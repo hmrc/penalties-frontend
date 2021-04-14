@@ -16,18 +16,18 @@
 
 package uk.gov.hmrc.penaltiesfrontend.config
 
-import javax.inject.{Inject, Singleton}
-
-import play.api.i18n.MessagesApi
-import play.api.mvc.Request
-import play.twirl.api.Html
-import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
+import uk.gov.hmrc.penaltiesfrontend.base.SpecBase
 import uk.gov.hmrc.penaltiesfrontend.views.html.ErrorTemplate
 
-@Singleton
-class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, val messagesApi: MessagesApi)(implicit appConfig: AppConfig)
-    extends FrontendErrorHandler {
+class ErrorHandlerSpec extends SpecBase {
+  val errorTemplate: ErrorTemplate = injector.instanceOf[ErrorTemplate]
+  val errorHandler = new ErrorHandler(errorTemplate, messagesApi)
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
-    errorTemplate(pageTitle, heading, message)
+  "standardErrorTemplate" should {
+    "return HTML for the standard error template" in {
+      lazy val expectedResult = errorTemplate.apply("Error!", "Something went wrong!", "We are unable to process this request.")
+      lazy val actualResult = errorHandler.standardErrorTemplate("Error!", "Something went wrong!", "We are unable to process this request.")
+      actualResult shouldBe expectedResult
+    }
+  }
 }
