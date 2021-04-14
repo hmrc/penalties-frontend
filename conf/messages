@@ -1,0 +1,3 @@
+service.name = penalties-frontend
+service.homePageUrl = /penalties-frontend
+service.text = This is your new service
