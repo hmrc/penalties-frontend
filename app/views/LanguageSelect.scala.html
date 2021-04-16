@@ -14,13 +14,17 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.penaltiesfrontend.config.AppConfig
+@import controllers.routes.LanguageSwitchController._
+@import config.AppConfig
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcLanguageSelect
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.LanguageSelect
 
-@this(layout: Layout)
+@this(hmrcLanguageSelect: HmrcLanguageSelect)
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@()(implicit messages: Messages, appConfig: AppConfig)
+@hmrcLanguageSelect(LanguageSelect(
+    if (messages.lang.code == "cy") Cy else En,
+    (En, switchToLanguage("en").url),
+    (Cy, switchToLanguage("cy").url)
+))
 
-@layout(pageTitle = Some("penalties-frontend")) {
-    <h1 class="govuk-heading-xl">penalties-frontend</h1>
-    <p class="govuk-body">@{messages("service.text")}</p>
-}

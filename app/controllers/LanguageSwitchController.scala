@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.penaltiesfrontend.controllers
+package controllers
 
-import uk.gov.hmrc.penaltiesfrontend.config.AppConfig
 import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
 import play.api.mvc._
 import play.api.i18n.Lang
 import com.google.inject.Inject
+import config.AppConfig
+
 import javax.inject.Singleton
 
 @Singleton

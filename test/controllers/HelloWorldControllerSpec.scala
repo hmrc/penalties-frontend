@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.penaltiesfrontend.controllers
+package controllers
 
 import play.api.http.Status
 import play.api.test.Helpers._
-import uk.gov.hmrc.penaltiesfrontend.base.SpecBase
-import uk.gov.hmrc.penaltiesfrontend.views.html.HelloWorldPage
+import base.SpecBase
+import views.html.HelloWorldPage
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 
 class HelloWorldControllerSpec extends SpecBase {

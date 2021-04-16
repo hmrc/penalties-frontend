@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.penaltiesfrontend.views
+package views
 
 import org.jsoup.Jsoup
-import uk.gov.hmrc.penaltiesfrontend.base.SpecBase
-import uk.gov.hmrc.penaltiesfrontend.views.html.LanguageSelect
+import base.SpecBase
+import views.html.LanguageSelect
 
 class LanguageSelectSpec extends SpecBase {
   val languageSelectPage = injector.instanceOf[LanguageSelect]
@@ -30,7 +30,7 @@ class LanguageSelectSpec extends SpecBase {
       val englishLangToggle = bodyAsHtml.select(".hmrc-language-select__list-item > span")
       val welshLangToggle = bodyAsHtml.select(".hmrc-language-select__list-item > a")
       englishLangToggle.text() shouldBe "English"
-      welshLangToggle.attr("href") shouldBe "/penalties-frontend/language/cy"
+      welshLangToggle.attr("href") shouldBe "/penalties/language/cy"
       result.contentType shouldBe "text/html"
     }
   }
