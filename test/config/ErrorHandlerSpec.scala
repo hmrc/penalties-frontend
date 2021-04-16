@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.penaltiesfrontend.config
+package config
 
-import uk.gov.hmrc.penaltiesfrontend.base.SpecBase
-import uk.gov.hmrc.penaltiesfrontend.views.html.ErrorTemplate
+import base.SpecBase
+import views.html.ErrorTemplate
 
 class ErrorHandlerSpec extends SpecBase {
   val errorTemplate: ErrorTemplate = injector.instanceOf[ErrorTemplate]

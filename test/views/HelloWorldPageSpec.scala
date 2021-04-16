@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.penaltiesfrontend.views
+package views
 
 import org.jsoup.Jsoup
-import uk.gov.hmrc.penaltiesfrontend.base.SpecBase
-import uk.gov.hmrc.penaltiesfrontend.views.html.HelloWorldPage
+import base.SpecBase
+import views.html.HelloWorldPage
 
 //TODO: Remove when we have other pages
 class HelloWorldPageSpec extends SpecBase {
