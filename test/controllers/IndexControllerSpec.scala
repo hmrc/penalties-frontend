@@ -14,20 +14,31 @@
  * limitations under the License.
  */
 
-package config
+package controllers
 
 import base.SpecBase
-import org.scalatest.Matchers._
-import views.html.ErrorTemplate
+import play.api.test.Helpers._
+import views.html.IndexView
 
-class ErrorHandlerSpec extends SpecBase {
-  val errorTemplate: ErrorTemplate = injector.instanceOf[ErrorTemplate]
+class IndexControllerSpec extends SpecBase {
 
-  "standardErrorTemplate" should {
-    "return HTML for the standard error template" in {
-      lazy val expectedResult = errorTemplate.apply("Error!", "Something went wrong!", "We are unable to process this request.")
-      lazy val actualResult = errorHandler.standardErrorTemplate("Error!", "Something went wrong!", "We are unable to process this request.")
-      actualResult shouldBe expectedResult
+  val page: IndexView = injector.instanceOf[IndexView]
+
+  object Controller extends IndexController(
+    page
+  )
+
+  "IndexController" must {
+
+    "when onPageLoad" when {
+
+      "return OK" in {
+
+        val result = Controller.onPageLoad()(fakeRequest)
+
+        status(result) mustBe OK
+      }
     }
+
   }
 }

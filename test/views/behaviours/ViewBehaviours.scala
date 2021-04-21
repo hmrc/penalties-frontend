@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,26 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.AppConfig
+package views.behaviours
 
-@this(layout: Layout)
+import base.SpecBase
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+import org.jsoup.nodes.Document
+import org.scalatest.MustMatchers._
 
-@layout(pageTitle = messages("service.name")) {
-    <h1 class="govuk-heading-xl">@{messages("service.name")}</h1>
-    <p class="govuk-body">@{messages("service.text")}</p>
+trait ViewBehaviours extends SpecBase {
+
+  def pageWithExpectedMessages(checks: Seq[(String, String)])(implicit document: Document): Unit = checks.foreach {
+    case (cssSelector, message) =>
+
+      s"element with cssSelector '$cssSelector'" must {
+
+        s"have message '$message'" in {
+          val elem = document.select(cssSelector)
+          elem.first.text() mustBe message
+        }
+      }
+  }
 }

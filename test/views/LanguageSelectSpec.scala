@@ -18,6 +18,7 @@ package views
 
 import org.jsoup.Jsoup
 import base.SpecBase
+import org.scalatest.Matchers._
 import views.html.LanguageSelect
 
 class LanguageSelectSpec extends SpecBase {
