@@ -16,24 +16,44 @@
 
 package controllers
 
+import base.SpecBase
+import org.mockito.Matchers
+import org.mockito.Mockito._
 import play.api.http.Status
 import play.api.test.Helpers._
-import base.SpecBase
-import views.html.HelloWorldPage
+import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
+import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+import utils.AuthTestModels
+import views.html.HelloWorldPage
+
+import scala.concurrent.Future
 
 class HelloWorldControllerSpec extends SpecBase {
   val helloWorldPage: HelloWorldPage = injector.instanceOf[HelloWorldPage]
 
-  private val controller = new HelloWorldController(appConfig, stubMessagesControllerComponents(), helloWorldPage)
+  class Setup(authResult: Future[~[Option[AffinityGroup], Enrolments]]) {
+    when(mockAuthConnector.authorise[~[Option[AffinityGroup], Enrolments]](
+      Matchers.any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
+      Matchers.any(), Matchers.any())
+    ).thenReturn(authResult)
+    val controller = new HelloWorldController(appConfig, stubMessagesControllerComponents(), authPredicate, helloWorldPage)
+  }
 
-  "GET /" should {
-    "return 200" in {
-      val result = controller.helloWorld(fakeRequest)
-      status(result) shouldBe Status.OK
+  "GET /hello-world" should {
+    "return 200" when {
+      "user is authorised" in new Setup(AuthTestModels.successfulAuthResult) {
+        val result = controller.helloWorld(fakeRequest)
+        status(result) shouldBe Status.OK
+      }
+
+      "user is unauthorised" in new Setup(AuthTestModels.failedAuthResultNoEnrolments) {
+        val result = controller.helloWorld(fakeRequest)
+        status(result) shouldBe Status.FORBIDDEN
+      }
     }
 
-    "return HTML" in {
+    "return HTML" in new Setup(AuthTestModels.successfulAuthResult) {
       val result = controller.helloWorld(fakeRequest)
       contentType(result) shouldBe Some("text/html")
       charset(result)     shouldBe Some("utf-8")
