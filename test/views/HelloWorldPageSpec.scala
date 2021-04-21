@@ -36,7 +36,7 @@ class HelloWorldPageSpec extends SpecBase {
     }
 
     "have the correct page title" in {
-      bodyAsHtml.title shouldBe messages("service.name")
+      bodyAsHtml.title shouldBe messages("common.pageTitle", "Penalties", "Penalties")
     }
   }
 }

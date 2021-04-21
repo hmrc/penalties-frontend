@@ -46,17 +46,16 @@ class HelloWorldControllerSpec extends SpecBase {
         val result = controller.helloWorld(fakeRequest)
         status(result) shouldBe Status.OK
       }
-
-      "user is unauthorised" in new Setup(AuthTestModels.failedAuthResultNoEnrolments) {
-        val result = controller.helloWorld(fakeRequest)
-        status(result) shouldBe Status.FORBIDDEN
-      }
     }
 
-    "return HTML" in new Setup(AuthTestModels.successfulAuthResult) {
+    "return 403 (FORBIDDEN) when user has no enrolments" in new Setup(AuthTestModels.failedAuthResultNoEnrolments) {
       val result = controller.helloWorld(fakeRequest)
-      contentType(result) shouldBe Some("text/html")
-      charset(result)     shouldBe Some("utf-8")
+      status(result) shouldBe Status.FORBIDDEN
+    }
+
+    "return 303 (SEE_OTHER) when user can not be authorised" in new Setup(AuthTestModels.failedAuthResultUnauthorised) {
+      val result = controller.helloWorld(fakeRequest)
+      status(result) shouldBe Status.SEE_OTHER
     }
   }
 }

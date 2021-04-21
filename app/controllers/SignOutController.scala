@@ -34,8 +34,4 @@ class SignOutController @Inject()(val mcc: MessagesControllerComponents)
       HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     Redirect(appConfig.signOutUrl)
   }
-
-  val timeout: Action[AnyContent] = Action {
-    Redirect(appConfig.signOutUrl)
-  }
 }

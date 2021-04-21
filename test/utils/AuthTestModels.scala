@@ -17,7 +17,7 @@
 package utils
 
 import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, EnrolmentIdentifier, Enrolments}
+import uk.gov.hmrc.auth.core.{AffinityGroup, BearerTokenExpired, Enrolment, EnrolmentIdentifier, Enrolments}
 import uk.gov.hmrc.auth.core.retrieve.~
 
 import scala.concurrent.Future
@@ -41,4 +41,8 @@ object AuthTestModels {
       Set()
     )
   ))
+
+  val failedAuthResultUnauthorised: Future[~[Option[AffinityGroup], Enrolments]] = Future.failed(
+    BearerTokenExpired()
+  )
 }
