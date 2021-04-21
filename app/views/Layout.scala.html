@@ -34,21 +34,21 @@
     @if(appConfig.welshLanguageSupportEnabled) {@languageSelect()}
 }
 
-    @headBlock = {
-        @head(
-            Some(hmrcTimeoutDialog(TimeoutDialog(
-                timeout = Some(appConfig.timeoutPeriod),
-                countdown = Some(appConfig.timeoutCountdown),
-                signOutUrl = Some(routes.SignOutController.signOut().url),
-                keepAliveUrl = Some("#"),
-                signOutButtonText = Some(messages("base.signOut"))
-            )))
-        )
+@headBlock = {
+    @head(
+        Some(hmrcTimeoutDialog(TimeoutDialog(
+            timeout = Some(appConfig.timeoutPeriod),
+            countdown = Some(appConfig.timeoutCountdown),
+            signOutUrl = Some(routes.SignOutController.signOut().url),
+            keepAliveUrl = Some("#"),
+            signOutButtonText = Some(messages("base.signOut"))
+        )))
+    )
 
-    }
+}
 
 @govukLayout(
-    pageTitle = Some(pageTitle),
+    pageTitle = Some(messages("common.pageTitle", pageTitle, "Penalties")),
     headBlock = Some(headBlock),
     headerBlock = Some(header()),
     scriptsBlock = scriptsBlock,
