@@ -1,0 +1,19 @@
+@*
+* Copyright 2021 HM Revenue & Customs
+*
+*@
+
+@this()
+
+@(
+tabTitle: Html,
+tabLink: String
+)(implicit messages: Messages)
+
+<div class="@classes" @id.map(i => s"id=$i") @ariaHidden.map(hidden => s"aria-hidden=$hidden")>@content</div>
+
+<li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+    <a class="govuk-tabs__tab" href="@tabLink">
+        @tabTitle
+    </a>
+</li>
