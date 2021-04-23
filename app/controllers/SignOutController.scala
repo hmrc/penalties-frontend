@@ -17,28 +17,21 @@
 package controllers
 
 import config.AppConfig
-import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, _}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc._
-import controllers.predicates.AuthPredicate
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.HelloWorldPage
-
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class HelloWorldController @Inject()(
-                                      appConfig: AppConfig,
-                                      mcc: MessagesControllerComponents,
-                                      authorise: AuthPredicate,
-                                      helloWorldPage: HelloWorldPage)
-  extends FrontendController(mcc) with I18nSupport {
-
-  implicit val config: AppConfig = appConfig
-
-  val helloWorld: Action[AnyContent] = authorise.async { implicit user =>
-    Future.successful(Ok(helloWorldPage()))
+class SignOutController @Inject()(val mcc: MessagesControllerComponents)
+                                 (implicit ec: ExecutionContext,
+                                  appConfig: AppConfig) extends FrontendController(mcc) {
+  def signOut: Action[AnyContent] = Action { implicit request =>
+    implicit val hc: HeaderCarrier =
+      HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+    Redirect(appConfig.signOutUrl)
   }
-
 }

@@ -22,6 +22,7 @@ import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, TestSuite}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.ws.{WSClient, WSRequest}
+import stubs.AuthStub
 import uk.gov.hmrc.play.test.UnitSpec
 
 trait IntegrationSpecCommonBase extends UnitSpec with GuiceOneServerPerSuite with
@@ -31,14 +32,13 @@ trait IntegrationSpecCommonBase extends UnitSpec with GuiceOneServerPerSuite wit
 
   override def afterEach(): Unit = {
     resetAll()
-    stop()
     super.afterEach()
     SharedMetricRegistries.clear()
   }
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    start()
+    AuthStub.authorised()
     SharedMetricRegistries.clear()
   }
 
@@ -55,7 +55,12 @@ trait IntegrationSpecCommonBase extends UnitSpec with GuiceOneServerPerSuite wit
     SharedMetricRegistries.clear()
   }
 
+  val configForApp: Map[String, Any] = Map(
+    "microservice.services.auth.port" -> stubPort
+  )
+
   override lazy val app = new GuiceApplicationBuilder()
+    .configure(configForApp)
     .build()
 
   lazy val ws = app.injector.instanceOf[WSClient]

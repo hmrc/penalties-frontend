@@ -25,7 +25,7 @@ class HelloWorldPageSpec extends SpecBase {
   val helloWorldPage = injector.instanceOf[HelloWorldPage]
 
   "HelloWorldPage" should {
-    lazy val result = helloWorldPage.apply()
+    lazy val result = helloWorldPage()
     val bodyAsHtml = Jsoup.parse(result.body)
     "have the service name as the header" in {
       bodyAsHtml.select("h1").text() shouldBe messages("service.name")
@@ -36,7 +36,7 @@ class HelloWorldPageSpec extends SpecBase {
     }
 
     "have the correct page title" in {
-      bodyAsHtml.title shouldBe messages("service.name")
+      bodyAsHtml.title shouldBe messages("common.pageTitle", "Penalties", "Penalties")
     }
   }
 }
