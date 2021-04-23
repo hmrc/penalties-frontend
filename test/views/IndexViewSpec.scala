@@ -45,7 +45,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
       behave like pageWithExpectedMessages(expectedContent)
 
       "have correct route for breadcrumb link" in {
-        doc.select(Selectors.breadcrumbWithLink(1)).attr("href") mustBe appConfig.vatOverviewUrl
+        doc.select(Selectors.breadcrumbWithLink(1)).attr("href") shouldBe appConfig.vatOverviewUrl
       }
     }
   }

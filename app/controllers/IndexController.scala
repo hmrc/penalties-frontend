@@ -17,20 +17,23 @@
 package controllers
 
 import config.AppConfig
+import controllers.predicates.AuthPredicate
 import javax.inject.Inject
-import play.api.i18n.Messages
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc._
 import play.api.mvc.Results.Ok
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.{FrontendBaseController, FrontendController}
 import views.html.IndexView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject()(page: IndexView)(implicit ec: ExecutionContext,
                                                 appConfig: AppConfig,
-                                                val controllerComponents: MessagesControllerComponents) extends FrontendBaseController {
+                                                authorise: AuthPredicate,
+                                                controllerComponents: MessagesControllerComponents)
+  extends FrontendController(controllerComponents) with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = Action.async { implicit request =>
+  def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
     Future.successful(Ok(page()))
   }
 }

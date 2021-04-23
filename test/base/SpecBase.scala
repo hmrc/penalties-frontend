@@ -24,7 +24,10 @@ import play.api.test.FakeRequest
 import config.{AppConfig, ErrorHandler}
 import org.scalamock.scalatest.MockFactory
 import controllers.predicates.AuthPredicate
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import org.scalatestplus.mockito.MockitoSugar.mock
+import play.twirl.api.Html
 import services.AuthService
 import uk.gov.hmrc.auth.core.AuthConnector
 import views.html.errors.Unauthorised
@@ -61,4 +64,6 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
     errorHandler,
     unauthorised
   )
+
+  def asDocument(html: Html): Document = Jsoup.parse(html.toString())
 }

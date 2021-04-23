@@ -20,7 +20,7 @@
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("index.title"))) {
+@layout(pageTitle = messages("index.title")) {
 
     <div class="govuk-breadcrumbs govuk-breadcrumbs--collapse-on-mobile">
         <ol class="govuk-breadcrumbs__list">

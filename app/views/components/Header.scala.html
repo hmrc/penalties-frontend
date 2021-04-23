@@ -22,9 +22,8 @@
 @(showSignOut: Boolean = true)(implicit messages: Messages)
 
 @hmrcHeader(Header(
-    //TODO Change homepageUrl and serviceUrl to penalty points page
-    homepageUrl = controllers.routes.HelloWorldController.helloWorld().url,
-    serviceUrl = controllers.routes.HelloWorldController.helloWorld().url,
+    homepageUrl = controllers.routes.IndexController.onPageLoad.url,
+    serviceUrl = controllers.routes.IndexController.onPageLoad.url,
     serviceName = Some(messages("service.name")),
     containerClasses = "govuk-width-container",
     navigation = None,

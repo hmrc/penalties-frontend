@@ -17,28 +17,59 @@
 package controllers
 
 import base.SpecBase
+import org.mockito.Matchers
+import org.mockito.Mockito.{reset, when}
+import play.api.mvc.Result
 import play.api.test.Helpers._
+import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
+import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
+import utils.AuthTestModels
 import views.html.IndexView
 
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 class IndexControllerSpec extends SpecBase {
 
   val page: IndexView = injector.instanceOf[IndexView]
 
+  class Setup(authResult: Future[~[Option[AffinityGroup], Enrolments]]) {
+    reset(mockAuthConnector)
+    when(mockAuthConnector.authorise[~[Option[AffinityGroup], Enrolments]](
+      Matchers.any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
+      Matchers.any(), Matchers.any())
+    ).thenReturn(authResult)
+  }
+
   object Controller extends IndexController(
     page
-  )
+  )(implicitly, implicitly, authPredicate, stubMessagesControllerComponents())
 
-  "IndexController" must {
+  "IndexController" should {
 
-    "when onPageLoad" when {
+    "onPageLoad" when {
 
-      "return OK" in {
+      "the user is authorised" when {
 
-        val result = Controller.onPageLoad()(fakeRequest)
+        "return OK" in new Setup(AuthTestModels.successfulAuthResult) {
 
-        status(result) mustBe OK
+          val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
+
+          status(result) shouldBe OK
+        }
+      }
+
+      "the user is unauthorised" when {
+
+        "return 403 (FORBIDDEN) when user has no enrolments" in new Setup(AuthTestModels.failedAuthResultNoEnrolments) {
+          val result: Future[Result] = Controller.onPageLoad(fakeRequest)
+          status(result) shouldBe FORBIDDEN
+        }
+
+        "return 303 (SEE_OTHER) when user can not be authorised" in new Setup(AuthTestModels.failedAuthResultUnauthorised) {
+          val result: Future[Result] = Controller.onPageLoad(fakeRequest)
+          status(result) shouldBe SEE_OTHER
+        }
       }
     }
-
   }
 }
