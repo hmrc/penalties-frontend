@@ -15,12 +15,66 @@
  *@
 
 @import config.AppConfig
+@import viewmodels.SummaryCard
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@this(layout: Layout)
+@this(
+    govukTabs : GovukTabs,
+    govukBreadcrumbs : GovukBreadcrumbs,
+    layout: Layout,
+    summaryCard: components.SummaryCard
+)
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(cardDetails: Seq[SummaryCard])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@summaryCards = {
+    @for(card <- cardDetails){
+        @summaryCard(card.cardBody, card.status, card.penaltyPoint, card.footerUrl)
+    }
+}
+
+@lateSP = {
+<h3 class="govuk-heading-m"> Late Submission Penalties </h3>
+
+@summaryCards
+}
 
 @layout(pageTitle = Some("penalties-frontend")) {
+
+@govukBreadcrumbs(Breadcrumbs(
+items = Seq(
+    BreadcrumbsItem(
+        content = Text("Your VAT Account"),
+        href = Some("#")
+    ),
+    BreadcrumbsItem(
+        content = Text("VAT penalties and appeals"),
+        href = Some("#")
+    )
+)
+
+))
+
     <h1 class="govuk-heading-xl">penalties-frontend</h1>
     <p class="govuk-body">@{messages("service.text")}</p>
+
+
+@govukTabs(Tabs(
+    items = Seq(
+        TabItem(
+            id = Some("late-submission-penalties"),
+            label = "Late Submission Penalties",
+            panel = TabPanel(
+                content = HtmlContent(lateSP)
+            )
+        ),
+        TabItem(
+            id = Some("late-payment-penalties"),
+            label = "Late Payment Penalties",
+            panel = TabPanel(
+                content = HtmlContent("test")
+            )
+        )
+    )
+))
 }

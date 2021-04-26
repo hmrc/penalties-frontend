@@ -17,25 +17,35 @@
 package controllers
 
 import config.AppConfig
-
 import javax.inject.{Inject, Singleton}
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import viewmodels.SummaryCardHelper
 import views.html.HelloWorldPage
+import service.TestData
 
 import scala.concurrent.Future
 
 @Singleton
 class HelloWorldController @Inject()(
-  appConfig: AppConfig,
-  mcc: MessagesControllerComponents,
-  helloWorldPage: HelloWorldPage)
-    extends FrontendController(mcc) {
+                                      appConfig: AppConfig,
+                                      mcc: MessagesControllerComponents,
+                                      helloWorldPage: HelloWorldPage,
+                                      data: TestData
+                                    )
+  extends FrontendController(mcc) {
 
   implicit val config: AppConfig = appConfig
+  val cardHelper = new SummaryCardHelper()
+  val mockServiceData = data.cardDetails
 
   val helloWorld: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(helloWorldPage()))
+    Future.successful(
+      Ok(helloWorldPage(
+        cardHelper.populateCard(mockServiceData.penalties)
+      ))
+    )
   }
 
 }
