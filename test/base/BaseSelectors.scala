@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,12 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(layout: Layout)
+package base
 
-@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@layout(pageTitle = pageTitle) {
-    <h1 class="govuk-heading-xl">@{Text(heading).asHtml}</h1>
-    <p class="govuk-body">@{Text(message).asHtml}</p>
+class BaseSelectors {
+
+  val title = "title"
+
+  val h1 = "h1"
+
+  def breadcrumbs(index: Int) = s"#main-content > div > div > div.govuk-breadcrumbs.govuk-breadcrumbs--collapse-on-mobile > ol > li:nth-child($index)"
+
+  def breadcrumbWithLink(index: Int) = s"${breadcrumbs(index)} > a"
+
+  val tab = "#main-content > div > div > div.govuk-tabs > ul > li > a"
+
+  val tabHeading = "#late-submission-penalties > h2"
 }

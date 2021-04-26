@@ -16,27 +16,29 @@
 
 package controllers
 
-import play.api.http.Status
-import play.api.test.Helpers._
 import base.SpecBase
-import views.html.HelloWorldPage
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+import play.api.http.Status
+import play.api.mvc.Result
+import play.api.test.Helpers._
+import utils.AuthMocks
 
-class HelloWorldControllerSpec extends SpecBase {
-  val helloWorldPage: HelloWorldPage = injector.instanceOf[HelloWorldPage]
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
-  private val controller = new HelloWorldController(appConfig, stubMessagesControllerComponents(), helloWorldPage)
+class SignOutControllerSpec extends SpecBase with AuthMocks {
+  val controller = new SignOutController(
+    mcc
+  )
 
-  "GET /" should {
-    "return 200" in {
-      val result = controller.helloWorld(fakeRequest)
-      status(result) shouldBe Status.OK
-    }
+  lazy val result: Future[Result] = {
+    mockOrganisationAuthorised()
+    controller.signOut()(fakeRequest)
+  }
 
-    "return HTML" in {
-      val result = controller.helloWorld(fakeRequest)
-      contentType(result) shouldBe Some("text/html")
-      charset(result)     shouldBe Some("utf-8")
+  "GET /sign-out" should {
+    "redirect to the sign out url" in {
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result).get shouldBe appConfig.signOutUrl
     }
   }
 }

@@ -14,28 +14,24 @@
  * limitations under the License.
  */
 
-package controllers
+package views.behaviours
 
-import config.AppConfig
+import base.SpecBase
 
-import javax.inject.{Inject, Singleton}
-import play.api.mvc._
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.HelloWorldPage
+import org.jsoup.nodes.Document
+import org.scalatest.MustMatchers._
 
-import scala.concurrent.Future
+trait ViewBehaviours extends SpecBase {
 
-@Singleton
-class HelloWorldController @Inject()(
-  appConfig: AppConfig,
-  mcc: MessagesControllerComponents,
-  helloWorldPage: HelloWorldPage)
-    extends FrontendController(mcc) {
+  def pageWithExpectedMessages(checks: Seq[(String, String)])(implicit document: Document): Unit = checks.foreach {
+    case (cssSelector, message) =>
 
-  implicit val config: AppConfig = appConfig
+      s"element with cssSelector '$cssSelector'" must {
 
-  val helloWorld: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(helloWorldPage()))
+        s"have message '$message'" in {
+          val elem = document.select(cssSelector)
+          elem.first.text() mustBe message
+        }
+      }
   }
-
 }

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,12 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(layout: Layout)
+package utils
 
-@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@layout(pageTitle = pageTitle) {
-    <h1 class="govuk-heading-xl">@{Text(heading).asHtml}</h1>
-    <p class="govuk-body">@{Text(message).asHtml}</p>
+object EnrolmentKeys {
+  val mtdVATEnrolmentKey: String = "HMRC-MTD-VAT"
+  val vrnId: String = "VRN"
+  val agentAffinityGroup: String = "Agent"
+  val activated = "Activated"
 }
