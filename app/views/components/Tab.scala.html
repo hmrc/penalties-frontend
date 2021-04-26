@@ -14,18 +14,15 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcHeader
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.Header
+@this()
 
-@this(hmrcHeader: HmrcHeader)
+@(
+tabTitle: Html,
+tabLink: String
+)(implicit messages: Messages)
 
-@(showSignOut: Boolean = true)(implicit messages: Messages)
-
-@hmrcHeader(Header(
-    homepageUrl = controllers.routes.IndexController.onPageLoad.url,
-    serviceUrl = controllers.routes.IndexController.onPageLoad.url,
-    serviceName = Some(messages("service.name")),
-    containerClasses = "govuk-width-container",
-    navigation = None,
-    signOutHref = if(showSignOut) Some(controllers.routes.SignOutController.signOut().url) else None
-))
+<li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+    <a class="govuk-tabs__tab" href=@tabLink>
+        @tabTitle
+    </a>
+</li>

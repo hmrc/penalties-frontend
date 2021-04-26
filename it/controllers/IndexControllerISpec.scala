@@ -16,21 +16,20 @@
 
 package controllers
 
-import org.scalatest.concurrent.ScalaFutures.whenReady
 import play.api.http.Status
 import stubs.AuthStub
 import utils.IntegrationSpecCommonBase
 
-class HelloWorldControllerISpec extends IntegrationSpecCommonBase {
-  "GET /hello-world" should {
+class IndexControllerISpec extends IntegrationSpecCommonBase {
+  "GET /" should {
     "return 200 (OK) when the user is authorised" in {
-      val request = await(buildClientForRequestToApp(uri = "/hello-world").get())
+      val request = await(buildClientForRequestToApp(uri = "/").get())
       request.status shouldBe Status.OK
     }
 
     "return 303 (SEE_OTHER) when the user is not authorised" in {
       AuthStub.unauthorised()
-      val request = await(buildClientForRequestToApp(uri = "/hello-world").get())
+      val request = await(buildClientForRequestToApp(uri = "/").get())
       request.status shouldBe Status.SEE_OTHER
     }
   }

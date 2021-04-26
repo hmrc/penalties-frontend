@@ -16,10 +16,12 @@
 
 package config
 
+import akka.stream.actor.ActorPublisherMessage.Request
 import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import play.api.i18n.Lang
+import play.api.mvc.RequestHeader
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 
 @Singleton
@@ -30,12 +32,13 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val cy: String            = "cy"
   val defaultLanguage: Lang = Lang(en)
 
+  lazy val vatOverviewUrl = servicesConfig.getString("urls.vatOverview")
+
   lazy val signInUrl: String = config.get[String]("signIn.url")
 
   lazy val signInContinueBaseUrl: String = config.get[String]("signIn.continueBaseUrl")
 
-  //TODO: Need to change to a functioning page
-  lazy val signInContinueUrl: String = SafeRedirectUrl(signInContinueBaseUrl + controllers.routes.HelloWorldController.helloWorld().url).encodedUrl
+  lazy val signInContinueUrl: String = SafeRedirectUrl(signInContinueBaseUrl + controllers.routes.IndexController.onPageLoad.url).encodedUrl
 
   lazy val signOutUrl: String = config.get[String]("signOut.url") + signInContinueUrl
 
