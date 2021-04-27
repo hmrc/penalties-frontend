@@ -14,13 +14,21 @@
  * limitations under the License.
  */
 
-package utils
+package models
 
-object EnrolmentKeys {
-  val mtdVATEnrolmentKey: String = "HMRC-MTD-VAT"
-  val vrnId: String = "VRN"
-  val agentAffinityGroup: String = "Agent"
-  val activated = "Activated"
+import models.point.PenaltyPoint
+import play.api.libs.json.{Json, OFormat}
 
-  def constructMTDVATEnrolmentKey(vrn: String): String = s"$mtdVATEnrolmentKey~$vrnId~$vrn"
+case class ETMPPayload(
+                        pointsTotal: Int,
+                        lateSubmissions: Int,
+                        adjustmentPointsTotal: BigDecimal,
+                        fixedPenaltyAmount: BigDecimal,
+                        penaltyAmountsTotal: BigDecimal,
+                        penaltyPointsThreshold: Int,
+                        penaltyPoints: Seq[PenaltyPoint]
+                      )
+
+object ETMPPayload {
+  implicit val format: OFormat[ETMPPayload] = Json.format[ETMPPayload]
 }

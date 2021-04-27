@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package utils
+package models.financial
 
-object EnrolmentKeys {
-  val mtdVATEnrolmentKey: String = "HMRC-MTD-VAT"
-  val vrnId: String = "VRN"
-  val agentAffinityGroup: String = "Agent"
-  val activated = "Activated"
+import play.api.libs.json.{Json, OFormat}
 
-  def constructMTDVATEnrolmentKey(vrn: String): String = s"$mtdVATEnrolmentKey~$vrnId~$vrn"
+import java.time.LocalDateTime
+
+case class Financial(
+                      amountDue: BigDecimal,
+                      dueDate: LocalDateTime
+                    )
+
+object Financial {
+  implicit val format: OFormat[Financial] = Json.format[Financial]
 }

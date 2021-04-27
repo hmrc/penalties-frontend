@@ -18,9 +18,12 @@ package controllers
 
 import base.SpecBase
 import org.mockito.Matchers
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Matchers.any
+import org.mockito.Mockito.{mock, reset, when}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Result
 import play.api.test.Helpers._
+import services.PenaltiesService
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import utils.AuthTestModels
@@ -28,20 +31,25 @@ import views.html.IndexView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-class IndexControllerSpec extends SpecBase {
+class IndexControllerSpec extends SpecBase with MockitoSugar {
 
   val page: IndexView = injector.instanceOf[IndexView]
+  val mockPenaltiesService:PenaltiesService = mock[PenaltiesService]
 
   class Setup(authResult: Future[~[Option[AffinityGroup], Enrolments]]) {
+
     reset(mockAuthConnector)
     when(mockAuthConnector.authorise[~[Option[AffinityGroup], Enrolments]](
       Matchers.any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
       Matchers.any(), Matchers.any())
     ).thenReturn(authResult)
+
+    when(mockPenaltiesService.getLspDataWithVrn(any())(any())).thenReturn(Future.successful(penaltiesData))
   }
 
   object Controller extends IndexController(
-    page
+    page,
+    mockPenaltiesService
   )(implicitly, implicitly, authPredicate, stubMessagesControllerComponents())
 
   "IndexController" should {
