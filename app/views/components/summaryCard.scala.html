@@ -15,6 +15,7 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import viewmodels.SummaryCard
 
 @this(
     govukSummaryList : GovukSummaryList,
@@ -22,6 +23,7 @@
 )
 
 @(
+    summaryCard: SummaryCard,
     summaryListRows: Seq[SummaryListRow],
     status: String,
     pointValue: Int,
@@ -29,19 +31,19 @@
     tagStatusClasses: String = "penalty-due-tag" // can maybe use this as a temp DUE tag class govuk-tag--red/penalty-due-tag
 )(implicit messages: Messages)
 
-<Section class="app-summary-card govuk-!-margin-bottom-3">
+<section class="app-summary-card govuk-!-margin-bottom-3">
     <header class="app-summary-card__header">
-        <h4 class="app-summary-card__title">@messages("summaryCard.header", pointValue)</h4>
+        <h3 class="app-summary-card__title">@messages("summaryCard.header", summaryCard.penaltyPoint)</h3>
         <div class="app-summary-card__actions">
             <ul class="app-summary-card__actions-list">
                 <il class="app-summary-card__actions-list-item">
-                    @govukTag(Tag(content = Text(messages(status)), classes = s"govuk-tag penalty-due-tag"))
+                    @govukTag(Tag(content = Text(messages(summaryCard.status)), classes = s"govuk-tag penalty-due-tag"))
                 </il>
             </ul>
         </div>
     </header>
-    <div class="app-summary-card__body">@govukSummaryList(SummaryList(summaryListRows))</div>
+    <div class="app-summary-card__body">@govukSummaryList(SummaryList(summaryCard.cardRows))</div>
     <footer class="app-summary-card__footer">
-        <a class="govuk-link" href="@footerLink">@messages("summaryCard.footerLinkText", pointValue)</a>
+        <a class="govuk-link" href="@footerLink">@messages("summaryCard.footerLinkText", summaryCard.penaltyPoint)</a>
     </footer>
-</Section>
+</section>
