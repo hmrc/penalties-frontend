@@ -17,6 +17,7 @@
 @import config.AppConfig
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
+@import views.html.layouts.GovUkPageLayout
 
 @this(
         govukLayout: GovUkPageLayout,
@@ -24,7 +25,7 @@
         hmrcTimeoutDialog: HmrcTimeoutDialog,
         header: components.Header,
         hmrcStandardFooter: HmrcStandardFooter,
-        languageSelect: LanguageSelect
+        languageSelect: views.html.LanguageSelect
 )
 @(pageTitle: String,
   scriptsBlock: Option[Html] = None,

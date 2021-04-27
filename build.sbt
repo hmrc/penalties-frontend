@@ -16,6 +16,7 @@ lazy val microservice = Project(appName, file("."))
       "config.AppConfig",
       "uk.gov.hmrc.govukfrontend.views.html.components._",
       "uk.gov.hmrc.govukfrontend.views.html.helpers._",
+      "views.html.layouts.Layout"
     ),
     // ***************
     // Use the silencer plugin to suppress warnings
@@ -28,7 +29,7 @@ lazy val microservice = Project(appName, file("."))
     ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;.*(BuildInfo|Routes).*",
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*repositories.*;" +
       ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;" +
-      ".*ControllerConfiguration;.*LanguageSwitchController;.*testonly.*;",
+      ".*ControllerConfiguration;.*LanguageSwitchController;.*testonly.*;.*layouts.*;",
     ScoverageKeys.coverageMinimum := 90,
     ScoverageKeys.coverageFailOnMinimum := false,
     ScoverageKeys.coverageHighlighting := true,
