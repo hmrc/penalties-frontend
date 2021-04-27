@@ -29,4 +29,6 @@ class BaseSelectors {
   val tab = "#main-content > div > div > div.govuk-tabs > ul > li > a"
 
   val tabHeading = "#late-submission-penalties > h2"
+
+  val externalGuidance = "#guidance-link"
 }

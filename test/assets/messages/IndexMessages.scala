@@ -27,4 +27,6 @@ object IndexMessages {
   val tab1 = "Late submission penalties"
 
   val subheading = "Late submission penalties"
+
+  val externalGuidanceLinkText = "Read the guidance about late submission penalties (opens in a new tab)"
 }
