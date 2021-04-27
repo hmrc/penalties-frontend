@@ -16,37 +16,41 @@
 
 package viewmodels
 
-import java.time.LocalDateTime
-
+import models._
+import play.api.i18n.Messages
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
-import play.api.i18n.Messages
-import models._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
+import utils.ImplicitDateFormatter
 
-class SummaryCardHelper {
-
+class SummaryCardHelper extends ImplicitDateFormatter{
 
   def populateCard(penalties: Seq[PenaltyModel])(implicit messages: Messages): Seq[SummaryCard] = {
     penalties.map(penalty => summaryCard(penalty))
   }
 
-  // will probably return Penalty details from service then for each 'penaltyPoints' print a summary card.
-
   def summaryCard(penalty: PenaltyModel)(implicit messages: Messages): SummaryCard = SummaryCard(
     Seq(
-      summaryListRow(messages("summaryCard.Key1"), Html(messages("summaryCard.value1", penalty.penaltyPeriod.startDate, penalty.penaltyPeriod.endDate))),
-      summaryListRow(messages("summaryCard.Key2"), Html(penalty.penaltyPeriod.submission.dueDate.toString)),
-      summaryListRow(messages("summaryCard.Key3"), Html(penalty.penaltyPeriod.submission.submissionDate.toString)),
-      summaryListRow(messages("summaryCard.Key4"), Html(penalty.dateExpired.toString)),
+      summaryListRow(
+        messages("summaryCard.key1"),
+        Html(
+          messages(
+            "summaryCard.value1",
+            dateTimeToString(penalty.penaltyPeriod.startDate),
+            dateTimeToString(penalty.penaltyPeriod.endDate)
+          )
+        )
+      ),
+      summaryListRow(messages("summaryCard.key2"), Html(dateTimeToString(penalty.penaltyPeriod.submission.dueDate))),
+      summaryListRow(messages("summaryCard.key3"), Html(dateTimeToString(penalty.penaltyPeriod.submission.submissionDate))),
+      summaryListRow(messages("summaryCard.key4"), Html(dateTimeToMonthYearString(penalty.dateExpired))),
     ),
-    penalty.status,
+    tagStatus(penalty.status),
     penalty.number
   )
 
-  def summaryListRow(label: String, value: Html): SummaryListRow = {
-    SummaryListRow(
+  def summaryListRow(label: String, value: Html): SummaryListRow = SummaryListRow(
       key = Key(
         content = Text(label),
         classes = "govuk-summary-list__key"
@@ -56,6 +60,17 @@ class SummaryCardHelper {
         classes = "govuk-summary-list__value"
       ),
       classes = "govuk-summary-list__row"
+    )
+
+  def tagStatus(statusText: String)(implicit messages: Messages): Tag = {
+    val tagCssClass = statusText match {
+      case _: String if statusText.equalsIgnoreCase("due") => "penalty-due-tag"
+      case _ => ""
+    }
+
+    Tag(
+      content = Text(statusText),
+      classes = s"govuk-tag $tagCssClass"
     )
   }
 

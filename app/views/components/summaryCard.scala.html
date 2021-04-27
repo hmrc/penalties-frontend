@@ -16,6 +16,7 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import viewmodels.SummaryCard
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 
 @this(
     govukSummaryList : GovukSummaryList,
@@ -32,7 +33,7 @@
         <div class="app-summary-card__actions">
             <ul class="app-summary-card__actions-list">
                 <il class="app-summary-card__actions-list-item">
-                    @govukTag(Tag(content = Text(messages(summaryCard.status)), classes = s"govuk-tag penalty-due-tag"))
+                    @govukTag(summaryCard.status)
                 </il>
             </ul>
         </div>

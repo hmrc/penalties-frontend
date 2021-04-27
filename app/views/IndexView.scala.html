@@ -15,10 +15,14 @@
  *@
 
 @import config.AppConfig
+@import viewmodels.SummaryCard
 
-@this(layout: Layout)
+@this(
+    layout: Layout,
+    summaryCard: components.summaryCard
+)
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(cards: Seq[SummaryCard])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = messages("index.title")) {
 
@@ -49,6 +53,10 @@
         </ul>
         <div class="govuk-tabs__panel" id="late-submission-penalties">
             <h2 class="govuk-heading-m">@{messages("index.subheading")}</h2>
+
+            @cards.map{card =>
+                @summaryCard(card)
+            }
         </div>
     </div>
 }

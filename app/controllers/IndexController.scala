@@ -19,21 +19,28 @@ package controllers
 import config.AppConfig
 import controllers.predicates.AuthPredicate
 import javax.inject.Inject
-import play.api.i18n.{I18nSupport, Messages}
+import play.api.i18n.I18nSupport
 import play.api.mvc._
-import play.api.mvc.Results.Ok
-import uk.gov.hmrc.play.bootstrap.frontend.controller.{FrontendBaseController, FrontendController}
+import service.TempTestData
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import viewmodels.SummaryCardHelper
 import views.html.IndexView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject()(page: IndexView)(implicit ec: ExecutionContext,
-                                                appConfig: AppConfig,
-                                                authorise: AuthPredicate,
-                                                controllerComponents: MessagesControllerComponents)
+                                                 appConfig: AppConfig,
+                                                 authorise: AuthPredicate,
+                                                 data: TempTestData,
+                                                 controllerComponents: MessagesControllerComponents)
   extends FrontendController(controllerComponents) with I18nSupport {
 
+  val cardHelper = new SummaryCardHelper()
+  val tempServiceData = data.cardDetails
+
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
-    Future.successful(Ok(page()))
+    Future.successful(Ok(page(
+      cardHelper.populateCard(tempServiceData.penalties)
+    )))
   }
 }

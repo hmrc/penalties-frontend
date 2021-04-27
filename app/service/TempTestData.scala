@@ -20,7 +20,7 @@ import java.time.LocalDateTime
 
 import models.{PenaltyCommunication, PenaltyDetails, PenaltyModel, PenaltyPeriod, PeriodSubmission}
 
-case class TestData(){
+case class TempTestData(){
 
   val periodSubmission: PeriodSubmission =
     PeriodSubmission(
@@ -58,6 +58,7 @@ case class TestData(){
       penaltyPeriod,
       penaltyCommunications
     )
+
   val penaltyModel2: PenaltyModel =
     PenaltyModel(
       "financial",
@@ -70,6 +71,18 @@ case class TestData(){
       penaltyCommunications
     )
 
+  val penaltyModel3: PenaltyModel =
+    PenaltyModel(
+      "point",
+      "ID-313",
+      3,
+      LocalDateTime.now(),
+      LocalDateTime.now().plusDays(2),
+      "due",
+      penaltyPeriod,
+      penaltyCommunications
+    )
+
   val cardDetails: PenaltyDetails =
     PenaltyDetails(
       1,
@@ -78,7 +91,7 @@ case class TestData(){
       200,
       400.00,
       4,
-      Seq(penaltyModel2, penaltyModel1)
+      Seq(penaltyModel3, penaltyModel2, penaltyModel1)
     )
 
 }

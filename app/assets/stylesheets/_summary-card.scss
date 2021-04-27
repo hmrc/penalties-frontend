@@ -14,6 +14,12 @@
     }
   }
 
+  		   /* Status Tag  */
+    .penalty-due-tag {
+        color: #ffffff;
+        background-color: govuk-colour("red");
+    }
+
   /* Card footer */
   .app-summary-card__footer {
     align-items: center;
