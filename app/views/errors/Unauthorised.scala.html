@@ -16,8 +16,13 @@
 
 @this(layout: Layout)
 
-@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@layout(pageTitle = pageTitle) {
-    <h1 class="govuk-heading-xl">@{Text(heading).asHtml}</h1>
-    <p class="govuk-body">@{Text(message).asHtml}</p>
+@()(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@layout(
+    pageTitle = messages("unauthorised.title")
+) {
+    <h1 class="govuk-heading-xl">@messages("unauthorised.title")</h1>
+    <p class="govuk-body"> @messages("unauthorised.signUp")</p>
+    <p class="govuk-body">@messages("unauthorised.alreadySignedUp")</p>
+    <p class="govuk-body"><a class="govuk-link" href="@routes.SignOutController.signOut()">@messages("base.signOut")</a></p>
 }

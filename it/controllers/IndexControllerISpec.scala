@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 
-package config
+package controllers
 
-import base.SpecBase
-import org.scalatest.Matchers._
-import views.html.ErrorTemplate
+import play.api.http.Status
+import stubs.AuthStub
+import utils.IntegrationSpecCommonBase
 
-class ErrorHandlerSpec extends SpecBase {
-  val errorTemplate: ErrorTemplate = injector.instanceOf[ErrorTemplate]
+class IndexControllerISpec extends IntegrationSpecCommonBase {
+  "GET /" should {
+    "return 200 (OK) when the user is authorised" in {
+      val request = await(buildClientForRequestToApp(uri = "/").get())
+      request.status shouldBe Status.OK
+    }
 
-  "standardErrorTemplate" should {
-    "return HTML for the standard error template" in {
-      lazy val expectedResult = errorTemplate.apply("Error!", "Something went wrong!", "We are unable to process this request.")
-      lazy val actualResult = errorHandler.standardErrorTemplate("Error!", "Something went wrong!", "We are unable to process this request.")
-      actualResult shouldBe expectedResult
+    "return 303 (SEE_OTHER) when the user is not authorised" in {
+      AuthStub.unauthorised()
+      val request = await(buildClientForRequestToApp(uri = "/").get())
+      request.status shouldBe Status.SEE_OTHER
     }
   }
 }

@@ -16,25 +16,41 @@
 
 @import config.AppConfig
 @import uk.gov.hmrc.govukfrontend.views.Layouts
-
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcHeader
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.Header
 @this(
         govukLayout: GovukLayout,
         head: Head,
+        hmrcTimeoutDialog: HmrcTimeoutDialog,
+        header: components.Header,
         hmrcStandardFooter: HmrcStandardFooter,
         languageSelect: LanguageSelect
 )
-@(pageTitle: Option[String] = None,
-        headBlock: Option[Html] = None,
-        scriptsBlock: Option[Html] = None
+@(pageTitle: String,
+  scriptsBlock: Option[Html] = None
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @beforeContentBlock = {
     @if(appConfig.welshLanguageSupportEnabled) {@languageSelect()}
 }
 
+@headBlock = {
+    @head(
+        Some(hmrcTimeoutDialog(TimeoutDialog(
+            timeout = Some(appConfig.timeoutPeriod),
+            countdown = Some(appConfig.timeoutCountdown),
+            signOutUrl = Some(routes.SignOutController.signOut().url),
+            keepAliveUrl = Some("#"),
+            signOutButtonText = Some(messages("base.signOut"))
+        )))
+    )
+
+}
+
 @govukLayout(
-    pageTitle = pageTitle,
-    headBlock = Some(head(headBlock)),
+    pageTitle = Some(messages("common.pageTitle", pageTitle, "Penalties")),
+    headBlock = Some(headBlock),
+    headerBlock = Some(header()),
     scriptsBlock = scriptsBlock,
     beforeContentBlock = Some(beforeContentBlock),
     footerBlock = Some(hmrcStandardFooter())

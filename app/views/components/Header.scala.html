@@ -14,10 +14,18 @@
  * limitations under the License.
  *@
 
-@this(layout: Layout)
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcHeader
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.Header
 
-@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@layout(pageTitle = pageTitle) {
-    <h1 class="govuk-heading-xl">@{Text(heading).asHtml}</h1>
-    <p class="govuk-body">@{Text(message).asHtml}</p>
-}
+@this(hmrcHeader: HmrcHeader)
+
+@(showSignOut: Boolean = true)(implicit messages: Messages)
+
+@hmrcHeader(Header(
+    homepageUrl = controllers.routes.IndexController.onPageLoad.url,
+    serviceUrl = controllers.routes.IndexController.onPageLoad.url,
+    serviceName = Some(messages("service.name")),
+    containerClasses = "govuk-width-container",
+    navigation = None,
+    signOutHref = if(showSignOut) Some(controllers.routes.SignOutController.signOut().url) else None
+))

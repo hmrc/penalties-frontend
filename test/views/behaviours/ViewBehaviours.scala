@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-package config
+package views.behaviours
 
 import base.SpecBase
-import org.scalatest.Matchers._
-import views.html.ErrorTemplate
 
-class ErrorHandlerSpec extends SpecBase {
-  val errorTemplate: ErrorTemplate = injector.instanceOf[ErrorTemplate]
+import org.jsoup.nodes.Document
+import org.scalatest.MustMatchers._
 
-  "standardErrorTemplate" should {
-    "return HTML for the standard error template" in {
-      lazy val expectedResult = errorTemplate.apply("Error!", "Something went wrong!", "We are unable to process this request.")
-      lazy val actualResult = errorHandler.standardErrorTemplate("Error!", "Something went wrong!", "We are unable to process this request.")
-      actualResult shouldBe expectedResult
-    }
+trait ViewBehaviours extends SpecBase {
+
+  def pageWithExpectedMessages(checks: Seq[(String, String)])(implicit document: Document): Unit = checks.foreach {
+    case (cssSelector, message) =>
+
+      s"element with cssSelector '$cssSelector'" must {
+
+        s"have message '$message'" in {
+          val elem = document.select(cssSelector)
+          elem.first.text() mustBe message
+        }
+      }
   }
 }
