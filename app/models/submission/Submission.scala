@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package utils
+package models.submission
 
-object EnrolmentKeys {
-  val mtdVATEnrolmentKey: String = "HMRC-MTD-VAT"
-  val vrnId: String = "VRN"
-  val agentAffinityGroup: String = "Agent"
-  val activated = "Activated"
+import play.api.libs.json.{Json, OFormat}
 
-  def constructMTDVATEnrolmentKey(vrn: String): String = s"$mtdVATEnrolmentKey~$vrnId~$vrn"
+import java.time.LocalDateTime
+
+case class Submission(
+                       dueDate: LocalDateTime,
+                       submittedDate: Option[LocalDateTime] = None,
+                       status: SubmissionStatusEnum.Value
+                     )
+
+object Submission {
+  implicit val format: OFormat[Submission] = Json.format[Submission]
 }

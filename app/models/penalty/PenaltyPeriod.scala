@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package utils
+package models.penalty
 
-object EnrolmentKeys {
-  val mtdVATEnrolmentKey: String = "HMRC-MTD-VAT"
-  val vrnId: String = "VRN"
-  val agentAffinityGroup: String = "Agent"
-  val activated = "Activated"
+import models.submission.Submission
+import play.api.libs.json.{Json, OFormat}
 
-  def constructMTDVATEnrolmentKey(vrn: String): String = s"$mtdVATEnrolmentKey~$vrnId~$vrn"
+import java.time.LocalDateTime
+
+case class PenaltyPeriod(
+                          startDate: LocalDateTime,
+                          endDate: LocalDateTime,
+                          submission: Submission
+                        )
+
+object PenaltyPeriod {
+  implicit val format: OFormat[PenaltyPeriod] = Json.format[PenaltyPeriod]
 }

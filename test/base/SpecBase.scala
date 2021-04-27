@@ -24,6 +24,8 @@ import play.api.test.FakeRequest
 import config.{AppConfig, ErrorHandler}
 import org.scalamock.scalatest.MockFactory
 import controllers.predicates.AuthPredicate
+import models.ETMPPayload
+import models.point.PenaltyPoint
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatestplus.mockito.MockitoSugar.mock
@@ -63,6 +65,16 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
     mockAuthService,
     errorHandler,
     unauthorised
+  )
+
+  val penaltiesData: ETMPPayload = ETMPPayload(
+    0,
+    0,
+    0.0,
+    0.0,
+    0.0,
+    4,
+    Seq.empty[PenaltyPoint]
   )
 
   def asDocument(html: Html): Document = Jsoup.parse(html.toString())

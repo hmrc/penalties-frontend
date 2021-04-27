@@ -26,9 +26,9 @@ case class User[A](vrn: String, active: Boolean = true, arn: Option[String] = No
 }
 
 object User {
-  def extractFirstMTDVatEnrolment(enrolments: Enrolments): Option[Enrolment] = {
+  def extractFirstMTDVatEnrolment(enrolments: Enrolments): Option[String] = {
     enrolments.enrolments.collectFirst {
-      case mtd@Enrolment(EnrolmentKeys.mtdVATEnrolmentKey, identifiers, EnrolmentKeys.activated, _) if identifiers.exists(_.key == EnrolmentKeys.vrnId) => mtd
+      case _@Enrolment(EnrolmentKeys.mtdVATEnrolmentKey, Seq(EnrolmentIdentifier(EnrolmentKeys.vrnId, vrn)), EnrolmentKeys.activated, _) => vrn
     }
   }
 }

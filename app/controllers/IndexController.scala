@@ -18,17 +18,21 @@ package controllers
 
 import config.AppConfig
 import controllers.predicates.AuthPredicate
+
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import services.PenaltiesService
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.EnrolmentKeys
 import service.TempTestData
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import viewmodels.SummaryCardHelper
 import views.html.IndexView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
-class IndexController @Inject()(page: IndexView)(implicit ec: ExecutionContext,
+class IndexController @Inject()(page: IndexView, penaltiesService: PenaltiesService)(implicit ec: ExecutionContext,
                                                  appConfig: AppConfig,
                                                  authorise: AuthPredicate,
                                                  data: TempTestData,
@@ -39,8 +43,11 @@ class IndexController @Inject()(page: IndexView)(implicit ec: ExecutionContext,
   val tempServiceData = data.cardDetails
 
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
-    Future.successful(Ok(page(
+    for {
+      lSPData <- penaltiesService.getLspDataWithVrn(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))    } yield {
+      Ok(page(
       cardHelper.populateCard(tempServiceData.penalties)
-    )))
+    ))
+    }
   }
 }
