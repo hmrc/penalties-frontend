@@ -16,12 +16,10 @@
 
 package config
 
-import akka.stream.actor.ActorPublisherMessage.Request
 import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import play.api.i18n.Lang
-import play.api.mvc.RequestHeader
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 
 @Singleton
@@ -33,6 +31,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val defaultLanguage: Lang = Lang(en)
 
   lazy val vatOverviewUrl = servicesConfig.getString("urls.vatOverview")
+  lazy val penaltiesUrl: String = s"${servicesConfig.baseUrl("penalties")}/penalties"
 
   lazy val signInUrl: String = config.get[String]("signIn.url")
 

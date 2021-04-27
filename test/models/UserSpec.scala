@@ -52,14 +52,14 @@ class UserSpec extends SpecBase {
             Enrolment(
               "IR-SA",
               Seq(
-                EnrolmentIdentifier("UTR", "123456789")
+                EnrolmentIdentifier("UTR", "FAIL")
               ),
               "Activated"
             ),
             Enrolment(
               "IR-CT",
               Seq(
-                EnrolmentIdentifier("UTR", "123456789")
+                EnrolmentIdentifier("UTR", "FAIL")
               ),
               "Activated"
             )
@@ -68,7 +68,7 @@ class UserSpec extends SpecBase {
 
         val result = User.extractFirstMTDVatEnrolment(enrolments)
         result.isDefined shouldBe true
-        result.get shouldBe mtdVatEnrolment
+        result.get shouldBe vrn
       }
     }
 

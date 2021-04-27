@@ -14,13 +14,25 @@
  * limitations under the License.
  */
 
-package utils
+package models.point
 
-object EnrolmentKeys {
-  val mtdVATEnrolmentKey: String = "HMRC-MTD-VAT"
-  val vrnId: String = "VRN"
-  val agentAffinityGroup: String = "Agent"
-  val activated = "Activated"
+import play.api.libs.json._
 
-  def constructMTDVATEnrolmentKey(vrn: String): String = s"$mtdVATEnrolmentKey~$vrnId~$vrn"
+object PointStatusEnum extends Enumeration {
+  val Active = Value
+  val Rejected = Value
+
+  implicit val format: Format[PointStatusEnum.Value] = new Format[PointStatusEnum.Value] {
+    override def writes(o: PointStatusEnum.Value): JsValue = {
+      JsString(o.toString.toUpperCase)
+    }
+
+    override def reads(json: JsValue): JsResult[PointStatusEnum.Value] = {
+      json.as[String] match {
+        case "ACTIVE" => JsSuccess(Active)
+        case "REJECTED" => JsSuccess(Rejected)
+        case e => JsError(s"$e not recognised")
+      }
+    }
+  }
 }
