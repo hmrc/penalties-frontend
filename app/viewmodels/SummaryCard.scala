@@ -20,13 +20,8 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 case class SummaryCard(
-                        cardBody: Seq[SummaryListRow],
+                        cardRows: Seq[SummaryListRow],
                         status: String,
                         penaltyPoint: Int,
                         footerUrl: String = ""
                       )
-
-object SummaryCard{
-
-  implicit val fmt = Json.format[SummaryCard]
-}
