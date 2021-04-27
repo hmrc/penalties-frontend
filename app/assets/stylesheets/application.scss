@@ -4,8 +4,3 @@ $hmrc-assets-path: "/penalties-frontend/assets/lib/hmrc-frontend/hmrc/";
 @import "lib/govuk-frontend/govuk/all";
 @import "lib/hmrc-frontend/hmrc/all";
 @import "summary-card";
-
-.app-reference-number {
-  display: block;
-  font-weight: bold;
-}
