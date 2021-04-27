@@ -24,11 +24,6 @@
 
 @(
     summaryCard: SummaryCard,
-    summaryListRows: Seq[SummaryListRow],
-    status: String,
-    pointValue: Int,
-    footerLink: String = "",
-    tagStatusClasses: String = "penalty-due-tag" // can maybe use this as a temp DUE tag class govuk-tag--red/penalty-due-tag
 )(implicit messages: Messages)
 
 <section class="app-summary-card govuk-!-margin-bottom-3">
@@ -44,6 +39,6 @@
     </header>
     <div class="app-summary-card__body">@govukSummaryList(SummaryList(summaryCard.cardRows))</div>
     <footer class="app-summary-card__footer">
-        <a class="govuk-link" href="@footerLink">@messages("summaryCard.footerLinkText", summaryCard.penaltyPoint)</a>
+        <a class="govuk-link" href="@summaryCard.footerUrl">@messages("summaryCard.footerLinkText", summaryCard.penaltyPoint)</a>
     </footer>
 </section>
