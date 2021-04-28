@@ -16,7 +16,8 @@
 
 @import config.AppConfig
 
-@this(layout: Layout)
+@this(layout: Layout,
+      link: components.link)
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -49,6 +50,14 @@
         </ul>
         <div class="govuk-tabs__panel" id="late-submission-penalties">
             <h2 class="govuk-heading-m">@{messages("index.subheading")}</h2>
+
+            @*     TODO: change this to external guidance link   *@
+            @link(
+                link = "#",
+                messageKey = messages("index.guidance.link"),
+                id = Some("guidance-link"),
+                isExternal = true
+            )
         </div>
     </div>
 }
