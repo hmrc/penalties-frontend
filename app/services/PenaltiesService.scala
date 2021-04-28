@@ -25,5 +25,5 @@ import scala.concurrent.Future
 
 class PenaltiesService @Inject()(connector: PenaltiesConnector) {
 
-  def getLspDataWithVrn(enrolmentKey: String)(implicit hc: HeaderCarrier): Future[ETMPPayload] = connector.getPenaltiesData(s"$enrolmentKey")
+  def getLspDataWithVrn(enrolmentKey: String)(implicit hc: HeaderCarrier): Future[ETMPPayload] = connector.getPenaltiesData(enrolmentKey)
 }

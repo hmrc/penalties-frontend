@@ -44,6 +44,7 @@ class IndexControllerSpec extends SpecBase with MockitoSugar {
       Matchers.any(), Matchers.any())
     ).thenReturn(authResult)
 
+    reset(mockPenaltiesService)
     when(mockPenaltiesService.getLspDataWithVrn(any())(any())).thenReturn(Future.successful(sampleLspData))
   }
 
