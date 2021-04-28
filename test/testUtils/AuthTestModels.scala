@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package testUtils
 
 import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
 import uk.gov.hmrc.auth.core.{AffinityGroup, BearerTokenExpired, Enrolment, EnrolmentIdentifier, Enrolments}

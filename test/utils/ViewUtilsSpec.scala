@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-package controllers
+package utils
 
-import play.api.http.Status
-import stubs.AuthStub
-import testUtils.IntegrationSpecCommonBase
+import org.scalatest.{Matchers, WordSpec}
+import play.twirl.api.{Html, HtmlFormat}
 
-class IndexControllerISpec extends IntegrationSpecCommonBase {
-  "GET /" should {
-    "return 200 (OK) when the user is authorised" in {
-      val request = await(buildClientForRequestToApp(uri = "/").get())
-      request.status shouldBe Status.OK
+class ViewUtilsSpec extends WordSpec with Matchers {
+  object Viewtils extends ViewUtils
+
+  "stringAsHtml" should {
+    "convert a string to HTML" in {
+      val content: String = "This is some content."
+      Viewtils.stringAsHtml(content).body shouldBe "This is some content."
     }
+  }
 
-    "return 303 (SEE_OTHER) when the user is not authorised" in {
-      AuthStub.unauthorised()
-      val request = await(buildClientForRequestToApp(uri = "/").get())
-      request.status shouldBe Status.SEE_OTHER
+  "html" should {
+    "take a sequence of HTML content and format as one HTML element" in {
+      val result = Viewtils.html(Html("1"), Html("2"), Html("3"), Html("4"))
+      result.body shouldBe "1234"
     }
   }
 }

@@ -25,20 +25,25 @@ import play.api.mvc._
 import services.PenaltiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.EnrolmentKeys
+import viewmodels.IndexPageHelper
 import views.html.IndexView
 
 import scala.concurrent.ExecutionContext
 
-class IndexController @Inject()(page: IndexView, penaltiesService: PenaltiesService)(implicit ec: ExecutionContext,
-                                                appConfig: AppConfig,
-                                                authorise: AuthPredicate,
-                                                controllerComponents: MessagesControllerComponents)
+class IndexController @Inject()(page: IndexView,
+                                penaltiesService: PenaltiesService,
+                                pageHelper: IndexPageHelper)(implicit ec: ExecutionContext,
+                                                             appConfig: AppConfig,
+                                                             authorise: AuthPredicate,
+                                                             controllerComponents: MessagesControllerComponents)
   extends FrontendController(controllerComponents) with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
     for {
-      lSPData <- penaltiesService.getLspDataWithVrn(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))    } yield {
-      Ok(page())
+      lSPData <- penaltiesService.getLspDataWithVrn(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))
+      contentToDisplayAboveCards = pageHelper.getContentBasedOnPointsFromModel(lSPData)
+    } yield {
+      Ok(page(contentToDisplayAboveCards))
     }
   }
 }

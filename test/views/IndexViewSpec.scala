@@ -19,12 +19,16 @@ package views
 import assets.messages.IndexMessages._
 import base.{BaseSelectors, SpecBase}
 import org.jsoup.nodes.Document
+import play.twirl.api.Html
 import views.behaviours.ViewBehaviours
 import views.html.IndexView
+import views.html.components.p
 
 class IndexViewSpec extends SpecBase with ViewBehaviours {
 
   object Selectors extends BaseSelectors
+
+  val pElement: p = injector.instanceOf[p]
 
   "IndexView" when {
 
@@ -41,7 +45,9 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         Selectors.externalGuidance -> externalGuidanceLinkText
       )
 
-      implicit val doc: Document = asDocument(indexViewPage.apply())
+      val contentToDisplayOnPage: Html = pElement(content = Html("This is some content."), id = Some("sample-content"))
+
+      implicit val doc: Document = asDocument(indexViewPage.apply(contentToDisplayOnPage))
 
       behave like pageWithExpectedMessages(expectedContent)
 
@@ -54,6 +60,10 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         //TODO: change this when we have a GOV.UK guidance page
         element.attr("href") shouldBe "#"
         element.attr("target") shouldBe "_blank"
+      }
+
+      "have the specified content displayed on the page" in {
+        doc.select("#sample-content").text() shouldBe "This is some content."
       }
     }
   }
