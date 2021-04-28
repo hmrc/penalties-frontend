@@ -67,7 +67,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
     unauthorised
   )
 
-  val penaltiesData: ETMPPayload = ETMPPayload(
+  val sampleLspData: ETMPPayload = ETMPPayload(
     0,
     0,
     0.0,
