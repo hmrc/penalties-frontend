@@ -15,19 +15,21 @@
  *@
 
 @import config.AppConfig
-@import uk.gov.hmrc.govukfrontend.views.Layouts
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcHeader
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.Header
+@import uk.gov.hmrc.hmrcfrontend.views.html.components._
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
+@import views.html.layouts.GovUkPageLayout
+
 @this(
-        govukLayout: GovukLayout,
+        govukLayout: GovUkPageLayout,
         head: Head,
         hmrcTimeoutDialog: HmrcTimeoutDialog,
         header: components.Header,
         hmrcStandardFooter: HmrcStandardFooter,
-        languageSelect: LanguageSelect
+        languageSelect: views.html.LanguageSelect
 )
 @(pageTitle: String,
-  scriptsBlock: Option[Html] = None
+  scriptsBlock: Option[Html] = None,
+    isPageFullWidth: Boolean = true
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @beforeContentBlock = {
@@ -53,5 +55,6 @@
     headerBlock = Some(header()),
     scriptsBlock = scriptsBlock,
     beforeContentBlock = Some(beforeContentBlock),
-    footerBlock = Some(hmrcStandardFooter())
+    footerBlock = Some(hmrcStandardFooter()),
+    isFullWidth = isPageFullWidth
 )(contentBlock)

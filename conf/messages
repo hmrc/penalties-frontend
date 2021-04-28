@@ -1,6 +1,5 @@
 service.name = VAT Penalties and Appeals
-service.homePageUrl = /penalties-frontend
-service.text = This is your new service
+service.homePageUrl = /penalties
 
 # Index
 # -------------------------------------------

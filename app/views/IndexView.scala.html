@@ -15,9 +15,12 @@
  *@
 
 @import config.AppConfig
+@import views.html.components.summaryCard
 
 @this(layout: Layout,
-      link: components.link)
+      link: components.link,
+      summaryCard: summaryCard
+)
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
