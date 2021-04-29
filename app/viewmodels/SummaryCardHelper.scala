@@ -27,7 +27,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 import utils.ImplicitDateFormatter
-import play.api.Logger.{isInfoEnabled, logger}
 
 class SummaryCardHelper extends ImplicitDateFormatter {
 
@@ -78,10 +77,8 @@ class SummaryCardHelper extends ImplicitDateFormatter {
 
 
   def pointSummaryCard(penalty: PenaltyPoint)(implicit messages: Messages): SummaryCard = {
-    // if return is submitted, then show normal card with 4 rows and blue status
-    // if return is not submitted, then show due card with 3 rows and "Not yet submitted message"
     val cardBody = penalty.period.submission.submittedDate match {
-      case Some(submissionDate: LocalDateTime) => returnSubmittedCardBody(penalty)
+      case Some(_: LocalDateTime) => returnSubmittedCardBody(penalty)
       case None => returnNotSubmittedCardBody(penalty.period)
     }
 
