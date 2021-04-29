@@ -22,6 +22,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 case class SummaryCard(
                         cardRows: Seq[SummaryListRow],
                         status: Tag,
-                        penaltyPoint: Int,
+                        penaltyPoint: String,
                         footerUrl: String = "#"
                       )

@@ -38,4 +38,6 @@ summaryCard.key2 = VAT Return due
 summaryCard.key3 = Return submitted
 summaryCard.key4 = Point due to expire
 
+summaryCard.key3.defaultValue = Not yet submitted
+
 summaryCard.footerLinkText = Appeal penalty point {0}

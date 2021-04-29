@@ -40,13 +40,12 @@ class IndexController @Inject()(page: IndexView, penaltiesService: PenaltiesServ
   extends FrontendController(controllerComponents) with I18nSupport {
 
   val cardHelper = new SummaryCardHelper()
-  val tempServiceData = data.cardDetails
 
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
     for {
-      lSPData <- penaltiesService.getLspDataWithVrn(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))    } yield {
+      lSPData <- penaltiesService.getLspDataWithVrn(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))} yield {
       Ok(page(
-      cardHelper.populateCard(tempServiceData.penalties)
+      cardHelper.populateCard(lSPData.penaltyPoints)
     ))
     }
   }
