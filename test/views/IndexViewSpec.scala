@@ -19,16 +19,25 @@ package views
 import assets.messages.IndexMessages._
 import base.{BaseSelectors, SpecBase}
 import org.jsoup.nodes.Document
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
+import viewmodels.{SummaryCard, SummaryCardHelper}
 import views.behaviours.ViewBehaviours
 import views.html.IndexView
 
 class IndexViewSpec extends SpecBase with ViewBehaviours {
+
+  val helper = injector.instanceOf[SummaryCardHelper]
+
+  val cardTag: Tag =     Tag(content = Text("active"), classes = s"govuk-tag")
+  val sampleViewData: Seq[SummaryCard] = Seq(sampleSummaryCard)
 
   object Selectors extends BaseSelectors
 
   "IndexView" when {
 
     val indexViewPage = injector.instanceOf[IndexView]
+    implicit val doc: Document = asDocument(indexViewPage.apply(Seq(sampleSummaryCard)))
 
     "user is on page" must {
 
@@ -41,8 +50,6 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         Selectors.externalGuidance -> externalGuidanceLinkText
       )
 
-      implicit val doc: Document = asDocument(indexViewPage.apply())
-
       behave like pageWithExpectedMessages(expectedContent)
 
       "have correct route for breadcrumb link" in {
@@ -54,6 +61,22 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         //TODO: change this when we have a GOV.UK guidance page
         element.attr("href") shouldBe "#"
         element.attr("target") shouldBe "_blank"
+      }
+
+      "populate cards" when {
+
+        "user has submitted their VAT return" in {
+
+          val summaryCardContent = Seq(
+            Selectors.summaryCardHeaderTitle(1) -> penaltyPointHeader
+          )
+
+          behave like pageWithExpectedMessages(summaryCardContent)
+        }
+
+        "user has not submitted their VAT return" in {
+
+        }
       }
     }
   }

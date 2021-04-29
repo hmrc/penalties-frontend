@@ -27,7 +27,6 @@ trait ViewBehaviours extends SpecBase {
     case (cssSelector, message) =>
 
       s"element with cssSelector '$cssSelector'" must {
-
         s"have message '$message'" in {
           val elem = document.select(cssSelector)
           elem.first.text() mustBe message

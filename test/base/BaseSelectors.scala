@@ -22,9 +22,19 @@ class BaseSelectors {
 
   val h1 = "h1"
 
-  def breadcrumbs(index: Int) = s"#main-content > div > div > div.govuk-breadcrumbs.govuk-breadcrumbs--collapse-on-mobile > ol > li:nth-child($index)"
+  def breadcrumbs(index: Int): String = s"#main-content > div > div > div.govuk-breadcrumbs.govuk-breadcrumbs--collapse-on-mobile > ol > li:nth-child($index)"
 
-  def breadcrumbWithLink(index: Int) = s"${breadcrumbs(index)} > a"
+  def breadcrumbWithLink(index: Int): String = s"${breadcrumbs(index)} > a"
+
+  def summaryCard(i: Int): String = s"#late-submission-penalties > section:nth-child($i)"
+
+  def summaryCardHeaderTitle(i: Int): String = s"${summaryCard(i)} > header > h3"
+
+  def summaryCardHeaderTag(i: Int): String = s"${summaryCard(i)} > header > div > ul > il > strong"
+
+  def summaryCardBody(i: Int): String = s"${summaryCard(i)} > div"
+
+  def summaryCardFooterLink(i: Int): String = s"${summaryCard(i)} > footer > a"
 
   val tab = "#main-content > div > div > div.govuk-tabs > ul > li > a"
 

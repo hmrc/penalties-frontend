@@ -57,13 +57,14 @@ class IndexControllerSpec extends SpecBase with MockitoSugar {
 
     "onPageLoad" when {
 
-      "the user is authorised" when {
+      "the user is authorised" must {
 
-        "return OK" in new Setup(AuthTestModels.successfulAuthResult) {
+        "return OK and correct view" in new Setup(AuthTestModels.successfulAuthResult) {
 
           val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
 
           status(result) shouldBe OK
+          contentAsString(result) shouldBe page(Seq())(fakeRequest, messages, appConfig).toString
         }
       }
 

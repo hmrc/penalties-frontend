@@ -18,18 +18,12 @@ package controllers
 
 import config.AppConfig
 import controllers.predicates.AuthPredicate
-
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.PenaltiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.EnrolmentKeys
-import services.PenaltiesService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.EnrolmentKeys
-import service.TempTestData
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import viewmodels.SummaryCardHelper
 import views.html.IndexView
 
@@ -38,7 +32,6 @@ import scala.concurrent.ExecutionContext
 class IndexController @Inject()(page: IndexView, penaltiesService: PenaltiesService)(implicit ec: ExecutionContext,
                                                  appConfig: AppConfig,
                                                  authorise: AuthPredicate,
-                                                 data: TempTestData,
                                                  controllerComponents: MessagesControllerComponents)
   extends FrontendController(controllerComponents) with I18nSupport {
 

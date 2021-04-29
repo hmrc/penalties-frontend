@@ -32,6 +32,8 @@ import org.scalatestplus.mockito.MockitoSugar.mock
 import play.twirl.api.Html
 import services.AuthService
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.govukfrontend.views.Aliases.Tag
+import viewmodels.SummaryCard
 import views.html.errors.Unauthorised
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -75,6 +77,12 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
     0.0,
     4,
     Seq.empty[PenaltyPoint]
+  )
+
+  val sampleSummaryCard: SummaryCard = SummaryCard(
+    Seq.empty,
+    Tag.defaultObject,
+    "1"
   )
 
   def asDocument(html: Html): Document = Jsoup.parse(html.toString())

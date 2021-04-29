@@ -34,8 +34,7 @@ class SummaryCardHelper extends ImplicitDateFormatter {
     penalties.map { penalty =>
       penalty.`type` match {
         case PenaltyTypeEnum.Financial => financialSummaryCard(penalty)
-        case PenaltyTypeEnum.Point =>
-          pointSummaryCard(penalty)
+        case PenaltyTypeEnum.Point => pointSummaryCard(penalty)
       }
     }
   }
@@ -82,6 +81,13 @@ class SummaryCardHelper extends ImplicitDateFormatter {
       case None => returnNotSubmittedCardBody(penalty.period)
     }
 
+//    val submissionStatus = penalty.period.submission.status
+//
+//    val cardBody: Seq[SummaryListRow] = submissionStatus match {
+//      case SubmissionStatusEnum.Submitted => returnSubmittedCardBody(penalty)
+//      case _ => returnNotSubmittedCardBody(penalty.period)
+//    }
+
     SummaryCard(
       cardBody,
       tagStatus(penalty.status),
@@ -115,7 +121,15 @@ class SummaryCardHelper extends ImplicitDateFormatter {
     classes = "govuk-summary-list__row"
   )
 
+//  def returnSubmittedTag() = Tag{}
+
   def tagStatus(status: PointStatusEnum.Value)(implicit messages: Messages): Tag = {
+    // need to update the tag to check for multiple status'
+
+    // check return submission status
+    // if return not submitted, use due tag
+    // if submitted check the penalty status and use status value e.g. active or rejected?
+
     val tagCssClass = status match {
       case Rejected => "penalty-due-tag"
       case _ => ""

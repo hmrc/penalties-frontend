@@ -29,4 +29,9 @@ object IndexMessages {
   val subheading = "Late submission penalties"
 
   val externalGuidanceLinkText = "Read the guidance about late submission penalties (opens in a new tab)"
+
+  def penaltyPointHeader: String = "Penalty point 1"
+
+  val penaltyPointTag = "ACTIVE"
+
 }
