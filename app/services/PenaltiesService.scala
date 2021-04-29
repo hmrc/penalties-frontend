@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package utils
+package services
 
-object EnrolmentKeys {
-  val mtdVATEnrolmentKey: String = "HMRC-MTD-VAT"
-  val vrnId: String = "VRN"
-  val agentAffinityGroup: String = "Agent"
-  val activated = "Activated"
+import connectors.PenaltiesConnector
+import models.ETMPPayload
+import uk.gov.hmrc.http.HeaderCarrier
 
-  def constructMTDVATEnrolmentKey(vrn: String): String = s"$mtdVATEnrolmentKey~$vrnId~$vrn"
+import javax.inject.Inject
+import scala.concurrent.Future
+
+class PenaltiesService @Inject()(connector: PenaltiesConnector) {
+
+  def getLspDataWithVrn(enrolmentKey: String)(implicit hc: HeaderCarrier): Future[ETMPPayload] = connector.getPenaltiesData(enrolmentKey)
 }
