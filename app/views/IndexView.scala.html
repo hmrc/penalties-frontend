@@ -19,6 +19,7 @@
 
 @this(
     layout: Layout,
+    link: components.link,
     summaryCard: components.summaryCard
 )
 
@@ -53,6 +54,14 @@
         </ul>
         <div class="govuk-tabs__panel" id="late-submission-penalties">
             <h2 class="govuk-heading-m">@{messages("index.subheading")}</h2>
+
+            @*     TODO: change this to external guidance link   *@
+            @link(
+                link = "#",
+                messageKey = messages("index.guidance.link"),
+                id = Some("guidance-link"),
+                isExternal = true
+            )
 
             @cards.map{card =>
                 @summaryCard(card)

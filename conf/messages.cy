@@ -1,7 +1,5 @@
-service.name = Penalties
-service.homePageUrl = /penalties-frontend
-service.text = Dyma'ch gwasanaeth newydd
-
+service.name = VAT Penalties and Appeals
+service.homePageUrl = /penalties
 
 # Index
 # -------------------------------------------
@@ -11,7 +9,7 @@ index.tab1 = Late submission penalties
 index.subheading = Late submission penalties
 index.breadcrumb.vat-account = Your VAT Account
 index.breadcrumb.index = VAT penalties and appeals
-
+index.guidance.link = Read the guidance about late submission penalties
 
 # Auth
 # -------------------------------------------
@@ -36,8 +34,10 @@ summaryCard.key1 = VAT Period
 summaryCard.value1 = {0} to {1}
 summaryCard.key2 = VAT Return due
 summaryCard.key3 = Return submitted
+summaryCard.key3.defaultValue = Not yet submitted
 summaryCard.key4 = Point due to expire
 
-summaryCard.key3.defaultValue = Not yet submitted
-
 summaryCard.footerLinkText = Appeal penalty point {0}
+
+
+site.opensInNewTab = (opens in a new tab)

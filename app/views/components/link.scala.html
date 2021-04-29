@@ -14,17 +14,17 @@
  * limitations under the License.
  *@
 
-@import controllers.routes.LanguageSwitchController._
-@import config.AppConfig
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcLanguageSelect
-@import uk.gov.hmrc.hmrcfrontend.views.html.components._
+@this()
 
-@this(hmrcLanguageSelect: HmrcLanguageSelect)
+@(
+        link: String,
+        messageKey: String,
+        id: Option[String] = None,
+        isExternal: Boolean = false,
+        button: Boolean = false,
+        classes: String = "govuk-link",
+        hiddenContent: Option[String] = None
+)(implicit messages: Messages)
 
-@()(implicit messages: Messages, appConfig: AppConfig)
-@hmrcLanguageSelect(LanguageSelect(
-    if (messages.lang.code == "cy") Cy else En,
-    (En, switchToLanguage("en").url),
-    (Cy, switchToLanguage("cy").url)
-))
-
+<a href="@link" class="@classes" @id.map(x => s"id=$x") @if(isExternal){target="_blank"}@if(button){role="button" data-module="govuk-button"}>
+    @messages(messageKey)@if(isExternal)(" " + messages("site.opensInNewTab")) @hiddenContent.map{content=> <span class="govuk-visually-hidden"> @content</span>}</a>

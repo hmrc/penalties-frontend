@@ -37,7 +37,8 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         Selectors.breadcrumbWithLink(1) -> breadcrumb1,
         Selectors.breadcrumbs(2) -> breadcrumb2,
         Selectors.tab -> tab1,
-        Selectors.tabHeading -> subheading
+        Selectors.tabHeading -> subheading,
+        Selectors.externalGuidance -> externalGuidanceLinkText
       )
 
       implicit val doc: Document = asDocument(indexViewPage.apply())
@@ -46,6 +47,13 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
       "have correct route for breadcrumb link" in {
         doc.select(Selectors.breadcrumbWithLink(1)).attr("href") shouldBe appConfig.vatOverviewUrl
+      }
+
+      "have a link to external guidance which opens in a new tab" in {
+        val element = doc.select(Selectors.externalGuidance)
+        //TODO: change this when we have a GOV.UK guidance page
+        element.attr("href") shouldBe "#"
+        element.attr("target") shouldBe "_blank"
       }
     }
   }
