@@ -17,9 +17,8 @@
 package viewmodels
 
 import java.time.LocalDateTime
-
 import models.penalty.PenaltyPeriod
-import models.point.PointStatusEnum.Rejected
+import models.point.PointStatusEnum.{Due, Rejected}
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import play.api.i18n.Messages
 import play.twirl.api.Html
@@ -55,7 +54,7 @@ class SummaryCardHelper extends ImplicitDateFormatter {
       ),
       summaryListRow(messages("summaryCard.key2"), Html(dateTimeToString(period.submission.dueDate))),
       summaryListRow(messages("summaryCard.key3"), Html(period.submission.submittedDate.map(date => dateTimeToString(date)))),
-      summaryListRow(messages("summaryCard.key4"), Html(penalty.dateExpired.map(date => dateTimeToMonthYearString(date)))),
+      summaryListRow(messages("summaryCard.key4"), Html(penalty.dateExpired.map(date => dateTimeToMonthYearString(date))))
     )
   }
 
@@ -71,7 +70,7 @@ class SummaryCardHelper extends ImplicitDateFormatter {
       )
     ),
     summaryListRow(messages("summaryCard.key2"), Html(dateTimeToString(period.submission.dueDate))),
-    summaryListRow(messages("summaryCard.key3"), Html(messages("summaryCard.key3.defaultValue"))),
+    summaryListRow(messages("summaryCard.key3"), Html(messages("summaryCard.key3.defaultValue")))
   )
 
 
@@ -81,12 +80,12 @@ class SummaryCardHelper extends ImplicitDateFormatter {
       case None => returnNotSubmittedCardBody(penalty.period)
     }
 
-//    val submissionStatus = penalty.period.submission.status
-//
-//    val cardBody: Seq[SummaryListRow] = submissionStatus match {
-//      case SubmissionStatusEnum.Submitted => returnSubmittedCardBody(penalty)
-//      case _ => returnNotSubmittedCardBody(penalty.period)
-//    }
+    //    val submissionStatus = penalty.period.submission.status
+    //
+    //    val cardBody: Seq[SummaryListRow] = submissionStatus match {
+    //      case SubmissionStatusEnum.Submitted => returnSubmittedCardBody(penalty)
+    //      case _ => returnNotSubmittedCardBody(penalty.period)
+    //    }
 
     SummaryCard(
       cardBody,
@@ -96,16 +95,44 @@ class SummaryCardHelper extends ImplicitDateFormatter {
   }
 
   def financialSummaryCard(penalty: PenaltyPoint)(implicit messages: Messages): SummaryCard = {
-
     SummaryCard(
       Seq(
         summaryListRow(
-          "Temp placeholder for:",
-          Html("Financial penalties")
+          messages("summaryCard.key1"),
+          Html(
+            messages(
+              "summaryCard.value1",
+              dateTimeToString(penalty.period.startDate),
+              dateTimeToString(penalty.period.endDate)
+            )
+          )
         ),
+        summaryListRow(
+          messages("summaryCard.key2"),
+          Html(
+            dateTimeToString(penalty.period.submission.dueDate)
+          )
+        ),
+        penalty.period.submission.submittedDate.fold(
+          summaryListRow(
+            messages("summaryCard.key3"),
+            Html(
+              messages("summaryCard.notYetSubmitted")
+            )
+          )
+        )( dateSubmitted =>
+          summaryListRow(
+            messages("summaryCard.key3"),
+            Html(
+              dateTimeToString(dateSubmitted)
+            )
+          )
+        )
       ),
       tagStatus(penalty.status),
-      penalty.number
+      penalty.number,
+      isFinancialPoint = penalty.`type` == PenaltyTypeEnum.Financial,
+      amountDue = penalty.financial.get.amountDue
     )
   }
 
@@ -121,7 +148,7 @@ class SummaryCardHelper extends ImplicitDateFormatter {
     classes = "govuk-summary-list__row"
   )
 
-//  def returnSubmittedTag() = Tag{}
+  //  def returnSubmittedTag() = Tag{}
 
   def tagStatus(status: PointStatusEnum.Value)(implicit messages: Messages): Tag = {
     // need to update the tag to check for multiple status'
@@ -131,7 +158,7 @@ class SummaryCardHelper extends ImplicitDateFormatter {
     // if submitted check the penalty status and use status value e.g. active or rejected?
 
     val tagCssClass = status match {
-      case Rejected => "penalty-due-tag"
+      case Due => "penalty-due-tag"
       case _ => ""
     }
 

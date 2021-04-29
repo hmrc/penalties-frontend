@@ -29,12 +29,18 @@
 
 <section class="app-summary-card govuk-!-margin-bottom-3">
     <header class="app-summary-card__header">
-        <h3 class="app-summary-card__title">@messages("summaryCard.header", summaryCard.penaltyPoint)</h3>
+        <h3 class="app-summary-card__title">
+            @if(summaryCard.isFinancialPoint) {
+                @messages("summaryCard.header.financial", summaryCard.penaltyPoint, summaryCard.amountDue.intValue)
+            } else {
+                @messages("summaryCard.header", summaryCard.penaltyPoint)
+            }
+        </h3>
         <div class="app-summary-card__actions">
             <ul class="app-summary-card__actions-list">
-                <il class="app-summary-card__actions-list-item">
+                <li class="app-summary-card__actions-list-item">
                     @govukTag(summaryCard.status)
-                </il>
+                </li>
             </ul>
         </div>
     </header>

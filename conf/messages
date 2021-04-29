@@ -24,6 +24,7 @@ status.active = active
 status.due = due
 
 summaryCard.header = Penalty point {0}
+summaryCard.header.financial = Penalty point {0}: £{1} penalty
 
 summaryCard.key1 = VAT Period
 summaryCard.value1 = {0} to {1}
@@ -31,7 +32,7 @@ summaryCard.key2 = VAT Return due
 summaryCard.key3 = Return submitted
 summaryCard.key3.defaultValue = Not yet submitted
 summaryCard.key4 = Point due to expire
-
+summaryCard.notYetSubmitted = Not yet submitted
 summaryCard.footerLinkText = Appeal penalty point {0}
 
 
