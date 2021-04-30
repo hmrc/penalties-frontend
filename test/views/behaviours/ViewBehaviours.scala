@@ -17,7 +17,6 @@
 package views.behaviours
 
 import base.SpecBase
-
 import org.jsoup.nodes.Document
 import org.scalatest.MustMatchers._
 

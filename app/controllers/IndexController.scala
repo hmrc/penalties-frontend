@@ -29,20 +29,21 @@ import views.html.IndexView
 
 import scala.concurrent.ExecutionContext
 
-class IndexController @Inject()(page: IndexView, penaltiesService: PenaltiesService)(implicit ec: ExecutionContext,
-                                                 appConfig: AppConfig,
-                                                 authorise: AuthPredicate,
-                                                 controllerComponents: MessagesControllerComponents)
+class IndexController @Inject()(page: IndexView,
+                                penaltiesService: PenaltiesService,
+                                cardHelper: SummaryCardHelper)(implicit ec: ExecutionContext,
+                                                               appConfig: AppConfig,
+                                                               authorise: AuthPredicate,
+                                                               controllerComponents: MessagesControllerComponents)
   extends FrontendController(controllerComponents) with I18nSupport {
-
-  val cardHelper = new SummaryCardHelper()
 
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
     for {
       lSPData <- penaltiesService.getLspDataWithVrn(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))} yield {
+      println("[IndexController][onPageLoad]: This index controller is hit")
       Ok(page(
-      cardHelper.populateCard(lSPData.penaltyPoints)
-    ))
+        cardHelper.populateCard(lSPData.penaltyPoints)
+      ))
     }
   }
 }

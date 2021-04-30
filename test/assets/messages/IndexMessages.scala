@@ -30,8 +30,16 @@ object IndexMessages {
 
   val externalGuidanceLinkText = "Read the guidance about late submission penalties (opens in a new tab)"
 
-  def penaltyPointHeader: String = "Penalty point 1"
+  val penaltyPointHeader = "Penalty point 1"
+  val activeTag = "Active"
+  val overdueTag = "Due"
 
-  val penaltyPointTag = "ACTIVE"
+  val period = "VAT Period"
+  val returnDue = "VAT Return due"
+  val returnSubmitted = "Return submitted"
+  val pointExpiration = "Point due to expire"
+
+  val appealLinkText = "Appeal penalty point 1"
+
 
 }

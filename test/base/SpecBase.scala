@@ -16,6 +16,8 @@
 
 package base
 
+import java.time.LocalDateTime
+
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Messages, MessagesApi}
@@ -25,7 +27,9 @@ import config.{AppConfig, ErrorHandler}
 import org.scalamock.scalatest.MockFactory
 import controllers.predicates.AuthPredicate
 import models.ETMPPayload
-import models.point.PenaltyPoint
+import models.penalty.PenaltyPeriod
+import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
+import models.submission.{Submission, SubmissionStatusEnum}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatestplus.mockito.MockitoSugar.mock
@@ -77,6 +81,46 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
     0.0,
     4,
     Seq.empty[PenaltyPoint]
+  )
+
+  val sampleReturnSubmittedPenaltyPointData: Seq[PenaltyPoint] = Seq(
+    PenaltyPoint(
+      PenaltyTypeEnum.Point,
+      "1",
+      LocalDateTime.now,
+      Some(LocalDateTime.now),
+      PointStatusEnum.Active,
+      PenaltyPeriod(
+        LocalDateTime.now,
+        LocalDateTime.now,
+        Submission(
+          LocalDateTime.now,
+          Some(LocalDateTime.now),
+          SubmissionStatusEnum.Submitted
+        )
+      ),
+      Seq.empty,
+    )
+  )
+
+  val sampleReturnNotSubmittedPenaltyPointData: Seq[PenaltyPoint] = Seq(
+    PenaltyPoint(
+      PenaltyTypeEnum.Point,
+      "1",
+      LocalDateTime.now,
+      Some(LocalDateTime.now),
+      PointStatusEnum.Active,
+      PenaltyPeriod(
+        LocalDateTime.now,
+        LocalDateTime.now,
+        Submission(
+          LocalDateTime.now,
+          None,
+          SubmissionStatusEnum.Due
+        )
+      ),
+      Seq.empty,
+    )
   )
 
   val sampleSummaryCard: SummaryCard = SummaryCard(

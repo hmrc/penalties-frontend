@@ -19,25 +19,25 @@ package views
 import assets.messages.IndexMessages._
 import base.{BaseSelectors, SpecBase}
 import org.jsoup.nodes.Document
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
-import viewmodels.{SummaryCard, SummaryCardHelper}
+import play.twirl.api.HtmlFormat
+import viewmodels.SummaryCardHelper
 import views.behaviours.ViewBehaviours
 import views.html.IndexView
 
 class IndexViewSpec extends SpecBase with ViewBehaviours {
 
   val helper = injector.instanceOf[SummaryCardHelper]
+  val indexViewPage = injector.instanceOf[IndexView]
 
-  val cardTag: Tag =     Tag(content = Text("active"), classes = s"govuk-tag")
-  val sampleViewData: Seq[SummaryCard] = Seq(sampleSummaryCard)
+  object Selectors extends BaseSelectors{
+    val rowItem: Int => String = i =>  s"#late-submission-penalties > section > div > dl > div:nth-child($i) > dt"
+  }
 
-  object Selectors extends BaseSelectors
+  def applyView(): HtmlFormat.Appendable = indexViewPage.apply(helper.populateCard(sampleReturnSubmittedPenaltyPointData))
 
   "IndexView" when {
 
-    val indexViewPage = injector.instanceOf[IndexView]
-    implicit val doc: Document = asDocument(indexViewPage.apply(Seq(sampleSummaryCard)))
+    implicit val doc: Document = asDocument(applyView())
 
     "user is on page" must {
 
@@ -47,7 +47,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         Selectors.breadcrumbs(2) -> breadcrumb2,
         Selectors.tab -> tab1,
         Selectors.tabHeading -> subheading,
-        Selectors.externalGuidance -> externalGuidanceLinkText
+        Selectors.externalGuidance -> externalGuidanceLinkText,
       )
 
       behave like pageWithExpectedMessages(expectedContent)
@@ -63,20 +63,30 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         element.attr("target") shouldBe "_blank"
       }
 
-      "populate cards" when {
+      "populate summary card when user has penalty points" in {
 
-        "user has submitted their VAT return" in {
+        doc.select(Selectors.summaryCardHeaderTitle).text shouldBe penaltyPointHeader
+        doc.select(Selectors.summaryCardHeaderTag).text shouldBe overdueTag
+        doc.select(Selectors.rowItem(1)).text shouldBe period
+        doc.select(Selectors.rowItem(2)).text shouldBe returnDue
+        doc.select(Selectors.rowItem(3)).text shouldBe returnSubmitted
+        doc.select(Selectors.rowItem(4)).text shouldBe pointExpiration
+        doc.select(Selectors.summaryCardFooterLink).text shouldBe appealLinkText
+        doc.select(Selectors.summaryCardFooterLink).attr("href") shouldBe "#"
+      }
 
-          val summaryCardContent = Seq(
-            Selectors.summaryCardHeaderTitle(1) -> penaltyPointHeader
-          )
+      "populate summary card when user has a penalty point from un-submitted VAT return with due status" in {
+        def applyView(): HtmlFormat.Appendable = indexViewPage.apply(helper.populateCard(sampleReturnNotSubmittedPenaltyPointData))
 
-          behave like pageWithExpectedMessages(summaryCardContent)
-        }
+        implicit val doc: Document = asDocument(applyView())
 
-        "user has not submitted their VAT return" in {
-
-        }
+//        doc.select(Selectors.summaryCardHeaderTitle).text shouldBe penaltyPointHeader
+//        doc.select(Selectors.summaryCardHeaderTag).text shouldBe overdueTag
+//        doc.select(Selectors.rowItem(1)).text shouldBe period
+//        doc.select(Selectors.rowItem(2)).text shouldBe returnDue
+//        doc.select(Selectors.rowItem(3)).text shouldBe returnSubmitted
+//        doc.select(Selectors.summaryCardFooterLink).text shouldBe appealLinkText
+//        doc.select(Selectors.summaryCardFooterLink).attr("href") shouldBe "#"
       }
     }
   }

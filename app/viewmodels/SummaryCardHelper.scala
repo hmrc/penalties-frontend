@@ -17,9 +17,10 @@
 package viewmodels
 
 import java.time.LocalDateTime
+
 import models.penalty.PenaltyPeriod
-import models.point.PointStatusEnum.{Due, Rejected}
-import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
+import models.point.{PenaltyPoint, PenaltyTypeEnum}
+import models.submission.SubmissionStatusEnum.{Due, Submitted}
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
@@ -73,23 +74,15 @@ class SummaryCardHelper extends ImplicitDateFormatter {
     summaryListRow(messages("summaryCard.key3"), Html(messages("summaryCard.key3.defaultValue")))
   )
 
-
   def pointSummaryCard(penalty: PenaltyPoint)(implicit messages: Messages): SummaryCard = {
     val cardBody = penalty.period.submission.submittedDate match {
       case Some(_: LocalDateTime) => returnSubmittedCardBody(penalty)
       case None => returnNotSubmittedCardBody(penalty.period)
     }
 
-    //    val submissionStatus = penalty.period.submission.status
-    //
-    //    val cardBody: Seq[SummaryListRow] = submissionStatus match {
-    //      case SubmissionStatusEnum.Submitted => returnSubmittedCardBody(penalty)
-    //      case _ => returnNotSubmittedCardBody(penalty.period)
-    //    }
-
     SummaryCard(
       cardBody,
-      tagStatus(penalty.status),
+      tagStatus(penalty),
       penalty.number
     )
   }
@@ -120,7 +113,7 @@ class SummaryCardHelper extends ImplicitDateFormatter {
               messages("summaryCard.notYetSubmitted")
             )
           )
-        )( dateSubmitted =>
+        )(dateSubmitted =>
           summaryListRow(
             messages("summaryCard.key3"),
             Html(
@@ -129,7 +122,7 @@ class SummaryCardHelper extends ImplicitDateFormatter {
           )
         )
       ),
-      tagStatus(penalty.status),
+      tagStatus(penalty),
       penalty.number,
       isFinancialPoint = penalty.`type` == PenaltyTypeEnum.Financial,
       amountDue = penalty.financial.get.amountDue
@@ -148,23 +141,25 @@ class SummaryCardHelper extends ImplicitDateFormatter {
     classes = "govuk-summary-list__row"
   )
 
-  //  def returnSubmittedTag() = Tag{}
+  def tagStatus(penalty: PenaltyPoint)(implicit messages: Messages): Tag = {
 
-  def tagStatus(status: PointStatusEnum.Value)(implicit messages: Messages): Tag = {
-    // need to update the tag to check for multiple status'
+    val submissionStatus = penalty.period.submission.status
 
-    // check return submission status
-    // if return not submitted, use due tag
-    // if submitted check the penalty status and use status value e.g. active or rejected?
+    val tagType = submissionStatus match {
+      case Submitted => penalty.status.toString
+      case _ => submissionStatus.toString
+    }
 
-    val tagCssClass = status match {
+    val tagCssClass = submissionStatus match {
       case Due => "penalty-due-tag"
       case _ => ""
     }
 
-    Tag(
-      content = Text(status.toString),
-      classes = s"govuk-tag $tagCssClass"
+    val renderedTag: (String, String) => Tag = (status, cssClass) => Tag(
+      content = Text(status),
+      classes = s"govuk-tag $cssClass"
     )
+
+    renderedTag(tagType, tagCssClass)
   }
 }
