@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package controllers
+package utils
 
-import play.api.http.Status
-import stubs.AuthStub
-import testUtils.IntegrationSpecCommonBase
+import play.twirl.api.{Html, HtmlFormat}
 
-class IndexControllerISpec extends IntegrationSpecCommonBase {
-  "GET /" should {
-    "return 200 (OK) when the user is authorised" in {
-      val request = await(buildClientForRequestToApp(uri = "/").get())
-      request.status shouldBe Status.OK
-    }
+trait ViewUtils {
 
-    "return 303 (SEE_OTHER) when the user is not authorised" in {
-      AuthStub.unauthorised()
-      val request = await(buildClientForRequestToApp(uri = "/").get())
-      request.status shouldBe Status.SEE_OTHER
-    }
+  def html(content: HtmlFormat.Appendable*): Html = {
+    HtmlFormat.fill(collection.immutable.Seq(content: _*))
+  }
+
+  def stringAsHtml(content: String): Html = {
+    Html(content)
   }
 }

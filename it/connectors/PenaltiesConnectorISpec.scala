@@ -20,7 +20,7 @@ package connectors
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import stubs.PenaltiesStub._
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.IntegrationSpecCommonBase
+import testUtils.IntegrationSpecCommonBase
 
 class PenaltiesConnectorISpec extends IntegrationSpecCommonBase {
 

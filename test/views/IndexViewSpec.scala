@@ -19,19 +19,27 @@ package views
 import assets.messages.IndexMessages._
 import base.{BaseSelectors, SpecBase}
 import org.jsoup.nodes.Document
+import play.twirl.api.Html
 import play.twirl.api.HtmlFormat
 import viewmodels.SummaryCardHelper
 import views.behaviours.ViewBehaviours
 import views.html.IndexView
+import views.html.components.p
 
 class IndexViewSpec extends SpecBase with ViewBehaviours {
 
+  object Selectors extends BaseSelectors {
+    val rowItem: Int => String = i =>  s"#late-submission-penalties > section > div > dl > div:nth-child($i) > dt"
+  }
+
+  val pElement: p = injector.instanceOf[p]
   val helper = injector.instanceOf[SummaryCardHelper]
   val indexViewPage = injector.instanceOf[IndexView]
 
-  object Selectors extends BaseSelectors{
-    val rowItem: Int => String = i =>  s"#late-submission-penalties > section > div > dl > div:nth-child($i) > dt"
-  }
+  "IndexView" when {
+
+
+
 
   def applyView(): HtmlFormat.Appendable = indexViewPage.apply(helper.populateCard(sampleReturnSubmittedPenaltyPointData))
 
@@ -50,6 +58,10 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         Selectors.externalGuidance -> externalGuidanceLinkText,
       )
 
+      val contentToDisplayOnPage: Html = pElement(content = Html("This is some content."), id = Some("sample-content"))
+
+      implicit val doc: Document = asDocument(indexViewPage.apply(contentToDisplayOnPage))
+
       behave like pageWithExpectedMessages(expectedContent)
 
       "have correct route for breadcrumb link" in {
@@ -61,6 +73,10 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         //TODO: change this when we have a GOV.UK guidance page
         element.attr("href") shouldBe "#"
         element.attr("target") shouldBe "_blank"
+      }
+
+      "have the specified content displayed on the page" in {
+        doc.select("#sample-content").text() shouldBe "This is some content."
       }
 
       "populate summary card when user has penalty points" in {

@@ -18,9 +18,9 @@ package controllers.predicates
 
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
-import utils.AuthMocks
 import play.api.mvc.Results.Ok
 import play.api.test.Helpers._
+import testUtils.AuthMocks
 import uk.gov.hmrc.play.test.LogCapturing
 
 import scala.concurrent.Future

@@ -24,11 +24,12 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.PenaltiesService
+import testUtils.AuthTestModels
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.AuthTestModels
 import viewmodels.SummaryCardHelper
+import viewmodels.IndexPageHelper
 import views.html.IndexView
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -36,6 +37,7 @@ import scala.concurrent.Future
 class IndexControllerSpec extends SpecBase with MockitoSugar {
 
   val page: IndexView = injector.instanceOf[IndexView]
+  val indexPageHelper: IndexPageHelper = injector.instanceOf[IndexPageHelper]
   val cardHelper = injector.instanceOf[SummaryCardHelper]
   val mockPenaltiesService:PenaltiesService = mock[PenaltiesService]
 
@@ -54,7 +56,8 @@ class IndexControllerSpec extends SpecBase with MockitoSugar {
   object Controller extends IndexController(
     page,
     mockPenaltiesService,
-    cardHelper
+    cardHelper,
+    indexPageHelper
   )(implicitly, implicitly, authPredicate, stubMessagesControllerComponents())
 
   "IndexController" should {

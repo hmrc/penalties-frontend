@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package testUtils
 
 import base.SpecBase
 import controllers.predicates.AuthPredicate

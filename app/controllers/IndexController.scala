@@ -24,26 +24,27 @@ import play.api.mvc._
 import services.PenaltiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.EnrolmentKeys
+import viewmodels.IndexPageHelper
 import viewmodels.SummaryCardHelper
 import views.html.IndexView
 
 import scala.concurrent.ExecutionContext
 
-class IndexController @Inject()(page: IndexView,
+class IndexController @Inject()(view: IndexView,
                                 penaltiesService: PenaltiesService,
-                                cardHelper: SummaryCardHelper)(implicit ec: ExecutionContext,
-                                                               appConfig: AppConfig,
-                                                               authorise: AuthPredicate,
-                                                               controllerComponents: MessagesControllerComponents)
+                                cardHelper: SummaryCardHelper,
+                                pageHelper: IndexPageHelper)(implicit ec: ExecutionContext,
+                                                             appConfig: AppConfig,
+                                                             authorise: AuthPredicate,
+                                                             controllerComponents: MessagesControllerComponents)
   extends FrontendController(controllerComponents) with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
     for {
-      lSPData <- penaltiesService.getLspDataWithVrn(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))} yield {
-      println("[IndexController][onPageLoad]: This index controller is hit")
-      Ok(page(
-        cardHelper.populateCard(lSPData.penaltyPoints)
-      ))
+      lSPData <- penaltiesService.getLspDataWithVrn(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))
+      contentToDisplayAboveCards = pageHelper.getContentBasedOnPointsFromModel(lSPData)
+    } yield {
+      Ok(view(contentToDisplayAboveCards, cardHelper.populateCard(lSPData.penaltyPoints)))
     }
   }
 }

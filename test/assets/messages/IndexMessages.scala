@@ -30,6 +30,22 @@ object IndexMessages {
 
   val externalGuidanceLinkText = "Read the guidance about late submission penalties (opens in a new tab)"
 
+  val singularOverviewText = "You have 1 penalty point for submitting a VAT Return late."
+
+  val pluralOverviewText = "You have 2 penalty points for submitting 2 VAT Returns late."
+
+  val penaltyPointsTotal = "Penalty points total:"
+
+  val noActivePenaltyPoints = "No active late submission penalty points."
+
+  def multiActivePenaltyPoints(amountOfPoints: Int, amountOfLateSubmissions: Int) = s"You have $amountOfPoints penalty points for submitting $amountOfLateSubmissions VAT Returns late."
+
+  val whatHappensWhenNextSubmissionIsLate = "You’ll get another point if you submit late again. Points usually expire after 24 months but it can be longer if you keep submitting late."
+
+  val quarterlyThresholdPlusOnePenaltyApplication = "If you reach 4 points you’ll have to pay a £200 penalty."
+
+  val warningText = "Warning: You’ll get a £200 penalty if you submit another VAT Return late."
+
   val penaltyPointHeader = "Penalty point 1"
   val activeTag = "Active"
   val overdueTag = "Due"

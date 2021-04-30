@@ -23,7 +23,7 @@
     summaryCard: components.summaryCard
 )
 
-@(cards: Seq[SummaryCard])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(contentToDisplayBeforeSummaryCards: Html, cards: Seq[SummaryCard])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = messages("index.title")) {
 
@@ -54,6 +54,7 @@
         </ul>
         <div class="govuk-tabs__panel" id="late-submission-penalties">
             <h2 class="govuk-heading-m">@{messages("index.subheading")}</h2>
+            @contentToDisplayBeforeSummaryCards
 
             @*     TODO: change this to external guidance link   *@
             @link(
