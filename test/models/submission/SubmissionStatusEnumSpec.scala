@@ -26,7 +26,7 @@ class SubmissionStatusEnumSpec extends WordSpec with Matchers {
   }
 
   "be writable to JSON for 'OVERDUE'" in {
-    val result = Json.toJson(SubmissionStatusEnum.Due)
+    val result = Json.toJson(SubmissionStatusEnum.Overdue)
     result shouldBe JsString("OVERDUE")
   }
 
@@ -49,7 +49,7 @@ class SubmissionStatusEnumSpec extends WordSpec with Matchers {
   "be readable from JSON for 'OVERDUE'" in {
     val result = Json.fromJson(JsString("OVERDUE"))(SubmissionStatusEnum.format)
     result.isSuccess shouldBe true
-    result.get shouldBe SubmissionStatusEnum.Due
+    result.get shouldBe SubmissionStatusEnum.Overdue
   }
 
   "be readable from JSON for 'TAX_TRIBUNAL'" in {

@@ -19,8 +19,9 @@ package viewmodels
 import java.time.LocalDateTime
 
 import models.penalty.PenaltyPeriod
+import models.point.PointStatusEnum.{Active, Due, Rejected}
 import models.point.{PenaltyPoint, PenaltyTypeEnum}
-import models.submission.SubmissionStatusEnum.{Due, Submitted}
+import models.submission.SubmissionStatusEnum.{Overdue, Submitted}
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
@@ -141,25 +142,22 @@ class SummaryCardHelper extends ImplicitDateFormatter {
     classes = "govuk-summary-list__row"
   )
 
+  def renderTag(status: String, cssClass: String = ""): Tag = Tag(
+    content = Text(status),
+    classes = s"govuk-tag $cssClass"
+  )
+
   def tagStatus(penalty: PenaltyPoint)(implicit messages: Messages): Tag = {
 
     val submissionStatus = penalty.period.submission.status
+    val penaltyPointStatus = penalty.status
 
-    val tagType = submissionStatus match {
-      case Submitted => penalty.status.toString
-      case _ => submissionStatus.toString
+    (submissionStatus, penaltyPointStatus) match {
+      case (Overdue, _)           => renderTag(messages("status.due"), "penalty-due-tag")
+      case (Submitted, Active)    => renderTag(messages("status.active"))
+      case (Submitted, Rejected)  => renderTag(messages("status.rejected"))
+      case (Submitted, Due)   => renderTag(messages("status.due"), "penalty-due-tag")
+      case (_, _) => renderTag(messages("status.active")) // Temp solution
     }
-
-    val tagCssClass = submissionStatus match {
-      case Due => "penalty-due-tag"
-      case _ => ""
-    }
-
-    val renderedTag: (String, String) => Tag = (status, cssClass) => Tag(
-      content = Text(status),
-      classes = s"govuk-tag $cssClass"
-    )
-
-    renderedTag(tagType, tagCssClass)
   }
 }

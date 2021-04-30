@@ -32,6 +32,8 @@ common.pageTitle = {0} - {1} - GOV.UK
 # -------------------------------------------
 status.active = active
 status.due = due
+status.rejected = rejected
+
 summaryCard.header = Penalty point {0}
 summaryCard.header.financial = Penalty point {0}: £{1} penalty
 

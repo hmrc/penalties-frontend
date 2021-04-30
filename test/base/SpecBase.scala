@@ -37,7 +37,8 @@ import play.twirl.api.Html
 import services.AuthService
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.govukfrontend.views.Aliases.Tag
-import viewmodels.SummaryCard
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.{SummaryCard, SummaryCardHelper}
 import views.html.errors.Unauthorised
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -63,6 +64,8 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
 
   val mockAuthService: AuthService = new AuthService(mockAuthConnector)
 
+  val summaryCardHelper = injector.instanceOf[SummaryCardHelper]
+
   val vrn: String = "123456789"
 
   lazy val authPredicate: AuthPredicate = new AuthPredicate(
@@ -83,24 +86,54 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
     Seq.empty[PenaltyPoint]
   )
 
-  val sampleReturnSubmittedPenaltyPointData: Seq[PenaltyPoint] = Seq(
-    PenaltyPoint(
-      PenaltyTypeEnum.Point,
-      "1",
+  val samplePenaltyPoint = PenaltyPoint(
+    PenaltyTypeEnum.Point,
+    "1",
+    LocalDateTime.now,
+    Some(LocalDateTime.now),
+    PointStatusEnum.Active,
+    PenaltyPeriod(
       LocalDateTime.now,
-      Some(LocalDateTime.now),
-      PointStatusEnum.Active,
-      PenaltyPeriod(
+      LocalDateTime.now,
+      Submission(
         LocalDateTime.now,
+        Some(LocalDateTime.now),
+        SubmissionStatusEnum.Submitted
+      )
+    ),
+    Seq.empty,
+  )
+
+  val sampleOverduePenaltyPoint = PenaltyPoint(
+    PenaltyTypeEnum.Point,
+    "1",
+    LocalDateTime.now,
+    Some(LocalDateTime.now),
+    PointStatusEnum.Active,
+    PenaltyPeriod(
+      LocalDateTime.now,
+      LocalDateTime.now,
+      Submission(
         LocalDateTime.now,
-        Submission(
-          LocalDateTime.now,
-          Some(LocalDateTime.now),
-          SubmissionStatusEnum.Submitted
-        )
-      ),
-      Seq.empty,
+        None,
+        SubmissionStatusEnum.Overdue
+      )
+    ),
+    Seq.empty,
+  )
+
+  val sampleReturnNotSubmittedPenaltyPeriod = PenaltyPeriod(
+    LocalDateTime.now,
+    LocalDateTime.now,
+    Submission(
+      LocalDateTime.now,
+      None,
+      SubmissionStatusEnum.Submitted
     )
+  )
+
+  val sampleReturnSubmittedPenaltyPointData: Seq[PenaltyPoint] = Seq(
+    samplePenaltyPoint
   )
 
   val sampleReturnNotSubmittedPenaltyPointData: Seq[PenaltyPoint] = Seq(
@@ -116,7 +149,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
         Submission(
           LocalDateTime.now,
           None,
-          SubmissionStatusEnum.Due
+          SubmissionStatusEnum.Overdue
         )
       ),
       Seq.empty,

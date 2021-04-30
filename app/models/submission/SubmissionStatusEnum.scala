@@ -20,7 +20,7 @@ import play.api.libs.json._
 
 object SubmissionStatusEnum extends Enumeration {
   val Submitted = Value
-  val Due = Value
+  val Overdue = Value
   val Under_Review = Value
   val Tax_Tribunal = Value
 
@@ -32,7 +32,7 @@ object SubmissionStatusEnum extends Enumeration {
     override def reads(json: JsValue): JsResult[SubmissionStatusEnum.Value] = {
       json.as[String] match {
         case "SUBMITTED" => JsSuccess(Submitted)
-        case "OVERDUE" => JsSuccess(Due)
+        case "OVERDUE" => JsSuccess(Overdue)
         case "UNDER_REVIEW" => JsSuccess(Under_Review)
         case "TAX_TRIBUNAL" => JsSuccess(Tax_Tribunal)
         case e => JsError(s"$e not recognised")

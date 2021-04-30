@@ -17,19 +17,24 @@
 package utils
 
 import java.time.{LocalDate, LocalDateTime}
-import java.time.format.DateTimeFormatter
 
-trait ImplicitDateFormatter {
+import base.SpecBase
 
-  private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-  private val monthYearDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MMMM yyyy")
+class ImplicitDateFormatterSpec extends SpecBase with ImplicitDateFormatter {
 
-  implicit def dateToString(date: LocalDate): String = dateFormatter.format(date)
+  "ImplicitDateFormatter" must {
+    "return a formatted LocalDate" when {
+      "dateToString is called" in {
+        dateToString(LocalDate.of(2021, 1, 1)) shouldBe "1 January 2021"
+      }
 
-  implicit def dateTimeToString(dateTime: LocalDateTime): String = dateFormatter.format(dateTime)
+      "dateTimeToString is called" in {
+        dateTimeToString(LocalDateTime.of(2021, 1, 1, 1, 1, 1)) shouldBe "1 January 2021"
+      }
 
-  implicit def dateTimeToMonthYearString(dateTime: LocalDateTime): String = monthYearDateFormatter.format(dateTime)
-
+      "dateTimeToMonthYearString is called" in {
+        dateTimeToMonthYearString(LocalDateTime.of(2021, 1, 1, 1, 1, 1)) shouldBe "January 2021"
+      }
+    }
+  }
 }
-
-object ImplicitDateFormatter extends ImplicitDateFormatter

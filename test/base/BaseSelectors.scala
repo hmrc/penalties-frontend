@@ -41,4 +41,5 @@ class BaseSelectors {
   val tabHeading = "#late-submission-penalties > h2"
 
   val externalGuidance = "#guidance-link"
+
 }

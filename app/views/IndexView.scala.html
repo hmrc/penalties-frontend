@@ -63,9 +63,11 @@
                 id = Some("guidance-link"),
                 isExternal = true
             )
-            <br><br>
-            @cards.map{card =>
-                @summaryCard(card)
+            @if(!cards.isEmpty){
+                <br><br>
+                @cards.map{card =>
+                    @summaryCard(card)
+                }
             }
         </div>
     </div>
