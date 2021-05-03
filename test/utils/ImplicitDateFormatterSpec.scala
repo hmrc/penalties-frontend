@@ -14,22 +14,27 @@
  * limitations under the License.
  */
 
-package views.behaviours
+package utils
+
+import java.time.{LocalDate, LocalDateTime}
 
 import base.SpecBase
-import org.jsoup.nodes.Document
-import org.scalatest.MustMatchers._
 
-trait ViewBehaviours extends SpecBase {
+class ImplicitDateFormatterSpec extends SpecBase with ImplicitDateFormatter {
 
-  def pageWithExpectedMessages(checks: Seq[(String, String)])(implicit document: Document): Unit = checks.foreach {
-    case (cssSelector, message) =>
-
-      s"element with cssSelector '$cssSelector'" must {
-        s"have message '$message'" in {
-          val elem = document.select(cssSelector)
-          elem.first.text() mustBe message
-        }
+  "ImplicitDateFormatter" must {
+    "return a formatted LocalDate" when {
+      "dateToString is called" in {
+        dateToString(LocalDate.of(2021, 1, 1)) shouldBe "1 January 2021"
       }
+
+      "dateTimeToString is called" in {
+        dateTimeToString(LocalDateTime.of(2021, 1, 1, 1, 1, 1)) shouldBe "1 January 2021"
+      }
+
+      "dateTimeToMonthYearString is called" in {
+        dateTimeToMonthYearString(LocalDateTime.of(2021, 1, 1, 1, 1, 1)) shouldBe "January 2021"
+      }
+    }
   }
 }

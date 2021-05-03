@@ -17,6 +17,7 @@
 package controllers
 
 import base.SpecBase
+import models.point.PenaltyPoint
 import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{mock, reset, when}
@@ -27,6 +28,8 @@ import services.PenaltiesService
 import testUtils.AuthTestModels
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.SummaryCardHelper
 import viewmodels.IndexPageHelper
 import views.html.IndexView
 
@@ -36,6 +39,7 @@ class IndexControllerSpec extends SpecBase with MockitoSugar {
 
   val page: IndexView = injector.instanceOf[IndexView]
   val indexPageHelper: IndexPageHelper = injector.instanceOf[IndexPageHelper]
+  val cardHelper = injector.instanceOf[SummaryCardHelper]
   val mockPenaltiesService:PenaltiesService = mock[PenaltiesService]
 
   class Setup(authResult: Future[~[Option[AffinityGroup], Enrolments]]) {
@@ -53,6 +57,7 @@ class IndexControllerSpec extends SpecBase with MockitoSugar {
   object Controller extends IndexController(
     page,
     mockPenaltiesService,
+    cardHelper,
     indexPageHelper
   )(implicitly, implicitly, authPredicate, stubMessagesControllerComponents())
 
@@ -60,9 +65,9 @@ class IndexControllerSpec extends SpecBase with MockitoSugar {
 
     "onPageLoad" when {
 
-      "the user is authorised" when {
+      "the user is authorised" must {
 
-        "return OK" in new Setup(AuthTestModels.successfulAuthResult) {
+        "return OK and correct view" in new Setup(AuthTestModels.successfulAuthResult) {
 
           val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
 

@@ -16,12 +16,14 @@
 
 package viewmodels
 
-import play.api.libs.json.Json
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 
 case class SummaryCard(
                         cardRows: Seq[SummaryListRow],
-                        status: String,
-                        penaltyPoint: Int,
-                        footerUrl: String = ""
+                        status: Tag,
+                        penaltyPoint: String,
+                        footerUrl: String = "#",
+                        isFinancialPoint: Boolean = false,
+                        amountDue: BigDecimal = 0
                       )

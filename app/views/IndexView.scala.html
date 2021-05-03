@@ -15,14 +15,15 @@
  *@
 
 @import config.AppConfig
-@import views.html.components.summaryCard
+@import viewmodels.SummaryCard
 
-@this(layout: Layout,
-      link: components.link,
-      summaryCard: summaryCard
+@this(
+    layout: Layout,
+    link: components.link,
+    summaryCard: components.summaryCard
 )
 
-@(contentToDisplayBeforeSummaryCards: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(contentToDisplayBeforeSummaryCards: Html, cards: Seq[SummaryCard])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = messages("index.title")) {
 
@@ -62,7 +63,12 @@
                 id = Some("guidance-link"),
                 isExternal = true
             )
-
+            @if(!cards.isEmpty){
+                <br><br>
+                @cards.map{card =>
+                    @summaryCard(card)
+                }
+            }
         </div>
     </div>
 }

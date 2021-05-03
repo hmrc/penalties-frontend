@@ -29,6 +29,8 @@ class PenaltiesConnector @Inject()(httpClient: HttpClient,
   private val penaltiesBaseUrl: String = appConfig.penaltiesUrl
   private def getPenaltiesDataUrl(enrolmentKey: String): String = s"/etmp/penalties/$enrolmentKey"
 
-  def getPenaltiesData(enrolmentKey: String)(implicit hc: HeaderCarrier): Future[ETMPPayload] =
+  def getPenaltiesData(enrolmentKey: String)(implicit hc: HeaderCarrier): Future[ETMPPayload] = {
+    println("[PenaltiesConnector][getPenaltiesData]: This connector is hit")
     httpClient.GET[ETMPPayload](s"$penaltiesBaseUrl${getPenaltiesDataUrl(enrolmentKey)}")
+  }
 }

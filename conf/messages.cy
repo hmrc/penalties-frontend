@@ -26,15 +26,23 @@ lsp.pointSummary.penaltyPoints.overview.anotherPoint = You’ll get another poin
 lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded = If you reach {0} points you’ll have to pay a £200 penalty.
 
 lsp.pointSummary.penaltyPoints.overview.warningText = You’ll get a £200 penalty if you submit another VAT Return late.
+common.pageTitle = {0} - {1} - GOV.UK
 
-# Summary Card
+# SummaryCard
 # -------------------------------------------
+status.active = active
+status.due = due
+
 summaryCard.header = Penalty point {0}
+summaryCard.header.financial = Penalty point {0}: £{1} penalty
+
 summaryCard.key1 = VAT Period
 summaryCard.value1 = {0} to {1}
 summaryCard.key2 = VAT Return due
 summaryCard.key3 = Return submitted
+summaryCard.key3.defaultValue = Not yet submitted
 summaryCard.key4 = Point due to expire
+summaryCard.notYetSubmitted = Not yet submitted
 summaryCard.footerLinkText = Appeal penalty point {0}
 status.active = active
 status.due = due

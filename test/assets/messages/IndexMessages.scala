@@ -45,4 +45,19 @@ object IndexMessages {
   val quarterlyThresholdPlusOnePenaltyApplication = "If you reach 4 points you’ll have to pay a £200 penalty."
 
   val warningText = "Warning: You’ll get a £200 penalty if you submit another VAT Return late."
+
+  val penaltyPointHeader = "Penalty point 1"
+  val activeTag = "active"
+  val overdueTag = "due"
+
+  val period = "VAT Period"
+  val returnDue = "VAT Return due"
+  val returnSubmitted = "Return submitted"
+  val pointExpiration = "Point due to expire"
+  val notSubmitted = "Not yet submitted"
+
+  val vatPeriodValue: (String, String) => String = (s1, s2) => s"$s1 to $s2"
+
+  val appealLinkText = "Appeal penalty point 1"
+
 }

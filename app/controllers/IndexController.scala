@@ -18,7 +18,6 @@ package controllers
 
 import config.AppConfig
 import controllers.predicates.AuthPredicate
-
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -26,12 +25,14 @@ import services.PenaltiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.EnrolmentKeys
 import viewmodels.IndexPageHelper
+import viewmodels.SummaryCardHelper
 import views.html.IndexView
 
 import scala.concurrent.ExecutionContext
 
-class IndexController @Inject()(page: IndexView,
+class IndexController @Inject()(view: IndexView,
                                 penaltiesService: PenaltiesService,
+                                cardHelper: SummaryCardHelper,
                                 pageHelper: IndexPageHelper)(implicit ec: ExecutionContext,
                                                              appConfig: AppConfig,
                                                              authorise: AuthPredicate,
@@ -43,7 +44,7 @@ class IndexController @Inject()(page: IndexView,
       lSPData <- penaltiesService.getLspDataWithVrn(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))
       contentToDisplayAboveCards = pageHelper.getContentBasedOnPointsFromModel(lSPData)
     } yield {
-      Ok(page(contentToDisplayAboveCards))
+      Ok(view(contentToDisplayAboveCards, cardHelper.populateCard(lSPData.penaltyPoints)))
     }
   }
 }
