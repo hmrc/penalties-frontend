@@ -20,10 +20,11 @@ import assets.messages.IndexMessages._
 import base.SpecBase
 import models.ETMPPayload
 import org.jsoup.Jsoup
-import org.scalatest.{Matchers, WordSpec}
 
 class IndexPageHelperSpec extends SpecBase {
   val pageHelper: IndexPageHelper = injector.instanceOf[IndexPageHelper]
+
+  private val quarterlyThreshold:Int = 4
 
   "getPluralOrSingularBasedOnCurrentPenaltyPoints" should {
     "show the singular wording" when {
@@ -69,10 +70,10 @@ class IndexPageHelperSpec extends SpecBase {
       }
     }
 
-    "points are below threshold" should {
+    "points are below threshold and less than warning level" should {
       "show the summary of penalty points" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 2, lateSubmissions = 2, 0, 0, 0, penaltyPointsThreshold = 3, Seq.empty
+          pointsTotal = 2, lateSubmissions = 2, 0, 0, 0, penaltyPointsThreshold = quarterlyThreshold, Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -81,7 +82,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "show the singular wording when there is only one penalty point" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 1, lateSubmissions = 1, 0, 0, 0, penaltyPointsThreshold = 3, Seq.empty
+          pointsTotal = 1, lateSubmissions = 1, 0, 0, 0, penaltyPointsThreshold = quarterlyThreshold, Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -90,7 +91,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "show the plural wording when there is multiple penalty points" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 2, lateSubmissions = 2, 0, 0, 0, penaltyPointsThreshold = 3, Seq.empty
+          pointsTotal = 2, lateSubmissions = 2, 0, 0, 0, penaltyPointsThreshold = quarterlyThreshold, Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -99,16 +100,16 @@ class IndexPageHelperSpec extends SpecBase {
 
       "show what happens when next submission is late" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 2, lateSubmissions = 2, 0, 0, 0, penaltyPointsThreshold = 3, Seq.empty
+          pointsTotal = 2, lateSubmissions = 2, 0, 0, 0, penaltyPointsThreshold = quarterlyThreshold, Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)
         val parsedHtmlResult = Jsoup.parse(result.body)
         parsedHtmlResult.select("p.govuk-body").get(2).text() shouldBe whatHappensWhenNextSubmissionIsLate
       }
 
-      "show the (threshold + 1) amount of points that need to be accrued before a penalty is applied" in {
+      "show the (threshold) amount of points that need to be accrued before a penalty is applied" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 2, lateSubmissions = 2, 0, 0, 0, penaltyPointsThreshold = 3, Seq.empty
+          pointsTotal = 2, lateSubmissions = 2, 0, 0, 0, penaltyPointsThreshold = quarterlyThreshold, Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -116,10 +117,10 @@ class IndexPageHelperSpec extends SpecBase {
       }
     }
 
-    "points are at threshold" should {
+    "points are at warning level (1 below threshold)" should {
       "show the summary of penalty points" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 1, lateSubmissions = 1, 0, 0, 0, penaltyPointsThreshold = 3, Seq.empty
+          pointsTotal = 1, lateSubmissions = 1, 0, 0, 0, penaltyPointsThreshold = 2, Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -128,7 +129,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "show some warning text explaining what will happen if another submission is late" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 3, lateSubmissions = 3, 0, 0, 0, penaltyPointsThreshold = 3, Seq.empty
+          pointsTotal = 3, lateSubmissions = 3, 0, 0, 0, penaltyPointsThreshold = quarterlyThreshold, Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -137,7 +138,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "show a summary of amount of points accrued and returns submitted late" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 3, lateSubmissions = 3, 0, 0, 0, penaltyPointsThreshold = 3, Seq.empty
+          pointsTotal = 3, lateSubmissions = 3, 0, 0, 0, penaltyPointsThreshold = quarterlyThreshold, Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)
         val parsedHtmlResult = Jsoup.parse(result.body)
