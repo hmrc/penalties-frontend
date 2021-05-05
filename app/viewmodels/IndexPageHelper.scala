@@ -32,7 +32,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       case (0, _) => {
         p(content = stringAsHtml(messages("lsp.pointSummary.noActivePoints")))
       }
-      case (currentPoints, threshold) if currentPoints < threshold => {
+      case (currentPoints, threshold) if currentPoints < threshold-1 => {
           html(
             renderPointsTotal(currentPoints),
             p(content = getPluralOrSingularBasedOnCurrentPenaltyPoints(currentPoints, etmpData.lateSubmissions)),
@@ -40,11 +40,11 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
               messages("lsp.pointSummary.penaltyPoints.overview.anotherPoint")
             )),
             p(content = stringAsHtml(
-              messages("lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded", threshold + 1)
+              messages("lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded", threshold)
             ))
           )
       }
-      case (currentPoints, threshold) if currentPoints == threshold => {
+      case (currentPoints, threshold) if currentPoints == threshold-1 => {
         html(
           renderPointsTotal(currentPoints),
           warningText(stringAsHtml(messages("lsp.pointSummary.penaltyPoints.overview.warningText"))),
