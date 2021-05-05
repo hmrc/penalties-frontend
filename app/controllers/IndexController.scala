@@ -28,6 +28,7 @@ import viewmodels.IndexPageHelper
 import viewmodels.SummaryCardHelper
 import views.html.IndexView
 
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext
 
 class IndexController @Inject()(view: IndexView,
@@ -43,8 +44,9 @@ class IndexController @Inject()(view: IndexView,
     for {
       lSPData <- penaltiesService.getLspDataWithVrn(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))
       contentToDisplayAboveCards = pageHelper.getContentBasedOnPointsFromModel(lSPData)
+      summaryCards = cardHelper.populateCard(lSPData.penaltyPoints)
     } yield {
-      Ok(view(contentToDisplayAboveCards, cardHelper.populateCard(lSPData.penaltyPoints)))
+      Ok(view(contentToDisplayAboveCards, summaryCards))
     }
   }
 }

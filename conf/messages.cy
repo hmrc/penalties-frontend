@@ -2,7 +2,6 @@ service.name = VAT Penalties and Appeals
 service.homePageUrl = /penalties
 common.pageTitle = {0} - {1} - GOV.UK
 
-
 # Index
 # -------------------------------------------
 index.title = VAT penalties and appeals
@@ -30,9 +29,7 @@ common.pageTitle = {0} - {1} - GOV.UK
 
 # SummaryCard
 # -------------------------------------------
-status.active = active
-status.due = due
-
+summaryCard.header.addedPoint = Penalty point {0}: adjustment point
 summaryCard.header = Penalty point {0}
 summaryCard.header.financial = Penalty point {0}: £{1} penalty
 
@@ -44,8 +41,15 @@ summaryCard.key3.defaultValue = Not yet submitted
 summaryCard.key4 = Point due to expire
 summaryCard.notYetSubmitted = Not yet submitted
 summaryCard.footerLinkText = Appeal penalty point {0}
+summaryCard.adjustedPoint.cannotAppeal = You cannot appeal this point
+summaryCard.addedOnKey = Added on
+summaryCard.removedReason = Reason
+summaryCard.infoOnAdjustmentPointsLinkText = Find out more about adjustment points
+
+
 status.active = active
 status.due = due
+status.removed = removed
 
 site.opensInNewTab = (opens in a new tab)
 site.warning = Warning:

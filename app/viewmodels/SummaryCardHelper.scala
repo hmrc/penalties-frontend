@@ -17,10 +17,9 @@
 package viewmodels
 
 import java.time.LocalDateTime
-
 import models.penalty.PenaltyPeriod
-import models.point.PointStatusEnum.{Active, Due, Rejected}
-import models.point.{PenaltyPoint, PenaltyTypeEnum}
+import models.point.PointStatusEnum.{Active, Added, Due, Rejected, Removed}
+import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.SubmissionStatusEnum.{Overdue, Submitted}
 import play.api.i18n.Messages
 import play.twirl.api.Html
@@ -33,17 +32,71 @@ class SummaryCardHelper extends ImplicitDateFormatter {
 
   def populateCard(penalties: Seq[PenaltyPoint])(implicit messages: Messages): Seq[SummaryCard] = {
     penalties.map { penalty =>
-      penalty.`type` match {
-        case PenaltyTypeEnum.Financial => financialSummaryCard(penalty)
-        case PenaltyTypeEnum.Point => pointSummaryCard(penalty)
+      (penalty.`type`, penalty.status) match {
+        case (PenaltyTypeEnum.Financial, _) => financialSummaryCard(penalty)
+        case (PenaltyTypeEnum.Point, PointStatusEnum.Added) => addedPointCard(penalty)
+        case (PenaltyTypeEnum.Point, PointStatusEnum.Removed) => removedPointCard(penalty)
+        case (PenaltyTypeEnum.Point, _) => pointSummaryCard(penalty)
       }
     }
   }
 
-  def returnSubmittedCardBody(penalty: PenaltyPoint)(implicit messages: Messages): Seq[SummaryListRow] = {
+  private def addedPointCard(penalty: PenaltyPoint)(implicit messages: Messages): SummaryCard = {
+    val rows = Seq(
+      Some(summaryListRow(
+        messages("summaryCard.addedOnKey"),
+        Html(
+          dateTimeToString(penalty.dateCreated)
+        )
+      )
+      ),
+      penalty.dateExpired.fold[Option[SummaryListRow]](None)(x => {
+        Some(summaryListRow(messages("summaryCard.key4"), Html(dateTimeToMonthYearString(x))))
+      })
+    ).collect {
+      case Some(x) => x
+    }
 
+    buildSummaryCard(rows, penalty, isAnAddedPoint = true, isAnAdjustedPoint = true)
+  }
+
+  private def removedPointCard(penalty: PenaltyPoint)(implicit messages: Messages): SummaryCard = {
+    val rows = Seq(
+      Some(summaryListRow(
+        messages("summaryCard.key1"),
+        Html(
+          messages(
+            "summaryCard.value1",
+            dateTimeToString(penalty.period.startDate),
+            dateTimeToString(penalty.period.endDate)
+          )
+        )
+      )),
+      penalty.reason.fold[Option[SummaryListRow]](None)(x => {
+        Some(summaryListRow(messages("summaryCard.removedReason"),
+          Html(x)))
+      })
+    ).collect {
+      case Some(x) => x
+    }
+
+    buildSummaryCard(rows, penalty, isAnAdjustedPoint = true)
+  }
+
+  private def buildSummaryCard(rows: Seq[SummaryListRow], penalty: PenaltyPoint, isAnAddedPoint: Boolean = false,
+                               isAnAdjustedPoint: Boolean = false)(implicit messages: Messages): SummaryCard = {
+    SummaryCard(
+      rows,
+      tagStatus(penalty),
+      penalty.number,
+      isAddedPoint = isAnAddedPoint,
+      isAdjustedPoint = isAnAdjustedPoint
+    )
+  }
+
+  def returnSubmittedCardBody(penalty: PenaltyPoint)(implicit messages: Messages): Seq[SummaryListRow] = {
     val period = penalty.period
-    Seq(
+    val base = Seq(
       summaryListRow(
         messages("summaryCard.key1"),
         Html(
@@ -55,9 +108,14 @@ class SummaryCardHelper extends ImplicitDateFormatter {
         )
       ),
       summaryListRow(messages("summaryCard.key2"), Html(dateTimeToString(period.submission.dueDate))),
-      summaryListRow(messages("summaryCard.key3"), Html(period.submission.submittedDate.map(date => dateTimeToString(date)))),
-      summaryListRow(messages("summaryCard.key4"), Html(penalty.dateExpired.map(date => dateTimeToMonthYearString(date))))
+      summaryListRow(messages("summaryCard.key3"), Html(dateTimeToString(period.submission.submittedDate.get)))
     )
+
+    if(penalty.dateExpired.isDefined) {
+      base :+ summaryListRow(messages("summaryCard.key4"), Html(dateTimeToMonthYearString(penalty.dateExpired.get)))
+    } else {
+      base
+    }
   }
 
   def returnNotSubmittedCardBody(period: PenaltyPeriod)(implicit messages: Messages): Seq[SummaryListRow] = Seq(
@@ -81,11 +139,7 @@ class SummaryCardHelper extends ImplicitDateFormatter {
       case None => returnNotSubmittedCardBody(penalty.period)
     }
 
-    SummaryCard(
-      cardBody,
-      tagStatus(penalty),
-      penalty.number
-    )
+    buildSummaryCard(cardBody, penalty)
   }
 
   def financialSummaryCard(penalty: PenaltyPoint)(implicit messages: Messages): SummaryCard = {
@@ -153,11 +207,13 @@ class SummaryCardHelper extends ImplicitDateFormatter {
     val penaltyPointStatus = penalty.status
 
     (submissionStatus, penaltyPointStatus) match {
+      case (_, Removed)           => renderTag(messages("status.removed"))
+      case (_, Added)             => renderTag(messages("status.active"))
       case (Overdue, _)           => renderTag(messages("status.due"), "penalty-due-tag")
       case (Submitted, Active)    => renderTag(messages("status.active"))
       case (Submitted, Rejected)  => renderTag(messages("status.rejected"))
-      case (Submitted, Due)   => renderTag(messages("status.due"), "penalty-due-tag")
-      case (_, _) => renderTag(messages("status.active")) // Temp solution
+      case (Submitted, Due)       => renderTag(messages("status.due"), "penalty-due-tag")
+      case (_, _)                 => renderTag(messages("status.active")) // Temp solution
     }
   }
 }

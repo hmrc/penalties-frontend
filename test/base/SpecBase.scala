@@ -92,6 +92,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
     LocalDateTime.now,
     Some(LocalDateTime.now),
     PointStatusEnum.Active,
+    None,
     PenaltyPeriod(
       LocalDateTime.now,
       LocalDateTime.now,
@@ -101,7 +102,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
         SubmissionStatusEnum.Submitted
       )
     ),
-    Seq.empty,
+    Seq.empty
   )
 
   val sampleOverduePenaltyPoint = PenaltyPoint(
@@ -110,6 +111,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
     LocalDateTime.now,
     Some(LocalDateTime.now),
     PointStatusEnum.Active,
+    None,
     PenaltyPeriod(
       LocalDateTime.now,
       LocalDateTime.now,
@@ -119,7 +121,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
         SubmissionStatusEnum.Overdue
       )
     ),
-    Seq.empty,
+    Seq.empty
   )
 
   val sampleReturnNotSubmittedPenaltyPeriod = PenaltyPeriod(
@@ -143,6 +145,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
       LocalDateTime.now,
       Some(LocalDateTime.now),
       PointStatusEnum.Active,
+      None,
       PenaltyPeriod(
         LocalDateTime.now,
         LocalDateTime.now,
@@ -152,7 +155,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
           SubmissionStatusEnum.Overdue
         )
       ),
-      Seq.empty,
+      Seq.empty
     )
   )
 
