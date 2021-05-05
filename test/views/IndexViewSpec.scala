@@ -153,10 +153,10 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           doc.select("#sample-content").text() shouldBe "This is some content."
         }
 
-        "display the removed point when an appeal has been successful" in {
+        "display the removed point due to a change in submission filing" in {
           implicit val documentWithOneSummaryCardComponent = asDocument(indexViewPage.apply(contentToDisplayOnPage, Seq(summaryCardRepresentingRemovedPoint)))
           val summaryCard = documentWithOneSummaryCardComponent.select(".app-summary-card")
-          summaryCard.select("header h3").text shouldBe "Penalty point 1"
+          summaryCard.select("header h3").text shouldBe "Penalty point"
           summaryCard.select("strong").text shouldBe "removed"
           val summaryCardBody = summaryCard.select(".app-summary-card__body")
           summaryCardBody.select("dt").get(0).text shouldBe "VAT Period"
@@ -169,7 +169,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           summaryCard.select("footer li").hasText shouldBe false
         }
 
-        "display the added point when an appeal has been successful" in {
+        "display the added point due to a change in submission filing" in {
           implicit val documentWithOneSummaryCardComponent = asDocument(indexViewPage.apply(contentToDisplayOnPage, Seq(summaryCardRepresentingAddedPoint)))
           val summaryCard = documentWithOneSummaryCardComponent.select(".app-summary-card")
           summaryCard.select("header h3").text shouldBe "Penalty point 1: adjustment point"

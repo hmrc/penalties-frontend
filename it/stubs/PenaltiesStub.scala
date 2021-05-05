@@ -46,6 +46,16 @@ object PenaltiesStub {
     )
   )
 
+  def returnLSPDataStub(lspDataToReturn: ETMPPayload): StubMapping = stubFor(get(urlMatching(getLspDataUrl))
+    .willReturn(
+      aResponse()
+        .withStatus(Status.OK)
+        .withBody(
+          Json.toJson(lspDataToReturn).toString()
+        )
+    )
+  )
+
   def invalidLspDataStub(): StubMapping = stubFor(get(urlMatching(getLspDataUrl))
     .willReturn(
       aResponse()

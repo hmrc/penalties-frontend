@@ -17,9 +17,9 @@
 package viewmodels
 
 import java.time.LocalDateTime
-
 import assets.messages.IndexMessages._
 import base.SpecBase
+import models.point.{PenaltyTypeEnum, PointStatusEnum}
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
@@ -121,6 +121,14 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           val result = helper.tagStatus(samplePenaltyPoint)
           result shouldBe Tag(
             content = Text(activeTag),
+            classes = "govuk-tag "
+          )
+        }
+
+        "a penalty is submitted but the appeal is rejected - return the appropriate tag" in {
+          val result = helper.tagStatus(samplePenaltyPoint.copy(status = PointStatusEnum.Rejected))
+          result shouldBe Tag(
+            content = Text(rejectedTag),
             classes = "govuk-tag "
           )
         }

@@ -32,6 +32,7 @@ common.pageTitle = {0} - {1} - GOV.UK
 # -------------------------------------------
 summaryCard.header.addedPoint = Penalty point {0}: adjustment point
 summaryCard.header = Penalty point {0}
+summaryCard.header.adjustedPoint = Penalty point
 summaryCard.header.financial = Penalty point {0}: £{1} penalty
 
 summaryCard.key1 = VAT Period

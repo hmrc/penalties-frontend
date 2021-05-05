@@ -30,7 +30,7 @@ import views.html.components.summaryCard
 
 import java.time.LocalDateTime
 
-class summaryCardSpec extends SpecBase with ViewBehaviours {
+class SummaryCardSpec extends SpecBase with ViewBehaviours {
 
   object Selectors extends BaseSelectors
 
@@ -110,7 +110,7 @@ class summaryCardSpec extends SpecBase with ViewBehaviours {
     "given a removed point" should {
       implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithRemovedPoint))
       "display that the point number as usual" in {
-        doc.select("h3").text() shouldBe "Penalty point 2"
+        doc.select("h3").text() shouldBe "Penalty point"
       }
 
       "display the VAT period the point was removed from" in {

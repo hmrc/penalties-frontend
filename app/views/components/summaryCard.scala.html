@@ -36,6 +36,8 @@
                     messages("summaryCard.header.financial", summaryCard.penaltyPoint, summaryCard.amountDue.intValue)
                 } else if(summaryCard.isAddedPoint) {
                     messages("summaryCard.header.addedPoint", summaryCard.penaltyPoint)
+                } else if(summaryCard.isAdjustedPoint) {
+                    messages("summaryCard.header.adjustedPoint")
                 } else {
                     messages("summaryCard.header", summaryCard.penaltyPoint)
                 }

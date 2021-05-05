@@ -105,6 +105,25 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
     Seq.empty
   )
 
+  val sampleFinancialPenaltyPoint = PenaltyPoint(
+    PenaltyTypeEnum.Financial,
+    "1",
+    LocalDateTime.now,
+    Some(LocalDateTime.now),
+    PointStatusEnum.Active,
+    None,
+    PenaltyPeriod(
+      LocalDateTime.now,
+      LocalDateTime.now,
+      Submission(
+        LocalDateTime.now,
+        None,
+        SubmissionStatusEnum.Overdue
+      )
+    ),
+    Seq.empty
+  )
+
   val sampleOverduePenaltyPoint = PenaltyPoint(
     PenaltyTypeEnum.Point,
     "1",
@@ -130,7 +149,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
     Submission(
       LocalDateTime.now,
       None,
-      SubmissionStatusEnum.Submitted
+      SubmissionStatusEnum.Overdue
     )
   )
 
