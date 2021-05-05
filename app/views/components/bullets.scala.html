@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models
+@this()
 
-import models.point.PenaltyPoint
-import play.api.libs.json.{Json, OFormat}
+@(content: Seq[Html], numberList: Boolean = false, classes: String = "govuk-list")(implicit messages: Messages)
 
-case class ETMPPayload(
-                        pointsTotal: Int,
-                        lateSubmissions: Int,
-                        adjustmentPointsTotal: Int,
-                        fixedPenaltyAmount: BigDecimal,
-                        penaltyAmountsTotal: BigDecimal,
-                        penaltyPointsThreshold: Int,
-                        penaltyPoints: Seq[PenaltyPoint]
-                      )
-
-object ETMPPayload {
-  implicit val format: OFormat[ETMPPayload] = Json.format[ETMPPayload]
+<ul class="@classes govuk-list--bullet @if(numberList){govuk-list govuk-list--number}">
+@content.map { bullet =>
+  <li>@bullet</li>
 }
+</ul>

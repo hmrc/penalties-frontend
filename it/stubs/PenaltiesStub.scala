@@ -29,7 +29,7 @@ object PenaltiesStub {
   val sampleLspData: ETMPPayload = ETMPPayload(
     0,
     0,
-    0.0,
+    0,
     0.0,
     0.0,
     4,
