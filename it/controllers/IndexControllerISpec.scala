@@ -34,7 +34,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
   val sampleDate3 = LocalDateTime.of(2021, 3, 1, 1, 1, 1)
   val sampleDate4 = LocalDateTime.of(2021, 4, 1, 1, 1, 1)
   val etmpPayloadWithAddedPoints: ETMPPayload = ETMPPayload(
-    pointsTotal = 1, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 2, penaltyPoints = Seq(
+    pointsTotal = 1, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, penaltyPoints = Seq(
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Point,
         number = "1",
@@ -56,7 +56,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
   )
 
   val etmpPayloadWithRemovedPoints: ETMPPayload = ETMPPayload(
-    pointsTotal = 1, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 2, penaltyPoints = Seq(
+    pointsTotal = 1, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, penaltyPoints = Seq(
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Point,
         number = "1",
