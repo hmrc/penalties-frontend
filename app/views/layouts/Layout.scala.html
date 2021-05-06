@@ -24,6 +24,7 @@
         head: Head,
         hmrcTimeoutDialog: HmrcTimeoutDialog,
         header: components.Header,
+        phaseBanner: components.phaseBanner,
         govukBackLink: GovukBackLink,
         hmrcStandardFooter: HmrcStandardFooter,
         languageSelect: views.html.LanguageSelect
@@ -34,6 +35,7 @@
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @beforeContentBlock = {
+    @phaseBanner("beta")
     @if(appConfig.welshLanguageSupportEnabled) {@languageSelect()}
 
     @govukBackLink(BackLink(href = "#", content = Text(messages("app.common.back")), attributes = Map("id" -> "back-link")))

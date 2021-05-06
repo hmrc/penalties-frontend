@@ -45,4 +45,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   lazy val timeoutCountdown: Int = config.get[Int]("timeout.countDown")
 
+  lazy val feedbackUrl: String = config.get[String]("feedback.url")
+
 }
