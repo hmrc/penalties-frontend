@@ -109,6 +109,7 @@ class ETMPPayloadSpec extends WordSpec with Matchers {
         dateCreated = sampleDate,
         dateExpired = Some(sampleDate),
         status = PointStatusEnum.Active,
+        reason = None,
         period = PenaltyPeriod(
           startDate = sampleDate,
           endDate = sampleDate,
@@ -136,6 +137,7 @@ class ETMPPayloadSpec extends WordSpec with Matchers {
         dateCreated = sampleDate,
         dateExpired = Some(sampleDate),
         status = PointStatusEnum.Active,
+        reason = None,
         period = PenaltyPeriod(
           startDate = sampleDate,
           endDate = sampleDate,

@@ -34,7 +34,7 @@ class BaseSelectors {
 
   val summaryCardBody = s"$summaryCard > div"
 
-  val summaryCardFooterLink = s"$summaryCard > footer > a"
+  val summaryCardFooterLink = s"$summaryCard > footer a"
 
   val tab = "#main-content > div > div > div.govuk-tabs > ul > li > a"
 

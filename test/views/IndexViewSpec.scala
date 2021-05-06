@@ -18,13 +18,18 @@ package views
 
 import assets.messages.IndexMessages._
 import base.{BaseSelectors, SpecBase}
+import models.penalty.PenaltyPeriod
+import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
+import models.submission.{Submission, SubmissionStatusEnum}
 import org.jsoup.nodes.Document
 import play.twirl.api.Html
 import play.twirl.api.HtmlFormat
-import viewmodels.SummaryCardHelper
+import viewmodels.{SummaryCard, SummaryCardHelper}
 import views.behaviours.ViewBehaviours
 import views.html.IndexView
 import views.html.components.p
+
+import java.time.LocalDateTime
 
 class IndexViewSpec extends SpecBase with ViewBehaviours {
 
@@ -32,71 +37,180 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
   val helper = injector.instanceOf[SummaryCardHelper]
   val indexViewPage = injector.instanceOf[IndexView]
 
-  object Selectors extends BaseSelectors {
-    val rowItem: Int => String = i => s"#late-submission-penalties > section > div > dl > div:nth-child($i) > dt"
-  }
+  val sampleDate1: LocalDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 0)
+  val sampleDate2: LocalDateTime = LocalDateTime.of(2021, 2, 1, 1, 1, 0)
+
+  val summaryCardToShowOnThePage: SummaryCard = summaryCardHelper.populateCard(
+    Seq(
+    PenaltyPoint(
+      `type` = PenaltyTypeEnum.Point,
+      number = "1",
+      dateCreated = sampleDate1,
+      dateExpired = Some(sampleDate2.plusYears(2)),
+      status = PointStatusEnum.Active,
+      reason = None,
+      period = PenaltyPeriod(
+        startDate = sampleDate1,
+        endDate = sampleDate2,
+        submission = Submission(
+          dueDate = sampleDate2.plusMonths(1).plusDays(7),
+          submittedDate = None,
+          status = SubmissionStatusEnum.Submitted
+        )
+      ),
+      communications = Seq.empty,
+      financial = None)
+    )
+  ).head
+
+  val summaryCardRepresentingRemovedPoint: SummaryCard = summaryCardHelper.populateCard(
+    Seq(
+      PenaltyPoint(
+        `type` = PenaltyTypeEnum.Point,
+        number = "1",
+        dateCreated = sampleDate1,
+        dateExpired = Some(sampleDate2.plusYears(2)),
+        status = PointStatusEnum.Removed,
+        reason = Some("This is a great reason."),
+        period = PenaltyPeriod(
+          startDate = sampleDate1,
+          endDate = sampleDate2,
+          submission = Submission(
+            dueDate = sampleDate2.plusMonths(1).plusDays(7),
+            submittedDate = None,
+            status = SubmissionStatusEnum.Submitted
+          )
+        ),
+        communications = Seq.empty,
+        financial = None)
+    )
+  ).head
+
+  val summaryCardRepresentingAddedPoint: SummaryCard = summaryCardHelper.populateCard(
+    Seq(
+      PenaltyPoint(
+        `type` = PenaltyTypeEnum.Point,
+        number = "1",
+        dateCreated = sampleDate1,
+        dateExpired = Some(sampleDate2.plusYears(2)),
+        status = PointStatusEnum.Added,
+        reason = None,
+        period = PenaltyPeriod(
+          startDate = sampleDate1,
+          endDate = sampleDate2,
+          submission = Submission(
+            dueDate = sampleDate2.plusMonths(1).plusDays(7),
+            submittedDate = None,
+            status = SubmissionStatusEnum.Submitted
+          )
+        ),
+        communications = Seq.empty,
+        financial = None)
+    )
+  ).head
 
   "IndexView" when {
 
-    val contentToDisplayOnPage: Html = pElement(content = Html("This is some content."), id = Some("sample-content"))
+    val indexViewPage = injector.instanceOf[IndexView]
 
-    def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnSubmittedPenaltyPointData))
+    object Selectors extends BaseSelectors {
+      val rowItem: Int => String = i => s"#late-submission-penalties > section > div > dl > div:nth-child($i) > dt"
+    }
 
-    implicit val doc: Document = asDocument(applyView())
+    "IndexView" when {
 
-    "user is on page" must {
+      val contentToDisplayOnPage: Html = pElement(content = Html("This is some content."), id = Some("sample-content"))
 
-      val expectedContent = Seq(
-        Selectors.h1 -> heading,
-        Selectors.breadcrumbWithLink(1) -> breadcrumb1,
-        Selectors.breadcrumbs(2) -> breadcrumb2,
-        Selectors.tab -> tab1,
-        Selectors.tabHeading -> subheading,
-        Selectors.externalGuidance -> externalGuidanceLinkText,
-      )
+      def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnSubmittedPenaltyPointData))
 
-      behave like pageWithExpectedMessages(expectedContent)
+      implicit val doc: Document = asDocument(applyView())
 
-      "have correct route for breadcrumb link" in {
-        doc.select(Selectors.breadcrumbWithLink(1)).attr("href") shouldBe appConfig.vatOverviewUrl
-      }
+      "user is on page" must {
 
-      "have a link to external guidance which opens in a new tab" in {
-        val element = doc.select(Selectors.externalGuidance)
-        //TODO: change this when we have a GOV.UK guidance page
-        element.attr("href") shouldBe "#"
-        element.attr("target") shouldBe "_blank"
-      }
+        val expectedContent = Seq(
+          Selectors.h1 -> heading,
+          Selectors.breadcrumbWithLink(1) -> breadcrumb1,
+          Selectors.breadcrumbs(2) -> breadcrumb2,
+          Selectors.tab -> tab1,
+          Selectors.tabHeading -> subheading,
+          Selectors.externalGuidance -> externalGuidanceLinkText,
+        )
 
-      "have the specified content displayed on the page" in {
-        doc.select("#sample-content").text() shouldBe "This is some content."
-      }
+        behave like pageWithExpectedMessages(expectedContent)
 
-      "populate summary card when user has penalty points" in {
+        "have correct route for breadcrumb link" in {
+          doc.select(Selectors.breadcrumbWithLink(1)).attr("href") shouldBe appConfig.vatOverviewUrl
+        }
 
-        doc.select(Selectors.summaryCardHeaderTitle).text shouldBe penaltyPointHeader
-        doc.select(Selectors.summaryCardHeaderTag).text shouldBe activeTag
-        doc.select(Selectors.rowItem(1)).text shouldBe period
-        doc.select(Selectors.rowItem(2)).text shouldBe returnDue
-        doc.select(Selectors.rowItem(3)).text shouldBe returnSubmitted
-        doc.select(Selectors.rowItem(4)).text shouldBe pointExpiration
-        doc.select(Selectors.summaryCardFooterLink).text shouldBe appealLinkText
-        //TODO: change this when we appeal penalties link
-        doc.select(Selectors.summaryCardFooterLink).attr("href") shouldBe "#"
-      }
+        "have a link to external guidance which opens in a new tab" in {
+          val element = doc.select(Selectors.externalGuidance)
+          //TODO: change this when we have a GOV.UK guidance page
+          element.attr("href") shouldBe "#"
+          element.attr("target") shouldBe "_blank"
+        }
 
-      "populate summary card when user has a penalty point from un-submitted VAT return with due status" in {
-        def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnNotSubmittedPenaltyPointData))
+        "have the specified content displayed on the page" in {
+          doc.select("#sample-content").text() shouldBe "This is some content."
+        }
 
-        implicit val doc: Document = asDocument(applyView())
+        "display the removed point due to a change in submission filing" in {
+          implicit val documentWithOneSummaryCardComponent = asDocument(indexViewPage.apply(contentToDisplayOnPage, Seq(summaryCardRepresentingRemovedPoint)))
+          val summaryCard = documentWithOneSummaryCardComponent.select(".app-summary-card")
+          summaryCard.select("header h3").text shouldBe "Penalty point"
+          summaryCard.select("strong").text shouldBe "removed"
+          val summaryCardBody = summaryCard.select(".app-summary-card__body")
+          summaryCardBody.select("dt").get(0).text shouldBe "VAT Period"
+          summaryCardBody.select("dd").get(0).text() shouldBe "1 January 2021 to 1 February 2021"
+          summaryCardBody.select("dt").get(1).text() shouldBe "Reason"
+          summaryCardBody.select("dd").get(1).text() shouldBe "This is a great reason."
+          summaryCardBody.select("p.govuk-body a").text() shouldBe "Find out more about adjustment points (opens in a new tab)"
+          //TODO: Change to external guidance when available
+          summaryCardBody.select("p.govuk-body a").attr("href") shouldBe "#"
+          summaryCard.select("footer li").hasText shouldBe false
+        }
 
-        doc.select(Selectors.summaryCardHeaderTitle).text shouldBe penaltyPointHeader
-        doc.select(Selectors.summaryCardHeaderTag).text shouldBe overdueTag
-        doc.select(Selectors.rowItem(1)).text shouldBe period
-        doc.select(Selectors.rowItem(2)).text shouldBe returnDue
-        doc.select(Selectors.rowItem(3)).text shouldBe returnSubmitted
-        doc.select(Selectors.summaryCardFooterLink).text shouldBe appealLinkText
-        doc.select(Selectors.summaryCardFooterLink).attr("href") shouldBe "#"
+        "display the added point due to a change in submission filing" in {
+          implicit val documentWithOneSummaryCardComponent = asDocument(indexViewPage.apply(contentToDisplayOnPage, Seq(summaryCardRepresentingAddedPoint)))
+          val summaryCard = documentWithOneSummaryCardComponent.select(".app-summary-card")
+          summaryCard.select("header h3").text shouldBe "Penalty point 1: adjustment point"
+          summaryCard.select("strong").text shouldBe "active"
+          val summaryCardBody = summaryCard.select(".app-summary-card__body")
+          summaryCardBody.select("dt").get(0).text shouldBe "Added on"
+          summaryCardBody.select("dd").get(0).text() shouldBe "1 January 2021"
+          summaryCardBody.select("dt").get(1).text() shouldBe "Point due to expire"
+          summaryCardBody.select("dd").get(1).text() shouldBe "February 2023"
+          summaryCardBody.select("p.govuk-body a").text() shouldBe "Find out more about adjustment points (opens in a new tab)"
+          //TODO: Change to external guidance when available
+          summaryCardBody.select("p.govuk-body a").attr("href") shouldBe "#"
+          summaryCard.select("footer li").text shouldBe "You cannot appeal this point"
+        }
+
+        "populate summary card when user has penalty points" in {
+
+          doc.select(Selectors.summaryCardHeaderTitle).text shouldBe penaltyPointHeader
+          doc.select(Selectors.summaryCardHeaderTag).text shouldBe activeTag
+          doc.select(Selectors.rowItem(1)).text shouldBe period
+          doc.select(Selectors.rowItem(2)).text shouldBe returnDue
+          doc.select(Selectors.rowItem(3)).text shouldBe returnSubmitted
+          doc.select(Selectors.rowItem(4)).text shouldBe pointExpiration
+          doc.select(Selectors.summaryCardFooterLink).text shouldBe appealLinkText
+          //TODO: change this when we appeal penalties link
+          doc.select(Selectors.summaryCardFooterLink).attr("href") shouldBe "#"
+        }
+
+        "populate summary card when user has a penalty point from un-submitted VAT return with due status" in {
+          def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnNotSubmittedPenaltyPointData))
+
+          implicit val doc: Document = asDocument(applyView())
+
+          doc.select(Selectors.summaryCardHeaderTitle).text shouldBe penaltyPointHeader
+          doc.select(Selectors.summaryCardHeaderTag).text shouldBe overdueTag
+          doc.select(Selectors.rowItem(1)).text shouldBe period
+          doc.select(Selectors.rowItem(2)).text shouldBe returnDue
+          doc.select(Selectors.rowItem(3)).text shouldBe returnSubmitted
+          doc.select(Selectors.summaryCardFooterLink).text shouldBe appealLinkText
+          doc.select(Selectors.summaryCardFooterLink).attr("href") shouldBe "#"
+        }
       }
     }
   }

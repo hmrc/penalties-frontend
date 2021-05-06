@@ -20,20 +20,27 @@
 
 @this(
     govukSummaryList : GovukSummaryList,
-    govukTag: GovukTag
+    govukTag: GovukTag,
+    link: components.link
 )
 
 @(
-    summaryCard: SummaryCard,
+    summaryCard: SummaryCard
 )(implicit messages: Messages)
 
 <section class="app-summary-card govuk-!-margin-bottom-3">
     <header class="app-summary-card__header">
         <h3 class="app-summary-card__title">
-            @if(summaryCard.isFinancialPoint) {
-                @messages("summaryCard.header.financial", summaryCard.penaltyPoint, summaryCard.amountDue.intValue)
-            } else {
-                @messages("summaryCard.header", summaryCard.penaltyPoint)
+            @{
+                if(summaryCard.isFinancialPoint) {
+                    messages("summaryCard.header.financial", summaryCard.penaltyPoint, summaryCard.amountDue.intValue)
+                } else if(summaryCard.isAddedPoint) {
+                    messages("summaryCard.header.addedPoint", summaryCard.penaltyPoint)
+                } else if(summaryCard.isAdjustedPoint) {
+                    messages("summaryCard.header.adjustedPoint")
+                } else {
+                    messages("summaryCard.header", summaryCard.penaltyPoint)
+                }
             }
         </h3>
         <div class="app-summary-card__actions">
@@ -44,8 +51,34 @@
             </ul>
         </div>
     </header>
-    <div class="app-summary-card__body">@govukSummaryList(SummaryList(summaryCard.cardRows))</div>
+    <div class="app-summary-card__body">
+        @govukSummaryList(SummaryList(summaryCard.cardRows))
+        @if(summaryCard.isAdjustedPoint) {
+            <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-3">
+            <p class="govuk-body">
+                @*     TODO: change this to adjustment points link   *@
+                @link(
+                    link = "#",
+                    messageKey = messages("summaryCard.infoOnAdjustmentPointsLinkText"),
+                    id = Some("adjustment-points-link"),
+                    isExternal = true
+                )
+            </p>
+        }
+    </div>
     <footer class="app-summary-card__footer">
-        <a class="govuk-link" href="@summaryCard.footerUrl">@messages("summaryCard.footerLinkText", summaryCard.penaltyPoint)</a>
+        <div class="app-summary-card__actions">
+            <ul class="app-summary-card__actions-list">
+                @{
+                    if(summaryCard.isAddedPoint) {
+                            <li class="app-summary-card__actions-list-item">{messages("summaryCard.adjustedPoint.cannotAppeal")}</li>
+                    } else if(!summaryCard.isAdjustedPoint) {
+                            <li class="app-summary-card__actions-list-item">
+                                <a class="govuk-link" href={summaryCard.footerUrl}>{messages("summaryCard.footerLinkText", summaryCard.penaltyPoint)}</a>
+                            </li>
+                    }
+                }
+            </ul>
+        </div>
     </footer>
 </section>

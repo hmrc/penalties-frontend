@@ -57,17 +57,17 @@
             @contentToDisplayBeforeSummaryCards
 
             @*     TODO: change this to external guidance link   *@
-            @link(
-                link = "#",
-                messageKey = messages("index.guidance.link"),
-                id = Some("guidance-link"),
-                isExternal = true
-            )
-            @if(!cards.isEmpty){
-                <br><br>
-                @cards.map{card =>
-                    @summaryCard(card)
-                }
+            <p class="govuk-body">
+                @link(
+                    link = "#",
+                    messageKey = messages("index.guidance.link"),
+                    id = Some("guidance-link"),
+                    isExternal = true
+                )
+            </p>
+
+            @cards.map { card =>
+                @summaryCard(card)
             }
         </div>
     </div>

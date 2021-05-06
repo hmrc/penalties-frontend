@@ -59,6 +59,7 @@ class PenaltyPointSpec extends WordSpec with Matchers {
     dateCreated = sampleDateTime1,
     dateExpired = Some(sampleDateTime2),
     status = PointStatusEnum.Active,
+    reason = None,
     period = PenaltyPeriod(
       startDate = sampleDateTime1,
       endDate = sampleDateTime2,

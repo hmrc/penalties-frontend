@@ -26,18 +26,34 @@ class IndexPageHelperSpec extends SpecBase {
 
   private val quarterlyThreshold:Int = 4
 
-  "getPluralOrSingularBasedOnCurrentPenaltyPoints" should {
+  "getPluralOrSingularContentForOverview" should {
     "show the singular wording" when {
       "there is only one current point" in {
-        val result = pageHelper.getPluralOrSingularBasedOnCurrentPenaltyPoints(1, 1)
+        val result = pageHelper.getPluralOrSingularContentForOverview(1, 1)
         result.body shouldBe singularOverviewText
       }
     }
 
     "show the plural wording" when {
       "there is more than one current point" in {
-        val result = pageHelper.getPluralOrSingularBasedOnCurrentPenaltyPoints(2, 2)
+        val result = pageHelper.getPluralOrSingularContentForOverview(2, 2)
         result.body shouldBe pluralOverviewText
+      }
+    }
+  }
+
+  "getPluralOrSingular" should {
+    "show the singular wording" when {
+      "there is only one total passed in" in {
+        val result = pageHelper.getPluralOrSingular(1, 1)("this.is.a.message.singular", "this.is.a.message.plural")
+        result.body shouldBe "this.is.a.message.singular"
+      }
+    }
+
+    "show the plural wording" when {
+      "there is more than one total passed in" in {
+        val result = pageHelper.getPluralOrSingular(2, 2)("this.is.a.message.singular", "this.is.a.message.plural")
+        result.body shouldBe "this.is.a.message.plural"
       }
     }
   }
@@ -143,6 +159,72 @@ class IndexPageHelperSpec extends SpecBase {
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)
         val parsedHtmlResult = Jsoup.parse(result.body)
         parsedHtmlResult.select("p.govuk-body").get(1).text() shouldBe multiActivePenaltyPoints(3, 3)
+      }
+    }
+
+    "points have been added" should {
+      "show the total of ALL POINTS (i.e. lateSubmissions + adjustmentPointsTotal)" in {
+        val sampleAddedPenaltyPoints: ETMPPayload = ETMPPayload(
+          pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, 0, 0, penaltyPointsThreshold = quarterlyThreshold, Seq.empty
+        )
+        val result = pageHelper.getContentBasedOnPointsFromModel(sampleAddedPenaltyPoints)
+        val parsedHtmlResult = Jsoup.parse(result.body)
+        parsedHtmlResult.select("p.govuk-body").get(0).text() shouldBe "You have 2 penalty points. This is because:"
+      }
+
+      "have a breakdown of how the points were calculated" in {
+        val sampleAddedPenaltyPoints: ETMPPayload = ETMPPayload(
+          pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, 0, 0, penaltyPointsThreshold = quarterlyThreshold, Seq.empty
+        )
+        val result = pageHelper.getContentBasedOnPointsFromModel(sampleAddedPenaltyPoints)
+        val parsedHtmlResult = Jsoup.parse(result.body)
+        parsedHtmlResult.select("ul li").get(0).text() shouldBe "you have submitted a VAT Return late"
+        parsedHtmlResult.select("ul li").get(1).text() shouldBe "we added 1 point and sent you a letter explaining why"
+      }
+
+      "all points are 1 below the threshold - show some warning text" in {
+        val sampleAddedPenaltyPoints: ETMPPayload = ETMPPayload(
+          pointsTotal = 3, lateSubmissions = 2, adjustmentPointsTotal = 1, 0, 0, penaltyPointsThreshold = quarterlyThreshold, Seq.empty
+        )
+        val result = pageHelper.getContentBasedOnPointsFromModel(sampleAddedPenaltyPoints)
+        val parsedHtmlResult = Jsoup.parse(result.body)
+        parsedHtmlResult.select("strong").text() shouldBe warningText
+        parsedHtmlResult.select("p.govuk-body").get(0).text() shouldBe "You have 3 penalty points. This is because:"
+        parsedHtmlResult.select("ul li").get(0).text() shouldBe "you have submitted 2 VAT Returns late"
+        parsedHtmlResult.select("ul li").get(1).text() shouldBe "we added 1 point and sent you a letter explaining why"
+      }
+    }
+
+    "points have been removed" should {
+      "show the total of ALL POINTS (i.e. lateSubmissions - adjustmentPointsTotal)" in {
+        val sampleAddedPenaltyPoints: ETMPPayload = ETMPPayload(
+          pointsTotal = 2, lateSubmissions = 3, adjustmentPointsTotal = -1, 0, 0, penaltyPointsThreshold = quarterlyThreshold, Seq.empty
+        )
+        val result = pageHelper.getContentBasedOnPointsFromModel(sampleAddedPenaltyPoints)
+        val parsedHtmlResult = Jsoup.parse(result.body)
+        parsedHtmlResult.select("p.govuk-body").get(0).text() shouldBe "You have 2 penalty points. This is because:"
+      }
+
+      "have a breakdown of how the points were calculated" in {
+        val sampleAddedPenaltyPoints: ETMPPayload = ETMPPayload(
+          pointsTotal = 3, lateSubmissions = 2, adjustmentPointsTotal = -1, 0, 0, penaltyPointsThreshold = quarterlyThreshold, Seq.empty
+        )
+        val result = pageHelper.getContentBasedOnPointsFromModel(sampleAddedPenaltyPoints)
+        val parsedHtmlResult = Jsoup.parse(result.body)
+        parsedHtmlResult.select("ul li").get(0).text() shouldBe "you have submitted 2 VAT Returns late"
+        parsedHtmlResult.select("ul li").get(1).text() shouldBe "we removed 1 point and sent you a letter explaining why"
+      }
+
+      "all points are 1 below the threshold - show some warning text" in {
+        val sampleAddedPenaltyPoints: ETMPPayload = ETMPPayload(
+          pointsTotal = 3, lateSubmissions = 4, adjustmentPointsTotal = -1, 0, 0, penaltyPointsThreshold = quarterlyThreshold, Seq.empty
+        )
+        val result = pageHelper.getContentBasedOnPointsFromModel(sampleAddedPenaltyPoints)
+        val parsedHtmlResult = Jsoup.parse(result.body)
+        parsedHtmlResult.select("strong").text() shouldBe warningText
+        parsedHtmlResult.select("p.govuk-body").get(0).text() shouldBe "You have 3 penalty points. This is because:"
+        parsedHtmlResult.select("ul li").get(0).text() shouldBe "you have submitted 4 VAT Returns late"
+        parsedHtmlResult.select("ul li").get(1).text() shouldBe "we removed 1 point and sent you a letter explaining why"
       }
     }
   }

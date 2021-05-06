@@ -25,17 +25,59 @@ import javax.inject.Inject
 
 class IndexPageHelper @Inject()(p: views.html.components.p,
                                 strong: views.html.components.strong,
+                                bullets: views.html.components.bullets,
                                 warningText: views.html.components.warningText) extends ViewUtils {
 
+  //scalastyle:off
   def getContentBasedOnPointsFromModel(etmpData: ETMPPayload)(implicit messages: Messages): Html = {
-    (etmpData.pointsTotal, etmpData.penaltyPointsThreshold) match {
-      case (0, _) => {
+    (etmpData.pointsTotal, etmpData.penaltyPointsThreshold, etmpData.adjustmentPointsTotal) match {
+      case (0, _, _) => {
         p(content = stringAsHtml(messages("lsp.pointSummary.noActivePoints")))
       }
-      case (currentPoints, threshold) if currentPoints < threshold-1 => {
+      case (currentPoints, threshold, adjustedPoints) if adjustedPoints > 0 => {
+        val base = Seq(
+          p(content = getPluralOrSingular(currentPoints, currentPoints)("lsp.pointSummary.penaltyPoints.adjusted.singular", "lsp.pointSummary.penaltyPoints.adjusted.plural")),
+          bullets(Seq(
+            getPluralOrSingular(etmpData.lateSubmissions, etmpData.lateSubmissions)("lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular",
+              "lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.plural"),
+            getPluralOrSingular(etmpData.adjustmentPointsTotal, etmpData.adjustmentPointsTotal)("lsp.pointSummary.penaltyPoints.adjusted.addedPoints.singular",
+              "lsp.pointSummary.penaltyPoints.adjusted.addedPoints.plural")
+          )),
+          p(content = stringAsHtml(
+            messages("lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded", threshold)
+          ))
+        )
+        if(currentPoints == threshold - 1) {
+          html(base.+:(warningText(stringAsHtml(messages("lsp.pointSummary.penaltyPoints.overview.warningText")))): _*)
+        } else {
+          html(base: _*)
+        }
+      }
+
+      case (currentPoints, threshold, adjustedPoints) if adjustedPoints < 0 => {
+        val base = Seq(
+          p(content = getPluralOrSingular(currentPoints, currentPoints)("lsp.pointSummary.penaltyPoints.adjusted.singular", "lsp.pointSummary.penaltyPoints.adjusted.plural")),
+          bullets(Seq(
+            getPluralOrSingular(etmpData.lateSubmissions, etmpData.lateSubmissions)("lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular",
+              "lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.plural"),
+            getPluralOrSingular(Math.abs(etmpData.adjustmentPointsTotal), Math.abs(etmpData.adjustmentPointsTotal))("lsp.pointSummary.penaltyPoints.adjusted.removedPoints.singular",
+              "lsp.pointSummary.penaltyPoints.adjusted.removedPoints.plural")
+          )),
+          p(content = stringAsHtml(
+            messages("lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded", threshold)
+          ))
+        )
+        if(currentPoints == threshold - 1) {
+          html(base.+:(warningText(stringAsHtml(messages("lsp.pointSummary.penaltyPoints.overview.warningText")))): _*)
+        } else {
+          html(base: _*)
+        }
+      }
+
+      case (currentPoints, threshold, _) if currentPoints < threshold-1 => {
           html(
             renderPointsTotal(currentPoints),
-            p(content = getPluralOrSingularBasedOnCurrentPenaltyPoints(currentPoints, etmpData.lateSubmissions)),
+            p(content = getPluralOrSingularContentForOverview(currentPoints, etmpData.lateSubmissions)),
             p(content = stringAsHtml(
               messages("lsp.pointSummary.penaltyPoints.overview.anotherPoint")
             )),
@@ -44,14 +86,13 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
             ))
           )
       }
-      case (currentPoints, threshold) if currentPoints == threshold-1 => {
+      case (currentPoints, threshold, _) if currentPoints == threshold-1 => {
         html(
           renderPointsTotal(currentPoints),
           warningText(stringAsHtml(messages("lsp.pointSummary.penaltyPoints.overview.warningText"))),
-          p(getPluralOrSingularBasedOnCurrentPenaltyPoints(currentPoints, etmpData.lateSubmissions))
+          p(getPluralOrSingularContentForOverview(currentPoints, etmpData.lateSubmissions))
         )
       }
-
       //TODO: replace this with max scenarios - added this so we don't get match errors.
       case _ => {
         p(content = html(stringAsHtml("")))
@@ -59,11 +100,19 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     }
   }
 
-  def getPluralOrSingularBasedOnCurrentPenaltyPoints(currentPoints: Int, lateSubmissions: Int)(implicit messages: Messages): Html = {
+  def getPluralOrSingularContentForOverview(currentPoints: Int, lateSubmissions: Int)(implicit messages: Messages): Html = {
     if(currentPoints == 1) {
-      stringAsHtml(messages("lsp.pointSummary.penaltyPoints.overview.singular", currentPoints, lateSubmissions))
+      stringAsHtml(messages("lsp.pointSummary.penaltyPoints.overview.singular", currentPoints))
     } else {
       stringAsHtml(messages("lsp.pointSummary.penaltyPoints.overview.plural", currentPoints, lateSubmissions))
+    }
+  }
+
+    def getPluralOrSingular(total: Int, arg: Int)(msgForSingular: String, msgForPlural: String)(implicit messages: Messages): Html = {
+    if(total == 1) {
+      stringAsHtml(messages(msgForSingular, arg))
+    } else {
+      stringAsHtml(messages(msgForPlural, arg))
     }
   }
 
