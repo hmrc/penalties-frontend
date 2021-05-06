@@ -50,3 +50,5 @@ status.due = due
 site.opensInNewTab = (opens in a new tab)
 site.warning = Warning:
 base.signOut = Sign out
+
+app.common.back = Back
