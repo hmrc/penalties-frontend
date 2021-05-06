@@ -74,6 +74,17 @@ class IndexPageHelperSpec extends SpecBase {
     }
   }
 
+  "getGuidanceLink" should {
+    "show the text 'Read the guidance about late submission penalties (opens in a new tab)' and have a link to external guidance which opens in a new tab" in {
+      val result = pageHelper.getGuidanceLink
+      val parsedHtmlResult = Jsoup.parse(result.body)
+      parsedHtmlResult.select("#guidance-link").text shouldBe externalGuidanceLinkText
+      //TODO: change this when we have a GOV.UK guidance page
+      parsedHtmlResult.select("#guidance-link").attr("href") shouldBe "#"
+      parsedHtmlResult.select("#guidance-link").attr("target") shouldBe "_blank"
+    }
+  }
+
   "getContentBasedOnPointsFromModel" should {
     "no active penalty points" should {
       "display a message in a <p> tag" in {
