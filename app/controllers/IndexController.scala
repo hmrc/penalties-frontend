@@ -18,17 +18,20 @@ package controllers
 
 import config.AppConfig
 import controllers.predicates.AuthPredicate
+import models.point.{PenaltyTypeEnum, PointStatusEnum}
+
 import javax.inject.Inject
 import play.api.Logger.logger
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.PenaltiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.EnrolmentKeys
+import utils.{CurrencyFormatter, EnrolmentKeys}
 import viewmodels.{IndexPageHelper, SummaryCardHelper}
 import views.html.IndexView
 
 import scala.concurrent.ExecutionContext
+import scala.math.BigDecimal.RoundingMode
 
 class IndexController @Inject()(view: IndexView,
                                 penaltiesService: PenaltiesService,
@@ -37,15 +40,21 @@ class IndexController @Inject()(view: IndexView,
                                                              appConfig: AppConfig,
                                                              authorise: AuthPredicate,
                                                              controllerComponents: MessagesControllerComponents)
-  extends FrontendController(controllerComponents) with I18nSupport {
+  extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter {
 
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
     for {
       lSPData <- penaltiesService.getLspDataWithVrn(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))
       contentToDisplayAboveCards = pageHelper.getContentBasedOnPointsFromModel(lSPData)
       summaryCards = cardHelper.populateCard(lSPData.penaltyPoints)
+      isAnyUnpaidLSPAndNotSubmittedReturn = penaltiesService.isAnyLSPUnpaidAndSubmissionIsDue(lSPData.penaltyPoints)
+      isAnyUnpaidLSP = penaltiesService.isAnyLSPUnpaid(lSPData.penaltyPoints)
     } yield {
-      Ok(view(contentToDisplayAboveCards, summaryCards))
+      Ok(view(contentToDisplayAboveCards,
+        summaryCards,
+        currencyFormatAsNonHTMLString(lSPData.penaltyAmountsTotal),
+        isAnyUnpaidLSP,
+        isAnyUnpaidLSPAndNotSubmittedReturn))
     }
   }
 }
