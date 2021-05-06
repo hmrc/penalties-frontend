@@ -113,7 +113,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
       val contentToDisplayOnPage: Html = pElement(content = Html("This is some content."), id = Some("sample-content"))
 
-      def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnSubmittedPenaltyPointData))
+      def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnSubmittedPenaltyPointData), "0")
 
       implicit val doc: Document = asDocument(applyView())
 
@@ -138,7 +138,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         }
 
         "display the removed point due to a change in submission filing" in {
-          implicit val documentWithOneSummaryCardComponent = asDocument(indexViewPage.apply(contentToDisplayOnPage, Seq(summaryCardRepresentingRemovedPoint)))
+          implicit val documentWithOneSummaryCardComponent = asDocument(indexViewPage.apply(contentToDisplayOnPage, Seq(summaryCardRepresentingRemovedPoint), "0"))
           val summaryCard = documentWithOneSummaryCardComponent.select(".app-summary-card")
           summaryCard.select("header h3").text shouldBe "Penalty point"
           summaryCard.select("strong").text shouldBe "removed"
@@ -154,7 +154,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         }
 
         "display the added point due to a change in submission filing" in {
-          implicit val documentWithOneSummaryCardComponent = asDocument(indexViewPage.apply(contentToDisplayOnPage, Seq(summaryCardRepresentingAddedPoint)))
+          implicit val documentWithOneSummaryCardComponent = asDocument(indexViewPage.apply(contentToDisplayOnPage, Seq(summaryCardRepresentingAddedPoint), "0"))
           val summaryCard = documentWithOneSummaryCardComponent.select(".app-summary-card")
           summaryCard.select("header h3").text shouldBe "Penalty point 1: adjustment point"
           summaryCard.select("strong").text shouldBe "active"

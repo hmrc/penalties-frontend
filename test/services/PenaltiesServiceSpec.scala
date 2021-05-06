@@ -68,6 +68,7 @@ class PenaltiesServiceSpec extends SpecBase with MockitoSugar {
         dateCreated = LocalDateTime.of(2021, 3, 8, 0, 0),
         dateExpired = Some(LocalDateTime.of(2023, 1, 1, 0, 0)),
         status = PointStatusEnum.Due,
+        reason = None,
         period = PenaltyPeriod(
           startDate = LocalDateTime.of(2021, 1, 1, 0, 0),
           endDate = LocalDateTime.of(2021, 2, 1, 0, 0),
@@ -100,6 +101,7 @@ class PenaltiesServiceSpec extends SpecBase with MockitoSugar {
         dateCreated = LocalDateTime.of(2021, 3, 8, 0, 0),
         dateExpired = Some(LocalDateTime.of(2023, 1, 1, 0, 0)),
         status = PointStatusEnum.Due,
+        reason = None,
         period = PenaltyPeriod(
           startDate = LocalDateTime.of(2021, 1, 1, 0, 0),
           endDate = LocalDateTime.of(2021, 2, 1, 0, 0),
