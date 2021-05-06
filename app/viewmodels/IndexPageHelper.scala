@@ -34,6 +34,14 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       case (0, _, _) => {
         p(content = stringAsHtml(messages("lsp.pointSummary.noActivePoints")))
       }
+      case (currentPoints, threshold, _) if currentPoints >= threshold => {
+        html(
+          p(content = html(stringAsHtml(messages("lsp.onThreshold.p1"))),
+            classes = "govuk-body govuk-!-font-size-24"),
+          p(content = html(stringAsHtml(messages("lsp.onThreshold.p2")))),
+          p(link(link = "#", messages("lsp.onThreshold.link")))
+        )
+      }
       case (currentPoints, threshold, adjustedPoints) if adjustedPoints > 0 => {
         val base = Seq(
           p(content = getPluralOrSingular(currentPoints, currentPoints)("lsp.pointSummary.penaltyPoints.adjusted.singular", "lsp.pointSummary.penaltyPoints.adjusted.plural")),
@@ -95,15 +103,6 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           warningText(stringAsHtml(messages("lsp.pointSummary.penaltyPoints.overview.warningText"))),
           p(getPluralOrSingularContentForOverview(currentPoints, etmpData.lateSubmissions)),
           getGuidanceLink
-        )
-      }
-      //TODO: replace this with max scenarios - added this so we don't get match errors.
-      case (currentPoints, threshold, _) if currentPoints >= threshold => {
-        html(
-          p(content = html(stringAsHtml(messages("lsp.onThreshold.p1"))),
-            classes = "govuk-body govuk-!-font-size-24"),
-          p(content = html(stringAsHtml(messages("lsp.onThreshold.p2")))),
-          p(link(link = "#", messages("lsp.onThreshold.link")))
         )
       }
       case _ => p(content = html(stringAsHtml("")))

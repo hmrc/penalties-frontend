@@ -40,13 +40,11 @@ class IndexController @Inject()(view: IndexView,
   extends FrontendController(controllerComponents) with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
-    logger.debug("[IndexController][onPageLoad]: Hitting the controller, before 'for->yield")
     for {
       lSPData <- penaltiesService.getLspDataWithVrn(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))
       contentToDisplayAboveCards = pageHelper.getContentBasedOnPointsFromModel(lSPData)
       summaryCards = cardHelper.populateCard(lSPData.penaltyPoints)
     } yield {
-      logger.debug("[IndexController][onPageLoad]: Hitting the controller, about to call view")
       Ok(view(contentToDisplayAboveCards, summaryCards))
     }
   }
