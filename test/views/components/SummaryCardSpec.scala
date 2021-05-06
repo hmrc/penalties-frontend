@@ -43,15 +43,7 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
     Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
     PointStatusEnum.Added,
     None,
-    PenaltyPeriod(
-      LocalDateTime.of(2020, 1, 1, 1, 1, 1),
-      LocalDateTime.of(2020, 2, 1, 1, 1, 1),
-      Submission(
-        LocalDateTime.of(2020, 1, 1, 1, 1, 1),
-        None,
-        SubmissionStatusEnum.Submitted
-      )
-    ),
+    None,
     Seq.empty
   ))).head
 
@@ -62,7 +54,7 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
     Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
     PointStatusEnum.Removed,
     Some("A really great reason."),
-    PenaltyPeriod(
+    Some(PenaltyPeriod(
       LocalDateTime.of(2020, 1, 1, 1, 1, 1),
       LocalDateTime.of(2020, 2, 1, 1, 1, 1),
       Submission(
@@ -70,7 +62,7 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
         None,
         SubmissionStatusEnum.Overdue
       )
-    ),
+    )),
     Seq.empty
   ))).head
 

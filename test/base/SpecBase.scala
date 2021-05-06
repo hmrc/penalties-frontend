@@ -93,7 +93,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
     Some(LocalDateTime.now),
     PointStatusEnum.Active,
     None,
-    PenaltyPeriod(
+    Some(PenaltyPeriod(
       LocalDateTime.now,
       LocalDateTime.now,
       Submission(
@@ -101,7 +101,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
         Some(LocalDateTime.now),
         SubmissionStatusEnum.Submitted
       )
-    ),
+    )),
     Seq.empty
   )
 
@@ -112,7 +112,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
     Some(LocalDateTime.now),
     PointStatusEnum.Active,
     None,
-    PenaltyPeriod(
+    Some(PenaltyPeriod(
       LocalDateTime.now,
       LocalDateTime.now,
       Submission(
@@ -120,7 +120,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
         None,
         SubmissionStatusEnum.Overdue
       )
-    ),
+    )),
     Seq.empty
   )
 
@@ -131,7 +131,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
     Some(LocalDateTime.now),
     PointStatusEnum.Active,
     None,
-    PenaltyPeriod(
+    Some(PenaltyPeriod(
       LocalDateTime.now,
       LocalDateTime.now,
       Submission(
@@ -139,26 +139,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
         None,
         SubmissionStatusEnum.Overdue
       )
-    ),
-    Seq.empty
-  )
-
-  val sampleAddedPenaltyPoints = PenaltyPoint(
-    PenaltyTypeEnum.Point,
-    "1",
-    LocalDateTime.now,
-    Some(LocalDateTime.now),
-    PointStatusEnum.Added,
-    None,
-    PenaltyPeriod(
-      LocalDateTime.now,
-      LocalDateTime.now,
-      Submission(
-        LocalDateTime.now,
-        None,
-        SubmissionStatusEnum.Overdue
-      )
-    ),
+    )),
     Seq.empty
   )
 
@@ -184,7 +165,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
       Some(LocalDateTime.now),
       PointStatusEnum.Active,
       None,
-      PenaltyPeriod(
+      Some(PenaltyPeriod(
         LocalDateTime.now,
         LocalDateTime.now,
         Submission(
@@ -192,7 +173,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
           None,
           SubmissionStatusEnum.Overdue
         )
-      ),
+      )),
       Seq.empty
     )
   )
