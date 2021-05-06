@@ -49,7 +49,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
       dateExpired = Some(sampleDate2.plusYears(2)),
       status = PointStatusEnum.Active,
       reason = None,
-      period = PenaltyPeriod(
+      period = Some(PenaltyPeriod(
         startDate = sampleDate1,
         endDate = sampleDate2,
         submission = Submission(
@@ -57,7 +57,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           submittedDate = None,
           status = SubmissionStatusEnum.Submitted
         )
-      ),
+      )),
       communications = Seq.empty,
       financial = None)
     )
@@ -72,15 +72,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         dateExpired = Some(sampleDate2.plusYears(2)),
         status = PointStatusEnum.Removed,
         reason = Some("This is a great reason."),
-        period = PenaltyPeriod(
-          startDate = sampleDate1,
-          endDate = sampleDate2,
-          submission = Submission(
-            dueDate = sampleDate2.plusMonths(1).plusDays(7),
-            submittedDate = None,
-            status = SubmissionStatusEnum.Submitted
-          )
-        ),
+        period = None,
         communications = Seq.empty,
         financial = None)
     )
@@ -95,15 +87,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         dateExpired = Some(sampleDate2.plusYears(2)),
         status = PointStatusEnum.Added,
         reason = None,
-        period = PenaltyPeriod(
-          startDate = sampleDate1,
-          endDate = sampleDate2,
-          submission = Submission(
-            dueDate = sampleDate2.plusMonths(1).plusDays(7),
-            submittedDate = None,
-            status = SubmissionStatusEnum.Submitted
-          )
-        ),
+        period = None,
         communications = Seq.empty,
         financial = None)
     )

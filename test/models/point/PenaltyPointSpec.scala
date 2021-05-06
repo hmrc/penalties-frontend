@@ -60,7 +60,7 @@ class PenaltyPointSpec extends WordSpec with Matchers {
     dateExpired = Some(sampleDateTime2),
     status = PointStatusEnum.Active,
     reason = None,
-    period = PenaltyPeriod(
+    period = Some(PenaltyPeriod(
       startDate = sampleDateTime1,
       endDate = sampleDateTime2,
       submission = Submission(
@@ -68,7 +68,7 @@ class PenaltyPointSpec extends WordSpec with Matchers {
         submittedDate = Some(sampleDateTime4),
         status = SubmissionStatusEnum.Submitted
       )
-    ),
+    )),
     communications = Seq.empty,
     financial = None
   )

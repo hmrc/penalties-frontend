@@ -16,9 +16,10 @@
 
 package base
 
-import java.time.LocalDateTime
+import com.codahale.metrics.SharedMetricRegistries
 
-import org.scalatest.{Matchers, WordSpec}
+import java.time.LocalDateTime
+import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Matchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{AnyContent, MessagesControllerComponents}
@@ -43,7 +44,28 @@ import views.html.errors.Unauthorised
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
+trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite with BeforeAndAfterAll with BeforeAndAfterEach {
+
+  override def afterEach(): Unit = {
+    super.afterEach()
+    SharedMetricRegistries.clear()
+  }
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    SharedMetricRegistries.clear()
+  }
+
+  override def beforeAll(): Unit = {
+    super.beforeAll()
+    SharedMetricRegistries.clear()
+  }
+
+  override def afterAll(): Unit = {
+    super.afterAll()
+    SharedMetricRegistries.clear()
+  }
+
   implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   lazy val injector = app.injector
@@ -93,7 +115,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
     Some(LocalDateTime.now),
     PointStatusEnum.Active,
     None,
-    PenaltyPeriod(
+    Some(PenaltyPeriod(
       LocalDateTime.now,
       LocalDateTime.now,
       Submission(
@@ -101,7 +123,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
         Some(LocalDateTime.now),
         SubmissionStatusEnum.Submitted
       )
-    ),
+    )),
     Seq.empty
   )
 
@@ -112,7 +134,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
     Some(LocalDateTime.now),
     PointStatusEnum.Active,
     None,
-    PenaltyPeriod(
+    Some(PenaltyPeriod(
       LocalDateTime.now,
       LocalDateTime.now,
       Submission(
@@ -120,7 +142,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
         None,
         SubmissionStatusEnum.Overdue
       )
-    ),
+    )),
     Seq.empty
   )
 
@@ -131,7 +153,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
     Some(LocalDateTime.now),
     PointStatusEnum.Active,
     None,
-    PenaltyPeriod(
+    Some(PenaltyPeriod(
       LocalDateTime.now,
       LocalDateTime.now,
       Submission(
@@ -139,26 +161,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
         None,
         SubmissionStatusEnum.Overdue
       )
-    ),
-    Seq.empty
-  )
-
-  val sampleAddedPenaltyPoints = PenaltyPoint(
-    PenaltyTypeEnum.Point,
-    "1",
-    LocalDateTime.now,
-    Some(LocalDateTime.now),
-    PointStatusEnum.Added,
-    None,
-    PenaltyPeriod(
-      LocalDateTime.now,
-      LocalDateTime.now,
-      Submission(
-        LocalDateTime.now,
-        None,
-        SubmissionStatusEnum.Overdue
-      )
-    ),
+    )),
     Seq.empty
   )
 
@@ -184,7 +187,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
       Some(LocalDateTime.now),
       PointStatusEnum.Active,
       None,
-      PenaltyPeriod(
+      Some(PenaltyPeriod(
         LocalDateTime.now,
         LocalDateTime.now,
         Submission(
@@ -192,7 +195,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
           None,
           SubmissionStatusEnum.Overdue
         )
-      ),
+      )),
       Seq.empty
     )
   )
