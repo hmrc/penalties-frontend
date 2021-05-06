@@ -92,7 +92,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#late-submission-penalties ul li").get(0).text shouldBe "you have submitted a VAT Return late"
       parsedBody.select("#late-submission-penalties ul li").get(1).text shouldBe "we added 1 point and sent you a letter explaining why"
       parsedBody.select("header h3").text shouldBe "Penalty point 1: adjustment point"
-      parsedBody.select("strong").text shouldBe "active"
+      parsedBody.select("main strong").text shouldBe "active"
       val summaryCardBody = parsedBody.select(".app-summary-card__body")
       summaryCardBody.select("dt").get(0).text shouldBe "Added on"
       summaryCardBody.select("dd").get(0).text() shouldBe "1 January 2021"
@@ -113,7 +113,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#late-submission-penalties ul li").get(0).text shouldBe "you have submitted 2 VAT Returns late"
       parsedBody.select("#late-submission-penalties ul li").get(1).text shouldBe "we removed 1 point and sent you a letter explaining why"
       parsedBody.select("header h3").text shouldBe "Penalty point"
-      parsedBody.select("strong").text shouldBe "removed"
+      parsedBody.select("main strong").text shouldBe "removed"
       val summaryCardBody = parsedBody.select(".app-summary-card__body")
       summaryCardBody.select("dt").get(0).text shouldBe "VAT Period"
       summaryCardBody.select("dd").get(0).text() shouldBe "1 January 2021 to 1 February 2021"
