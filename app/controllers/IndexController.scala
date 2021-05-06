@@ -19,16 +19,15 @@ package controllers
 import config.AppConfig
 import controllers.predicates.AuthPredicate
 import javax.inject.Inject
+import play.api.Logger.logger
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.PenaltiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.EnrolmentKeys
-import viewmodels.IndexPageHelper
-import viewmodels.SummaryCardHelper
+import viewmodels.{IndexPageHelper, SummaryCardHelper}
 import views.html.IndexView
 
-import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext
 
 class IndexController @Inject()(view: IndexView,
@@ -41,11 +40,13 @@ class IndexController @Inject()(view: IndexView,
   extends FrontendController(controllerComponents) with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
+    logger.debug("[IndexController][onPageLoad]: Hitting the controller, before 'for->yield")
     for {
       lSPData <- penaltiesService.getLspDataWithVrn(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))
       contentToDisplayAboveCards = pageHelper.getContentBasedOnPointsFromModel(lSPData)
       summaryCards = cardHelper.populateCard(lSPData.penaltyPoints)
     } yield {
+      logger.debug("[IndexController][onPageLoad]: Hitting the controller, about to call view")
       Ok(view(contentToDisplayAboveCards, summaryCards))
     }
   }

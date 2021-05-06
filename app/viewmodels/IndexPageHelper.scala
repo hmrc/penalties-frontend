@@ -26,6 +26,7 @@ import javax.inject.Inject
 class IndexPageHelper @Inject()(p: views.html.components.p,
                                 strong: views.html.components.strong,
                                 bullets: views.html.components.bullets,
+                                link: views.html.components.link,
                                 warningText: views.html.components.warningText) extends ViewUtils {
 
   //scalastyle:off
@@ -94,6 +95,14 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
         )
       }
       //TODO: replace this with max scenarios - added this so we don't get match errors.
+      case (currentPoints, threshold, _) if currentPoints >= threshold-1 => {
+        html(
+          p(content = html(stringAsHtml(messages("lsp.onThreshold.p1"))),
+          classes = "govuk-body govuk-!-font-size-24"),
+          p(content = html(stringAsHtml(messages("lsp.onThreshold.p2")))),
+          p(link(link = "#", messages("lsp.onThreshold.link")))
+        )
+      }
       case _ => {
         p(content = html(stringAsHtml("")))
       }

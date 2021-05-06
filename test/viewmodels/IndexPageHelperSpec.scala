@@ -162,6 +162,28 @@ class IndexPageHelperSpec extends SpecBase {
       }
     }
 
+    "points are at or above the threshold" should {
+      val etmpPayloadModelWithActivePenaltyPointsOnOrAboveThreshold: ETMPPayload = ETMPPayload(
+        pointsTotal = 4, lateSubmissions = 4, 0, 0, 0, penaltyPointsThreshold = quarterlyThreshold, Seq.empty
+      )
+      val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsOnOrAboveThreshold)
+      val parsedHtmlResult = Jsoup.parse(result.body)
+
+      "show the financial penalty threshold reached text" in {
+        parsedHtmlResult.select("p.govuk-body").get(0).text shouldBe thresholdReached
+        parsedHtmlResult.select("p.govuk-body").get(0).hasClass("govuk-body govuk-!-font-size-24") shouldBe true
+      }
+
+      "show the penalty amount until account is updated text" in {
+        parsedHtmlResult.select("p.govuk-body").get(1).text shouldBe lateReturnPenalty
+      }
+
+      "show the guidance link text" in {
+        parsedHtmlResult.select("a.govuk-link").text shouldBe bringAccountUpToDate
+        parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe "#"
+      }
+    }
+
     "points have been added" should {
       "show the total of ALL POINTS (i.e. lateSubmissions + adjustmentPointsTotal)" in {
         val sampleAddedPenaltyPoints: ETMPPayload = ETMPPayload(
