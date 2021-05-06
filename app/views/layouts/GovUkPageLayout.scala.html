@@ -55,7 +55,13 @@
 
 @mainContentDefault = {
     <div class="govuk-grid-row">
-        <div class='@{if(isFullWidth) { "govuk-grid-column-full" } else { "govuk-grid-column-two-thirds" }}'>
+        <div class='@{
+            if(isFullWidth) {
+                "govuk-grid-column-full"
+            } else {
+                "govuk-grid-column-two-thirds"
+            }
+        }'>
         @contentBlock
         </div>
     </div>

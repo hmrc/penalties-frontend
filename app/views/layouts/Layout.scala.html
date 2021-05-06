@@ -24,6 +24,7 @@
         head: Head,
         hmrcTimeoutDialog: HmrcTimeoutDialog,
         header: components.Header,
+        govukBackLink: GovukBackLink,
         hmrcStandardFooter: HmrcStandardFooter,
         languageSelect: views.html.LanguageSelect
 )
@@ -34,6 +35,8 @@
 
 @beforeContentBlock = {
     @if(appConfig.welshLanguageSupportEnabled) {@languageSelect()}
+
+    @govukBackLink(BackLink(href = "#", content = Text(messages("app.common.back")), attributes = Map("id" -> "back-link")))
 }
 
 @headBlock = {
@@ -49,11 +52,19 @@
 
 }
 
+@scripts = {
+    @if(scriptsBlock.isEmpty) {
+        <script src="@controllers.routes.Assets.versioned("javascripts/backLink.js")"></script>
+    } else {
+        @scriptsBlock.get
+    }
+}
+
 @govukLayout(
     pageTitle = Some(messages("common.pageTitle", pageTitle, "Penalties")),
     headBlock = Some(headBlock),
     headerBlock = Some(header()),
-    scriptsBlock = scriptsBlock,
+    scriptsBlock = Some(scripts),
     beforeContentBlock = Some(beforeContentBlock),
     footerBlock = Some(hmrcStandardFooter()),
     isFullWidth = isPageFullWidth
