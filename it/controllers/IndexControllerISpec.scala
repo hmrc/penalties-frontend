@@ -42,13 +42,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
         status = PointStatusEnum.Added,
         reason = None,
-        period = PenaltyPeriod(
-          startDate = sampleDate1, endDate = sampleDate2, submission = Submission(
-            sampleDate3,
-            Some(sampleDate4),
-            SubmissionStatusEnum.Submitted
-          )
-        ),
+        period = None,
         communications = Seq.empty,
         financial = None
       )
@@ -64,13 +58,13 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
         status = PointStatusEnum.Removed,
         reason = Some("This is a great reason."),
-        period = PenaltyPeriod(
+        period = Some(PenaltyPeriod(
           startDate = sampleDate1, endDate = sampleDate2, submission = Submission(
             sampleDate3,
             Some(sampleDate4),
             SubmissionStatusEnum.Submitted
           )
-        ),
+        )),
         communications = Seq.empty,
         financial = None
       )

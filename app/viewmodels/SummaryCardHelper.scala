@@ -67,8 +67,8 @@ class SummaryCardHelper extends ImplicitDateFormatter {
         Html(
           messages(
             "summaryCard.value1",
-            dateTimeToString(penalty.period.startDate),
-            dateTimeToString(penalty.period.endDate)
+            dateTimeToString(penalty.period.get.startDate),
+            dateTimeToString(penalty.period.get.endDate)
           )
         )
       )),
@@ -102,13 +102,13 @@ class SummaryCardHelper extends ImplicitDateFormatter {
         Html(
           messages(
             "summaryCard.value1",
-            dateTimeToString(period.startDate),
-            dateTimeToString(period.endDate)
+            dateTimeToString(period.get.startDate),
+            dateTimeToString(period.get.endDate)
           )
         )
       ),
-      summaryListRow(messages("summaryCard.key2"), Html(dateTimeToString(period.submission.dueDate))),
-      summaryListRow(messages("summaryCard.key3"), Html(dateTimeToString(period.submission.submittedDate.get)))
+      summaryListRow(messages("summaryCard.key2"), Html(dateTimeToString(period.get.submission.dueDate))),
+      summaryListRow(messages("summaryCard.key3"), Html(dateTimeToString(period.get.submission.submittedDate.get)))
     )
 
     if(penalty.dateExpired.isDefined) {
@@ -134,9 +134,9 @@ class SummaryCardHelper extends ImplicitDateFormatter {
   )
 
   def pointSummaryCard(penalty: PenaltyPoint)(implicit messages: Messages): SummaryCard = {
-    val cardBody = penalty.period.submission.submittedDate match {
+    val cardBody = penalty.period.get.submission.submittedDate match {
       case Some(_: LocalDateTime) => returnSubmittedCardBody(penalty)
-      case None => returnNotSubmittedCardBody(penalty.period)
+      case None => returnNotSubmittedCardBody(penalty.period.get)
     }
 
     buildSummaryCard(cardBody, penalty)
@@ -150,18 +150,18 @@ class SummaryCardHelper extends ImplicitDateFormatter {
           Html(
             messages(
               "summaryCard.value1",
-              dateTimeToString(penalty.period.startDate),
-              dateTimeToString(penalty.period.endDate)
+              dateTimeToString(penalty.period.get.startDate),
+              dateTimeToString(penalty.period.get.endDate)
             )
           )
         ),
         summaryListRow(
           messages("summaryCard.key2"),
           Html(
-            dateTimeToString(penalty.period.submission.dueDate)
+            dateTimeToString(penalty.period.get.submission.dueDate)
           )
         ),
-        penalty.period.submission.submittedDate.fold(
+        penalty.period.get.submission.submittedDate.fold(
           summaryListRow(
             messages("summaryCard.key3"),
             Html(
@@ -203,17 +203,17 @@ class SummaryCardHelper extends ImplicitDateFormatter {
 
   def tagStatus(penalty: PenaltyPoint)(implicit messages: Messages): Tag = {
 
-    val submissionStatus = penalty.period.submission.status
+    val period = penalty.period.map(_.submission.status)
     val penaltyPointStatus = penalty.status
 
-    (submissionStatus, penaltyPointStatus) match {
-      case (_, Removed)           => renderTag(messages("status.removed"))
-      case (_, Added)             => renderTag(messages("status.active"))
-      case (Overdue, _)           => renderTag(messages("status.due"), "penalty-due-tag")
-      case (Submitted, Active)    => renderTag(messages("status.active"))
-      case (Submitted, Rejected)  => renderTag(messages("status.rejected"))
-      case (Submitted, Due)       => renderTag(messages("status.due"), "penalty-due-tag")
-      case (_, _)                 => renderTag(messages("status.active")) // Temp solution
+    (period, penaltyPointStatus) match {
+      case (None, _)                    => renderTag(messages("status.active"))
+      case (Some(_), Removed)           => renderTag(messages("status.removed"))
+      case (Some(Overdue), _)           => renderTag(messages("status.due"), "penalty-due-tag")
+      case (Some(Submitted), Active)    => renderTag(messages("status.active"))
+      case (Some(Submitted), Rejected)  => renderTag(messages("status.rejected"))
+      case (Some(Submitted), Due)       => renderTag(messages("status.due"), "penalty-due-tag")
+      case (_, _)                       => renderTag(messages("status.active")) // Temp solution
     }
   }
 }
