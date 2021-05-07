@@ -59,6 +59,7 @@ summaryCard.key3.defaultValue = Not yet submitted
 summaryCard.key4 = Point due to expire
 summaryCard.notYetSubmitted = Not yet submitted
 summaryCard.footerLinkText = Appeal penalty point {0}
+summaryCard.footerLinkTextNoPointNumber = Appeal this penalty
 summaryCard.adjustedPoint.cannotAppeal = You cannot appeal this point
 summaryCard.addedOnKey = Added on
 summaryCard.removedReason = Reason
