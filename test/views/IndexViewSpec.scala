@@ -202,7 +202,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
       "user has unpaid LSP's but has submitted a VAT return - show a call to action to pay with no preceding text" in {
         def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage,
-          helper.populateCard(sampleReturnNotSubmittedPenaltyPointData),
+          helper.populateCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold),
           "£200.00",
           isUnpaidLSPExists = true,
           isAnyUnpaidLSPAndNotSubmittedReturn = false)
@@ -213,7 +213,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
       "user has unpaid LSP's and has NOT submitted a VAT return - show a call to action to pay WITH preceding text" in {
         def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage,
-          helper.populateCard(sampleReturnNotSubmittedPenaltyPointData),
+          helper.populateCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold),
           "£200.00",
           isUnpaidLSPExists = true,
           isAnyUnpaidLSPAndNotSubmittedReturn = true)
@@ -224,7 +224,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
       "user has unpaid LSP's and therefore needs to pay their penalties - show a button for them to check and pay what they owe" in {
         def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage,
-          helper.populateCard(sampleReturnNotSubmittedPenaltyPointData),
+          helper.populateCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold),
           "£200.00",
           isUnpaidLSPExists = true,
           isAnyUnpaidLSPAndNotSubmittedReturn = true)
