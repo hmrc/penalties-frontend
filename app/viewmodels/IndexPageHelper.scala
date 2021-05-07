@@ -18,14 +18,14 @@ package viewmodels
 
 import models.ETMPPayload
 import play.api.i18n.Messages
-import play.twirl.api.Html
+import play.twirl.api.{Html, HtmlFormat}
 import utils.ViewUtils
-
 import javax.inject.Inject
 
 class IndexPageHelper @Inject()(p: views.html.components.p,
                                 strong: views.html.components.strong,
                                 bullets: views.html.components.bullets,
+                                link: views.html.components.link,
                                 warningText: views.html.components.warningText) extends ViewUtils {
 
   //scalastyle:off
@@ -33,6 +33,14 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     (etmpData.pointsTotal, etmpData.penaltyPointsThreshold, etmpData.adjustmentPointsTotal) match {
       case (0, _, _) => {
         p(content = stringAsHtml(messages("lsp.pointSummary.noActivePoints")))
+      }
+      case (currentPoints, threshold, _) if currentPoints >= threshold => {
+        html(
+          p(content = html(stringAsHtml(messages("lsp.onThreshold.p1"))),
+            classes = "govuk-body govuk-!-font-size-24"),
+          p(content = html(stringAsHtml(messages("lsp.onThreshold.p2")))),
+          p(link(link = "#", messages("lsp.onThreshold.link")))
+        )
       }
       case (currentPoints, threshold, adjustedPoints) if adjustedPoints > 0 => {
         val base = Seq(
@@ -45,9 +53,10 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           )),
           p(content = stringAsHtml(
             messages("lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded", threshold)
-          ))
+          )),
+          getGuidanceLink
         )
-        if(currentPoints == threshold - 1) {
+        if (currentPoints == threshold - 1) {
           html(base.+:(warningText(stringAsHtml(messages("lsp.pointSummary.penaltyPoints.overview.warningText")))): _*)
         } else {
           html(base: _*)
@@ -65,51 +74,51 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           )),
           p(content = stringAsHtml(
             messages("lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded", threshold)
-          ))
+          )),
+          getGuidanceLink
         )
-        if(currentPoints == threshold - 1) {
+        if (currentPoints == threshold - 1) {
           html(base.+:(warningText(stringAsHtml(messages("lsp.pointSummary.penaltyPoints.overview.warningText")))): _*)
         } else {
           html(base: _*)
         }
       }
 
-      case (currentPoints, threshold, _) if currentPoints < threshold-1 => {
-          html(
-            renderPointsTotal(currentPoints),
-            p(content = getPluralOrSingularContentForOverview(currentPoints, etmpData.lateSubmissions)),
-            p(content = stringAsHtml(
-              messages("lsp.pointSummary.penaltyPoints.overview.anotherPoint")
-            )),
-            p(content = stringAsHtml(
-              messages("lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded", threshold)
-            ))
-          )
+      case (currentPoints, threshold, _) if currentPoints < threshold - 1 => {
+        html(
+          renderPointsTotal(currentPoints),
+          p(content = getPluralOrSingularContentForOverview(currentPoints, etmpData.lateSubmissions)),
+          p(content = stringAsHtml(
+            messages("lsp.pointSummary.penaltyPoints.overview.anotherPoint")
+          )),
+          p(content = stringAsHtml(
+            messages("lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded", threshold)
+          )),
+          getGuidanceLink
+        )
       }
-      case (currentPoints, threshold, _) if currentPoints == threshold-1 => {
+      case (currentPoints, threshold, _) if currentPoints == threshold - 1 => {
         html(
           renderPointsTotal(currentPoints),
           warningText(stringAsHtml(messages("lsp.pointSummary.penaltyPoints.overview.warningText"))),
-          p(getPluralOrSingularContentForOverview(currentPoints, etmpData.lateSubmissions))
+          p(getPluralOrSingularContentForOverview(currentPoints, etmpData.lateSubmissions)),
+          getGuidanceLink
         )
       }
-      //TODO: replace this with max scenarios - added this so we don't get match errors.
-      case _ => {
-        p(content = html(stringAsHtml("")))
-      }
+      case _ => p(content = html(stringAsHtml("")))
     }
   }
 
   def getPluralOrSingularContentForOverview(currentPoints: Int, lateSubmissions: Int)(implicit messages: Messages): Html = {
-    if(currentPoints == 1) {
+    if (currentPoints == 1) {
       stringAsHtml(messages("lsp.pointSummary.penaltyPoints.overview.singular", currentPoints))
     } else {
       stringAsHtml(messages("lsp.pointSummary.penaltyPoints.overview.plural", currentPoints, lateSubmissions))
     }
   }
 
-    def getPluralOrSingular(total: Int, arg: Int)(msgForSingular: String, msgForPlural: String)(implicit messages: Messages): Html = {
-    if(total == 1) {
+  def getPluralOrSingular(total: Int, arg: Int)(msgForSingular: String, msgForPlural: String)(implicit messages: Messages): Html = {
+    if (total == 1) {
       stringAsHtml(messages(msgForSingular, arg))
     } else {
       stringAsHtml(messages(msgForPlural, arg))
@@ -124,4 +133,13 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       )
     })
   }
+
+  def getGuidanceLink(implicit messages: Messages): HtmlFormat.Appendable = p(
+    content = link(
+      //TODO: change this to external guidance link
+      link = "#",
+      messageKey = messages("index.guidance.link"),
+      id = Some("guidance-link"),
+      isExternal = true),
+    classes = "govuk-body")
 }

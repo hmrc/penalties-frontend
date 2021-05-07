@@ -56,16 +56,6 @@
             <h2 class="govuk-heading-m">@{messages("index.subheading")}</h2>
             @contentToDisplayBeforeSummaryCards
 
-            @*     TODO: change this to external guidance link   *@
-            <p class="govuk-body">
-                @link(
-                    link = "#",
-                    messageKey = messages("index.guidance.link"),
-                    id = Some("guidance-link"),
-                    isExternal = true
-                )
-            </p>
-
             @cards.map { card =>
                 @summaryCard(card)
             }
