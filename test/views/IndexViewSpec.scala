@@ -219,7 +219,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         doc.select("h2.govuk-heading-m").get(0).text() shouldBe "Total penalty to pay: £200.00"
       }
 
-      "ussr has unpaid LSP's and therefore needs to pay their penalties - show a button for them to check and pay what they owe" in {
+      "user has unpaid LSP's and therefore needs to pay their penalties - show a button for them to check and pay what they owe" in {
         def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage,
           helper.populateCard(sampleReturnNotSubmittedPenaltyPointData),
           "£200.00",

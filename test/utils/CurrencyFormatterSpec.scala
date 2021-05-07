@@ -45,5 +45,11 @@ class CurrencyFormatterSpec extends WordSpec with Matchers {
       val actualResult = Formatter.currencyFormatAsNonHTMLString(bigDecimalToPassToFormatter)
       actualResult shouldBe "£419.20"
     }
+
+    "convert a BigDecimal with leading .00 to a whole and prepend with £" in {
+      val bigDecimalToPassToFormatter = BigDecimal(419.00)
+      val actualResult = Formatter.currencyFormatAsNonHTMLString(bigDecimalToPassToFormatter)
+      actualResult shouldBe "£419"
+    }
   }
 }
