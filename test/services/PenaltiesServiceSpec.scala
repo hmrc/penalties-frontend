@@ -69,7 +69,7 @@ class PenaltiesServiceSpec extends SpecBase with MockitoSugar {
         dateExpired = Some(LocalDateTime.of(2023, 1, 1, 0, 0)),
         status = PointStatusEnum.Due,
         reason = None,
-        period = PenaltyPeriod(
+        period = Some(PenaltyPeriod(
           startDate = LocalDateTime.of(2021, 1, 1, 0, 0),
           endDate = LocalDateTime.of(2021, 2, 1, 0, 0),
           submission = Submission(
@@ -77,7 +77,7 @@ class PenaltiesServiceSpec extends SpecBase with MockitoSugar {
             submittedDate = Some(LocalDateTime.of(2021, 3, 9, 0, 0)),
             status = SubmissionStatusEnum.Submitted
           )
-        ),
+        )),
         communications = Seq.empty,
         financial = None
       )
@@ -102,21 +102,21 @@ class PenaltiesServiceSpec extends SpecBase with MockitoSugar {
         dateExpired = Some(LocalDateTime.of(2023, 1, 1, 0, 0)),
         status = PointStatusEnum.Due,
         reason = None,
-        period = PenaltyPeriod(
+        period = Some(PenaltyPeriod(
           startDate = LocalDateTime.of(2021, 1, 1, 0, 0),
           endDate = LocalDateTime.of(2021, 2, 1, 0, 0),
           submission = Submission(
             dueDate = LocalDateTime.of(2021, 3, 7, 0, 0),
             status = SubmissionStatusEnum.Overdue
           )
-        ),
+        )),
         communications = Seq.empty,
         financial = None
       )
     )
 
     val sampleFinancialPenaltyPointUnpaidAndSubmitted: Seq[PenaltyPoint] = Seq(
-      sampleFinancialPenaltyPointUnpaidAndNotSubmitted.head.copy(period = PenaltyPeriod(
+      sampleFinancialPenaltyPointUnpaidAndNotSubmitted.head.copy(period = Some(PenaltyPeriod(
         startDate = LocalDateTime.of(2021, 1, 1, 0, 0),
         endDate = LocalDateTime.of(2021, 2, 1, 0, 0),
         submission = Submission(
@@ -124,7 +124,7 @@ class PenaltiesServiceSpec extends SpecBase with MockitoSugar {
           submittedDate = Some(LocalDateTime.of(2021, 3, 9, 0, 0)),
           status = SubmissionStatusEnum.Submitted
         )
-      ))
+      )))
     )
 
     s"return true when there is a ${PenaltyTypeEnum.Financial} penalty point, it is due and there is no submission" in new Setup {

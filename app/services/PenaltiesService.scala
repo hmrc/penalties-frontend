@@ -36,6 +36,6 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
   def isAnyLSPUnpaidAndSubmissionIsDue(penaltyPoints: Seq[PenaltyPoint]): Boolean = {
     penaltyPoints.exists(penalty => penalty.status == PointStatusEnum.Due &&
       penalty.`type` == PenaltyTypeEnum.Financial &&
-      penalty.period.submission.submittedDate.isEmpty)
+      penalty.period.isDefined && penalty.period.get.submission.submittedDate.isEmpty)
   }
 }
