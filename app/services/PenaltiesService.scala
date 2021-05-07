@@ -18,6 +18,7 @@ package services
 
 import connectors.PenaltiesConnector
 import models.ETMPPayload
+import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -26,4 +27,15 @@ import scala.concurrent.Future
 class PenaltiesService @Inject()(connector: PenaltiesConnector) {
 
   def getLspDataWithVrn(enrolmentKey: String)(implicit hc: HeaderCarrier): Future[ETMPPayload] = connector.getPenaltiesData(enrolmentKey)
+
+  def isAnyLSPUnpaid(penaltyPoints: Seq[PenaltyPoint]): Boolean = {
+    penaltyPoints.exists(penalty => penalty.`type` == PenaltyTypeEnum.Financial &&
+      penalty.status != PointStatusEnum.Paid)
+  }
+
+  def isAnyLSPUnpaidAndSubmissionIsDue(penaltyPoints: Seq[PenaltyPoint]): Boolean = {
+    penaltyPoints.exists(penalty => penalty.status == PointStatusEnum.Due &&
+      penalty.`type` == PenaltyTypeEnum.Financial &&
+      penalty.period.isDefined && penalty.period.get.submission.submittedDate.isEmpty)
+  }
 }

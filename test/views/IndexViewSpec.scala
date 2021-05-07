@@ -113,7 +113,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
       val contentToDisplayOnPage: Html = pElement(content = Html("This is some content."), id = Some("sample-content"))
 
-      def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnSubmittedPenaltyPointData))
+      def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnSubmittedPenaltyPointData), "0")
 
       implicit val doc: Document = asDocument(applyView())
 
@@ -138,7 +138,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         }
 
         "display the removed point due to a change in submission filing" in {
-          implicit val documentWithOneSummaryCardComponent = asDocument(indexViewPage.apply(contentToDisplayOnPage, Seq(summaryCardRepresentingRemovedPoint)))
+          implicit val documentWithOneSummaryCardComponent = asDocument(indexViewPage.apply(contentToDisplayOnPage, Seq(summaryCardRepresentingRemovedPoint), "0"))
           val summaryCard = documentWithOneSummaryCardComponent.select(".app-summary-card")
           summaryCard.select("header h3").text shouldBe "Penalty point"
           summaryCard.select("strong").text shouldBe "removed"
@@ -154,7 +154,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         }
 
         "display the added point due to a change in submission filing" in {
-          implicit val documentWithOneSummaryCardComponent = asDocument(indexViewPage.apply(contentToDisplayOnPage, Seq(summaryCardRepresentingAddedPoint)))
+          implicit val documentWithOneSummaryCardComponent = asDocument(indexViewPage.apply(contentToDisplayOnPage, Seq(summaryCardRepresentingAddedPoint), "0"))
           val summaryCard = documentWithOneSummaryCardComponent.select(".app-summary-card")
           summaryCard.select("header h3").text shouldBe "Penalty point 1: adjustment point"
           summaryCard.select("strong").text shouldBe "active"
@@ -182,8 +182,8 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           doc.select(Selectors.summaryCardFooterLink).attr("href") shouldBe "#"
         }
 
-        "populate summary card when user has a penalty point from un-submitted VAT return with due status" in {
-          def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnNotSubmittedPenaltyPointData))
+      "populate summary card when user has a penalty point from un-submitted VAT return with due status" in {
+        def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnNotSubmittedPenaltyPointData), "0")
 
           implicit val doc: Document = asDocument(applyView())
 
@@ -195,6 +195,38 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           doc.select(Selectors.summaryCardFooterLink).text shouldBe appealLinkText
           doc.select(Selectors.summaryCardFooterLink).attr("href") shouldBe "#"
         }
+      }
+
+      "user has unpaid LSP's but has submitted a VAT return - show a call to action to pay with no preceding text" in {
+        def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage,
+          helper.populateCard(sampleReturnNotSubmittedPenaltyPointData),
+          "£200.00",
+          isUnpaidLSPExists = true,
+          isAnyUnpaidLSPAndNotSubmittedReturn = false)
+        implicit val doc: Document = asDocument(applyView())
+        doc.select(".govuk-body-l").text().isEmpty shouldBe true
+        doc.select("h2.govuk-heading-m").get(0).text() shouldBe "Total penalty to pay: £200.00"
+      }
+
+      "user has unpaid LSP's and has NOT submitted a VAT return - show a call to action to pay WITH preceding text" in {
+        def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage,
+          helper.populateCard(sampleReturnNotSubmittedPenaltyPointData),
+          "£200.00",
+          isUnpaidLSPExists = true,
+          isAnyUnpaidLSPAndNotSubmittedReturn = true)
+        implicit val doc: Document = asDocument(applyView())
+        doc.select(".govuk-body-l").text() shouldBe submitAndPayVATPenaltyText
+        doc.select("h2.govuk-heading-m").get(0).text() shouldBe "Total penalty to pay: £200.00"
+      }
+
+      "user has unpaid LSP's and therefore needs to pay their penalties - show a button for them to check and pay what they owe" in {
+        def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage,
+          helper.populateCard(sampleReturnNotSubmittedPenaltyPointData),
+          "£200.00",
+          isUnpaidLSPExists = true,
+          isAnyUnpaidLSPAndNotSubmittedReturn = true)
+        implicit val doc: Document = asDocument(applyView())
+        doc.select("button.govuk-button").get(0).text() shouldBe payVATPenaltyText
       }
     }
   }

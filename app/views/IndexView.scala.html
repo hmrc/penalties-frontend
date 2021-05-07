@@ -20,10 +20,15 @@
 @this(
     layout: Layout,
     link: components.link,
-    summaryCard: components.summaryCard
+    summaryCard: components.summaryCard,
+    button: components.button
 )
 
-@(contentToDisplayBeforeSummaryCards: Html, cards: Seq[SummaryCard])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(contentToDisplayBeforeSummaryCards: Html,
+        cards: Seq[SummaryCard],
+        totalAmountToPay: String,
+        isUnpaidLSPExists: Boolean = false,
+        isAnyUnpaidLSPAndNotSubmittedReturn: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = messages("index.title")) {
 
@@ -41,6 +46,15 @@
     </div>
 
     <h1 class="govuk-heading-xl">@{messages("index.heading")}</h1>
+
+    @if(isAnyUnpaidLSPAndNotSubmittedReturn) {
+        <p class="govuk-body-l">@messages("index.lsp.unpaid.bringAccountUpToDate")</p>
+    }
+    @if(isUnpaidLSPExists || isAnyUnpaidLSPAndNotSubmittedReturn) {
+        <h2 class="govuk-heading-m">@messages("index.lsp.unpaid.amount", totalAmountToPay)</h2>
+        @button("index.lsp.unpaid.payBtn.text", "pay-what-you-owe")
+    }
+
     <div class="govuk-tabs" data-module="govuk-tabs">
         <h2 class="govuk-tabs__title">
             Contents
