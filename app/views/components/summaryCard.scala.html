@@ -32,8 +32,10 @@
     <header class="app-summary-card__header">
         <h3 class="app-summary-card__title">
             @{
-                if(summaryCard.isFinancialPoint) {
+                if(summaryCard.isFinancialPoint && summaryCard.penaltyPoint.nonEmpty) {
                     messages("summaryCard.header.financial", summaryCard.penaltyPoint, summaryCard.amountDue.intValue)
+                } else if(summaryCard.isFinancialPoint && summaryCard.penaltyPoint.isEmpty) {
+                    messages("summaryCard.header.financialNoNumber", summaryCard.amountDue.intValue)
                 } else if(summaryCard.isAddedPoint) {
                     messages("summaryCard.header.addedPoint", summaryCard.penaltyPoint)
                 } else if(summaryCard.isAdjustedPoint) {

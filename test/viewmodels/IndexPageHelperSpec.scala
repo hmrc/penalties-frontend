@@ -19,12 +19,11 @@ package viewmodels
 import assets.messages.IndexMessages._
 import base.SpecBase
 import models.ETMPPayload
+import models.point.{PenaltyPoint, PenaltyTypeEnum}
 import org.jsoup.Jsoup
 
 class IndexPageHelperSpec extends SpecBase {
   val pageHelper: IndexPageHelper = injector.instanceOf[IndexPageHelper]
-
-  private val quarterlyThreshold:Int = 4
 
   "getPluralOrSingularContentForOverview" should {
     "show the singular wording" when {
@@ -84,6 +83,7 @@ class IndexPageHelperSpec extends SpecBase {
       parsedHtmlResult.select("#guidance-link").attr("target") shouldBe "_blank"
     }
   }
+
 
   "getContentBasedOnPointsFromModel" should {
     "no active penalty points" should {

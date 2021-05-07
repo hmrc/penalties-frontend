@@ -60,7 +60,8 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
       )),
       communications = Seq.empty,
       financial = None)
-    )
+    ),
+    quarterlyThreshold
   ).head
 
   val summaryCardRepresentingRemovedPoint: SummaryCard = summaryCardHelper.populateCard(
@@ -83,7 +84,8 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         )),
         communications = Seq.empty,
         financial = None)
-    )
+    ),
+    quarterlyThreshold
   ).head
 
   val summaryCardRepresentingAddedPoint: SummaryCard = summaryCardHelper.populateCard(
@@ -98,7 +100,8 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         period = None,
         communications = Seq.empty,
         financial = None)
-    )
+    ),
+    quarterlyThreshold
   ).head
 
   "IndexView" when {
@@ -113,7 +116,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
       val contentToDisplayOnPage: Html = pElement(content = Html("This is some content."), id = Some("sample-content"))
 
-      def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnSubmittedPenaltyPointData), "0")
+      def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnSubmittedPenaltyPointData, quarterlyThreshold), "0")
 
       implicit val doc: Document = asDocument(applyView())
 
@@ -182,8 +185,8 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           doc.select(Selectors.summaryCardFooterLink).attr("href") shouldBe "#"
         }
 
-      "populate summary card when user has a penalty point from un-submitted VAT return with due status" in {
-        def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnNotSubmittedPenaltyPointData), "0")
+        "populate summary card when user has a penalty point from un-submitted VAT return with due status" in {
+          def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold), "0")
 
           implicit val doc: Document = asDocument(applyView())
 

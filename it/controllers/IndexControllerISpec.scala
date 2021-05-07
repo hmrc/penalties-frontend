@@ -71,6 +71,79 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     )
   )
 
+  val etmpPayloadWith2PointsandOneRemovedPoint: ETMPPayload = ETMPPayload(
+    pointsTotal = 2, lateSubmissions = 3, adjustmentPointsTotal = -1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, penaltyPoints = Seq(
+      PenaltyPoint(
+        `type` = PenaltyTypeEnum.Point,
+        number = "4",
+        dateCreated = sampleDate1,
+        dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
+        status = PointStatusEnum.Active,
+        None,
+        period = Some(PenaltyPeriod(
+          startDate = sampleDate1, endDate = sampleDate2, submission = Submission(
+            sampleDate3,
+            Some(sampleDate4),
+            SubmissionStatusEnum.Submitted
+          )
+        )),
+        communications = Seq.empty,
+        financial = None
+      ),
+      PenaltyPoint(
+        `type` = PenaltyTypeEnum.Point,
+        number = "3",
+        dateCreated = sampleDate1,
+        dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
+        status = PointStatusEnum.Active,
+        None,
+        period = Some(PenaltyPeriod(
+          startDate = sampleDate1, endDate = sampleDate2, submission = Submission(
+            sampleDate3,
+            Some(sampleDate4),
+            SubmissionStatusEnum.Submitted
+          )
+        )),
+        communications = Seq.empty,
+        financial = None
+      ),
+      PenaltyPoint(
+        `type` = PenaltyTypeEnum.Point,
+        number = "2",
+        dateCreated = sampleDate1,
+        dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
+        status = PointStatusEnum.Active,
+        None,
+        period = Some(PenaltyPeriod(
+          startDate = sampleDate1, endDate = sampleDate2, submission = Submission(
+            sampleDate3,
+            Some(sampleDate4),
+            SubmissionStatusEnum.Submitted
+          )
+        )),
+        communications = Seq.empty,
+        financial = None
+      ),
+      PenaltyPoint(
+        `type` = PenaltyTypeEnum.Point,
+        number = "1",
+        dateCreated = sampleDate1,
+        dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
+        status = PointStatusEnum.Removed,
+        reason = Some("This is a great reason."),
+        period = Some(PenaltyPeriod(
+          startDate = sampleDate1, endDate = sampleDate2, submission = Submission(
+            sampleDate3,
+            Some(sampleDate4),
+            SubmissionStatusEnum.Submitted
+          )
+        )),
+        communications = Seq.empty,
+        financial = None
+      )
+    )
+  )
+
   "GET /" should {
     "return 200 (OK) when the user is authorised" in {
       val request = await(buildClientForRequestToApp(uri = "/").get())
@@ -117,6 +190,21 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       //TODO: Change to external guidance when available
       summaryCardBody.select("p.govuk-body a").attr("href") shouldBe "#"
       parsedBody.select(".app-summary-card footer li").text shouldBe ""
+    }
+
+    "return 200 (OK) and render the view when removed points are below active points (active points are reindexed)" in {
+      returnLSPDataStub(etmpPayloadWith2PointsandOneRemovedPoint)
+      val request = await(buildClientForRequestToApp(uri = "/").get())
+      request.status shouldBe Status.OK
+      val parsedBody = Jsoup.parse(request.body)
+      parsedBody.select("#late-submission-penalties p.govuk-body").get(0).text shouldBe "You have 2 penalty points. This is because:"
+      parsedBody.select("#late-submission-penalties ul li").get(0).text shouldBe "you have submitted 3 VAT Returns late"
+      parsedBody.select("#late-submission-penalties ul li").get(1).text shouldBe "we removed 1 point and sent you a letter explaining why"
+      parsedBody.select("main section h3").get(0).text shouldBe "Penalty point 3"
+      parsedBody.select("main section h3").get(1).text shouldBe "Penalty point 2"
+      parsedBody.select("main section h3").get(2).text shouldBe "Penalty point 1"
+      parsedBody.select("main section h3").get(3).text shouldBe "Penalty point"
+      parsedBody.select("main section strong").get(3).text shouldBe "removed"
     }
 
     "return 303 (SEE_OTHER) when the user is not authorised" in {

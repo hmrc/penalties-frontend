@@ -30,14 +30,26 @@ import utils.ImplicitDateFormatter
 
 class SummaryCardHelper extends ImplicitDateFormatter {
 
-  def populateCard(penalties: Seq[PenaltyPoint])(implicit messages: Messages): Seq[SummaryCard] = {
+  def populateCard(penalties: Seq[PenaltyPoint], threshold: Int)(implicit messages: Messages): Seq[SummaryCard] = {
+    val filteredActivePenalties: Seq[PenaltyPoint] = penalties.filter(_.status != PointStatusEnum.Removed).reverse
+    val indexedActivePoints = filteredActivePenalties.zipWithIndex
     penalties.map { penalty =>
-      (penalty.`type`, penalty.status) match {
-        case (PenaltyTypeEnum.Financial, _) => financialSummaryCard(penalty)
-        case (PenaltyTypeEnum.Point, PointStatusEnum.Added) => addedPointCard(penalty)
-        case (PenaltyTypeEnum.Point, PointStatusEnum.Removed) => removedPointCard(penalty)
-        case (PenaltyTypeEnum.Point, _) => pointSummaryCard(penalty)
+      val newPenalty = findAndReindexPointIfIsActive(indexedActivePoints, penalty)
+      (newPenalty.`type`, newPenalty.status) match {
+        case (PenaltyTypeEnum.Financial, _) => financialSummaryCard(newPenalty, threshold)
+        case (PenaltyTypeEnum.Point, PointStatusEnum.Added) => addedPointCard(newPenalty)
+        case (PenaltyTypeEnum.Point, PointStatusEnum.Removed) => removedPointCard(newPenalty)
+        case (PenaltyTypeEnum.Point, _) => pointSummaryCard(newPenalty)
       }
+    }
+  }
+
+  def findAndReindexPointIfIsActive(indexedActivePoints: Seq[(PenaltyPoint, Int)], penaltyPoint: PenaltyPoint): PenaltyPoint = {
+    if(indexedActivePoints.map(_._1).contains(penaltyPoint)) {
+      val numberOfPoint = indexedActivePoints.find(_._1 == penaltyPoint).get._2 + 1
+      penaltyPoint.copy(number = s"$numberOfPoint")
+    } else {
+      penaltyPoint
     }
   }
 
@@ -88,7 +100,7 @@ class SummaryCardHelper extends ImplicitDateFormatter {
     SummaryCard(
       rows,
       tagStatus(penalty),
-      penalty.number,
+      if(!isAnAdjustedPoint || isAnAddedPoint) penalty.number else "",
       isAddedPoint = isAnAddedPoint,
       isAdjustedPoint = isAnAdjustedPoint
     )
@@ -142,7 +154,7 @@ class SummaryCardHelper extends ImplicitDateFormatter {
     buildSummaryCard(cardBody, penalty)
   }
 
-  def financialSummaryCard(penalty: PenaltyPoint)(implicit messages: Messages): SummaryCard = {
+  def financialSummaryCard(penalty: PenaltyPoint, threshold: Int)(implicit messages: Messages): SummaryCard = {
     SummaryCard(
       Seq(
         summaryListRow(
@@ -178,10 +190,14 @@ class SummaryCardHelper extends ImplicitDateFormatter {
         )
       ),
       tagStatus(penalty),
-      penalty.number,
+      getPenaltyNumberBasedOnThreshold(penalty.number, threshold),
       isFinancialPoint = penalty.`type` == PenaltyTypeEnum.Financial,
       amountDue = penalty.financial.get.amountDue
     )
+  }
+
+  def getPenaltyNumberBasedOnThreshold(penaltyNumberAsString: String, threshold: Int): String = {
+    if(penaltyNumberAsString.toInt > threshold) "" else penaltyNumberAsString
   }
 
   def summaryListRow(label: String, value: Html): SummaryListRow = SummaryListRow(
@@ -203,10 +219,10 @@ class SummaryCardHelper extends ImplicitDateFormatter {
 
   def tagStatus(penalty: PenaltyPoint)(implicit messages: Messages): Tag = {
 
-    val period = penalty.period.map(_.submission.status)
+    val periodSubmissionStatus = penalty.period.map(_.submission.status)
     val penaltyPointStatus = penalty.status
 
-    (period, penaltyPointStatus) match {
+    (periodSubmissionStatus, penaltyPointStatus) match {
       case (None, _)                    => renderTag(messages("status.active"))
       case (Some(_), Removed)           => renderTag(messages("status.removed"))
       case (Some(Overdue), _)           => renderTag(messages("status.due"), "penalty-due-tag")

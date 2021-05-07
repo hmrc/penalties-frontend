@@ -59,6 +59,7 @@ object IndexMessages {
 
   val period = "VAT Period"
   val returnDue = "VAT Return due"
+  val reason = "Reason"
   val returnSubmitted = "Return submitted"
   val pointExpiration = "Point due to expire"
   val notSubmitted = "Not yet submitted"

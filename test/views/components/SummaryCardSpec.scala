@@ -17,6 +17,7 @@
 package views.components
 
 import base.{BaseSelectors, SpecBase}
+import models.financial.Financial
 import models.penalty.PenaltyPeriod
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
@@ -38,14 +39,14 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
 
   val summaryCardModelWithAddedPoint: SummaryCard = summaryCardHelper.populateCard(Seq(PenaltyPoint(
     PenaltyTypeEnum.Point,
-    "2",
+    "1",
     LocalDateTime.of(2020, 1, 1, 1, 1, 1),
     Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
     PointStatusEnum.Added,
     None,
     None,
     Seq.empty
-  ))).head
+  )), quarterlyThreshold).head
 
   val summaryCardModelWithRemovedPoint: SummaryCard = summaryCardHelper.populateCard(Seq(PenaltyPoint(
     PenaltyTypeEnum.Point,
@@ -64,14 +65,64 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
       )
     )),
     Seq.empty
-  ))).head
+  )), quarterlyThreshold).head
+
+  val summaryCardModelWithFinancialPointBelowThreshold: SummaryCard = summaryCardHelper.financialSummaryCard(PenaltyPoint(
+    PenaltyTypeEnum.Financial,
+    "1",
+    LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+    Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
+    PointStatusEnum.Due,
+    None,
+    Some(PenaltyPeriod(
+      LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+      LocalDateTime.of(2020, 2, 1, 1, 1, 1),
+      Submission(
+        LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+        Some(LocalDateTime.of(2020, 1, 1, 1, 1, 1)),
+        SubmissionStatusEnum.Submitted
+      )
+    )),
+    Seq.empty,
+    financial = Some(
+      Financial(
+        amountDue = 200.00,
+        dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
+      )
+    )
+  ), quarterlyThreshold)
+
+  val summaryCardModelWithFinancialPointAboveThreshold: SummaryCard = summaryCardHelper.financialSummaryCard(PenaltyPoint(
+    PenaltyTypeEnum.Financial,
+    "3",
+    LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+    Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
+    PointStatusEnum.Due,
+    None,
+    Some(PenaltyPeriod(
+      LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+      LocalDateTime.of(2020, 2, 1, 1, 1, 1),
+      Submission(
+        LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+        Some(LocalDateTime.of(2020, 1, 1, 1, 1, 1)),
+        SubmissionStatusEnum.Submitted
+      )
+    )),
+    Seq.empty,
+    financial = Some(
+      Financial(
+        amountDue = 200.00,
+        dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
+      )
+    )
+  ), annualThreshold)
 
 
   "summaryCard" when {
     "given an added point" should {
       implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAddedPoint))
       "display that the point has been added i.e. Penalty point X: adjustment point" in {
-        doc.select("h3").text() shouldBe "Penalty point 2: adjustment point"
+        doc.select("h3").text() shouldBe "Penalty point 1: adjustment point"
       }
 
       "display a link to allow the user to find information about adjusted points" in {
@@ -117,6 +168,19 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
 
       "not display any footer text" in {
         doc.select("footer li").hasText shouldBe false
+      }
+    }
+
+    "given a financial point" should {
+      val docWithFinancialPointBelowThreshold: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThreshold))
+      val docWithFinancialPointAboveThreshold: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointAboveThreshold))
+
+      "shows the financial heading with point number when the point is below/at threshold for filing frequency" in {
+        docWithFinancialPointBelowThreshold.select(".app-summary-card__title").get(0).text shouldBe "Penalty point 1: £200 penalty"
+      }
+
+      "shows the financial heading WITHOUT point number when the point is above threshold for filing frequency" in {
+        docWithFinancialPointAboveThreshold.select(".app-summary-card__title").get(0).text shouldBe "£200 penalty"
       }
     }
   }
