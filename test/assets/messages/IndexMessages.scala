@@ -56,6 +56,7 @@ object IndexMessages {
   val activeTag = "active"
   val rejectedTag = "rejected"
   val overdueTag = "due"
+  val paidTag = "paid"
 
   val period = "VAT Period"
   val returnDue = "VAT Return due"

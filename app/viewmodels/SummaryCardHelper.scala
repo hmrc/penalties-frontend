@@ -18,7 +18,7 @@ package viewmodels
 
 import java.time.LocalDateTime
 import models.penalty.PenaltyPeriod
-import models.point.PointStatusEnum.{Active, Added, Due, Rejected, Removed}
+import models.point.PointStatusEnum.{Active, Due, Rejected, Removed, Paid}
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.SubmissionStatusEnum.{Overdue, Submitted}
 import play.api.i18n.Messages
@@ -213,6 +213,7 @@ class SummaryCardHelper extends ImplicitDateFormatter {
       case (Some(Submitted), Active)    => renderTag(messages("status.active"))
       case (Some(Submitted), Rejected)  => renderTag(messages("status.rejected"))
       case (Some(Submitted), Due)       => renderTag(messages("status.due"), "penalty-due-tag")
+      case (Some(Submitted), Paid)      => renderTag(messages("status.paid"))
       case (_, _)                       => renderTag(messages("status.active")) // Temp solution
     }
   }

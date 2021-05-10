@@ -132,6 +132,14 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
             classes = "govuk-tag "
           )
         }
+
+        "a financial penalty has been added and the user has paid" in {
+          val result = helper.tagStatus(samplePenaltyPoint.copy(status = PointStatusEnum.Paid))
+          result shouldBe Tag(
+            content = Text(paidTag),
+            classes = "govuk-tag "
+          )
+        }
       }
     }
   }
