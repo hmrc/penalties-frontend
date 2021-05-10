@@ -32,8 +32,10 @@
     <header class="app-summary-card__header">
         <h3 class="app-summary-card__title">
             @{
-                if(summaryCard.isFinancialPoint) {
+                if(summaryCard.isFinancialPoint && summaryCard.penaltyPoint.nonEmpty) {
                     messages("summaryCard.header.financial", summaryCard.penaltyPoint, summaryCard.amountDue.intValue)
+                } else if(summaryCard.isFinancialPoint && summaryCard.penaltyPoint.isEmpty) {
+                    messages("summaryCard.header.financialNoNumber", summaryCard.amountDue.intValue)
                 } else if(summaryCard.isAddedPoint) {
                     messages("summaryCard.header.addedPoint", summaryCard.penaltyPoint)
                 } else if(summaryCard.isAdjustedPoint) {
@@ -72,6 +74,10 @@
                 @{
                     if(summaryCard.isAddedPoint) {
                             <li class="app-summary-card__actions-list-item">{messages("summaryCard.adjustedPoint.cannotAppeal")}</li>
+                    } else if(summaryCard.penaltyPoint.isEmpty && !summaryCard.isAdjustedPoint) {
+                            <li class="app-summary-card__actions-list-item">
+                            <a class="govuk-link" href={summaryCard.footerUrl}>{messages("summaryCard.footerLinkTextNoPointNumber")}</a>
+                            </li>
                     } else if(!summaryCard.isAdjustedPoint) {
                             <li class="app-summary-card__actions-list-item">
                                 <a class="govuk-link" href={summaryCard.footerUrl}>{messages("summaryCard.footerLinkText", summaryCard.penaltyPoint)}</a>

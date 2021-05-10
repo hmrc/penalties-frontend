@@ -17,7 +17,6 @@
 package base
 
 import java.time.LocalDateTime
-
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Messages, MessagesApi}
@@ -27,6 +26,7 @@ import config.{AppConfig, ErrorHandler}
 import org.scalamock.scalatest.MockFactory
 import controllers.predicates.AuthPredicate
 import models.ETMPPayload
+import models.financial.Financial
 import models.penalty.PenaltyPeriod
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
@@ -121,7 +121,12 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
         SubmissionStatusEnum.Overdue
       )
     )),
-    Seq.empty
+    Seq.empty,
+    financial = Some(
+      Financial(
+        amountDue = 200.00, dueDate = LocalDateTime.now()
+      )
+    )
   )
 
   val sampleOverduePenaltyPoint = PenaltyPoint(
@@ -143,6 +148,25 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
     Seq.empty
   )
 
+  val sampleRemovedPenaltyPoint = PenaltyPoint(
+    PenaltyTypeEnum.Point,
+    "1",
+    LocalDateTime.now,
+    Some(LocalDateTime.now),
+    PointStatusEnum.Removed,
+    Some("reason"),
+    Some(PenaltyPeriod(
+      LocalDateTime.now,
+      LocalDateTime.now,
+      Submission(
+        LocalDateTime.now,
+        Some(LocalDateTime.now),
+        SubmissionStatusEnum.Submitted
+      )
+    )),
+    Seq.empty
+  )
+
   val sampleReturnNotSubmittedPenaltyPeriod = PenaltyPeriod(
     LocalDateTime.now,
     LocalDateTime.now,
@@ -153,8 +177,16 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
     )
   )
 
+
   val sampleReturnSubmittedPenaltyPointData: Seq[PenaltyPoint] = Seq(
     samplePenaltyPoint
+  )
+
+  val sample3ReturnsSubmittedPenaltyPointDataAndOneRemovedPoint: Seq[PenaltyPoint] = Seq(
+    samplePenaltyPoint.copy(number = "4"),
+    samplePenaltyPoint.copy(number = "3"),
+    samplePenaltyPoint.copy(number = "2"),
+    sampleRemovedPenaltyPoint
   )
 
   val sampleReturnNotSubmittedPenaltyPointData: Seq[PenaltyPoint] = Seq(
@@ -183,6 +215,10 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
     Tag.defaultObject,
     "1"
   )
+
+  val quarterlyThreshold: Int = 4
+
+  val annualThreshold: Int = 2
 
   def asDocument(html: Html): Document = Jsoup.parse(html.toString())
 }
