@@ -45,7 +45,7 @@ class PointStatusEnumSpec extends WordSpec with Matchers {
     result shouldBe JsString("REMOVED")
   }
 
-  "be writable to JSOn for 'PAID'" in {
+  "be writable to JSON for 'PAID'" in {
     val result = Json.toJson(PointStatusEnum.Paid)
     result shouldBe JsString("PAID")
   }

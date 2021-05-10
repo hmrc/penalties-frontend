@@ -64,6 +64,9 @@ object IndexMessages {
   val pointExpiration = "Point due to expire"
   val notSubmitted = "Not yet submitted"
 
+  val submitAndPayVATPenaltyText = "You need to submit your VAT Return and pay any VAT you owe immediately."
+  val payVATPenaltyText = "Check and pay what you owe"
+
   val vatPeriodValue: (String, String) => String = (s1, s2) => s"$s1 to $s2"
 
   val appealLinkText = "Appeal penalty point 1"
