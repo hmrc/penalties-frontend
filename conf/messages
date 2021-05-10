@@ -68,6 +68,7 @@ status.active = active
 status.due = due
 status.rejected = rejected
 status.removed = removed
+status.paid = paid
 
 site.opensInNewTab = (opens in a new tab)
 site.warning = Warning:
