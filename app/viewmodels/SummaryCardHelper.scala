@@ -209,11 +209,11 @@ class SummaryCardHelper extends ImplicitDateFormatter {
     (period, penaltyPointStatus) match {
       case (None, _)                    => renderTag(messages("status.active"))
       case (Some(_), Removed)           => renderTag(messages("status.removed"))
+      case (Some(_), Paid)              => renderTag(messages("status.paid"))
       case (Some(Overdue), _)           => renderTag(messages("status.due"), "penalty-due-tag")
       case (Some(Submitted), Active)    => renderTag(messages("status.active"))
       case (Some(Submitted), Rejected)  => renderTag(messages("status.rejected"))
       case (Some(Submitted), Due)       => renderTag(messages("status.due"), "penalty-due-tag")
-      case (Some(Submitted), Paid)      => renderTag(messages("status.paid"))
       case (_, _)                       => renderTag(messages("status.active")) // Temp solution
     }
   }
