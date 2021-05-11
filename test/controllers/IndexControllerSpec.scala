@@ -88,5 +88,14 @@ class IndexControllerSpec extends SpecBase with MockitoSugar {
         }
       }
     }
+
+    "redirectToAppeals" when {
+      "the user wants to appeal a penalty" in {
+        val result = Controller.redirectToAppeals("123456789")(fakeRequest)
+
+        status(result) shouldBe SEE_OTHER
+      }
+    }
+
   }
 }

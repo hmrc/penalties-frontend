@@ -88,6 +88,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
 
   val samplePenaltyPoint = PenaltyPoint(
     PenaltyTypeEnum.Point,
+    "123456789",
     "1",
     LocalDateTime.now,
     Some(LocalDateTime.now),
@@ -107,6 +108,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
 
   val sampleFinancialPenaltyPoint = PenaltyPoint(
     PenaltyTypeEnum.Financial,
+    "123456789",
     "1",
     LocalDateTime.now,
     Some(LocalDateTime.now),
@@ -131,6 +133,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
 
   val sampleOverduePenaltyPoint = PenaltyPoint(
     PenaltyTypeEnum.Point,
+    "123456789",
     "1",
     LocalDateTime.now,
     Some(LocalDateTime.now),
@@ -150,6 +153,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
 
   val sampleRemovedPenaltyPoint = PenaltyPoint(
     PenaltyTypeEnum.Point,
+    "123456789",
     "1",
     LocalDateTime.now,
     Some(LocalDateTime.now),
@@ -192,6 +196,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
   val sampleReturnNotSubmittedPenaltyPointData: Seq[PenaltyPoint] = Seq(
     PenaltyPoint(
       PenaltyTypeEnum.Point,
+      "123456789",
       "1",
       LocalDateTime.now,
       Some(LocalDateTime.now),
@@ -213,7 +218,8 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
   val sampleSummaryCard: SummaryCard = SummaryCard(
     Seq.empty,
     Tag.defaultObject,
-    "1"
+    "1",
+    penaltyId = "123456789"
   )
 
   val quarterlyThreshold: Int = 4

@@ -39,6 +39,7 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
 
   val summaryCardModelWithAddedPoint: SummaryCard = summaryCardHelper.populateCard(Seq(PenaltyPoint(
     PenaltyTypeEnum.Point,
+    "123456789",
     "1",
     LocalDateTime.of(2020, 1, 1, 1, 1, 1),
     Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
@@ -50,6 +51,7 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
 
   val summaryCardModelWithRemovedPoint: SummaryCard = summaryCardHelper.populateCard(Seq(PenaltyPoint(
     PenaltyTypeEnum.Point,
+    "123456789",
     "2",
     LocalDateTime.of(2020, 1, 1, 1, 1, 1),
     Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
@@ -69,6 +71,7 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
 
   val summaryCardModelWithFinancialPointBelowThreshold: SummaryCard = summaryCardHelper.financialSummaryCard(PenaltyPoint(
     PenaltyTypeEnum.Financial,
+    "123456789",
     "1",
     LocalDateTime.of(2020, 1, 1, 1, 1, 1),
     Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
@@ -94,6 +97,7 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
 
   val summaryCardModelWithFinancialPointAboveThreshold: SummaryCard = summaryCardHelper.financialSummaryCard(PenaltyPoint(
     PenaltyTypeEnum.Financial,
+    "123456789",
     "3",
     LocalDateTime.of(2020, 1, 1, 1, 1, 1),
     Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),

@@ -47,4 +47,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   lazy val feedbackUrl: String = config.get[String]("feedback.url")
 
+  lazy val penaltiesAppealsBaseUrl = s"${servicesConfig.baseUrl("penalties-appeals-frontend")}/penalties-appeals"
+
 }

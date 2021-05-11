@@ -101,8 +101,9 @@ class SummaryCardHelper extends ImplicitDateFormatter {
       rows,
       tagStatus(penalty),
       if(!isAnAdjustedPoint || isAnAddedPoint) penalty.number else "",
+      penalty.id,
       isAddedPoint = isAnAddedPoint,
-      isAdjustedPoint = isAnAdjustedPoint
+      isAdjustedPoint = isAnAdjustedPoint,
     )
   }
 
@@ -191,8 +192,9 @@ class SummaryCardHelper extends ImplicitDateFormatter {
       ),
       tagStatus(penalty),
       getPenaltyNumberBasedOnThreshold(penalty.number, threshold),
+      penalty.id,
       isFinancialPoint = penalty.`type` == PenaltyTypeEnum.Financial,
-      amountDue = penalty.financial.get.amountDue
+      amountDue = penalty.financial.get.amountDue,
     )
   }
 
