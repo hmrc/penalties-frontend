@@ -90,10 +90,11 @@ class IndexControllerSpec extends SpecBase with MockitoSugar {
     }
 
     "redirectToAppeals" when {
-      "the user wants to appeal a penalty" in {
+      "the user wants to appeal a penalty" in new Setup(AuthTestModels.successfulAuthResult) {
         val result = Controller.redirectToAppeals("123456789")(fakeRequest)
 
         status(result) shouldBe SEE_OTHER
+        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId")
       }
     }
 

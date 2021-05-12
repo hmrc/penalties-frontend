@@ -227,4 +227,8 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
   val annualThreshold: Int = 2
 
   def asDocument(html: Html): Document = Jsoup.parse(html.toString())
+
+  val penaltyId = "123456789"
+
+  val redirectToAppealUrl: String = controllers.routes.IndexController.redirectToAppeals(penaltyId).url
 }
