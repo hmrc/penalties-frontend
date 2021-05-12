@@ -44,6 +44,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
     Seq(
     PenaltyPoint(
       `type` = PenaltyTypeEnum.Point,
+      id = penaltyId,
       number = "1",
       dateCreated = sampleDate1,
       dateExpired = Some(sampleDate2.plusYears(2)),
@@ -68,6 +69,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
     Seq(
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Point,
+        id = penaltyId,
         number = "1",
         dateCreated = sampleDate1,
         dateExpired = Some(sampleDate2.plusYears(2)),
@@ -92,6 +94,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
     Seq(
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Point,
+        id = penaltyId,
         number = "1",
         dateCreated = sampleDate1,
         dateExpired = Some(sampleDate2.plusYears(2)),
@@ -181,8 +184,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           doc.select(Selectors.rowItem(3)).text shouldBe returnSubmitted
           doc.select(Selectors.rowItem(4)).text shouldBe pointExpiration
           doc.select(Selectors.summaryCardFooterLink).text shouldBe appealLinkText
-          //TODO: change this when we appeal penalties link
-          doc.select(Selectors.summaryCardFooterLink).attr("href") shouldBe "#"
+          doc.select(Selectors.summaryCardFooterLink).attr("href") shouldBe redirectToAppealUrl
         }
 
         "populate summary card when user has a penalty point from un-submitted VAT return with due status" in {
@@ -196,7 +198,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           doc.select(Selectors.rowItem(2)).text shouldBe returnDue
           doc.select(Selectors.rowItem(3)).text shouldBe returnSubmitted
           doc.select(Selectors.summaryCardFooterLink).text shouldBe appealLinkText
-          doc.select(Selectors.summaryCardFooterLink).attr("href") shouldBe "#"
+          doc.select(Selectors.summaryCardFooterLink).attr("href") shouldBe redirectToAppealUrl
         }
       }
 

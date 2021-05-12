@@ -37,6 +37,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, penaltyPoints = Seq(
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Point,
+        id = "1234567890",
         number = "1",
         dateCreated = sampleDate1,
         dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
@@ -53,6 +54,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     pointsTotal = 1, lateSubmissions = 2, adjustmentPointsTotal = -1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, penaltyPoints = Seq(
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Point,
+        id = "1234567890",
         number = "1",
         dateCreated = sampleDate1,
         dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
@@ -75,6 +77,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     pointsTotal = 2, lateSubmissions = 3, adjustmentPointsTotal = -1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, penaltyPoints = Seq(
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Point,
+        id = "1234567890",
         number = "4",
         dateCreated = sampleDate1,
         dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
@@ -92,6 +95,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       ),
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Point,
+        id = "12345678901",
         number = "3",
         dateCreated = sampleDate1,
         dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
@@ -109,6 +113,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       ),
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Point,
+        id = "12345678902",
         number = "2",
         dateCreated = sampleDate1,
         dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
@@ -126,6 +131,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       ),
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Point,
+        id = "12345678903",
         number = "1",
         dateCreated = sampleDate1,
         dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),

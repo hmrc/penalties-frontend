@@ -23,7 +23,7 @@ case class SummaryCard(
                         cardRows: Seq[SummaryListRow],
                         status: Tag,
                         penaltyPoint: String,
-                        footerUrl: String = "#",
+                        penaltyId: String,
                         isFinancialPoint: Boolean = false,
                         amountDue: BigDecimal = 0,
                         isAddedPoint: Boolean = false,

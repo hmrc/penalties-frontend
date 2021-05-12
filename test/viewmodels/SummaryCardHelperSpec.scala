@@ -41,7 +41,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       helper.summaryListRow(pointExpiration, Html(dateTimeToMonthYearString(LocalDateTime.now)))
     ),
     Tag(content = Text("active"), classes = "govuk-tag "),
-    "1"
+    "1",
+    "123456789"
   )
 
   "SummaryCard helper" should {
@@ -102,6 +103,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           ),
           Tag(content = Text("due"), classes = "govuk-tag penalty-due-tag"),
           "",
+          "123456789",
           isFinancialPoint = true,
           amountDue = 200.0
         )
@@ -124,6 +126,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           ),
           Tag(content = Text("due"), classes = "govuk-tag penalty-due-tag"),
           "1",
+          "123456789",
           isFinancialPoint = true,
           amountDue = 200.0
         )
@@ -153,7 +156,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
             helper.summaryListRow(pointExpiration, Html(dateTimeToMonthYearString(LocalDateTime.now)))
           ),
           Tag(content = Text("active"), classes = "govuk-tag "),
-          "3"
+          "3",
+          "123456789"
         ),
           SummaryCard(
             Seq(
@@ -166,7 +170,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               helper.summaryListRow(pointExpiration, Html(dateTimeToMonthYearString(LocalDateTime.now)))
             ),
             Tag(content = Text("active"), classes = "govuk-tag "),
-            "2"
+            "2",
+            "123456789"
           ),
           SummaryCard(
             Seq(
@@ -179,7 +184,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               helper.summaryListRow(pointExpiration, Html(dateTimeToMonthYearString(LocalDateTime.now)))
             ),
             Tag(content = Text("active"), classes = "govuk-tag "),
-            "1"
+            "1",
+            "123456789"
           ),
           SummaryCard(
             Seq(
@@ -191,6 +197,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
             ),
             Tag(content = Text("removed"), classes = "govuk-tag "),
             "",
+            "123456789",
             isAdjustedPoint = true
           ))
 

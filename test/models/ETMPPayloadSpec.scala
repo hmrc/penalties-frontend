@@ -43,6 +43,7 @@ class ETMPPayloadSpec extends WordSpec with Matchers {
       |	"penaltyPoints": [
       |		{
       |			"type": "financial",
+      |     "id": "123456789",
       |			"number": "2",
       |			"dateCreated": "2021-04-23T18:25:43.511",
       |			"dateExpired": "2021-04-23T18:25:43.511",
@@ -70,6 +71,7 @@ class ETMPPayloadSpec extends WordSpec with Matchers {
       |		},
       |		{
       |			"type": "point",
+      |     "id": "123456789",
       |			"number": "1",
       |			"dateCreated": "2021-04-23T18:25:43.511",
       |			"dateExpired": "2021-04-23T18:25:43.511",
@@ -105,6 +107,7 @@ class ETMPPayloadSpec extends WordSpec with Matchers {
     penaltyPoints = Seq(
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Financial,
+        id = "123456789",
         number = "2",
         dateCreated = sampleDate,
         dateExpired = Some(sampleDate),
@@ -133,6 +136,7 @@ class ETMPPayloadSpec extends WordSpec with Matchers {
       ),
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Point,
+        id = "123456789",
         number = "1",
         dateCreated = sampleDate,
         dateExpired = Some(sampleDate),

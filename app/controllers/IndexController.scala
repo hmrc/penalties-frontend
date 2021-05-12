@@ -19,7 +19,6 @@ package controllers
 import config.AppConfig
 import controllers.predicates.AuthPredicate
 import models.point.{PenaltyTypeEnum, PointStatusEnum}
-
 import javax.inject.Inject
 import play.api.Logger.logger
 import play.api.i18n.I18nSupport
@@ -30,7 +29,7 @@ import utils.{CurrencyFormatter, EnrolmentKeys}
 import viewmodels.{IndexPageHelper, SummaryCardHelper}
 import views.html.IndexView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import scala.math.BigDecimal.RoundingMode
 
 class IndexController @Inject()(view: IndexView,
@@ -56,5 +55,10 @@ class IndexController @Inject()(view: IndexView,
         isAnyUnpaidLSP,
         isAnyUnpaidLSPAndNotSubmittedReturn))
     }
+  }
+
+  def redirectToAppeals(penaltyId: String): Action[AnyContent] = authorise.async { implicit request =>
+    logger.debug(s"[IndexController][redirectToAppeals] redirect to appeals frontend with id $penaltyId")
+    Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId"))
   }
 }
