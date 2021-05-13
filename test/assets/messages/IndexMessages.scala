@@ -71,5 +71,6 @@ object IndexMessages {
   val vatPeriodValue: (String, String) => String = (s1, s2) => s"$s1 to $s2"
 
   val appealLinkText = "Appeal penalty point 1"
+  val checkAppeal = "Check if you can appeal"
 
 }
