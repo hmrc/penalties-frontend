@@ -219,7 +219,8 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
     Seq.empty,
     Tag.defaultObject,
     "1",
-    penaltyId = "123456789"
+    penaltyId = "123456789",
+    isReturnSubmitted = true
   )
 
   val quarterlyThreshold: Int = 4

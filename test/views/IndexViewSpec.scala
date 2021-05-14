@@ -197,8 +197,8 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           doc.select(Selectors.rowItem(1)).text shouldBe period
           doc.select(Selectors.rowItem(2)).text shouldBe returnDue
           doc.select(Selectors.rowItem(3)).text shouldBe returnSubmitted
-          doc.select(Selectors.summaryCardFooterLink).text shouldBe appealLinkText
-          doc.select(Selectors.summaryCardFooterLink).attr("href") shouldBe redirectToAppealUrl
+          doc.select(Selectors.summaryCardFooterLink).text shouldBe checkAppeal
+          doc.select(Selectors.summaryCardFooterLink).attr("href") shouldBe "#"
         }
       }
 

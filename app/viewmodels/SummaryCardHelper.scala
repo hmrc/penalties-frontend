@@ -97,11 +97,15 @@ class SummaryCardHelper extends ImplicitDateFormatter {
 
   private def buildSummaryCard(rows: Seq[SummaryListRow], penalty: PenaltyPoint, isAnAddedPoint: Boolean = false,
                                isAnAdjustedPoint: Boolean = false)(implicit messages: Messages): SummaryCard = {
+
+    val isReturnSubmitted = penalty.period.fold(false)(_.submission.submittedDate.isDefined)
+
     SummaryCard(
       rows,
       tagStatus(penalty),
       if(!isAnAdjustedPoint || isAnAddedPoint) penalty.number else "",
       penalty.id,
+      isReturnSubmitted,
       isAddedPoint = isAnAddedPoint,
       isAdjustedPoint = isAnAdjustedPoint
     )
@@ -193,6 +197,7 @@ class SummaryCardHelper extends ImplicitDateFormatter {
       tagStatus(penalty),
       getPenaltyNumberBasedOnThreshold(penalty.number, threshold),
       penalty.id,
+      penalty.period.fold(false)(_.submission.submittedDate.isDefined),
       isFinancialPoint = penalty.`type` == PenaltyTypeEnum.Financial,
       amountDue = penalty.financial.get.amountDue
     )

@@ -24,6 +24,7 @@ case class SummaryCard(
                         status: Tag,
                         penaltyPoint: String,
                         penaltyId: String,
+                        isReturnSubmitted: Boolean,
                         isFinancialPoint: Boolean = false,
                         amountDue: BigDecimal = 0,
                         isAddedPoint: Boolean = false,

@@ -64,6 +64,7 @@ summaryCard.adjustedPoint.cannotAppeal = You cannot appeal this point
 summaryCard.addedOnKey = Added on
 summaryCard.removedReason = Reason
 summaryCard.infoOnAdjustmentPointsLinkText = Find out more about adjustment points
+summaryCard.appealCheck = Check if you can appeal
 
 
 status.active = active

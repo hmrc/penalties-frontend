@@ -42,7 +42,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
     ),
     Tag(content = Text("active"), classes = "govuk-tag "),
     "1",
-    "123456789"
+    "123456789",
+    isReturnSubmitted = true
   )
 
   "SummaryCard helper" should {
@@ -104,6 +105,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           Tag(content = Text("due"), classes = "govuk-tag penalty-due-tag"),
           "",
           "123456789",
+          isReturnSubmitted = false,
           isFinancialPoint = true,
           amountDue = 200.0
         )
@@ -127,6 +129,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           Tag(content = Text("due"), classes = "govuk-tag penalty-due-tag"),
           "1",
           "123456789",
+          isReturnSubmitted = false,
           isFinancialPoint = true,
           amountDue = 200.0
         )
@@ -157,7 +160,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           ),
           Tag(content = Text("active"), classes = "govuk-tag "),
           "3",
-          "123456789"
+          "123456789",
+          isReturnSubmitted = true,
         ),
           SummaryCard(
             Seq(
@@ -171,7 +175,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
             ),
             Tag(content = Text("active"), classes = "govuk-tag "),
             "2",
-            "123456789"
+            "123456789",
+            isReturnSubmitted = true,
           ),
           SummaryCard(
             Seq(
@@ -185,7 +190,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
             ),
             Tag(content = Text("active"), classes = "govuk-tag "),
             "1",
-            "123456789"
+            "123456789",
+            isReturnSubmitted = true,
           ),
           SummaryCard(
             Seq(
@@ -198,6 +204,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
             Tag(content = Text("removed"), classes = "govuk-tag "),
             "",
             "123456789",
+            isReturnSubmitted = true,
             isAdjustedPoint = true
           ))
 
