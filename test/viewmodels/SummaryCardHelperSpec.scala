@@ -16,15 +16,16 @@
 
 package viewmodels
 
-import java.time.LocalDateTime
 import assets.messages.IndexMessages._
 import base.SpecBase
-import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
+import models.point.{PenaltyPoint, PointStatusEnum}
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 import utils.ImplicitDateFormatter
+
+import java.time.LocalDateTime
 
 class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 

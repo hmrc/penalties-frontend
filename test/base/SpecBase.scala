@@ -16,14 +16,7 @@
 
 package base
 
-import java.time.LocalDateTime
-import org.scalatest.{Matchers, WordSpec}
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{AnyContent, MessagesControllerComponents}
-import play.api.test.FakeRequest
 import config.{AppConfig, ErrorHandler}
-import org.scalamock.scalatest.MockFactory
 import controllers.predicates.AuthPredicate
 import models.ETMPPayload
 import models.financial.Financial
@@ -32,18 +25,24 @@ import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.scalatestplus.mockito.MockitoSugar.mock
+import org.mockito.Mockito.mock
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.i18n.{Messages, MessagesApi}
+import play.api.mvc.{AnyContent, MessagesControllerComponents}
+import play.api.test.FakeRequest
 import play.twirl.api.Html
 import services.AuthService
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.govukfrontend.views.Aliases.Tag
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.{SummaryCard, SummaryCardHelper}
 import views.html.errors.Unauthorised
 
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
+trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   lazy val injector = app.injector
@@ -60,7 +59,7 @@ trait SpecBase extends WordSpec with Matchers with GuiceOneAppPerSuite {
 
   val unauthorised: Unauthorised = injector.instanceOf[Unauthorised]
 
-  val mockAuthConnector: AuthConnector = mock[AuthConnector]
+  val mockAuthConnector: AuthConnector = mock(classOf[AuthConnector])
 
   val mockAuthService: AuthService = new AuthService(mockAuthConnector)
 

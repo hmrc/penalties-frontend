@@ -21,7 +21,6 @@ import models.point.PenaltyPoint
 import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{mock, reset, when}
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.PenaltiesService
@@ -35,12 +34,12 @@ import views.html.IndexView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-class IndexControllerSpec extends SpecBase with MockitoSugar {
+class IndexControllerSpec extends SpecBase {
 
   val page: IndexView = injector.instanceOf[IndexView]
   val indexPageHelper: IndexPageHelper = injector.instanceOf[IndexPageHelper]
   val cardHelper = injector.instanceOf[SummaryCardHelper]
-  val mockPenaltiesService:PenaltiesService = mock[PenaltiesService]
+  val mockPenaltiesService:PenaltiesService = mock(classOf[PenaltiesService])
 
   class Setup(authResult: Future[~[Option[AffinityGroup], Enrolments]]) {
 

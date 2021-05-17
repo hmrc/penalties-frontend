@@ -18,19 +18,17 @@ package controllers
 
 import config.AppConfig
 import controllers.predicates.AuthPredicate
-import models.point.{PenaltyTypeEnum, PointStatusEnum}
-import javax.inject.Inject
-import play.api.Logger.logger
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.PenaltiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.Logger.logger.logger
 import utils.{CurrencyFormatter, EnrolmentKeys}
 import viewmodels.{IndexPageHelper, SummaryCardHelper}
 import views.html.IndexView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.math.BigDecimal.RoundingMode
 
 class IndexController @Inject()(view: IndexView,
                                 penaltiesService: PenaltiesService,

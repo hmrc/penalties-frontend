@@ -19,13 +19,14 @@ package models.point
 import models.financial.Financial
 import models.penalty.PenaltyPeriod
 import models.submission.{Submission, SubmissionStatusEnum}
-import org.scalatest.{Matchers, WordSpec}
-import play.api.libs.json.{JsString, JsValue, Json}
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers
+import play.api.libs.json.Json
 
+import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import java.time.{LocalDate, LocalDateTime}
 
-class PenaltyPointSpec extends WordSpec with Matchers {
+class PenaltyPointSpec extends AnyWordSpec with Matchers {
 
   val sampleDateTime1: LocalDateTime = LocalDateTime.of(2019, 1, 31, 23, 59, 59).plus(998, ChronoUnit.MILLIS)
   val sampleDateTime2: LocalDateTime = LocalDateTime.of(2019, 1, 31, 23, 59, 59).plus(999, ChronoUnit.MILLIS)

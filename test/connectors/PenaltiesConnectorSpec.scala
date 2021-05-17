@@ -21,16 +21,15 @@ import config.AppConfig
 import models.ETMPPayload
 import org.mockito.Matchers._
 import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PenaltiesConnectorSpec extends SpecBase with MockitoSugar {
+class PenaltiesConnectorSpec extends SpecBase {
   implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
-  val mockHttpClient: HttpClient = mock[HttpClient]
-  val mockAppConfig: AppConfig = mock[AppConfig]
+  val mockHttpClient: HttpClient = mock(classOf[HttpClient])
+  val mockAppConfig: AppConfig = mock(classOf[AppConfig])
 
   class Setup {
     reset(mockHttpClient)

@@ -19,7 +19,6 @@ package viewmodels
 import assets.messages.IndexMessages._
 import base.SpecBase
 import models.ETMPPayload
-import models.point.{PenaltyPoint, PenaltyTypeEnum}
 import org.jsoup.Jsoup
 
 class IndexPageHelperSpec extends SpecBase {
