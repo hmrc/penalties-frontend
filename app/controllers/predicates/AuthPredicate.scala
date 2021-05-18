@@ -18,7 +18,6 @@ package controllers.predicates
 
 import config.{AppConfig, ErrorHandler}
 import models.User
-import play.api.Logger.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{ActionBuilder, ActionFunction, Request, _}
 import services.AuthService
@@ -26,6 +25,7 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.Logger.logger
 import views.html.errors.Unauthorised
 
 import javax.inject.{Inject, Singleton}

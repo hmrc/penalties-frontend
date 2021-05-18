@@ -21,13 +21,14 @@ import models.financial.Financial
 import models.penalty.PenaltyPeriod
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers
 import play.api.libs.json.{JsValue, Json}
 
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-class ETMPPayloadSpec extends WordSpec with Matchers {
+class ETMPPayloadSpec extends AnyWordSpec with Matchers {
 
   val sampleDate: LocalDateTime = LocalDateTime.of(2021, 4, 23, 18, 25, 43).plus(511, ChronoUnit.MILLIS)
 

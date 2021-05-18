@@ -16,14 +16,14 @@
 
 package models.communication
 
-import org.scalatest.time.Millis
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers
 import play.api.libs.json.{JsValue, Json}
 
 import java.time.LocalDateTime
-import java.time.temporal.{ChronoUnit, TemporalUnit}
+import java.time.temporal.ChronoUnit
 
-class CommunicationSpec extends WordSpec with Matchers {
+class CommunicationSpec extends AnyWordSpec with Matchers {
   val communicationModelAsJson: JsValue = Json.parse(
     """
       |{

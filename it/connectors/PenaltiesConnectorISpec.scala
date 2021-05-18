@@ -18,9 +18,10 @@ package connectors
 
 
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
+import play.api.test.Helpers._
 import stubs.PenaltiesStub._
-import uk.gov.hmrc.http.HeaderCarrier
 import testUtils.IntegrationSpecCommonBase
+import uk.gov.hmrc.http.HeaderCarrier
 
 class PenaltiesConnectorISpec extends IntegrationSpecCommonBase {
 

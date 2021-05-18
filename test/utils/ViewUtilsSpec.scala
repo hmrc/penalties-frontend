@@ -16,10 +16,11 @@
 
 package utils
 
-import org.scalatest.{Matchers, WordSpec}
-import play.twirl.api.{Html, HtmlFormat}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+import play.twirl.api.Html
 
-class ViewUtilsSpec extends WordSpec with Matchers {
+class ViewUtilsSpec extends AnyWordSpec with Matchers {
   object Viewtils extends ViewUtils
 
   "stringAsHtml" should {

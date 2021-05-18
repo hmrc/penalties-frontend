@@ -22,6 +22,7 @@ import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
 import org.jsoup.Jsoup
 import play.api.http.Status
+import play.api.test.Helpers._
 import stubs.AuthStub
 import stubs.PenaltiesStub.returnLSPDataStub
 import testUtils.IntegrationSpecCommonBase

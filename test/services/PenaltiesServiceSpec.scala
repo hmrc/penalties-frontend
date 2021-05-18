@@ -23,16 +23,15 @@ import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 
 import java.time.LocalDateTime
 import scala.concurrent.Future
 
-class PenaltiesServiceSpec extends SpecBase with MockitoSugar {
+class PenaltiesServiceSpec extends SpecBase {
 
-  val mocPenaltiesConnector: PenaltiesConnector = mock[PenaltiesConnector]
+  val mocPenaltiesConnector: PenaltiesConnector = mock(classOf[PenaltiesConnector])
 
   class Setup {
     val service: PenaltiesService = new PenaltiesService(mocPenaltiesConnector)

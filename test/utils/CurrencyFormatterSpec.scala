@@ -16,9 +16,10 @@
 
 package utils
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class CurrencyFormatterSpec extends WordSpec with Matchers {
+class CurrencyFormatterSpec extends AnyWordSpec with Matchers {
   object Formatter extends CurrencyFormatter
 
   "currencyFormatAsNonHTMLString" should {

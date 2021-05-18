@@ -17,13 +17,14 @@
 package models.penalty
 
 import models.submission.{Submission, SubmissionStatusEnum}
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers
 import play.api.libs.json.{JsValue, Json}
 
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-class PenaltyPeriodSpec extends WordSpec with Matchers {
+class PenaltyPeriodSpec extends AnyWordSpec with Matchers {
   val penaltyPeriodModelAsJson: JsValue = Json.parse(
     """
       |{
