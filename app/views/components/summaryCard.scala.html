@@ -75,7 +75,11 @@
                             <li class="app-summary-card__actions-list-item">{messages("summaryCard.adjustedPoint.cannotAppeal")}</li>
                     } else if(summaryCard.penaltyPoint.isEmpty && !summaryCard.isAdjustedPoint) {
                             <li class="app-summary-card__actions-list-item">
-                            <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId).url}>{messages("summaryCard.footerLinkTextNoPointNumber")}</a>
+                            {if(!summaryCard.isReturnSubmitted) {
+                                <a class="govuk-link" href="#">{messages("summaryCard.appealCheck")}</a>
+                            } else {
+                                <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId).url}>{messages("summaryCard.footerLinkTextNoPointNumber")}</a>
+                            }}
                             </li>
                     } else if(!summaryCard.isAdjustedPoint) {
                             if(!summaryCard.isReturnSubmitted){
