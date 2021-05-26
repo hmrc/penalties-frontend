@@ -226,6 +226,8 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   val annualThreshold: Int = 2
 
+  val monthlyThreshold: Int = 5
+
   def asDocument(html: Html): Document = Jsoup.parse(html.toString())
 
   val penaltyId = "123456789"

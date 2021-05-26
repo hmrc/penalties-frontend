@@ -47,7 +47,19 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
     None,
     None,
     Seq.empty
-  )), quarterlyThreshold).head
+  )), quarterlyThreshold, 1).head
+
+  val summaryCardModelWithAddedPointAtThreshold: SummaryCard = summaryCardHelper.populateCard(Seq(PenaltyPoint(
+    PenaltyTypeEnum.Point,
+    "123456789",
+    "1",
+    LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+    Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
+    PointStatusEnum.Added,
+    None,
+    None,
+    Seq.empty
+  )), quarterlyThreshold, 4).head
 
   val summaryCardModelWithRemovedPoint: SummaryCard = summaryCardHelper.populateCard(Seq(PenaltyPoint(
     PenaltyTypeEnum.Point,
@@ -67,7 +79,7 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
       )
     )),
     Seq.empty
-  )), quarterlyThreshold).head
+  )), quarterlyThreshold, 1).head
 
   val summaryCardModelWithFinancialPointBelowThreshold: SummaryCard = summaryCardHelper.financialSummaryCard(PenaltyPoint(
     PenaltyTypeEnum.Financial,
@@ -123,7 +135,7 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
 
 
   "summaryCard" when {
-    "given an added point" should {
+    "given an added point and the threshold has not been met" should {
       implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAddedPoint))
       "display that the point has been added i.e. Penalty point X: adjustment point" in {
         doc.select("h3").text() shouldBe "Penalty point 1: adjustment point"
@@ -147,6 +159,37 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
       "display when the point is due to expire" in {
         doc.select("dt").get(1).text() shouldBe "Point due to expire"
         doc.select("dd").get(1).text() shouldBe "February 2020"
+      }
+
+      "display that the user can not appeal an added point" in {
+        doc.select("footer li").text() shouldBe "You cannot appeal this point"
+      }
+    }
+
+    "given an added point and the threshold has been met" should {
+      implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAddedPointAtThreshold))
+      "display that the point has been added i.e. Penalty point X: adjustment point" in {
+        doc.select("h3").text() shouldBe "Penalty point 1: adjustment point"
+      }
+
+      "display a link to allow the user to find information about adjusted points" in {
+        doc.select("a").text() shouldBe "Find out more about adjustment points (opens in a new tab)"
+        //TODO: change this once we have the adjustment point info page
+        doc.select("a").attr("href") shouldBe "#"
+      }
+
+      "display the 'active' status for an added point" in {
+        doc.select("strong").text() shouldBe "active"
+      }
+
+      "display when the added point was added" in {
+        doc.select("dt").get(0).text() shouldBe "Added on"
+        doc.select("dd").get(0).text() shouldBe "1 January 2020"
+      }
+
+      "NOT display when the point is due to expire" in {
+        doc.select("dt").size() shouldBe 1
+        doc.select("dd").size() shouldBe 1
       }
 
       "display that the user can not appeal an added point" in {

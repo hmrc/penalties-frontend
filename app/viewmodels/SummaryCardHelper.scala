@@ -30,16 +30,17 @@ import utils.ImplicitDateFormatter
 
 class SummaryCardHelper extends ImplicitDateFormatter {
 
-  def populateCard(penalties: Seq[PenaltyPoint], threshold: Int)(implicit messages: Messages): Seq[SummaryCard] = {
+  def populateCard(penalties: Seq[PenaltyPoint], threshold: Int, activePoints: Int)(implicit messages: Messages): Seq[SummaryCard] = {
+    val thresholdMet: Boolean = pointsThresholdMet(threshold, activePoints)
     val filteredActivePenalties: Seq[PenaltyPoint] = penalties.filter(_.status != PointStatusEnum.Removed).reverse
     val indexedActivePoints = filteredActivePenalties.zipWithIndex
     penalties.map { penalty =>
       val newPenalty = findAndReindexPointIfIsActive(indexedActivePoints, penalty)
       (newPenalty.`type`, newPenalty.status) match {
         case (PenaltyTypeEnum.Financial, _) => financialSummaryCard(newPenalty, threshold)
-        case (PenaltyTypeEnum.Point, PointStatusEnum.Added) => addedPointCard(newPenalty)
+        case (PenaltyTypeEnum.Point, PointStatusEnum.Added) => addedPointCard(newPenalty, thresholdMet)
         case (PenaltyTypeEnum.Point, PointStatusEnum.Removed) => removedPointCard(newPenalty)
-        case (PenaltyTypeEnum.Point, _) => pointSummaryCard(newPenalty)
+        case (PenaltyTypeEnum.Point, _) => pointSummaryCard(newPenalty, thresholdMet)
       }
     }
   }
@@ -53,7 +54,7 @@ class SummaryCardHelper extends ImplicitDateFormatter {
     }
   }
 
-  private def addedPointCard(penalty: PenaltyPoint)(implicit messages: Messages): SummaryCard = {
+  private def addedPointCard(penalty: PenaltyPoint, thresholdMet: Boolean)(implicit messages: Messages): SummaryCard = {
     val rows = Seq(
       Some(summaryListRow(
         messages("summaryCard.addedOnKey"),
@@ -63,7 +64,11 @@ class SummaryCardHelper extends ImplicitDateFormatter {
       )
       ),
       penalty.dateExpired.fold[Option[SummaryListRow]](None)(x => {
-        Some(summaryListRow(messages("summaryCard.key4"), Html(dateTimeToMonthYearString(x))))
+        if(!thresholdMet) {
+          Some(summaryListRow(messages("summaryCard.key4"), Html(dateTimeToMonthYearString(x))))
+        } else {
+          None
+        }
       })
     ).collect {
       case Some(x) => x
@@ -111,7 +116,7 @@ class SummaryCardHelper extends ImplicitDateFormatter {
     )
   }
 
-  def returnSubmittedCardBody(penalty: PenaltyPoint)(implicit messages: Messages): Seq[SummaryListRow] = {
+  def returnSubmittedCardBody(penalty: PenaltyPoint, thresholdMet: Boolean)(implicit messages: Messages): Seq[SummaryListRow] = {
     val period = penalty.period
     val base = Seq(
       summaryListRow(
@@ -128,7 +133,7 @@ class SummaryCardHelper extends ImplicitDateFormatter {
       summaryListRow(messages("summaryCard.key3"), Html(dateTimeToString(period.get.submission.submittedDate.get)))
     )
 
-    if(penalty.dateExpired.isDefined) {
+    if(penalty.dateExpired.isDefined && !thresholdMet) {
       base :+ summaryListRow(messages("summaryCard.key4"), Html(dateTimeToMonthYearString(penalty.dateExpired.get)))
     } else {
       base
@@ -150,9 +155,9 @@ class SummaryCardHelper extends ImplicitDateFormatter {
     summaryListRow(messages("summaryCard.key3"), Html(messages("summaryCard.key3.defaultValue")))
   )
 
-  def pointSummaryCard(penalty: PenaltyPoint)(implicit messages: Messages): SummaryCard = {
+  def pointSummaryCard(penalty: PenaltyPoint, thresholdMet: Boolean)(implicit messages: Messages): SummaryCard = {
     val cardBody = penalty.period.get.submission.submittedDate match {
-      case Some(_: LocalDateTime) => returnSubmittedCardBody(penalty)
+      case Some(_: LocalDateTime) => returnSubmittedCardBody(penalty, thresholdMet)
       case None => returnNotSubmittedCardBody(penalty.period.get)
     }
 
@@ -240,4 +245,6 @@ class SummaryCardHelper extends ImplicitDateFormatter {
       case (_, _)                       => renderTag(messages("status.active")) // Temp solution
     }
   }
+
+  def pointsThresholdMet(threshold: Int, activePoints: Int):Boolean = activePoints >= threshold
 }
