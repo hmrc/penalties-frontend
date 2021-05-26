@@ -62,7 +62,8 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
       communications = Seq.empty,
       financial = None)
     ),
-    quarterlyThreshold
+    quarterlyThreshold,
+  1
   ).head
 
   val summaryCardRepresentingRemovedPoint: SummaryCard = summaryCardHelper.populateCard(
@@ -87,7 +88,8 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         communications = Seq.empty,
         financial = None)
     ),
-    quarterlyThreshold
+    quarterlyThreshold,
+    1
   ).head
 
   val summaryCardRepresentingAddedPoint: SummaryCard = summaryCardHelper.populateCard(
@@ -104,7 +106,8 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         communications = Seq.empty,
         financial = None)
     ),
-    quarterlyThreshold
+    quarterlyThreshold,
+    1
   ).head
 
   "IndexView" when {
@@ -119,7 +122,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
       val contentToDisplayOnPage: Html = pElement(content = Html("This is some content."), id = Some("sample-content"))
 
-      def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnSubmittedPenaltyPointData, quarterlyThreshold), "0")
+      def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnSubmittedPenaltyPointData, quarterlyThreshold,1), "0")
 
       implicit val doc: Document = asDocument(applyView())
 
@@ -188,7 +191,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         }
 
         "populate summary card when user has a penalty point from un-submitted VAT return with due status" in {
-          def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold), "0")
+          def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold, 1), "0")
 
           implicit val doc: Document = asDocument(applyView())
 
@@ -204,7 +207,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
       "user has unpaid LSP's but has submitted a VAT return - show a call to action to pay with no preceding text" in {
         def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage,
-          helper.populateCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold),
+          helper.populateCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold, 1),
           "£200.00",
           isUnpaidLSPExists = true,
           isAnyUnpaidLSPAndNotSubmittedReturn = false)
@@ -215,7 +218,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
       "user has unpaid LSP's and has NOT submitted a VAT return - show a call to action to pay WITH preceding text" in {
         def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage,
-          helper.populateCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold),
+          helper.populateCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold, 1),
           "£200.00",
           isUnpaidLSPExists = true,
           isAnyUnpaidLSPAndNotSubmittedReturn = true)
@@ -226,7 +229,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
       "user has unpaid LSP's and therefore needs to pay their penalties - show a button for them to check and pay what they owe" in {
         def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage,
-          helper.populateCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold),
+          helper.populateCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold, 1),
           "£200.00",
           isUnpaidLSPExists = true,
           isAnyUnpaidLSPAndNotSubmittedReturn = true)
