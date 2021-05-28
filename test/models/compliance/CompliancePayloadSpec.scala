@@ -19,33 +19,69 @@ package models.compliance
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-import org.scalatest.matchers.must.Matchers
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import play.api.libs.json.{JsValue, Json}
 
 class CompliancePayloadSpec extends AnyWordSpec with Matchers {
 
   val sampleDate: LocalDateTime = LocalDateTime.of(2021, 4, 23, 18, 25, 43)
     .plus(511, ChronoUnit.MILLIS)
 
+  val compliancePayloadAsJson: JsValue = Json.parse(
+    """
+      {
+      | "NoOfMissingReturns": 1,
+      | "noOfSubmissionsReqForCompliance": 1,
+      | "expiryDateOfAllPenaltyPoints": "2021-04-23T18:25:43.511",
+      | "missingReturns": [
+      | {
+      |   "startDate": "2021-04-23T18:25:43.511",
+      |   "endDate": "2021-04-30T18:25:43.511"
+      |   }
+      | ],
+      | "returns" : [
+      | {
+      |   "startDate": "2021-04-23T18:25:43.511",
+      |   "endDate": "2021-04-30T18:25:43.511",
+      |   "dueDate": "2021-05-23T18:25:43.511",
+      |   "status": "SUBMITTED"
+      | }
+      | ]
+      |}
+      | """.stripMargin
+  )
+
   val compliancePayloadModel: CompliancePayload = CompliancePayload(
-    regime = "",
-    VRN = "",
     NoOfMissingReturns = 1,
     noOfSubmissionsReqForCompliance = 1,
-    expiryDateOfAllPenaltyPoints = LocalDateTime.now,
+    expiryDateOfAllPenaltyPoints = sampleDate,
     missingReturns = Seq(
       MissingReturn(
-        startDate = LocalDateTime.now,
-        endDate = LocalDateTime.now.plus(7, ChronoUnit.DAYS)
+        startDate = sampleDate,
+        endDate = sampleDate.plusDays(7)
       )
     ),
     returns = Seq(
       Return(
-        startDate = LocalDateTime.now,
-        endDate = LocalDateTime.now.plus(7, ChronoUnit.DAYS),
-        dueDate = LocalDateTime.now.plus(1, ChronoUnit.MONTHS),
+        startDate = sampleDate,
+        endDate = sampleDate.plusDays(7),
+        dueDate = sampleDate.plusMonths(1),
         status = Some(ReturnStatusEnum.submitted)
       )
     )
   )
+
+  "CompliancePayload" should {
+    "be writable to JSON" in {
+      val result = Json.toJson(compliancePayloadModel)
+      result shouldBe compliancePayloadAsJson
+    }
+
+    "be readable from JSON" in {
+      val result = Json.fromJson(compliancePayloadAsJson)(CompliancePayload.format)
+      result.isSuccess shouldBe true
+      result.get shouldBe compliancePayloadModel
+    }
+  }
 }

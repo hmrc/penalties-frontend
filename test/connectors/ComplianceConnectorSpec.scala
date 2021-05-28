@@ -59,7 +59,7 @@ class ComplianceConnectorSpec extends SpecBase {
     any())
       (any(),
       any(),
-      any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", INTERNAL_SERVER_ERROR)))
+      any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", NOT_FOUND)))
 
     val result: Exception = intercept[Exception](await(connector.getComplianceData("123456789")(HeaderCarrier())))
     result.getMessage shouldBe "Upstream error"
