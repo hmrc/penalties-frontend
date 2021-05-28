@@ -77,6 +77,18 @@ base.signOut = Sign out
 
 app.common.back = Back
 
+# Compliance View
+
+compliance.title = VAT Compliance View
+compliance.heading = Bring your VAT account up to date
+
+compliance.p1 = You need to take action to bring your VAT account up to date.
+compliance.p2 = Taking this action will:
+compliance.b1 = allow HMRC to remove all your penalty points
+compliance.b2 = help you stop paying late submission financial penalties
+
+compliance.unsubmitted.header = Submit these missing returns
+
 # BETA Banner
 # ----------------------------------------------------------
 feedback.before = This is a new service - your
