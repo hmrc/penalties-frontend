@@ -59,11 +59,12 @@ summaryCard.key3.defaultValue = Not yet submitted
 summaryCard.key4 = Point due to expire
 summaryCard.notYetSubmitted = Not yet submitted
 summaryCard.footerLinkText = Appeal penalty point {0}
+summaryCard.footerLinkTextNoPointNumber = Appeal this penalty
 summaryCard.adjustedPoint.cannotAppeal = You cannot appeal this point
 summaryCard.addedOnKey = Added on
 summaryCard.removedReason = Reason
 summaryCard.infoOnAdjustmentPointsLinkText = Find out more about adjustment points
-
+summaryCard.appealCheck = Check if you can appeal
 
 status.active = active
 status.due = due
@@ -79,13 +80,15 @@ app.common.back = Back
 
 # Compliance View
 
-compliance.title = VAT Compliance View
+compliance.title = Bring your VAT account up to date
 compliance.heading = Bring your VAT account up to date
+compliance.heading.completeActions = Complete these actions on time
 
 compliance.p1 = You need to take action to bring your VAT account up to date.
 compliance.p2 = Taking this action will:
 compliance.b1 = allow HMRC to remove all your penalty points
 compliance.b2 = help you stop paying late submission financial penalties
+compliance.vat.missingReturn = VAT Period {0} to {1}
 
 compliance.unsubmitted.header = Submit these missing returns
 
