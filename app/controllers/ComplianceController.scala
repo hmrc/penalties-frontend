@@ -40,6 +40,7 @@ class ComplianceController @Inject()(view: ComplianceView,
 
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
     for {
+      //TODO: The below code is temporary whilst PRM-253/254 are being completed.
       lSPData <- penaltiesService.getLspDataWithVrn(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))
       missingReturns = pageHelper.getUnsubmittedReturns(lSPData)
       missingReturnsBulletContent = pageHelper.getUnsubmittedReturnContentFromSequence(missingReturns)

@@ -1,0 +1,67 @@
+/*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package views
+
+import assets.messages.ComplianceMessages._
+import base.{BaseSelectors, SpecBase}
+import org.jsoup.nodes.Document
+import play.twirl.api.{Html, HtmlFormat}
+import utils.ViewUtils
+import views.behaviours.ViewBehaviours
+import views.html.ComplianceView
+
+class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
+  val compliancePage: ComplianceView = injector.instanceOf[ComplianceView]
+  val sampleMissingReturns: String = "VAT Period 1 October 2021 to 31 December 2021"
+  object Selectors extends BaseSelectors {
+    val staticListItem = (item: Int) => s"#main-content li:nth-child($item)"
+
+    val submitTheseMissingReturnsH2 = "#submit-these-missing-returns"
+
+    val completeTheseActionsOnTimeH2 = "#complete-these-actions-on-time"
+  }
+
+  "ComplianceView" should {
+    def applyView(isUnsubmittedReturns: Boolean, contentForMissingReturns: Html): HtmlFormat.Appendable = {
+      compliancePage.apply(isUnsubmittedReturns, contentForMissingReturns)
+    }
+
+    implicit val docWithMissingReturns: Document = asDocument(applyView(isUnsubmittedReturns = true, html(stringAsHtml(sampleMissingReturns))))
+
+    val expectedContent = Seq(
+      Selectors.title -> title,
+      Selectors.h1 -> heading,
+      Selectors.pNthChild(2) -> p1,
+      Selectors.pNthChild(3) -> p2,
+      Selectors.staticListItem(1) -> li1,
+      Selectors.staticListItem(2) -> li2,
+      Selectors.submitTheseMissingReturnsH2 -> h2MissingReturns,
+      Selectors.completeTheseActionsOnTimeH2 -> completeTheseActionsOnTime
+    )
+
+    behave like pageWithExpectedMessages(expectedContent)
+
+    "contain the VAT period when there is missing VAT returns" in {
+      docWithMissingReturns.body().toString.contains("VAT Period 1 October 2021 to 31 December 2021") shouldBe true
+    }
+
+    "not display 'submit these missing returns' when the user has no missing returns" in {
+      implicit val docWithNoMissingReturns: Document = asDocument(applyView(isUnsubmittedReturns = false, html()))
+      docWithNoMissingReturns.select(Selectors.submitTheseMissingReturnsH2).hasText shouldBe false
+    }
+  }
+}

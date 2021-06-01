@@ -39,7 +39,7 @@ class IndexControllerSpec extends SpecBase {
   val page: IndexView = injector.instanceOf[IndexView]
   val indexPageHelper: IndexPageHelper = injector.instanceOf[IndexPageHelper]
   val cardHelper = injector.instanceOf[SummaryCardHelper]
-  val mockPenaltiesService:PenaltiesService = mock(classOf[PenaltiesService])
+  val mockPenaltiesService: PenaltiesService = mock(classOf[PenaltiesService])
 
   class Setup(authResult: Future[~[Option[AffinityGroup], Enrolments]]) {
 

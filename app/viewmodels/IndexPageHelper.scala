@@ -39,7 +39,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           p(content = html(stringAsHtml(messages("lsp.onThreshold.p1"))),
             classes = "govuk-body govuk-!-font-size-24"),
           p(content = html(stringAsHtml(messages("lsp.onThreshold.p2")))),
-          p(link(link = "#", messages("lsp.onThreshold.link")))
+          p(link(link = controllers.routes.ComplianceController.onPageLoad().url, messages("lsp.onThreshold.link")))
         )
       }
       case (currentPoints, threshold, adjustedPoints) if adjustedPoints > 0 => {

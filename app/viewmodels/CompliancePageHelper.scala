@@ -21,14 +21,15 @@ import models.point.PenaltyPoint
 import models.submission.SubmissionStatusEnum
 import play.api.i18n.Messages
 import play.twirl.api.Html
-import utils.ViewUtils
+import utils.{ImplicitDateFormatter, ViewUtils}
 
 import javax.inject.Inject
 
 class CompliancePageHelper @Inject()(p: views.html.components.p,
-                                     bullets: views.html.components.bullets) extends ViewUtils {
-
+                                     bullets: views.html.components.bullets) extends ViewUtils with ImplicitDateFormatter {
+  //TODO: The below code is temporary whilst PRM-253/254 are being completed.
   //scalastyle:off
+  @deprecated("Not needed when calling ETMP/Stub to retrieve missing returns")
   def getUnsubmittedReturns(etmpData: ETMPPayload): Seq[PenaltyPoint] = {
     // To be replaced by the Compliance Model
     etmpData.penaltyPoints.filter { x =>
@@ -37,25 +38,20 @@ class CompliancePageHelper @Inject()(p: views.html.components.p,
   }
 
   def getUnsubmittedReturnContentFromSequence(unsubmittedReturns: Seq[PenaltyPoint])(implicit messages: Messages): Html = {
-    if (unsubmittedReturns.nonEmpty) {
+    if(unsubmittedReturns.nonEmpty) {
       html(
-        getUnsubmittedReturnBullets(unsubmittedReturns),
-        p(content = html(stringAsHtml(messages("lsp.onThreshold.p1"))),
-          classes = "govuk-body govuk-!-font-size-24"),
-        p(content = html(stringAsHtml(messages("lsp.onThreshold.p2")))),
+        bullets(
+          unsubmittedReturns.map(unsubmittedReturn => {
+            html(stringAsHtml(
+              messages("compliance.vat.missingReturn",
+                dateTimeToString(unsubmittedReturn.period.get.startDate),
+                dateTimeToString(unsubmittedReturn.period.get.endDate))))
+          }),
+          classes = "govuk-list govuk-list--bullet govuk-body-l")
       )
+    } else {
+      html()
     }
-    html(stringAsHtml(""))
-  }
-
-  def getUnsubmittedReturnBullets(unsubmittedReturns: Seq[PenaltyPoint])(implicit messages: Messages): Html = {
-    html(
-      bullets(
-        unsubmittedReturns.map(unsubmittedReturn => {
-          html(stringAsHtml(unsubmittedReturn.period.get.startDate + " to " + unsubmittedReturn.period.get.endDate))
-        })
-      )
-    )
   }
 }
 
