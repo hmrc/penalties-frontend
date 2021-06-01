@@ -28,30 +28,30 @@ import scala.concurrent.Future
 
 class ComplianceServiceSpec extends SpecBase {
 
-  val mocComplianceConnector: ComplianceConnector = mock(classOf[ComplianceConnector])
+  val mockComplianceConnector: ComplianceConnector = mock(classOf[ComplianceConnector])
 
   class Setup {
-    val service: ComplianceService = new ComplianceService(mocComplianceConnector)
+    val service: ComplianceService = new ComplianceService(mockComplianceConnector)
 
-    reset(mocComplianceConnector)
+    reset(mockComplianceConnector)
   }
 
   "getComplianceDataWithVrn" should {
     s"return a successful response and pass the result back to the controller" in new Setup {
 
-      when(mocComplianceConnector.getComplianceData(any())(any())).thenReturn(Future.successful(sampleComplianceData))
+      when(mockComplianceConnector.getComplianceData(any())(any())).thenReturn(Future.successful(sampleComplianceData))
 
-      val result: CompliancePayload = await(service.getComplianceDataWithVrn(vrn)(HeaderCarrier()))
+      val result: CompliancePayload = await(service.getComplianceDataWithEnrolmentKey(vrn)(HeaderCarrier()))
 
       result shouldBe sampleComplianceData
     }
 
     s"return an exception and pass the result back to the controller" in new Setup {
 
-      when(mocComplianceConnector.getComplianceData(any())(any()))
+      when(mockComplianceConnector.getComplianceData(any())(any()))
         .thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", INTERNAL_SERVER_ERROR)))
 
-      val result: Exception = intercept[Exception](await(service.getComplianceDataWithVrn(vrn)(HeaderCarrier())))
+      val result: Exception = intercept[Exception](await(service.getComplianceDataWithEnrolmentKey(vrn)(HeaderCarrier())))
 
       result.getMessage shouldBe "Upstream error"
     }

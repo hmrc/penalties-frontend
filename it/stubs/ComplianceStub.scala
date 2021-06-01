@@ -26,14 +26,14 @@ import play.api.http.Status
 import play.api.libs.json.Json
 
 object ComplianceStub {
-  val vrn: String = "HMRC-MTD-VAT~VRN~123456789"
-  val getComplianceDataUrl: String = s"/penalties/compliance/compliance-data\\?enrolmentKey=$vrn"
+  val enrolmentKey: String = "HMRC-MTD-VAT~VRN~123456789"
+  val getComplianceDataUrl: String = s"/penalties/compliance/compliance-data\\?enrolmentKey=$enrolmentKey"
   val date: LocalDateTime = LocalDateTime.of(2021, 4, 23, 18, 25, 43)
     .plus(511, ChronoUnit.MILLIS)
 
   val sampleComplianceData: CompliancePayload = CompliancePayload(
-    0,
-    0,
+    "0",
+    "0",
     date,
     Seq.empty[MissingReturn],
     Seq.empty[Return]

@@ -30,21 +30,21 @@ class ComplianceConnectorISpec extends IntegrationSpecCommonBase {
 
   "getComplianceData" should {
     "generate a CompliancePayload when valid JSON is returned from penalties" in {
-      val result = connector.getComplianceData(vrn).futureValue
+      val result = connector.getComplianceData(enrolmentKey).futureValue
       result shouldBe sampleComplianceData
     }
 
     "throw an exception when invalid JSON is returned from penalties" in {
       wireMockServer.editStubMapping(invalidComplianceDataStub())
 
-      val result = intercept[Exception](await(connector.getComplianceData(vrn)))
+      val result = intercept[Exception](await(connector.getComplianceData(enrolmentKey)))
       result.getMessage should include("invalid json")
     }
 
     "throw an exception when an upstream error is returned from penalties" in {
       wireMockServer.editStubMapping(upstreamErrorStub())
 
-      val result = intercept[Exception](await(connector.getComplianceData(vrn)))
+      val result = intercept[Exception](await(connector.getComplianceData(enrolmentKey)))
       result.getMessage should include("Upstream Error")
     }
   }

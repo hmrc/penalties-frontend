@@ -88,8 +88,8 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   )
 
   val sampleComplianceData: CompliancePayload = CompliancePayload(
-    0,
-    0,
+    "0",
+    "0",
     LocalDateTime.now(),
     Seq.empty[MissingReturn],
     Seq.empty[Return]

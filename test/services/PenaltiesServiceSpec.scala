@@ -31,18 +31,18 @@ import scala.concurrent.Future
 
 class PenaltiesServiceSpec extends SpecBase {
 
-  val mocPenaltiesConnector: PenaltiesConnector = mock(classOf[PenaltiesConnector])
+  val mockPenaltiesConnector: PenaltiesConnector = mock(classOf[PenaltiesConnector])
 
   class Setup {
-    val service: PenaltiesService = new PenaltiesService(mocPenaltiesConnector)
+    val service: PenaltiesService = new PenaltiesService(mockPenaltiesConnector)
 
-    reset(mocPenaltiesConnector)
+    reset(mockPenaltiesConnector)
   }
 
   "getLspDataWithVrn" should {
     s"return a successful response and pass the result back to the controller" in new Setup {
 
-      when(mocPenaltiesConnector.getPenaltiesData(any())(any())).thenReturn(Future.successful(sampleLspData))
+      when(mockPenaltiesConnector.getPenaltiesData(any())(any())).thenReturn(Future.successful(sampleLspData))
 
       val result = await(service.getLspDataWithVrn(vrn)(HeaderCarrier()))
 
@@ -51,7 +51,7 @@ class PenaltiesServiceSpec extends SpecBase {
 
     s"return an exception and pass the result back to the controller" in new Setup {
 
-      when(mocPenaltiesConnector.getPenaltiesData(any())(any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", INTERNAL_SERVER_ERROR)))
+      when(mockPenaltiesConnector.getPenaltiesData(any())(any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", INTERNAL_SERVER_ERROR)))
 
       val result = intercept[Exception](await(service.getLspDataWithVrn(vrn)(HeaderCarrier())))
 

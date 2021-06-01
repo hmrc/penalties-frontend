@@ -25,6 +25,6 @@ import scala.concurrent.Future
 
 class ComplianceService @Inject()(connector: ComplianceConnector) {
 
-  def getComplianceDataWithVrn(enrolmentKey: String)(implicit hc: HeaderCarrier): Future[CompliancePayload] = connector.getComplianceData(enrolmentKey)
+  def getComplianceDataWithEnrolmentKey(enrolmentKey: String)(implicit hc: HeaderCarrier): Future[CompliancePayload] = connector.getComplianceData(enrolmentKey)
 
 }

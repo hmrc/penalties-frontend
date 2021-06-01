@@ -31,8 +31,8 @@ class CompliancePayloadSpec extends AnyWordSpec with Matchers {
   val compliancePayloadAsJson: JsValue = Json.parse(
     """
       {
-      | "NoOfMissingReturns": 1,
-      | "noOfSubmissionsReqForCompliance": 1,
+      | "noOfMissingReturns": "1",
+      | "noOfSubmissionsReqForCompliance": "1",
       | "expiryDateOfAllPenaltyPoints": "2021-04-23T18:25:43.511",
       | "missingReturns": [
       | {
@@ -53,8 +53,8 @@ class CompliancePayloadSpec extends AnyWordSpec with Matchers {
   )
 
   val compliancePayloadModel: CompliancePayload = CompliancePayload(
-    NoOfMissingReturns = 1,
-    noOfSubmissionsReqForCompliance = 1,
+    noOfMissingReturns = "1",
+    noOfSubmissionsReqForCompliance = "1",
     expiryDateOfAllPenaltyPoints = sampleDate,
     missingReturns = Seq(
       MissingReturn(
