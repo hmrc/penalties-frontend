@@ -27,7 +27,7 @@ class ComplianceConnector @Inject()(httpClient: HttpClient,
                                    appConfig: AppConfig)(implicit ec: ExecutionContext) {
 
   private val penaltiesBaseUrl: String = appConfig.penaltiesUrl
-  private def getComplianceDataUrl(enrolmentKey: String): String = s"penalties/compliance/compliance-data?enrolmentKey=$enrolmentKey"
+  private def getComplianceDataUrl(enrolmentKey: String): String = s"/compliance/compliance-data?enrolmentKey=$enrolmentKey"
 
   def getComplianceData(enrolmentKey: String)(implicit hc: HeaderCarrier): Future[CompliancePayload] = {
     httpClient.GET[CompliancePayload](s"$penaltiesBaseUrl${getComplianceDataUrl(enrolmentKey)}")

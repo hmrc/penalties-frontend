@@ -67,7 +67,7 @@ class CompliancePayloadSpec extends AnyWordSpec with Matchers {
         startDate = sampleDate,
         endDate = sampleDate.plusDays(7),
         dueDate = sampleDate.plusMonths(1),
-        status = Some(ReturnStatusEnum.submitted)
+        status = Some(ReturnStatusEnum.Submitted)
       )
     )
   )

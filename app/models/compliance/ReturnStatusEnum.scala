@@ -19,7 +19,7 @@ package models.compliance
 import play.api.libs.json._
 
 object ReturnStatusEnum extends Enumeration {
-  val submitted: ReturnStatusEnum.Value = Value
+  val Submitted: ReturnStatusEnum.Value = Value
 
   implicit val format: Format[ReturnStatusEnum.Value] = new Format[ReturnStatusEnum.Value] {
     override def writes(o: ReturnStatusEnum.Value): JsValue = {
@@ -28,7 +28,7 @@ object ReturnStatusEnum extends Enumeration {
 
     override def reads(json: JsValue): JsResult[ReturnStatusEnum.Value] = {
       json.as[String] match {
-        case "SUBMITTED" => JsSuccess(submitted)
+        case "SUBMITTED" => JsSuccess(Submitted)
         case e => JsError(s"$e not recognised")
       }
     }
