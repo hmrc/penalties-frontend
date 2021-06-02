@@ -190,7 +190,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "show the guidance link text" in {
         parsedHtmlResult.select("a.govuk-link").text shouldBe bringAccountUpToDate
-        parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe "#"
+        parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe controllers.routes.ComplianceController.onPageLoad().url
       }
     }
 
