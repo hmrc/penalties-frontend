@@ -24,7 +24,7 @@ import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, TestSuite}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.ws.{WSClient, WSRequest}
-import stubs.{AuthStub, PenaltiesStub}
+import stubs.{AuthStub, ComplianceStub, PenaltiesStub}
 
 trait IntegrationSpecCommonBase extends AnyWordSpec with Matchers with GuiceOneServerPerSuite with
   BeforeAndAfterAll with BeforeAndAfterEach with TestSuite with WiremockHelper {
@@ -41,6 +41,7 @@ trait IntegrationSpecCommonBase extends AnyWordSpec with Matchers with GuiceOneS
     super.beforeEach()
     AuthStub.authorised()
     PenaltiesStub.lspDataStub()
+    ComplianceStub.complianceDataStub()
     SharedMetricRegistries.clear()
   }
 
