@@ -39,6 +39,9 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.Tag
 import viewmodels.{SummaryCard, SummaryCardHelper, TimelineHelper}
 import views.html.errors.Unauthorised
 import java.time.LocalDateTime
+
+import models.compliance.{CompliancePayload, MissingReturn, Return}
+
 import java.time.temporal.ChronoUnit
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -86,6 +89,14 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     0.0,
     4,
     Seq.empty[PenaltyPoint]
+  )
+
+  val sampleComplianceData: CompliancePayload = CompliancePayload(
+    "0",
+    "0",
+    LocalDateTime.now(),
+    Seq.empty[MissingReturn],
+    Seq.empty[Return]
   )
 
   val samplePenaltyPoint = PenaltyPoint(

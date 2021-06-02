@@ -20,7 +20,9 @@ class BaseSelectors {
 
   val title = "title"
 
-  val h1 = "h1"
+  val h1 = "#main-content h1"
+
+  val h2 = "#main-content h2"
 
   def breadcrumbs(index: Int): String = s"#main-content > div > div > div.govuk-breadcrumbs.govuk-breadcrumbs--collapse-on-mobile > ol > li:nth-child($index)"
 
@@ -42,4 +44,5 @@ class BaseSelectors {
 
   val externalGuidance = "#guidance-link"
 
+  val pNthChild = (nThChild: Int) => s"#main-content p:nth-child($nThChild)"
 }
