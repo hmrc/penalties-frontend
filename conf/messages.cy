@@ -82,3 +82,8 @@ app.common.back = Back
 feedback.before = This is a new service - your
 feedback.link = feedback
 feedback.after = will help us to improve it.
+
+
+compliance.vat.actionEvent.header = VAT period {0} to {1}
+compliance.vat.actionEvent.body = Submit VAT Return by {0}
+compliance.vat.actionEvent.tag.submitted = Submitted on time
