@@ -19,5 +19,5 @@ package viewmodels
 case class TimelineEvent(
                           headerContent: String,
                           spanContent: String,
-                          tagContent: Option[String] = None,
+                          tagContent: Option[String] = None
                         )
