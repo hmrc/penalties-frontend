@@ -35,8 +35,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
   val sampleDate2 = LocalDateTime.of(2021, 2, 1, 1, 1, 1)
   val sampleDate3 = LocalDateTime.of(2021, 2, 28, 1, 1, 1)
   val sampleDate4 = LocalDateTime.of(2021, 4, 1, 1, 1, 1)
-
-  //TODO: Change this to new compliance payload with missing return
+  val sampleDate5 = LocalDateTime.of(2021, 1, 31, 1, 1, 1)
 
   val compliancePayloadWithMissingReturns: CompliancePayload = CompliancePayload(
     noOfMissingReturns = "1",
@@ -44,48 +43,19 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
     expiryDateOfAllPenaltyPoints = sampleDate1.plusMonths(1).plusYears(2),
     missingReturns = Seq(
       MissingReturn(
-        startDate = sampleDate2,
-        endDate = sampleDate3
+        startDate = sampleDate1,
+        endDate = sampleDate5
       )
     ),
     returns = Seq(
       Return(
         startDate = sampleDate2,
         endDate = sampleDate3,
-        dueDate = sampleDate2.plusMonths(1).plusDays(7),
+        dueDate = sampleDate3.plusMonths(1).plusDays(7),
         status = Some(ReturnStatusEnum.Submitted)
       )
     )
   )
-
-  val etmpPayloadWithOverdueSubmissionsPoints: ETMPPayload = ETMPPayload(
-    pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, penaltyPoints = Seq(
-      PenaltyPoint(
-        `type` = PenaltyTypeEnum.Point,
-        id = "1234567890",
-        number = "1",
-        dateCreated = sampleDate1,
-        dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
-        status = PointStatusEnum.Due,
-        reason = None,
-        period = Some(
-          PenaltyPeriod(
-            startDate = sampleDate2,
-            endDate = sampleDate3,
-            submission = Submission(
-              dueDate = sampleDate3.plusMonths(1).plusDays(7),
-              submittedDate = None,
-              status = SubmissionStatusEnum.Overdue
-            )
-          )
-        ),
-        communications = Seq.empty,
-        financial = None
-      )
-    )
-  )
-
-  //TODO: Change this to new compliance payload with no missing return
 
   val compliancePayloadWithNoMissingReturns: CompliancePayload = CompliancePayload(
     noOfMissingReturns = "1",
@@ -94,9 +64,9 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
     missingReturns = Seq.empty,
     returns = Seq(
       Return(
-        startDate = sampleDate2,
-        endDate = sampleDate3,
-        dueDate = sampleDate2.plusMonths(1).plusDays(7),
+        startDate = sampleDate1,
+        endDate = sampleDate5,
+        dueDate = sampleDate5.plusMonths(1).plusDays(7),
         status = None
       )
     )
@@ -116,9 +86,10 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         request.status shouldBe OK
         val parsedBody = Jsoup.parse(request.body)
         parsedBody.select("#submit-these-missing-returns").text shouldBe "Submit these missing returns"
+        parsedBody.body().toString.contains("VAT period 1 January 2021 to 31 January 2021") shouldBe true
         parsedBody.select("#complete-these-actions-on-time").text shouldBe "Complete these actions on time"
-        parsedBody.body().toString.contains("VAT Period 1 February 2021 to 28 February 2021") shouldBe true
-        parsedBody.body().toString.contains("Submit VAT Return by 8 March 2021") shouldBe true
+        parsedBody.body().toString.contains("VAT period 1 February 2021 to 28 February 2021") shouldBe true
+        parsedBody.body().toString.contains("Submit VAT Return by 4 April 2021") shouldBe true
         parsedBody.body().toString.contains("Submitted on time") shouldBe true
       }
 
@@ -128,9 +99,10 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         request.status shouldBe OK
         val parsedBody = Jsoup.parse(request.body)
         parsedBody.select("#submit-these-missing-returns").text.isEmpty shouldBe true
+        parsedBody.body().toString.contains("VAT period 1 February 2021 to 28 February 2021") shouldBe false
         parsedBody.select("#complete-these-actions-on-time").text shouldBe "Complete these actions on time"
-        parsedBody.body().toString.contains("VAT Period 1 February 2021 to 28 February 2021") shouldBe false
-        parsedBody.body().toString.contains("Submit VAT Return by 8 March 2021") shouldBe true
+        parsedBody.body().toString.contains("VAT period 1 January 2021 to 31 January 2021") shouldBe true
+        parsedBody.body().toString.contains("Submit VAT Return by 7 March 2021") shouldBe true
         parsedBody.body().toString.contains("Submitted on time") shouldBe false
       }
     }

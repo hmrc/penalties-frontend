@@ -46,69 +46,6 @@ class CompliancePageHelperSpec extends SpecBase {
     )
   )
 
-//  val oneOverduePenaltyPoint: PenaltyPoint = PenaltyPoint(
-//      `type` = PenaltyTypeEnum.Point,
-//      id = "1",
-//      number = "1",
-//      dateCreated = sampleDate1.plusMonths(2).plusDays(8),
-//      dateExpired = Some(sampleDate1.plusMonths(2).plusDays(7).plusYears(2)),
-//      status = PointStatusEnum.Active,
-//      reason = None,
-//      period = Some(PenaltyPeriod(
-//        startDate = sampleDate1,
-//        endDate = sampleDate2,
-//        submission = Submission(
-//            dueDate = sampleDate1.plusMonths(2).plusDays(7),
-//            submittedDate = Some(sampleDate1.plusMonths(2).plusDays(8)),
-//            status = SubmissionStatusEnum.Overdue
-//          )
-//      )),
-//      communications = Seq.empty,
-//      financial = None
-//  )
-//
-//  val multipleOverduePenaltyPoints: Seq[PenaltyPoint] = Seq(
-//    PenaltyPoint(
-//      `type` = PenaltyTypeEnum.Point,
-//      id = "2",
-//      number = "2",
-//      dateCreated = sampleDate1.plusMonths(3).plusDays(8),
-//      dateExpired = Some(sampleDate1.plusMonths(3).plusDays(7).plusYears(2)),
-//      status = PointStatusEnum.Active,
-//      reason = None,
-//      period = Some(PenaltyPeriod(
-//        startDate = sampleDate1.plusMonths(1),
-//        endDate = sampleDate2.plusMonths(1),
-//        submission = Submission(
-//          dueDate = sampleDate1.plusMonths(3).plusDays(7),
-//          submittedDate = Some(sampleDate1.plusMonths(3).plusDays(8)),
-//          status = SubmissionStatusEnum.Overdue
-//        )
-//      )),
-//      communications = Seq.empty,
-//      financial = None
-//    ),
-//    PenaltyPoint(
-//      `type` = PenaltyTypeEnum.Point,
-//      id = "1",
-//      number = "1",
-//      dateCreated = sampleDate1.plusMonths(2).plusDays(8),
-//      dateExpired = Some(sampleDate1.plusMonths(2).plusDays(7).plusYears(2)),
-//      status = PointStatusEnum.Active,
-//      reason = None,
-//      period = Some(PenaltyPeriod(
-//        startDate = sampleDate1,
-//        endDate = sampleDate2,
-//        submission = Submission(
-//          dueDate = sampleDate1.plusMonths(2).plusDays(7),
-//          submittedDate = Some(sampleDate1.plusMonths(2).plusDays(8)),
-//          status = SubmissionStatusEnum.Overdue
-//        )
-//      )),
-//      communications = Seq.empty,
-//      financial = None
-//    )
-//  )
   val pageHelper: CompliancePageHelper = injector.instanceOf[CompliancePageHelper]
 
   "getUnsubmittedReturnContentFromSequence" should {
