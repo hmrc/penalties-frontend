@@ -20,7 +20,6 @@ import java.time.LocalDateTime
 
 import base.SpecBase
 import models.compliance.{Return, ReturnStatusEnum}
-import net.ceedubs.ficus.readers.LocalDateReader
 import org.jsoup.Jsoup
 import utils.ImplicitDateFormatter
 
@@ -45,10 +44,8 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter {
         parsedHtmlResult.select("span").get(0).text() shouldBe "Submit VAT Return by 23 May 2021"
         parsedHtmlResult.select("strong").text shouldBe "Submitted on time"
 
-        parsedHtmlResult.select("ol").attr("class") shouldBe "hmrc-timeline"
         parsedHtmlResult.select("h2").get(1).text() shouldBe "VAT period 23 April 2021 to 30 April 2021"
         parsedHtmlResult.select("span").get(1).text() shouldBe "Submit VAT Return by 23 May 2021"
-        parsedHtmlResult.select("p").get(1).text shouldBe ""
 
         parsedHtmlResult.select("#point-expiry-date").text shouldBe "If you complete these actions we will remove your points in March 2023."
       }

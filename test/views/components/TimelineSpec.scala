@@ -66,11 +66,9 @@ class TimelineSpec extends SpecBase with ViewBehaviours with ImplicitDateFormatt
         doc.select("ol").attr("class") shouldBe "hmrc-timeline"
         doc.select("h2").get(0).text() shouldBe "VAT period 23 April 2021 to 30 April 2021"
         doc.select("span").get(0).text() shouldBe "Submit VAT Return by 23 May 2021"
-        doc.select("p").get(0).text() shouldBe ""
 
         doc.select("h2").get(1).text() shouldBe "VAT period 23 April 2021 to 30 April 2021"
         doc.select("span").get(1).text() shouldBe "Submit VAT Return by 23 May 2021"
-        doc.select("p").get(1).text() shouldBe ""
       }
     }
 
@@ -85,7 +83,6 @@ class TimelineSpec extends SpecBase with ViewBehaviours with ImplicitDateFormatt
 
         doc.select("h2").get(1).text() shouldBe "VAT period 23 April 2021 to 30 April 2021"
         doc.select("span").get(1).text() shouldBe "Submit VAT Return by 23 May 2021"
-        doc.select("p").get(1).text() shouldBe ""
       }
     }
   }

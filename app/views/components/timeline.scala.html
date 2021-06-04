@@ -5,8 +5,6 @@
 
 @(events: Seq[TimelineEvent])(implicit messages: Messages)
 
-@* will change the model type 'Return' once merged from PRM-253 *@
-
 @timelineEvent(event: TimelineEvent) = {
 <li class="hmrc-timeline__event">
     <h2 class="hmrc-timeline__event-title">@event.headerContent</h2>
@@ -14,10 +12,6 @@
     @if(event.tagContent.isDefined){
         <div class="hmrc-timeline__event-content">
             <p><strong class="govuk-tag govuk-tag--turquoise">@event.tagContent</strong></p>
-        </div>
-    }else{
-        <div class="hmrc-timeline__event-content">
-            <p></p>
         </div>
     }
 </li>
