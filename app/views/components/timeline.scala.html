@@ -1,0 +1,24 @@
+
+@import viewmodels.TimelineEvent
+
+@this()
+
+@(events: Seq[TimelineEvent])(implicit messages: Messages)
+
+@timelineEvent(event: TimelineEvent) = {
+<li class="hmrc-timeline__event">
+    <h2 class="hmrc-timeline__event-title">@event.headerContent</h2>
+    <span class="hmrc-timeline__event-meta">@event.spanContent</span>
+    @if(event.tagContent.isDefined){
+        <div class="hmrc-timeline__event-content">
+            <p><strong class="govuk-tag govuk-tag--turquoise">@event.tagContent</strong></p>
+        </div>
+    }
+</li>
+}
+
+<ol class="hmrc-timeline">
+    @events.map{event =>
+        @timelineEvent(event)
+    }
+</ol>

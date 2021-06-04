@@ -16,77 +16,54 @@
 
 package controllers
 
-import models.ETMPPayload
-import models.penalty.PenaltyPeriod
-import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
-import models.submission.{Submission, SubmissionStatusEnum}
+import java.time.LocalDateTime
+
+import models.compliance.{CompliancePayload, MissingReturn, Return, ReturnStatusEnum}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.test.Helpers._
 import stubs.AuthStub
-import stubs.PenaltiesStub.returnLSPDataStub
+import stubs.ComplianceStub._
 import testUtils.IntegrationSpecCommonBase
-
-import java.time.LocalDateTime
 
 class ComplianceControllerISpec extends IntegrationSpecCommonBase {
   val sampleDate1 = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
   val sampleDate2 = LocalDateTime.of(2021, 2, 1, 1, 1, 1)
   val sampleDate3 = LocalDateTime.of(2021, 2, 28, 1, 1, 1)
   val sampleDate4 = LocalDateTime.of(2021, 4, 1, 1, 1, 1)
+  val sampleDate5 = LocalDateTime.of(2021, 1, 31, 1, 1, 1)
 
-  //TODO: Change this to new compliance payload with missing return
-  val etmpPayloadWithOverdueSubmissionsPoints: ETMPPayload = ETMPPayload(
-    pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, penaltyPoints = Seq(
-      PenaltyPoint(
-        `type` = PenaltyTypeEnum.Point,
-        id = "1234567890",
-        number = "1",
-        dateCreated = sampleDate1,
-        dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
-        status = PointStatusEnum.Due,
-        reason = None,
-        period = Some(
-          PenaltyPeriod(
-            startDate = sampleDate2,
-            endDate = sampleDate3,
-            submission = Submission(
-              dueDate = sampleDate3.plusMonths(1).plusDays(7),
-              submittedDate = None,
-              status = SubmissionStatusEnum.Overdue
-            )
-          )
-        ),
-        communications = Seq.empty,
-        financial = None
+  val compliancePayloadWithMissingReturns: CompliancePayload = CompliancePayload(
+    noOfMissingReturns = "1",
+    noOfSubmissionsReqForCompliance = "1",
+    expiryDateOfAllPenaltyPoints = sampleDate1.plusMonths(1).plusYears(2),
+    missingReturns = Seq(
+      MissingReturn(
+        startDate = sampleDate1,
+        endDate = sampleDate5
+      )
+    ),
+    returns = Seq(
+      Return(
+        startDate = sampleDate2,
+        endDate = sampleDate3,
+        dueDate = sampleDate3.plusMonths(1).plusDays(7),
+        status = Some(ReturnStatusEnum.Submitted)
       )
     )
   )
 
-  //TODO: Change this to new compliance payload with no missing return
-  val etmpPayloadWithNoOverdueSubmissionsPoints: ETMPPayload = ETMPPayload(
-    pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, penaltyPoints = Seq(
-      PenaltyPoint(
-        `type` = PenaltyTypeEnum.Point,
-        id = "1234567890",
-        number = "1",
-        dateCreated = sampleDate1,
-        dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
-        status = PointStatusEnum.Due,
-        reason = None,
-        period = Some(
-          PenaltyPeriod(
-            startDate = sampleDate2,
-            endDate = sampleDate3,
-            submission = Submission(
-              dueDate = sampleDate3.plusMonths(1).plusDays(7),
-              submittedDate = Some(sampleDate3.plusMonths(1).plusDays(8)),
-              status = SubmissionStatusEnum.Submitted
-            )
-          )
-        ),
-        communications = Seq.empty,
-        financial = None
+  val compliancePayloadWithNoMissingReturns: CompliancePayload = CompliancePayload(
+    noOfMissingReturns = "1",
+    noOfSubmissionsReqForCompliance = "1",
+    expiryDateOfAllPenaltyPoints = sampleDate1.plusMonths(1).plusYears(2),
+    missingReturns = Seq.empty,
+    returns = Seq(
+      Return(
+        startDate = sampleDate1,
+        endDate = sampleDate5,
+        dueDate = sampleDate5.plusMonths(1).plusDays(7),
+        status = None
       )
     )
   )
@@ -100,21 +77,29 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
       }
 
       "there is missing returns - show the 'missing returns' content" in {
-        returnLSPDataStub(etmpPayloadWithOverdueSubmissionsPoints)
+        returnComplianceDataStub(compliancePayloadWithMissingReturns)
         val request = await(buildClientForRequestToApp(uri = "/compliance").get())
         request.status shouldBe OK
         val parsedBody = Jsoup.parse(request.body)
         parsedBody.select("#submit-these-missing-returns").text shouldBe "Submit these missing returns"
-        parsedBody.body().toString.contains("VAT Period 1 February 2021 to 28 February 2021") shouldBe true
+        parsedBody.body().toString.contains("VAT period 1 January 2021 to 31 January 2021") shouldBe true
+        parsedBody.select("#complete-these-actions-on-time").text shouldBe "Complete these actions on time"
+        parsedBody.body().toString.contains("VAT period 1 February 2021 to 28 February 2021") shouldBe true
+        parsedBody.body().toString.contains("Submit VAT Return by 4 April 2021") shouldBe true
+        parsedBody.body().toString.contains("Submitted on time") shouldBe true
       }
 
       "there is no missing returns - do not show the 'missing returns' content" in {
-        returnLSPDataStub(etmpPayloadWithNoOverdueSubmissionsPoints)
+        returnComplianceDataStub(compliancePayloadWithNoMissingReturns)
         val request = await(buildClientForRequestToApp(uri = "/compliance").get())
         request.status shouldBe OK
         val parsedBody = Jsoup.parse(request.body)
         parsedBody.select("#submit-these-missing-returns").text.isEmpty shouldBe true
-        parsedBody.body().toString.contains("VAT Period 1 February 2021 to 28 February 2021") shouldBe false
+        parsedBody.body().toString.contains("VAT period 1 February 2021 to 28 February 2021") shouldBe false
+        parsedBody.select("#complete-these-actions-on-time").text shouldBe "Complete these actions on time"
+        parsedBody.body().toString.contains("VAT period 1 January 2021 to 31 January 2021") shouldBe true
+        parsedBody.body().toString.contains("Submit VAT Return by 7 March 2021") shouldBe true
+        parsedBody.body().toString.contains("Submitted on time") shouldBe false
       }
     }
 

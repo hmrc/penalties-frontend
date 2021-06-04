@@ -36,11 +36,13 @@ import play.twirl.api.Html
 import services.AuthService
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.govukfrontend.views.Aliases.Tag
-import viewmodels.{SummaryCard, SummaryCardHelper}
+import viewmodels.{SummaryCard, SummaryCardHelper, TimelineHelper}
 import views.html.errors.Unauthorised
 import java.time.LocalDateTime
 
 import models.compliance.{CompliancePayload, MissingReturn, Return}
+
+import java.time.temporal.ChronoUnit
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -66,6 +68,8 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   val mockAuthService: AuthService = new AuthService(mockAuthConnector)
 
   val summaryCardHelper = injector.instanceOf[SummaryCardHelper]
+
+  val timelineHelper = injector.instanceOf[TimelineHelper]
 
   val vrn: String = "123456789"
 
@@ -243,4 +247,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   val penaltyId = "123456789"
 
   val redirectToAppealUrl: String = controllers.routes.IndexController.redirectToAppeals(penaltyId).url
+
+  val sampleDate: LocalDateTime = LocalDateTime.of(2021, 4, 23, 18, 25, 43)
+    .plus(511, ChronoUnit.MILLIS)
 }

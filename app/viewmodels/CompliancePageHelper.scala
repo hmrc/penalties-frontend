@@ -16,36 +16,24 @@
 
 package viewmodels
 
-import models.ETMPPayload
-import models.point.PenaltyPoint
-import models.submission.SubmissionStatusEnum
+import javax.inject.Inject
+import models.compliance.MissingReturn
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import utils.{ImplicitDateFormatter, ViewUtils}
 
-import javax.inject.Inject
-
 class CompliancePageHelper @Inject()(p: views.html.components.p,
                                      bullets: views.html.components.bullets) extends ViewUtils with ImplicitDateFormatter {
-  //TODO: The below code is temporary whilst PRM-253/254 are being completed.
-  //scalastyle:off
-  @deprecated("Not needed when calling ETMP/Stub to retrieve missing returns")
-  def getUnsubmittedReturns(etmpData: ETMPPayload): Seq[PenaltyPoint] = {
-    // To be replaced by the Compliance Model
-    etmpData.penaltyPoints.filter { x =>
-      x.period.isDefined && x.period.get.submission.status == SubmissionStatusEnum.Overdue
-    }
-  }
 
-  def getUnsubmittedReturnContentFromSequence(unsubmittedReturns: Seq[PenaltyPoint])(implicit messages: Messages): Html = {
+  def getUnsubmittedReturnContentFromSequence(unsubmittedReturns: Seq[MissingReturn])(implicit messages: Messages): Html = {
     if(unsubmittedReturns.nonEmpty) {
       html(
         bullets(
           unsubmittedReturns.map(unsubmittedReturn => {
             html(stringAsHtml(
               messages("compliance.vat.missingReturn",
-                dateTimeToString(unsubmittedReturn.period.get.startDate),
-                dateTimeToString(unsubmittedReturn.period.get.endDate))))
+                dateTimeToString(unsubmittedReturn.startDate),
+                dateTimeToString(unsubmittedReturn.endDate))))
           }),
           classes = "govuk-list govuk-list--bullet govuk-body-l")
       )

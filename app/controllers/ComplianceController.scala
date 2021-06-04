@@ -16,38 +16,42 @@
 
 package controllers
 
+import com.google.inject.internal.cglib.proxy.$Enhancer.EnhancerKey
 import config.AppConfig
 import controllers.predicates.AuthPredicate
+import javax.inject.Inject
 import play.api.i18n.I18nSupport
+import play.api.i18n.Lang.logger
 import play.api.mvc._
-import play.twirl.api.Html
-import services.PenaltiesService
+import services.ComplianceService
+import uk.gov.hmrc.auth.core.Enrolment
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{CurrencyFormatter, EnrolmentKeys}
-import viewmodels.CompliancePageHelper
+import viewmodels.{CompliancePageHelper, TimelineHelper}
 import views.html.ComplianceView
 
-import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class ComplianceController @Inject()(view: ComplianceView,
-                                     penaltiesService: PenaltiesService,
-                                     pageHelper: CompliancePageHelper)(implicit ec: ExecutionContext,
-                                                                       appConfig: AppConfig,
-                                                                       authorise: AuthPredicate,
-                                                                       controllerComponents: MessagesControllerComponents)
+                                     complianceService: ComplianceService,
+                                     pageHelper: CompliancePageHelper,
+                                    timelineHelper: TimelineHelper)(implicit ec: ExecutionContext,
+                                                                    appConfig: AppConfig,
+                                                                    authorise: AuthPredicate,
+                                                                    controllerComponents: MessagesControllerComponents)
   extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter {
 
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
+    val enrolmentKey = EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn)
     for {
-      //TODO: The below code is temporary whilst PRM-253/254 are being completed.
-      lSPData <- penaltiesService.getLspDataWithVrn(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))
-      missingReturns = pageHelper.getUnsubmittedReturns(lSPData)
-      missingReturnsBulletContent = pageHelper.getUnsubmittedReturnContentFromSequence(missingReturns)
+      complianceData <- complianceService.getComplianceDataWithEnrolmentKey(enrolmentKey)
+      missingReturnsBulletContent = pageHelper.getUnsubmittedReturnContentFromSequence(complianceData.missingReturns)
+      timelineContent = timelineHelper.getTimelineContent(complianceData.returns, complianceData.expiryDateOfAllPenaltyPoints)
     } yield {
       Ok(view(
-        missingReturns.nonEmpty,
-        missingReturnsBulletContent
+        complianceData.missingReturns.nonEmpty,
+        missingReturnsBulletContent,
+        timelineContent
       ))
     }
   }

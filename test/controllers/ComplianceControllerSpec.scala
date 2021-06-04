@@ -22,19 +22,20 @@ import org.mockito.Matchers._
 import org.mockito.Mockito.{mock, reset, when}
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import services.PenaltiesService
+import services.{ComplianceService, PenaltiesService}
 import testUtils.AuthTestModels
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
-import viewmodels.CompliancePageHelper
+import viewmodels.{CompliancePageHelper, TimelineHelper}
 import views.html.ComplianceView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class ComplianceControllerSpec extends SpecBase {
-  val mockPenaltiesService: PenaltiesService = mock(classOf[PenaltiesService])
+  val mockComplianceService: ComplianceService = mock(classOf[ComplianceService])
   val page: ComplianceView = injector.instanceOf[ComplianceView]
   val pageHelper: CompliancePageHelper = injector.instanceOf[CompliancePageHelper]
+  override val timelineHelper: TimelineHelper = injector.instanceOf[TimelineHelper]
   implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
 
 
@@ -46,14 +47,15 @@ class ComplianceControllerSpec extends SpecBase {
       Matchers.any(), Matchers.any())
     ).thenReturn(authResult)
 
-    reset(mockPenaltiesService)
-    when(mockPenaltiesService.getLspDataWithVrn(any())(any())).thenReturn(Future.successful(sampleLspData))
+    reset(mockComplianceService)
+    when(mockComplianceService.getComplianceDataWithEnrolmentKey(any())(any())).thenReturn(Future.successful(sampleComplianceData))
   }
 
   object Controller extends ComplianceController(
     page,
-    mockPenaltiesService,
-    pageHelper
+    mockComplianceService,
+    pageHelper,
+    timelineHelper
   )(implicitly, implicitly, authPredicate, stubMessagesControllerComponents())
 
   "onPageLoad" should {
@@ -67,7 +69,7 @@ class ComplianceControllerSpec extends SpecBase {
 
       "return ISE (exception thrown) - try calling the service to retrieve missing returns " +
         "and compliance summary but failing" in new Setup(AuthTestModels.successfulAuthResult) {
-        when(mockPenaltiesService.getLspDataWithVrn(any())(any())).thenReturn(Future.failed(new Exception("Something went wrong.")))
+        when(mockComplianceService.getComplianceDataWithEnrolmentKey(any())(any())).thenReturn(Future.failed(new Exception("Something went wrong.")))
 
         val result = intercept[Exception](await(Controller.onPageLoad()(fakeRequest)))
         result.getMessage shouldBe "Something went wrong."
