@@ -22,6 +22,7 @@
 
 @(      isUnsubmittedReturns: Boolean = false,
         contentForUnsubmittedReturnBullets: Html,
+        timelineContent: Html
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = messages("compliance.title"),
@@ -42,4 +43,6 @@
     }
 
     <h2 class="govuk-heading-l" id="complete-these-actions-on-time">@{messages("compliance.heading.completeActions")}</h2>
+
+    @timelineContent
 }

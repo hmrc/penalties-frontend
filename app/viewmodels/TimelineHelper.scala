@@ -16,25 +16,38 @@
 
 package viewmodels
 
+import java.time.LocalDateTime
+
 import javax.inject.Inject
-import models.Return
+import models.compliance.Return
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import utils.{ImplicitDateFormatter, ViewUtils}
 
-class TimelineHelper @Inject()(timeline: views.html.components.timeline) extends ImplicitDateFormatter with ViewUtils {
+class TimelineHelper @Inject()(timeline: views.html.components.timeline,
+                               p: views.html.components.p) extends ImplicitDateFormatter with ViewUtils {
 
-  def getTimelineContent(complianceReturns: Seq[Return])(implicit messages: Messages): Html = {
-
-    val events: Seq[TimelineEvent] =  complianceReturns.map{ compReturn =>
+  def getTimelineContent(complianceReturns: Seq[Return], pointExpiryDate: LocalDateTime)(implicit messages: Messages): Html = {
+    if (complianceReturns.nonEmpty) {
+      val events: Seq[TimelineEvent] = complianceReturns.map { compReturn =>
         TimelineEvent(
-          headerContent = messages("compliance.vat.actionEvent.header", dateTimeToString(compReturn.startDate), dateTimeToString(compReturn.endDate)),
-          spanContent = messages("compliance.vat.actionEvent.body", dateTimeToString(compReturn.dueDate)),
-          tagContent =  if(compReturn.status.isDefined) Some(messages(s"compliance.vat.actionEvent.tag.${compReturn.status.get}")) else None
+          headerContent = messages("compliance.timeline.actionEvent.header", dateTimeToString(compReturn.startDate), dateTimeToString(compReturn.endDate)),
+          spanContent = messages("compliance.timeline.actionEvent.body", dateTimeToString(compReturn.dueDate)),
+          tagContent = if (compReturn.status.isDefined)
+            Some(messages(s"compliance.timeline.actionEvent.tag.${compReturn.status.get.toString.toLowerCase}")) else None
         )
+      }
+
+      html(
+        timeline(events),
+        p(
+          content = html(stringAsHtml(messages("compliance.point.expiry", dateTimeToMonthYearString(pointExpiryDate)))),
+          classes = "govuk-body-l govuk-!-padding-top-3",
+          id = Some("point-expiry-date")
+        )
+      )
+    }else{
+      html()
     }
-
-    html(timeline(events))
   }
-
 }

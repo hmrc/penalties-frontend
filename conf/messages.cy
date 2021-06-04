@@ -92,13 +92,13 @@ compliance.vat.missingReturn = VAT Period {0} to {1}
 
 compliance.unsubmitted.header = Submit these missing returns
 
+compliance.timeline.actionEvent.header = VAT period {0} to {1}
+compliance.timeline.actionEvent.body = Submit VAT Return by {0}
+compliance.timeline.actionEvent.tag.submitted = Submitted on time
+compliance.point.removal = If you complete these actions we will remove your points in {0}.
+
 # BETA Banner
 # ----------------------------------------------------------
 feedback.before = This is a new service - your
 feedback.link = feedback
 feedback.after = will help us to improve it.
-
-
-compliance.vat.actionEvent.header = VAT period {0} to {1}
-compliance.vat.actionEvent.body = Submit VAT Return by {0}
-compliance.vat.actionEvent.tag.submitted = Submitted on time

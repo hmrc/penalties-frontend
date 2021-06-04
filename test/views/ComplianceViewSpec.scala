@@ -21,26 +21,47 @@ import base.{BaseSelectors, SpecBase}
 import org.jsoup.nodes.Document
 import play.twirl.api.{Html, HtmlFormat}
 import utils.ViewUtils
+import viewmodels.TimelineEvent
 import views.behaviours.ViewBehaviours
 import views.html.ComplianceView
+import views.html.components.{timeline, p}
 
 class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
   val compliancePage: ComplianceView = injector.instanceOf[ComplianceView]
+  val timeline = injector.instanceOf[timeline]
+  val p = injector.instanceOf[p]
   val sampleMissingReturns: String = "VAT Period 1 October 2021 to 31 December 2021"
+  val sampleTimelineEvent: TimelineEvent = TimelineEvent(
+    sampleMissingReturns,
+    "Submit VAT Return by February 2023",
+    Some("Submitted on time")
+  )
+
+  val sampleTimelineHtml: Html = html(
+    timeline(
+      Seq(sampleTimelineEvent)
+    ),
+    p(html(stringAsHtml("If you complete these actions we will remove your points in March 2023.")))
+  )
+
   object Selectors extends BaseSelectors {
     val staticListItem = (item: Int) => s"#main-content li:nth-child($item)"
 
     val submitTheseMissingReturnsH2 = "#submit-these-missing-returns"
 
     val completeTheseActionsOnTimeH2 = "#complete-these-actions-on-time"
+
+    val timelineEvent = (item: Int) => s"#main-content > div > div > ol > li:nth-child($item)"
+
+    val pointExpiryContent = "#point-expiry-date"
   }
 
   "ComplianceView" should {
-    def applyView(isUnsubmittedReturns: Boolean, contentForMissingReturns: Html): HtmlFormat.Appendable = {
-      compliancePage.apply(isUnsubmittedReturns, contentForMissingReturns)
+    def applyView(isUnsubmittedReturns: Boolean, contentForMissingReturns: Html, timelineContent: Html): HtmlFormat.Appendable = {
+      compliancePage.apply(isUnsubmittedReturns, contentForMissingReturns, timelineContent)
     }
 
-    implicit val docWithMissingReturns: Document = asDocument(applyView(isUnsubmittedReturns = true, html(stringAsHtml(sampleMissingReturns))))
+    implicit val docWithMissingReturns: Document = asDocument(applyView(isUnsubmittedReturns = true, html(stringAsHtml(sampleMissingReturns)), sampleTimelineHtml))
 
     val expectedContent = Seq(
       Selectors.title -> title,
@@ -55,12 +76,19 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
     behave like pageWithExpectedMessages(expectedContent)
 
-    "contain the VAT period when there is missing VAT returns" in {
+    "contain the VAT period and compliance timeline when there is missing VAT returns" in {
       docWithMissingReturns.body().toString.contains("VAT Period 1 October 2021 to 31 December 2021") shouldBe true
     }
 
+    "show a timeline with returns to be submitted and a point expiry date " in {
+      docWithMissingReturns.select(Selectors.timelineEvent(1) + " > h2").text shouldBe "VAT Period 1 October 2021 to 31 December 2021"
+      docWithMissingReturns.select(Selectors.timelineEvent(1) + " > span").text shouldBe "Submit VAT Return by February 2023"
+      docWithMissingReturns.select(Selectors.timelineEvent(1) + " > div > p > strong").text shouldBe "Submitted on time"
+      docWithMissingReturns.body().toString.contains("If you complete these actions we will remove your points in March 2023.") shouldBe true
+    }
+
     "not display 'submit these missing returns' when the user has no missing returns" in {
-      implicit val docWithNoMissingReturns: Document = asDocument(applyView(isUnsubmittedReturns = false, html()))
+      implicit val docWithNoMissingReturns: Document = asDocument(applyView(isUnsubmittedReturns = false, html(), html()))
       docWithNoMissingReturns.select(Selectors.submitTheseMissingReturnsH2).hasText shouldBe false
     }
   }

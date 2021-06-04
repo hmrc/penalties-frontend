@@ -21,75 +21,94 @@ import models.penalty.PenaltyPeriod
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
 import org.jsoup.Jsoup
-
 import java.time.LocalDateTime
+
+import models.compliance.MissingReturn
 
 class CompliancePageHelperSpec extends SpecBase {
   val sampleDate1 = LocalDateTime.of(2022, 1, 1, 1, 1, 1)
   val sampleDate2 = LocalDateTime.of(2022, 1, 31, 0, 0, 0)
-  val oneOverduePenaltyPoint: PenaltyPoint = PenaltyPoint(
-      `type` = PenaltyTypeEnum.Point,
-      id = "1",
-      number = "1",
-      dateCreated = sampleDate1.plusMonths(2).plusDays(8),
-      dateExpired = Some(sampleDate1.plusMonths(2).plusDays(7).plusYears(2)),
-      status = PointStatusEnum.Active,
-      reason = None,
-      period = Some(PenaltyPeriod(
-        startDate = sampleDate1,
-        endDate = sampleDate2,
-        submission = Submission(
-            dueDate = sampleDate1.plusMonths(2).plusDays(7),
-            submittedDate = Some(sampleDate1.plusMonths(2).plusDays(8)),
-            status = SubmissionStatusEnum.Overdue
-          )
-      )),
-      communications = Seq.empty,
-      financial = None
-  )
 
-  val multipleOverduePenaltyPoints: Seq[PenaltyPoint] = Seq(
-    PenaltyPoint(
-      `type` = PenaltyTypeEnum.Point,
-      id = "2",
-      number = "2",
-      dateCreated = sampleDate1.plusMonths(3).plusDays(8),
-      dateExpired = Some(sampleDate1.plusMonths(3).plusDays(7).plusYears(2)),
-      status = PointStatusEnum.Active,
-      reason = None,
-      period = Some(PenaltyPeriod(
-        startDate = sampleDate1.plusMonths(1),
-        endDate = sampleDate2.plusMonths(1),
-        submission = Submission(
-          dueDate = sampleDate1.plusMonths(3).plusDays(7),
-          submittedDate = Some(sampleDate1.plusMonths(3).plusDays(8)),
-          status = SubmissionStatusEnum.Overdue
-        )
-      )),
-      communications = Seq.empty,
-      financial = None
-    ),
-    PenaltyPoint(
-      `type` = PenaltyTypeEnum.Point,
-      id = "1",
-      number = "1",
-      dateCreated = sampleDate1.plusMonths(2).plusDays(8),
-      dateExpired = Some(sampleDate1.plusMonths(2).plusDays(7).plusYears(2)),
-      status = PointStatusEnum.Active,
-      reason = None,
-      period = Some(PenaltyPeriod(
-        startDate = sampleDate1,
-        endDate = sampleDate2,
-        submission = Submission(
-          dueDate = sampleDate1.plusMonths(2).plusDays(7),
-          submittedDate = Some(sampleDate1.plusMonths(2).plusDays(8)),
-          status = SubmissionStatusEnum.Overdue
-        )
-      )),
-      communications = Seq.empty,
-      financial = None
+  val singleMissingReturn = Seq(
+    MissingReturn(
+      startDate = sampleDate1,
+      endDate = sampleDate2
     )
   )
+  val multipleMissingReturns = Seq(
+    MissingReturn(
+      startDate = sampleDate1.plusMonths(1),
+      endDate = sampleDate2.plusMonths(1)
+    ),
+    MissingReturn(
+      startDate = sampleDate1,
+      endDate = sampleDate2
+    )
+  )
+
+//  val oneOverduePenaltyPoint: PenaltyPoint = PenaltyPoint(
+//      `type` = PenaltyTypeEnum.Point,
+//      id = "1",
+//      number = "1",
+//      dateCreated = sampleDate1.plusMonths(2).plusDays(8),
+//      dateExpired = Some(sampleDate1.plusMonths(2).plusDays(7).plusYears(2)),
+//      status = PointStatusEnum.Active,
+//      reason = None,
+//      period = Some(PenaltyPeriod(
+//        startDate = sampleDate1,
+//        endDate = sampleDate2,
+//        submission = Submission(
+//            dueDate = sampleDate1.plusMonths(2).plusDays(7),
+//            submittedDate = Some(sampleDate1.plusMonths(2).plusDays(8)),
+//            status = SubmissionStatusEnum.Overdue
+//          )
+//      )),
+//      communications = Seq.empty,
+//      financial = None
+//  )
+//
+//  val multipleOverduePenaltyPoints: Seq[PenaltyPoint] = Seq(
+//    PenaltyPoint(
+//      `type` = PenaltyTypeEnum.Point,
+//      id = "2",
+//      number = "2",
+//      dateCreated = sampleDate1.plusMonths(3).plusDays(8),
+//      dateExpired = Some(sampleDate1.plusMonths(3).plusDays(7).plusYears(2)),
+//      status = PointStatusEnum.Active,
+//      reason = None,
+//      period = Some(PenaltyPeriod(
+//        startDate = sampleDate1.plusMonths(1),
+//        endDate = sampleDate2.plusMonths(1),
+//        submission = Submission(
+//          dueDate = sampleDate1.plusMonths(3).plusDays(7),
+//          submittedDate = Some(sampleDate1.plusMonths(3).plusDays(8)),
+//          status = SubmissionStatusEnum.Overdue
+//        )
+//      )),
+//      communications = Seq.empty,
+//      financial = None
+//    ),
+//    PenaltyPoint(
+//      `type` = PenaltyTypeEnum.Point,
+//      id = "1",
+//      number = "1",
+//      dateCreated = sampleDate1.plusMonths(2).plusDays(8),
+//      dateExpired = Some(sampleDate1.plusMonths(2).plusDays(7).plusYears(2)),
+//      status = PointStatusEnum.Active,
+//      reason = None,
+//      period = Some(PenaltyPeriod(
+//        startDate = sampleDate1,
+//        endDate = sampleDate2,
+//        submission = Submission(
+//          dueDate = sampleDate1.plusMonths(2).plusDays(7),
+//          submittedDate = Some(sampleDate1.plusMonths(2).plusDays(8)),
+//          status = SubmissionStatusEnum.Overdue
+//        )
+//      )),
+//      communications = Seq.empty,
+//      financial = None
+//    )
+//  )
   val pageHelper: CompliancePageHelper = injector.instanceOf[CompliancePageHelper]
 
   "getUnsubmittedReturnContentFromSequence" should {
@@ -99,13 +118,13 @@ class CompliancePageHelperSpec extends SpecBase {
     }
 
     "return bullets for one missing period" in {
-      val result = pageHelper.getUnsubmittedReturnContentFromSequence(Seq(oneOverduePenaltyPoint))
+      val result = pageHelper.getUnsubmittedReturnContentFromSequence(singleMissingReturn)
       val parsedResult = Jsoup.parse(result.body)
       parsedResult.select("li").text() shouldBe "VAT Period 1 January 2022 to 31 January 2022"
     }
 
     "return bullets for multiple missing periods" in {
-      val result = pageHelper.getUnsubmittedReturnContentFromSequence(multipleOverduePenaltyPoints)
+      val result = pageHelper.getUnsubmittedReturnContentFromSequence(multipleMissingReturns)
       val parsedResult = Jsoup.parse(result.body)
       parsedResult.select("li:nth-child(1)").text() shouldBe "VAT Period 1 February 2022 to 28 February 2022"
       parsedResult.select("li:nth-child(2)").text() shouldBe "VAT Period 1 January 2022 to 31 January 2022"
