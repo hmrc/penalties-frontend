@@ -16,19 +16,15 @@
 
 package controllers
 
-import models.ETMPPayload
-import models.penalty.PenaltyPeriod
-import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
-import models.submission.{Submission, SubmissionStatusEnum}
+import java.time.LocalDateTime
+
+import models.compliance.{CompliancePayload, MissingReturn, Return, ReturnStatusEnum}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.test.Helpers._
 import stubs.AuthStub
 import stubs.ComplianceStub._
 import testUtils.IntegrationSpecCommonBase
-import java.time.LocalDateTime
-
-import models.compliance.{CompliancePayload, MissingReturn, Return, ReturnStatusEnum}
 
 class ComplianceControllerISpec extends IntegrationSpecCommonBase {
   val sampleDate1 = LocalDateTime.of(2021, 1, 1, 1, 1, 1)

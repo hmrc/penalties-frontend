@@ -16,14 +16,11 @@
 
 package viewmodels
 
-import base.SpecBase
-import models.penalty.PenaltyPeriod
-import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
-import models.submission.{Submission, SubmissionStatusEnum}
-import org.jsoup.Jsoup
 import java.time.LocalDateTime
 
+import base.SpecBase
 import models.compliance.MissingReturn
+import org.jsoup.Jsoup
 
 class CompliancePageHelperSpec extends SpecBase {
   val sampleDate1 = LocalDateTime.of(2022, 1, 1, 1, 1, 1)
@@ -57,14 +54,14 @@ class CompliancePageHelperSpec extends SpecBase {
     "return bullets for one missing period" in {
       val result = pageHelper.getUnsubmittedReturnContentFromSequence(singleMissingReturn)
       val parsedResult = Jsoup.parse(result.body)
-      parsedResult.select("li").text() shouldBe "VAT Period 1 January 2022 to 31 January 2022"
+      parsedResult.select("li").text() shouldBe "VAT period 1 January 2022 to 31 January 2022"
     }
 
     "return bullets for multiple missing periods" in {
       val result = pageHelper.getUnsubmittedReturnContentFromSequence(multipleMissingReturns)
       val parsedResult = Jsoup.parse(result.body)
-      parsedResult.select("li:nth-child(1)").text() shouldBe "VAT Period 1 February 2022 to 28 February 2022"
-      parsedResult.select("li:nth-child(2)").text() shouldBe "VAT Period 1 January 2022 to 31 January 2022"
+      parsedResult.select("li:nth-child(1)").text() shouldBe "VAT period 1 February 2022 to 28 February 2022"
+      parsedResult.select("li:nth-child(2)").text() shouldBe "VAT period 1 January 2022 to 31 January 2022"
     }
   }
 }
