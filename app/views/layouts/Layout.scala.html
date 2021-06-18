@@ -27,7 +27,8 @@
         phaseBanner: components.phaseBanner,
         govukBackLink: GovukBackLink,
         hmrcStandardFooter: HmrcStandardFooter,
-        languageSelect: views.html.LanguageSelect
+        languageSelect: views.html.LanguageSelect,
+        hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet
 )
 @(pageTitle: String,
   scriptsBlock: Option[Html] = None,
@@ -51,7 +52,7 @@
             signOutButtonText = Some(messages("base.signOut"))
         )))
     )
-
+    @hmrcTrackingConsentSnippet()
 }
 
 @scripts = {
