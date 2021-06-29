@@ -16,6 +16,7 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import viewmodels.SummaryCard
+@import models.point.AppealStatusEnum
 
 @this(
     govukSummaryList : GovukSummaryList,
@@ -71,26 +72,28 @@
         <div class="app-summary-card__actions">
             <ul class="app-summary-card__actions-list">
                 @{
-                    if(summaryCard.isAddedPoint) {
-                            <li class="app-summary-card__actions-list-item">{messages("summaryCard.adjustedPoint.cannotAppeal")}</li>
-                    } else if(summaryCard.penaltyPoint.isEmpty && !summaryCard.isAdjustedPoint) {
-                            <li class="app-summary-card__actions-list-item">
-                            {if(!summaryCard.isReturnSubmitted) {
-                                <a class="govuk-link" href="#">{messages("summaryCard.appealCheck")}</a>
+                    if(!summaryCard.isAppealedPoint) {
+                        if(summaryCard.isAddedPoint) {
+                                <li class="app-summary-card__actions-list-item">{messages("summaryCard.adjustedPoint.cannotAppeal")}</li>
+                        } else if(summaryCard.penaltyPoint.isEmpty && !summaryCard.isAdjustedPoint) {
+                                <li class="app-summary-card__actions-list-item">
+                                {if(!summaryCard.isReturnSubmitted) {
+                                        <a class="govuk-link" href="#">{messages("summaryCard.appealCheck")}</a>
+                                } else {
+                                        <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId).url}>{messages("summaryCard.footerLinkTextNoPointNumber")}</a>
+                                }}
+                                </li>
+                        } else if(!summaryCard.isAdjustedPoint) {
+                            if(!summaryCard.isReturnSubmitted) {
+                                    <li class="app-summary-card__actions-list-item">
+                                    <a class="govuk-link" href="#">{messages("summaryCard.appealCheck")}</a>
+                                    </li>
                             } else {
-                                <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId).url}>{messages("summaryCard.footerLinkTextNoPointNumber")}</a>
-                            }}
-                            </li>
-                    } else if(!summaryCard.isAdjustedPoint) {
-                            if(!summaryCard.isReturnSubmitted){
-                            <li class="app-summary-card__actions-list-item">
-                                <a class="govuk-link" href="#">{messages("summaryCard.appealCheck")}</a>
-                            </li>
-                            } else{
-                            <li class="app-summary-card__actions-list-item">
-                                <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId).url}>{messages("summaryCard.footerLinkText", summaryCard.penaltyPoint)}</a>
-                            </li>
+                                    <li class="app-summary-card__actions-list-item">
+                                    <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId).url}>{messages("summaryCard.footerLinkText", summaryCard.penaltyPoint)}</a>
+                                    </li>
                             }
+                        }
                     }
                 }
             </ul>

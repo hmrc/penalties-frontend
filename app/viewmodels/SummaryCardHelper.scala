@@ -18,9 +18,9 @@ package viewmodels
 
 import java.time.LocalDateTime
 import models.penalty.PenaltyPeriod
-import models.point.PointStatusEnum.{Active, Due, Rejected, Removed, Paid}
-import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
-import models.submission.SubmissionStatusEnum.{Overdue, Submitted}
+import models.point.PointStatusEnum.{Active, Due, Paid, Rejected, Removed}
+import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
+import models.submission.SubmissionStatusEnum.{Overdue, Submitted, Under_Review}
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
@@ -112,6 +112,7 @@ class SummaryCardHelper extends ImplicitDateFormatter {
       penalty.id,
       isReturnSubmitted,
       isAddedPoint = isAnAddedPoint,
+      isAppealedPoint = penalty.appealStatus.isDefined,
       isAdjustedPoint = isAnAdjustedPoint
     )
   }
@@ -161,7 +162,18 @@ class SummaryCardHelper extends ImplicitDateFormatter {
       case None => returnNotSubmittedCardBody(penalty.period.get)
     }
 
-    buildSummaryCard(cardBody, penalty)
+    if(penalty.appealStatus.isDefined) {
+      buildSummaryCard(cardBody :+ summaryListRow(
+        messages("summaryCard.appeal.status"),
+        Html(
+          messages(
+            s"summaryCard.appeal.${penalty.appealStatus.get.toString}"
+          )
+        )
+      ), penalty)
+    } else {
+      buildSummaryCard(cardBody, penalty)
+    }
   }
 
   def financialSummaryCard(penalty: PenaltyPoint, threshold: Int)(implicit messages: Messages): SummaryCard = {
@@ -233,16 +245,18 @@ class SummaryCardHelper extends ImplicitDateFormatter {
 
     val periodSubmissionStatus = penalty.period.map(_.submission.status)
     val penaltyPointStatus = penalty.status
+    val penaltyAppealStatus = penalty.appealStatus
 
-    (periodSubmissionStatus, penaltyPointStatus) match {
-      case (None, _)                    => renderTag(messages("status.active"))
-      case (Some(_), Removed)           => renderTag(messages("status.removed"))
-      case (Some(_), Paid)              => renderTag(messages("status.paid"))
-      case (Some(Overdue), _)           => renderTag(messages("status.due"), "penalty-due-tag")
-      case (Some(Submitted), Active)    => renderTag(messages("status.active"))
-      case (Some(Submitted), Rejected)  => renderTag(messages("status.rejected"))
-      case (Some(Submitted), Due)       => renderTag(messages("status.due"), "penalty-due-tag")
-      case (_, _)                       => renderTag(messages("status.active")) // Temp solution
+    (penaltyAppealStatus, periodSubmissionStatus, penaltyPointStatus) match {
+      case (Some(AppealStatusEnum.Under_Review), _, _)      => renderTag(messages("status.active"))
+      case (_, None, _)                    => renderTag(messages("status.active"))
+      case (_, Some(_), Removed)           => renderTag(messages("status.removed"))
+      case (_, Some(_), Paid)              => renderTag(messages("status.paid"))
+      case (_, Some(Overdue), _)           => renderTag(messages("status.due"), "penalty-due-tag")
+      case (_, Some(Submitted), Active)    => renderTag(messages("status.active"))
+      case (_, Some(Submitted), Rejected)  => renderTag(messages("status.rejected"))
+      case (_, Some(Submitted), Due)       => renderTag(messages("status.due"), "penalty-due-tag")
+      case (_, _, _)                       => renderTag(messages("status.active")) // Temp solution
     }
   }
 
