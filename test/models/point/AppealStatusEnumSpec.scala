@@ -16,23 +16,20 @@
 
 package models.point
 
-import play.api.libs.json.{Format, JsError, JsResult, JsString, JsSuccess, JsValue}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+import play.api.libs.json.{JsString, Json}
 
-object AppealStatusEnum extends Enumeration {
+class AppealStatusEnumSpec extends AnyWordSpec with Matchers {
 
-  val Under_Review = Value
-
-  implicit val format: Format[AppealStatusEnum.Value] = new Format[AppealStatusEnum.Value] {
-    override def writes(o: AppealStatusEnum.Value): JsValue = {
-      JsString(o.toString.toUpperCase)
-    }
-
-    override def reads(json: JsValue): JsResult[AppealStatusEnum.Value] = {
-      json.as[String].toUpperCase match {
-        case "UNDER_REVIEW" => JsSuccess(Under_Review)
-        case e => JsError(s"$e not recognised")
-      }
-    }
+  "be readable from JSON for 'Under_Review'" in {
+    val result = Json.fromJson(JsString("UNDER_REVIEW"))(AppealStatusEnum.format)
+    result.isSuccess shouldBe true
+    result.get shouldBe AppealStatusEnum.Under_Review
   }
 
+  "be writable to JSON for 'Under_Review'" in {
+    val result = Json.toJson(AppealStatusEnum.Under_Review)
+    result shouldBe JsString("UNDER_REVIEW")
+  }
 }

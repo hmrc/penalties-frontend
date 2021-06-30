@@ -21,7 +21,7 @@ import controllers.predicates.AuthPredicate
 import models.ETMPPayload
 import models.financial.Financial
 import models.penalty.PenaltyPeriod
-import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
+import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -38,12 +38,11 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.govukfrontend.views.Aliases.Tag
 import viewmodels.{SummaryCard, SummaryCardHelper, TimelineHelper}
 import views.html.errors.Unauthorised
-import java.time.LocalDateTime
 
+import java.time.LocalDateTime
 import models.compliance.{CompliancePayload, MissingReturn, Return}
 
 import java.time.temporal.ChronoUnit
-
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
@@ -162,6 +161,27 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         LocalDateTime.now,
         None,
         SubmissionStatusEnum.Overdue
+      )
+    )),
+    Seq.empty
+  )
+
+  val samplPenaltyPointAppealedUnderReview = PenaltyPoint(
+    PenaltyTypeEnum.Point,
+    "123456789",
+    "1",
+    Some(AppealStatusEnum.Under_Review),
+    LocalDateTime.now,
+    Some(LocalDateTime.now),
+    PointStatusEnum.Active,
+    None,
+    Some(PenaltyPeriod(
+      LocalDateTime.now,
+      LocalDateTime.now,
+      Submission(
+        LocalDateTime.now,
+        None,
+        SubmissionStatusEnum.Submitted
       )
     )),
     Seq.empty

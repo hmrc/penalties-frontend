@@ -18,7 +18,7 @@ package viewmodels
 
 import assets.messages.IndexMessages._
 import base.SpecBase
-import models.point.{PenaltyPoint, PointStatusEnum}
+import models.point.{AppealStatusEnum, PenaltyPoint, PointStatusEnum}
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
@@ -139,6 +139,13 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         val actualResult = helper.financialSummaryCard(pointToPassIn, quarterlyThreshold)
         val expectedResult = sampleSummaryCardReturnSubmitted
         actualResult shouldBe expectedResult
+      }
+
+      "show the appeal status when the point has been appealed" in {
+        val result = helper.financialSummaryCard(sampleFinancialPenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Under_Review)), quarterlyThreshold)
+        result.isAppealedPoint shouldBe true
+        result.appealStatus.isDefined shouldBe true
+        result.appealStatus.get shouldBe AppealStatusEnum.Under_Review
       }
     }
 
@@ -285,6 +292,14 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
     }
 
     "tagStatus is called" when {
+      "an appealed point is provided - under review" in {
+        val result = helper.tagStatus(samplPenaltyPointAppealedUnderReview)
+        result shouldBe Tag(
+          content = Text(activeTag),
+          classes = "govuk-tag "
+        )
+      }
+
       "an overdue penaltyPointSubmission is provided" in {
         val result = helper.tagStatus(sampleOverduePenaltyPoint)
         result shouldBe Tag(
@@ -352,6 +367,15 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         quarterlyResult shouldBe false
         monthlyResult shouldBe false
       }
+    }
+  }
+
+  "pointSummaryCard" should {
+    "when given an appealed point - set the relevant fields" in {
+      val result = helper.pointSummaryCard(samplPenaltyPointAppealedUnderReview, false)
+      result.isAppealedPoint shouldBe true
+      result.appealStatus.isDefined shouldBe true
+      result.appealStatus.get shouldBe AppealStatusEnum.Under_Review
     }
   }
 }

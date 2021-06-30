@@ -113,6 +113,7 @@ class SummaryCardHelper extends ImplicitDateFormatter {
       isReturnSubmitted,
       isAddedPoint = isAnAddedPoint,
       isAppealedPoint = penalty.appealStatus.isDefined,
+      appealStatus = penalty.appealStatus,
       isAdjustedPoint = isAnAdjustedPoint
     )
   }
@@ -176,46 +177,60 @@ class SummaryCardHelper extends ImplicitDateFormatter {
     }
   }
 
+  //scalastyle:off
   def financialSummaryCard(penalty: PenaltyPoint, threshold: Int)(implicit messages: Messages): SummaryCard = {
-    SummaryCard(
-      Seq(
-        summaryListRow(
-          messages("summaryCard.key1"),
-          Html(
-            messages(
-              "summaryCard.value1",
-              dateTimeToString(penalty.period.get.startDate),
-              dateTimeToString(penalty.period.get.endDate)
-            )
-          )
-        ),
-        summaryListRow(
-          messages("summaryCard.key2"),
-          Html(
-            dateTimeToString(penalty.period.get.submission.dueDate)
-          )
-        ),
-        penalty.period.get.submission.submittedDate.fold(
-          summaryListRow(
-            messages("summaryCard.key3"),
-            Html(
-              messages("summaryCard.notYetSubmitted")
-            )
-          )
-        )(dateSubmitted =>
-          summaryListRow(
-            messages("summaryCard.key3"),
-            Html(
-              dateTimeToString(dateSubmitted)
-            )
+    val base = Seq(
+      summaryListRow(
+        messages("summaryCard.key1"),
+        Html(
+          messages(
+            "summaryCard.value1",
+            dateTimeToString(penalty.period.get.startDate),
+            dateTimeToString(penalty.period.get.endDate)
           )
         )
       ),
+      summaryListRow(
+        messages("summaryCard.key2"),
+        Html(
+          dateTimeToString(penalty.period.get.submission.dueDate)
+        )
+      ),
+      penalty.period.get.submission.submittedDate.fold(
+        summaryListRow(
+          messages("summaryCard.key3"),
+          Html(
+            messages("summaryCard.notYetSubmitted")
+          )
+        )
+      )(dateSubmitted =>
+        summaryListRow(
+          messages("summaryCard.key3"),
+          Html(
+            dateTimeToString(dateSubmitted)
+          )
+        )
+      )
+    )
+
+    SummaryCard(
+      if(penalty.appealStatus.isDefined) {
+        base :+ summaryListRow(
+          messages("summaryCard.appeal.status"),
+          Html(
+            messages(
+              s"summaryCard.appeal.${penalty.appealStatus.get.toString}"
+            )
+          )
+        )
+      } else base,
       tagStatus(penalty),
       getPenaltyNumberBasedOnThreshold(penalty.number, threshold),
       penalty.id,
       penalty.period.fold(false)(_.submission.submittedDate.isDefined),
       isFinancialPoint = penalty.`type` == PenaltyTypeEnum.Financial,
+      isAppealedPoint = penalty.appealStatus.isDefined,
+      appealStatus = penalty.appealStatus,
       amountDue = penalty.financial.get.amountDue
     )
   }
@@ -248,15 +263,15 @@ class SummaryCardHelper extends ImplicitDateFormatter {
     val penaltyAppealStatus = penalty.appealStatus
 
     (penaltyAppealStatus, periodSubmissionStatus, penaltyPointStatus) match {
+      case (_, None, _)                                     => renderTag(messages("status.active"))
+      case (_, Some(_), Removed)                            => renderTag(messages("status.removed"))
+      case (_, Some(_), Paid)                               => renderTag(messages("status.paid"))
+      case (_, Some(Overdue), _)                            => renderTag(messages("status.due"), "penalty-due-tag")
       case (Some(AppealStatusEnum.Under_Review), _, _)      => renderTag(messages("status.active"))
-      case (_, None, _)                    => renderTag(messages("status.active"))
-      case (_, Some(_), Removed)           => renderTag(messages("status.removed"))
-      case (_, Some(_), Paid)              => renderTag(messages("status.paid"))
-      case (_, Some(Overdue), _)           => renderTag(messages("status.due"), "penalty-due-tag")
-      case (_, Some(Submitted), Active)    => renderTag(messages("status.active"))
-      case (_, Some(Submitted), Rejected)  => renderTag(messages("status.rejected"))
-      case (_, Some(Submitted), Due)       => renderTag(messages("status.due"), "penalty-due-tag")
-      case (_, _, _)                       => renderTag(messages("status.active")) // Temp solution
+      case (_, Some(Submitted), Active)                     => renderTag(messages("status.active"))
+      case (_, Some(Submitted), Rejected)                   => renderTag(messages("status.rejected"))
+      case (_, Some(Submitted), Due)                        => renderTag(messages("status.due"), "penalty-due-tag")
+      case (_, _, _)                                        => renderTag(messages("status.active")) // Temp solution
     }
   }
 
