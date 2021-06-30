@@ -38,11 +38,11 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     val indexedActivePoints = filteredActivePenalties.zipWithIndex
     penalties.map { penalty =>
       val newPenalty = findAndReindexPointIfIsActive(indexedActivePoints, penalty)
-      (newPenalty.`type`, newPenalty.status) match {
-        case (PenaltyTypeEnum.Financial, _) => financialSummaryCard(newPenalty, threshold)
-        case (PenaltyTypeEnum.Point, PointStatusEnum.Added) => addedPointCard(newPenalty, thresholdMet)
-        case (PenaltyTypeEnum.Point, PointStatusEnum.Removed) => removedPointCard(newPenalty)
-        case (PenaltyTypeEnum.Point, _) => pointSummaryCard(newPenalty, thresholdMet)
+      (newPenalty.`type`, newPenalty.status, newPenalty.appealStatus) match {
+        case (PenaltyTypeEnum.Financial, _, _) => financialSummaryCard(newPenalty, threshold)
+        case (PenaltyTypeEnum.Point, PointStatusEnum.Added, _) => addedPointCard(newPenalty, thresholdMet)
+        case (PenaltyTypeEnum.Point, PointStatusEnum.Removed, None) => removedPointCard(newPenalty)
+        case (PenaltyTypeEnum.Point, _, _) => pointSummaryCard(newPenalty, thresholdMet)
       }
     }
   }

@@ -18,7 +18,7 @@ package services
 
 import connectors.PenaltiesConnector
 import models.ETMPPayload
-import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
+import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -30,12 +30,12 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
 
   def isAnyLSPUnpaid(penaltyPoints: Seq[PenaltyPoint]): Boolean = {
     penaltyPoints.exists(penalty => penalty.`type` == PenaltyTypeEnum.Financial &&
-      penalty.status != PointStatusEnum.Paid)
+      penalty.status != PointStatusEnum.Paid && !penalty.appealStatus.contains(AppealStatusEnum.Accepted))
   }
 
   def isAnyLSPUnpaidAndSubmissionIsDue(penaltyPoints: Seq[PenaltyPoint]): Boolean = {
     penaltyPoints.exists(penalty => penalty.status == PointStatusEnum.Due &&
       penalty.`type` == PenaltyTypeEnum.Financial &&
-      penalty.period.isDefined && penalty.period.get.submission.submittedDate.isEmpty)
+      penalty.period.isDefined && penalty.period.get.submission.submittedDate.isEmpty && !penalty.appealStatus.contains(AppealStatusEnum.Accepted))
   }
 }
