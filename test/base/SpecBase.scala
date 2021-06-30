@@ -166,7 +166,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     Seq.empty
   )
 
-  val samplPenaltyPointAppealedUnderReview = PenaltyPoint(
+  val samplePenaltyPointAppealedUnderReview = PenaltyPoint(
     PenaltyTypeEnum.Point,
     "123456789",
     "1",
@@ -186,6 +186,8 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     )),
     Seq.empty
   )
+
+  val samplePenaltyPointAppealedAccepted = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Accepted))
 
   val sampleRemovedPenaltyPoint = PenaltyPoint(
     PenaltyTypeEnum.Point,

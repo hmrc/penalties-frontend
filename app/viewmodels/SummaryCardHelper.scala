@@ -26,9 +26,11 @@ import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
-import utils.ImplicitDateFormatter
+import utils.{ImplicitDateFormatter, ViewUtils}
 
-class SummaryCardHelper extends ImplicitDateFormatter {
+import javax.inject.Inject
+
+class SummaryCardHelper @Inject()(link: views.html.components.link) extends ImplicitDateFormatter with ViewUtils {
 
   def populateCard(penalties: Seq[PenaltyPoint], threshold: Int, activePoints: Int)(implicit messages: Messages): Seq[SummaryCard] = {
     val thresholdMet: Boolean = pointsThresholdMet(threshold, activePoints)
@@ -135,7 +137,7 @@ class SummaryCardHelper extends ImplicitDateFormatter {
       summaryListRow(messages("summaryCard.key3"), Html(dateTimeToString(period.get.submission.submittedDate.get)))
     )
 
-    if(penalty.dateExpired.isDefined && !thresholdMet) {
+    if(penalty.dateExpired.isDefined && !thresholdMet && !penalty.appealStatus.contains(AppealStatusEnum.Accepted)) {
       base :+ summaryListRow(messages("summaryCard.key4"), Html(dateTimeToMonthYearString(penalty.dateExpired.get)))
     } else {
       base
@@ -166,11 +168,7 @@ class SummaryCardHelper extends ImplicitDateFormatter {
     if(penalty.appealStatus.isDefined) {
       buildSummaryCard(cardBody :+ summaryListRow(
         messages("summaryCard.appeal.status"),
-        Html(
-          messages(
-            s"summaryCard.appeal.${penalty.appealStatus.get.toString}"
-          )
-        )
+        returnAppealStatusMessageBasedOnPenalty(penalty)
       ), penalty)
     } else {
       buildSummaryCard(cardBody, penalty)
@@ -217,11 +215,7 @@ class SummaryCardHelper extends ImplicitDateFormatter {
       if(penalty.appealStatus.isDefined) {
         base :+ summaryListRow(
           messages("summaryCard.appeal.status"),
-          Html(
-            messages(
-              s"summaryCard.appeal.${penalty.appealStatus.get.toString}"
-            )
-          )
+          returnAppealStatusMessageBasedOnPenalty(penalty)
         )
       } else base,
       tagStatus(penalty),
@@ -263,6 +257,7 @@ class SummaryCardHelper extends ImplicitDateFormatter {
     val penaltyAppealStatus = penalty.appealStatus
 
     (penaltyAppealStatus, periodSubmissionStatus, penaltyPointStatus) match {
+      case (Some(AppealStatusEnum.Accepted), _, _)          => renderTag(messages("status.cancelled"))
       case (_, None, _)                                     => renderTag(messages("status.active"))
       case (_, Some(_), Removed)                            => renderTag(messages("status.removed"))
       case (_, Some(_), Paid)                               => renderTag(messages("status.paid"))
@@ -276,4 +271,20 @@ class SummaryCardHelper extends ImplicitDateFormatter {
   }
 
   def pointsThresholdMet(threshold: Int, activePoints: Int):Boolean = activePoints >= threshold
+
+  private def returnAppealStatusMessageBasedOnPenalty(penaltyPoint: PenaltyPoint)(implicit messages: Messages): Html = {
+    if(penaltyPoint.appealStatus.get == AppealStatusEnum.Accepted) {
+      html(
+        Html(messages(s"summaryCard.appeal.${penaltyPoint.appealStatus.get.toString}")),
+        Html("<br>"),
+        link("#", "summaryCard.appeal.readMessage")
+      )
+    } else {
+      Html(
+        messages(
+          s"summaryCard.appeal.${penaltyPoint.appealStatus.get.toString}"
+        )
+      )
+    }
+  }
 }

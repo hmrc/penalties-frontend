@@ -141,11 +141,18 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         actualResult shouldBe expectedResult
       }
 
-      "show the appeal status when the point has been appealed" in {
+      "show the appeal status when the point has been appealed - for under review" in {
         val result = helper.financialSummaryCard(sampleFinancialPenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Under_Review)), quarterlyThreshold)
         result.isAppealedPoint shouldBe true
         result.appealStatus.isDefined shouldBe true
         result.appealStatus.get shouldBe AppealStatusEnum.Under_Review
+      }
+
+      "show the appeal status when the point has been appealed - for accepted" in {
+        val result = helper.financialSummaryCard(sampleFinancialPenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Accepted)), quarterlyThreshold)
+        result.isAppealedPoint shouldBe true
+        result.appealStatus.isDefined shouldBe true
+        result.appealStatus.get shouldBe AppealStatusEnum.Accepted
       }
     }
 
@@ -293,9 +300,17 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
     "tagStatus is called" when {
       "an appealed point is provided - under review" in {
-        val result = helper.tagStatus(samplPenaltyPointAppealedUnderReview)
+        val result = helper.tagStatus(samplePenaltyPointAppealedUnderReview)
         result shouldBe Tag(
           content = Text(activeTag),
+          classes = "govuk-tag "
+        )
+      }
+
+      "an appealed point is provided - accepted" in {
+        val result = helper.tagStatus(samplePenaltyPointAppealedAccepted)
+        result shouldBe Tag(
+          content = Text(cancelledTag),
           classes = "govuk-tag "
         )
       }
@@ -371,11 +386,18 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
   }
 
   "pointSummaryCard" should {
-    "when given an appealed point - set the relevant fields" in {
-      val result = helper.pointSummaryCard(samplPenaltyPointAppealedUnderReview, false)
+    "when given an appealed point (under review) - set the relevant fields" in {
+      val result = helper.pointSummaryCard(samplePenaltyPointAppealedUnderReview, false)
       result.isAppealedPoint shouldBe true
       result.appealStatus.isDefined shouldBe true
       result.appealStatus.get shouldBe AppealStatusEnum.Under_Review
+    }
+
+    "when given an appealed point (accepted) - set the relevant fields" in {
+      val result = helper.pointSummaryCard(samplePenaltyPointAppealedAccepted, false)
+      result.isAppealedPoint shouldBe true
+      result.appealStatus.isDefined shouldBe true
+      result.appealStatus.get shouldBe AppealStatusEnum.Accepted
     }
   }
 }
