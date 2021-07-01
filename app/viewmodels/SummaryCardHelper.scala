@@ -273,18 +273,21 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   def pointsThresholdMet(threshold: Int, activePoints: Int):Boolean = activePoints >= threshold
 
   private def returnAppealStatusMessageBasedOnPenalty(penaltyPoint: PenaltyPoint)(implicit messages: Messages): Html = {
-    if(penaltyPoint.appealStatus.get == AppealStatusEnum.Accepted) {
-      html(
-        Html(messages(s"summaryCard.appeal.${penaltyPoint.appealStatus.get.toString}")),
-        Html("<br>"),
-        link("#", "summaryCard.appeal.readMessage")
-      )
-    } else {
-      Html(
-        messages(
-          s"summaryCard.appeal.${penaltyPoint.appealStatus.get.toString}"
+    penaltyPoint.appealStatus.get match {
+      case AppealStatusEnum.Accepted | AppealStatusEnum.Rejected => {
+        html(
+          Html(messages(s"summaryCard.appeal.${penaltyPoint.appealStatus.get.toString}")),
+          Html("<br>"),
+          link("#", "summaryCard.appeal.readMessage")
         )
-      )
+      }
+      case _ => {
+        Html(
+          messages(
+            s"summaryCard.appeal.${penaltyPoint.appealStatus.get.toString}"
+          )
+        )
+      }
     }
   }
 }
