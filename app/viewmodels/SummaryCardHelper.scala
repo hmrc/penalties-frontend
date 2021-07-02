@@ -276,7 +276,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
 
   private def returnAppealStatusMessageBasedOnPenalty(penaltyPoint: PenaltyPoint)(implicit messages: Messages): Html = {
     penaltyPoint.appealStatus.get match {
-      case AppealStatusEnum.Accepted | AppealStatusEnum.Rejected => {
+      case AppealStatusEnum.Accepted | AppealStatusEnum.Rejected | AppealStatusEnum.Tribunal_Rejected => {
         html(
           Html(messages(s"summaryCard.appeal.${penaltyPoint.appealStatus.get.toString}")),
           Html("<br>"),
@@ -288,13 +288,6 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
           Html(messages(s"summaryCard.appeal.${penaltyPoint.appealStatus.get.toString}")),
           Html("<br>"),
           link("#", "summaryCard.appeal.readMessageReinstated")
-        )
-      }
-      case AppealStatusEnum.Tribunal_Rejected => {
-        html(
-          Html(messages(s"summaryCard.appeal.${penaltyPoint.appealStatus.get.toString}")),
-          Html("<br>"),
-          link("#", "summaryCard.appeal.readMessage")
         )
       }
       case _ => {

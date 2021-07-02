@@ -49,6 +49,10 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
     Seq(samplePenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Rejected))),
     quarterlyThreshold, 1).head
 
+  val summaryCardModelWithAppealedPointTribunalRejected: SummaryCard = summaryCardHelper.populateCard(
+    Seq(samplePenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Tribunal_Rejected))),
+    quarterlyThreshold, 1).head
+
   val summaryCardModelWithAddedPoint: SummaryCard = summaryCardHelper.populateCard(Seq(PenaltyPoint(
     PenaltyTypeEnum.Point,
     "123456789",
@@ -352,6 +356,7 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
       val docWithAppealedPoint: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPoint))
       val docWithAppealedPointAccepted: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPointAccepted))
       val docWithAppealedPointRejected: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPointRejected))
+      val docWithAppealedPointUnderTribunalRejected: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPointTribunalRejected))
 
       "not show the appeal link" in {
         docWithAppealedPoint.select(".app-summary-card__footer a").isEmpty shouldBe true
@@ -372,6 +377,11 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
         docWithAppealedPointRejected.select("dt").text().contains("Point due to expire") shouldBe true
         docWithAppealedPointRejected.select("dt").get(4).text() shouldBe "Appeal status"
         docWithAppealedPointRejected.select("dd").get(4).text() shouldBe "Appeal rejected Read outcome message"
+      }
+
+      "have the appeal status for TRIBUNAL REJECTED" in {
+        docWithAppealedPointUnderTribunalRejected.select("dt").get(4).text() shouldBe "Appeal status"
+        docWithAppealedPointUnderTribunalRejected.select("dd").get(4).text() shouldBe "Appeal rejected by tax tribunal Read outcome message"
       }
     }
   }
