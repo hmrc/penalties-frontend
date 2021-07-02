@@ -61,6 +61,7 @@ summaryCard.appeal.status = Appeal status
 summaryCard.appeal.Under_Review = Under review by HMRC
 summaryCard.appeal.Reinstated = Appeal outcome changed
 summaryCard.appeal.readMessageReinstated = Read message
+summaryCard.appeal.Tribunal_Rejected = Appeal rejected by tax tribunal
 summaryCard.notYetSubmitted = Not yet submitted
 summaryCard.footerLinkText = Appeal penalty point {0}
 summaryCard.footerLinkTextNoPointNumber = Appeal this penalty

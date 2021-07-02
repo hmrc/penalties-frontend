@@ -168,6 +168,13 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         result.appealStatus.isDefined shouldBe true
         result.appealStatus.get shouldBe AppealStatusEnum.Reinstated
       }
+
+      "show the appeal status when the point has been appealed - for tribunal rejected" in {
+        val result = helper.financialSummaryCard(sampleFinancialPenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Tribunal_Rejected)), quarterlyThreshold)
+        result.isAppealedPoint shouldBe true
+        result.appealStatus.isDefined shouldBe true
+        result.appealStatus.get shouldBe AppealStatusEnum.Tribunal_Rejected
+      }
     }
 
     "return SummaryCards when given Penalty point" when {
@@ -345,6 +352,14 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         )
       }
 
+      "an appealed point is provided - tribunal rejected" in {
+        val result = helper.tagStatus(samplePenaltyPointAppealedTribunalRejected)
+        result shouldBe Tag(
+          content = Text(activeTag),
+          classes = "govuk-tag "
+        )
+      }
+
       "an overdue penaltyPointSubmission is provided" in {
         val result = helper.tagStatus(sampleOverduePenaltyPoint)
         result shouldBe Tag(
@@ -442,6 +457,12 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       result.isAppealedPoint shouldBe true
       result.appealStatus.isDefined shouldBe true
       result.appealStatus.get shouldBe AppealStatusEnum.Reinstated
+    }
+    "when given an appealed point (tribunal rejected) - set the relevant fields" in {
+      val result = helper.pointSummaryCard(samplePenaltyPointAppealedTribunalRejected, false)
+      result.isAppealedPoint shouldBe true
+      result.appealStatus.isDefined shouldBe true
+      result.appealStatus.get shouldBe AppealStatusEnum.Tribunal_Rejected
     }
   }
 }

@@ -64,6 +64,7 @@ summaryCard.appeal.Accepted = Appeal accepted
 summaryCard.appeal.readMessage = Read outcome message
 summaryCard.appeal.Reinstated = Appeal outcome changed
 summaryCard.appeal.readMessageReinstated = Read message
+summaryCard.appeal.Tribunal_Rejected = Appeal rejected by tax tribunal
 summaryCard.notYetSubmitted = Not yet submitted
 summaryCard.footerLinkText = Appeal penalty point {0}
 summaryCard.footerLinkTextNoPointNumber = Appeal this penalty
