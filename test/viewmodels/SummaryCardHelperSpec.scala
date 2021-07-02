@@ -148,6 +148,13 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         result.appealStatus.get shouldBe AppealStatusEnum.Under_Review
       }
 
+      "show the appeal status when the point has been appealed - for under tribunal review" in {
+        val result = helper.financialSummaryCard(sampleFinancialPenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Under_Tribunal_Review)), quarterlyThreshold)
+        result.isAppealedPoint shouldBe true
+        result.appealStatus.isDefined shouldBe true
+        result.appealStatus.get shouldBe AppealStatusEnum.Under_Tribunal_Review
+      }
+
       "show the appeal status when the point has been appealed - for accepted" in {
         val result = helper.financialSummaryCard(sampleFinancialPenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Accepted)), quarterlyThreshold)
         result.isAppealedPoint shouldBe true
@@ -436,6 +443,13 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       result.isAppealedPoint shouldBe true
       result.appealStatus.isDefined shouldBe true
       result.appealStatus.get shouldBe AppealStatusEnum.Under_Review
+    }
+
+    "when given an appealed point (under tribunal review) - set the relevant fields" in {
+      val result = helper.pointSummaryCard(samplePenaltyPointAppealedUnderTribunalReview, false)
+      result.isAppealedPoint shouldBe true
+      result.appealStatus.isDefined shouldBe true
+      result.appealStatus.get shouldBe AppealStatusEnum.Under_Tribunal_Review
     }
 
     "when given an appealed point (accepted) - set the relevant fields" in {
