@@ -59,6 +59,7 @@ summaryCard.key3.defaultValue = Not yet submitted
 summaryCard.key4 = Point due to expire
 summaryCard.appeal.status = Appeal status
 summaryCard.appeal.Under_Review = Under review by HMRC
+summaryCard.appeal.Under_Tribunal_Review = Under review by the tax tribunal
 summaryCard.appeal.Rejected = Appeal rejected
 summaryCard.appeal.Accepted = Appeal accepted
 summaryCard.appeal.readMessage = Read outcome message
