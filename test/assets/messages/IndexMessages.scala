@@ -54,6 +54,7 @@ object IndexMessages {
 
   val penaltyPointHeader = "Penalty point 1"
   val activeTag = "active"
+  val cancelledTag = "cancelled"
   val rejectedTag = "rejected"
   val overdueTag = "due"
   val paidTag = "paid"

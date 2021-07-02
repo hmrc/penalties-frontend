@@ -19,7 +19,7 @@ package views.components
 import base.{BaseSelectors, SpecBase}
 import models.financial.Financial
 import models.penalty.PenaltyPeriod
-import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
+import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
 import org.jsoup.nodes.Document
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
@@ -37,10 +37,23 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
 
   val summaryCardHtml: summaryCard = injector.instanceOf[summaryCard]
 
+  val summaryCardModelWithAppealedPoint: SummaryCard = summaryCardHelper.populateCard(
+    Seq(samplePenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Under_Review))),
+    quarterlyThreshold, 1).head
+
+  val summaryCardModelWithAppealedPointAccepted: SummaryCard = summaryCardHelper.populateCard(
+    Seq(samplePenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Accepted))),
+    quarterlyThreshold, 1).head
+
+  val summaryCardModelWithAppealedPointRejected: SummaryCard = summaryCardHelper.populateCard(
+    Seq(samplePenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Rejected))),
+    quarterlyThreshold, 1).head
+
   val summaryCardModelWithAddedPoint: SummaryCard = summaryCardHelper.populateCard(Seq(PenaltyPoint(
     PenaltyTypeEnum.Point,
     "123456789",
     "1",
+    None,
     LocalDateTime.of(2020, 1, 1, 1, 1, 1),
     Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
     PointStatusEnum.Added,
@@ -53,6 +66,7 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
     PenaltyTypeEnum.Point,
     "123456789",
     "1",
+    None,
     LocalDateTime.of(2020, 1, 1, 1, 1, 1),
     Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
     PointStatusEnum.Added,
@@ -65,6 +79,7 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
     PenaltyTypeEnum.Point,
     "123456789",
     "2",
+    None,
     LocalDateTime.of(2020, 1, 1, 1, 1, 1),
     Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
     PointStatusEnum.Removed,
@@ -85,6 +100,88 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
     PenaltyTypeEnum.Financial,
     "123456789",
     "1",
+    None,
+    LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+    Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
+    PointStatusEnum.Due,
+    None,
+    Some(PenaltyPeriod(
+      LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+      LocalDateTime.of(2020, 2, 1, 1, 1, 1),
+      Submission(
+        LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+        Some(LocalDateTime.of(2020, 1, 1, 1, 1, 1)),
+        SubmissionStatusEnum.Submitted
+      )
+    )),
+    Seq.empty,
+    financial = Some(
+      Financial(
+        amountDue = 200.00,
+        dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
+      )
+    )
+  ), quarterlyThreshold)
+
+  val summaryCardModelWithFinancialPointBelowThresholdAndAppealInProgress: SummaryCard = summaryCardHelper.financialSummaryCard(PenaltyPoint(
+    PenaltyTypeEnum.Financial,
+    "123456789",
+    "1",
+    Some(AppealStatusEnum.Under_Review),
+    LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+    Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
+    PointStatusEnum.Due,
+    None,
+    Some(PenaltyPeriod(
+      LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+      LocalDateTime.of(2020, 2, 1, 1, 1, 1),
+      Submission(
+        LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+        Some(LocalDateTime.of(2020, 1, 1, 1, 1, 1)),
+        SubmissionStatusEnum.Submitted
+      )
+    )),
+    Seq.empty,
+    financial = Some(
+      Financial(
+        amountDue = 200.00,
+        dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
+      )
+    )
+  ), quarterlyThreshold)
+
+  val summaryCardModelWithFinancialPointBelowThresholdAndAppealAccepted = summaryCardHelper.financialSummaryCard(PenaltyPoint(
+    PenaltyTypeEnum.Financial,
+    "123456789",
+    "1",
+    Some(AppealStatusEnum.Accepted),
+    LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+    Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
+    PointStatusEnum.Removed,
+    None,
+    Some(PenaltyPeriod(
+      LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+      LocalDateTime.of(2020, 2, 1, 1, 1, 1),
+      Submission(
+        LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+        Some(LocalDateTime.of(2020, 1, 1, 1, 1, 1)),
+        SubmissionStatusEnum.Submitted
+      )
+    )),
+    Seq.empty,
+    financial = Some(
+      Financial(
+        amountDue = 200.00,
+        dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
+      )
+    )
+  ), quarterlyThreshold)
+
+  val summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected = summaryCardHelper.financialSummaryCard(PenaltyPoint(
+    PenaltyTypeEnum.Financial,
+    "123456789",
+    "1",
+    Some(AppealStatusEnum.Rejected),
     LocalDateTime.of(2020, 1, 1, 1, 1, 1),
     Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
     PointStatusEnum.Due,
@@ -111,6 +208,7 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
     PenaltyTypeEnum.Financial,
     "123456789",
     "3",
+    None,
     LocalDateTime.of(2020, 1, 1, 1, 1, 1),
     Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
     PointStatusEnum.Due,
@@ -221,6 +319,9 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
     "given a financial point" should {
       val docWithFinancialPointBelowThreshold: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThreshold))
       val docWithFinancialPointAboveThreshold: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointAboveThreshold))
+      val docWithFinancialPointAppealUnderReview: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealInProgress))
+      val docWithFinancialPointAppealAccepted: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealAccepted))
+      val docWithFinancialPointAppealRejected: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected))
 
       "shows the financial heading with point number when the point is below/at threshold for filing frequency" in {
         docWithFinancialPointBelowThreshold.select(".app-summary-card__title").get(0).text shouldBe "Penalty point 1: £200 penalty"
@@ -229,6 +330,48 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
       "shows the financial heading WITHOUT point number when the point is above threshold for filing frequency and a rewording of the appeal text" in {
         docWithFinancialPointAboveThreshold.select(".app-summary-card__title").get(0).text shouldBe "£200 penalty"
         docWithFinancialPointAboveThreshold.select(".app-summary-card__footer a").get(0).text shouldBe "Appeal this penalty"
+      }
+
+      "shows the appeal information when the point is being appealed - i.e. under review" in {
+        docWithFinancialPointAppealUnderReview.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithFinancialPointAppealUnderReview.select("dd").get(3).text() shouldBe "Under review by HMRC"
+      }
+
+      "have the appeal status for ACCEPTED" in {
+        docWithFinancialPointAppealAccepted.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithFinancialPointAppealAccepted.select("dd").get(3).text() shouldBe "Appeal accepted Read outcome message"
+      }
+
+      "have the appeal status for REJECTED" in {
+        docWithFinancialPointAppealRejected.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithFinancialPointAppealRejected.select("dd").get(3).text() shouldBe "Appeal rejected Read outcome message"
+      }
+    }
+
+    "given an appealed point" should {
+      val docWithAppealedPoint: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPoint))
+      val docWithAppealedPointAccepted: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPointAccepted))
+      val docWithAppealedPointRejected: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPointRejected))
+
+      "not show the appeal link" in {
+        docWithAppealedPoint.select(".app-summary-card__footer a").isEmpty shouldBe true
+      }
+
+      "have the appeal status for UNDER_REVIEW" in {
+        docWithAppealedPoint.select("dt").get(4).text() shouldBe "Appeal status"
+        docWithAppealedPoint.select("dd").get(4).text() shouldBe "Under review by HMRC"
+      }
+
+      "have the appeal status for ACCEPTED - removing the point due to expire" in {
+        docWithAppealedPointAccepted.select("dt").text().contains("Point due to expire") shouldBe false
+        docWithAppealedPointAccepted.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithAppealedPointAccepted.select("dd").get(3).text() shouldBe "Appeal accepted Read outcome message"
+      }
+
+      "have the appeal status for REJECTED" in {
+        docWithAppealedPointRejected.select("dt").text().contains("Point due to expire") shouldBe true
+        docWithAppealedPointRejected.select("dt").get(4).text() shouldBe "Appeal status"
+        docWithAppealedPointRejected.select("dd").get(4).text() shouldBe "Appeal rejected Read outcome message"
       }
     }
   }
