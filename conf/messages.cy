@@ -59,6 +59,8 @@ summaryCard.key3.defaultValue = Not yet submitted
 summaryCard.key4 = Point due to expire
 summaryCard.appeal.status = Appeal status
 summaryCard.appeal.Under_Review = Under review by HMRC
+summaryCard.appeal.Reinstated = Appeal outcome changed
+summaryCard.appeal.readMessageReinstated = Read message
 summaryCard.notYetSubmitted = Not yet submitted
 summaryCard.footerLinkText = Appeal penalty point {0}
 summaryCard.footerLinkTextNoPointNumber = Appeal this penalty
@@ -73,6 +75,7 @@ status.due = due
 status.rejected = rejected
 status.removed = removed
 status.paid = paid
+status.reinstated = reinstated
 
 site.opensInNewTab = (opens in a new tab)
 site.warning = Warning:

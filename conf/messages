@@ -62,6 +62,8 @@ summaryCard.appeal.Under_Review = Under review by HMRC
 summaryCard.appeal.Rejected = Appeal rejected
 summaryCard.appeal.Accepted = Appeal accepted
 summaryCard.appeal.readMessage = Read outcome message
+summaryCard.appeal.Reinstated = Appeal outcome changed
+summaryCard.appeal.readMessageReinstated = Read message
 summaryCard.notYetSubmitted = Not yet submitted
 summaryCard.footerLinkText = Appeal penalty point {0}
 summaryCard.footerLinkTextNoPointNumber = Appeal this penalty
@@ -77,6 +79,7 @@ status.rejected = rejected
 status.removed = removed
 status.paid = paid
 status.cancelled = cancelled
+status.reinstated = reinstated
 
 site.opensInNewTab = (opens in a new tab)
 site.warning = Warning:

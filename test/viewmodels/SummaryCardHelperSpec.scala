@@ -161,6 +161,13 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         result.appealStatus.isDefined shouldBe true
         result.appealStatus.get shouldBe AppealStatusEnum.Rejected
       }
+
+      "show the appeal status when the point has been appealed - for reinstated" in {
+        val result = helper.financialSummaryCard(sampleFinancialPenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Reinstated)), quarterlyThreshold)
+        result.isAppealedPoint shouldBe true
+        result.appealStatus.isDefined shouldBe true
+        result.appealStatus.get shouldBe AppealStatusEnum.Reinstated
+      }
     }
 
     "return SummaryCards when given Penalty point" when {
@@ -330,6 +337,14 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         )
       }
 
+      "an appealed point is provided - reinstated" in {
+        val result = helper.tagStatus(samplePenaltyPointAppealedReinstated)
+        result shouldBe Tag(
+          content = Text(reinstatedTag),
+          classes = "govuk-tag "
+        )
+      }
+
       "an overdue penaltyPointSubmission is provided" in {
         val result = helper.tagStatus(sampleOverduePenaltyPoint)
         result shouldBe Tag(
@@ -420,6 +435,13 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       result.isAppealedPoint shouldBe true
       result.appealStatus.isDefined shouldBe true
       result.appealStatus.get shouldBe AppealStatusEnum.Rejected
+    }
+
+    "when given an appealed point (reinstated) - set the relevant fields" in {
+      val result = helper.pointSummaryCard(samplePenaltyPointAppealedReinstated, false)
+      result.isAppealedPoint shouldBe true
+      result.appealStatus.isDefined shouldBe true
+      result.appealStatus.get shouldBe AppealStatusEnum.Reinstated
     }
   }
 }

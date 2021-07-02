@@ -258,6 +258,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
 
     (penaltyAppealStatus, periodSubmissionStatus, penaltyPointStatus) match {
       case (Some(AppealStatusEnum.Accepted), _, _)          => renderTag(messages("status.cancelled"))
+      case (Some(AppealStatusEnum.Reinstated), _, _)        => renderTag(messages("status.reinstated"))
       case (_, None, _)                                     => renderTag(messages("status.active"))
       case (_, Some(_), Removed)                            => renderTag(messages("status.removed"))
       case (_, Some(_), Paid)                               => renderTag(messages("status.paid"))
@@ -279,6 +280,13 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
           Html(messages(s"summaryCard.appeal.${penaltyPoint.appealStatus.get.toString}")),
           Html("<br>"),
           link("#", "summaryCard.appeal.readMessage")
+        )
+      }
+      case AppealStatusEnum.Reinstated => {
+        html(
+          Html(messages(s"summaryCard.appeal.${penaltyPoint.appealStatus.get.toString}")),
+          Html("<br>"),
+          link("#", "summaryCard.appeal.readMessageReinstated")
         )
       }
       case _ => {
