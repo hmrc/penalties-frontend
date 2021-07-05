@@ -30,12 +30,12 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
 
   def isAnyLSPUnpaid(penaltyPoints: Seq[PenaltyPoint]): Boolean = {
     penaltyPoints.exists(penalty => penalty.`type` == PenaltyTypeEnum.Financial &&
-      penalty.status != PointStatusEnum.Paid && !penalty.appealStatus.contains(AppealStatusEnum.Accepted))
+      penalty.status != PointStatusEnum.Paid && !penalty.appealStatus.contains(AppealStatusEnum.Accepted) && !penalty.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal))
   }
 
   def isAnyLSPUnpaidAndSubmissionIsDue(penaltyPoints: Seq[PenaltyPoint]): Boolean = {
     penaltyPoints.exists(penalty => penalty.status == PointStatusEnum.Due &&
       penalty.`type` == PenaltyTypeEnum.Financial &&
-      penalty.period.isDefined && penalty.period.get.submission.submittedDate.isEmpty && !penalty.appealStatus.contains(AppealStatusEnum.Accepted))
+      penalty.period.isDefined && penalty.period.get.submission.submittedDate.isEmpty && !penalty.appealStatus.contains(AppealStatusEnum.Accepted) && !penalty.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal))
   }
 }
