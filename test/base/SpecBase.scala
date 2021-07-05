@@ -191,6 +191,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   val samplePenaltyPointAppealedRejected = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Rejected))
   val samplePenaltyPointAppealedReinstated = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Reinstated))
   val samplePenaltyPointAppealedTribunalRejected = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Tribunal_Rejected))
+  val samplePenaltyPointAppealedUnderTribunalReview = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Under_Tribunal_Review))
 
   val sampleRemovedPenaltyPoint = PenaltyPoint(
     PenaltyTypeEnum.Point,

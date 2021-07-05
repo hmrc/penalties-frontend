@@ -41,6 +41,10 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
     Seq(samplePenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Under_Review))),
     quarterlyThreshold, 1).head
 
+  val summaryCardModelWithAppealedPointUnderTribunalReview: SummaryCard = summaryCardHelper.populateCard(
+    Seq(samplePenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Under_Tribunal_Review))),
+    quarterlyThreshold, 1).head
+
   val summaryCardModelWithAppealedPointAccepted: SummaryCard = summaryCardHelper.populateCard(
     Seq(samplePenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Accepted))),
     quarterlyThreshold, 1).head
@@ -354,6 +358,7 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
 
     "given an appealed point" should {
       val docWithAppealedPoint: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPoint))
+      val docWithAppealedPointUnderTribunalReview: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPointUnderTribunalReview))
       val docWithAppealedPointAccepted: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPointAccepted))
       val docWithAppealedPointRejected: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPointRejected))
       val docWithAppealedPointUnderTribunalRejected: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPointTribunalRejected))
@@ -365,6 +370,11 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
       "have the appeal status for UNDER_REVIEW" in {
         docWithAppealedPoint.select("dt").get(4).text() shouldBe "Appeal status"
         docWithAppealedPoint.select("dd").get(4).text() shouldBe "Under review by HMRC"
+      }
+
+      "have the appeal status for UNDER_TRIBUNAL_REVIEW" in {
+        docWithAppealedPointUnderTribunalReview.select("dt").get(4).text() shouldBe "Appeal status"
+        docWithAppealedPointUnderTribunalReview.select("dd").get(4).text() shouldBe "Under review by the tax tribunal"
       }
 
       "have the appeal status for ACCEPTED - removing the point due to expire" in {
