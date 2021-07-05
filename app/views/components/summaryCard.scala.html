@@ -38,7 +38,7 @@
                     messages("summaryCard.header.financialNoNumber", summaryCard.amountDue.intValue)
                 } else if(summaryCard.isAddedPoint) {
                     messages("summaryCard.header.addedPoint", summaryCard.penaltyPoint)
-                } else if(summaryCard.isAdjustedPoint) {
+                } else if(summaryCard.isAdjustedPoint || summaryCard.appealStatus.contains(AppealStatusEnum.Accepted)) {
                     messages("summaryCard.header.adjustedPoint")
                 } else {
                     messages("summaryCard.header", summaryCard.penaltyPoint)

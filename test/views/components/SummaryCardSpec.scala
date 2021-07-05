@@ -377,10 +377,11 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
         docWithAppealedPointUnderTribunalReview.select("dd").get(4).text() shouldBe "Under review by the tax tribunal"
       }
 
-      "have the appeal status for ACCEPTED - removing the point due to expire" in {
+      "have the appeal status for ACCEPTED - removing the point due to expire and point number" in {
         docWithAppealedPointAccepted.select("dt").text().contains("Point due to expire") shouldBe false
         docWithAppealedPointAccepted.select("dt").get(3).text() shouldBe "Appeal status"
         docWithAppealedPointAccepted.select("dd").get(3).text() shouldBe "Appeal accepted Read outcome message"
+        docWithAppealedPointAccepted.select("h3").get(0).text() shouldBe "Penalty point"
       }
 
       "have the appeal status for REJECTED" in {
