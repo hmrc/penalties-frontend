@@ -137,7 +137,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       summaryListRow(messages("summaryCard.key3"), Html(dateTimeToString(period.get.submission.submittedDate.get)))
     )
 
-    if(penalty.dateExpired.isDefined && !thresholdMet && !penalty.appealStatus.contains(AppealStatusEnum.Accepted)) {
+    if(penalty.dateExpired.isDefined && !thresholdMet && !penalty.appealStatus.contains(AppealStatusEnum.Accepted) && !penalty.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal)) {
       base :+ summaryListRow(messages("summaryCard.key4"), Html(dateTimeToMonthYearString(penalty.dateExpired.get)))
     } else {
       base
@@ -257,7 +257,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     val penaltyAppealStatus = penalty.appealStatus
 
     (penaltyAppealStatus, periodSubmissionStatus, penaltyPointStatus) match {
-      case (Some(AppealStatusEnum.Accepted), _, _)          => renderTag(messages("status.cancelled"))
+      case (Some(AppealStatusEnum.Accepted | AppealStatusEnum.Accepted_By_Tribunal), _, _)          => renderTag(messages("status.cancelled"))
       case (Some(AppealStatusEnum.Reinstated), _, _)        => renderTag(messages("status.reinstated"))
       case (Some(AppealStatusEnum.Tribunal_Rejected), _, _) => renderTag(messages("status.active"))
       case (_, None, _)                                     => renderTag(messages("status.active"))
@@ -276,7 +276,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
 
   private def returnAppealStatusMessageBasedOnPenalty(penaltyPoint: PenaltyPoint)(implicit messages: Messages): Html = {
     penaltyPoint.appealStatus.get match {
-      case AppealStatusEnum.Accepted | AppealStatusEnum.Rejected | AppealStatusEnum.Tribunal_Rejected => {
+      case AppealStatusEnum.Accepted | AppealStatusEnum.Rejected | AppealStatusEnum.Tribunal_Rejected | AppealStatusEnum.Accepted_By_Tribunal => {
         html(
           Html(messages(s"summaryCard.appeal.${penaltyPoint.appealStatus.get.toString}")),
           Html("<br>"),

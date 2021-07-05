@@ -46,7 +46,11 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
     quarterlyThreshold, 1).head
 
   val summaryCardModelWithAppealedPointAccepted: SummaryCard = summaryCardHelper.populateCard(
-    Seq(samplePenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Accepted))),
+    Seq(samplePenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Accepted), status = PointStatusEnum.Removed)),
+    quarterlyThreshold, 1).head
+
+  val summaryCardModelWithAppealedPointAcceptedByTribunal: SummaryCard = summaryCardHelper.populateCard(
+    Seq(samplePenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Accepted_By_Tribunal), status = PointStatusEnum.Removed)),
     quarterlyThreshold, 1).head
 
   val summaryCardModelWithAppealedPointRejected: SummaryCard = summaryCardHelper.populateCard(
@@ -212,6 +216,114 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
     )
   ), quarterlyThreshold)
 
+  val summaryCardModelWithFinancialPointBelowThresholdAndAppealReinstated = summaryCardHelper.financialSummaryCard(PenaltyPoint(
+    PenaltyTypeEnum.Financial,
+    "123456789",
+    "1",
+    Some(AppealStatusEnum.Reinstated),
+    LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+    Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
+    PointStatusEnum.Due,
+    None,
+    Some(PenaltyPeriod(
+      LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+      LocalDateTime.of(2020, 2, 1, 1, 1, 1),
+      Submission(
+        LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+        Some(LocalDateTime.of(2020, 1, 1, 1, 1, 1)),
+        SubmissionStatusEnum.Submitted
+      )
+    )),
+    Seq.empty,
+    financial = Some(
+      Financial(
+        amountDue = 200.00,
+        dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
+      )
+    )
+  ), quarterlyThreshold)
+
+  val summaryCardModelWithFinancialPointBelowThresholdAndAppealUnderTribunalReview = summaryCardHelper.financialSummaryCard(PenaltyPoint(
+    PenaltyTypeEnum.Financial,
+    "123456789",
+    "1",
+    Some(AppealStatusEnum.Under_Tribunal_Review),
+    LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+    Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
+    PointStatusEnum.Due,
+    None,
+    Some(PenaltyPeriod(
+      LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+      LocalDateTime.of(2020, 2, 1, 1, 1, 1),
+      Submission(
+        LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+        Some(LocalDateTime.of(2020, 1, 1, 1, 1, 1)),
+        SubmissionStatusEnum.Submitted
+      )
+    )),
+    Seq.empty,
+    financial = Some(
+      Financial(
+        amountDue = 200.00,
+        dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
+      )
+    )
+  ), quarterlyThreshold)
+
+  val summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected = summaryCardHelper.financialSummaryCard(PenaltyPoint(
+    PenaltyTypeEnum.Financial,
+    "123456789",
+    "1",
+    Some(AppealStatusEnum.Tribunal_Rejected),
+    LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+    Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
+    PointStatusEnum.Due,
+    None,
+    Some(PenaltyPeriod(
+      LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+      LocalDateTime.of(2020, 2, 1, 1, 1, 1),
+      Submission(
+        LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+        Some(LocalDateTime.of(2020, 1, 1, 1, 1, 1)),
+        SubmissionStatusEnum.Submitted
+      )
+    )),
+    Seq.empty,
+    financial = Some(
+      Financial(
+        amountDue = 200.00,
+        dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
+      )
+    )
+  ), quarterlyThreshold)
+
+  val summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalAccepted = summaryCardHelper.financialSummaryCard(PenaltyPoint(
+    PenaltyTypeEnum.Financial,
+    "123456789",
+    "1",
+    Some(AppealStatusEnum.Accepted_By_Tribunal),
+    LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+    Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
+    PointStatusEnum.Removed,
+    None,
+    Some(PenaltyPeriod(
+      LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+      LocalDateTime.of(2020, 2, 1, 1, 1, 1),
+      Submission(
+        LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+        Some(LocalDateTime.of(2020, 1, 1, 1, 1, 1)),
+        SubmissionStatusEnum.Submitted
+      )
+    )),
+    Seq.empty,
+    financial = Some(
+      Financial(
+        amountDue = 200.00,
+        dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
+      )
+    )
+  ), quarterlyThreshold)
+
   val summaryCardModelWithFinancialPointAboveThreshold: SummaryCard = summaryCardHelper.financialSummaryCard(PenaltyPoint(
     PenaltyTypeEnum.Financial,
     "123456789",
@@ -330,6 +442,10 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
       val docWithFinancialPointAppealUnderReview: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealInProgress))
       val docWithFinancialPointAppealAccepted: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealAccepted))
       val docWithFinancialPointAppealRejected: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected))
+      val docWithFinancialPointAppealReinstated: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealReinstated))
+      val docWithFinancialPointAppealUnderTribunalReview: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealUnderTribunalReview))
+      val docWithFinancialPointAppealTribunalRejected: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected))
+      val docWithFinancialPointAppealTribunalAccepted: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalAccepted))
 
       "shows the financial heading with point number when the point is below/at threshold for filing frequency" in {
         docWithFinancialPointBelowThreshold.select(".app-summary-card__title").get(0).text shouldBe "Penalty point 1: £200 penalty"
@@ -354,12 +470,33 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
         docWithFinancialPointAppealRejected.select("dt").get(3).text() shouldBe "Appeal status"
         docWithFinancialPointAppealRejected.select("dd").get(3).text() shouldBe "Appeal rejected Read outcome message"
       }
+
+      "have the appeal status for REINSTATED" in {
+        docWithFinancialPointAppealReinstated.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithFinancialPointAppealReinstated.select("dd").get(3).text() shouldBe "Appeal outcome changed Read message"
+      }
+
+      "have the appeal status for UNDER_TRIBUNAL_REVIEW" in {
+        docWithFinancialPointAppealUnderTribunalReview.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithFinancialPointAppealUnderTribunalReview.select("dd").get(3).text() shouldBe "Under review by the tax tribunal"
+      }
+
+      "have the appeal status for TRIBUNAL REJECTED" in {
+        docWithFinancialPointAppealTribunalRejected.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithFinancialPointAppealTribunalRejected.select("dd").get(3).text() shouldBe "Appeal rejected by tax tribunal Read outcome message"
+      }
+
+      "have the appeal status for ACCEPTED BY TRIBUNAL" in {
+        docWithFinancialPointAppealTribunalAccepted.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithFinancialPointAppealTribunalAccepted.select("dd").get(3).text() shouldBe "Appeal accepted by tax tribunal Read outcome message"
+      }
     }
 
     "given an appealed point" should {
       val docWithAppealedPoint: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPoint))
       val docWithAppealedPointUnderTribunalReview: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPointUnderTribunalReview))
       val docWithAppealedPointAccepted: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPointAccepted))
+      val docWithAppealedPointAcceptedByTribunal: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPointAcceptedByTribunal))
       val docWithAppealedPointRejected: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPointRejected))
       val docWithAppealedPointUnderTribunalRejected: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPointTribunalRejected))
 
@@ -382,6 +519,13 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
         docWithAppealedPointAccepted.select("dt").get(3).text() shouldBe "Appeal status"
         docWithAppealedPointAccepted.select("dd").get(3).text() shouldBe "Appeal accepted Read outcome message"
         docWithAppealedPointAccepted.select("h3").get(0).text() shouldBe "Penalty point"
+      }
+
+      "have the appeal status for ACCEPTED_BY_TRIBUNAL - removing the point due to expire and point number" in {
+        docWithAppealedPointAcceptedByTribunal.select("dt").text().contains("Point due to expire") shouldBe false
+        docWithAppealedPointAcceptedByTribunal.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithAppealedPointAcceptedByTribunal.select("dd").get(3).text() shouldBe "Appeal accepted by tax tribunal Read outcome message"
+        docWithAppealedPointAcceptedByTribunal.select("h3").get(0).text() shouldBe "Penalty point"
       }
 
       "have the appeal status for REJECTED" in {

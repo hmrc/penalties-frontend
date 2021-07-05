@@ -162,6 +162,13 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         result.appealStatus.get shouldBe AppealStatusEnum.Accepted
       }
 
+      "show the appeal status when the point has been appealed - for accepted by tribunal" in {
+        val result = helper.financialSummaryCard(sampleFinancialPenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Accepted_By_Tribunal)), quarterlyThreshold)
+        result.isAppealedPoint shouldBe true
+        result.appealStatus.isDefined shouldBe true
+        result.appealStatus.get shouldBe AppealStatusEnum.Accepted_By_Tribunal
+      }
+
       "show the appeal status when the point has been appealed - for rejected" in {
         val result = helper.financialSummaryCard(sampleFinancialPenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Rejected)), quarterlyThreshold)
         result.isAppealedPoint shouldBe true
@@ -343,6 +350,14 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         )
       }
 
+      "an appealed point is provided - accepted by tax tribunal" in {
+        val result = helper.tagStatus(samplePenaltyPointAppealedAcceptedByTribunal)
+        result shouldBe Tag(
+          content = Text(cancelledTag),
+          classes = "govuk-tag "
+        )
+      }
+
       "an appealed point is provided - rejected" in {
         val result = helper.tagStatus(samplePenaltyPointAppealedRejected)
         result shouldBe Tag(
@@ -457,6 +472,13 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       result.isAppealedPoint shouldBe true
       result.appealStatus.isDefined shouldBe true
       result.appealStatus.get shouldBe AppealStatusEnum.Accepted
+    }
+
+    "when given an appealed point (accepted by tribunal) - set the relevant fields" in {
+      val result = helper.pointSummaryCard(samplePenaltyPointAppealedAcceptedByTribunal, false)
+      result.isAppealedPoint shouldBe true
+      result.appealStatus.isDefined shouldBe true
+      result.appealStatus.get shouldBe AppealStatusEnum.Accepted_By_Tribunal
     }
 
     "when given an appealed point (rejected) - set the relevant fields" in {

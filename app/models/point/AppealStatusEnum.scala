@@ -23,6 +23,7 @@ object AppealStatusEnum extends Enumeration {
   val Under_Review = Value
   val Under_Tribunal_Review = Value
   val Accepted = Value
+  val Accepted_By_Tribunal = Value
   val Rejected = Value
   val Reinstated = Value
   val Tribunal_Rejected = Value
@@ -37,6 +38,7 @@ object AppealStatusEnum extends Enumeration {
         case "UNDER_REVIEW" => JsSuccess(Under_Review)
         case "UNDER_TRIBUNAL_REVIEW" => JsSuccess(Under_Tribunal_Review)
         case "ACCEPTED" => JsSuccess(Accepted)
+        case "ACCEPTED_BY_TRIBUNAL" => JsSuccess(Accepted_By_Tribunal)
         case "REJECTED" => JsSuccess(Rejected)
         case "REINSTATED" => JsSuccess(Reinstated)
         case "TRIBUNAL_REJECTED" => JsSuccess(Tribunal_Rejected)
