@@ -18,13 +18,12 @@ package models
 
 import models.communication.{Communication, CommunicationTypeEnum}
 import models.financial.Financial
-import models.penalty.PenaltyPeriod
+import models.penalty.{PaymentPoint, PenaltyPeriod}
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.libs.json.{JsValue, Json}
-
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -36,8 +35,6 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
     """
         {
       |	"pointsTotal": 1,
-      |	"lateSubmissions": 1,
-      |	"adjustmentPointsTotal": 1,
       |	"fixedPenaltyAmount": 200,
       |	"penaltyAmountsTotal": 400.00,
       |	"penaltyPointsThreshold": 4,
@@ -49,14 +46,17 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
       |			"dateCreated": "2021-04-23T18:25:43.511",
       |			"dateExpired": "2021-04-23T18:25:43.511",
       |			"status": "ACTIVE",
+      |     "appealStatus": ""
       |			"period": {
       |				"startDate": "2021-04-23T18:25:43.511",
       |				"endDate": "2021-04-23T18:25:43.511",
-      |				"submission": {
-      |					"dueDate": "2021-04-23T18:25:43.511",
-      |					"submittedDate": "2021-04-23T18:25:43.511",
-      |					"status": "SUBMITTED"
-      |				}
+      |				"submission": [
+      |          {
+      |					 "dueDate": "2021-04-23T18:25:43.511",
+      |					 "submittedDate": "2021-04-23T18:25:43.511",
+      |					 "status": "SUBMITTED"
+      |				 }
+      |       ]
       |			},
       |			"communications": [
       |				{
@@ -80,11 +80,13 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
       |			"period": {
       |				"startDate": "2021-04-23T18:25:43.511",
       |				"endDate": "2021-04-23T18:25:43.511",
-      |				"submission": {
-      |					"dueDate": "2021-04-23T18:25:43.511",
-      |					"submittedDate": "2021-04-23T18:25:43.511",
-      |					"status": "SUBMITTED"
+      |				"submission": [
+      |         {
+      |					 "dueDate": "2021-04-23T18:25:43.511",
+      |					 "submittedDate": "2021-04-23T18:25:43.511",
+      |					 "status": "SUBMITTED"
       |				}
+      |      ]
       |			},
       |			"communications": [
       |				{
@@ -94,14 +96,39 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
       |				}
       |			]
       |		}
-      |	]
+      |	],
+      | "latePaymentPenalties": [
+      | {
+      |   "type": "financial",
+      |   "reason": "VAT_NOT_PAID_ON_TIME",
+      |   "id": "1234567891",
+      |   "dateCreated": "2021-04-23T18:25:43.511Z",
+      |   "status": "ACTIVE",
+      |   "appealStatus": ""
+      |   "period": {
+      |     "startDate": "2021-04-23T18:25:43.511Z",
+      |     "endDate": "2021-04-23T18:25:43.511Z",
+      |		  "paymentStatus": "DUE"
+      |   },
+      |   "communications": [
+      |    {
+      |     "type": "letter",
+      |     "dateSent": "2021-04-23T18:25:43.511Z",
+      |     "documentId": "1234567890"
+      |    }
+      |   ],
+      |   "financial": {
+      |      "amountDue": 400.00,
+      |      "outstandingAmountDue": 0.00,
+      |      "dueDate": "2021-04-23T18:25:43.511Z",
+      |    }
+      |  }
+      | ]
       |}
       |""".stripMargin)
 
   val etmpPayloadModel: ETMPPayload = ETMPPayload(
     pointsTotal = 1,
-    lateSubmissions = 1,
-    adjustmentPointsTotal = 1,
     fixedPenaltyAmount = 200.00,
     penaltyAmountsTotal = 400.00,
     penaltyPointsThreshold = 4,
@@ -159,6 +186,17 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
             documentId = "1234567890")
         ),
         financial = None
+      )
+    ),
+    latePaymentPenalties = Seq(
+      PaymentPoint(
+        `type` = PenaltyTypeEnum.Financial,
+        reason = "VAT_NOT_PAID_ON_TIME",
+        id = "1234567890",
+        dateCreated = sampleDate,
+        status = PointStatusEnum.Active,
+        appealStatus = None,
+        period =
       )
     )
   )
