@@ -39,6 +39,8 @@ lsp.pointSummary.penaltyPoints.overview.warningText = You’ll get a £200 penal
 
 lsp.onThreshold.p1 = You have reached the financial penalty threshold.
 lsp.onThreshold.p2 = Until you bring your account up to date, you’ll have to pay a £200 penalty every time you submit a VAT Return late.
+lsp.onThreshold.p2.b1 = your penalty points will not expire
+lsp.onThreshold.p2.b2 = you’ll have to pay a £200 penalty every time you submit a VAT Return late
 lsp.onThreshold.link = Show me how to bring this account up to date
 
 common.pageTitle = {0} - {1} - GOV.UK

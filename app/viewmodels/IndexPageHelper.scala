@@ -39,6 +39,10 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           p(content = html(stringAsHtml(messages("lsp.onThreshold.p1"))),
             classes = "govuk-body govuk-!-font-size-24"),
           p(content = html(stringAsHtml(messages("lsp.onThreshold.p2")))),
+          bullets(Seq(
+            stringAsHtml(messages("lsp.onThreshold.p2.b1")),
+            stringAsHtml(messages("lsp.onThreshold.p2.b2"))
+          )),
           p(link(link = controllers.routes.ComplianceController.onPageLoad().url, messages("lsp.onThreshold.link")))
         )
       }
