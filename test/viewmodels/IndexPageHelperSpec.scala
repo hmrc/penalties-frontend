@@ -186,6 +186,8 @@ class IndexPageHelperSpec extends SpecBase {
 
       "show the penalty amount until account is updated text" in {
         parsedHtmlResult.select("p.govuk-body").get(1).text shouldBe lateReturnPenalty
+        parsedHtmlResult.select("ul li").get(0).text shouldBe lateReturnPenaltyBullet1
+        parsedHtmlResult.select("ul li").get(1).text shouldBe lateReturnPenaltyBullet2
       }
 
       "show the guidance link text" in {

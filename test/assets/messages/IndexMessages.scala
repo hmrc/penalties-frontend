@@ -48,7 +48,11 @@ object IndexMessages {
 
   val thresholdReached = "You have reached the financial penalty threshold."
 
-  val lateReturnPenalty = "Until you bring your account up to date, you’ll have to pay a £200 penalty every time you submit a VAT Return late."
+  val lateReturnPenalty = "Until you bring your account up to date:"
+
+  val lateReturnPenaltyBullet1 = "your penalty points will not expire"
+
+  val lateReturnPenaltyBullet2 = "you’ll have to pay a £200 penalty every time you submit a VAT Return late"
 
   val bringAccountUpToDate = "Show me how to bring this account up to date"
 
