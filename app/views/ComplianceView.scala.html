@@ -23,7 +23,7 @@
 @(      isUnsubmittedReturns: Boolean = false,
         contentForUnsubmittedReturnBullets: Html,
         timelineContent: Html
-)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+)(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
 
 @layout(pageTitle = messages("compliance.title"),
     isPageFullWidth = false) {

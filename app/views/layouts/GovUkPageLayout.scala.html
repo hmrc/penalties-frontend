@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *@
+@import utils.SessionKeys
 
 @this(
         govukTemplate: GovukTemplate,
@@ -36,7 +37,7 @@
 @headerBlock.getOrElse {
     @govukHeader(Header(
         homepageUrl = Some(messages("service.homePageUrl")),
-        serviceName = Some(messages("service.name")),
+        serviceName = Some(if(request.session.get(SessionKeys.agentSessionVrn).isDefined) { messages("agent.service.name")} else { messages("service.name") }),
         serviceUrl = Some(messages("service.homePageUrl")),
         containerClasses = Some("govuk-width-container")))
 }

@@ -16,10 +16,12 @@
 
 package viewmodels
 
-import models.ETMPPayload
+import models.{ETMPPayload, User}
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
+import utils.MessageRenderer.getMessage
 import utils.ViewUtils
+
 import javax.inject.Inject
 
 class IndexPageHelper @Inject()(p: views.html.components.p,
@@ -29,19 +31,19 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
                                 warningText: views.html.components.warningText) extends ViewUtils {
 
   //scalastyle:off
-  def getContentBasedOnPointsFromModel(etmpData: ETMPPayload)(implicit messages: Messages): Html = {
+  def getContentBasedOnPointsFromModel(etmpData: ETMPPayload)(implicit messages: Messages, user: User[_]): Html = {
     (etmpData.pointsTotal, etmpData.penaltyPointsThreshold, etmpData.adjustmentPointsTotal) match {
       case (0, _, _) => {
         p(content = stringAsHtml(messages("lsp.pointSummary.noActivePoints")))
       }
       case (currentPoints, threshold, _) if currentPoints >= threshold => {
         html(
-          p(content = html(stringAsHtml(messages("lsp.onThreshold.p1"))),
+          p(content = html(stringAsHtml(getMessage("lsp.onThreshold.p1"))),
             classes = "govuk-body govuk-!-font-size-24"),
-          p(content = html(stringAsHtml(messages("lsp.onThreshold.p2")))),
+          p(content = html(stringAsHtml(getMessage("lsp.onThreshold.p2")))),
           bullets(Seq(
-            stringAsHtml(messages("lsp.onThreshold.p2.b1")),
-            stringAsHtml(messages("lsp.onThreshold.p2.b2"))
+            stringAsHtml(getMessage("lsp.onThreshold.p2.b1")),
+            stringAsHtml(getMessage("lsp.onThreshold.p2.b2"))
           )),
           p(link(link = controllers.routes.ComplianceController.onPageLoad().url, messages("lsp.onThreshold.link")))
         )
@@ -61,7 +63,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           getGuidanceLink
         )
         if (currentPoints == threshold - 1) {
-          html(base.+:(warningText(stringAsHtml(messages("lsp.pointSummary.penaltyPoints.overview.warningText")))): _*)
+          html(base.+:(warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText")))): _*)
         } else {
           html(base: _*)
         }
@@ -82,7 +84,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           getGuidanceLink
         )
         if (currentPoints == threshold - 1) {
-          html(base.+:(warningText(stringAsHtml(messages("lsp.pointSummary.penaltyPoints.overview.warningText")))): _*)
+          html(base.+:(warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText")))): _*)
         } else {
           html(base: _*)
         }
@@ -93,10 +95,10 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           renderPointsTotal(currentPoints),
           p(content = getPluralOrSingularContentForOverview(currentPoints, etmpData.lateSubmissions)),
           p(content = stringAsHtml(
-            messages("lsp.pointSummary.penaltyPoints.overview.anotherPoint")
+            getMessage("lsp.pointSummary.penaltyPoints.overview.anotherPoint")
           )),
           p(content = stringAsHtml(
-            messages("lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded", threshold)
+            getMessage("lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded", threshold)
           )),
           getGuidanceLink
         )
@@ -104,7 +106,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       case (currentPoints, threshold, _) if currentPoints == threshold - 1 => {
         html(
           renderPointsTotal(currentPoints),
-          warningText(stringAsHtml(messages("lsp.pointSummary.penaltyPoints.overview.warningText"))),
+          warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText"))),
           p(getPluralOrSingularContentForOverview(currentPoints, etmpData.lateSubmissions)),
           getGuidanceLink
         )
@@ -113,19 +115,19 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     }
   }
 
-  def getPluralOrSingularContentForOverview(currentPoints: Int, lateSubmissions: Int)(implicit messages: Messages): Html = {
+  def getPluralOrSingularContentForOverview(currentPoints: Int, lateSubmissions: Int)(implicit messages: Messages, user: User[_]): Html = {
     if (currentPoints == 1) {
-      stringAsHtml(messages("lsp.pointSummary.penaltyPoints.overview.singular", currentPoints))
+      stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.singular", currentPoints))
     } else {
-      stringAsHtml(messages("lsp.pointSummary.penaltyPoints.overview.plural", currentPoints, lateSubmissions))
+      stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.plural", currentPoints, lateSubmissions))
     }
   }
 
-  def getPluralOrSingular(total: Int, arg: Int)(msgForSingular: String, msgForPlural: String)(implicit messages: Messages): Html = {
+  def getPluralOrSingular(total: Int, arg: Int)(msgForSingular: String, msgForPlural: String)(implicit messages: Messages, user: User[_]): Html = {
     if (total == 1) {
-      stringAsHtml(messages(msgForSingular, arg))
+      stringAsHtml(getMessage(msgForSingular, arg))
     } else {
-      stringAsHtml(messages(msgForPlural, arg))
+      stringAsHtml(getMessage(msgForPlural, arg))
     }
   }
 

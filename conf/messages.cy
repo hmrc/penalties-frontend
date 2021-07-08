@@ -1,4 +1,5 @@
 service.name = VAT Penalties and Appeals
+agent.service.name = Your client’s VAT details
 service.homePageUrl = /penalties
 common.pageTitle = {0} - {1} - GOV.UK
 
@@ -23,24 +24,41 @@ unauthorised.alreadySignedUp = If you have already signed up, you need to sign i
 lsp.pointSummary.noActivePoints = No active late submission penalty points.
 lsp.pointSummary.penaltyPoints.totalSummary = Penalty points total:
 lsp.pointSummary.penaltyPoints.overview.singular = You have {0} penalty point for submitting a VAT Return late.
+agent.lsp.pointSummary.penaltyPoints.overview.singular = Your client has {0} penalty point for submitting a VAT Return late.
 lsp.pointSummary.penaltyPoints.overview.plural = You have {0} penalty points for submitting {1} VAT Returns late.
+agent.lsp.pointSummary.penaltyPoints.overview.plural = Your client has {0} penalty points for submitting {1} VAT Returns late.
 lsp.pointSummary.penaltyPoints.adjusted.singular = You have {0} penalty point. This is because:
+agent.lsp.pointSummary.penaltyPoints.adjusted.singular = Your client has {0} penalty point. This is because:
 lsp.pointSummary.penaltyPoints.adjusted.plural = You have {0} penalty points. This is because:
+agent.lsp.pointSummary.penaltyPoints.adjusted.plural = Your client has {0} penalty points. This is because:
 lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular = you have submitted a VAT Return late
+agent.lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular = they have submitted a VAT Return late
 lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.plural = you have submitted {0} VAT Returns late
+agent.lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.plural = they have submitted {0} VAT Returns late
 lsp.pointSummary.penaltyPoints.adjusted.addedPoints.singular = we added {0} point and sent you a letter explaining why
+agent.lsp.pointSummary.penaltyPoints.adjusted.addedPoints.singular = we added {0} point and sent them a letter explaining why
 lsp.pointSummary.penaltyPoints.adjusted.addedPoints.plural = we added {0} points and sent you a letter explaining why
+agent.lsp.pointSummary.penaltyPoints.adjusted.addedPoints.plural = we added {0} points and sent them a letter explaining why
 lsp.pointSummary.penaltyPoints.adjusted.removedPoints.singular = we removed {0} point and sent you a letter explaining why
+agent.lsp.pointSummary.penaltyPoints.adjusted.removedPoints.singular = we removed {0} point and sent them a letter explaining why
 lsp.pointSummary.penaltyPoints.adjusted.removedPoints.plural = we removed {0} points and sent you a letter explaining why
+agent.lsp.pointSummary.penaltyPoints.adjusted.removedPoints.plural = we removed {0} points and sent them a letter explaining why
 lsp.pointSummary.penaltyPoints.overview.anotherPoint = You’ll get another point if you submit late again. Points usually expire after 24 months but it can be longer if you keep submitting late.
+agent.lsp.pointSummary.penaltyPoints.overview.anotherPoint = They’ll get another point if they submit late again. Points usually expire after 24 months but it can be longer if your client keeps submitting late.
 lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded = If you reach {0} points you’ll have to pay a £200 penalty.
+agent.lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded = If your client reaches {0} points, they’ll have to pay a £200 penalty.
 
 lsp.pointSummary.penaltyPoints.overview.warningText = You’ll get a £200 penalty if you submit another VAT Return late.
+agent.lsp.pointSummary.penaltyPoints.overview.warningText = Your client will get a £200 penalty if they submit another VAT Return late.
 
 lsp.onThreshold.p1 = You have reached the financial penalty threshold.
-lsp.onThreshold.p2 = Until you bring your account up to date, you’ll have to pay a £200 penalty every time you submit a VAT Return late.
+agent.lsp.onThreshold.p1 = Your client has reached the financial penalty threshold.
+lsp.onThreshold.p2 = Until you bring your account up to date:
+agent.lsp.onThreshold.p2 = Until they bring their account up to date:
 lsp.onThreshold.p2.b1 = your penalty points will not expire
+agent.lsp.onThreshold.p2.b1 = their penalty points will not expire
 lsp.onThreshold.p2.b2 = you’ll have to pay a £200 penalty every time you submit a VAT Return late
+agent.lsp.onThreshold.p2.b2 = they’ll have to pay a £200 penalty every time they submit a VAT Return late
 lsp.onThreshold.link = Show me how to bring this account up to date
 
 common.pageTitle = {0} - {1} - GOV.UK
