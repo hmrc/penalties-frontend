@@ -18,7 +18,7 @@ package testUtils
 
 import base.SpecBase
 import controllers.predicates.AuthPredicate
-import org.mockito.Matchers
+import org.mockito.{Matchers, Mockito}
 import org.mockito.Mockito.when
 import org.mockito.stubbing.OngoingStubbing
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, EnrolmentIdentifier, Enrolments, InternalError, MissingBearerToken}
@@ -27,7 +27,7 @@ import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait AuthMocks extends SpecBase {
+trait AuthMocks extends SpecBase  {
   def setupAuthResponse(authResult: Future[~[Option[AffinityGroup], Enrolments]]): OngoingStubbing[Future[~[Option[AffinityGroup], Enrolments]]] = {
     when(mockAuthConnector.authorise[~[Option[AffinityGroup], Enrolments]](
       Matchers.any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
@@ -59,20 +59,35 @@ trait AuthMocks extends SpecBase {
       )
     ))
 
-  def mockAgentAuthorised(): OngoingStubbing[Future[~[Option[AffinityGroup], Enrolments]]] = {
-    //TODO: Need to change this response to a more 'Agent-like' setup
-    setupAuthResponse(Future.successful(
-      new ~(Some(AffinityGroup.Agent),
-        Enrolments(
-          Set(
-            Enrolment("HMRC-MTD-VAT",
-              Seq(
-                EnrolmentIdentifier("VRN", vrn)
-              ),
-              "Activated"
-            )
-          ))
-      )
+  def mockAgentAuthorised(): OngoingStubbing[Future[Enrolments]] = {
+    when(mockAuthConnector.authorise[Enrolments](
+      Matchers.any(), Matchers.any())(
+      Matchers.any(), Matchers.any())
+    ).thenReturn(Future.successful(
+      Enrolments(
+        Set(
+          Enrolment(
+            "HMRC-AS-AGENT",
+            Seq(EnrolmentIdentifier("AgentReferenceNumber", "1234567")),
+            "Activated"
+          )
+        ))
+    ))
+  }
+
+  def mockAgentAuthorisedNoARN(): OngoingStubbing[Future[Enrolments]] = {
+    when(mockAuthConnector.authorise[Enrolments](
+      Matchers.any(), Matchers.any())(
+      Matchers.any(), Matchers.any())
+    ).thenReturn(Future.successful(
+      Enrolments(
+        Set(
+          Enrolment(
+            "HMRC-AS-AGENT",
+            Seq(),
+            "Activated"
+          )
+        ))
     ))
   }
 

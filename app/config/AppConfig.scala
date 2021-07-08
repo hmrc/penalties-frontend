@@ -50,4 +50,19 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   lazy val penaltiesAppealsBaseUrl = config.get[String]("urls.penaltiesAppealsBaseurl") + "/penalties-appeals"
 
+  val vatAgentClientLookupFrontendHost: String = "vat-agent-client-lookup-frontend.host"
+  val vatAgentClientLookupFrontendStartUrl: String = "vat-agent-client-lookup-frontend.startUrl"
+
+  private lazy val agentClientLookupHost = servicesConfig.getConfString(vatAgentClientLookupFrontendHost, "")
+
+  private lazy val platformHost = servicesConfig.getString("host")
+
+  private lazy val agentClientLookupRedirectUrl: String => String = uri => SafeRedirectUrl(platformHost + uri).encodedUrl
+
+  lazy val agentClientLookupStartUrl = (uri: String) =>
+    agentClientLookupHost +
+      servicesConfig.getConfString(vatAgentClientLookupFrontendStartUrl, "") +
+      s"?redirectUrl=${agentClientLookupRedirectUrl(uri)}"
+
+
 }
