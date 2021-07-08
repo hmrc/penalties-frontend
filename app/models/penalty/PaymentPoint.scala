@@ -25,13 +25,13 @@ import play.api.libs.json.{Json, OFormat}
 
 case class PaymentPoint (
                           `type`: PenaltyTypeEnum.Value,
-                          reason: String,
                           id: String,
+                          reason: String,
                           dateCreated: LocalDateTime,
                           status: PointStatusEnum.Value,
                           appealStatus: Option[AppealStatusEnum.Value] = None,
                           period: PaymentPeriod,
-                          communication: Seq[Communication],
+                          communications: Seq[Communication],
                           financial: PaymentFinancial
                         )
 

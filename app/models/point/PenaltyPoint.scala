@@ -20,13 +20,12 @@ import models.communication.Communication
 import models.financial.Financial
 import models.penalty.PenaltyPeriod
 import play.api.libs.json.{Json, OFormat}
-
 import java.time.LocalDateTime
 
 case class PenaltyPoint(
                          `type`: PenaltyTypeEnum.Value,
-                         id: String,
                          number: String,
+                         id: String,
                          appealStatus: Option[AppealStatusEnum.Value] = None,
                          dateCreated: LocalDateTime,
                          dateExpired: Option[LocalDateTime] = None,
