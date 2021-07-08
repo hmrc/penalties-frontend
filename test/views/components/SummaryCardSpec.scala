@@ -448,7 +448,7 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
       val docWithFinancialPointAppealTribunalAccepted: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalAccepted))
 
       "shows the financial heading with point number when the point is below/at threshold for filing frequency" in {
-        docWithFinancialPointBelowThreshold.select(".app-summary-card__title").get(0).text shouldBe "£200 penalty"
+        docWithFinancialPointBelowThreshold.select(".app-summary-card__title").get(0).text shouldBe "Penalty point 1: £200 penalty"
       }
 
       "shows the financial heading WITHOUT point number when the point is above threshold for filing frequency and a rewording of the appeal text" in {

@@ -27,7 +27,7 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 import models.payment.PaymentFinancial
-import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
+import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 
 class ETMPPayloadSpec extends AnyWordSpec with Matchers {
 
@@ -45,8 +45,9 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
       |	"penaltyPoints": [
       |		{
       |			"type": "financial",
-      |     "id": "123456789",
+      |     "id": "123456790",
       |			"number": "2",
+      |     "appealStatus": "UNDER_REVIEW",
       |			"dateCreated": "2021-04-23T18:25:43.511",
       |			"dateExpired": "2021-04-23T18:25:43.511",
       |			"status": "ACTIVE",
@@ -78,6 +79,7 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
       |			"dateCreated": "2021-04-23T18:25:43.511",
       |			"dateExpired": "2021-04-23T18:25:43.511",
       |			"status": "ACTIVE",
+      |     "reason": "reason",
       |			"period": {
       |				"startDate": "2021-04-23T18:25:43.511",
       |				"endDate": "2021-04-23T18:25:43.511",
@@ -111,9 +113,9 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
       |	"penaltyPoints": [
       |		{
       |			"type": "financial",
+      |     "id": "123456790",
       |			"number": "2",
       |     "appealStatus": "UNDER_REVIEW",
-      |     "id": "123456790",
       |			"dateCreated": "2021-04-23T18:25:43.511",
       |			"dateExpired": "2021-04-23T18:25:43.511",
       |			"status": "ACTIVE",
@@ -140,8 +142,8 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
       |		},
       |		{
       |			"type": "point",
-      |			"number": "1",
       |     "id": "123456789",
+      |			"number": "1",
       |			"dateCreated": "2021-04-23T18:25:43.511",
       |			"dateExpired": "2021-04-23T18:25:43.511",
       |			"status": "ACTIVE",
@@ -201,8 +203,9 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
     penaltyPoints = Seq(
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Financial,
-        id = "123456789",
         number = "2",
+        id = "123456790",
+        appealStatus = Some(AppealStatusEnum.Under_Review),
         dateCreated = sampleDate,
         dateExpired = Some(sampleDate),
         status = PointStatusEnum.Active,
@@ -230,12 +233,13 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
       ),
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Point,
-        id = "123456789",
         number = "1",
+        id = "123456789",
+        appealStatus = None,
         dateCreated = sampleDate,
         dateExpired = Some(sampleDate),
         status = PointStatusEnum.Active,
-        reason = None,
+        reason = Some("reason"),
         period = Some(PenaltyPeriod(
           startDate = sampleDate,
           endDate = sampleDate,
@@ -256,7 +260,7 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
     )
   )
 
-  val etmpPayloadModelWithLPPs = etmpPayloadModel.copy(
+  val etmpPayloadModelWithLPPs: ETMPPayload = etmpPayloadModel.copy(
     latePaymentPenalties = Some(
       Seq(
         PaymentPoint(
@@ -294,10 +298,21 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
       result shouldBe etmpPayloadAsJson
     }
 
+    "be writable to JSON when there is a LPP" in {
+      val result = Json.toJson(etmpPayloadModelWithLPPs)
+      result shouldBe etmpPayloadAsJsonWithLPP
+    }
+
     "be readable from JSON" in {
       val result = Json.fromJson(etmpPayloadAsJson)(ETMPPayload.format)
       result.isSuccess shouldBe true
       result.get shouldBe etmpPayloadModel
+    }
+
+    "be readable from JSON when there is a LPP" in {
+      val result = Json.fromJson(etmpPayloadAsJsonWithLPP)(ETMPPayload.format)
+      result.isSuccess shouldBe true
+      result.get shouldBe etmpPayloadModelWithLPPs
     }
   }
 }

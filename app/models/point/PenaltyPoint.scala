@@ -24,8 +24,8 @@ import java.time.LocalDateTime
 
 case class PenaltyPoint(
                          `type`: PenaltyTypeEnum.Value,
-                         number: String,
                          id: String,
+                         number: String,
                          appealStatus: Option[AppealStatusEnum.Value] = None,
                          dateCreated: LocalDateTime,
                          dateExpired: Option[LocalDateTime] = None,
