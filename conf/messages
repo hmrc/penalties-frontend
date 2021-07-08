@@ -45,7 +45,7 @@ lsp.pointSummary.penaltyPoints.adjusted.removedPoints.plural = we removed {0} po
 agent.lsp.pointSummary.penaltyPoints.adjusted.removedPoints.plural = we removed {0} points and sent them a letter explaining why
 lsp.pointSummary.penaltyPoints.overview.anotherPoint = You’ll get another point if you submit late again. Points usually expire after 24 months but it can be longer if you keep submitting late.
 agent.lsp.pointSummary.penaltyPoints.overview.anotherPoint = They’ll get another point if they submit late again. Points usually expire after 24 months but it can be longer if your client keeps submitting late.
-lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded = If you reach {0} points you’ll have to pay a £200 penalty.
+lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded = If you reach {0} points, you’ll have to pay a £200 penalty.
 agent.lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded = If your client reaches {0} points, they’ll have to pay a £200 penalty.
 
 lsp.pointSummary.penaltyPoints.overview.warningText = You’ll get a £200 penalty if you submit another VAT Return late.

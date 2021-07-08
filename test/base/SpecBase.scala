@@ -18,7 +18,7 @@ package base
 
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
-import models.ETMPPayload
+import models.{ETMPPayload, User}
 import models.financial.Financial
 import models.penalty.PenaltyPeriod
 import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
@@ -41,6 +41,7 @@ import views.html.errors.Unauthorised
 
 import java.time.LocalDateTime
 import models.compliance.{CompliancePayload, MissingReturn, Return}
+import utils.SessionKeys
 
 import java.time.temporal.ChronoUnit
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -282,4 +283,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   val sampleDate: LocalDateTime = LocalDateTime.of(2021, 4, 23, 18, 25, 43)
     .plus(511, ChronoUnit.MILLIS)
+
+  val vatTraderUser = User("123456789", arn = None)(fakeRequest)
+  val agentUser = User("123456789", arn = Some("AGENT1"))(fakeRequest.withSession(SessionKeys.agentSessionVrn -> "VRN1234"))
 }

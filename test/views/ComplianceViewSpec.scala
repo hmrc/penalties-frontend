@@ -58,7 +58,7 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
   "ComplianceView" should {
     def applyView(isUnsubmittedReturns: Boolean, contentForMissingReturns: Html, timelineContent: Html): HtmlFormat.Appendable = {
-      compliancePage.apply(isUnsubmittedReturns, contentForMissingReturns, timelineContent)
+      compliancePage.apply(isUnsubmittedReturns, contentForMissingReturns, timelineContent)(implicitly, implicitly, implicitly, vatTraderUser)
     }
 
     implicit val docWithMissingReturns: Document = asDocument(applyView(isUnsubmittedReturns = true, html(stringAsHtml(sampleMissingReturns)), sampleTimelineHtml))

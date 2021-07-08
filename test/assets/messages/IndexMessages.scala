@@ -24,6 +24,8 @@ object IndexMessages {
 
   val heading = "VAT penalties and appeals"
 
+  val agentHeading = "Your client’s VAT details"
+
   val tab1 = "Late submission penalties"
 
   val subheading = "Late submission penalties"
@@ -32,7 +34,11 @@ object IndexMessages {
 
   val singularOverviewText = "You have 1 penalty point for submitting a VAT Return late."
 
+  val singularAgentOverviewText = "Your client has 1 penalty point for submitting a VAT Return late."
+
   val pluralOverviewText = "You have 2 penalty points for submitting 2 VAT Returns late."
+
+  val pluralAgentOverviewText = "Your client has 2 penalty points for submitting 2 VAT Returns late."
 
   val penaltyPointsTotal = "Penalty points total:"
 
@@ -40,19 +46,35 @@ object IndexMessages {
 
   def multiActivePenaltyPoints(amountOfPoints: Int, amountOfLateSubmissions: Int) = s"You have $amountOfPoints penalty points for submitting $amountOfLateSubmissions VAT Returns late."
 
+  def multiAgentActivePenaltyPoints(amountOfPoints: Int, amountOfLateSubmissions: Int) = s"Your client has $amountOfPoints penalty points for submitting $amountOfLateSubmissions VAT Returns late."
+
   val whatHappensWhenNextSubmissionIsLate = "You’ll get another point if you submit late again. Points usually expire after 24 months but it can be longer if you keep submitting late."
 
-  val quarterlyThresholdPlusOnePenaltyApplication = "If you reach 4 points you’ll have to pay a £200 penalty."
+  val whatHappensWhenNextSubmissionIsLateForAgent = "They’ll get another point if they submit late again. Points usually expire after 24 months but it can be longer if your client keeps submitting late."
+
+  val quarterlyThresholdPlusOnePenaltyApplication = "If you reach 4 points, you’ll have to pay a £200 penalty."
+
+  val quarterlyThresholdPlusOnePenaltyApplicationForAgent = "If your client reaches 4 points, they’ll have to pay a £200 penalty."
 
   val warningText = "Warning: You’ll get a £200 penalty if you submit another VAT Return late."
 
+  val warningTextAgent = "Warning: Your client will get a £200 penalty if they submit another VAT Return late."
+
   val thresholdReached = "You have reached the financial penalty threshold."
+
+  val thresholdReachedAgent = "Your client has reached the financial penalty threshold."
 
   val lateReturnPenalty = "Until you bring your account up to date:"
 
   val lateReturnPenaltyBullet1 = "your penalty points will not expire"
 
   val lateReturnPenaltyBullet2 = "you’ll have to pay a £200 penalty every time you submit a VAT Return late"
+
+  val lateReturnPenaltyAgent = "Until they bring their account up to date:"
+
+  val lateReturnPenaltyBullet1Agent = "their penalty points will not expire"
+
+  val lateReturnPenaltyBullet2Agent = "they’ll have to pay a £200 penalty every time they submit a VAT Return late"
 
   val bringAccountUpToDate = "Show me how to bring this account up to date"
 
