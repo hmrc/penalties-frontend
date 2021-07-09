@@ -151,6 +151,11 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         )
 
         behave like pageWithExpectedMessages(expectedAgentContent)(agentDoc)
+
+        "not have breadcrumb links for 'Your VAT account'" in {
+          agentDoc.select(Selectors.breadcrumbs(1)).isEmpty shouldBe true
+          agentDoc.select(Selectors.breadcrumbWithLink(2)).isEmpty shouldBe true
+        }
       }
 
       "user is on page" must {
