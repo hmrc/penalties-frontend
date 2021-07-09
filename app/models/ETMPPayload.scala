@@ -16,7 +16,7 @@
 
 package models
 
-import models.penalty.PaymentPoint
+import models.penalty.LatePaymentPenalty
 import models.point.PenaltyPoint
 import play.api.libs.json.{Json, OFormat}
 
@@ -28,7 +28,7 @@ case class ETMPPayload(
                         penaltyAmountsTotal: BigDecimal,
                         penaltyPointsThreshold: Int,
                         penaltyPoints: Seq[PenaltyPoint],
-                        latePaymentPenalties: Option[Seq[PaymentPoint]] = None
+                        latePaymentPenalties: Option[Seq[LatePaymentPenalty]] = None
                       )
 
 object ETMPPayload {

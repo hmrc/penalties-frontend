@@ -24,7 +24,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.Json
 
-class PaymentPointSpec extends AnyWordSpec with Matchers {
+class LatePaymentPenaltySpec extends AnyWordSpec with Matchers {
 
   val paymentPointJson = (withAppealStatus: Boolean) => Json.obj(
     "type"-> "financial",
@@ -47,7 +47,7 @@ class PaymentPointSpec extends AnyWordSpec with Matchers {
     if(withAppealStatus) Json.obj("appealStatus" -> AppealStatusEnum.Under_Review) else Json.obj()
   )
 
-  val paymentPointModelWithAppeal: PaymentPoint = PaymentPoint(
+  val paymentPointModelWithAppeal: LatePaymentPenalty = LatePaymentPenalty(
     `type` = PenaltyTypeEnum.Financial,
     id = "123456789",
     reason = "VAT_NOT_PAID_ON_TIME",
@@ -67,7 +67,7 @@ class PaymentPointSpec extends AnyWordSpec with Matchers {
     )
   )
 
-  val paymentPointModelWithNoAppeal: PaymentPoint = paymentPointModelWithAppeal.copy(appealStatus = None)
+  val paymentPointModelWithNoAppeal: LatePaymentPenalty = paymentPointModelWithAppeal.copy(appealStatus = None)
 
   "be writable to JSON with no appeal status" in {
     val result = Json.toJson(paymentPointModelWithNoAppeal)
@@ -80,13 +80,13 @@ class PaymentPointSpec extends AnyWordSpec with Matchers {
   }
 
   "be readable from JSON with no appeal status" in {
-    val result = Json.fromJson(paymentPointJson(false))(PaymentPoint.format)
+    val result = Json.fromJson(paymentPointJson(false))(LatePaymentPenalty.format)
     result.isSuccess shouldBe true
     result.get shouldBe paymentPointModelWithNoAppeal
   }
 
   "be readable from JSON with an appeal status" in {
-    val result = Json.fromJson(paymentPointJson(true))(PaymentPoint.format)
+    val result = Json.fromJson(paymentPointJson(true))(LatePaymentPenalty.format)
     result.isSuccess shouldBe true
     result.get shouldBe paymentPointModelWithAppeal
   }

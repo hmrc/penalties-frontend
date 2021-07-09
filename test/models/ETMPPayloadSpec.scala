@@ -18,7 +18,7 @@ package models
 
 import models.communication.{Communication, CommunicationTypeEnum}
 import models.financial.Financial
-import models.penalty.{PaymentPeriod, PaymentPoint, PaymentStatusEnum, PenaltyPeriod}
+import models.penalty.{PaymentPeriod, LatePaymentPenalty, PaymentStatusEnum, PenaltyPeriod}
 import models.submission.{Submission, SubmissionStatusEnum}
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
@@ -263,7 +263,7 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
   val etmpPayloadModelWithLPPs: ETMPPayload = etmpPayloadModel.copy(
     latePaymentPenalties = Some(
       Seq(
-        PaymentPoint(
+        LatePaymentPenalty(
           `type` = PenaltyTypeEnum.Financial,
           id = "1234567891",
           reason = "VAT_NOT_PAID_ON_TIME",
