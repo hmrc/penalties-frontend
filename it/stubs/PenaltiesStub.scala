@@ -19,6 +19,7 @@ package stubs
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, stubFor, urlMatching}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import models.ETMPPayload
+import models.penalty.LatePaymentPenalty
 import models.point.PenaltyPoint
 import play.api.http.Status
 import play.api.libs.json.Json
@@ -33,7 +34,8 @@ object PenaltiesStub {
     0.0,
     0.0,
     4,
-    Seq.empty[PenaltyPoint]
+    Seq.empty[PenaltyPoint],
+    Option(Seq.empty[LatePaymentPenalty])
   )
 
   def lspDataStub(): StubMapping = stubFor(get(urlMatching(getLspDataUrl))

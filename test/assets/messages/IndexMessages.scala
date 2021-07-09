@@ -28,7 +28,11 @@ object IndexMessages {
 
   val tab1 = "Late submission penalties"
 
+  val tab2 = "Late payment penalties"
+
   val subheading = "Late submission penalties"
+
+  val subheadingLPP = "Late payment penalties"
 
   val externalGuidanceLinkText = "Read the guidance about late submission penalties (opens in a new tab)"
 
@@ -43,6 +47,8 @@ object IndexMessages {
   val penaltyPointsTotal = "Penalty points total:"
 
   val noActivePenaltyPoints = "No active late submission penalty points."
+
+  val noActivePaymentPenalty = "There are no late payment penalties."
 
   def multiActivePenaltyPoints(amountOfPoints: Int, amountOfLateSubmissions: Int) = s"You have $amountOfPoints penalty points for submitting $amountOfLateSubmissions VAT Returns late."
 

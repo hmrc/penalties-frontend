@@ -115,6 +115,14 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     }
   }
 
+  def getContentBasedOnLatePaymentPenaltiesFromModel (etmpData: ETMPPayload)(implicit messages: Messages, user: User[_]): Html= {
+    if (etmpData.latePaymentPenalties.get.isEmpty) {
+      p(content = stringAsHtml(messages("lpp.penaltiesSummary.noPaymentPenalties")))
+    } else {
+      p(content = html(stringAsHtml(""))) //TODO: for non-empty latePaymentPenalties
+    }
+  }
+
   def getPluralOrSingularContentForOverview(currentPoints: Int, lateSubmissions: Int)(implicit messages: Messages, user: User[_]): Html = {
     if (currentPoints == 1) {
       stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.singular", currentPoints))

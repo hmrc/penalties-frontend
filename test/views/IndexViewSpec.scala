@@ -126,13 +126,14 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
     "IndexView" when {
 
       val contentToDisplayOnPage: Html = pElement(content = Html("This is some content."), id = Some("sample-content"))
+      val contentLPPToDisplayOnPage: Html = pElement(content = Html("This is some LPP content."), id = Some("sample-lpp-content"))
 
-      def applyVATTraderView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnSubmittedPenaltyPointData,
+      def applyVATTraderView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, contentLPPToDisplayOnPage,helper.populateCard(sampleReturnSubmittedPenaltyPointData,
         quarterlyThreshold, 1), "0")(fakeRequest, implicitly, implicitly, vatTraderUser)
 
       implicit val vatTraderDoc: Document = asDocument(applyVATTraderView())
 
-      def applyAgentView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnSubmittedPenaltyPointData,
+      def applyAgentView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, contentLPPToDisplayOnPage,helper.populateCard(sampleReturnSubmittedPenaltyPointData,
         quarterlyThreshold, 1), "0")(agentRequest, implicitly, implicitly, agentUser)
 
       implicit val agentDoc: Document = asDocument(applyAgentView())
@@ -143,8 +144,10 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           Selectors.h1 -> heading,
           Selectors.breadcrumbWithLink(1) -> breadcrumb1,
           Selectors.breadcrumbs(2) -> breadcrumb2,
-          Selectors.tab -> tab1,
-          Selectors.tabHeading -> subheading
+          Selectors.tab(1) -> tab1,
+          Selectors.tab(2) -> tab2,
+          Selectors.tabHeading -> subheading,
+          Selectors.tabHeadingLPP -> subheadingLPP
         )
 
         behave like pageWithExpectedMessages(expectedAgentContent)(agentDoc)
@@ -156,8 +159,10 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           Selectors.h1 -> heading,
           Selectors.breadcrumbWithLink(1) -> breadcrumb1,
           Selectors.breadcrumbs(2) -> breadcrumb2,
-          Selectors.tab -> tab1,
-          Selectors.tabHeading -> subheading
+          Selectors.tab(1) -> tab1,
+          Selectors.tab(2) -> tab2,
+          Selectors.tabHeading -> subheading,
+          Selectors.tabHeadingLPP -> subheadingLPP
         )
 
         behave like pageWithExpectedMessages(expectedContent)(vatTraderDoc)
@@ -172,7 +177,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
         "display the removed point due to a change in submission filing" in {
           implicit val documentWithOneSummaryCardComponent = {
-            asDocument(indexViewPage.apply(contentToDisplayOnPage, Seq(summaryCardRepresentingRemovedPoint), "0")(fakeRequest,
+            asDocument(indexViewPage.apply(contentToDisplayOnPage,contentLPPToDisplayOnPage, Seq(summaryCardRepresentingRemovedPoint), "0")(fakeRequest,
               implicitly, implicitly, vatTraderUser))
           }
           val summaryCard = documentWithOneSummaryCardComponent.select(".app-summary-card")
@@ -191,7 +196,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
         "display the added point due to a change in submission filing" in {
           implicit val documentWithOneSummaryCardComponent = {
-            asDocument(indexViewPage.apply(contentToDisplayOnPage, Seq(summaryCardRepresentingAddedPoint), "0")(fakeRequest,
+            asDocument(indexViewPage.apply(contentToDisplayOnPage,contentLPPToDisplayOnPage, Seq(summaryCardRepresentingAddedPoint), "0")(fakeRequest,
               implicitly, implicitly, vatTraderUser))
           }
           val summaryCard = documentWithOneSummaryCardComponent.select(".app-summary-card")
@@ -222,7 +227,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
         "populate summary card when user has a penalty point from un-submitted VAT return with due status" in {
           def applyView(): HtmlFormat.Appendable = {
-            indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold,
+            indexViewPage.apply(contentToDisplayOnPage, contentLPPToDisplayOnPage, helper.populateCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold,
               1), "0")(fakeRequest, implicitly, implicitly, vatTraderUser)
           }
 
@@ -239,7 +244,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
       }
 
       "user has unpaid LSP's but has submitted a VAT return - show a call to action to pay with no preceding text" in {
-        def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage,
+        def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage,contentLPPToDisplayOnPage,
           helper.populateCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold, 1),
           "£200.00",
           isUnpaidLSPExists = true,
@@ -250,7 +255,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
       }
 
       "user has unpaid LSP's and has NOT submitted a VAT return - show a call to action to pay WITH preceding text" in {
-        def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage,
+        def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage,contentLPPToDisplayOnPage,
           helper.populateCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold, 1),
           "£200.00",
           isUnpaidLSPExists = true,
@@ -261,7 +266,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
       }
 
       "user has unpaid LSP's and therefore needs to pay their penalties - show a button for them to check and pay what they owe" in {
-        def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage,
+        def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage,contentLPPToDisplayOnPage,
           helper.populateCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold, 1),
           "£200.00",
           isUnpaidLSPExists = true,

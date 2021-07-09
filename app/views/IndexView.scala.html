@@ -25,6 +25,7 @@
 )
 
 @(contentToDisplayBeforeSummaryCards: Html,
+contentLPPToDisplayBeforeSummaryCards: Html,
         cards: Seq[SummaryCard],
         totalAmountToPay: String,
         isUnpaidLSPExists: Boolean = false,
@@ -65,6 +66,11 @@
                     @messages("index.tab1")
                 </a>
             </li>
+            <li class="govuk-tabs__list-item">
+                <a class="govuk-tabs__tab" href="#late-payment-penalties">
+                    @messages("index.tab2")
+                </a>
+            </li>
         </ul>
         <div class="govuk-tabs__panel" id="late-submission-penalties">
             <h2 class="govuk-heading-m">@{messages("index.subheading")}</h2>
@@ -73,6 +79,10 @@
             @cards.map { card =>
                 @summaryCard(card)
             }
+        </div>
+        <div class="govuk-tabs__panel" id="late-payment-penalties">
+            <h2 class="govuk-heading-m">@{messages("index.subheading.lpp")}</h2>
+            @contentLPPToDisplayBeforeSummaryCards
         </div>
     </div>
 }

@@ -20,7 +20,7 @@ import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
 import models.{ETMPPayload, User}
 import models.financial.Financial
-import models.penalty.PenaltyPeriod
+import models.penalty.{LatePaymentPenalty, PenaltyPeriod}
 import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
 import org.jsoup.Jsoup
@@ -88,7 +88,8 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     0.0,
     0.0,
     4,
-    Seq.empty[PenaltyPoint]
+    Seq.empty[PenaltyPoint],
+    Option(Seq.empty[LatePaymentPenalty])
   )
 
   val sampleComplianceData: CompliancePayload = CompliancePayload(
