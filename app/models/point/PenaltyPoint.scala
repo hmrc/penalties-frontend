@@ -20,7 +20,6 @@ import models.communication.Communication
 import models.financial.Financial
 import models.penalty.PenaltyPeriod
 import play.api.libs.json.{Json, OFormat}
-
 import java.time.LocalDateTime
 
 case class PenaltyPoint(
