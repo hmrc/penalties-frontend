@@ -141,13 +141,16 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         val expectedAgentContent = Seq(
           Selectors.serviceNameLink -> agentHeading,
           Selectors.h1 -> heading,
-          Selectors.breadcrumbWithLink(1) -> breadcrumb1,
-          Selectors.breadcrumbs(2) -> breadcrumb2,
           Selectors.tab -> tab1,
           Selectors.tabHeading -> subheading
         )
 
         behave like pageWithExpectedMessages(expectedAgentContent)(agentDoc)
+
+        "not have breadcrumb links for 'Your VAT account'" in {
+          agentDoc.select(Selectors.breadcrumbs(1)).isEmpty shouldBe true
+          agentDoc.select(Selectors.breadcrumbWithLink(2)).isEmpty shouldBe true
+        }
       }
 
       "user is on page" must {
