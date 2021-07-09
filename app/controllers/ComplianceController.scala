@@ -16,20 +16,17 @@
 
 package controllers
 
-import com.google.inject.internal.cglib.proxy.$Enhancer.EnhancerKey
 import config.AppConfig
 import controllers.predicates.AuthPredicate
-import javax.inject.Inject
 import play.api.i18n.I18nSupport
-import play.api.i18n.Lang.logger
 import play.api.mvc._
 import services.ComplianceService
-import uk.gov.hmrc.auth.core.Enrolment
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{CurrencyFormatter, EnrolmentKeys}
 import viewmodels.{CompliancePageHelper, TimelineHelper}
 import views.html.ComplianceView
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class ComplianceController @Inject()(view: ComplianceView,

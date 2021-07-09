@@ -22,10 +22,12 @@ import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
 import org.jsoup.Jsoup
 import play.api.http.Status
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.AuthStub
 import stubs.PenaltiesStub.returnLSPDataStub
 import testUtils.IntegrationSpecCommonBase
+import utils.SessionKeys
 
 import java.time.LocalDateTime
 
@@ -34,6 +36,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
   val sampleDate2 = LocalDateTime.of(2021, 2, 1, 1, 1, 1)
   val sampleDate3 = LocalDateTime.of(2021, 3, 1, 1, 1, 1)
   val sampleDate4 = LocalDateTime.of(2021, 4, 1, 1, 1, 1)
+  val controller = injector.instanceOf[IndexController]
+  val fakeAgentRequest = FakeRequest("GET", "/").withSession(SessionKeys.agentSessionVrn -> "123456789")
   val etmpPayloadWithAddedPoints: ETMPPayload = ETMPPayload(
     pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, penaltyPoints = Seq(
       PenaltyPoint(
@@ -215,6 +219,68 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("main section h3").get(2).text shouldBe "Penalty point 1"
       parsedBody.select("main section h3").get(3).text shouldBe "Penalty point"
       parsedBody.select("main section strong").get(3).text shouldBe "removed"
+    }
+
+    "agent view" must {
+      "return 200 (OK) and render the view when there are added points that are retrieved from the backend" in {
+        AuthStub.agentAuthorised()
+        returnLSPDataStub(etmpPayloadWithAddedPoints)
+        val request = controller.onPageLoad()(fakeAgentRequest)
+        await(request).header.status shouldBe Status.OK
+        val parsedBody = Jsoup.parse(contentAsString(request))
+        parsedBody.select("#late-submission-penalties p.govuk-body").get(0).text shouldBe "Your client has 2 penalty points. This is because:"
+        parsedBody.select("#late-submission-penalties ul li").get(0).text shouldBe "they have submitted a VAT Return late"
+        parsedBody.select("#late-submission-penalties ul li").get(1).text shouldBe "we added 1 point and sent them a letter explaining why"
+        parsedBody.select("header h3").text shouldBe "Penalty point 1: adjustment point"
+        parsedBody.select("main strong").text shouldBe "active"
+        val summaryCardBody = parsedBody.select(".app-summary-card__body")
+        summaryCardBody.select("dt").get(0).text shouldBe "Added on"
+        summaryCardBody.select("dd").get(0).text() shouldBe "1 January 2021"
+        summaryCardBody.select("dt").get(1).text() shouldBe "Point due to expire"
+        summaryCardBody.select("dd").get(1).text() shouldBe "February 2023"
+        summaryCardBody.select("p.govuk-body a").text() shouldBe "Find out more about adjustment points (opens in a new tab)"
+        //TODO: Change to external guidance when available
+        summaryCardBody.select("p.govuk-body a").attr("href") shouldBe "#"
+        parsedBody.select(".app-summary-card footer li").text shouldBe "You cannot appeal this point"
+      }
+
+      "return 200 (OK) and render the view when there are removed points that are retrieved from the backend" in {
+        AuthStub.agentAuthorised()
+        returnLSPDataStub(etmpPayloadWithRemovedPoints)
+        val request = controller.onPageLoad()(fakeAgentRequest)
+        await(request).header.status shouldBe Status.OK
+        val parsedBody = Jsoup.parse(contentAsString(request))
+        parsedBody.select("#late-submission-penalties p.govuk-body").get(0).text shouldBe "Your client has 1 penalty point. This is because:"
+        parsedBody.select("#late-submission-penalties ul li").get(0).text shouldBe "they have submitted 2 VAT Returns late"
+        parsedBody.select("#late-submission-penalties ul li").get(1).text shouldBe "we removed 1 point and sent them a letter explaining why"
+        parsedBody.select("header h3").text shouldBe "Penalty point"
+        parsedBody.select("main strong").text shouldBe "removed"
+        val summaryCardBody = parsedBody.select(".app-summary-card__body")
+        summaryCardBody.select("dt").get(0).text shouldBe "VAT Period"
+        summaryCardBody.select("dd").get(0).text() shouldBe "1 January 2021 to 1 February 2021"
+        summaryCardBody.select("dt").get(1).text() shouldBe "Reason"
+        summaryCardBody.select("dd").get(1).text() shouldBe "This is a great reason."
+        summaryCardBody.select("p.govuk-body a").text() shouldBe "Find out more about adjustment points (opens in a new tab)"
+        //TODO: Change to external guidance when available
+        summaryCardBody.select("p.govuk-body a").attr("href") shouldBe "#"
+        parsedBody.select(".app-summary-card footer li").text shouldBe ""
+      }
+
+      "return 200 (OK) and render the view when removed points are below active points (active points are reindexed)" in {
+        AuthStub.agentAuthorised()
+        returnLSPDataStub(etmpPayloadWith2PointsandOneRemovedPoint)
+        val request = controller.onPageLoad()(fakeAgentRequest)
+        await(request).header.status shouldBe Status.OK
+        val parsedBody = Jsoup.parse(contentAsString(request))
+        parsedBody.select("#late-submission-penalties p.govuk-body").get(0).text shouldBe "Your client has 2 penalty points. This is because:"
+        parsedBody.select("#late-submission-penalties ul li").get(0).text shouldBe "they have submitted 3 VAT Returns late"
+        parsedBody.select("#late-submission-penalties ul li").get(1).text shouldBe "we removed 1 point and sent them a letter explaining why"
+        parsedBody.select("main section h3").get(0).text shouldBe "Penalty point 3"
+        parsedBody.select("main section h3").get(1).text shouldBe "Penalty point 2"
+        parsedBody.select("main section h3").get(2).text shouldBe "Penalty point 1"
+        parsedBody.select("main section h3").get(3).text shouldBe "Penalty point"
+        parsedBody.select("main section strong").get(3).text shouldBe "removed"
+      }
     }
 
     "return 303 (SEE_OTHER) when the user is not authorised" in {

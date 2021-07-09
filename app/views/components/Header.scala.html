@@ -15,15 +15,16 @@
  *@
 
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.{Header, HmrcHeader}
+@import utils.SessionKeys
 
 @this(hmrcHeader: HmrcHeader)
 
-@(showSignOut: Boolean = true)(implicit messages: Messages)
+@(showSignOut: Boolean = true)(implicit messages: Messages, request: Request[_])
 
 @hmrcHeader(Header(
     homepageUrl = controllers.routes.IndexController.onPageLoad.url,
     serviceUrl = controllers.routes.IndexController.onPageLoad.url,
-    serviceName = Some(messages("service.name")),
+    serviceName = Some(if(request.session.get(SessionKeys.agentSessionVrn).isDefined) { messages("agent.service.name")} else { messages("service.name") }),
     containerClasses = "govuk-width-container",
     navigation = None,
     signOutHref = if(showSignOut) Some(controllers.routes.SignOutController.signOut().url) else None

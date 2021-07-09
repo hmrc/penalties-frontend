@@ -24,6 +24,7 @@ import models.submission.{Submission, SubmissionStatusEnum}
 import org.jsoup.nodes.Document
 import play.twirl.api.Html
 import play.twirl.api.HtmlFormat
+import utils.SessionKeys
 import viewmodels.{SummaryCard, SummaryCardHelper}
 import views.behaviours.ViewBehaviours
 import views.html.IndexView
@@ -114,17 +115,40 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
     val indexViewPage = injector.instanceOf[IndexView]
 
+    val agentRequest = fakeRequest.withSession(SessionKeys.agentSessionVrn -> "VRN1234")
+
     object Selectors extends BaseSelectors {
       val rowItem: Int => String = i => s"#late-submission-penalties > section > div > dl > div:nth-child($i) > dt"
+
+      val serviceNameLink = ".govuk-header__content a.govuk-header__link"
     }
 
     "IndexView" when {
 
       val contentToDisplayOnPage: Html = pElement(content = Html("This is some content."), id = Some("sample-content"))
 
-      def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnSubmittedPenaltyPointData, quarterlyThreshold,1), "0")
+      def applyVATTraderView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnSubmittedPenaltyPointData,
+        quarterlyThreshold, 1), "0")(fakeRequest, implicitly, implicitly, vatTraderUser)
 
-      implicit val doc: Document = asDocument(applyView())
+      implicit val vatTraderDoc: Document = asDocument(applyVATTraderView())
+
+      def applyAgentView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnSubmittedPenaltyPointData,
+        quarterlyThreshold, 1), "0")(agentRequest, implicitly, implicitly, agentUser)
+
+      implicit val agentDoc: Document = asDocument(applyAgentView())
+
+      "agent is on page" must {
+        val expectedAgentContent = Seq(
+          Selectors.serviceNameLink -> agentHeading,
+          Selectors.h1 -> heading,
+          Selectors.breadcrumbWithLink(1) -> breadcrumb1,
+          Selectors.breadcrumbs(2) -> breadcrumb2,
+          Selectors.tab -> tab1,
+          Selectors.tabHeading -> subheading
+        )
+
+        behave like pageWithExpectedMessages(expectedAgentContent)(agentDoc)
+      }
 
       "user is on page" must {
 
@@ -136,18 +160,21 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           Selectors.tabHeading -> subheading
         )
 
-        behave like pageWithExpectedMessages(expectedContent)
+        behave like pageWithExpectedMessages(expectedContent)(vatTraderDoc)
 
         "have correct route for breadcrumb link" in {
-          doc.select(Selectors.breadcrumbWithLink(1)).attr("href") shouldBe appConfig.vatOverviewUrl
+          vatTraderDoc.select(Selectors.breadcrumbWithLink(1)).attr("href") shouldBe appConfig.vatOverviewUrl
         }
 
         "have the specified content displayed on the page" in {
-          doc.select("#sample-content").text() shouldBe "This is some content."
+          vatTraderDoc.select("#sample-content").text() shouldBe "This is some content."
         }
 
         "display the removed point due to a change in submission filing" in {
-          implicit val documentWithOneSummaryCardComponent = asDocument(indexViewPage.apply(contentToDisplayOnPage, Seq(summaryCardRepresentingRemovedPoint), "0"))
+          implicit val documentWithOneSummaryCardComponent = {
+            asDocument(indexViewPage.apply(contentToDisplayOnPage, Seq(summaryCardRepresentingRemovedPoint), "0")(fakeRequest,
+              implicitly, implicitly, vatTraderUser))
+          }
           val summaryCard = documentWithOneSummaryCardComponent.select(".app-summary-card")
           summaryCard.select("header h3").text shouldBe "Penalty point"
           summaryCard.select("strong").text shouldBe "removed"
@@ -163,7 +190,10 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         }
 
         "display the added point due to a change in submission filing" in {
-          implicit val documentWithOneSummaryCardComponent = asDocument(indexViewPage.apply(contentToDisplayOnPage, Seq(summaryCardRepresentingAddedPoint), "0"))
+          implicit val documentWithOneSummaryCardComponent = {
+            asDocument(indexViewPage.apply(contentToDisplayOnPage, Seq(summaryCardRepresentingAddedPoint), "0")(fakeRequest,
+              implicitly, implicitly, vatTraderUser))
+          }
           val summaryCard = documentWithOneSummaryCardComponent.select(".app-summary-card")
           summaryCard.select("header h3").text shouldBe "Penalty point 1: adjustment point"
           summaryCard.select("strong").text shouldBe "active"
@@ -180,18 +210,21 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
         "populate summary card when user has penalty points" in {
 
-          doc.select(Selectors.summaryCardHeaderTitle).text shouldBe penaltyPointHeader
-          doc.select(Selectors.summaryCardHeaderTag).text shouldBe activeTag
-          doc.select(Selectors.rowItem(1)).text shouldBe period
-          doc.select(Selectors.rowItem(2)).text shouldBe returnDue
-          doc.select(Selectors.rowItem(3)).text shouldBe returnSubmitted
-          doc.select(Selectors.rowItem(4)).text shouldBe pointExpiration
-          doc.select(Selectors.summaryCardFooterLink).text shouldBe appealLinkText
-          doc.select(Selectors.summaryCardFooterLink).attr("href") shouldBe redirectToAppealUrl
+          vatTraderDoc.select(Selectors.summaryCardHeaderTitle).text shouldBe penaltyPointHeader
+          vatTraderDoc.select(Selectors.summaryCardHeaderTag).text shouldBe activeTag
+          vatTraderDoc.select(Selectors.rowItem(1)).text shouldBe period
+          vatTraderDoc.select(Selectors.rowItem(2)).text shouldBe returnDue
+          vatTraderDoc.select(Selectors.rowItem(3)).text shouldBe returnSubmitted
+          vatTraderDoc.select(Selectors.rowItem(4)).text shouldBe pointExpiration
+          vatTraderDoc.select(Selectors.summaryCardFooterLink).text shouldBe appealLinkText
+          vatTraderDoc.select(Selectors.summaryCardFooterLink).attr("href") shouldBe redirectToAppealUrl
         }
 
         "populate summary card when user has a penalty point from un-submitted VAT return with due status" in {
-          def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold, 1), "0")
+          def applyView(): HtmlFormat.Appendable = {
+            indexViewPage.apply(contentToDisplayOnPage, helper.populateCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold,
+              1), "0")(fakeRequest, implicitly, implicitly, vatTraderUser)
+          }
 
           implicit val doc: Document = asDocument(applyView())
 
@@ -210,7 +243,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           helper.populateCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold, 1),
           "£200.00",
           isUnpaidLSPExists = true,
-          isAnyUnpaidLSPAndNotSubmittedReturn = false)
+          isAnyUnpaidLSPAndNotSubmittedReturn = false)(fakeRequest, implicitly, implicitly, vatTraderUser)
         implicit val doc: Document = asDocument(applyView())
         doc.select(".govuk-body-l").text().isEmpty shouldBe true
         doc.select("h2.govuk-heading-m").get(0).text() shouldBe "Total penalty to pay: £200.00"
@@ -221,7 +254,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           helper.populateCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold, 1),
           "£200.00",
           isUnpaidLSPExists = true,
-          isAnyUnpaidLSPAndNotSubmittedReturn = true)
+          isAnyUnpaidLSPAndNotSubmittedReturn = true)(fakeRequest, implicitly, implicitly, vatTraderUser)
         implicit val doc: Document = asDocument(applyView())
         doc.select(".govuk-body-l").text() shouldBe submitAndPayVATPenaltyText
         doc.select("h2.govuk-heading-m").get(0).text() shouldBe "Total penalty to pay: £200.00"
@@ -232,7 +265,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           helper.populateCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold, 1),
           "£200.00",
           isUnpaidLSPExists = true,
-          isAnyUnpaidLSPAndNotSubmittedReturn = true)
+          isAnyUnpaidLSPAndNotSubmittedReturn = true)(fakeRequest, implicitly, implicitly, vatTraderUser)
         implicit val doc: Document = asDocument(applyView())
         doc.select("button.govuk-button").get(0).text() shouldBe payVATPenaltyText
       }
