@@ -142,8 +142,6 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         val expectedAgentContent = Seq(
           Selectors.serviceNameLink -> agentHeading,
           Selectors.h1 -> heading,
-          Selectors.breadcrumbWithLink(1) -> breadcrumb1,
-          Selectors.breadcrumbs(2) -> breadcrumb2,
           Selectors.tab(1) -> tab1,
           Selectors.tab(2) -> tab2,
           Selectors.tabHeading -> subheading,
