@@ -17,7 +17,7 @@
 package controllers
 
 import models.ETMPPayload
-import models.penalty.PenaltyPeriod
+import models.penalty.{LatePaymentPenalty, PenaltyPeriod}
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
 import org.jsoup.Jsoup
@@ -52,11 +52,12 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         communications = Seq.empty,
         financial = None
       )
-    )
+    ),Option(Seq.empty[LatePaymentPenalty])
   )
 
   val etmpPayloadWithRemovedPoints: ETMPPayload = ETMPPayload(
-    pointsTotal = 1, lateSubmissions = 2, adjustmentPointsTotal = -1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, penaltyPoints = Seq(
+    pointsTotal = 1, lateSubmissions = 2, adjustmentPointsTotal = -1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4,
+    penaltyPoints = Seq(
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Point,
         id = "1234567890",
@@ -75,7 +76,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         communications = Seq.empty,
         financial = None
       )
-    )
+    ),Option(Seq.empty[LatePaymentPenalty])
   )
 
   val etmpPayloadWith2PointsandOneRemovedPoint: ETMPPayload = ETMPPayload(
@@ -155,7 +156,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         communications = Seq.empty,
         financial = None
       )
-    )
+    ),Option(Seq.empty[LatePaymentPenalty])
   )
 
   "GET /" should {

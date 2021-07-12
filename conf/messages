@@ -8,7 +8,9 @@ common.pageTitle = {0} - {1} - GOV.UK
 index.title = VAT penalties and appeals
 index.heading = VAT penalties and appeals
 index.tab1 = Late submission penalties
+index.tab2 = Late payment penalties
 index.subheading = Late submission penalties
+index.subheading.lpp = Late payment penalties
 index.breadcrumb.vat-account = Your VAT Account
 index.breadcrumb.index = VAT penalties and appeals
 index.guidance.link = Read the guidance about late submission penalties
@@ -60,6 +62,10 @@ agent.lsp.onThreshold.p2.b1 = their penalty points will not expire
 lsp.onThreshold.p2.b2 = you’ll have to pay a £200 penalty every time you submit a VAT Return late
 agent.lsp.onThreshold.p2.b2 = they’ll have to pay a £200 penalty every time they submit a VAT Return late
 lsp.onThreshold.link = Show me how to bring this account up to date
+
+# LPP Content
+# -------------------------------------------
+lpp.penaltiesSummary.noPaymentPenalties = There are no late payment penalties.
 
 common.pageTitle = {0} - {1} - GOV.UK
 

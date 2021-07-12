@@ -430,4 +430,17 @@ class IndexPageHelperSpec extends SpecBase {
       }
     }
   }
+
+  "getContentBasedOnLatePaymentPenaltiesFromModel" should {
+    "no active payment penalties" should {
+      "display a message in a <p> tag" in {
+        val etmpPayloadModelWithNoActivePaymentPenalty: ETMPPayload = ETMPPayload(
+          0, 0, 0, 0, 0, 3, Seq.empty, Option(Seq.empty)
+        )
+        val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(etmpPayloadModelWithNoActivePaymentPenalty)(implicitly, vatTraderUser)
+        val parsedHtmlResult = Jsoup.parse(result.body)
+        parsedHtmlResult.select("p.govuk-body").text() shouldBe noActivePaymentPenalty
+      }
+    }
+  }
 }

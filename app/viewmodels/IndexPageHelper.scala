@@ -16,6 +16,7 @@
 
 package viewmodels
 
+import models.penalty.LatePaymentPenalty
 import models.{ETMPPayload, User}
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
@@ -112,6 +113,14 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
         )
       }
       case _ => p(content = html(stringAsHtml("")))
+    }
+  }
+
+  def getContentBasedOnLatePaymentPenaltiesFromModel (etmpData: ETMPPayload)(implicit messages: Messages, user: User[_]): Html= {
+    if (etmpData.latePaymentPenalties.getOrElse(List.empty[LatePaymentPenalty]).isEmpty){
+      p(content = stringAsHtml(messages("lpp.penaltiesSummary.noPaymentPenalties")))
+    } else {
+      p(content = html(stringAsHtml(""))) //TODO: for non-empty latePaymentPenalties
     }
   }
 

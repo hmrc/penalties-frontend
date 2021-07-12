@@ -38,9 +38,11 @@ class BaseSelectors {
 
   val summaryCardFooterLink = s"$summaryCard > footer a"
 
-  val tab = "#main-content > div > div > div.govuk-tabs > ul > li > a"
+  def tab(index: Int): String = s"#main-content > div > div > div.govuk-tabs > ul > li:nth-child($index)> a"
 
   val tabHeading = "#late-submission-penalties > h2"
+
+  val tabHeadingLPP = "#late-payment-penalties > h2"
 
   val externalGuidance = "#guidance-link"
 
