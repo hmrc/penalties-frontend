@@ -1,0 +1,34 @@
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import viewmodels.{LateSubmissionPenaltySummaryCard, LatePaymentPenaltySummaryCard}
+@import models.point.AppealStatusEnum
+
+@this(
+    govukSummaryList : GovukSummaryList,
+    govukTag: GovukTag,
+    link: components.link
+)
+
+@(
+    lspSummaryCard: Option[LateSubmissionPenaltySummaryCard],
+    lppSummaryCard: Option[LatePaymentPenaltySummaryCard]
+)(implicit messages: Messages)
+
+@{
+    if(lspSummaryCard.isDefined) {
+        val summaryCard = lspSummaryCard.get
+            if(summaryCard.isFinancialPoint && summaryCard.penaltyPoint.nonEmpty) {
+                messages("summaryCard.header.financial", summaryCard.penaltyPoint, summaryCard.amountDue.intValue)
+            } else if(summaryCard.isFinancialPoint && summaryCard.penaltyPoint.isEmpty) {
+                messages("summaryCard.header.financialNoNumber", summaryCard.amountDue.intValue)
+            } else if(summaryCard.isAddedPoint) {
+                messages("summaryCard.header.addedPoint", summaryCard.penaltyPoint)
+            } else if(summaryCard.isAdjustedPoint || summaryCard.appealStatus.contains(AppealStatusEnum.Accepted) || summaryCard.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal)) {
+                messages("summaryCard.header.adjustedPoint")
+            } else {
+                messages("summaryCard.header", summaryCard.penaltyPoint)
+            }
+    } else {
+        val summaryCard = lppSummaryCard.get
+        messages("summaryCard.header.financialNoNumber", summaryCard.amountDue)
+    }
+}

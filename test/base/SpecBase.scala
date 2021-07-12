@@ -20,7 +20,7 @@ import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
 import models.{ETMPPayload, User}
 import models.financial.Financial
-import models.penalty.{LatePaymentPenalty, PenaltyPeriod}
+import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum, PenaltyPeriod}
 import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
 import org.jsoup.Jsoup
@@ -36,14 +36,16 @@ import play.twirl.api.Html
 import services.AuthService
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.govukfrontend.views.Aliases.Tag
-import viewmodels.{SummaryCard, SummaryCardHelper, TimelineHelper}
+import viewmodels.{LateSubmissionPenaltySummaryCard, SummaryCardHelper, TimelineHelper}
 import views.html.errors.Unauthorised
-
 import java.time.LocalDateTime
+
 import models.compliance.{CompliancePayload, MissingReturn, Return}
 import utils.SessionKeys
-
 import java.time.temporal.ChronoUnit
+
+import models.payment.PaymentFinancial
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
@@ -189,12 +191,41 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     Seq.empty
   )
 
+  val sampleLatePaymentPenalty = LatePaymentPenalty(
+    PenaltyTypeEnum.Financial,
+    "123456789",
+    "reason",
+    LocalDateTime.now,
+    PointStatusEnum.Active,
+    None,
+    PaymentPeriod(
+      LocalDateTime.now,
+      LocalDateTime.now,
+      PaymentStatusEnum.Paid
+    ),
+    Seq.empty,
+    PaymentFinancial(
+      amountDue = 400.00,
+      outstandingAmountDue = 200.00,
+      dueDate = LocalDateTime.now
+    )
+  )
+
   val samplePenaltyPointAppealedAccepted = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Accepted), status = PointStatusEnum.Removed)
   val samplePenaltyPointAppealedAcceptedByTribunal = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Accepted_By_Tribunal), status = PointStatusEnum.Removed)
   val samplePenaltyPointAppealedRejected = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Rejected))
   val samplePenaltyPointAppealedReinstated = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Reinstated))
   val samplePenaltyPointAppealedTribunalRejected = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Tribunal_Rejected))
   val samplePenaltyPointAppealedUnderTribunalReview = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Under_Tribunal_Review))
+
+  val sampleLatePaymentPenaltyDue = sampleLatePaymentPenalty.copy(period  = PaymentPeriod(LocalDateTime.now, LocalDateTime.now, PaymentStatusEnum.Due))
+  val sampleLatePaymentPenaltyAppealedUnderReview = sampleLatePaymentPenalty.copy(appealStatus = Some(AppealStatusEnum.Under_Review))
+  val sampleLatePaymentPenaltyAppealedUnderTribunalReview = sampleLatePaymentPenalty.copy(appealStatus = Some(AppealStatusEnum.Under_Tribunal_Review))
+  val sampleLatePaymentPenaltyAppealedAccepted = sampleLatePaymentPenalty.copy(appealStatus = Some(AppealStatusEnum.Accepted))
+  val sampleLatePaymentPenaltyAppealedAcceptedTribunal = sampleLatePaymentPenalty.copy(appealStatus = Some(AppealStatusEnum.Accepted_By_Tribunal))
+  val sampleLatePaymentPenaltyAppealedRejected = sampleLatePaymentPenalty.copy(appealStatus = Some(AppealStatusEnum.Rejected))
+  val sampleLatePaymentPenaltyAppealedRejectedTribunal = sampleLatePaymentPenalty.copy(appealStatus = Some(AppealStatusEnum.Tribunal_Rejected))
+  val sampleLatePaymentPenaltyAppealedReinstated = sampleLatePaymentPenalty.copy(appealStatus = Some(AppealStatusEnum.Reinstated))
 
   val sampleRemovedPenaltyPoint = PenaltyPoint(
     PenaltyTypeEnum.Point,
@@ -232,6 +263,14 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     samplePenaltyPoint
   )
 
+  val sampleLatePaymentPenaltyData: Seq[LatePaymentPenalty] = Seq(
+    sampleLatePaymentPenalty
+  )
+
+  val sampleLatePaymentPenaltyAppealedData: Seq[LatePaymentPenalty] = Seq(
+    sampleLatePaymentPenaltyAppealedAccepted
+  )
+
   val sample3ReturnsSubmittedPenaltyPointDataAndOneRemovedPoint: Seq[PenaltyPoint] = Seq(
     samplePenaltyPoint.copy(number = "4"),
     samplePenaltyPoint.copy(number = "3"),
@@ -262,7 +301,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     )
   )
 
-  val sampleSummaryCard: SummaryCard = SummaryCard(
+  val sampleSummaryCard: LateSubmissionPenaltySummaryCard = LateSubmissionPenaltySummaryCard(
     Seq.empty,
     Tag.defaultObject,
     "1",

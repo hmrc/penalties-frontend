@@ -24,14 +24,15 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 import utils.ImplicitDateFormatter
-
 import java.time.LocalDateTime
+
+import models.payment.PaymentFinancial
 
 class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
   val helper: SummaryCardHelper = injector.instanceOf[SummaryCardHelper]
 
-  val sampleSummaryCardReturnSubmitted: SummaryCard = SummaryCard(
+  val sampleLSPSummaryCardReturnSubmitted: LateSubmissionPenaltySummaryCard = LateSubmissionPenaltySummaryCard(
     Seq(
       helper.summaryListRow(
         period,
@@ -45,6 +46,20 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
     "1",
     "123456789",
     isReturnSubmitted = true
+  )
+
+  val sampleLPPSummaryCardPenaltyPaid: LatePaymentPenaltySummaryCard = LatePaymentPenaltySummaryCard(
+    Seq(
+      helper.summaryListRow(
+        period,
+        Html(vatPeriodValue(dateTimeToString(LocalDateTime.now), dateTimeToString(LocalDateTime.now)))
+    ),
+      helper.summaryListRow(penaltyReason, Html("VAT not paid within 15 days"))
+  ),
+    Tag(content = Text("paid"), classes = "govuk-tag "),
+    "123456789",
+    isPenaltyPaid = false,
+    200.00
   )
 
   "SummaryCard helper" should {
@@ -94,7 +109,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
     "financialSummaryCard" should {
       "have an empty string when the penalty number exceeds the threshold" in {
-        val sampleSummaryCardReturnSubmitted: SummaryCard = SummaryCard(
+        val sampleSummaryCardReturnSubmitted: LateSubmissionPenaltySummaryCard = LateSubmissionPenaltySummaryCard(
           Seq(
             helper.summaryListRow(
               period,
@@ -118,7 +133,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "have the penalty number when it DOES NOT exceeds the threshold" in {
-        val sampleSummaryCardReturnSubmitted: SummaryCard = SummaryCard(
+        val sampleSummaryCardReturnSubmitted: LateSubmissionPenaltySummaryCard = LateSubmissionPenaltySummaryCard(
           Seq(
             helper.summaryListRow(
               period,
@@ -191,76 +206,87 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
     }
 
-    "return SummaryCards when given Penalty point" when {
-      "populateCard is called" in {
-        val result = helper.populateCard(sampleReturnSubmittedPenaltyPointData, quarterlyThreshold, quarterlyThreshold - 1)
-        result shouldBe Seq(sampleSummaryCardReturnSubmitted)
+    "return SummaryCards" when {
+      "given a Penalty point" when {
+        "populateLateSubmissionPenaltyCard is called" in {
+          val result = helper.populateLateSubmissionPenaltyCard(sampleReturnSubmittedPenaltyPointData, quarterlyThreshold, quarterlyThreshold - 1)
+          result shouldBe Seq(sampleLSPSummaryCardReturnSubmitted)
+        }
+
+        "user has removed points below active points - active points should be reindexed so that the points are logically numbered correctly" in {
+          val expectedResult: Seq[LateSubmissionPenaltySummaryCard] = Seq(LateSubmissionPenaltySummaryCard(
+            Seq(
+              helper.summaryListRow(
+                period,
+                Html(vatPeriodValue(dateTimeToString(LocalDateTime.now), dateTimeToString(LocalDateTime.now)))
+              ),
+              helper.summaryListRow(returnDue, Html(dateTimeToString(LocalDateTime.now))),
+              helper.summaryListRow(returnSubmitted, Html(dateTimeToString(LocalDateTime.now))),
+              helper.summaryListRow(pointExpiration, Html(dateTimeToMonthYearString(LocalDateTime.now)))
+            ),
+            Tag(content = Text("active"), classes = "govuk-tag "),
+            "3",
+            "123456789",
+            isReturnSubmitted = true,
+          ),
+            LateSubmissionPenaltySummaryCard(
+              Seq(
+                helper.summaryListRow(
+                  period,
+                  Html(vatPeriodValue(dateTimeToString(LocalDateTime.now), dateTimeToString(LocalDateTime.now)))
+                ),
+                helper.summaryListRow(returnDue, Html(dateTimeToString(LocalDateTime.now))),
+                helper.summaryListRow(returnSubmitted, Html(dateTimeToString(LocalDateTime.now))),
+                helper.summaryListRow(pointExpiration, Html(dateTimeToMonthYearString(LocalDateTime.now)))
+              ),
+              Tag(content = Text("active"), classes = "govuk-tag "),
+              "2",
+              "123456789",
+              isReturnSubmitted = true,
+            ),
+            LateSubmissionPenaltySummaryCard(
+              Seq(
+                helper.summaryListRow(
+                  period,
+                  Html(vatPeriodValue(dateTimeToString(LocalDateTime.now), dateTimeToString(LocalDateTime.now)))
+                ),
+                helper.summaryListRow(returnDue, Html(dateTimeToString(LocalDateTime.now))),
+                helper.summaryListRow(returnSubmitted, Html(dateTimeToString(LocalDateTime.now))),
+                helper.summaryListRow(pointExpiration, Html(dateTimeToMonthYearString(LocalDateTime.now)))
+              ),
+              Tag(content = Text("active"), classes = "govuk-tag "),
+              "1",
+              "123456789",
+              isReturnSubmitted = true,
+            ),
+            LateSubmissionPenaltySummaryCard(
+              Seq(
+                helper.summaryListRow(
+                  period,
+                  Html(vatPeriodValue(dateTimeToString(LocalDateTime.now), dateTimeToString(LocalDateTime.now)))
+                ),
+                helper.summaryListRow(reason, Html("reason"))
+              ),
+              Tag(content = Text("removed"), classes = "govuk-tag "),
+              "",
+              "123456789",
+              isReturnSubmitted = true,
+              isAdjustedPoint = true
+            ))
+
+
+          val result = helper.populateLateSubmissionPenaltyCard(sample3ReturnsSubmittedPenaltyPointDataAndOneRemovedPoint, quarterlyThreshold, quarterlyThreshold - 1)
+          result shouldBe expectedResult
+        }
       }
 
-      "user has removed points below active points - active points should be reindexed so that the points are logically numbered correctly" in {
-        val expectedResult: Seq[SummaryCard] = Seq(SummaryCard(
-          Seq(
-            helper.summaryListRow(
-              period,
-              Html(vatPeriodValue(dateTimeToString(LocalDateTime.now), dateTimeToString(LocalDateTime.now)))
-            ),
-            helper.summaryListRow(returnDue, Html(dateTimeToString(LocalDateTime.now))),
-            helper.summaryListRow(returnSubmitted, Html(dateTimeToString(LocalDateTime.now))),
-            helper.summaryListRow(pointExpiration, Html(dateTimeToMonthYearString(LocalDateTime.now)))
-          ),
-          Tag(content = Text("active"), classes = "govuk-tag "),
-          "3",
-          "123456789",
-          isReturnSubmitted = true,
-        ),
-          SummaryCard(
-            Seq(
-              helper.summaryListRow(
-                period,
-                Html(vatPeriodValue(dateTimeToString(LocalDateTime.now), dateTimeToString(LocalDateTime.now)))
-              ),
-              helper.summaryListRow(returnDue, Html(dateTimeToString(LocalDateTime.now))),
-              helper.summaryListRow(returnSubmitted, Html(dateTimeToString(LocalDateTime.now))),
-              helper.summaryListRow(pointExpiration, Html(dateTimeToMonthYearString(LocalDateTime.now)))
-            ),
-            Tag(content = Text("active"), classes = "govuk-tag "),
-            "2",
-            "123456789",
-            isReturnSubmitted = true,
-          ),
-          SummaryCard(
-            Seq(
-              helper.summaryListRow(
-                period,
-                Html(vatPeriodValue(dateTimeToString(LocalDateTime.now), dateTimeToString(LocalDateTime.now)))
-              ),
-              helper.summaryListRow(returnDue, Html(dateTimeToString(LocalDateTime.now))),
-              helper.summaryListRow(returnSubmitted, Html(dateTimeToString(LocalDateTime.now))),
-              helper.summaryListRow(pointExpiration, Html(dateTimeToMonthYearString(LocalDateTime.now)))
-            ),
-            Tag(content = Text("active"), classes = "govuk-tag "),
-            "1",
-            "123456789",
-            isReturnSubmitted = true,
-          ),
-          SummaryCard(
-            Seq(
-              helper.summaryListRow(
-                period,
-                Html(vatPeriodValue(dateTimeToString(LocalDateTime.now), dateTimeToString(LocalDateTime.now)))
-              ),
-              helper.summaryListRow(reason, Html("reason"))
-            ),
-            Tag(content = Text("removed"), classes = "govuk-tag "),
-            "",
-            "123456789",
-            isReturnSubmitted = true,
-            isAdjustedPoint = true
-          ))
-
-
-        val result = helper.populateCard(sample3ReturnsSubmittedPenaltyPointDataAndOneRemovedPoint, quarterlyThreshold, quarterlyThreshold - 1)
-        result shouldBe expectedResult
+      "given a Late Payment penalty" when {
+        "return SummaryCards when given Late Payment penalty" when {
+          "populateLatePaymentPenaltyCard is called" in {
+            val result = helper.populateLatePaymentPenaltyCard(Some(sampleLatePaymentPenaltyData))
+            result shouldBe Some(Seq(sampleLPPSummaryCardPenaltyPaid))
+          }
+        }
       }
     }
   }
@@ -268,7 +294,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
   "return Seq[SummaryListRow] when give a PenaltyPoint" when {
     "returnSubmittedCardBody is called" when {
       "given a PenaltyPoint and the threshold has not been met" in {
-        val result = helper.returnSubmittedCardBody(samplePenaltyPoint, false)
+        val result = helper.returnSubmittedCardBody(samplePenaltyPoint, thresholdMet = false)
         result shouldBe Seq(
           helper.summaryListRow(
             period,
@@ -281,7 +307,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "given a PenaltyPoint and the threshold has been met" in {
-        val result = helper.returnSubmittedCardBody(samplePenaltyPoint, true)
+        val result = helper.returnSubmittedCardBody(samplePenaltyPoint, thresholdMet = true)
         result shouldBe Seq(
           helper.summaryListRow(
             period,
@@ -335,7 +361,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
     "tagStatus is called" when {
       "an appealed point is provided - under review" in {
-        val result = helper.tagStatus(samplePenaltyPointAppealedUnderReview)
+        val result = helper.tagStatus(Some(samplePenaltyPointAppealedUnderReview), None)
         result shouldBe Tag(
           content = Text(activeTag),
           classes = "govuk-tag "
@@ -343,7 +369,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "an appealed point is provided - accepted" in {
-        val result = helper.tagStatus(samplePenaltyPointAppealedAccepted)
+        val result = helper.tagStatus(Some(samplePenaltyPointAppealedAccepted), None)
         result shouldBe Tag(
           content = Text(cancelledTag),
           classes = "govuk-tag "
@@ -351,7 +377,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "an appealed point is provided - accepted by tax tribunal" in {
-        val result = helper.tagStatus(samplePenaltyPointAppealedAcceptedByTribunal)
+        val result = helper.tagStatus(Some(samplePenaltyPointAppealedAcceptedByTribunal), None)
         result shouldBe Tag(
           content = Text(cancelledTag),
           classes = "govuk-tag "
@@ -359,7 +385,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "an appealed point is provided - rejected" in {
-        val result = helper.tagStatus(samplePenaltyPointAppealedRejected)
+        val result = helper.tagStatus(Some(samplePenaltyPointAppealedRejected), None)
         result shouldBe Tag(
           content = Text(activeTag),
           classes = "govuk-tag "
@@ -367,7 +393,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "an appealed point is provided - reinstated" in {
-        val result = helper.tagStatus(samplePenaltyPointAppealedReinstated)
+        val result = helper.tagStatus(Some(samplePenaltyPointAppealedReinstated), None)
         result shouldBe Tag(
           content = Text(reinstatedTag),
           classes = "govuk-tag "
@@ -375,7 +401,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "an appealed point is provided - tribunal rejected" in {
-        val result = helper.tagStatus(samplePenaltyPointAppealedTribunalRejected)
+        val result = helper.tagStatus(Some(samplePenaltyPointAppealedTribunalRejected), None)
         result shouldBe Tag(
           content = Text(activeTag),
           classes = "govuk-tag "
@@ -383,7 +409,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "an overdue penaltyPointSubmission is provided" in {
-        val result = helper.tagStatus(sampleOverduePenaltyPoint)
+        val result = helper.tagStatus(Some(sampleOverduePenaltyPoint), None)
         result shouldBe Tag(
           content = Text(overdueTag),
           classes = "govuk-tag penalty-due-tag"
@@ -391,7 +417,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "an active penalty point is provided" in {
-        val result = helper.tagStatus(samplePenaltyPoint)
+        val result = helper.tagStatus(Some(samplePenaltyPoint), None)
         result shouldBe Tag(
           content = Text(activeTag),
           classes = "govuk-tag "
@@ -399,7 +425,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "a penalty is submitted but the appeal is rejected - return the appropriate tag" in {
-        val result = helper.tagStatus(samplePenaltyPoint.copy(status = PointStatusEnum.Rejected))
+        val result = helper.tagStatus(Some(samplePenaltyPoint.copy(status = PointStatusEnum.Rejected)), None)
         result shouldBe Tag(
           content = Text(rejectedTag),
           classes = "govuk-tag "
@@ -407,7 +433,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "a financial penalty has been added and the user has paid" in {
-        val result = helper.tagStatus(samplePenaltyPoint.copy(status = PointStatusEnum.Paid))
+        val result = helper.tagStatus(Some(samplePenaltyPoint.copy(status = PointStatusEnum.Paid)), None)
         result shouldBe Tag(
           content = Text(paidTag),
           classes = "govuk-tag "
@@ -454,49 +480,93 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
   "pointSummaryCard" should {
     "when given an appealed point (under review) - set the relevant fields" in {
-      val result = helper.pointSummaryCard(samplePenaltyPointAppealedUnderReview, false)
+      val result = helper.pointSummaryCard(samplePenaltyPointAppealedUnderReview, thresholdMet = false)
       result.isAppealedPoint shouldBe true
       result.appealStatus.isDefined shouldBe true
       result.appealStatus.get shouldBe AppealStatusEnum.Under_Review
     }
 
     "when given an appealed point (under tribunal review) - set the relevant fields" in {
-      val result = helper.pointSummaryCard(samplePenaltyPointAppealedUnderTribunalReview, false)
+      val result = helper.pointSummaryCard(samplePenaltyPointAppealedUnderTribunalReview, thresholdMet = false)
       result.isAppealedPoint shouldBe true
       result.appealStatus.isDefined shouldBe true
       result.appealStatus.get shouldBe AppealStatusEnum.Under_Tribunal_Review
     }
 
     "when given an appealed point (accepted) - set the relevant fields" in {
-      val result = helper.pointSummaryCard(samplePenaltyPointAppealedAccepted, false)
+      val result = helper.pointSummaryCard(samplePenaltyPointAppealedAccepted, thresholdMet = false)
       result.isAppealedPoint shouldBe true
       result.appealStatus.isDefined shouldBe true
       result.appealStatus.get shouldBe AppealStatusEnum.Accepted
     }
 
     "when given an appealed point (accepted by tribunal) - set the relevant fields" in {
-      val result = helper.pointSummaryCard(samplePenaltyPointAppealedAcceptedByTribunal, false)
+      val result = helper.pointSummaryCard(samplePenaltyPointAppealedAcceptedByTribunal, thresholdMet = false)
       result.isAppealedPoint shouldBe true
       result.appealStatus.isDefined shouldBe true
       result.appealStatus.get shouldBe AppealStatusEnum.Accepted_By_Tribunal
     }
 
     "when given an appealed point (rejected) - set the relevant fields" in {
-      val result = helper.pointSummaryCard(samplePenaltyPointAppealedRejected, false)
+      val result = helper.pointSummaryCard(samplePenaltyPointAppealedRejected, thresholdMet = false)
       result.isAppealedPoint shouldBe true
       result.appealStatus.isDefined shouldBe true
       result.appealStatus.get shouldBe AppealStatusEnum.Rejected
     }
 
     "when given an appealed point (reinstated) - set the relevant fields" in {
-      val result = helper.pointSummaryCard(samplePenaltyPointAppealedReinstated, false)
+      val result = helper.pointSummaryCard(samplePenaltyPointAppealedReinstated, thresholdMet = false)
       result.isAppealedPoint shouldBe true
       result.appealStatus.isDefined shouldBe true
       result.appealStatus.get shouldBe AppealStatusEnum.Reinstated
     }
     "when given an appealed point (tribunal rejected) - set the relevant fields" in {
-      val result = helper.pointSummaryCard(samplePenaltyPointAppealedTribunalRejected, false)
+      val result = helper.pointSummaryCard(samplePenaltyPointAppealedTribunalRejected, thresholdMet = false)
       result.isAppealedPoint shouldBe true
+      result.appealStatus.isDefined shouldBe true
+      result.appealStatus.get shouldBe AppealStatusEnum.Tribunal_Rejected
+    }
+  }
+
+  "lppSummaryCard" should {
+    "when given an appealed point (under review) - set the relevant fields" in {
+      val result = helper.lppSummaryCard(sampleLatePaymentPenaltyAppealedUnderReview)
+      result.appealStatus.isDefined shouldBe true
+      result.appealStatus.get shouldBe AppealStatusEnum.Under_Review
+    }
+
+    "when given an appealed point (under tribunal review) - set the relevant fields" in {
+      val result = helper.lppSummaryCard(sampleLatePaymentPenaltyAppealedUnderTribunalReview)
+      result.appealStatus.isDefined shouldBe true
+      result.appealStatus.get shouldBe AppealStatusEnum.Under_Tribunal_Review
+    }
+
+    "when given an appealed point (accepted) - set the relevant fields" in {
+      val result = helper.lppSummaryCard(sampleLatePaymentPenaltyAppealedAccepted)
+      result.appealStatus.isDefined shouldBe true
+      result.appealStatus.get shouldBe AppealStatusEnum.Accepted
+    }
+
+    "when given an appealed point (accepted by tribunal) - set the relevant fields" in {
+      val result = helper.lppSummaryCard(sampleLatePaymentPenaltyAppealedAcceptedTribunal)
+      result.appealStatus.isDefined shouldBe true
+      result.appealStatus.get shouldBe AppealStatusEnum.Accepted_By_Tribunal
+    }
+
+    "when given an appealed point (rejected) - set the relevant fields" in {
+      val result = helper.lppSummaryCard(sampleLatePaymentPenaltyAppealedRejected)
+      result.appealStatus.isDefined shouldBe true
+      result.appealStatus.get shouldBe AppealStatusEnum.Rejected
+    }
+
+    "when given an appealed point (reinstated) - set the relevant fields" in {
+      val result = helper.lppSummaryCard(sampleLatePaymentPenaltyAppealedReinstated)
+      result.appealStatus.isDefined shouldBe true
+      result.appealStatus.get shouldBe AppealStatusEnum.Reinstated
+    }
+
+    "when given an appealed point (tribunal rejected) - set the relevant fields" in {
+      val result = helper.lppSummaryCard(sampleLatePaymentPenaltyAppealedRejectedTribunal)
       result.appealStatus.isDefined shouldBe true
       result.appealStatus.get shouldBe AppealStatusEnum.Tribunal_Rejected
     }

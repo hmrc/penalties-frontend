@@ -20,7 +20,7 @@ import models.point.AppealStatusEnum
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 
-case class SummaryCard(
+case class LateSubmissionPenaltySummaryCard(
                         cardRows: Seq[SummaryListRow],
                         status: Tag,
                         penaltyPoint: String,

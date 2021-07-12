@@ -1,0 +1,50 @@
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import viewmodels.LatePaymentPenaltySummaryCard
+@import models.point.AppealStatusEnum
+
+@this(
+    govukSummaryList : GovukSummaryList,
+    govukTag: GovukTag,
+    link: components.link
+)
+
+@(
+    summaryCard: LatePaymentPenaltySummaryCard
+)(implicit messages: Messages)
+
+<section class="app-summary-card govuk-!-margin-bottom-3">
+    <header class="app-summary-card__header">
+        <h3 class="app-summary-card__title">
+            @{
+                messages("summaryCard.header.financialNoNumber", summaryCard.amountDue)
+            }
+        </h3>
+        <div class="app-summary-card__actions">
+            <ul class="app-summary-card__actions-list">
+                <li class="app-summary-card__actions-list-item">
+                    @govukTag(summaryCard.status)
+                </li>
+            </ul>
+        </div>
+    </header>
+    <div class="app-summary-card__body">
+        @govukSummaryList(SummaryList(summaryCard.cardRows))
+    </div>
+    <footer class="app-summary-card__footer">
+        <div class="app-summary-card__actions">
+            @{
+            if(!summaryCard.appealStatus.isDefined){
+                <ul class="app-summary-card__actions-list">
+                    <li class="app-summary-card__actions-list-item">
+                        <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId).url}>
+                            {messages("summaryCard.footerLinkTextNoPointNumber")}
+                        </a>
+                    </li>
+                </ul>
+            } else {
+                <div style="padding:.8rem;"></div>
+            }
+            }
+        </div>
+    </footer>
+</section>
