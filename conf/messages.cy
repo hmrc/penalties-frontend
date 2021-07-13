@@ -76,6 +76,7 @@ summaryCard.header = Penalty point {0}
 summaryCard.header.adjustedPoint = Penalty point
 summaryCard.header.financial = Penalty point {0}: £{1} penalty
 summaryCard.header.financialNoNumber = £{0} penalty
+summaryCard.header.financialAdjustedPoint = Penalty point: £{0} penalty
 
 summaryCard.key1 = VAT Period
 summaryCard.value1 = {0} to {1}
