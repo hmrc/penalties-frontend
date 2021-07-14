@@ -258,16 +258,16 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
 
     (penaltyAppealStatus, periodSubmissionStatus, penaltyPointStatus) match {
       case (Some(AppealStatusEnum.Accepted | AppealStatusEnum.Accepted_By_Tribunal), _, _)          => renderTag(messages("status.cancelled"))
-      case (Some(AppealStatusEnum.Reinstated), _, _)        => renderTag(messages("status.reinstated"))
-      case (Some(AppealStatusEnum.Tribunal_Rejected), _, _) => renderTag(messages("status.active"))
-      case (_, None, _)                                     => renderTag(messages("status.active"))
-      case (_, Some(_), Removed)                            => renderTag(messages("status.removed"))
+      case (_, Some(Submitted), Due)                        => renderTag(messages("status.due"), "penalty-due-tag")
       case (_, Some(_), Paid)                               => renderTag(messages("status.paid"))
       case (_, Some(Overdue), _)                            => renderTag(messages("status.due"), "penalty-due-tag")
+      case (Some(AppealStatusEnum.Reinstated), _, _)        => renderTag(messages("status.reinstated"))
+      case (Some(AppealStatusEnum.Tribunal_Rejected), _, _) => renderTag(messages("status.active"))
       case (Some(AppealStatusEnum.Under_Review | AppealStatusEnum.Under_Tribunal_Review), _, _)      => renderTag(messages("status.active"))
+      case (_, None, _)                                     => renderTag(messages("status.active"))
+      case (_, Some(_), Removed)                            => renderTag(messages("status.removed"))
       case (_, Some(Submitted), Active)                     => renderTag(messages("status.active"))
       case (_, Some(Submitted), Rejected)                   => renderTag(messages("status.rejected"))
-      case (_, Some(Submitted), Due)                        => renderTag(messages("status.due"), "penalty-due-tag")
       case (_, _, _)                                        => renderTag(messages("status.active")) // Temp solution
     }
   }
