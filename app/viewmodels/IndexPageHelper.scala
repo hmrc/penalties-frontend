@@ -116,11 +116,19 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     }
   }
 
-  def getContentBasedOnLatePaymentPenaltiesFromModel (etmpData: ETMPPayload)(implicit messages: Messages, user: User[_]): Html= {
-    if (etmpData.latePaymentPenalties.getOrElse(List.empty[LatePaymentPenalty]).isEmpty){
+  def getContentBasedOnLatePaymentPenaltiesFromModel(etmpData: ETMPPayload)(implicit messages: Messages, user: User[_]): Html = {
+    if (etmpData.latePaymentPenalties.getOrElse(List.empty[LatePaymentPenalty]).isEmpty) {
       p(content = stringAsHtml(messages("lpp.penaltiesSummary.noPaymentPenalties")))
     } else {
-      p(content = html(stringAsHtml(""))) //TODO: for non-empty latePaymentPenalties
+      if (etmpData.latePaymentPenalties.get.map(_.financial.outstandingAmountDue).sum > 0) {
+        html(
+          p(content = html(stringAsHtml(messages("lpp.penaltiesSummary.unpaid")))),
+          p(link(link = "#", messages("lpp.penaltiesSummary.howLppCalculated.link", messages("site.opensInNewTab"))))
+        )
+      } else {
+        p(content = html(stringAsHtml("")))
+        p(link(link = "#", messages("lpp.penaltiesSummary.howLppCalculated.link", messages("site.opensInNewTab"))))
+      }
     }
   }
 
