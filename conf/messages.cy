@@ -66,6 +66,8 @@ lsp.onThreshold.link = Show me how to bring this account up to date
 # LPP Content
 # -------------------------------------------
 lpp.penaltiesSummary.noPaymentPenalties = There are no late payment penalties.
+lpp.penaltiesSummary.unpaid = The earlier you pay your VAT, the lower your penalties and interest will be.
+lpp.penaltiesSummary.howLppCalculated.link = Find out how late payment penalties are calculated {0}
 
 common.pageTitle = {0} - {1} - GOV.UK
 

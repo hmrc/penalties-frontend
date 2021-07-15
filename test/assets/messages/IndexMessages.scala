@@ -50,6 +50,10 @@ object IndexMessages {
 
   val noActivePaymentPenalty = "There are no late payment penalties."
 
+  val unpaidVATText = "The earlier you pay your VAT, the lower your penalties and interest will be."
+
+  val howLppCalculatedLinkText = "Find out how late payment penalties are calculated (opens in a new tab)"
+
   def multiActivePenaltyPoints(amountOfPoints: Int, amountOfLateSubmissions: Int) = s"You have $amountOfPoints penalty points for submitting $amountOfLateSubmissions VAT Returns late."
 
   def multiAgentActivePenaltyPoints(amountOfPoints: Int, amountOfLateSubmissions: Int) = s"Your client has $amountOfPoints penalty points for submitting $amountOfLateSubmissions VAT Returns late."

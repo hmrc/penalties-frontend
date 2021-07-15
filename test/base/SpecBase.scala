@@ -89,7 +89,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     0.0,
     4,
     Seq.empty[PenaltyPoint],
-    Option(Seq.empty[LatePaymentPenalty])
+    Some(Seq.empty[LatePaymentPenalty])
   )
 
   val sampleComplianceData: CompliancePayload = CompliancePayload(

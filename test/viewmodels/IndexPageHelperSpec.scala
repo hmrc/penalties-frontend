@@ -19,6 +19,10 @@ package viewmodels
 import assets.messages.IndexMessages._
 import base.SpecBase
 import models.ETMPPayload
+import models.communication.{Communication, CommunicationTypeEnum}
+import models.payment.PaymentFinancial
+import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum}
+import models.point.{PenaltyTypeEnum, PointStatusEnum}
 import org.jsoup.Jsoup
 
 class IndexPageHelperSpec extends SpecBase {
@@ -435,11 +439,80 @@ class IndexPageHelperSpec extends SpecBase {
     "no active payment penalties" should {
       "display a message in a <p> tag" in {
         val etmpPayloadModelWithNoActivePaymentPenalty: ETMPPayload = ETMPPayload(
-          0, 0, 0, 0, 0, 3, Seq.empty, Option(Seq.empty)
+          0, 0, 0, 0, 0, 3, Seq.empty, Some(Seq.empty)
         )
         val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(etmpPayloadModelWithNoActivePaymentPenalty)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
         parsedHtmlResult.select("p.govuk-body").text() shouldBe noActivePaymentPenalty
+      }
+    }
+
+    "display unpaid VAT text and 'how lpp calculated' link" when {
+      "user has outstanding vat to pay" in {
+        val etmpPayloadWithOutstandingVAT: ETMPPayload = ETMPPayload(
+          0, 0, 0, 0, 0, 3, Seq.empty, Some(Seq(
+            LatePaymentPenalty(
+              `type` = PenaltyTypeEnum.Financial,
+              id = "1234567891",
+              reason = "VAT_NOT_PAID_ON_TIME",
+              dateCreated = sampleDate,
+              status = PointStatusEnum.Active,
+              appealStatus = None,
+              period = PaymentPeriod(
+                startDate = sampleDate,
+                endDate = sampleDate,
+                paymentStatus = PaymentStatusEnum.Paid
+              ),
+              communications = Seq.empty,
+              financial = PaymentFinancial(
+                amountDue = 400.00,
+                outstandingAmountDue = 11.00,
+                dueDate = sampleDate
+              )
+            )
+          )
+          )
+        )
+        val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(etmpPayloadWithOutstandingVAT)(implicitly, vatTraderUser)
+        val parsedHtmlResult = Jsoup.parse(result.body)
+        parsedHtmlResult.select("p.govuk-body").get(0).text shouldBe unpaidVATText
+        parsedHtmlResult.select("a.govuk-link").text shouldBe howLppCalculatedLinkText
+        //TODO: change this when we have link to calculation page
+        parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe "#"
+      }
+    }
+
+    "display 'how lpp calculated' link" when {
+      "user has no outstanding vat to pay" in {
+        val etmpPayloadWithOutstandingVAT: ETMPPayload = ETMPPayload(
+          0, 0, 0, 0, 0, 3, Seq.empty, Some(Seq(
+            LatePaymentPenalty(
+              `type` = PenaltyTypeEnum.Financial,
+              id = "1234567891",
+              reason = "VAT_NOT_PAID_ON_TIME",
+              dateCreated = sampleDate,
+              status = PointStatusEnum.Active,
+              appealStatus = None,
+              period = PaymentPeriod(
+                startDate = sampleDate,
+                endDate = sampleDate,
+                paymentStatus = PaymentStatusEnum.Paid
+              ),
+              communications = Seq.empty,
+              financial = PaymentFinancial(
+                amountDue = 400.00,
+                outstandingAmountDue = 0.00,
+                dueDate = sampleDate
+              )
+            )
+          )
+          )
+        )
+        val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(etmpPayloadWithOutstandingVAT)(implicitly, vatTraderUser)
+        val parsedHtmlResult = Jsoup.parse(result.body)
+        parsedHtmlResult.select("a.govuk-link").text shouldBe howLppCalculatedLinkText
+        //TODO: change this when we have link to calculation page
+        parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe "#"
       }
     }
   }
