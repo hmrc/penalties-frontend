@@ -50,7 +50,7 @@ object IndexMessages {
 
   val noActivePaymentPenalty = "There are no late payment penalties."
 
-  val unpaidVATText = "The earlier your client pays their VAT, the lower their penalties and interest will be."
+  val unpaidVATText = "The earlier you pay your VAT, the lower your penalties and interest will be."
 
   val howLppCalculatedLinkText = "Find out how late payment penalties are calculated (opens in a new tab)"
 
