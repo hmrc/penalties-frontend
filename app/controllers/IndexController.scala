@@ -44,13 +44,15 @@ class IndexController @Inject()(view: IndexView,
       lSPData <- penaltiesService.getLspDataWithVrn(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))
       contentToDisplayAboveCards = pageHelper.getContentBasedOnPointsFromModel(lSPData)
       contentLPPToDisplayAboveCards = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(lSPData)
-      summaryCards = cardHelper.populateCard(lSPData.penaltyPoints, lSPData.penaltyPointsThreshold, lSPData.pointsTotal)
+      lspSummaryCards = cardHelper.populateLateSubmissionPenaltyCard(lSPData.penaltyPoints, lSPData.penaltyPointsThreshold, lSPData.pointsTotal)
+      lppSummaryCards = cardHelper.populateLatePaymentPenaltyCard(lSPData.latePaymentPenalties)
       isAnyUnpaidLSPAndNotSubmittedReturn = penaltiesService.isAnyLSPUnpaidAndSubmissionIsDue(lSPData.penaltyPoints)
       isAnyUnpaidLSP = penaltiesService.isAnyLSPUnpaid(lSPData.penaltyPoints)
     } yield {
       Ok(view(contentToDisplayAboveCards,
         contentLPPToDisplayAboveCards,
-        summaryCards,
+        lspSummaryCards,
+        lppSummaryCards,
         currencyFormatAsNonHTMLString(lSPData.penaltyAmountsTotal),
         isAnyUnpaidLSP,
         isAnyUnpaidLSPAndNotSubmittedReturn))

@@ -15,18 +15,20 @@
  *@
 
 @import config.AppConfig
-@import viewmodels.SummaryCard
+@import viewmodels.{LateSubmissionPenaltySummaryCard, LatePaymentPenaltySummaryCard}
 
 @this(
     layout: Layout,
     link: components.link,
-    summaryCard: components.summaryCard,
+    summaryCardLSP: components.summaryCardLSP,
+    summaryCardLPP: components.summaryCardLPP,
     button: components.button
 )
 
 @(contentToDisplayBeforeSummaryCards: Html,
 contentLPPToDisplayBeforeSummaryCards: Html,
-        cards: Seq[SummaryCard],
+        lspCards: Seq[LateSubmissionPenaltySummaryCard],
+        lppCards: Option[Seq[LatePaymentPenaltySummaryCard]],
         totalAmountToPay: String,
         isUnpaidLSPExists: Boolean = false,
         isAnyUnpaidLSPAndNotSubmittedReturn: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
@@ -80,13 +82,19 @@ contentLPPToDisplayBeforeSummaryCards: Html,
             <h2 class="govuk-heading-m">@{messages("index.subheading")}</h2>
             @contentToDisplayBeforeSummaryCards
 
-            @cards.map { card =>
-                @summaryCard(card)
+            @lspCards.map { lspCard =>
+                @summaryCardLSP(lspCard)
             }
         </div>
         <div class="govuk-tabs__panel" id="late-payment-penalties">
             <h2 class="govuk-heading-m">@{messages("index.subheading.lpp")}</h2>
             @contentLPPToDisplayBeforeSummaryCards
+
+            @if(lppCards.isDefined) {
+                @lppCards.get.map { lppCard =>
+                    @summaryCardLPP(lppCard)
+                }
+            }
         </div>
     </div>
 }

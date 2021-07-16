@@ -28,15 +28,17 @@ class BaseSelectors {
 
   def breadcrumbWithLink(index: Int): String = s"${breadcrumbs(index)} > a"
 
-  val summaryCard = s"#late-submission-penalties > section"
+  val summaryLSPCard = s"#late-submission-penalties > section"
 
-  val summaryCardHeaderTitle = s"$summaryCard > header > h3"
+  val summaryLPPCard = s"#late-payment-penalties > section"
 
-  val summaryCardHeaderTag = s"$summaryCard > header > div > ul > li > strong"
+  def summaryCardHeaderTitle(summaryCard: String): String = s"$summaryCard > header > h3"
 
-  val summaryCardBody = s"$summaryCard > div"
+  def summaryCardHeaderTag(summaryCard: String): String = s"$summaryCard > header > div > ul > li > strong"
 
-  val summaryCardFooterLink = s"$summaryCard > footer a"
+  def summaryCardBody(summaryCard: String): String = s"$summaryCard > div"
+
+  def summaryCardFooterLink(summaryCard: String): String = s"$summaryCard > footer a"
 
   def tab(index: Int): String = s"#main-content > div > div > div.govuk-tabs > ul > li:nth-child($index)> a"
 

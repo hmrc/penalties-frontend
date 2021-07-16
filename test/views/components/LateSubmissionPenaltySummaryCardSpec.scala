@@ -25,43 +25,43 @@ import org.jsoup.nodes.Document
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
-import viewmodels.{SummaryCard, SummaryCardHelper}
+import viewmodels.{LateSubmissionPenaltySummaryCard, SummaryCardHelper}
 import views.behaviours.ViewBehaviours
-import views.html.components.summaryCard
+import views.html.components.summaryCardLSP
 
 import java.time.LocalDateTime
 
-class SummaryCardSpec extends SpecBase with ViewBehaviours {
+class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
 
   object Selectors extends BaseSelectors
 
-  val summaryCardHtml: summaryCard = injector.instanceOf[summaryCard]
+  val summaryCardHtml: summaryCardLSP = injector.instanceOf[summaryCardLSP]
 
-  val summaryCardModelWithAppealedPoint: SummaryCard = summaryCardHelper.populateCard(
+  val summaryCardModelWithAppealedPoint: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(samplePenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Under_Review))),
     quarterlyThreshold, 1).head
 
-  val summaryCardModelWithAppealedPointUnderTribunalReview: SummaryCard = summaryCardHelper.populateCard(
+  val summaryCardModelWithAppealedPointUnderTribunalReview: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(samplePenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Under_Tribunal_Review))),
     quarterlyThreshold, 1).head
 
-  val summaryCardModelWithAppealedPointAccepted: SummaryCard = summaryCardHelper.populateCard(
+  val summaryCardModelWithAppealedPointAccepted: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(samplePenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Accepted), status = PointStatusEnum.Removed)),
     quarterlyThreshold, 1).head
 
-  val summaryCardModelWithAppealedPointAcceptedByTribunal: SummaryCard = summaryCardHelper.populateCard(
+  val summaryCardModelWithAppealedPointAcceptedByTribunal: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(samplePenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Accepted_By_Tribunal), status = PointStatusEnum.Removed)),
     quarterlyThreshold, 1).head
 
-  val summaryCardModelWithAppealedPointRejected: SummaryCard = summaryCardHelper.populateCard(
+  val summaryCardModelWithAppealedPointRejected: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(samplePenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Rejected))),
     quarterlyThreshold, 1).head
 
-  val summaryCardModelWithAppealedPointTribunalRejected: SummaryCard = summaryCardHelper.populateCard(
+  val summaryCardModelWithAppealedPointTribunalRejected: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(samplePenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Tribunal_Rejected))),
     quarterlyThreshold, 1).head
 
-  val summaryCardModelWithAddedPoint: SummaryCard = summaryCardHelper.populateCard(Seq(PenaltyPoint(
+  val summaryCardModelWithAddedPoint: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(Seq(PenaltyPoint(
     PenaltyTypeEnum.Point,
     "123456789",
     "1",
@@ -74,7 +74,7 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
     Seq.empty
   )), quarterlyThreshold, 1).head
 
-  val summaryCardModelWithAddedPointAtThreshold: SummaryCard = summaryCardHelper.populateCard(Seq(PenaltyPoint(
+  val summaryCardModelWithAddedPointAtThreshold: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(Seq(PenaltyPoint(
     PenaltyTypeEnum.Point,
     "123456789",
     "1",
@@ -87,7 +87,7 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
     Seq.empty
   )), quarterlyThreshold, 4).head
 
-  val summaryCardModelWithRemovedPoint: SummaryCard = summaryCardHelper.populateCard(Seq(PenaltyPoint(
+  val summaryCardModelWithRemovedPoint: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(Seq(PenaltyPoint(
     PenaltyTypeEnum.Point,
     "123456789",
     "2",
@@ -108,7 +108,7 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
     Seq.empty
   )), quarterlyThreshold, 1).head
 
-  val summaryCardModelWithFinancialPointBelowThreshold: SummaryCard = summaryCardHelper.financialSummaryCard(PenaltyPoint(
+  val summaryCardModelWithFinancialPointBelowThreshold: LateSubmissionPenaltySummaryCard = summaryCardHelper.financialSummaryCard(PenaltyPoint(
     PenaltyTypeEnum.Financial,
     "123456789",
     "1",
@@ -135,7 +135,7 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
     )
   ), quarterlyThreshold)
 
-  val summaryCardModelWithFinancialPointBelowThresholdAndAppealInProgress: SummaryCard = summaryCardHelper.financialSummaryCard(PenaltyPoint(
+  val summaryCardModelWithFinancialPointBelowThresholdAndAppealInProgress: LateSubmissionPenaltySummaryCard = summaryCardHelper.financialSummaryCard(PenaltyPoint(
     PenaltyTypeEnum.Financial,
     "123456789",
     "1",
@@ -324,7 +324,7 @@ class SummaryCardSpec extends SpecBase with ViewBehaviours {
     )
   ), quarterlyThreshold)
 
-  val summaryCardModelWithFinancialPointAboveThreshold: SummaryCard = summaryCardHelper.financialSummaryCard(PenaltyPoint(
+  val summaryCardModelWithFinancialPointAboveThreshold: LateSubmissionPenaltySummaryCard = summaryCardHelper.financialSummaryCard(PenaltyPoint(
     PenaltyTypeEnum.Financial,
     "123456789",
     "3",

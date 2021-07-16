@@ -17,10 +17,12 @@
 package viewmodels
 
 import java.time.LocalDateTime
-import models.penalty.PenaltyPeriod
+
+import javax.inject.Inject
+import models.penalty.{LatePaymentPenalty, PaymentStatusEnum, PenaltyPeriod}
 import models.point.PointStatusEnum.{Active, Due, Paid, Rejected, Removed}
 import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
-import models.submission.SubmissionStatusEnum.{Overdue, Submitted, Under_Review}
+import models.submission.SubmissionStatusEnum.{Overdue, Submitted}
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
@@ -28,11 +30,10 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListR
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 import utils.{ImplicitDateFormatter, ViewUtils}
 
-import javax.inject.Inject
-
 class SummaryCardHelper @Inject()(link: views.html.components.link) extends ImplicitDateFormatter with ViewUtils {
 
-  def populateCard(penalties: Seq[PenaltyPoint], threshold: Int, activePoints: Int)(implicit messages: Messages): Seq[SummaryCard] = {
+  def populateLateSubmissionPenaltyCard(penalties: Seq[PenaltyPoint],
+                                        threshold: Int, activePoints: Int)(implicit messages: Messages): Seq[LateSubmissionPenaltySummaryCard] = {
     val thresholdMet: Boolean = pointsThresholdMet(threshold, activePoints)
     val filteredActivePenalties: Seq[PenaltyPoint] = penalties.filter(_.status != PointStatusEnum.Removed).reverse
     val indexedActivePoints = filteredActivePenalties.zipWithIndex
@@ -47,6 +48,18 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     }
   }
 
+  def populateLatePaymentPenaltyCard(lpp: Option[Seq[LatePaymentPenalty]])(implicit messages: Messages): Option[Seq[LatePaymentPenaltySummaryCard]] = {
+    if(lpp.isDefined){
+    Some(lpp.get.map { penalty =>
+      (penalty.`type`, penalty.status, penalty.appealStatus) match {
+        case (PenaltyTypeEnum.Financial, _, _) => lppSummaryCard(penalty)
+      }
+    })
+    } else {
+      None
+    }
+  }
+
   def findAndReindexPointIfIsActive(indexedActivePoints: Seq[(PenaltyPoint, Int)], penaltyPoint: PenaltyPoint): PenaltyPoint = {
     if(indexedActivePoints.map(_._1).contains(penaltyPoint)) {
       val numberOfPoint = indexedActivePoints.find(_._1 == penaltyPoint).get._2 + 1
@@ -56,7 +69,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     }
   }
 
-  private def addedPointCard(penalty: PenaltyPoint, thresholdMet: Boolean)(implicit messages: Messages): SummaryCard = {
+  private def addedPointCard(penalty: PenaltyPoint, thresholdMet: Boolean)(implicit messages: Messages): LateSubmissionPenaltySummaryCard = {
     val rows = Seq(
       Some(summaryListRow(
         messages("summaryCard.addedOnKey"),
@@ -76,10 +89,10 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       case Some(x) => x
     }
 
-    buildSummaryCard(rows, penalty, isAnAddedPoint = true, isAnAdjustedPoint = true)
+    buildLSPSummaryCard(rows, penalty, isAnAddedPoint = true, isAnAdjustedPoint = true)
   }
 
-  private def removedPointCard(penalty: PenaltyPoint)(implicit messages: Messages): SummaryCard = {
+  private def removedPointCard(penalty: PenaltyPoint)(implicit messages: Messages): LateSubmissionPenaltySummaryCard = {
     val rows = Seq(
       Some(summaryListRow(
         messages("summaryCard.key1"),
@@ -99,17 +112,17 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       case Some(x) => x
     }
 
-    buildSummaryCard(rows, penalty, isAnAdjustedPoint = true)
+    buildLSPSummaryCard(rows, penalty, isAnAdjustedPoint = true)
   }
 
-  private def buildSummaryCard(rows: Seq[SummaryListRow], penalty: PenaltyPoint, isAnAddedPoint: Boolean = false,
-                               isAnAdjustedPoint: Boolean = false)(implicit messages: Messages): SummaryCard = {
+  private def buildLSPSummaryCard(rows: Seq[SummaryListRow], penalty: PenaltyPoint, isAnAddedPoint: Boolean = false,
+                               isAnAdjustedPoint: Boolean = false)(implicit messages: Messages): LateSubmissionPenaltySummaryCard = {
 
     val isReturnSubmitted = penalty.period.fold(false)(_.submission.submittedDate.isDefined)
 
-    SummaryCard(
+    LateSubmissionPenaltySummaryCard(
       rows,
-      tagStatus(penalty),
+      tagStatus(Some(penalty), None),
       if(!isAnAdjustedPoint || isAnAddedPoint) penalty.number else "",
       penalty.id,
       isReturnSubmitted,
@@ -117,6 +130,18 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       isAppealedPoint = penalty.appealStatus.isDefined,
       appealStatus = penalty.appealStatus,
       isAdjustedPoint = isAnAdjustedPoint
+    )
+  }
+
+  private def buildLPPSummaryCard(rows: Seq[SummaryListRow],
+                                  lpp: LatePaymentPenalty, isPaid: Boolean = false)(implicit messages: Messages): LatePaymentPenaltySummaryCard = {
+    LatePaymentPenaltySummaryCard(
+      rows,
+      tagStatus(None,Some(lpp)),
+      lpp.id,
+      isPaid,
+      lpp.financial.outstandingAmountDue,
+      lpp.appealStatus
     )
   }
 
@@ -144,6 +169,24 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     }
   }
 
+  def lppCardBody(lpp: LatePaymentPenalty)(implicit messages: Messages): Seq[SummaryListRow] = {
+    val period = lpp.period
+    val base = Seq(
+      summaryListRow(
+        messages("summaryCard.key1"),
+        Html(
+          messages(
+            "summaryCard.value1",
+            dateTimeToString(period.startDate),
+            dateTimeToString(period.endDate)
+          )
+        )
+      ),
+      summaryListRow(messages("summaryCard.lpp.key2"), Html(messages("summaryCard.lpp.15days")))
+    )
+    base
+  }
+
   def returnNotSubmittedCardBody(period: PenaltyPeriod)(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     summaryListRow(
       messages("summaryCard.key1"),
@@ -159,24 +202,37 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     summaryListRow(messages("summaryCard.key3"), Html(messages("summaryCard.key3.defaultValue")))
   )
 
-  def pointSummaryCard(penalty: PenaltyPoint, thresholdMet: Boolean)(implicit messages: Messages): SummaryCard = {
+  def pointSummaryCard(penalty: PenaltyPoint, thresholdMet: Boolean)(implicit messages: Messages): LateSubmissionPenaltySummaryCard = {
     val cardBody = penalty.period.get.submission.submittedDate match {
       case Some(_: LocalDateTime) => returnSubmittedCardBody(penalty, thresholdMet)
       case None => returnNotSubmittedCardBody(penalty.period.get)
     }
 
     if(penalty.appealStatus.isDefined) {
-      buildSummaryCard(cardBody :+ summaryListRow(
+      buildLSPSummaryCard(cardBody :+ summaryListRow(
         messages("summaryCard.appeal.status"),
-        returnAppealStatusMessageBasedOnPenalty(penalty)
+        returnAppealStatusMessageBasedOnPenalty(Some(penalty), None)
       ), penalty)
     } else {
-      buildSummaryCard(cardBody, penalty)
+      buildLSPSummaryCard(cardBody, penalty)
+    }
+  }
+
+  def lppSummaryCard(lpp: LatePaymentPenalty)(implicit messages: Messages): LatePaymentPenaltySummaryCard = {
+    val cardBody =  lppCardBody(lpp)
+    val isPaid = if(lpp.period.paymentStatus == Paid) true else false
+    if(lpp.appealStatus.isDefined) {
+      buildLPPSummaryCard(cardBody :+ summaryListRow(
+        messages("summaryCard.appeal.status"),
+        returnAppealStatusMessageBasedOnPenalty(None, Some(lpp))
+      ), lpp)
+    } else {
+      buildLPPSummaryCard(cardBody, lpp, isPaid)
     }
   }
 
   //scalastyle:off
-  def financialSummaryCard(penalty: PenaltyPoint, threshold: Int)(implicit messages: Messages): SummaryCard = {
+  def financialSummaryCard(penalty: PenaltyPoint, threshold: Int)(implicit messages: Messages): LateSubmissionPenaltySummaryCard = {
     val base = Seq(
       summaryListRow(
         messages("summaryCard.key1"),
@@ -211,14 +267,14 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       )
     )
 
-    SummaryCard(
+    LateSubmissionPenaltySummaryCard(
       if(penalty.appealStatus.isDefined) {
         base :+ summaryListRow(
           messages("summaryCard.appeal.status"),
-          returnAppealStatusMessageBasedOnPenalty(penalty)
+          returnAppealStatusMessageBasedOnPenalty(Some(penalty), None)
         )
       } else base,
-      tagStatus(penalty),
+      tagStatus(Some(penalty), None),
       getPenaltyNumberBasedOnThreshold(penalty.number, threshold),
       penalty.id,
       penalty.period.fold(false)(_.submission.submittedDate.isDefined),
@@ -250,42 +306,50 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     classes = s"govuk-tag $cssClass"
   )
 
-  def tagStatus(penalty: PenaltyPoint)(implicit messages: Messages): Tag = {
+  def tagStatus(penalty: Option[PenaltyPoint], lpp: Option[LatePaymentPenalty])(implicit messages: Messages): Tag = {
 
-    val periodSubmissionStatus = penalty.period.map(_.submission.status)
-    val penaltyPointStatus = penalty.status
-    val penaltyAppealStatus = penalty.appealStatus
+    if (penalty.isDefined) {
+      val periodSubmissionStatus = penalty.get.period.map(_.submission.status)
+      val penaltyPointStatus = penalty.get.status
+      val penaltyAppealStatus = penalty.get.appealStatus
 
-    (penaltyAppealStatus, periodSubmissionStatus, penaltyPointStatus) match {
-      case (Some(AppealStatusEnum.Accepted | AppealStatusEnum.Accepted_By_Tribunal), _, _)          => renderTag(messages("status.cancelled"))
-      case (_, Some(Submitted), Due)                        => renderTag(messages("status.due"), "penalty-due-tag")
-      case (_, Some(_), Paid)                               => renderTag(messages("status.paid"))
-      case (_, Some(Overdue), _)                            => renderTag(messages("status.due"), "penalty-due-tag")
-      case (Some(AppealStatusEnum.Reinstated), _, _)        => renderTag(messages("status.reinstated"))
-      case (Some(AppealStatusEnum.Tribunal_Rejected), _, _) => renderTag(messages("status.active"))
-      case (Some(AppealStatusEnum.Under_Review | AppealStatusEnum.Under_Tribunal_Review), _, _)      => renderTag(messages("status.active"))
-      case (_, None, _)                                     => renderTag(messages("status.active"))
-      case (_, Some(_), Removed)                            => renderTag(messages("status.removed"))
-      case (_, Some(Submitted), Active)                     => renderTag(messages("status.active"))
-      case (_, Some(Submitted), Rejected)                   => renderTag(messages("status.rejected"))
-      case (_, _, _)                                        => renderTag(messages("status.active")) // Temp solution
+      (penaltyAppealStatus, periodSubmissionStatus, penaltyPointStatus) match {
+        case (Some(AppealStatusEnum.Accepted | AppealStatusEnum.Accepted_By_Tribunal), _, _) => renderTag(messages("status.cancelled"))
+        case (_, Some(Submitted), Due) => renderTag(messages("status.due"), "penalty-due-tag")
+        case (_, Some(_), Paid) => renderTag(messages("status.paid"))
+        case (_, Some(Overdue), _) => renderTag(messages("status.due"), "penalty-due-tag")
+        case (Some(AppealStatusEnum.Reinstated), _, _) => renderTag(messages("status.reinstated"))
+        case (Some(AppealStatusEnum.Tribunal_Rejected), _, _) => renderTag(messages("status.active"))
+        case (Some(AppealStatusEnum.Under_Review | AppealStatusEnum.Under_Tribunal_Review), _, _) => renderTag(messages("status.active"))
+        case (_, None, _) => renderTag(messages("status.active"))
+        case (_, Some(_), Removed) => renderTag(messages("status.removed"))
+        case (_, Some(Submitted), Active) => renderTag(messages("status.active"))
+        case (_, Some(Submitted), Rejected) => renderTag(messages("status.rejected"))
+        case (_, _, _) => renderTag(messages("status.active")) // Temp solution
+      }
+    } else {
+      lpp.get.period.paymentStatus match {
+        case PaymentStatusEnum.Paid => renderTag(messages("status.paid"))
+        case PaymentStatusEnum.Due => renderTag(messages("status.due"), "penalty-due-tag")
+      }
     }
   }
 
   def pointsThresholdMet(threshold: Int, activePoints: Int):Boolean = activePoints >= threshold
 
-  private def returnAppealStatusMessageBasedOnPenalty(penaltyPoint: PenaltyPoint)(implicit messages: Messages): Html = {
-    penaltyPoint.appealStatus.get match {
+  private def returnAppealStatusMessageBasedOnPenalty(penaltyPoint: Option[PenaltyPoint], lpp: Option[LatePaymentPenalty])(implicit messages: Messages): Html = {
+    val penalty = if(penaltyPoint.isDefined) penaltyPoint.get.appealStatus else lpp.get.appealStatus
+    penalty.get match {
       case AppealStatusEnum.Accepted | AppealStatusEnum.Rejected | AppealStatusEnum.Tribunal_Rejected | AppealStatusEnum.Accepted_By_Tribunal => {
         html(
-          Html(messages(s"summaryCard.appeal.${penaltyPoint.appealStatus.get.toString}")),
+          Html(messages(s"summaryCard.appeal.${penalty.get.toString}")),
           Html("<br>"),
           link("#", "summaryCard.appeal.readMessage")
         )
       }
       case AppealStatusEnum.Reinstated => {
         html(
-          Html(messages(s"summaryCard.appeal.${penaltyPoint.appealStatus.get.toString}")),
+          Html(messages(s"summaryCard.appeal.${penalty.get.toString}")),
           Html("<br>"),
           link("#", "summaryCard.appeal.readMessageReinstated")
         )
@@ -293,7 +357,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       case _ => {
         Html(
           messages(
-            s"summaryCard.appeal.${penaltyPoint.appealStatus.get.toString}"
+            s"summaryCard.appeal.${penalty.get.toString}"
           )
         )
       }

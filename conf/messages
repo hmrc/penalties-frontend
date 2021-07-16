@@ -105,6 +105,9 @@ summaryCard.addedOnKey = Added on
 summaryCard.removedReason = Reason
 summaryCard.infoOnAdjustmentPointsLinkText = Find out more about adjustment points
 summaryCard.appealCheck = Check if you can appeal
+summaryCard.lpp.key2 = Penalty reason
+summaryCard.lpp.15days = VAT not paid within 15 days
+summaryCard.lpp.30days = VAT not paid within 30 days
 
 status.active = active
 status.due = due

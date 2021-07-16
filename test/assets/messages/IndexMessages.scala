@@ -88,7 +88,8 @@ object IndexMessages {
 
   val bringAccountUpToDate = "Show me how to bring this account up to date"
 
-  val penaltyPointHeader = "Penalty point 1"
+  val lspHeader = "Penalty point 1"
+  val lppHeader = "£200 penalty"
   val activeTag = "active"
   val reinstatedTag = "reinstated"
   val cancelledTag = "cancelled"
@@ -99,6 +100,7 @@ object IndexMessages {
   val period = "VAT Period"
   val returnDue = "VAT Return due"
   val reason = "Reason"
+  val penaltyReason = "Penalty reason"
   val returnSubmitted = "Return submitted"
   val pointExpiration = "Point due to expire"
   val notSubmitted = "Not yet submitted"
@@ -108,7 +110,8 @@ object IndexMessages {
 
   val vatPeriodValue: (String, String) => String = (s1, s2) => s"$s1 to $s2"
 
-  val appealLinkText = "Appeal penalty point 1"
+  val appealPointLinkText = "Appeal penalty point 1"
+  val appealPointText = "Appeal this penalty"
   val checkAppeal = "Check if you can appeal"
-
+  val appealStatus = "Appeal status"
 }
