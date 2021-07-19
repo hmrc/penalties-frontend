@@ -32,7 +32,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
   val summaryCardHtml: summaryCardLPP = injector.instanceOf[summaryCardLPP]
 
   val summaryCardModel: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenalty.copy(
+    Some(Seq(sampleLatePaymentPenaltyPaid.copy(
       period = PaymentPeriod(
         LocalDateTime.of(2020,1,1,1,1,1),
         LocalDateTime.of(2020,2,1,1,1,1),
@@ -73,7 +73,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModel))
 
       "display the penalty amount" in {
-        doc.select("h3").text() shouldBe "£200 penalty"
+        doc.select("h3").text() shouldBe "£400 penalty"
       }
 
       "display the 'PAID' status" in {

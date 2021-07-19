@@ -89,7 +89,7 @@ object IndexMessages {
   val bringAccountUpToDate = "Show me how to bring this account up to date"
 
   val lspHeader = "Penalty point 1"
-  val lppHeader = "£200 penalty"
+  val lppHeader = "£400 penalty"
   val activeTag = "active"
   val reinstatedTag = "reinstated"
   val cancelledTag = "cancelled"

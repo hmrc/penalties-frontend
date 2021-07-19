@@ -140,7 +140,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       tagStatus(None,Some(lpp)),
       lpp.id,
       isPaid,
-      lpp.financial.outstandingAmountDue,
+      lpp.financial.amountDue,
       lpp.appealStatus
     )
   }
@@ -220,7 +220,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
 
   def lppSummaryCard(lpp: LatePaymentPenalty)(implicit messages: Messages): LatePaymentPenaltySummaryCard = {
     val cardBody =  lppCardBody(lpp)
-    val isPaid = if(lpp.period.paymentStatus == Paid) true else false
+    val isPaid = lpp.status == Paid
     if(lpp.appealStatus.isDefined) {
       buildLPPSummaryCard(cardBody :+ summaryListRow(
         messages("summaryCard.appeal.status"),
@@ -328,9 +328,9 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
         case (_, _, _) => renderTag(messages("status.active")) // Temp solution
       }
     } else {
-      lpp.get.period.paymentStatus match {
-        case PaymentStatusEnum.Paid => renderTag(messages("status.paid"))
-        case PaymentStatusEnum.Due => renderTag(messages("status.due"), "penalty-due-tag")
+      lpp.get.status match {
+        case PointStatusEnum.Paid => renderTag(messages("status.paid"))
+        case _ => renderTag(messages("status.due"), "penalty-due-tag")
       }
     }
   }
