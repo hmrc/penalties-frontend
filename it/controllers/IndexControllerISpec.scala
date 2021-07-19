@@ -265,7 +265,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val request = await(buildClientForRequestToApp(uri = "/").get())
       request.status shouldBe Status.OK
       val parsedBody = Jsoup.parse(request.body)
-      parsedBody.select("#late-payment-penalties section header h3").text shouldBe "£200 penalty"
+      parsedBody.select("#late-payment-penalties section header h3").text shouldBe "£400 penalty"
       parsedBody.select("#late-payment-penalties section header strong").text shouldBe "paid"
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
       summaryCardBody.select("dt").get(0).text shouldBe "VAT Period"
@@ -280,7 +280,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val request = await(buildClientForRequestToApp(uri = "/").get())
       request.status shouldBe Status.OK
       val parsedBody = Jsoup.parse(request.body)
-      parsedBody.select("#late-payment-penalties section header h3").text shouldBe "£200 penalty"
+      parsedBody.select("#late-payment-penalties section header h3").text shouldBe "£400 penalty"
       parsedBody.select("#late-payment-penalties section header strong").text shouldBe "paid"
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
       summaryCardBody.select("dt").get(0).text shouldBe "VAT Period"

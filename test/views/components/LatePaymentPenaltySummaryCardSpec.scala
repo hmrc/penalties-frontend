@@ -73,7 +73,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModel))
 
       "display the penalty amount" in {
-        doc.select("h3").text() shouldBe "£200 penalty"
+        doc.select("h3").text() shouldBe "£400 penalty"
       }
 
       "display the 'PAID' status" in {

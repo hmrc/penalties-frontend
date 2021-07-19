@@ -59,7 +59,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
     Tag(content = Text("paid"), classes = "govuk-tag "),
     "123456789",
     isPenaltyPaid = false,
-    200.00
+    400.00
   )
 
   "SummaryCard helper" should {

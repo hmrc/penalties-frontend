@@ -140,7 +140,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       tagStatus(None,Some(lpp)),
       lpp.id,
       isPaid,
-      lpp.financial.outstandingAmountDue,
+      lpp.financial.amountDue,
       lpp.appealStatus
     )
   }
