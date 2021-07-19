@@ -456,12 +456,12 @@ class IndexPageHelperSpec extends SpecBase {
               id = "1234567891",
               reason = "VAT_NOT_PAID_ON_TIME",
               dateCreated = sampleDate,
-              status = PointStatusEnum.Active,
+              status = PointStatusEnum.Due,
               appealStatus = None,
               period = PaymentPeriod(
                 startDate = sampleDate,
                 endDate = sampleDate,
-                paymentStatus = PaymentStatusEnum.Paid
+                paymentStatus = PaymentStatusEnum.Due
               ),
               communications = Seq.empty,
               financial = PaymentFinancial(

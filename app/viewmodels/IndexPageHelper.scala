@@ -16,13 +16,12 @@
 
 package viewmodels
 
-import models.penalty.LatePaymentPenalty
+import models.penalty.{LatePaymentPenalty, PaymentStatusEnum}
 import models.{ETMPPayload, User}
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import utils.MessageRenderer.getMessage
 import utils.ViewUtils
-
 import javax.inject.Inject
 
 class IndexPageHelper @Inject()(p: views.html.components.p,
@@ -120,7 +119,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     if (etmpData.latePaymentPenalties.getOrElse(List.empty[LatePaymentPenalty]).isEmpty) {
       p(content = stringAsHtml(messages("lpp.penaltiesSummary.noPaymentPenalties")))
     } else {
-      if (etmpData.latePaymentPenalties.get.map(_.financial.amountDue).sum > 0) {
+      if (etmpData.latePaymentPenalties.isDefined && etmpData.latePaymentPenalties.get.exists(_.period.paymentStatus != PaymentStatusEnum.Paid)) {
         html(
           p(content = html(stringAsHtml(messages("lpp.penaltiesSummary.unpaid")))),
           p(link(link = "#", messages("lpp.penaltiesSummary.howLppCalculated.link", messages("site.opensInNewTab"))))
