@@ -220,7 +220,6 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
 
   def lppSummaryCard(lpp: LatePaymentPenalty)(implicit messages: Messages): LatePaymentPenaltySummaryCard = {
     val cardBody =  lppCardBody(lpp)
-    println(Console.GREEN + (lpp.status == Paid) + Console.RESET)
     val isPaid = lpp.status == Paid
     if(lpp.appealStatus.isDefined) {
       buildLPPSummaryCard(cardBody :+ summaryListRow(
