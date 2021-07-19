@@ -120,7 +120,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     if (etmpData.latePaymentPenalties.getOrElse(List.empty[LatePaymentPenalty]).isEmpty) {
       p(content = stringAsHtml(messages("lpp.penaltiesSummary.noPaymentPenalties")))
     } else {
-      if (etmpData.latePaymentPenalties.get.map(_.financial.outstandingAmountDue).sum > 0) {
+      if (etmpData.latePaymentPenalties.get.map(_.financial.amountDue).sum > 0) {
         html(
           p(content = html(stringAsHtml(messages("lpp.penaltiesSummary.unpaid")))),
           p(link(link = "#", messages("lpp.penaltiesSummary.howLppCalculated.link", messages("site.opensInNewTab"))))
