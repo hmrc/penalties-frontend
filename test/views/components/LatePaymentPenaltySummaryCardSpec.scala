@@ -32,7 +32,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
   val summaryCardHtml: summaryCardLPP = injector.instanceOf[summaryCardLPP]
 
   val summaryCardModel: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenalty.copy(
+    Some(Seq(sampleLatePaymentPenaltyPaid.copy(
       period = PaymentPeriod(
         LocalDateTime.of(2020,1,1,1,1,1),
         LocalDateTime.of(2020,2,1,1,1,1),
