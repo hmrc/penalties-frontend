@@ -49,20 +49,14 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     }
   }
 
-  def populateLatePaymentPenaltyCard(lpp: Option[Seq[LatePaymentPenalty]])(implicit messages: Messages, user: User[_]): Option[Seq[LatePaymentPenaltySummaryCard]] = {
-    if(lpp.isDefined){
-    Some(lpp.get.map { penalty =>
-      (penalty.`type`, penalty.status, penalty.appealStatus) match {
-        case (PenaltyTypeEnum.Financial, _, _) => lppSummaryCard(penalty)
-      }
-    })
-    } else {
-      None
+  def populateLatePaymentPenaltyCard(lpp: Option[Seq[LatePaymentPenalty]])(implicit messages: Messages): Option[Seq[LatePaymentPenaltySummaryCard]] = {
+    lpp.map {
+      _.map(penalty => lppSummaryCard(penalty))
     }
   }
 
   def findAndReindexPointIfIsActive(indexedActivePoints: Seq[(PenaltyPoint, Int)], penaltyPoint: PenaltyPoint): PenaltyPoint = {
-    if(indexedActivePoints.map(_._1).contains(penaltyPoint)) {
+    if (indexedActivePoints.map(_._1).contains(penaltyPoint)) {
       val numberOfPoint = indexedActivePoints.find(_._1 == penaltyPoint).get._2 + 1
       penaltyPoint.copy(number = s"$numberOfPoint")
     } else {
@@ -80,7 +74,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       )
       ),
       penalty.dateExpired.fold[Option[SummaryListRow]](None)(x => {
-        if(!thresholdMet) {
+        if (!thresholdMet) {
           Some(summaryListRow(messages("summaryCard.key4"), Html(dateTimeToMonthYearString(x))))
         } else {
           None
@@ -117,14 +111,14 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   }
 
   private def buildLSPSummaryCard(rows: Seq[SummaryListRow], penalty: PenaltyPoint, isAnAddedPoint: Boolean = false,
-                               isAnAdjustedPoint: Boolean = false)(implicit messages: Messages): LateSubmissionPenaltySummaryCard = {
+                                  isAnAdjustedPoint: Boolean = false)(implicit messages: Messages): LateSubmissionPenaltySummaryCard = {
 
     val isReturnSubmitted = penalty.period.fold(false)(_.submission.submittedDate.isDefined)
 
     LateSubmissionPenaltySummaryCard(
       rows,
       tagStatus(Some(penalty), None),
-      if(!isAnAdjustedPoint || isAnAddedPoint) penalty.number else "",
+      if (!isAnAdjustedPoint || isAnAddedPoint) penalty.number else "",
       penalty.id,
       isReturnSubmitted,
       isAddedPoint = isAnAddedPoint,
@@ -135,14 +129,15 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   }
 
   private def buildLPPSummaryCard(rows: Seq[SummaryListRow],
-                                  lpp: LatePaymentPenalty, isPaid: Boolean = false)(implicit messages: Messages): LatePaymentPenaltySummaryCard = {
+                                  lpp: LatePaymentPenalty, isPaid: Boolean = false, isVatPaid: Boolean = false)(implicit messages: Messages): LatePaymentPenaltySummaryCard = {
     LatePaymentPenaltySummaryCard(
       rows,
-      tagStatus(None,Some(lpp)),
+      tagStatus(None, Some(lpp)),
       lpp.id,
       isPaid,
       lpp.financial.amountDue,
-      lpp.appealStatus
+      lpp.appealStatus,
+      isVatPaid
     )
   }
 
@@ -163,7 +158,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       summaryListRow(messages("summaryCard.key3"), Html(dateTimeToString(period.get.submission.submittedDate.get)))
     )
 
-    if(penalty.dateExpired.isDefined && !thresholdMet && !penalty.appealStatus.contains(AppealStatusEnum.Accepted) && !penalty.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal)) {
+    if (penalty.dateExpired.isDefined && !thresholdMet && !penalty.appealStatus.contains(AppealStatusEnum.Accepted) && !penalty.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal)) {
       base :+ summaryListRow(messages("summaryCard.key4"), Html(dateTimeToMonthYearString(penalty.dateExpired.get)))
     } else {
       base
@@ -209,7 +204,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       case None => returnNotSubmittedCardBody(penalty.period.get)
     }
 
-    if(penalty.appealStatus.isDefined) {
+    if (penalty.appealStatus.isDefined) {
       buildLSPSummaryCard(cardBody :+ summaryListRow(
         messages("summaryCard.appeal.status"),
         returnAppealStatusMessageBasedOnPenalty(Some(penalty), None)
@@ -220,15 +215,16 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   }
 
   def lppSummaryCard(lpp: LatePaymentPenalty)(implicit messages: Messages, user: User[_]): LatePaymentPenaltySummaryCard = {
-    val cardBody =  lppCardBody(lpp)
+    val cardBody = lppCardBody(lpp)
     val isPaid = lpp.status == Paid
-    if(lpp.appealStatus.isDefined) {
+    val isVatPaid = lpp.period.paymentStatus == PaymentStatusEnum.Paid
+    if (lpp.appealStatus.isDefined) {
       buildLPPSummaryCard(cardBody :+ summaryListRow(
         messages("summaryCard.appeal.status"),
         returnAppealStatusMessageBasedOnPenalty(None, Some(lpp))
-      ), lpp)
+      ), lpp, isPaid, isVatPaid)
     } else {
-      buildLPPSummaryCard(cardBody, lpp, isPaid)
+      buildLPPSummaryCard(cardBody, lpp, isPaid, isVatPaid)
     }
   }
 
@@ -269,7 +265,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     )
 
     LateSubmissionPenaltySummaryCard(
-      if(penalty.appealStatus.isDefined) {
+      if (penalty.appealStatus.isDefined) {
         base :+ summaryListRow(
           messages("summaryCard.appeal.status"),
           returnAppealStatusMessageBasedOnPenalty(Some(penalty), None)
@@ -287,7 +283,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   }
 
   def getPenaltyNumberBasedOnThreshold(penaltyNumberAsString: String, threshold: Int): String = {
-    if(penaltyNumberAsString.toInt > threshold) "" else penaltyNumberAsString
+    if (penaltyNumberAsString.toInt > threshold) "" else penaltyNumberAsString
   }
 
   def summaryListRow(label: String, value: Html): SummaryListRow = SummaryListRow(
@@ -336,7 +332,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     }
   }
 
-  def pointsThresholdMet(threshold: Int, activePoints: Int):Boolean = activePoints >= threshold
+  def pointsThresholdMet(threshold: Int, activePoints: Int): Boolean = activePoints >= threshold
 
   private def returnAppealStatusMessageBasedOnPenalty(penaltyPoint: Option[PenaltyPoint], lpp: Option[LatePaymentPenalty])(implicit messages: Messages, user: User[_]): Html = {
     val penalty = if(penaltyPoint.isDefined) penaltyPoint.get.appealStatus else lpp.get.appealStatus
