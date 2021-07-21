@@ -17,6 +17,7 @@
 package views.components
 
 import base.{BaseSelectors, SpecBase}
+import models.User
 import models.financial.Financial
 import models.penalty.PenaltyPeriod
 import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
@@ -34,6 +35,8 @@ import java.time.LocalDateTime
 class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
 
   object Selectors extends BaseSelectors
+
+  implicit val user: User[_] = vatTraderUser
 
   val summaryCardHtml: summaryCardLSP = injector.instanceOf[summaryCardLSP]
 
@@ -162,7 +165,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     )
   ), quarterlyThreshold)
 
-  val summaryCardModelWithFinancialPointBelowThresholdAndAppealAccepted = summaryCardHelper.financialSummaryCard(PenaltyPoint(
+  val summaryCardModelWithFinancialPointBelowThresholdAndAppealAccepted = (user: User[_]) => summaryCardHelper.financialSummaryCard(PenaltyPoint(
     PenaltyTypeEnum.Financial,
     "123456789",
     "1",
@@ -187,9 +190,9 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
       )
     )
-  ), quarterlyThreshold)
+  ), quarterlyThreshold)(implicitly, user)
 
-  val summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected = summaryCardHelper.financialSummaryCard(PenaltyPoint(
+  val summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected = (user: User[_]) => summaryCardHelper.financialSummaryCard(PenaltyPoint(
     PenaltyTypeEnum.Financial,
     "123456789",
     "1",
@@ -214,9 +217,9 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
       )
     )
-  ), quarterlyThreshold)
+  ), quarterlyThreshold)(implicitly, user)
 
-  val summaryCardModelWithFinancialPointBelowThresholdAndAppealReinstated = summaryCardHelper.financialSummaryCard(PenaltyPoint(
+  val summaryCardModelWithFinancialPointBelowThresholdAndAppealReinstated = (user: User[_]) => summaryCardHelper.financialSummaryCard(PenaltyPoint(
     PenaltyTypeEnum.Financial,
     "123456789",
     "1",
@@ -241,7 +244,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
       )
     )
-  ), quarterlyThreshold)
+  ), quarterlyThreshold)(implicitly, user)
 
   val summaryCardModelWithFinancialPointBelowThresholdAndAppealUnderTribunalReview = summaryCardHelper.financialSummaryCard(PenaltyPoint(
     PenaltyTypeEnum.Financial,
@@ -270,7 +273,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     )
   ), quarterlyThreshold)
 
-  val summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected = summaryCardHelper.financialSummaryCard(PenaltyPoint(
+  val summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected = (user: User[_]) => summaryCardHelper.financialSummaryCard(PenaltyPoint(
     PenaltyTypeEnum.Financial,
     "123456789",
     "1",
@@ -295,9 +298,9 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
       )
     )
-  ), quarterlyThreshold)
+  ), quarterlyThreshold)(implicitly, user)
 
-  val summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalAccepted = summaryCardHelper.financialSummaryCard(PenaltyPoint(
+  val summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalAccepted = (user: User[_]) => summaryCardHelper.financialSummaryCard(PenaltyPoint(
     PenaltyTypeEnum.Financial,
     "123456789",
     "1",
@@ -322,9 +325,9 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
       )
     )
-  ), quarterlyThreshold)
+  ), quarterlyThreshold)(implicitly, user)
 
-  val summaryCardModelWithFinancialPointAboveThreshold: LateSubmissionPenaltySummaryCard = summaryCardHelper.financialSummaryCard(PenaltyPoint(
+  val summaryCardModelWithFinancialPointAboveThreshold = summaryCardHelper.financialSummaryCard(PenaltyPoint(
     PenaltyTypeEnum.Financial,
     "123456789",
     "3",
@@ -349,7 +352,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
       )
     )
-  ), annualThreshold)
+  ), annualThreshold)(implicitly, user)
 
 
   "summaryCard" when {
@@ -440,12 +443,17 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       val docWithFinancialPointBelowThreshold: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThreshold))
       val docWithFinancialPointAboveThreshold: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointAboveThreshold))
       val docWithFinancialPointAppealUnderReview: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealInProgress))
-      val docWithFinancialPointAppealAccepted: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealAccepted))
-      val docWithFinancialPointAppealRejected: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected))
-      val docWithFinancialPointAppealReinstated: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealReinstated))
+      val docWithFinancialPointAppealAccepted: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealAccepted(user)))
+      val docWithFinancialPointAppealAcceptedAgent: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealAccepted(agentUser)))
+      val docWithFinancialPointAppealRejected: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected(user)))
+      val docWithFinancialPointAppealRejectedAgent: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected(agentUser)))
+      val docWithFinancialPointAppealReinstated: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealReinstated(user)))
+      val docWithFinancialPointAppealReinstatedAgent: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealReinstated(agentUser)))
       val docWithFinancialPointAppealUnderTribunalReview: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealUnderTribunalReview))
-      val docWithFinancialPointAppealTribunalRejected: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected))
-      val docWithFinancialPointAppealTribunalAccepted: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalAccepted))
+      val docWithFinancialPointAppealTribunalRejected: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected(user)))
+      val docWithFinancialPointAppealTribunalRejectedAgent: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected(agentUser)))
+      val docWithFinancialPointAppealTribunalAccepted: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalAccepted(user)))
+      val docWithFinancialPointAppealTribunalAcceptedAgent: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalAccepted(agentUser)))
 
       "shows the financial heading with point number when the point is below/at threshold for filing frequency" in {
         docWithFinancialPointBelowThreshold.select(".app-summary-card__title").get(0).text shouldBe "Penalty point 1: £200 penalty"
@@ -466,14 +474,29 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         docWithFinancialPointAppealAccepted.select("dd").get(3).text() shouldBe "Appeal accepted Read outcome message"
       }
 
+      "have the appeal status for ACCEPTED - no read message for agents" in {
+        docWithFinancialPointAppealAcceptedAgent.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithFinancialPointAppealAcceptedAgent.select("dd").get(3).text() shouldBe "Appeal accepted"
+      }
+
       "have the appeal status for REJECTED" in {
         docWithFinancialPointAppealRejected.select("dt").get(3).text() shouldBe "Appeal status"
         docWithFinancialPointAppealRejected.select("dd").get(3).text() shouldBe "Appeal rejected Read outcome message"
       }
 
+      "have the appeal status for REJECTED - no read message for agent" in {
+        docWithFinancialPointAppealRejectedAgent.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithFinancialPointAppealRejectedAgent.select("dd").get(3).text() shouldBe "Appeal rejected"
+      }
+
       "have the appeal status for REINSTATED" in {
         docWithFinancialPointAppealReinstated.select("dt").get(3).text() shouldBe "Appeal status"
         docWithFinancialPointAppealReinstated.select("dd").get(3).text() shouldBe "Appeal outcome changed Read message"
+      }
+
+      "have the appeal status for REINSTATED - no read outcome message for agents" in {
+        docWithFinancialPointAppealReinstatedAgent.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithFinancialPointAppealReinstatedAgent.select("dd").get(3).text() shouldBe "Appeal outcome changed"
       }
 
       "have the appeal status for UNDER_TRIBUNAL_REVIEW" in {
@@ -486,9 +509,19 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         docWithFinancialPointAppealTribunalRejected.select("dd").get(3).text() shouldBe "Appeal rejected by tax tribunal Read outcome message"
       }
 
+      "have the appeal status for TRIBUNAL REJECTED - no read outcome message for agents" in {
+        docWithFinancialPointAppealTribunalRejectedAgent.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithFinancialPointAppealTribunalRejectedAgent.select("dd").get(3).text() shouldBe "Appeal rejected by tax tribunal"
+      }
+
       "have the appeal status for ACCEPTED BY TRIBUNAL" in {
         docWithFinancialPointAppealTribunalAccepted.select("dt").get(3).text() shouldBe "Appeal status"
         docWithFinancialPointAppealTribunalAccepted.select("dd").get(3).text() shouldBe "Appeal accepted by tax tribunal Read outcome message"
+      }
+
+      "have the appeal status for ACCEPTED BY TRIBUNAL - no read outcome message for agents" in {
+        docWithFinancialPointAppealTribunalAcceptedAgent.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithFinancialPointAppealTribunalAcceptedAgent.select("dd").get(3).text() shouldBe "Appeal accepted by tax tribunal"
       }
     }
 

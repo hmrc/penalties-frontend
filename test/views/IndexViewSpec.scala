@@ -18,6 +18,7 @@ package views
 
 import assets.messages.IndexMessages._
 import base.{BaseSelectors, SpecBase}
+import models.User
 import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum, PenaltyPeriod}
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
@@ -29,8 +30,8 @@ import viewmodels.{LatePaymentPenaltySummaryCard, LateSubmissionPenaltySummaryCa
 import views.behaviours.ViewBehaviours
 import views.html.IndexView
 import views.html.components.p
-import java.time.LocalDateTime
 
+import java.time.LocalDateTime
 import models.communication.{Communication, CommunicationTypeEnum}
 import models.payment.PaymentFinancial
 
@@ -39,6 +40,8 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
   val pElement: p = injector.instanceOf[p]
   val helper = injector.instanceOf[SummaryCardHelper]
   val indexViewPage = injector.instanceOf[IndexView]
+
+  implicit val user: User[_] = vatTraderUser
 
   val sampleDate1: LocalDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 0)
   val sampleDate2: LocalDateTime = LocalDateTime.of(2021, 2, 1, 1, 1, 0)
