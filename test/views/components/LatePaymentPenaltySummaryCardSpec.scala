@@ -17,8 +17,8 @@
 package views.components
 
 import java.time.LocalDateTime
-
 import base.{BaseSelectors, SpecBase}
+import models.User
 import models.penalty.{PaymentPeriod, PaymentStatusEnum}
 import viewmodels.LatePaymentPenaltySummaryCard
 import views.behaviours.ViewBehaviours
@@ -29,6 +29,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
 
   object Selectors extends BaseSelectors
 
+  implicit val user: User[_] = vatTraderUser
   val summaryCardHtml: summaryCardLPP = injector.instanceOf[summaryCardLPP]
 
   val summaryCardModel: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
@@ -56,17 +57,41 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
     Some(Seq(sampleLatePaymentPenaltyAppealedAccepted))
   ).get.head
 
+  val summaryCardModelWithAppealedPenaltyAcceptedAgent: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
+    Some(Seq(sampleLatePaymentPenaltyAppealedAccepted))
+  )(implicitly, agentUser).get.head
+
   val summaryCardModelWithAppealedPenaltyAcceptedByTribunal: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
     Some(Seq(sampleLatePaymentPenaltyAppealedAcceptedTribunal))
   ).get.head
+
+  val summaryCardModelWithAppealedPenaltyAcceptedByTribunalAgent: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
+    Some(Seq(sampleLatePaymentPenaltyAppealedAcceptedTribunal))
+  )(implicitly, agentUser).get.head
 
   val summaryCardModelWithAppealedPenaltyRejected: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
     Some(Seq(sampleLatePaymentPenaltyAppealedRejected))
   ).get.head
 
+  val summaryCardModelWithAppealedPenaltyRejectedAgent: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
+    Some(Seq(sampleLatePaymentPenaltyAppealedRejected))
+  )(implicitly, agentUser).get.head
+
   val summaryCardModelWithAppealedPenaltyRejectedTribunal: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
     Some(Seq(sampleLatePaymentPenaltyAppealedRejectedTribunal))
   ).get.head
+
+  val summaryCardModelWithAppealedPenaltyRejectedTribunalAgent: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
+    Some(Seq(sampleLatePaymentPenaltyAppealedRejectedTribunal))
+  )(implicitly, agentUser).get.head
+
+  val summaryCardModelWithAppealedPenaltyReinstated: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
+    Some(Seq(sampleLatePaymentPenaltyAppealedReinstated))
+  ).get.head
+
+  val summaryCardModelWithAppealedPenaltyReinstatedAgent: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
+    Some(Seq(sampleLatePaymentPenaltyAppealedReinstated))
+  )(implicitly, agentUser).get.head
 
   "summaryCard" when {
     "given a penalty" should {
@@ -104,9 +129,15 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       val docWithAppealedPenalty: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenalty))
       val docWithAppealedPenaltyUnderTribunalReview: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyUnderTribunalReview))
       val docWithAppealedPenaltyAccepted: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyAccepted))
+      val docWithAppealedPenaltyAcceptedAgent: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyAcceptedAgent))
       val docWithAppealedPenaltyAcceptedByTribunal: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyAcceptedByTribunal))
+      val docWithAppealedPenaltyAcceptedByTribunalAgent: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyAcceptedByTribunalAgent))
       val docWithAppealedPenaltyRejected: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyRejected))
-      val docWithAppealedPenaltyUnderTribunalRejected: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyRejectedTribunal))
+      val docWithAppealedPenaltyRejectedAgent: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyRejectedAgent))
+      val docWithAppealedPenaltyTribunalRejected: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyRejectedTribunal))
+      val docWithAppealedPenaltyTribunalRejectedAgent: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyRejectedTribunalAgent))
+      val docWithAppealedPenaltyTribunalReinstated: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyReinstated))
+      val docWithAppealedPenaltyTribunalReinstatedAgent: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyReinstatedAgent))
 
       "not show the appeal link" in {
         docWithAppealedPenalty.select(".app-summary-card__footer a").isEmpty shouldBe true
@@ -127,9 +158,19 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         docWithAppealedPenaltyAccepted.select("dd").get(2).text() shouldBe "Appeal accepted Read outcome message"
       }
 
+      "have the appeal status for ACCEPTED - no outcome message for agents" in {
+        docWithAppealedPenaltyAcceptedAgent.select("dt").get(2).text() shouldBe "Appeal status"
+        docWithAppealedPenaltyAcceptedAgent.select("dd").get(2).text() shouldBe "Appeal accepted"
+      }
+
       "have the appeal status ACCEPTED_BY_TRIBUNAL" in {
         docWithAppealedPenaltyAcceptedByTribunal.select("dt").get(2).text() shouldBe "Appeal status"
         docWithAppealedPenaltyAcceptedByTribunal.select("dd").get(2).text() shouldBe "Appeal accepted by tax tribunal Read outcome message"
+      }
+
+      "have the appeal status ACCEPTED_BY_TRIBUNAL - no outcome message for agents" in {
+        docWithAppealedPenaltyAcceptedByTribunalAgent.select("dt").get(2).text() shouldBe "Appeal status"
+        docWithAppealedPenaltyAcceptedByTribunalAgent.select("dd").get(2).text() shouldBe "Appeal accepted by tax tribunal"
       }
 
       "have the appeal status for REJECTED" in {
@@ -137,9 +178,29 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         docWithAppealedPenaltyRejected.select("dd").get(2).text() shouldBe "Appeal rejected Read outcome message"
       }
 
+      "have the appeal status for REJECTED - no outcome message for agents" in {
+        docWithAppealedPenaltyRejectedAgent.select("dt").get(2).text() shouldBe "Appeal status"
+        docWithAppealedPenaltyRejectedAgent.select("dd").get(2).text() shouldBe "Appeal rejected"
+      }
+
       "have the appeal status for TRIBUNAL REJECTED" in {
-        docWithAppealedPenaltyUnderTribunalRejected.select("dt").get(2).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyUnderTribunalRejected.select("dd").get(2).text() shouldBe "Appeal rejected by tax tribunal Read outcome message"
+        docWithAppealedPenaltyTribunalRejected.select("dt").get(2).text() shouldBe "Appeal status"
+        docWithAppealedPenaltyTribunalRejected.select("dd").get(2).text() shouldBe "Appeal rejected by tax tribunal Read outcome message"
+      }
+
+      "have the appeal status for TRIBUNAL REJECTED - no outcome message for agents" in {
+        docWithAppealedPenaltyTribunalRejectedAgent.select("dt").get(2).text() shouldBe "Appeal status"
+        docWithAppealedPenaltyTribunalRejectedAgent.select("dd").get(2).text() shouldBe "Appeal rejected by tax tribunal"
+      }
+
+      "have the appeal status for REINSTATED" in {
+        docWithAppealedPenaltyTribunalReinstated.select("dt").get(2).text() shouldBe "Appeal status"
+        docWithAppealedPenaltyTribunalReinstated.select("dd").get(2).text() shouldBe "Appeal outcome changed Read message"
+      }
+
+      "have the appeal status for REINSTATED - no outcome message for agents" in {
+        docWithAppealedPenaltyTribunalReinstatedAgent.select("dt").get(2).text() shouldBe "Appeal status"
+        docWithAppealedPenaltyTribunalReinstatedAgent.select("dd").get(2).text() shouldBe "Appeal outcome changed"
       }
     }
   }
