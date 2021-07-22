@@ -43,7 +43,7 @@
                                     {messages("summaryCard.appealCheck")}
                                 </a>
                             } else {
-                                <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId).url}>
+                                <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, true).url}>
                                     {messages("summaryCard.footerLinkTextNoPointNumber")}
                                 </a>
                             }

@@ -201,6 +201,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     PaymentPeriod(
       LocalDateTime.now,
       LocalDateTime.now,
+      LocalDateTime.now,
       PaymentStatusEnum.Paid
     ),
     Seq.empty,
@@ -219,6 +220,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     PointStatusEnum.Paid,
     None,
     PaymentPeriod(
+      LocalDateTime.now,
       LocalDateTime.now,
       LocalDateTime.now,
       PaymentStatusEnum.Paid
@@ -362,7 +364,9 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   val penaltyId = "123456789"
 
-  val redirectToAppealUrl: String = controllers.routes.IndexController.redirectToAppeals(penaltyId).url
+  val redirectToAppealUrlForLSP: String = controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = false).url
+
+  val redirectToAppealUrlForLPP: String = controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = true).url
 
   val sampleDate: LocalDateTime = LocalDateTime.of(2021, 4, 23, 18, 25, 43)
     .plus(511, ChronoUnit.MILLIS)

@@ -23,6 +23,7 @@ import play.api.libs.json.{Json, OFormat}
 case class PaymentPeriod (
                            startDate: LocalDateTime,
                            endDate: LocalDateTime,
+                           dueDate: LocalDateTime,
                            paymentStatus: PaymentStatusEnum.Value
                          )
 

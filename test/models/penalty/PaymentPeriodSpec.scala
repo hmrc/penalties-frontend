@@ -29,6 +29,7 @@ class PaymentPeriodSpec extends AnyWordSpec with Matchers {
       |{
       | "startDate": "2020-01-01T13:00:00.123",
       | "endDate": "2020-01-01T13:00:00.123",
+      | "dueDate": "2020-01-01T13:00:00.123",
       | "paymentStatus": "PAID"
       |}
       |""".stripMargin)
@@ -36,6 +37,7 @@ class PaymentPeriodSpec extends AnyWordSpec with Matchers {
   val paymentPeriodModel: PaymentPeriod = PaymentPeriod(
     startDate = LocalDateTime.of(2020,1,1,13,0,0).plus(123, ChronoUnit.MILLIS),
     endDate = LocalDateTime.of(2020,1,1,13,0,0).plus(123, ChronoUnit.MILLIS),
+    dueDate = LocalDateTime.of(2020,1,1,13,0,0).plus(123, ChronoUnit.MILLIS),
     paymentStatus = PaymentStatusEnum.Paid
   )
 

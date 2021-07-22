@@ -171,6 +171,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     period = PaymentPeriod(
       sampleDate1,
       sampleDate1.plusMonths(1),
+      sampleDate1.plusMonths(2).plusDays(7),
       PaymentStatusEnum.Paid
     ),
     communications = Seq(
