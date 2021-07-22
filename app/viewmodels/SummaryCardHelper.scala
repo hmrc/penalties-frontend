@@ -49,7 +49,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     }
   }
 
-  def populateLatePaymentPenaltyCard(lpp: Option[Seq[LatePaymentPenalty]])(implicit messages: Messages): Option[Seq[LatePaymentPenaltySummaryCard]] = {
+  def populateLatePaymentPenaltyCard(lpp: Option[Seq[LatePaymentPenalty]])(implicit messages: Messages, user: User[_]): Option[Seq[LatePaymentPenaltySummaryCard]] = {
     lpp.map {
       _.map(penalty => lppSummaryCard(penalty))
     }
