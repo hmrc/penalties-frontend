@@ -243,6 +243,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     PaymentPeriod(
       LocalDateTime.now,
       LocalDateTime.now,
+      LocalDateTime.now,
       PaymentStatusEnum.Due
     ),
     Seq.empty,
