@@ -231,6 +231,26 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     )
   )
 
+  val sampleLatePaymentPenaltyUnpaidVAT = LatePaymentPenalty(
+    PenaltyTypeEnum.Financial,
+    "123456789",
+    "reason",
+    LocalDateTime.now,
+    PointStatusEnum.Due,
+    None,
+    PaymentPeriod(
+      LocalDateTime.now,
+      LocalDateTime.now,
+      PaymentStatusEnum.Due
+    ),
+    Seq.empty,
+    PaymentFinancial(
+      amountDue = 400.00,
+      outstandingAmountDue = 200.00,
+      dueDate = LocalDateTime.now
+    )
+  )
+
   val samplePenaltyPointAppealedAccepted = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Accepted), status = PointStatusEnum.Removed)
   val samplePenaltyPointAppealedAcceptedByTribunal = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Accepted_By_Tribunal), status = PointStatusEnum.Removed)
   val samplePenaltyPointAppealedRejected = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Rejected))
@@ -284,6 +304,10 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   val sampleLatePaymentPenaltyData: Seq[LatePaymentPenalty] = Seq(
     sampleLatePaymentPenaltyPaid
+  )
+
+  val sampleLatePaymentPenaltyDataUnpaidVAT: Seq[LatePaymentPenalty] = Seq(
+    sampleLatePaymentPenaltyUnpaidVAT
   )
 
   val sampleLatePaymentPenaltyAppealedData: Seq[LatePaymentPenalty] = Seq(

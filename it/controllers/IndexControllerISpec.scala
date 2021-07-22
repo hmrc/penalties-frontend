@@ -187,10 +187,40 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     )
   )))
 
+  val latePaymentPenaltyVATUnpaid: Option[Seq[LatePaymentPenalty]] = Some(Seq(LatePaymentPenalty(
+    `type` = PenaltyTypeEnum.Financial,
+    id = "123456789",
+    reason = "this is a reason",
+    dateCreated = sampleDate1,
+    status = PointStatusEnum.Due,
+    appealStatus = None,
+    period = PaymentPeriod(
+      sampleDate1,
+      sampleDate1.plusMonths(1),
+      PaymentStatusEnum.Due
+    ),
+    communications = Seq(
+      Communication(
+        `type` = CommunicationTypeEnum.letter,
+        dateSent = sampleDate1,
+        documentId = "123456789"
+      )
+    ),
+    financial = PaymentFinancial(
+      amountDue = 400.00,
+      outstandingAmountDue = 200.00,
+      dueDate = sampleDate1
+    )
+  )))
+
   val latePaymentPenaltyWithAppeal: Option[Seq[LatePaymentPenalty]] = Some(Seq(latePaymentPenalty.get.head.copy(appealStatus = Some(AppealStatusEnum.Under_Review))))
 
   val etmpPayloadWithLPP: ETMPPayload = etmpPayloadWithAddedPoints.copy(
     latePaymentPenalties = latePaymentPenalty
+  )
+
+  val etmpPayloadWithLPPVATUnpaid: ETMPPayload = etmpPayloadWithAddedPoints.copy(
+    latePaymentPenalties = latePaymentPenaltyVATUnpaid
   )
 
   val etmpPayloadWithLPPAppeal: ETMPPayload = etmpPayloadWithLPP.copy(
@@ -273,6 +303,21 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("dt").get(1).text shouldBe "Penalty reason"
       summaryCardBody.select("dd").get(1).text shouldBe "VAT not paid within 15 days"
       parsedBody.select("#late-payment-penalties footer li").text() shouldBe "Appeal this penalty"
+    }
+
+    "return 200 (OK) and render the view when there are LPPs with VAT unpaid that are retrieved from the backend" in {
+      returnLSPDataStub(etmpPayloadWithLPPVATUnpaid)
+      val request = await(buildClientForRequestToApp(uri = "/").get())
+      request.status shouldBe Status.OK
+      val parsedBody = Jsoup.parse(request.body)
+      parsedBody.select("#late-payment-penalties section header h3").text shouldBe "£400 penalty"
+      parsedBody.select("#late-payment-penalties section header strong").text shouldBe "due"
+      val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
+      summaryCardBody.select("dt").get(0).text shouldBe "VAT Period"
+      summaryCardBody.select("dd").get(0).text shouldBe "1 January 2021 to 1 February 2021"
+      summaryCardBody.select("dt").get(1).text shouldBe "Penalty reason"
+      summaryCardBody.select("dd").get(1).text shouldBe "VAT not paid within 15 days"
+      parsedBody.select("#late-payment-penalties footer li").text() shouldBe "Check if you can appeal"
     }
 
     "return 200 (OK) and render the view when there are appealed LPPs that are retrieved from the backend" in {

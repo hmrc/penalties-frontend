@@ -62,8 +62,12 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
     Tag(content = Text("paid"), classes = "govuk-tag "),
     "123456789",
     isPenaltyPaid = true,
-    400.00
+    400.00,
+    isVatPaid = true
   )
+
+  val sampleLPPSummaryCardPenaltyUnpaidVAT: LatePaymentPenaltySummaryCard = sampleLPPSummaryCardPenaltyPaid.copy(isPenaltyPaid = false, isVatPaid = false,
+    status = Tag(content = Text("due"), classes = "govuk-tag penalty-due-tag"))
 
   "SummaryCard helper" should {
     "findAndReindexPointIfIsActive" should {
@@ -288,6 +292,11 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           "populateLatePaymentPenaltyCard is called" in {
             val result = helper.populateLatePaymentPenaltyCard(Some(sampleLatePaymentPenaltyData))
             result shouldBe Some(Seq(sampleLPPSummaryCardPenaltyPaid))
+          }
+
+          "set the isVatPaid boolean to false when the VAT is unpaid" in {
+            val result = helper.populateLatePaymentPenaltyCard(Some(sampleLatePaymentPenaltyDataUnpaidVAT))
+            result shouldBe Some(Seq(sampleLPPSummaryCardPenaltyUnpaidVAT))
           }
         }
       }
@@ -532,6 +541,11 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
   }
 
   "lppSummaryCard" should {
+    "when given a point where VAT has not been paid - set the correct field" in {
+      val result = helper.lppSummaryCard(sampleLatePaymentPenaltyUnpaidVAT)
+      result.isVatPaid shouldBe false
+    }
+
     "when given an appealed point (under review) - set the relevant fields" in {
       val result = helper.lppSummaryCard(sampleLatePaymentPenaltyAppealedUnderReview)
       result.appealStatus.isDefined shouldBe true
