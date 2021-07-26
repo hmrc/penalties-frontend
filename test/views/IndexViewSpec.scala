@@ -127,6 +127,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
       period = PaymentPeriod(
         startDate = LocalDateTime.now,
         endDate = LocalDateTime.now,
+        dueDate = LocalDateTime.now,
         PaymentStatusEnum.Due
       ),
       communications = Seq(Communication(
@@ -259,7 +260,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           vatTraderDoc.select(Selectors.rowItem(Selectors.summaryLSPCard, 3)).text shouldBe returnSubmitted
           vatTraderDoc.select(Selectors.rowItem(Selectors.summaryLSPCard, 4)).text shouldBe pointExpiration
           vatTraderDoc.select(Selectors.summaryCardFooterLink(Selectors.summaryLSPCard)).text shouldBe appealPointLinkText
-          vatTraderDoc.select(Selectors.summaryCardFooterLink(Selectors.summaryLSPCard)).attr("href") shouldBe redirectToAppealUrl
+          vatTraderDoc.select(Selectors.summaryCardFooterLink(Selectors.summaryLSPCard)).attr("href") shouldBe redirectToAppealUrlForLSP
         }
 
         "populate summary card when user has LPPs" in {
@@ -268,7 +269,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           vatTraderDoc.select(Selectors.rowItem(Selectors.summaryLPPCard, 1)).text shouldBe period
           vatTraderDoc.select(Selectors.rowItem(Selectors.summaryLPPCard, 2)).text shouldBe penaltyReason
           vatTraderDoc.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).text shouldBe appealPointText
-          vatTraderDoc.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).attr("href") shouldBe redirectToAppealUrl
+          vatTraderDoc.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).attr("href") shouldBe redirectToAppealUrlForLPP
         }
 
         "populate summary card when user has LPPs with VAT unpaid" in {

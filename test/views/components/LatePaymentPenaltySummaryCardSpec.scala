@@ -37,6 +37,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       period = PaymentPeriod(
         LocalDateTime.of(2020,1,1,1,1,1),
         LocalDateTime.of(2020,2,1,1,1,1),
+        LocalDateTime.of(2020,2,1,1,1,1),
         PaymentStatusEnum.Paid
       ))))
   ).get.head

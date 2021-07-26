@@ -461,6 +461,7 @@ class IndexPageHelperSpec extends SpecBase {
               period = PaymentPeriod(
                 startDate = sampleDate,
                 endDate = sampleDate,
+                dueDate = sampleDate,
                 paymentStatus = PaymentStatusEnum.Due
               ),
               communications = Seq.empty,
@@ -496,6 +497,7 @@ class IndexPageHelperSpec extends SpecBase {
               period = PaymentPeriod(
                 startDate = sampleDate,
                 endDate = sampleDate,
+                dueDate = sampleDate,
                 paymentStatus = PaymentStatusEnum.Paid
               ),
               communications = Seq.empty,

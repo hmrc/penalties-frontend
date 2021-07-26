@@ -93,7 +93,14 @@ class IndexControllerSpec extends SpecBase {
         val result = Controller.redirectToAppeals("123456789")(fakeRequest)
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId")
+        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=false")
+      }
+
+      "the user wants to appeal a penalty for LPP" in new Setup(AuthTestModels.successfulAuthResult) {
+        val result = Controller.redirectToAppeals("123456789", isLPP = true)(fakeRequest)
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=true")
       }
     }
 
