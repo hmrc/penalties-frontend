@@ -21,15 +21,15 @@ import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum, Pen
 import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
 import org.jsoup.Jsoup
-import play.api.http.Status
+import play.api.http.{HeaderNames, Status}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.AuthStub
 import stubs.PenaltiesStub.returnLSPDataStub
 import testUtils.IntegrationSpecCommonBase
 import utils.SessionKeys
-import java.time.LocalDateTime
 
+import java.time.LocalDateTime
 import models.communication.{Communication, CommunicationTypeEnum}
 import models.payment.PaymentFinancial
 
@@ -404,6 +404,20 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       AuthStub.unauthorised()
       val request = await(buildClientForRequestToApp(uri = "/").get())
       request.status shouldBe Status.SEE_OTHER
+    }
+  }
+
+  "GET /appeal-penalty" should {
+    "redirect the user to the appeals service when the penalty is not a LPP" in {
+      val request = buildClientForRequestToApp(uri = "/appeal-penalty?penaltyId=1234&isLPP=false").get()
+      await(request).status shouldBe Status.SEE_OTHER
+      await(request).header(HeaderNames.LOCATION).get shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=false"
+    }
+
+    "redirect the user to the appeals service when the penalty is a LPP" in {
+      val request = buildClientForRequestToApp(uri = "/appeal-penalty?penaltyId=1234&isLPP=true").get()
+      await(request).status shouldBe Status.SEE_OTHER
+      await(request).header(HeaderNames.LOCATION).get shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=true"
     }
   }
 }
