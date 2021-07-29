@@ -365,9 +365,13 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   val penaltyId = "123456789"
 
-  val redirectToAppealUrlForLSP: String = controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = false).url
+  val redirectToAppealUrlForLSP: String = controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = false, isObligation = false).url
 
-  val redirectToAppealUrlForLPP: String = controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = true).url
+  val redirectToAppealUrlForLPP: String = controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = true, isObligation = false).url
+
+  val redirectToAppealObligationUrlForLSP: String = controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = false, isObligation = true).url
+
+  val redirectToAppealObligationUrlForLPP: String = controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = true, isObligation = true).url
 
   val sampleDate: LocalDateTime = LocalDateTime.of(2021, 4, 23, 18, 25, 43)
     .plus(511, ChronoUnit.MILLIS)
