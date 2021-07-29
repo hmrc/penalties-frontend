@@ -39,11 +39,11 @@
                         {
                             if(!summaryCard.isVatPaid) {
                                 //TODO: change to appeal against obligation link
-                                <a class="govuk-link" href="#">
+                                <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, true, true).url}>
                                     {messages("summaryCard.appealCheck")}
                                 </a>
                             } else {
-                                <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, true).url}>
+                                <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, true, false).url}>
                                     {messages("summaryCard.footerLinkTextNoPointNumber")}
                                 </a>
                             }

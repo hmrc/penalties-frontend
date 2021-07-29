@@ -278,8 +278,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           vatTraderDocWithLPPVATUnpaid.select(Selectors.rowItem(Selectors.summaryLPPCard, 1)).text shouldBe period
           vatTraderDocWithLPPVATUnpaid.select(Selectors.rowItem(Selectors.summaryLPPCard, 2)).text shouldBe penaltyReason
           vatTraderDocWithLPPVATUnpaid.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).text shouldBe checkAppeal
-          //TODO : change to appeal against obligation link
-          vatTraderDocWithLPPVATUnpaid.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).attr("href") shouldBe "#"
+          vatTraderDocWithLPPVATUnpaid.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).attr("href") shouldBe redirectToAppealObligationUrlForLPP
         }
 
         "populate summary card when user has LPPs and has appealed them" in {
@@ -306,7 +305,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           doc.select(Selectors.rowItem(Selectors.summaryLSPCard, 2)).text shouldBe returnDue
           doc.select(Selectors.rowItem(Selectors.summaryLSPCard, 3)).text shouldBe returnSubmitted
           doc.select(Selectors.summaryCardFooterLink(Selectors.summaryLSPCard)).text shouldBe checkAppeal
-          doc.select(Selectors.summaryCardFooterLink(Selectors.summaryLSPCard)).attr("href") shouldBe "#"
+          doc.select(Selectors.summaryCardFooterLink(Selectors.summaryLSPCard)).attr("href") shouldBe redirectToAppealObligationUrlForLSP
         }
       }
 

@@ -102,6 +102,20 @@ class IndexControllerSpec extends SpecBase {
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=true")
       }
+
+      "the user wants to appeal an obligation" in new Setup(AuthTestModels.successfulAuthResult) {
+        val result = Controller.redirectToAppeals("123456789", isObligation = true)(fakeRequest)
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal-against-the-obligation?penaltyId=$penaltyId&isLPP=false")
+      }
+
+      "the user wats to appeal an obligation for LPP" in new Setup(AuthTestModels.successfulAuthResult) {
+        val result = Controller.redirectToAppeals("123456789", isLPP = true, isObligation = true)(fakeRequest)
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal-against-the-obligation?penaltyId=$penaltyId&isLPP=true")
+      }
     }
 
   }
