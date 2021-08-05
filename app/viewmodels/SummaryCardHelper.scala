@@ -330,8 +330,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
 
       (latePaymentPenaltyAppealStatus,latePaymentPenaltyStatus) match {
         case (Some(AppealStatusEnum.Accepted),_) => renderTag(messages("status.cancelled"))
-        case (Some(AppealStatusEnum.Reinstated),_) => renderTag(messages("status.reinstated"))
-        case (Some(AppealStatusEnum.Rejected),_) => renderTag(messages("status.paid"))
+        case (Some(AppealStatusEnum.Reinstated),_) => renderTag(messages("status.due"), "penalty-due-tag")
         case (_,PointStatusEnum.Paid) => renderTag(messages("status.paid"))
         case (_,_) => renderTag(messages("status.due"), "penalty-due-tag")
       }
