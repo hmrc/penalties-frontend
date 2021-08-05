@@ -458,6 +458,13 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           classes = "govuk-tag "
         )
       }
+      "a financial penalty has been added and the user has paid - appealStatus AcceptedByTribunal" in {
+        val result = helper.tagStatus(None,Some(sampleLatePaymentPenaltyAppealedAcceptedTribunal))
+        result shouldBe Tag(
+          content = Text(cancelledTag),
+          classes = "govuk-tag "
+        )
+      }
       "a financial penalty has been added and the user has paid - appealStatus Reinstated " in {
         val result = helper.tagStatus(None,Some(sampleLatePaymentPenaltyAppealedReinstated))
         result shouldBe Tag(
@@ -473,7 +480,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         )
       }
 
-      "a financial penalty has been added and the user is due - appealStatus Rejected" in {
+      "a financial penalty has been added and the user has not paid the penalty - appealStatus Rejected" in {
         val result = helper.tagStatus(None,Some(sampleLatePaymentPenaltyAppealedRejected))
         result shouldBe Tag(
           content = Text(overdueTag),

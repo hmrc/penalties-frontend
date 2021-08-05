@@ -329,8 +329,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       val latePaymentPenaltyAppealStatus = lpp.get.appealStatus
 
       (latePaymentPenaltyAppealStatus,latePaymentPenaltyStatus) match {
-        case (Some(AppealStatusEnum.Accepted),_) => renderTag(messages("status.cancelled"))
-        case (Some(AppealStatusEnum.Reinstated),_) => renderTag(messages("status.due"), "penalty-due-tag")
+        case (Some(AppealStatusEnum.Accepted | AppealStatusEnum.Accepted_By_Tribunal),_) => renderTag(messages("status.cancelled"))
         case (_,PointStatusEnum.Paid) => renderTag(messages("status.paid"))
         case (_,_) => renderTag(messages("status.due"), "penalty-due-tag")
       }
