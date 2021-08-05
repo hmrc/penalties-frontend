@@ -325,9 +325,13 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
         case (_, _, _) => renderTag(messages("status.active")) // Temp solution
       }
     } else {
-      lpp.get.status match {
-        case PointStatusEnum.Paid => renderTag(messages("status.paid"))
-        case _ => renderTag(messages("status.due"), "penalty-due-tag")
+      val latePaymentPenaltyStatus = lpp.get.status
+      val latePaymentPenaltyAppealStatus = lpp.get.appealStatus
+
+      (latePaymentPenaltyAppealStatus,latePaymentPenaltyStatus) match {
+        case (Some(AppealStatusEnum.Accepted | AppealStatusEnum.Accepted_By_Tribunal),_) => renderTag(messages("status.cancelled"))
+        case (_,PointStatusEnum.Paid) => renderTag(messages("status.paid"))
+        case (_,_) => renderTag(messages("status.due"), "penalty-due-tag")
       }
     }
   }
