@@ -138,7 +138,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       }
 
       "display the 'DUE' status" in {
-        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelForAdditionalPenaltyDue))
+        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDue))
         doc.select("strong").text() shouldBe "due"
       }
 
@@ -169,7 +169,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       }
 
       "display the 'DUE' status" in {
-        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDue))
+        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelForAdditionalPenaltyDue))
         doc.select("strong").text() shouldBe "due"
       }
 
