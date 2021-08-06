@@ -16,7 +16,11 @@
     <header class="app-summary-card__header">
         <h3 class="app-summary-card__title">
             @{
-                messages("summaryCard.header.financialNoNumber", summaryCard.amountDue)
+                if(summaryCard.isAdditionalPenalty) {
+                    messages("summaryCard.header.financialAdditionalPenalty", summaryCard.amountDue)
+                } else {
+                    messages("summaryCard.header.financialNoNumber", summaryCard.amountDue)
+                }
             }
         </h3>
         <div class="app-summary-card__actions">
@@ -33,7 +37,7 @@
     <footer class="app-summary-card__footer">
         <div class="app-summary-card__actions">
             @{
-            if(!summaryCard.appealStatus.isDefined){
+            if(summaryCard.appealStatus.isEmpty){
                 <ul class="app-summary-card__actions-list">
                     <li class="app-summary-card__actions-list-item">
                         {

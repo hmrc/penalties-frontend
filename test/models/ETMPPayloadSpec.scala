@@ -18,16 +18,16 @@ package models
 
 import models.communication.{Communication, CommunicationTypeEnum}
 import models.financial.Financial
-import models.penalty.{PaymentPeriod, LatePaymentPenalty, PaymentStatusEnum, PenaltyPeriod}
+import models.payment.PaymentFinancial
+import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum, PenaltyPeriod}
+import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.{JsValue, Json}
+
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-
-import models.payment.PaymentFinancial
-import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 
 class ETMPPayloadSpec extends AnyWordSpec with Matchers {
 

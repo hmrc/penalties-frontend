@@ -16,11 +16,11 @@
 
 package viewmodels
 
-import java.time.LocalDateTime
-
 import base.SpecBase
 import models.compliance.MissingReturn
 import org.jsoup.Jsoup
+
+import java.time.LocalDateTime
 
 class CompliancePageHelperSpec extends SpecBase {
   val sampleDate1 = LocalDateTime.of(2022, 1, 1, 1, 1, 1)

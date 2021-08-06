@@ -16,12 +16,12 @@
 
 package viewmodels
 
-import java.time.LocalDateTime
-
 import base.SpecBase
 import models.compliance.{Return, ReturnStatusEnum}
 import org.jsoup.Jsoup
 import utils.ImplicitDateFormatter
+
+import java.time.LocalDateTime
 
 class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter {
 

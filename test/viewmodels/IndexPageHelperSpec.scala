@@ -19,7 +19,6 @@ package viewmodels
 import assets.messages.IndexMessages._
 import base.SpecBase
 import models.ETMPPayload
-import models.communication.{Communication, CommunicationTypeEnum}
 import models.payment.PaymentFinancial
 import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum}
 import models.point.{PenaltyTypeEnum, PointStatusEnum}

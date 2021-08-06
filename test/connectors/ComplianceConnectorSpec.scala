@@ -19,8 +19,8 @@ package connectors
 import base.SpecBase
 import config.AppConfig
 import models.compliance.CompliancePayload
-import org.mockito.Mockito._
 import org.mockito.Matchers._
+import org.mockito.Mockito._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 
