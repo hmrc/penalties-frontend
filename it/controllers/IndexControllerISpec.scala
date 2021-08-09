@@ -41,7 +41,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
   val controller = injector.instanceOf[IndexController]
   val fakeAgentRequest = FakeRequest("GET", "/").withSession(SessionKeys.agentSessionVrn -> "123456789")
   val etmpPayloadWithAddedPoints: ETMPPayload = ETMPPayload(
-    pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, penaltyPoints = Seq(
+    pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0,Some(false),Some(Seq.empty), penaltyPointsThreshold = 4, penaltyPoints = Seq(
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Point,
         id = "1234567890",
@@ -58,7 +58,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
   )
 
   val etmpPayloadWithRemovedPoints: ETMPPayload = ETMPPayload(
-    pointsTotal = 1, lateSubmissions = 2, adjustmentPointsTotal = -1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4,
+    pointsTotal = 1, lateSubmissions = 2, adjustmentPointsTotal = -1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, Some(false),Some(Seq.empty),penaltyPointsThreshold = 4,
     penaltyPoints = Seq(
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Point,
@@ -82,7 +82,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
   )
 
   val etmpPayloadWith2PointsandOneRemovedPoint: ETMPPayload = ETMPPayload(
-    pointsTotal = 2, lateSubmissions = 3, adjustmentPointsTotal = -1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, penaltyPoints = Seq(
+    pointsTotal = 2, lateSubmissions = 3, adjustmentPointsTotal = -1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0,Some(false),Some(Seq.empty), penaltyPointsThreshold = 4, penaltyPoints = Seq(
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Point,
         id = "1234567890",
@@ -158,7 +158,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         communications = Seq.empty,
         financial = None
       )
-    ),Option(Seq.empty[LatePaymentPenalty])
+    ),
+    Option(Seq.empty[LatePaymentPenalty])
   )
 
   val latePaymentPenalty: Option[Seq[LatePaymentPenalty]] = Some(Seq(LatePaymentPenalty(

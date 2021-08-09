@@ -33,6 +33,8 @@ object PenaltiesStub {
     0,
     0.0,
     0.0,
+    Some(false),
+    Some(Seq.empty),
     4,
     Seq.empty[PenaltyPoint],
     Option(Seq.empty[LatePaymentPenalty])
