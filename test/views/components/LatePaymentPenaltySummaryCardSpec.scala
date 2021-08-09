@@ -45,7 +45,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       ))))
   ).get.head
 
-  val summaryCardModelForAdditionalPenalty: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
+  val summaryCardModelForAdditionalPenaltyPaid: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
     Some(Seq(sampleLatePaymentPenaltyPaid.copy(
       `type` = PenaltyTypeEnum.Additional,
       period = PaymentPeriod(
@@ -158,14 +158,14 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
     }
 
     "given an additional penalty" should {
-      implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelForAdditionalPenalty))
+      implicit val docWithAdditionalPenalty: Document = asDocument(summaryCardHtml.apply(summaryCardModelForAdditionalPenaltyPaid))
 
       "display the penalty amount" in {
-        doc.select("h3").text() shouldBe "£123.45 additional penalty"
+        docWithAdditionalPenalty.select("h3").text() shouldBe "£123.45 additional penalty"
       }
 
       "display the 'PAID' status" in {
-        doc.select("strong").text() shouldBe "paid"
+        docWithAdditionalPenalty.select("strong").text() shouldBe "paid"
       }
 
       "display the 'DUE' status" in {
@@ -174,23 +174,22 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       }
 
       "display the VAT period" in {
-        doc.select("dt").get(0).text() shouldBe "VAT Period"
-        doc.select("dd").get(0).text() shouldBe "1 January 2020 to 1 February 2020"
+        docWithAdditionalPenalty.select("dt").get(0).text() shouldBe "VAT Period"
+        docWithAdditionalPenalty.select("dd").get(0).text() shouldBe "1 January 2020 to 1 February 2020"
       }
 
       "display the penalty reason" in {
-        doc.select("dt").get(1).text() shouldBe "Penalty reason"
-        //TODO: needs changing when reason is made 'smart'
-        doc.select("dd").get(1).text() shouldBe "VAT not paid within 15 days"
+        docWithAdditionalPenalty.select("dt").get(1).text() shouldBe "Penalty reason"
+        docWithAdditionalPenalty.select("dd").get(1).text() shouldBe "VAT more than 30 days late"
       }
 
       "display the charged daily from - 31 days after the due date" in {
-        doc.select("dt").get(2).text() shouldBe "Charged daily from"
-        doc.select("dd").get(2).text() shouldBe "7 April 2020"
+        docWithAdditionalPenalty.select("dt").get(2).text() shouldBe "Charged daily from"
+        docWithAdditionalPenalty.select("dd").get(2).text() shouldBe "7 April 2020"
       }
 
       "display the appeal link" in {
-        doc.select(".app-summary-card__footer a").get(0).text shouldBe "Appeal this penalty"
+        docWithAdditionalPenalty.select(".app-summary-card__footer a").get(0).text shouldBe "Appeal this penalty"
       }
     }
 

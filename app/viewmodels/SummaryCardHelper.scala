@@ -179,7 +179,12 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
           )
         )
       ),
-      summaryListRow(messages("summaryCard.lpp.key2"), Html(messages("summaryCard.lpp.15days")))
+      if(lpp.`type` == PenaltyTypeEnum.Additional){
+      summaryListRow(messages("summaryCard.lpp.key2"), Html(messages("summaryCard.lpp.additional.30days")))
+      }
+      else{
+        summaryListRow(messages("summaryCard.lpp.key2"), Html(messages("summaryCard.lpp.15days")))
+      }
     )
   }
 

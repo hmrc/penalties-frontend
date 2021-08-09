@@ -110,6 +110,7 @@ summaryCard.lpp.key2 = Penalty reason
 summaryCard.lpp.15days = VAT not paid within 15 days
 summaryCard.lpp.30days = VAT not paid within 30 days
 summaryCard.lpp.additional.key = Charged daily from
+summaryCard.lpp.additional.30days = VAT more than 30 days late
 
 status.active = active
 status.due = due

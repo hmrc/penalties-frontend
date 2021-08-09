@@ -378,8 +378,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("dt").get(0).text shouldBe "VAT Period"
       summaryCardBody.select("dd").get(0).text shouldBe "1 January 2021 to 1 February 2021"
       summaryCardBody.select("dt").get(1).text shouldBe "Penalty reason"
-      //TODO: this will need to change when the reason becomes 'smart'
-      summaryCardBody.select("dd").get(1).text shouldBe "VAT not paid within 15 days"
+      summaryCardBody.select("dd").get(1).text shouldBe "VAT more than 30 days late"
       summaryCardBody.select("dt").get(2).text shouldBe "Charged daily from"
       summaryCardBody.select("dd").get(2).text shouldBe "8 April 2021"
       parsedBody.select("#late-payment-penalties footer li").text().contains("Appeal this penalty") shouldBe true
