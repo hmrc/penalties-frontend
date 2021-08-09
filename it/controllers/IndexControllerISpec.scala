@@ -54,7 +54,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         communications = Seq.empty,
         financial = None
       )
-    ),Option(Seq.empty[LatePaymentPenalty])
+    ), Option(Seq.empty[LatePaymentPenalty])
   )
 
   val etmpPayloadWithRemovedPoints: ETMPPayload = ETMPPayload(
@@ -78,7 +78,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         communications = Seq.empty,
         financial = None
       )
-    ),Option(Seq.empty[LatePaymentPenalty])
+    ), Option(Seq.empty[LatePaymentPenalty])
   )
 
   val etmpPayloadWith2PointsandOneRemovedPoint: ETMPPayload = ETMPPayload(
@@ -158,36 +158,91 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         communications = Seq.empty,
         financial = None
       )
-    ),
-    Option(Seq.empty[LatePaymentPenalty])
+    ), Option(Seq.empty[LatePaymentPenalty])
   )
 
-  val latePaymentPenalty: Option[Seq[LatePaymentPenalty]] = Some(Seq(LatePaymentPenalty(
-    `type` = PenaltyTypeEnum.Financial,
-    id = "123456789",
-    reason = "this is a reason",
-    dateCreated = sampleDate1,
-    status = PointStatusEnum.Paid,
-    appealStatus = None,
-    period = PaymentPeriod(
-      sampleDate1,
-      sampleDate1.plusMonths(1),
-      sampleDate1.plusMonths(2).plusDays(7),
-      PaymentStatusEnum.Paid
-    ),
-    communications = Seq(
-      Communication(
-        `type` = CommunicationTypeEnum.letter,
-        dateSent = sampleDate1,
-        documentId = "123456789"
+  val latePaymentPenalty: Option[Seq[LatePaymentPenalty]] = Some(Seq(
+    LatePaymentPenalty(
+      `type` = PenaltyTypeEnum.Financial,
+      id = "123456789",
+      reason = "this is a reason",
+      dateCreated = sampleDate1,
+      status = PointStatusEnum.Paid,
+      appealStatus = None,
+      period = PaymentPeriod(
+        sampleDate1,
+        sampleDate1.plusMonths(1),
+        sampleDate1.plusMonths(2).plusDays(7),
+        PaymentStatusEnum.Paid
+      ),
+      communications = Seq(
+        Communication(
+          `type` = CommunicationTypeEnum.letter,
+          dateSent = sampleDate1,
+          documentId = "123456789"
+        )
+      ),
+      financial = PaymentFinancial(
+        amountDue = 400.00,
+        outstandingAmountDue = 200.00,
+        dueDate = sampleDate1
+      )
+    )))
+
+  val latePaymentPenaltyWithAdditionalPenalty: Option[Seq[LatePaymentPenalty]] = Some(Seq(
+    LatePaymentPenalty(
+      `type` = PenaltyTypeEnum.Additional,
+      id = "123456790",
+      reason = "this is a reason",
+      dateCreated = sampleDate1,
+      status = PointStatusEnum.Paid,
+      appealStatus = None,
+      period = PaymentPeriod(
+        sampleDate1,
+        sampleDate1.plusMonths(1),
+        sampleDate1.plusMonths(2).plusDays(7),
+        PaymentStatusEnum.Paid
+      ),
+      communications = Seq(
+        Communication(
+          `type` = CommunicationTypeEnum.letter,
+          dateSent = sampleDate1,
+          documentId = "123456789"
+        )
+      ),
+      financial = PaymentFinancial(
+        amountDue = 123.45,
+        outstandingAmountDue = 0.00,
+        dueDate = sampleDate1
       )
     ),
-    financial = PaymentFinancial(
-      amountDue = 400.00,
-      outstandingAmountDue = 200.00,
-      dueDate = sampleDate1
+    LatePaymentPenalty(
+      `type` = PenaltyTypeEnum.Financial,
+      id = "123456789",
+      reason = "this is a reason",
+      dateCreated = sampleDate1,
+      status = PointStatusEnum.Paid,
+      appealStatus = None,
+      period = PaymentPeriod(
+        sampleDate1,
+        sampleDate1.plusMonths(1),
+        sampleDate1.plusMonths(2).plusDays(7),
+        PaymentStatusEnum.Paid
+      ),
+      communications = Seq(
+        Communication(
+          `type` = CommunicationTypeEnum.letter,
+          dateSent = sampleDate1,
+          documentId = "123456789"
+        )
+      ),
+      financial = PaymentFinancial(
+        amountDue = 400.00,
+        outstandingAmountDue = 200.00,
+        dueDate = sampleDate1
+      )
     )
-  )))
+  ))
 
   val latePaymentPenaltyVATUnpaid: Option[Seq[LatePaymentPenalty]] = Some(Seq(LatePaymentPenalty(
     `type` = PenaltyTypeEnum.Financial,
@@ -220,6 +275,10 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
 
   val etmpPayloadWithLPP: ETMPPayload = etmpPayloadWithAddedPoints.copy(
     latePaymentPenalties = latePaymentPenalty
+  )
+
+  val etmpPayloadWithLPPAndAdditionalPenalty: ETMPPayload = etmpPayloadWithAddedPoints.copy(
+    latePaymentPenalties = latePaymentPenaltyWithAdditionalPenalty
   )
 
   val etmpPayloadWithLPPVATUnpaid: ETMPPayload = etmpPayloadWithAddedPoints.copy(
@@ -306,6 +365,24 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("dt").get(1).text shouldBe "Penalty reason"
       summaryCardBody.select("dd").get(1).text shouldBe "VAT not paid within 15 days"
       parsedBody.select("#late-payment-penalties footer li").text() shouldBe "Appeal this penalty"
+    }
+
+    "return 200 (OK) and render the view when there are LPPs and additional penalties paid that are retrieved from the backend" in {
+      returnLSPDataStub(etmpPayloadWithLPPAndAdditionalPenalty)
+      val request = await(buildClientForRequestToApp(uri = "/").get())
+      request.status shouldBe Status.OK
+      val parsedBody = Jsoup.parse(request.body)
+      parsedBody.select("#late-payment-penalties section header h3").text.contains("£123.45 additional penalty") shouldBe true
+      parsedBody.select("#late-payment-penalties section header strong").text.contains("paid") shouldBe true
+      val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body").first()
+      summaryCardBody.select("dt").get(0).text shouldBe "VAT Period"
+      summaryCardBody.select("dd").get(0).text shouldBe "1 January 2021 to 1 February 2021"
+      summaryCardBody.select("dt").get(1).text shouldBe "Penalty reason"
+      //TODO: this will need to change when the reason becomes 'smart'
+      summaryCardBody.select("dd").get(1).text shouldBe "VAT not paid within 15 days"
+      summaryCardBody.select("dt").get(2).text shouldBe "Charged daily from"
+      summaryCardBody.select("dd").get(2).text shouldBe "8 April 2021"
+      parsedBody.select("#late-payment-penalties footer li").text().contains("Appeal this penalty") shouldBe true
     }
 
     "return 200 (OK) and render the view when there are LPPs with VAT unpaid that are retrieved from the backend" in {

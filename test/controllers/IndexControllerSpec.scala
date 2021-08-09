@@ -17,7 +17,6 @@
 package controllers
 
 import base.SpecBase
-import models.point.PenaltyPoint
 import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{mock, reset, when}
@@ -25,11 +24,9 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.PenaltiesService
 import testUtils.AuthTestModels
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.SummaryCardHelper
-import viewmodels.IndexPageHelper
+import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
+import viewmodels.{IndexPageHelper, SummaryCardHelper}
 import views.html.IndexView
 
 import scala.concurrent.ExecutionContext.Implicits.global

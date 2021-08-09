@@ -18,14 +18,14 @@ package testUtils
 
 import base.SpecBase
 import controllers.predicates.AuthPredicate
-import org.mockito.{Matchers, Mockito}
+import org.mockito.Matchers
 import org.mockito.Mockito.when
 import org.mockito.stubbing.OngoingStubbing
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, EnrolmentIdentifier, Enrolments, InternalError, MissingBearerToken}
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
+import uk.gov.hmrc.auth.core._
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 trait AuthMocks extends SpecBase  {
   def setupAuthResponse(authResult: Future[~[Option[AffinityGroup], Enrolments]]): OngoingStubbing[Future[~[Option[AffinityGroup], Enrolments]]] = {

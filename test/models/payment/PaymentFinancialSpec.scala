@@ -16,11 +16,11 @@
 
 package models.payment
 
-import java.time.LocalDateTime
-
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.{JsValue, Json}
+
+import java.time.LocalDateTime
 
 class PaymentFinancialSpec extends AnyWordSpec with Matchers {
   val paymentFinancialJson: JsValue = Json.parse(

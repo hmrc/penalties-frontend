@@ -90,6 +90,7 @@ object IndexMessages {
 
   val lspHeader = "Penalty point 1"
   val lppHeader = "£400 penalty"
+  val additionalPenaltyHeader = "£123.45 additional penalty"
   val activeTag = "active"
   val reinstatedTag = "reinstated"
   val cancelledTag = "cancelled"
@@ -101,6 +102,7 @@ object IndexMessages {
   val returnDue = "VAT Return due"
   val reason = "Reason"
   val penaltyReason = "Penalty reason"
+  val chargedDailyFrom = "Charged daily from"
   val returnSubmitted = "Return submitted"
   val pointExpiration = "Point due to expire"
   val notSubmitted = "Not yet submitted"

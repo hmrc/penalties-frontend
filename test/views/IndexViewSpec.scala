@@ -19,12 +19,13 @@ package views
 import assets.messages.IndexMessages._
 import base.{BaseSelectors, SpecBase}
 import models.User
+import models.communication.{Communication, CommunicationTypeEnum}
+import models.payment.PaymentFinancial
 import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum, PenaltyPeriod}
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
 import org.jsoup.nodes.Document
-import play.twirl.api.Html
-import play.twirl.api.HtmlFormat
+import play.twirl.api.{Html, HtmlFormat}
 import utils.SessionKeys
 import viewmodels.{LatePaymentPenaltySummaryCard, LateSubmissionPenaltySummaryCard, SummaryCardHelper}
 import views.behaviours.ViewBehaviours
@@ -32,8 +33,6 @@ import views.html.IndexView
 import views.html.components.p
 
 import java.time.LocalDateTime
-import models.communication.{Communication, CommunicationTypeEnum}
-import models.payment.PaymentFinancial
 
 class IndexViewSpec extends SpecBase with ViewBehaviours {
 
@@ -165,6 +164,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         helper.populateLatePaymentPenaltyCard(Some(lppData)), "0")(fakeRequest, implicitly, implicitly, vatTraderUser)
 
       implicit val vatTraderDoc: Document = asDocument(applyVATTraderView(sampleLatePaymentPenaltyData))
+      implicit val vatTraderDocLPPAdditionalPenalty: Document = asDocument(applyVATTraderView(Seq(sampleLatePaymentPenaltyAdditional)))
       implicit val vatTraderDocWithLPPVATUnpaid: Document = asDocument(applyVATTraderView(sampleLatePaymentPenaltyDataUnpaidVAT))
 
       def applyAgentView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, contentLPPToDisplayOnPage,
@@ -279,6 +279,16 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           vatTraderDocWithLPPVATUnpaid.select(Selectors.rowItem(Selectors.summaryLPPCard, 2)).text shouldBe penaltyReason
           vatTraderDocWithLPPVATUnpaid.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).text shouldBe checkAppeal
           vatTraderDocWithLPPVATUnpaid.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).attr("href") shouldBe redirectToAppealObligationUrlForLPP
+        }
+
+        "populate summary card when user has LPPs with additional penalties" in {
+          vatTraderDocLPPAdditionalPenalty.select(Selectors.summaryCardHeaderTitle(Selectors.summaryLPPCard)).text shouldBe additionalPenaltyHeader
+          vatTraderDocLPPAdditionalPenalty.select(Selectors.summaryCardHeaderTag(Selectors.summaryLPPCard)).text shouldBe paidTag
+          vatTraderDocLPPAdditionalPenalty.select(Selectors.rowItem(Selectors.summaryLPPCard, 1)).text shouldBe period
+          vatTraderDocLPPAdditionalPenalty.select(Selectors.rowItem(Selectors.summaryLPPCard, 2)).text shouldBe penaltyReason
+          vatTraderDocLPPAdditionalPenalty.select(Selectors.rowItem(Selectors.summaryLPPCard, 3)).text shouldBe chargedDailyFrom
+          vatTraderDocLPPAdditionalPenalty.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).text shouldBe appealPointText
+          vatTraderDocLPPAdditionalPenalty.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).attr("href") shouldBe redirectToAppealUrlForLPP
         }
 
         "populate summary card when user has LPPs and has appealed them" in {

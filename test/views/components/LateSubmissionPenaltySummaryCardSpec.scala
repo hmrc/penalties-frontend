@@ -23,10 +23,7 @@ import models.penalty.PenaltyPeriod
 import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
 import org.jsoup.nodes.Document
-import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
-import viewmodels.{LateSubmissionPenaltySummaryCard, SummaryCardHelper}
+import viewmodels.LateSubmissionPenaltySummaryCard
 import views.behaviours.ViewBehaviours
 import views.html.components.summaryCardLSP
 

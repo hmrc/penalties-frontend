@@ -27,7 +27,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 import utils.ImplicitDateFormatter
 
 import java.time.LocalDateTime
-import models.payment.PaymentFinancial
 
 class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
@@ -622,6 +621,12 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       val result = helper.lppSummaryCard(sampleLatePaymentPenaltyAppealedRejectedTribunal)
       result.appealStatus.isDefined shouldBe true
       result.appealStatus.get shouldBe AppealStatusEnum.Tribunal_Rejected
+    }
+
+    "when given an additional penalty - set the relevant fields" in {
+      val result = helper.lppSummaryCard(sampleLatePaymentPenaltyAdditional)
+      result.isAdditionalPenalty shouldBe true
+      result.cardRows.exists(_.key.content == Text("Charged daily from")) shouldBe true
     }
   }
 }

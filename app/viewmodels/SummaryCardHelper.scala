@@ -131,13 +131,14 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   private def buildLPPSummaryCard(rows: Seq[SummaryListRow],
                                   lpp: LatePaymentPenalty, isPaid: Boolean = false, isVatPaid: Boolean = false)(implicit messages: Messages): LatePaymentPenaltySummaryCard = {
     LatePaymentPenaltySummaryCard(
-      rows,
-      tagStatus(None, Some(lpp)),
-      lpp.id,
-      isPaid,
-      lpp.financial.amountDue,
-      lpp.appealStatus,
-      isVatPaid
+      cardRows = rows,
+      status = tagStatus(None, Some(lpp)),
+      penaltyId = lpp.id,
+      isPenaltyPaid = isPaid,
+      amountDue = lpp.financial.amountDue,
+      appealStatus = lpp.appealStatus,
+      isVatPaid = isVatPaid,
+      isAdditionalPenalty = lpp.`type` == PenaltyTypeEnum.Additional
     )
   }
 
@@ -167,7 +168,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
 
   def lppCardBody(lpp: LatePaymentPenalty)(implicit messages: Messages): Seq[SummaryListRow] = {
     val period = lpp.period
-    val base = Seq(
+    Seq(
       summaryListRow(
         messages("summaryCard.key1"),
         Html(
@@ -180,7 +181,6 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       ),
       summaryListRow(messages("summaryCard.lpp.key2"), Html(messages("summaryCard.lpp.15days")))
     )
-    base
   }
 
   def returnNotSubmittedCardBody(period: PenaltyPeriod)(implicit messages: Messages): Seq[SummaryListRow] = Seq(
@@ -215,7 +215,8 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   }
 
   def lppSummaryCard(lpp: LatePaymentPenalty)(implicit messages: Messages, user: User[_]): LatePaymentPenaltySummaryCard = {
-    val cardBody = lppCardBody(lpp)
+    val dueDatePlus31Days: String = dateTimeToString(lpp.period.dueDate.plusDays(31))
+    val cardBody = if(lpp.`type` == PenaltyTypeEnum.Additional) lppCardBody(lpp) :+ summaryListRow(messages("summaryCard.lpp.additional.key"), Html(dueDatePlus31Days)) else lppCardBody(lpp)
     val isPaid = lpp.status == Paid
     val isVatPaid = lpp.period.paymentStatus == PaymentStatusEnum.Paid
     if (lpp.appealStatus.isDefined) {

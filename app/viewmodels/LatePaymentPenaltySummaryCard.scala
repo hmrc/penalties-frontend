@@ -27,5 +27,6 @@ case class LatePaymentPenaltySummaryCard (
                                           isPenaltyPaid: Boolean,
                                           amountDue: BigDecimal = 0,
                                           appealStatus: Option[AppealStatusEnum.Value] = None,
-                                          isVatPaid: Boolean = false
+                                          isVatPaid: Boolean = false,
+                                          isAdditionalPenalty: Boolean = false
                                          )
