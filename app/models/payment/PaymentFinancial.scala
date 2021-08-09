@@ -23,7 +23,9 @@ import play.api.libs.json.{Json, OFormat}
 case class PaymentFinancial (
                               amountDue: BigDecimal,
                               outstandingAmountDue: BigDecimal,
-                              dueDate: LocalDateTime
+                              dueDate: LocalDateTime,
+                              estimatedInterest: Option[BigDecimal] = None,
+                              crystalizedInterest: Option[BigDecimal] = None
                             )
 
 object PaymentFinancial {
