@@ -525,6 +525,11 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
       result shouldBe etmpPayloadAsJsonWithLPP
     }
 
+    "be writable to JSON when there is a VAT overview field present" in {
+      val result = Json.toJson(etmpPayloadModelWithVATOverview)
+      result shouldBe etmpPayloadWithVATOverviewAsJson
+    }
+
     "be readable from JSON" in {
       val result = Json.fromJson(etmpPayloadAsJson)(ETMPPayload.format)
       result.isSuccess shouldBe true
@@ -535,6 +540,11 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
       val result = Json.fromJson(etmpPayloadAsJsonWithLPP)(ETMPPayload.format)
       result.isSuccess shouldBe true
       result.get shouldBe etmpPayloadModelWithLPPs
+    }
+    "be readable from JSON when there is a VAT overview field present" in {
+      val result = Json.fromJson(etmpPayloadWithVATOverviewAsJson)(ETMPPayload.format)
+      result.isSuccess shouldBe true
+      result.get shouldBe etmpPayloadModelWithVATOverview
     }
   }
 }
