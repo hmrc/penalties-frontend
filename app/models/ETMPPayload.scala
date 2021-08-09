@@ -27,8 +27,6 @@ case class ETMPPayload(
                         adjustmentPointsTotal: Int,
                         fixedPenaltyAmount: BigDecimal,
                         penaltyAmountsTotal: BigDecimal,
-                        otherPenalties: Option[Boolean] = None,
-                        vatOverview: Option[Seq[OverviewElement]] = None,
                         penaltyPointsThreshold: Int,
                         otherPenalties: Option[Boolean] = None,
                         vatOverview: Option[Seq[OverviewElement]] = None,
