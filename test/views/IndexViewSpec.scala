@@ -47,28 +47,28 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
   val summaryLSPCardToShowOnThePage: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(
-    PenaltyPoint(
-      `type` = PenaltyTypeEnum.Point,
-      id = penaltyId,
-      number = "1",
-      dateCreated = sampleDate1,
-      dateExpired = Some(sampleDate2.plusYears(2)),
-      status = PointStatusEnum.Active,
-      reason = None,
-      period = Some(PenaltyPeriod(
-        startDate = sampleDate1,
-        endDate = sampleDate2,
-        submission = Submission(
-          dueDate = sampleDate2.plusMonths(1).plusDays(7),
-          submittedDate = None,
-          status = SubmissionStatusEnum.Submitted
-        )
-      )),
-      communications = Seq.empty,
-      financial = None)
+      PenaltyPoint(
+        `type` = PenaltyTypeEnum.Point,
+        id = penaltyId,
+        number = "1",
+        dateCreated = sampleDate1,
+        dateExpired = Some(sampleDate2.plusYears(2)),
+        status = PointStatusEnum.Active,
+        reason = None,
+        period = Some(PenaltyPeriod(
+          startDate = sampleDate1,
+          endDate = sampleDate2,
+          submission = Submission(
+            dueDate = sampleDate2.plusMonths(1).plusDays(7),
+            submittedDate = None,
+            status = SubmissionStatusEnum.Submitted
+          )
+        )),
+        communications = Seq.empty,
+        financial = None)
     ),
     quarterlyThreshold,
-  1
+    1
   ).head
 
   val summaryLSPCardRepresentingRemovedPoint: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
@@ -169,7 +169,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
       def applyAgentView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, contentLPPToDisplayOnPage,
         helper.populateLateSubmissionPenaltyCard(sampleReturnSubmittedPenaltyPointData, quarterlyThreshold, 1)
-        ,helper.populateLatePaymentPenaltyCard(Some(sampleLatePaymentPenaltyData)), "0")(agentRequest, implicitly, implicitly, agentUser)
+        , helper.populateLatePaymentPenaltyCard(Some(sampleLatePaymentPenaltyData)), "0")(agentRequest, implicitly, implicitly, agentUser)
 
       implicit val agentDoc: Document = asDocument(applyAgentView())
 
@@ -215,7 +215,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
         "display the removed point due to a change in submission filing" in {
           implicit val documentWithOneSummaryCardComponent = {
-            asDocument(indexViewPage.apply(contentToDisplayOnPage,contentLPPToDisplayOnPage, Seq(summaryLSPCardRepresentingRemovedPoint), None,"0")(fakeRequest,
+            asDocument(indexViewPage.apply(contentToDisplayOnPage, contentLPPToDisplayOnPage, Seq(summaryLSPCardRepresentingRemovedPoint), None, "0")(fakeRequest,
               implicitly, implicitly, vatTraderUser))
           }
           val summaryCard = documentWithOneSummaryCardComponent.select(".app-summary-card")
@@ -234,7 +234,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
         "display the added point due to a change in submission filing" in {
           implicit val documentWithOneSummaryCardComponent = {
-            asDocument(indexViewPage.apply(contentToDisplayOnPage,contentLPPToDisplayOnPage, Seq(summaryLSPCardRepresentingAddedPoint), None, "0")(fakeRequest,
+            asDocument(indexViewPage.apply(contentToDisplayOnPage, contentLPPToDisplayOnPage, Seq(summaryLSPCardRepresentingAddedPoint), None, "0")(fakeRequest,
               implicitly, implicitly, vatTraderUser))
           }
           val summaryCard = documentWithOneSummaryCardComponent.select(".app-summary-card")
@@ -304,7 +304,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         "populate summary card when user has a penalty point from un-submitted VAT return with due status" in {
           def applyView(): HtmlFormat.Appendable = {
             indexViewPage.apply(contentToDisplayOnPage, contentLPPToDisplayOnPage, helper.populateLateSubmissionPenaltyCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold,
-              1), helper.populateLatePaymentPenaltyCard(Some(sampleLatePaymentPenaltyData)),"0")(fakeRequest, implicitly, implicitly, vatTraderUser)
+              1), helper.populateLatePaymentPenaltyCard(Some(sampleLatePaymentPenaltyData)), "0")(fakeRequest, implicitly, implicitly, vatTraderUser)
           }
 
           implicit val doc: Document = asDocument(applyView())
@@ -317,41 +317,19 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           doc.select(Selectors.summaryCardFooterLink(Selectors.summaryLSPCard)).text shouldBe checkAppeal
           doc.select(Selectors.summaryCardFooterLink(Selectors.summaryLSPCard)).attr("href") shouldBe redirectToAppealObligationUrlForLSP
         }
-      }
 
-      "user has unpaid LSP's but has submitted a VAT return - show a call to action to pay with no preceding text" in {
-        def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage,contentLPPToDisplayOnPage,
-          helper.populateLateSubmissionPenaltyCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold, 1),
-          None,
-          "£200.00",
-          isUnpaidLSPExists = true,
-          isAnyUnpaidLSPAndNotSubmittedReturn = false)(fakeRequest, implicitly, implicitly, vatTraderUser)
-        implicit val doc: Document = asDocument(applyView())
-        doc.select(".govuk-body-l").text().isEmpty shouldBe true
-        doc.select("h2.govuk-heading-m").get(0).text() shouldBe "Total penalty to pay: £200.00"
-      }
-
-      "user has unpaid LSP's and has NOT submitted a VAT return - show a call to action to pay WITH preceding text" in {
-        def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage,contentLPPToDisplayOnPage,
-          helper.populateLateSubmissionPenaltyCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold, 1),
-          None,
-          "£200.00",
-          isUnpaidLSPExists = true,
-          isAnyUnpaidLSPAndNotSubmittedReturn = true)(fakeRequest, implicitly, implicitly, vatTraderUser)
-        implicit val doc: Document = asDocument(applyView())
-        doc.select(".govuk-body-l").text() shouldBe submitAndPayVATPenaltyText
-        doc.select("h2.govuk-heading-m").get(0).text() shouldBe "Total penalty to pay: £200.00"
-      }
-
-      "user has unpaid LSP's and therefore needs to pay their penalties - show a button for them to check and pay what they owe" in {
-        def applyView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage,contentLPPToDisplayOnPage,
-          helper.populateLateSubmissionPenaltyCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold, 1),
-          None,
-          "£200.00",
-          isUnpaidLSPExists = true,
-          isAnyUnpaidLSPAndNotSubmittedReturn = true)(fakeRequest, implicitly, implicitly, vatTraderUser)
-        implicit val doc: Document = asDocument(applyView())
-        doc.select("button.govuk-button").get(0).text() shouldBe payVATPenaltyText
+        "show the content and headings when the user has outstanding payments" in {
+          val sampleContent = pElement(content = Html("sample content"))
+          def applyView(): HtmlFormat.Appendable = {
+            indexViewPage.apply(contentToDisplayOnPage, contentLPPToDisplayOnPage, helper.populateLateSubmissionPenaltyCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold,
+              1), helper.populateLatePaymentPenaltyCard(Some(sampleLatePaymentPenaltyData)), "0", whatYouOweContent = Some(sampleContent))(fakeRequest, implicitly, implicitly, vatTraderUser)
+          }
+          implicit val doc: Document = asDocument(applyView())
+          doc.select("#what-is-owed > h2").text shouldBe "Overview"
+          doc.select("#what-is-owed > p").first().text shouldBe "You owe:"
+          //TODO: add button and reveal section
+          doc.select("#main-content h2:nth-child(4)").text shouldBe "Penalty and appeal details"
+        }
       }
     }
   }

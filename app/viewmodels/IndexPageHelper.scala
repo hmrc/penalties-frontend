@@ -20,15 +20,19 @@ import models.penalty.{LatePaymentPenalty, PaymentStatusEnum}
 import models.{ETMPPayload, User}
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
+import services.PenaltiesService
 import utils.MessageRenderer.getMessage
 import utils.ViewUtils
+
 import javax.inject.Inject
+import scala.math.BigDecimal.RoundingMode
 
 class IndexPageHelper @Inject()(p: views.html.components.p,
                                 strong: views.html.components.strong,
                                 bullets: views.html.components.bullets,
                                 link: views.html.components.link,
-                                warningText: views.html.components.warningText) extends ViewUtils {
+                                warningText: views.html.components.warningText,
+                                penaltiesService: PenaltiesService) extends ViewUtils {
 
   //scalastyle:off
   def getContentBasedOnPointsFromModel(etmpData: ETMPPayload)(implicit messages: Messages, user: User[_]): Html = {
@@ -164,4 +168,28 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       id = Some("guidance-link"),
       isExternal = true),
     classes = "govuk-body")
+
+  def getWhatYouOweBreakdown(etmpData: ETMPPayload)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
+    val amountOfLateVAT = penaltiesService.findOverdueVATFromPayload(etmpData)
+    val stringToConvertToBulletPoints = Seq(
+      //TODO: fill this Seq with Option[String]'s with each bullet point - it will render only those which values exist
+      returnMessageIfAmountMoreThanZero(amountOfLateVAT, "whatIsOwed.lateVAT")
+    ).collect{case Some(x) => x}
+    if(stringToConvertToBulletPoints.isEmpty) {
+      None
+    } else {
+      Some(bullets(
+        stringToConvertToBulletPoints.map {
+          stringAsHtml
+        }
+      ))
+    }
+  }
+
+  private def returnMessageIfAmountMoreThanZero(amount: BigDecimal, msgKeyToApply: String)(implicit messages: Messages): Option[String] = {
+    if(amount > 0) {
+      val formattedAmount = if(amount.isWhole()) amount else "%,.2f".format(amount)
+      Some(messages(msgKeyToApply, formattedAmount))
+    } else None
+  }
 }
