@@ -24,7 +24,7 @@ import utils.ViewUtils
 import viewmodels.TimelineEvent
 import views.behaviours.ViewBehaviours
 import views.html.ComplianceView
-import views.html.components.{timeline, p}
+import views.html.components.{p, timeline}
 
 class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
   val compliancePage: ComplianceView = injector.instanceOf[ComplianceView]

@@ -78,7 +78,9 @@ summaryCard.header = Penalty point {0}
 summaryCard.header.adjustedPoint = Penalty point
 summaryCard.header.financial = Penalty point {0}: £{1} penalty
 summaryCard.header.financialNoNumber = £{0} penalty
+summaryCard.header.financialAdditionalPenalty = £{0} additional penalty
 summaryCard.header.financialAdjustedPoint = Penalty point: £{0} penalty
+
 
 summaryCard.key1 = VAT Period
 summaryCard.value1 = {0} to {1}
@@ -104,6 +106,10 @@ summaryCard.addedOnKey = Added on
 summaryCard.removedReason = Reason
 summaryCard.infoOnAdjustmentPointsLinkText = Find out more about adjustment points
 summaryCard.appealCheck = Check if you can appeal
+summaryCard.lpp.key2 = Penalty reason
+summaryCard.lpp.15days = VAT not paid within 15 days
+summaryCard.lpp.30days = VAT not paid within 30 days
+summaryCard.lpp.additional.key = Charged daily from
 
 status.active = active
 status.due = due

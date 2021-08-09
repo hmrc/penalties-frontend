@@ -16,13 +16,13 @@
 
 package models.penalty
 
-import java.time.LocalDateTime
-
 import models.payment.PaymentFinancial
 import models.point.{AppealStatusEnum, PenaltyTypeEnum, PointStatusEnum}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.Json
+
+import java.time.LocalDateTime
 
 class LatePaymentPenaltySpec extends AnyWordSpec with Matchers {
 

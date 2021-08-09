@@ -18,11 +18,13 @@ package base
 
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
-import models.{ETMPPayload, User}
+import models.compliance.{CompliancePayload, MissingReturn, Return}
 import models.financial.Financial
+import models.payment.PaymentFinancial
 import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum, PenaltyPeriod}
 import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
+import models.{ETMPPayload, User}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.Mockito.mock
@@ -36,16 +38,12 @@ import play.twirl.api.Html
 import services.AuthService
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.govukfrontend.views.Aliases.Tag
+import utils.SessionKeys
 import viewmodels.{LateSubmissionPenaltySummaryCard, SummaryCardHelper, TimelineHelper}
 import views.html.errors.Unauthorised
+
 import java.time.LocalDateTime
-
-import models.compliance.{CompliancePayload, MissingReturn, Return}
-import utils.SessionKeys
 import java.time.temporal.ChronoUnit
-
-import models.payment.PaymentFinancial
-
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
@@ -84,34 +82,34 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   )
 
   val sampleLspData: ETMPPayload = ETMPPayload(
-    0,
-    0,
-    0,
-    0.0,
-    0.0,
-    4,
-    Seq.empty[PenaltyPoint],
-    Some(Seq.empty[LatePaymentPenalty])
+    pointsTotal = 0,
+    lateSubmissions = 0,
+    adjustmentPointsTotal = 0,
+    fixedPenaltyAmount = 0.0,
+    penaltyAmountsTotal = 0.0,
+    penaltyPointsThreshold = 4,
+    penaltyPoints = Seq.empty[PenaltyPoint],
+    latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
   )
 
   val sampleComplianceData: CompliancePayload = CompliancePayload(
-    "0",
-    "0",
-    LocalDateTime.now(),
-    Seq.empty[MissingReturn],
-    Seq.empty[Return]
+    noOfMissingReturns = "0",
+    noOfSubmissionsReqForCompliance = "0",
+    expiryDateOfAllPenaltyPoints = LocalDateTime.now(),
+    missingReturns = Seq.empty[MissingReturn],
+    returns = Seq.empty[Return]
   )
 
   val samplePenaltyPoint = PenaltyPoint(
-    PenaltyTypeEnum.Point,
-    "123456789",
-    "1",
-    None,
-    LocalDateTime.now,
-    Some(LocalDateTime.now),
-    PointStatusEnum.Active,
-    None,
-    Some(PenaltyPeriod(
+    `type` = PenaltyTypeEnum.Point,
+    id = "123456789",
+    number = "1",
+    appealStatus = None,
+    dateCreated = LocalDateTime.now,
+    dateExpired = Some(LocalDateTime.now),
+    status = PointStatusEnum.Active,
+    reason = None,
+    period = Some(PenaltyPeriod(
       LocalDateTime.now,
       LocalDateTime.now,
       Submission(
@@ -120,19 +118,19 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         SubmissionStatusEnum.Submitted
       )
     )),
-    Seq.empty
+    communications = Seq.empty
   )
 
   val sampleFinancialPenaltyPoint = PenaltyPoint(
-    PenaltyTypeEnum.Financial,
-    "123456789",
-    "1",
-    None,
-    LocalDateTime.now,
-    Some(LocalDateTime.now),
-    PointStatusEnum.Active,
-    None,
-    Some(PenaltyPeriod(
+    `type` = PenaltyTypeEnum.Financial,
+    id = "123456789",
+    number = "1",
+    appealStatus = None,
+    dateCreated = LocalDateTime.now,
+    dateExpired = Some(LocalDateTime.now),
+    status = PointStatusEnum.Active,
+    reason = None,
+    period = Some(PenaltyPeriod(
       LocalDateTime.now,
       LocalDateTime.now,
       Submission(
@@ -141,7 +139,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         SubmissionStatusEnum.Overdue
       )
     )),
-    Seq.empty,
+    communications = Seq.empty,
     financial = Some(
       Financial(
         amountDue = 200.00, dueDate = LocalDateTime.now()
@@ -150,15 +148,15 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   )
 
   val sampleOverduePenaltyPoint = PenaltyPoint(
-    PenaltyTypeEnum.Point,
-    "123456789",
-    "1",
-    None,
-    LocalDateTime.now,
-    Some(LocalDateTime.now),
-    PointStatusEnum.Active,
-    None,
-    Some(PenaltyPeriod(
+    `type` = PenaltyTypeEnum.Point,
+    id = "123456789",
+    number = "1",
+    appealStatus = None,
+    dateCreated = LocalDateTime.now,
+    dateExpired = Some(LocalDateTime.now),
+    status = PointStatusEnum.Active,
+    reason = None,
+    period = Some(PenaltyPeriod(
       LocalDateTime.now,
       LocalDateTime.now,
       Submission(
@@ -167,19 +165,19 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         SubmissionStatusEnum.Overdue
       )
     )),
-    Seq.empty
+    communications = Seq.empty
   )
 
   val samplePenaltyPointAppealedUnderReview = PenaltyPoint(
-    PenaltyTypeEnum.Point,
-    "123456789",
-    "1",
-    Some(AppealStatusEnum.Under_Review),
-    LocalDateTime.now,
-    Some(LocalDateTime.now),
-    PointStatusEnum.Active,
-    None,
-    Some(PenaltyPeriod(
+    `type` = PenaltyTypeEnum.Point,
+    id = "123456789",
+    number = "1",
+    appealStatus = Some(AppealStatusEnum.Under_Review),
+    dateCreated = LocalDateTime.now,
+    dateExpired = Some(LocalDateTime.now),
+    status = PointStatusEnum.Active,
+    reason = None,
+    period = Some(PenaltyPeriod(
       LocalDateTime.now,
       LocalDateTime.now,
       Submission(
@@ -188,45 +186,66 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         SubmissionStatusEnum.Submitted
       )
     )),
-    Seq.empty
+    communications = Seq.empty
   )
 
   val sampleLatePaymentPenaltyDue = LatePaymentPenalty(
-    PenaltyTypeEnum.Financial,
-    "123456789",
-    "reason",
-    LocalDateTime.now,
-    PointStatusEnum.Due,
-    None,
-    PaymentPeriod(
+    `type` = PenaltyTypeEnum.Financial,
+    id = "123456789",
+    reason = "reason",
+    dateCreated = LocalDateTime.now,
+    status = PointStatusEnum.Due,
+    appealStatus = None,
+    period = PaymentPeriod(
       LocalDateTime.now,
       LocalDateTime.now,
       LocalDateTime.now,
       PaymentStatusEnum.Paid
     ),
-    Seq.empty,
-    PaymentFinancial(
+    communications = Seq.empty,
+    financial = PaymentFinancial(
       amountDue = 400.00,
       outstandingAmountDue = 200.00,
       dueDate = LocalDateTime.now
     )
   )
 
-  val sampleLatePaymentPenaltyPaid = LatePaymentPenalty(
-    PenaltyTypeEnum.Financial,
-    "123456789",
-    "reason",
-    LocalDateTime.now,
-    PointStatusEnum.Paid,
-    None,
-    PaymentPeriod(
+  val sampleLatePaymentPenaltyAdditional = LatePaymentPenalty(
+    `type` = PenaltyTypeEnum.Additional,
+    id = "123456789",
+    reason = "reason",
+    dateCreated = LocalDateTime.now,
+    status = PointStatusEnum.Paid,
+    appealStatus = None,
+    period = PaymentPeriod(
       LocalDateTime.now,
       LocalDateTime.now,
       LocalDateTime.now,
       PaymentStatusEnum.Paid
     ),
-    Seq.empty,
-    PaymentFinancial(
+    communications = Seq.empty,
+    financial = PaymentFinancial(
+      amountDue = 123.45,
+      outstandingAmountDue = 12.34,
+      dueDate = LocalDateTime.now
+    )
+  )
+
+  val sampleLatePaymentPenaltyPaid = LatePaymentPenalty(
+    `type` = PenaltyTypeEnum.Financial,
+    id = "123456789",
+    reason = "reason",
+    dateCreated = LocalDateTime.now,
+    status = PointStatusEnum.Paid,
+    appealStatus = None,
+    period = PaymentPeriod(
+      LocalDateTime.now,
+      LocalDateTime.now,
+      LocalDateTime.now,
+      PaymentStatusEnum.Paid
+    ),
+    communications = Seq.empty,
+    financial = PaymentFinancial(
       amountDue = 400.00,
       outstandingAmountDue = 200.00,
       dueDate = LocalDateTime.now
@@ -234,20 +253,20 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   )
 
   val sampleLatePaymentPenaltyUnpaidVAT = LatePaymentPenalty(
-    PenaltyTypeEnum.Financial,
-    "123456789",
-    "reason",
-    LocalDateTime.now,
-    PointStatusEnum.Due,
-    None,
-    PaymentPeriod(
+    `type` = PenaltyTypeEnum.Financial,
+    id = "123456789",
+    reason = "reason",
+    dateCreated = LocalDateTime.now,
+    status = PointStatusEnum.Due,
+    appealStatus = None,
+    period = PaymentPeriod(
       LocalDateTime.now,
       LocalDateTime.now,
       LocalDateTime.now,
       PaymentStatusEnum.Due
     ),
-    Seq.empty,
-    PaymentFinancial(
+    communications = Seq.empty,
+    financial = PaymentFinancial(
       amountDue = 400.00,
       outstandingAmountDue = 200.00,
       dueDate = LocalDateTime.now

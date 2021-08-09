@@ -16,9 +16,6 @@
 
 package views.components
 
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
-
 import base.{BaseSelectors, SpecBase}
 import org.jsoup.nodes.Document
 import utils.ImplicitDateFormatter

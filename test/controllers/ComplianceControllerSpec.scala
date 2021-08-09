@@ -22,10 +22,10 @@ import org.mockito.Matchers._
 import org.mockito.Mockito.{mock, reset, when}
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import services.{ComplianceService, PenaltiesService}
+import services.ComplianceService
 import testUtils.AuthTestModels
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
+import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import viewmodels.{CompliancePageHelper, TimelineHelper}
 import views.html.ComplianceView
 

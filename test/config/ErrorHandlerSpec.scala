@@ -17,7 +17,6 @@
 package config
 
 import base.SpecBase
-import org.scalatest.Matchers._
 import views.html.ErrorTemplate
 
 class ErrorHandlerSpec extends SpecBase {

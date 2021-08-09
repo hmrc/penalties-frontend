@@ -16,8 +16,8 @@
 
 package models.communication
 
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.{JsValue, Json}
 
 import java.time.LocalDateTime
