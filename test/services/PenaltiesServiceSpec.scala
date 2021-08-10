@@ -327,4 +327,21 @@ class PenaltiesServiceSpec extends SpecBase {
       result._2 shouldBe true
     }
   }
+
+  "findTotalLSPFromPayload" should {
+    "return 0 when the payload does not have any LSPP's" in new Setup {
+      val result = service.findTotalLSPFromPayload(sampleLspData)
+      result shouldBe 0
+    }
+
+    "return 0 when the payload does not have any LSP's" in new Setup {
+      val result = service.findTotalLSPFromPayload(etmpDataWithOneLSP)
+      result shouldBe 0
+    }
+
+    "return total amount of VAT overdue when the VAT overview is present with elements" in new Setup {
+      val result = service.findTotalLSPFromPayload(sampleLspDataWithDueFinancialPenalties)
+      result shouldBe 400.00
+    }
+  }
 }

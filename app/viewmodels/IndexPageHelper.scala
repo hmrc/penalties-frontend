@@ -25,7 +25,6 @@ import utils.MessageRenderer.getMessage
 import utils.ViewUtils
 
 import javax.inject.Inject
-import scala.math.BigDecimal.RoundingMode
 
 class IndexPageHelper @Inject()(p: views.html.components.p,
                                 strong: views.html.components.strong,
@@ -173,10 +172,12 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     val amountOfLateVAT = penaltiesService.findOverdueVATFromPayload(etmpData)
     val lppAmount = penaltiesService.findEstimatedLPPsFromPayload(etmpData)
     val otherUnrelatedPenalties = penaltiesService.isOtherUnrelatedPenalties(etmpData)
+    val totalAmountOfLSPs = penaltiesService.findTotalLSPFromPayload(etmpData)
     val stringToConvertToBulletPoints = Seq(
       //TODO: fill this Seq with Option[String]'s with each bullet point - it will render only those which values exist
       returnMessageIfAmountMoreThanZero(amountOfLateVAT, "whatIsOwed.lateVAT"),
       returnEstimatedMessageIfHasEstimatedCharges(lppAmount._1, lppAmount._2, "whatIsOwed.lppAmount"),
+      returnMessageIfAmountMoreThanZero(totalAmountOfLSPs, "whatIsOwed.amountOfLSPs"),
       returnMessageIfOtherUnrelatedPenalties(otherUnrelatedPenalties, "whatIsOwed.otherPenalties")
     ).collect{case Some(x) => x}
     if(stringToConvertToBulletPoints.isEmpty) {
