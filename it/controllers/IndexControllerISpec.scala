@@ -32,6 +32,7 @@ import utils.SessionKeys
 import java.time.LocalDateTime
 import models.communication.{Communication, CommunicationTypeEnum}
 import models.payment.PaymentFinancial
+import models.reason.PaymentPenaltyReasonEnum
 
 class IndexControllerISpec extends IntegrationSpecCommonBase {
   val sampleDate1 = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
@@ -165,7 +166,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     LatePaymentPenalty(
       `type` = PenaltyTypeEnum.Financial,
       id = "123456789",
-      reason = "this is a reason",
+      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
       dateCreated = sampleDate1,
       status = PointStatusEnum.Paid,
       appealStatus = None,
@@ -193,7 +194,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     LatePaymentPenalty(
       `type` = PenaltyTypeEnum.Additional,
       id = "123456790",
-      reason = "VAT_NOT_PAID_ON_TIME",
+      PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
       dateCreated = sampleDate1,
       status = PointStatusEnum.Paid,
       appealStatus = None,
@@ -219,7 +220,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     LatePaymentPenalty(
       `type` = PenaltyTypeEnum.Financial,
       id = "123456789",
-      reason = "this is a reason",
+      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
       dateCreated = sampleDate1,
       status = PointStatusEnum.Paid,
       appealStatus = None,
@@ -247,7 +248,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
   val latePaymentPenaltyVATUnpaid: Option[Seq[LatePaymentPenalty]] = Some(Seq(LatePaymentPenalty(
     `type` = PenaltyTypeEnum.Financial,
     id = "123456789",
-    reason = "this is a reason",
+    reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
     dateCreated = sampleDate1,
     status = PointStatusEnum.Due,
     appealStatus = None,

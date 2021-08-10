@@ -21,6 +21,7 @@ import models.User
 import models.payment.PaymentFinancial
 import models.penalty.{PaymentPeriod, PaymentStatusEnum}
 import models.point.PenaltyTypeEnum
+import models.reason.PaymentPenaltyReasonEnum
 import org.jsoup.nodes.Document
 import viewmodels.LatePaymentPenaltySummaryCard
 import views.behaviours.ViewBehaviours
@@ -48,7 +49,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
   val summaryCardModelForAdditionalPenaltyPaid: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
     Some(Seq(sampleLatePaymentPenaltyPaid.copy(
       `type` = PenaltyTypeEnum.Additional,
-      reason = "VAT_NOT_PAID_ON_TIME",
+      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
       period = PaymentPeriod(
         startDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1),
         endDate = LocalDateTime.of(2020, 2, 1, 1, 1, 1),

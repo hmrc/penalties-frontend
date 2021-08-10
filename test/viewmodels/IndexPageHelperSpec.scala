@@ -22,6 +22,7 @@ import models.ETMPPayload
 import models.payment.PaymentFinancial
 import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum}
 import models.point.{PenaltyTypeEnum, PointStatusEnum}
+import models.reason.PaymentPenaltyReasonEnum
 import org.jsoup.Jsoup
 
 class IndexPageHelperSpec extends SpecBase {
@@ -453,7 +454,7 @@ class IndexPageHelperSpec extends SpecBase {
             LatePaymentPenalty(
               `type` = PenaltyTypeEnum.Financial,
               id = "1234567891",
-              reason = "VAT_NOT_PAID_ON_TIME",
+              reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
               dateCreated = sampleDate,
               status = PointStatusEnum.Due,
               appealStatus = None,
@@ -489,7 +490,7 @@ class IndexPageHelperSpec extends SpecBase {
             LatePaymentPenalty(
               `type` = PenaltyTypeEnum.Financial,
               id = "1234567891",
-              reason = "VAT_NOT_PAID_ON_TIME",
+              reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
               dateCreated = sampleDate,
               status = PointStatusEnum.Active,
               appealStatus = None,

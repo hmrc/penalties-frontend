@@ -17,16 +17,16 @@
 package models.penalty
 
 import java.time.LocalDateTime
-
 import models.communication.Communication
 import models.payment.PaymentFinancial
 import models.point.{AppealStatusEnum, PenaltyTypeEnum, PointStatusEnum}
+import models.reason.PaymentPenaltyReasonEnum
 import play.api.libs.json.{Json, OFormat}
 
 case class LatePaymentPenalty(
                           `type`: PenaltyTypeEnum.Value,
                           id: String,
-                          reason: String,
+                          reason: PaymentPenaltyReasonEnum.Value,
                           dateCreated: LocalDateTime,
                           status: PointStatusEnum.Value,
                           appealStatus: Option[AppealStatusEnum.Value] = None,

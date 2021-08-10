@@ -23,6 +23,7 @@ import models.financial.Financial
 import models.payment.PaymentFinancial
 import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum, PenaltyPeriod}
 import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
+import models.reason.PaymentPenaltyReasonEnum
 import models.submission.{Submission, SubmissionStatusEnum}
 import models.{ETMPPayload, User}
 import org.jsoup.Jsoup
@@ -192,7 +193,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   val sampleLatePaymentPenaltyDue = LatePaymentPenalty(
     `type` = PenaltyTypeEnum.Financial,
     id = "123456789",
-    reason = "reason",
+    reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
     dateCreated = LocalDateTime.now,
     status = PointStatusEnum.Due,
     appealStatus = None,
@@ -213,7 +214,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   val sampleLatePaymentPenaltyAdditional = LatePaymentPenalty(
     `type` = PenaltyTypeEnum.Additional,
     id = "123456789",
-    reason = "reason",
+    reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
     dateCreated = LocalDateTime.now,
     status = PointStatusEnum.Paid,
     appealStatus = None,
@@ -234,7 +235,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   val sampleLatePaymentPenaltyPaid = LatePaymentPenalty(
     `type` = PenaltyTypeEnum.Financial,
     id = "123456789",
-    reason = "reason",
+    reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
     dateCreated = LocalDateTime.now,
     status = PointStatusEnum.Paid,
     appealStatus = None,
@@ -255,7 +256,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   val sampleLatePaymentPenaltyUnpaidVAT = LatePaymentPenalty(
     `type` = PenaltyTypeEnum.Financial,
     id = "123456789",
-    reason = "reason",
+    reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
     dateCreated = LocalDateTime.now,
     status = PointStatusEnum.Due,
     appealStatus = None,
