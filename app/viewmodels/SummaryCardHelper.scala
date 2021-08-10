@@ -179,13 +179,16 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
           )
         )
       ),
-      if(lpp.`type` == PenaltyTypeEnum.Additional){
-      summaryListRow(messages("summaryCard.lpp.key2"), Html(messages("summaryCard.lpp.additional.30days")))
-      }
-      else{
-        summaryListRow(messages("summaryCard.lpp.key2"), Html(messages("summaryCard.lpp.15days")))
-      }
+      getPenaltyReason(lpp)
     )
+  }
+
+  private def getPenaltyReason(lpp: LatePaymentPenalty)(implicit messages: Messages):SummaryListRow={
+    (lpp.`type`,lpp.reason) match{
+      case(PenaltyTypeEnum.Additional,"VAT_NOT_PAID_ON_TIME") =>
+        summaryListRow(messages("summaryCard.lpp.key2"), Html(messages("summaryCard.lpp.additional.30days")))
+      case(_,_) => summaryListRow(messages("summaryCard.lpp.key2"), Html(messages("summaryCard.lpp.15days")))
+    }
   }
 
   def returnNotSubmittedCardBody(period: PenaltyPeriod)(implicit messages: Messages): Seq[SummaryListRow] = Seq(

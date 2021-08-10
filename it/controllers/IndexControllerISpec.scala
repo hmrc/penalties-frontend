@@ -193,7 +193,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     LatePaymentPenalty(
       `type` = PenaltyTypeEnum.Additional,
       id = "123456790",
-      reason = "this is a reason",
+      reason = "VAT_NOT_PAID_ON_TIME",
       dateCreated = sampleDate1,
       status = PointStatusEnum.Paid,
       appealStatus = None,
