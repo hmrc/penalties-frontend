@@ -171,10 +171,12 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
 
   def getWhatYouOweBreakdown(etmpData: ETMPPayload)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
     val amountOfLateVAT = penaltiesService.findOverdueVATFromPayload(etmpData)
+    val lppAmount = penaltiesService.findEstimatedLPPsFromPayload(etmpData)
     val otherUnrelatedPenalties = penaltiesService.isOtherUnrelatedPenalties(etmpData)
     val stringToConvertToBulletPoints = Seq(
       //TODO: fill this Seq with Option[String]'s with each bullet point - it will render only those which values exist
       returnMessageIfAmountMoreThanZero(amountOfLateVAT, "whatIsOwed.lateVAT"),
+      returnEstimatedMessageIfHasEstimatedCharges(lppAmount._1, lppAmount._2, "whatIsOwed.lppAmount"),
       returnMessageIfOtherUnrelatedPenalties(otherUnrelatedPenalties, "whatIsOwed.otherPenalties")
     ).collect{case Some(x) => x}
     if(stringToConvertToBulletPoints.isEmpty) {
@@ -192,6 +194,13 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     if(amount > 0) {
       val formattedAmount = if(amount.isWhole()) amount else "%,.2f".format(amount)
       Some(messages(msgKeyToApply, formattedAmount))
+    } else None
+  }
+
+  private def returnEstimatedMessageIfHasEstimatedCharges(amount: BigDecimal, isEstimate: Boolean, msgKeyToApply: String)(implicit messages: Messages): Option[String] = {
+    if(amount > 0) {
+      val msgKey = if(isEstimate) s"$msgKeyToApply.estimated" else msgKeyToApply
+      Some(messages(msgKey, amount))
     } else None
   }
 

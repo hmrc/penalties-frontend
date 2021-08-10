@@ -20,7 +20,8 @@ import base.SpecBase
 import connectors.PenaltiesConnector
 import models.ETMPPayload
 import models.financial.{AmountTypeEnum, OverviewElement}
-import models.penalty.{LatePaymentPenalty, PenaltyPeriod}
+import models.payment.PaymentFinancial
+import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum, PenaltyPeriod}
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
 import org.mockito.Matchers._
@@ -72,6 +73,98 @@ class PenaltiesServiceSpec extends SpecBase {
     vatOverview = Some(Seq()),
     penaltyPoints = Seq.empty[PenaltyPoint],
     latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
+  )
+
+  val sampleLppDataNoAdditionalPenalties: ETMPPayload = ETMPPayload(
+    pointsTotal = 0,
+    lateSubmissions = 0,
+    adjustmentPointsTotal = 0,
+    fixedPenaltyAmount = 0.0,
+    penaltyAmountsTotal = 0.0,
+    penaltyPointsThreshold = 4,
+    vatOverview = None,
+    penaltyPoints = Seq.empty[PenaltyPoint],
+    latePaymentPenalties = Some(Seq(
+      LatePaymentPenalty(
+        `type` = PenaltyTypeEnum.Financial,
+        id = "1234",
+        reason = "",
+        dateCreated = sampleDate,
+        status = PointStatusEnum.Due,
+        appealStatus = None,
+        period = PaymentPeriod(
+          startDate = sampleDate,
+          endDate = sampleDate,
+          dueDate = sampleDate,
+          paymentStatus = PaymentStatusEnum.Paid
+        ),
+        communications = Seq.empty,
+        financial = PaymentFinancial(
+          amountDue = 123.45,
+          outstandingAmountDue = 50.00,
+          dueDate = sampleDate,
+          estimatedInterest = Some(10.12),
+          crystalizedInterest = Some(10.12)
+        )
+      )
+    ))
+  )
+
+  val sampleLppDataWithAdditionalPenalties: ETMPPayload = ETMPPayload(
+    pointsTotal = 0,
+    lateSubmissions = 0,
+    adjustmentPointsTotal = 0,
+    fixedPenaltyAmount = 0.0,
+    penaltyAmountsTotal = 0.0,
+    penaltyPointsThreshold = 4,
+    vatOverview = None,
+    penaltyPoints = Seq.empty[PenaltyPoint],
+    latePaymentPenalties = Some(Seq(
+      LatePaymentPenalty(
+        `type` = PenaltyTypeEnum.Additional,
+        id = "1234",
+        reason = "",
+        dateCreated = sampleDate,
+        status = PointStatusEnum.Due,
+        appealStatus = None,
+        period = PaymentPeriod(
+          startDate = sampleDate,
+          endDate = sampleDate,
+          dueDate = sampleDate,
+          paymentStatus = PaymentStatusEnum.Paid
+        ),
+        communications = Seq.empty,
+        financial = PaymentFinancial(
+          amountDue = 100.00,
+          outstandingAmountDue = 50.00,
+          dueDate = sampleDate,
+          estimatedInterest = None,
+          crystalizedInterest = None
+        )
+      ),
+      LatePaymentPenalty(
+        `type` = PenaltyTypeEnum.Financial,
+        id = "1234",
+        reason = "",
+        dateCreated = sampleDate,
+        status = PointStatusEnum.Due,
+        appealStatus = None,
+        period = PaymentPeriod(
+          startDate = sampleDate,
+          endDate = sampleDate,
+          dueDate = sampleDate,
+          paymentStatus = PaymentStatusEnum.Paid
+        ),
+        communications = Seq.empty,
+        financial = PaymentFinancial(
+          amountDue = 123.45,
+          outstandingAmountDue = 50.00,
+          dueDate = sampleDate,
+          estimatedInterest = Some(10.12),
+          crystalizedInterest = Some(10.12)
+        )
+      )
+    ))
   )
 
   class Setup {
@@ -211,6 +304,26 @@ class PenaltiesServiceSpec extends SpecBase {
     "return true when the payload has the 'otherPenalties' field and it's true" in new Setup {
       val result = service.isOtherUnrelatedPenalties(sampleLspData.copy(otherPenalties = Some(true)))
       result shouldBe true
+    }
+  }
+
+  "findEstimatedLPPsFromPayload" should {
+    "return 0 when the user has no LPP's" in new Setup {
+      val result = service.findEstimatedLPPsFromPayload(sampleLspData)
+      result._1 shouldBe 0
+      result._2 shouldBe false
+    }
+
+    "return the amount of crystallised penalties and false - indicating no estimate" in new Setup {
+      val result = service.findEstimatedLPPsFromPayload(sampleLppDataNoAdditionalPenalties)
+      result._1 shouldBe 123.45
+      result._2 shouldBe false
+    }
+
+    "return the amount of crystallised penalties and true - indicating additional penalties / estimates" in new Setup {
+      val result = service.findEstimatedLPPsFromPayload(sampleLppDataWithAdditionalPenalties)
+      result._1 shouldBe 223.45
+      result._2 shouldBe true
     }
   }
 }
