@@ -46,4 +46,8 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
       }
     }
   }.getOrElse(0)
+
+  def isOtherUnrelatedPenalties(payload: ETMPPayload): Boolean = {
+    payload.otherPenalties.contains(true)
+  }
 }

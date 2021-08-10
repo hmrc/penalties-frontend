@@ -156,4 +156,5 @@ feedback.after = will help us to improve it.
 whatIsOwed.heading = Overview
 whatIsOwed.penaltyAndAppealsHeading = Penalty and appeal details
 whatIsOwed.p1 = You owe:
-whatIsOwed.lateVAT = {0} in late VAT
+whatIsOwed.lateVAT = £{0} in late VAT
+whatIsOwed.otherPenalties = other penalties not related to late submission or late payment
