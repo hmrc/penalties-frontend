@@ -78,11 +78,11 @@
                 } else if(summaryCard.penaltyPoint.isEmpty && !summaryCard.isAdjustedPoint) {
                 <li class="app-summary-card__actions-list-item">
                     {if(!summaryCard.isReturnSubmitted) {
-                    <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true).url}>
+                    <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}>
                         {messages("summaryCard.appealCheck")}
                     </a>
                     } else {
-                    <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, false).url}>
+                    <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, false, false).url}>
                         {messages("summaryCard.footerLinkTextNoPointNumber")}
                     </a>
                     }}
@@ -90,13 +90,13 @@
                 } else if(!summaryCard.isAdjustedPoint) {
                 if(!summaryCard.isReturnSubmitted) {
                 <li class="app-summary-card__actions-list-item">
-                    <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true).url}>
+                    <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}>
                         {messages("summaryCard.appealCheck")}
                     </a>
                 </li>
                 } else {
                 <li class="app-summary-card__actions-list-item">
-                    <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, false).url}>
+                    <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, false, false).url}>
                         {messages("summaryCard.footerLinkText", summaryCard.penaltyPoint)}
                     </a>
                 </li>

@@ -523,27 +523,33 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
 
   "GET /appeal-penalty" should {
     "redirect the user to the appeals service when the penalty is not a LPP" in {
-      val request = buildClientForRequestToApp(uri = "/appeal-penalty?penaltyId=1234&isLPP=false&isObligation=false").get()
+      val request = buildClientForRequestToApp(uri = "/appeal-penalty?penaltyId=1234&isLPP=false&isObligation=false&isAdditional=false").get()
       await(request).status shouldBe Status.SEE_OTHER
-      await(request).header(HeaderNames.LOCATION).get shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=false"
+      await(request).header(HeaderNames.LOCATION).get shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=false&isAdditional=false"
     }
 
     "redirect the user to the appeals service when the penalty is a LPP" in {
-      val request = buildClientForRequestToApp(uri = "/appeal-penalty?penaltyId=1234&isLPP=true&isObligation=false").get()
+      val request = buildClientForRequestToApp(uri = "/appeal-penalty?penaltyId=1234&isLPP=true&isObligation=false&isAdditional=false").get()
       await(request).status shouldBe Status.SEE_OTHER
-      await(request).header(HeaderNames.LOCATION).get shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=true"
+      await(request).header(HeaderNames.LOCATION).get shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=true&isAdditional=false"
+    }
+
+    "redirect the user to the appeals service when the penalty is an additional penalty" in {
+      val request = buildClientForRequestToApp(uri = "/appeal-penalty?penaltyId=1234&isLPP=false&isObligation=false&isAdditional=true").get()
+      await(request).status shouldBe Status.SEE_OTHER
+      await(request).header(HeaderNames.LOCATION).get shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=false&isAdditional=true"
     }
 
     "redirect the user to the obligations appeals service when the penalty is not a LPP" in {
-      val request = buildClientForRequestToApp(uri = "/appeal-penalty?penaltyId=1234&isLPP=false&isObligation=true").get()
+      val request = buildClientForRequestToApp(uri = "/appeal-penalty?penaltyId=1234&isLPP=false&isObligation=true&isAdditional=false").get()
       await(request).status shouldBe Status.SEE_OTHER
-      await(request).header(HeaderNames.LOCATION).get shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234&isLPP=false"
+      await(request).header(HeaderNames.LOCATION).get shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234&isLPP=false&isAdditional=false"
     }
 
     "redirect the user to the obligations appeals service when the penalty is a LPP" in {
-      val request = buildClientForRequestToApp(uri = "/appeal-penalty?penaltyId=1234&isLPP=true&isObligation=true").get()
+      val request = buildClientForRequestToApp(uri = "/appeal-penalty?penaltyId=1234&isLPP=true&isObligation=true&isAdditional=false").get()
       await(request).status shouldBe Status.SEE_OTHER
-      await(request).header(HeaderNames.LOCATION).get shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234&isLPP=true"
+      await(request).header(HeaderNames.LOCATION).get shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234&isLPP=true&isAdditional=false"
     }
   }
 }

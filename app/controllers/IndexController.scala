@@ -61,12 +61,12 @@ class IndexController @Inject()(view: IndexView,
     }
   }
 
-  def redirectToAppeals(penaltyId: String, isLPP: Boolean = false, isObligation: Boolean = false): Action[AnyContent] = authorise.async { implicit request =>
-    logger.debug(s"[IndexController][redirectToAppeals] redirect to appeals frontend with id $penaltyId and is late payment penalty: $isLPP and is obligation appeal: $isObligation")
+  def redirectToAppeals(penaltyId: String, isLPP: Boolean = false, isObligation: Boolean = false, isAdditional: Boolean = false): Action[AnyContent] = authorise.async { implicit request =>
+    logger.debug(s"[IndexController][redirectToAppeals] redirect to appeals frontend with id $penaltyId and is late payment penalty: $isLPP and is obligation appeal: $isObligation and is additional penalty: $isAdditional")
     if (isObligation) {
-      Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal-against-the-obligation?penaltyId=$penaltyId&isLPP=$isLPP"))
+      Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal-against-the-obligation?penaltyId=$penaltyId&isLPP=$isLPP&isAdditional=$isAdditional"))
     } else {
-      Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=$isLPP"))
+      Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=$isLPP&isAdditional=$isAdditional"))
     }
   }
 }
