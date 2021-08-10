@@ -22,7 +22,8 @@
     link: components.link,
     summaryCardLSP: components.summaryCardLSP,
     summaryCardLPP: components.summaryCardLPP,
-    button: components.button
+    button: components.button,
+    details: govukDetails
 )
 
 @(
@@ -34,6 +35,10 @@
         isUnpaidLSPExists: Boolean = false,
         isAnyUnpaidLSPAndNotSubmittedReturn: Boolean = false,
         whatYouOweContent: Option[Html] = None)(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
+
+@unableToPayTodayContent = {
+    <p class="govuk-body">@messages("whatIsOwed.details.body.1") <a href="#" class="govuk-link">@messages("whatIsOwed.details.link.1")</a>@messages("whatIsOwed.details.body.2")</p>
+}
 
 @layout(pageTitle = messages("index.title")) {
 
@@ -61,6 +66,12 @@
             <h2 class="govuk-heading-l">@messages("whatIsOwed.heading")</h2>
             <p class="govuk-body">@messages("whatIsOwed.p1")</p>
             @breakdownContent
+            @* TODO: change implementation when agent processing is added *@
+            @link("#", "whatIsOwed.button.checkAndPay", button = true, classes = "govuk-button")
+            @details(Details(
+                summary = Text(messages("whatIsOwed.details.heading")),
+                content = HtmlContent(unableToPayTodayContent)
+            ))
         </div>
         <h2 class="govuk-heading-l">@messages("whatIsOwed.penaltyAndAppealsHeading")</h2>
     }

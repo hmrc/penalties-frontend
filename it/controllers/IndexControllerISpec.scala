@@ -403,7 +403,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£121.40 in late VAT"
       parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "other penalties not related to late submission or late payment"
       parsedBody.select("#main-content h2:nth-child(4)").text shouldBe "Penalty and appeal details"
-      //TODO: add button and reveal section
+      parsedBody.select("#what-is-owed > a").text shouldBe "Check amounts and pay"
+      parsedBody.select("#main-content .govuk-details__summary-text").text shouldBe "I cannot pay today"
     }
 
     "return 200 (OK) and render the view when there are LPPs and additional penalties paid that are retrieved from the backend" in {
