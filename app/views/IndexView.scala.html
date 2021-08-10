@@ -25,13 +25,15 @@
     button: components.button
 )
 
-@(contentToDisplayBeforeSummaryCards: Html,
-contentLPPToDisplayBeforeSummaryCards: Html,
+@(
+        contentToDisplayBeforeSummaryCards: Html,
+        contentLPPToDisplayBeforeSummaryCards: Html,
         lspCards: Seq[LateSubmissionPenaltySummaryCard],
         lppCards: Option[Seq[LatePaymentPenaltySummaryCard]],
         totalAmountToPay: String,
         isUnpaidLSPExists: Boolean = false,
-        isAnyUnpaidLSPAndNotSubmittedReturn: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
+        isAnyUnpaidLSPAndNotSubmittedReturn: Boolean = false,
+        whatYouOweContent: Option[Html] = None)(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
 
 @layout(pageTitle = messages("index.title")) {
 
@@ -54,12 +56,13 @@ contentLPPToDisplayBeforeSummaryCards: Html,
 
     <h1 class="govuk-heading-xl">@{messages("index.heading")}</h1>
 
-    @if(isAnyUnpaidLSPAndNotSubmittedReturn) {
-        <p class="govuk-body-l">@messages("index.lsp.unpaid.bringAccountUpToDate")</p>
-    }
-    @if(isUnpaidLSPExists || isAnyUnpaidLSPAndNotSubmittedReturn) {
-        <h2 class="govuk-heading-m">@messages("index.lsp.unpaid.amount", totalAmountToPay)</h2>
-        @button("index.lsp.unpaid.payBtn.text", "pay-what-you-owe")
+    @whatYouOweContent.map { breakdownContent =>
+        <div id="what-is-owed">
+            <h2 class="govuk-heading-l">@messages("whatIsOwed.heading")</h2>
+            <p class="govuk-body">@messages("whatIsOwed.p1")</p>
+            @breakdownContent
+        </div>
+        <h2 class="govuk-heading-l">@messages("whatIsOwed.penaltyAndAppealsHeading")</h2>
     }
 
     <div class="govuk-tabs" data-module="govuk-tabs">

@@ -86,10 +86,10 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     lateSubmissions = 0,
     adjustmentPointsTotal = 0,
     fixedPenaltyAmount = 0.0,
-    penaltyAmountsTotal = 0.0,    
-    Some(false),
-    Some(Seq.empty),
+    penaltyAmountsTotal = 0.0,
     penaltyPointsThreshold = 4,
+    otherPenalties = Some(false),
+    vatOverview = Some(Seq.empty),
     penaltyPoints = Seq.empty[PenaltyPoint],
     latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
   )

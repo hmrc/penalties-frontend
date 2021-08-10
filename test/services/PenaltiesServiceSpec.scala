@@ -18,7 +18,9 @@ package services
 
 import base.SpecBase
 import connectors.PenaltiesConnector
-import models.penalty.PenaltyPeriod
+import models.ETMPPayload
+import models.financial.{AmountTypeEnum, OverviewElement}
+import models.penalty.{LatePaymentPenalty, PenaltyPeriod}
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
 import org.mockito.Matchers._
@@ -32,6 +34,45 @@ import scala.concurrent.Future
 class PenaltiesServiceSpec extends SpecBase {
 
   val mockPenaltiesConnector: PenaltiesConnector = mock(classOf[PenaltiesConnector])
+
+  val sampleLspDataWithVATOverview: ETMPPayload = ETMPPayload(
+    pointsTotal = 0,
+    lateSubmissions = 0,
+    adjustmentPointsTotal = 0,
+    fixedPenaltyAmount = 0.0,
+    penaltyAmountsTotal = 0.0,
+    penaltyPointsThreshold = 4,
+    vatOverview = Some(
+      Seq(
+        OverviewElement(
+          `type` = AmountTypeEnum.VAT,
+          amount = 100.00,
+          estimatedInterest = Some(10.00),
+          crystalizedInterest = Some(10.00)
+        ),
+        OverviewElement(
+          `type` = AmountTypeEnum.Central_Assessment,
+          amount = 123.45,
+          estimatedInterest = Some(10.00),
+          crystalizedInterest = Some(10.00)
+        )
+      )
+    ),
+    penaltyPoints = Seq.empty[PenaltyPoint],
+    latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
+  )
+
+  val sampleLspDataWithVATOverviewNoElements: ETMPPayload = ETMPPayload(
+    pointsTotal = 0,
+    lateSubmissions = 0,
+    adjustmentPointsTotal = 0,
+    fixedPenaltyAmount = 0.0,
+    penaltyAmountsTotal = 0.0,
+    penaltyPointsThreshold = 4,
+    vatOverview = Some(Seq()),
+    penaltyPoints = Seq.empty[PenaltyPoint],
+    latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
+  )
 
   class Setup {
     val service: PenaltiesService = new PenaltiesService(mockPenaltiesConnector)
@@ -136,6 +177,23 @@ class PenaltiesServiceSpec extends SpecBase {
     s"return false when there is a ${PenaltyTypeEnum.Financial} penalty point, it is due BUT there is a submission" in new Setup {
       val result = service.isAnyLSPUnpaidAndSubmissionIsDue(sampleFinancialPenaltyPointUnpaidAndSubmitted)
       result shouldBe false
+    }
+  }
+
+  "findOverdueVATFromPayload" should {
+    "return 0 when the payload does not have any VAT overview field" in new Setup {
+      val result = service.findOverdueVATFromPayload(sampleLspData)
+      result shouldBe 0
+    }
+
+    "return 0 when the payload contains VAT overview but has no elements" in new Setup {
+      val result = service.findOverdueVATFromPayload(sampleLspDataWithVATOverviewNoElements)
+      result shouldBe 0
+    }
+
+    "return total amount of VAT overdue when the VAT overview is present with elements" in new Setup {
+      val result = service.findOverdueVATFromPayload(sampleLspDataWithVATOverview)
+      result shouldBe 223.45
     }
   }
 }

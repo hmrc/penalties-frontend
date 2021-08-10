@@ -31,6 +31,7 @@ import utils.SessionKeys
 
 import java.time.LocalDateTime
 import models.communication.{Communication, CommunicationTypeEnum}
+import models.financial.{AmountTypeEnum, OverviewElement}
 import models.payment.PaymentFinancial
 
 class IndexControllerISpec extends IntegrationSpecCommonBase {
@@ -41,7 +42,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
   val controller = injector.instanceOf[IndexController]
   val fakeAgentRequest = FakeRequest("GET", "/").withSession(SessionKeys.agentSessionVrn -> "123456789")
   val etmpPayloadWithAddedPoints: ETMPPayload = ETMPPayload(
-    pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0,Some(false),Some(Seq.empty), penaltyPointsThreshold = 4, penaltyPoints = Seq(
+    pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, otherPenalties = Some(false), vatOverview = Some(Seq.empty), penaltyPoints = Seq(
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Point,
         id = "1234567890",
@@ -54,11 +55,12 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         communications = Seq.empty,
         financial = None
       )
-    ), Option(Seq.empty[LatePaymentPenalty])
+    ),
+    latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
   )
 
   val etmpPayloadWithRemovedPoints: ETMPPayload = ETMPPayload(
-    pointsTotal = 1, lateSubmissions = 2, adjustmentPointsTotal = -1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, Some(false),Some(Seq.empty),penaltyPointsThreshold = 4,
+    pointsTotal = 1, lateSubmissions = 2, adjustmentPointsTotal = -1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, otherPenalties = Some(false),vatOverview = Some(Seq.empty),
     penaltyPoints = Seq(
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Point,
@@ -78,11 +80,12 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         communications = Seq.empty,
         financial = None
       )
-    ), Option(Seq.empty[LatePaymentPenalty])
+    ),
+    latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
   )
 
   val etmpPayloadWith2PointsandOneRemovedPoint: ETMPPayload = ETMPPayload(
-    pointsTotal = 2, lateSubmissions = 3, adjustmentPointsTotal = -1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0,Some(false),Some(Seq.empty), penaltyPointsThreshold = 4, penaltyPoints = Seq(
+    pointsTotal = 2, lateSubmissions = 3, adjustmentPointsTotal = -1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, otherPenalties = Some(false), vatOverview = Some(Seq.empty), penaltyPoints = Seq(
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Point,
         id = "1234567890",
@@ -158,7 +161,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         communications = Seq.empty,
         financial = None
       )
-    ), Option(Seq.empty[LatePaymentPenalty])
+    ),
+    latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
   )
 
   val latePaymentPenalty: Option[Seq[LatePaymentPenalty]] = Some(Seq(
@@ -285,6 +289,26 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     latePaymentPenalties = latePaymentPenaltyVATUnpaid
   )
 
+  val etmpPayloadWithLPPVATUnpaidAndVATOverview: ETMPPayload = etmpPayloadWithAddedPoints.copy(
+    vatOverview = Some(
+      Seq(
+        OverviewElement(
+          `type` = AmountTypeEnum.VAT,
+          amount = 100.00,
+          estimatedInterest = Some(12.34),
+          crystalizedInterest = Some(34.21)
+        ),
+        OverviewElement(
+          `type` = AmountTypeEnum.Central_Assessment,
+          amount = 21.40,
+          estimatedInterest = Some(12.34),
+          crystalizedInterest = Some(34.21)
+        )
+      )
+    ),
+    latePaymentPenalties = latePaymentPenaltyVATUnpaid
+  )
+
   val etmpPayloadWithLPPAppeal: ETMPPayload = etmpPayloadWithLPP.copy(
     latePaymentPenalties = latePaymentPenaltyWithAppeal
   )
@@ -365,6 +389,18 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("dt").get(1).text shouldBe "Penalty reason"
       summaryCardBody.select("dd").get(1).text shouldBe "VAT not paid within 15 days"
       parsedBody.select("#late-payment-penalties footer li").text() shouldBe "Appeal this penalty"
+    }
+
+    "return 200 (OK) and render the view when there is outstanding payments" in {
+      returnLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverview)
+      val request = await(buildClientForRequestToApp(uri = "/").get())
+      request.status shouldBe Status.OK
+      val parsedBody = Jsoup.parse(request.body)
+      parsedBody.select("#what-is-owed > h2").text shouldBe "Overview"
+      parsedBody.select("#what-is-owed > p").first().text shouldBe "You owe:"
+      parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£121.40 in late VAT"
+      parsedBody.select("#main-content h2:nth-child(4)").text shouldBe "Penalty and appeal details"
+      //TODO: add button and reveal section
     }
 
     "return 200 (OK) and render the view when there are LPPs and additional penalties paid that are retrieved from the backend" in {

@@ -38,4 +38,12 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
       penalty.`type` == PenaltyTypeEnum.Financial &&
       penalty.period.isDefined && penalty.period.get.submission.submittedDate.isEmpty && !penalty.appealStatus.contains(AppealStatusEnum.Accepted) && !penalty.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal))
   }
+
+  def findOverdueVATFromPayload(payload: ETMPPayload): BigDecimal = {
+    payload.vatOverview.map {
+      allCharges => {
+        allCharges.map(_.amount).foldRight(BigDecimal(0))(_ + _)
+      }
+    }
+  }.getOrElse(0)
 }
