@@ -64,6 +64,55 @@ class PenaltiesServiceSpec extends SpecBase {
     latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
   )
 
+  val samplePayloadWithVATOverviewWithoutEstimatedInterest: ETMPPayload = ETMPPayload(
+    pointsTotal = 0,
+    lateSubmissions = 0,
+    adjustmentPointsTotal = 0,
+    fixedPenaltyAmount = 0.0,
+    penaltyAmountsTotal = 0.0,
+    penaltyPointsThreshold = 4,
+    vatOverview = Some(
+      Seq(
+        OverviewElement(
+          `type` = AmountTypeEnum.VAT,
+          amount = 100.00,
+          crystalizedInterest = Some(10.00)
+        ),
+        OverviewElement(
+          `type` = AmountTypeEnum.Central_Assessment,
+          amount = 123.45,
+          crystalizedInterest = Some(10.00)
+        )
+      )
+    ),
+    penaltyPoints = Seq.empty[PenaltyPoint],
+    latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
+  )
+  val samplePayloadWithVATOverviewWithoutCrystalizedInterest: ETMPPayload = ETMPPayload(
+    pointsTotal = 0,
+    lateSubmissions = 0,
+    adjustmentPointsTotal = 0,
+    fixedPenaltyAmount = 0.0,
+    penaltyAmountsTotal = 0.0,
+    penaltyPointsThreshold = 4,
+    vatOverview = Some(
+      Seq(
+        OverviewElement(
+          `type` = AmountTypeEnum.VAT,
+          amount = 100.00,
+          estimatedInterest = Some(13.00)
+        ),
+        OverviewElement(
+          `type` = AmountTypeEnum.Central_Assessment,
+          amount = 123.45,
+          estimatedInterest = Some(30.00)
+        )
+      )
+    ),
+    penaltyPoints = Seq.empty[PenaltyPoint],
+    latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
+  )
+
   val sampleLspDataWithVATOverviewNoElements: ETMPPayload = ETMPPayload(
     pointsTotal = 0,
     lateSubmissions = 0,
@@ -342,6 +391,32 @@ class PenaltiesServiceSpec extends SpecBase {
     "return total amount of VAT overdue when the VAT overview is present with elements" in new Setup {
       val result = service.findTotalLSPFromPayload(sampleLspDataWithDueFinancialPenalties)
       result shouldBe 400.00
+    }
+  }
+
+  "estimatedVATInterest" should {
+    "return 0 when the payload does not have any VAT overview field" in new Setup {
+      val result = service.estimatedVATInterest(sampleLspData)
+      result shouldBe (0,false)
+    }
+
+    "return 0 when the payload contains VAT overview but has no crystalized and estimated interest" in new Setup {
+      val result = service.estimatedVATInterest(sampleLspDataWithVATOverviewNoElements)
+      result shouldBe (0,false)
+    }
+
+    "return total estimated VAT interest when  crystalized and estimated interest is present" in new Setup {
+      val result = service.estimatedVATInterest(sampleLspDataWithVATOverview)
+      result shouldBe (40.00,true)
+    }
+
+    "return total VAT interest when the VAT overview is present without estimated interest" in new Setup {
+      val result = service.estimatedVATInterest(samplePayloadWithVATOverviewWithoutEstimatedInterest)
+      result shouldBe (20.00,false)
+    }
+    "return total VAT interest when the VAT overview is present without crystalized interest" in new Setup {
+      val result = service.estimatedVATInterest(samplePayloadWithVATOverviewWithoutCrystalizedInterest)
+      result shouldBe (43.00,true)
     }
   }
 }

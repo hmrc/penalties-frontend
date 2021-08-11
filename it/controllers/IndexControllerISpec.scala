@@ -548,6 +548,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "£400 in late payment penalties"
       parsedBody.select("#what-is-owed > ul > li").get(2).text shouldBe "£400 fixed penalties for late submission"
       parsedBody.select("#what-is-owed > ul > li").get(3).text shouldBe "other penalties not related to late submission or late payment"
+      parsedBody.select("#what-is-owed > ul > li").get(4).text shouldBe "£93.10 in estimated VAT interest"
       parsedBody.select("#main-content h2:nth-child(4)").text shouldBe "Penalty and appeal details"
       parsedBody.select("#what-is-owed > a").text shouldBe "Check amounts and pay"
       parsedBody.select("#main-content .govuk-details__summary-text").text shouldBe "I cannot pay today"

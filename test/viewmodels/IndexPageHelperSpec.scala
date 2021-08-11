@@ -868,12 +868,37 @@ class IndexPageHelperSpec extends SpecBase {
         result.isDefined shouldBe true
         result.get.body.contains("£223.45 in late VAT") shouldBe true
         result.get.body.contains("£400 fixed penalties for late submission") shouldBe true
+        result.get.body.contains("£43.27 in estimated VAT interest") shouldBe true
       }
 
       "the user has outstanding LSP's" in {
         val result = pageHelper.getWhatYouOweBreakdown(sampleLspDataWithDueFinancialPenalties)
         result.isDefined shouldBe true
         result.get.body.contains("£400 fixed penalties for late submission") shouldBe true
+      }
+
+      "the user has outstanding VAT Interest to pay - no estimated interest " in {
+        val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3,
+          penaltyPoints = Seq.empty,
+          latePaymentPenalties = None,
+          vatOverview = Some(
+            Seq(
+              OverviewElement(
+                `type` = AmountTypeEnum.VAT,
+                amount = 100.00,
+                crystalizedInterest = Some(10.00)
+              ),
+              OverviewElement(
+                `type` = AmountTypeEnum.Central_Assessment,
+                amount = 123.45,
+                crystalizedInterest = Some(11.23)
+              )
+            )
+          ))
+        val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithOutstandingPayments)
+        result.isDefined shouldBe true
+        result.get.body.contains("£21.23 in VAT interest") shouldBe true
       }
     }
   }

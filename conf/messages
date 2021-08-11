@@ -166,3 +166,5 @@ whatIsOwed.button.checkAndPay = Check amounts and pay
 whatIsOwed.lppAmount = £{0} in late payment penalties
 whatIsOwed.lppAmount.estimated = £{0} in estimated late payment penalties
 whatIsOwed.amountOfLSPs = £{0} fixed penalties for late submission
+whatIsOwed.VATInterest.estimated = £{0} in estimated VAT interest
+whatIsOwed.VATInterest = £{0} in VAT interest
