@@ -23,6 +23,7 @@ import models.communication.{Communication, CommunicationTypeEnum}
 import models.payment.PaymentFinancial
 import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum, PenaltyPeriod}
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
+import models.reason.PaymentPenaltyReasonEnum
 import models.submission.{Submission, SubmissionStatusEnum}
 import org.jsoup.nodes.Document
 import play.twirl.api.{Html, HtmlFormat}
@@ -119,7 +120,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
     Some(Seq(LatePaymentPenalty(
       `type` = PenaltyTypeEnum.Financial,
       id = penaltyId,
-      reason = "reason",
+      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
       dateCreated = LocalDateTime.now,
       status = PointStatusEnum.Active,
       appealStatus = None,

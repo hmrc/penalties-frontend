@@ -18,6 +18,7 @@ package models.penalty
 
 import models.payment.PaymentFinancial
 import models.point.{AppealStatusEnum, PenaltyTypeEnum, PointStatusEnum}
+import models.reason.PaymentPenaltyReasonEnum
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.Json
@@ -29,7 +30,7 @@ class LatePaymentPenaltySpec extends AnyWordSpec with Matchers {
   val paymentPointJson = (withAppealStatus: Boolean) => Json.obj(
     "type"-> "financial",
     "id" -> "123456789",
-    "reason" -> "VAT_NOT_PAID_ON_TIME",
+    "reason" -> "VAT_NOT_PAID_WITHIN_30_DAYS",
     "dateCreated" -> "2020-01-01T01:00:00.123",
     "status" -> "ACTIVE",
     "period" -> Json.obj(
@@ -51,7 +52,7 @@ class LatePaymentPenaltySpec extends AnyWordSpec with Matchers {
   val paymentPointModelWithAppeal: LatePaymentPenalty = LatePaymentPenalty(
     `type` = PenaltyTypeEnum.Financial,
     id = "123456789",
-    reason = "VAT_NOT_PAID_ON_TIME",
+    reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
     dateCreated = LocalDateTime.parse("2020-01-01T01:00:00.123"),
     status = PointStatusEnum.Active,
     appealStatus = Some(AppealStatusEnum.Under_Review),

@@ -33,6 +33,7 @@ import java.time.LocalDateTime
 import models.communication.{Communication, CommunicationTypeEnum}
 import models.financial.{AmountTypeEnum, OverviewElement}
 import models.payment.PaymentFinancial
+import models.reason.PaymentPenaltyReasonEnum
 
 class IndexControllerISpec extends IntegrationSpecCommonBase {
   val sampleDate1 = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
@@ -169,7 +170,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     LatePaymentPenalty(
       `type` = PenaltyTypeEnum.Financial,
       id = "123456789",
-      reason = "this is a reason",
+      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
       dateCreated = sampleDate1,
       status = PointStatusEnum.Paid,
       appealStatus = None,
@@ -197,7 +198,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     LatePaymentPenalty(
       `type` = PenaltyTypeEnum.Additional,
       id = "123456790",
-      reason = "this is a reason",
+      PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
       dateCreated = sampleDate1,
       status = PointStatusEnum.Paid,
       appealStatus = None,
@@ -223,7 +224,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     LatePaymentPenalty(
       `type` = PenaltyTypeEnum.Financial,
       id = "123456789",
-      reason = "this is a reason",
+      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
       dateCreated = sampleDate1,
       status = PointStatusEnum.Paid,
       appealStatus = None,
@@ -251,7 +252,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
   val latePaymentPenaltyVATUnpaid: Option[Seq[LatePaymentPenalty]] = Some(Seq(LatePaymentPenalty(
     `type` = PenaltyTypeEnum.Financial,
     id = "123456789",
-    reason = "this is a reason",
+    reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
     dateCreated = sampleDate1,
     status = PointStatusEnum.Due,
     appealStatus = None,
@@ -414,8 +415,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("dt").get(0).text shouldBe "VAT Period"
       summaryCardBody.select("dd").get(0).text shouldBe "1 January 2021 to 1 February 2021"
       summaryCardBody.select("dt").get(1).text shouldBe "Penalty reason"
-      //TODO: this will need to change when the reason becomes 'smart'
-      summaryCardBody.select("dd").get(1).text shouldBe "VAT not paid within 15 days"
+      summaryCardBody.select("dd").get(1).text shouldBe "VAT more than 30 days late"
       summaryCardBody.select("dt").get(2).text shouldBe "Charged daily from"
       summaryCardBody.select("dd").get(2).text shouldBe "8 April 2021"
       parsedBody.select("#late-payment-penalties footer li").text().contains("Appeal this penalty") shouldBe true
