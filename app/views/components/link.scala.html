@@ -27,4 +27,4 @@
 )(implicit messages: Messages)
 
 <a href="@link" class="@classes" @id.map(x => s"id=$x") @if(isExternal){target="_blank"}@if(button){role="button" data-module="govuk-button"}>
-    @messages(messageKey)@if(isExternal)(" " + messages("site.opensInNewTab")) @hiddenContent.map{content=> <span class="govuk-visually-hidden"> @content</span>}</a>
+    @messages(messageKey)@if(isExternal)(" " + messages("site.opensInNewTab"))@hiddenContent.map{content=> <span class="govuk-visually-hidden"> @content</span>}</a>

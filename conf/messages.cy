@@ -160,6 +160,6 @@ whatIsOwed.lateVAT = £{0} in late VAT
 whatIsOwed.otherPenalties = other penalties not related to late submission or late payment
 whatIsOwed.details.heading = I cannot pay today
 whatIsOwed.details.body.1 = If you cannot pay a tax bill, you can ask HMRC about
-whatIsOwed.details.link.1 = setting up a Time to Pay Arrangement (opens in a new tab)
+whatIsOwed.details.link.1 = setting up a Time to Pay Arrangement
 whatIsOwed.details.body.2 = . This allows you to pay your bill in instalments.
 whatIsOwed.button.checkAndPay = Check amounts and pay

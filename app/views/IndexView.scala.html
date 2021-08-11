@@ -37,7 +37,7 @@
         whatYouOweContent: Option[Html] = None)(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
 
 @unableToPayTodayContent = {
-    <p class="govuk-body">@messages("whatIsOwed.details.body.1") <a href="#" class="govuk-link">@messages("whatIsOwed.details.link.1")</a>@messages("whatIsOwed.details.body.2")</p>
+    <p class="govuk-body">@messages("whatIsOwed.details.body.1") @link("#", "whatIsOwed.details.link.1", isExternal = true)@messages("whatIsOwed.details.body.2")</p>
 }
 
 @layout(pageTitle = messages("index.title")) {
