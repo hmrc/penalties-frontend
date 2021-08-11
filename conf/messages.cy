@@ -163,3 +163,5 @@ whatIsOwed.details.body.1 = If you cannot pay a tax bill, you can ask HMRC about
 whatIsOwed.details.link.1 = setting up a Time to Pay Arrangement
 whatIsOwed.details.body.2 = . This allows you to pay your bill in instalments.
 whatIsOwed.button.checkAndPay = Check amounts and pay
+whatIsOwed.lppAmount = £{0} in late payment penalties
+whatIsOwed.lppAmount.estimated = £{0} in estimated late payment penalties

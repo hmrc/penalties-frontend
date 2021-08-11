@@ -61,7 +61,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
   )
 
   val etmpPayloadWithRemovedPoints: ETMPPayload = ETMPPayload(
-    pointsTotal = 1, lateSubmissions = 2, adjustmentPointsTotal = -1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, otherPenalties = Some(false),vatOverview = Some(Seq.empty),
+    pointsTotal = 1, lateSubmissions = 2, adjustmentPointsTotal = -1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, otherPenalties = Some(false), vatOverview = Some(Seq.empty),
     penaltyPoints = Seq(
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Point,
@@ -276,6 +276,60 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     )
   )))
 
+  val latePaymentPenaltiesWithEstimate: Option[Seq[LatePaymentPenalty]] = Some(Seq(
+    LatePaymentPenalty(
+      `type` = PenaltyTypeEnum.Additional,
+      id = "123456789",
+      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
+      dateCreated = sampleDate1,
+      status = PointStatusEnum.Due,
+      appealStatus = None,
+      period = PaymentPeriod(
+        sampleDate1,
+        sampleDate1.plusMonths(1),
+        sampleDate1.plusMonths(1).plusDays(7),
+        PaymentStatusEnum.Paid
+      ),
+      communications = Seq(
+        Communication(
+          `type` = CommunicationTypeEnum.letter,
+          dateSent = sampleDate1,
+          documentId = "123456789"
+        )
+      ),
+      financial = PaymentFinancial(
+        amountDue = 32.12,
+        outstandingAmountDue = 200.00,
+        dueDate = sampleDate1
+      )
+    ),
+    LatePaymentPenalty(
+      `type` = PenaltyTypeEnum.Financial,
+      id = "123456789",
+      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
+      dateCreated = sampleDate1,
+      status = PointStatusEnum.Due,
+      appealStatus = None,
+      period = PaymentPeriod(
+        sampleDate1,
+        sampleDate1.plusMonths(1),
+        sampleDate1.plusMonths(1).plusDays(7),
+        PaymentStatusEnum.Due
+      ),
+      communications = Seq(
+        Communication(
+          `type` = CommunicationTypeEnum.letter,
+          dateSent = sampleDate1,
+          documentId = "123456789"
+        )
+      ),
+      financial = PaymentFinancial(
+        amountDue = 400.00,
+        outstandingAmountDue = 200.00,
+        dueDate = sampleDate1
+      )
+    )))
+
   val latePaymentPenaltyWithAppeal: Option[Seq[LatePaymentPenalty]] = Some(Seq(latePaymentPenalty.get.head.copy(appealStatus = Some(AppealStatusEnum.Under_Review))))
 
   val etmpPayloadWithLPP: ETMPPayload = etmpPayloadWithAddedPoints.copy(
@@ -309,6 +363,11 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     ),
     latePaymentPenalties = latePaymentPenaltyVATUnpaid,
     otherPenalties = Some(true)
+  )
+
+  val etmpPayloadWithEstimates: ETMPPayload = etmpPayloadWithAddedPoints.copy(
+    vatOverview = None,
+    latePaymentPenalties = latePaymentPenaltiesWithEstimate
   )
 
   val etmpPayloadWithLPPAppeal: ETMPPayload = etmpPayloadWithLPP.copy(
@@ -401,10 +460,20 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#what-is-owed > h2").text shouldBe "Overview"
       parsedBody.select("#what-is-owed > p").first().text shouldBe "You owe:"
       parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£121.40 in late VAT"
-      parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "other penalties not related to late submission or late payment"
+      parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "£400 in late payment penalties"
+      parsedBody.select("#what-is-owed > ul > li").get(2).text shouldBe "other penalties not related to late submission or late payment"
       parsedBody.select("#main-content h2:nth-child(4)").text shouldBe "Penalty and appeal details"
       parsedBody.select("#what-is-owed > a").text shouldBe "Check amounts and pay"
       parsedBody.select("#main-content .govuk-details__summary-text").text shouldBe "I cannot pay today"
+    }
+
+    "return 200 (OK) and render the view when there is outstanding estimate payments" in {
+      returnLSPDataStub(etmpPayloadWithEstimates)
+      val request = await(buildClientForRequestToApp(uri = "/").get())
+      request.status shouldBe Status.OK
+      val parsedBody = Jsoup.parse(request.body)
+      parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£432.12 in estimated late payment penalties"
+      //TODO: add button and reveal section
     }
 
     "return 200 (OK) and render the view when there are LPPs and additional penalties paid that are retrieved from the backend" in {

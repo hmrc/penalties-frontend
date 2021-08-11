@@ -50,4 +50,17 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
   def isOtherUnrelatedPenalties(payload: ETMPPayload): Boolean = {
     payload.otherPenalties.contains(true)
   }
+
+  def findEstimatedLPPsFromPayload(payload: ETMPPayload): (BigDecimal, Boolean) = {
+    payload.latePaymentPenalties.map {
+      allLPPs => {
+        val allAdditionalPoints = allLPPs.filter(_.`type` == PenaltyTypeEnum.Additional)
+        val allFinancialPoints = allLPPs.filter(_.`type` == PenaltyTypeEnum.Financial)
+        val estimatedLPPs = allAdditionalPoints.map(_.financial.amountDue).foldRight(BigDecimal(0))(_ + _)
+        val crystallisedLPPs = allFinancialPoints.map(_.financial.amountDue).foldRight(BigDecimal(0))(_ + _)
+        val isEstimatesIncluded = estimatedLPPs > BigDecimal(0)
+        (crystallisedLPPs + estimatedLPPs, isEstimatesIncluded)
+      }
+    }
+  }.getOrElse((0, false))
 }
