@@ -89,6 +89,8 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     fixedPenaltyAmount = 0.0,
     penaltyAmountsTotal = 0.0,
     penaltyPointsThreshold = 4,
+    otherPenalties = Some(false),
+    vatOverview = Some(Seq.empty),
     penaltyPoints = Seq.empty[PenaltyPoint],
     latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
   )
@@ -386,13 +388,15 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   val penaltyId = "123456789"
 
-  val redirectToAppealUrlForLSP: String = controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = false, isObligation = false).url
+  val redirectToAppealUrlForLSP: String = controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = false, isObligation = false, isAdditional = false).url
 
-  val redirectToAppealUrlForLPP: String = controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = true, isObligation = false).url
+  val redirectToAppealUrlForLPP: String = controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = true, isObligation = false, isAdditional = false).url
 
-  val redirectToAppealObligationUrlForLSP: String = controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = false, isObligation = true).url
+  val redirectToAppealObligationUrlForLSP: String = controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = false, isObligation = true, isAdditional = false).url
 
-  val redirectToAppealObligationUrlForLPP: String = controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = true, isObligation = true).url
+  val redirectToAppealObligationUrlForLPP: String = controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = true, isObligation = true, isAdditional = false).url
+
+  val redirectToAppealObligationUrlForLPPAdditional: String = controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = true, isObligation = false, isAdditional = true).url
 
   val sampleDate: LocalDateTime = LocalDateTime.of(2021, 4, 23, 18, 25, 43)
     .plus(511, ChronoUnit.MILLIS)

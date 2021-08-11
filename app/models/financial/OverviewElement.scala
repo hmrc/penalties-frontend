@@ -18,15 +18,13 @@ package models.financial
 
 import play.api.libs.json.{Json, OFormat}
 
-import java.time.LocalDateTime
+case class OverviewElement(
+                            `type`: AmountTypeEnum.Value,
+                            amount: BigDecimal,
+                            estimatedInterest: Option[BigDecimal] = None,
+                            crystalizedInterest: Option[BigDecimal] = None
+                          )
 
-case class Financial(
-                      amountDue: BigDecimal,
-                      dueDate: LocalDateTime,
-                      estimatedInterest: Option[BigDecimal] = None,
-                      crystalizedInterest: Option[BigDecimal] = None
-                    )
-
-object Financial {
-  implicit val format: OFormat[Financial] = Json.format[Financial]
+object OverviewElement {
+  implicit val format: OFormat[OverviewElement] = Json.format[OverviewElement]
 }

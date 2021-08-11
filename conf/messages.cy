@@ -81,7 +81,6 @@ summaryCard.header.financialNoNumber = £{0} penalty
 summaryCard.header.financialAdditionalPenalty = £{0} additional penalty
 summaryCard.header.financialAdjustedPoint = Penalty point: £{0} penalty
 
-
 summaryCard.key1 = VAT Period
 summaryCard.value1 = {0} to {1}
 summaryCard.key2 = VAT Return due
@@ -150,3 +149,11 @@ compliance.point.expiry = If you complete these actions we will remove your poin
 feedback.before = This is a new service - your
 feedback.link = feedback
 feedback.after = will help us to improve it.
+
+
+# What is owed messages
+# ----------------------------------------------------------
+whatIsOwed.heading = Overview
+whatIsOwed.penaltyAndAppealsHeading = Penalty and appeal details
+whatIsOwed.p1 = You owe:
+whatIsOwed.lateVAT = {0} in late VAT

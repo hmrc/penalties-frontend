@@ -28,14 +28,14 @@ object PenaltiesStub {
   val vrn: String = "HMRC-MTD-VAT~VRN~123456789"
   val getLspDataUrl: String = s"/penalties/etmp/penalties/$vrn"
   val sampleLspData: ETMPPayload = ETMPPayload(
-    0,
-    0,
-    0,
-    0.0,
-    0.0,
-    4,
-    Seq.empty[PenaltyPoint],
-    Option(Seq.empty[LatePaymentPenalty])
+    pointsTotal = 0,
+    lateSubmissions = 0,
+    adjustmentPointsTotal = 0,
+    fixedPenaltyAmount = 0.0,
+    penaltyAmountsTotal = 0.0,
+    penaltyPointsThreshold = 4,
+    penaltyPoints = Seq.empty[PenaltyPoint],
+    latePaymentPenalties = Option(Seq.empty[LatePaymentPenalty])
   )
 
   def lspDataStub(): StubMapping = stubFor(get(urlMatching(getLspDataUrl))
