@@ -31,7 +31,7 @@ import utils.SessionKeys
 
 import java.time.LocalDateTime
 import models.communication.{Communication, CommunicationTypeEnum}
-import models.financial.{AmountTypeEnum, OverviewElement}
+import models.financial.{AmountTypeEnum, Financial, OverviewElement}
 import models.payment.PaymentFinancial
 import models.reason.PaymentPenaltyReasonEnum
 
@@ -344,7 +344,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     latePaymentPenalties = latePaymentPenaltyVATUnpaid
   )
 
-  val etmpPayloadWithLPPVATUnpaidAndVATOverview: ETMPPayload = etmpPayloadWithAddedPoints.copy(
+  val etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue: ETMPPayload = etmpPayloadWithAddedPoints.copy(
     vatOverview = Some(
       Seq(
         OverviewElement(
@@ -362,6 +362,91 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       )
     ),
     latePaymentPenalties = latePaymentPenaltyVATUnpaid,
+    penaltyPoints = Seq(
+      PenaltyPoint(
+        `type` = PenaltyTypeEnum.Financial,
+        id = "1236",
+        number = "3",
+        appealStatus = None,
+        dateCreated = sampleDate1,
+        dateExpired = Some(sampleDate1),
+        status = PointStatusEnum.Due,
+        reason = None,
+        period = Some(
+          PenaltyPeriod(
+            startDate = sampleDate1,
+            endDate = sampleDate1,
+            submission = Submission(
+              dueDate = sampleDate1,
+              submittedDate = Some(sampleDate1),
+              status = SubmissionStatusEnum.Submitted
+            )
+          )
+        ),
+        communications = Seq.empty,
+        financial = Some(
+          Financial(
+            amountDue = 200.00,
+            dueDate = sampleDate1,
+            estimatedInterest = None,
+            crystalizedInterest = None
+          )
+        )
+      ),
+      PenaltyPoint(
+        `type` = PenaltyTypeEnum.Financial,
+        id = "1235",
+        number = "2",
+        appealStatus = None,
+        dateCreated = sampleDate1,
+        dateExpired = Some(sampleDate1),
+        status = PointStatusEnum.Due,
+        reason = None,
+        period = Some(
+          PenaltyPeriod(
+            startDate = sampleDate1,
+            endDate = sampleDate1,
+            submission = Submission(
+              dueDate = sampleDate1,
+              submittedDate = Some(sampleDate1),
+              status = SubmissionStatusEnum.Submitted
+            )
+          )
+        ),
+        communications = Seq.empty,
+        financial = Some(
+          Financial(
+            amountDue = 200.00,
+            dueDate = sampleDate1,
+            estimatedInterest = None,
+            crystalizedInterest = None
+          )
+        )
+      ),
+      PenaltyPoint(
+        `type` = PenaltyTypeEnum.Point,
+        id = "1234",
+        number = "1",
+        appealStatus = None,
+        dateCreated = sampleDate1,
+        dateExpired = Some(sampleDate1),
+        status = PointStatusEnum.Active,
+        reason = None,
+        period = Some(
+          PenaltyPeriod(
+            startDate = sampleDate1,
+            endDate = sampleDate1,
+            submission = Submission(
+              dueDate = sampleDate1,
+              submittedDate = Some(sampleDate1),
+              status = SubmissionStatusEnum.Submitted
+            )
+          )
+        ),
+        communications = Seq.empty,
+        financial = None
+      )
+    ),
     otherPenalties = Some(true)
   )
 
@@ -453,7 +538,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     }
 
     "return 200 (OK) and render the view when there is outstanding payments" in {
-      returnLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverview)
+      returnLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue)
       val request = await(buildClientForRequestToApp(uri = "/").get())
       request.status shouldBe Status.OK
       val parsedBody = Jsoup.parse(request.body)
@@ -461,7 +546,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#what-is-owed > p").first().text shouldBe "You owe:"
       parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£121.40 in late VAT"
       parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "£400 in late payment penalties"
-      parsedBody.select("#what-is-owed > ul > li").get(2).text shouldBe "other penalties not related to late submission or late payment"
+      parsedBody.select("#what-is-owed > ul > li").get(2).text shouldBe "£400 fixed penalties for late submission"
+      parsedBody.select("#what-is-owed > ul > li").get(3).text shouldBe "other penalties not related to late submission or late payment"
       parsedBody.select("#main-content h2:nth-child(4)").text shouldBe "Penalty and appeal details"
       parsedBody.select("#what-is-owed > a").text shouldBe "Check amounts and pay"
       parsedBody.select("#main-content .govuk-details__summary-text").text shouldBe "I cannot pay today"

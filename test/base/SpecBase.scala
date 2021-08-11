@@ -323,6 +323,114 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     )
   )
 
+  val etmpDataWithOneLSP = ETMPPayload(
+    pointsTotal = 1,
+    lateSubmissions = 1,
+    adjustmentPointsTotal = 0,
+    fixedPenaltyAmount = 0,
+    penaltyAmountsTotal = 0,
+    penaltyPointsThreshold = 2,
+    otherPenalties = None,
+    vatOverview = None,
+    penaltyPoints = Seq(sampleOverduePenaltyPoint),
+    latePaymentPenalties = None
+  )
+
+  val sampleLspDataWithDueFinancialPenalties: ETMPPayload = ETMPPayload(
+    pointsTotal = 3,
+    lateSubmissions = 3,
+    adjustmentPointsTotal = 0,
+    fixedPenaltyAmount = 400.0,
+    penaltyAmountsTotal = 0.0,
+    penaltyPointsThreshold = 2,
+    vatOverview = None,
+    penaltyPoints = Seq(
+      PenaltyPoint(
+        `type` = PenaltyTypeEnum.Financial,
+        id = "1236",
+        number = "3",
+        appealStatus = None,
+        dateCreated = sampleDate,
+        dateExpired = Some(sampleDate),
+        status = PointStatusEnum.Due,
+        reason = None,
+        period = Some(
+          PenaltyPeriod(
+            startDate = sampleDate,
+            endDate = sampleDate,
+            submission = Submission(
+              dueDate = sampleDate,
+              submittedDate = Some(sampleDate),
+              status = SubmissionStatusEnum.Submitted
+            )
+          )
+        ),
+        communications = Seq.empty,
+        financial = Some(
+          Financial(
+            amountDue = 200.00,
+            dueDate = sampleDate,
+            estimatedInterest = None,
+            crystalizedInterest = None
+          )
+        )
+      ),
+      PenaltyPoint(
+        `type` = PenaltyTypeEnum.Financial,
+        id = "1235",
+        number = "2",
+        appealStatus = None,
+        dateCreated = sampleDate,
+        dateExpired = Some(sampleDate),
+        status = PointStatusEnum.Due,
+        reason = None,
+        period = Some(
+          PenaltyPeriod(
+            startDate = sampleDate,
+            endDate = sampleDate,
+            submission = Submission(
+              dueDate = sampleDate,
+              submittedDate = Some(sampleDate),
+              status = SubmissionStatusEnum.Submitted
+            )
+          )
+        ),
+        communications = Seq.empty,
+        financial = Some(
+          Financial(
+            amountDue = 200.00,
+            dueDate = sampleDate,
+            estimatedInterest = None,
+            crystalizedInterest = None
+          )
+        )
+      ),
+      PenaltyPoint(
+        `type` = PenaltyTypeEnum.Point,
+        id = "1234",
+        number = "1",
+        appealStatus = None,
+        dateCreated = sampleDate,
+        dateExpired = Some(sampleDate),
+        status = PointStatusEnum.Active,
+        reason = None,
+        period = Some(
+          PenaltyPeriod(
+            startDate = sampleDate,
+            endDate = sampleDate,
+            submission = Submission(
+              dueDate = sampleDate,
+              submittedDate = Some(sampleDate),
+              status = SubmissionStatusEnum.Submitted
+            )
+          )
+        ),
+        communications = Seq.empty,
+        financial = None
+      )
+    ),
+    latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
+  )
 
   val sampleReturnSubmittedPenaltyPointData: Seq[PenaltyPoint] = Seq(
     samplePenaltyPoint

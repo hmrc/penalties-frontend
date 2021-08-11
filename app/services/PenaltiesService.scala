@@ -63,4 +63,8 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
       }
     }
   }.getOrElse((0, false))
+
+  def findTotalLSPFromPayload(payload: ETMPPayload): BigDecimal = {
+    payload.penaltyPoints.map(_.financial.map(_.amountDue)).collect{ case Some(x) => x }.foldRight(BigDecimal(0))(_ + _)
+  }
 }

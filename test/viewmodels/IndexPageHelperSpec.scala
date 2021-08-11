@@ -19,11 +19,12 @@ package viewmodels
 import assets.messages.IndexMessages._
 import base.SpecBase
 import models.ETMPPayload
-import models.financial.{AmountTypeEnum, OverviewElement}
+import models.financial.{AmountTypeEnum, Financial, OverviewElement}
 import models.payment.PaymentFinancial
-import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum}
-import models.point.{PenaltyTypeEnum, PointStatusEnum}
+import models.penalty._
+import models.point._
 import models.reason.PaymentPenaltyReasonEnum
+import models.submission.{Submission, SubmissionStatusEnum}
 import org.jsoup.Jsoup
 
 class IndexPageHelperSpec extends SpecBase {
@@ -756,6 +757,123 @@ class IndexPageHelperSpec extends SpecBase {
         val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithOutstandingPayments)
         result.isDefined shouldBe true
         result.get.body.contains("other penalties not related to late submission or late payment") shouldBe true
+      }
+
+      "the user has outstanding VAT to pay and outstanding LSP's" in {
+        val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3,
+          penaltyPoints = Seq(
+            PenaltyPoint(
+              `type` = PenaltyTypeEnum.Financial,
+              id = "1236",
+              number = "3",
+              appealStatus = None,
+              dateCreated = sampleDate,
+              dateExpired = Some(sampleDate),
+              status = PointStatusEnum.Due,
+              reason = None,
+              period = Some(
+                PenaltyPeriod(
+                  startDate = sampleDate,
+                  endDate = sampleDate,
+                  submission = Submission(
+                    dueDate = sampleDate,
+                    submittedDate = Some(sampleDate),
+                    status = SubmissionStatusEnum.Submitted
+                  )
+                )
+              ),
+              communications = Seq.empty,
+              financial = Some(
+                Financial(
+                  amountDue = 200.00,
+                  dueDate = sampleDate,
+                  estimatedInterest = None,
+                  crystalizedInterest = None
+                )
+              )
+            ),
+            PenaltyPoint(
+              `type` = PenaltyTypeEnum.Financial,
+              id = "1235",
+              number = "2",
+              appealStatus = None,
+              dateCreated = sampleDate,
+              dateExpired = Some(sampleDate),
+              status = PointStatusEnum.Due,
+              reason = None,
+              period = Some(
+                PenaltyPeriod(
+                  startDate = sampleDate,
+                  endDate = sampleDate,
+                  submission = Submission(
+                    dueDate = sampleDate,
+                    submittedDate = Some(sampleDate),
+                    status = SubmissionStatusEnum.Submitted
+                  )
+                )
+              ),
+              communications = Seq.empty,
+              financial = Some(
+                Financial(
+                  amountDue = 200.00,
+                  dueDate = sampleDate,
+                  estimatedInterest = None,
+                  crystalizedInterest = None
+                )
+              )
+            ),
+            PenaltyPoint(
+              `type` = PenaltyTypeEnum.Point,
+              id = "1234",
+              number = "1",
+              appealStatus = None,
+              dateCreated = sampleDate,
+              dateExpired = Some(sampleDate),
+              status = PointStatusEnum.Active,
+              reason = None,
+              period = Some(
+                PenaltyPeriod(
+                  startDate = sampleDate,
+                  endDate = sampleDate,
+                  submission = Submission(
+                    dueDate = sampleDate,
+                    submittedDate = Some(sampleDate),
+                    status = SubmissionStatusEnum.Submitted
+                  )
+                )
+              ),
+              communications = Seq.empty,
+              financial = None
+            )
+          ),
+          latePaymentPenalties = None,
+          vatOverview = Some(
+            Seq(
+              OverviewElement(
+                `type` = AmountTypeEnum.VAT,
+                amount = 100.00,
+                estimatedInterest = Some(10.00),
+                crystalizedInterest = Some(10.00)
+              ),
+              OverviewElement(
+                `type` = AmountTypeEnum.Central_Assessment,
+                amount = 123.45,
+                estimatedInterest = Some(12.04),
+                crystalizedInterest = Some(11.23)
+              )
+            )
+          ))
+        val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithOutstandingPayments)
+        result.isDefined shouldBe true
+        result.get.body.contains("£223.45 in late VAT") shouldBe true
+        result.get.body.contains("£400 fixed penalties for late submission") shouldBe true
+      }
+
+      "the user has outstanding LSP's" in {
+        val result = pageHelper.getWhatYouOweBreakdown(sampleLspDataWithDueFinancialPenalties)
+        result.isDefined shouldBe true
+        result.get.body.contains("£400 fixed penalties for late submission") shouldBe true
       }
     }
   }
