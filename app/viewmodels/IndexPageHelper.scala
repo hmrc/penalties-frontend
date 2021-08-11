@@ -171,9 +171,11 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
 
   def getWhatYouOweBreakdown(etmpData: ETMPPayload)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
     val amountOfLateVAT = penaltiesService.findOverdueVATFromPayload(etmpData)
+    val otherUnrelatedPenalties = penaltiesService.isOtherUnrelatedPenalties(etmpData)
     val stringToConvertToBulletPoints = Seq(
       //TODO: fill this Seq with Option[String]'s with each bullet point - it will render only those which values exist
-      returnMessageIfAmountMoreThanZero(amountOfLateVAT, "whatIsOwed.lateVAT")
+      returnMessageIfAmountMoreThanZero(amountOfLateVAT, "whatIsOwed.lateVAT"),
+      returnMessageIfOtherUnrelatedPenalties(otherUnrelatedPenalties, "whatIsOwed.otherPenalties")
     ).collect{case Some(x) => x}
     if(stringToConvertToBulletPoints.isEmpty) {
       None
@@ -190,6 +192,12 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     if(amount > 0) {
       val formattedAmount = if(amount.isWhole()) amount else "%,.2f".format(amount)
       Some(messages(msgKeyToApply, formattedAmount))
+    } else None
+  }
+
+  private def returnMessageIfOtherUnrelatedPenalties(isUnrelatedPenalties: Boolean, msgKey: String)(implicit messages: Messages): Option[String] = {
+    if(isUnrelatedPenalties) {
+      Some(messages(msgKey))
     } else None
   }
 }

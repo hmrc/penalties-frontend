@@ -307,7 +307,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         )
       )
     ),
-    latePaymentPenalties = latePaymentPenaltyVATUnpaid
+    latePaymentPenalties = latePaymentPenaltyVATUnpaid,
+    otherPenalties = Some(true)
   )
 
   val etmpPayloadWithLPPAppeal: ETMPPayload = etmpPayloadWithLPP.copy(
@@ -400,6 +401,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#what-is-owed > h2").text shouldBe "Overview"
       parsedBody.select("#what-is-owed > p").first().text shouldBe "You owe:"
       parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£121.40 in late VAT"
+      parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "other penalties not related to late submission or late payment"
       parsedBody.select("#main-content h2:nth-child(4)").text shouldBe "Penalty and appeal details"
       //TODO: add button and reveal section
     }

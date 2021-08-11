@@ -196,4 +196,21 @@ class PenaltiesServiceSpec extends SpecBase {
       result shouldBe 223.45
     }
   }
+
+  "isOtherUnrelatedPenalties" should {
+    "return false when the payload does not have the 'otherPenalties' field" in new Setup {
+      val result = service.isOtherUnrelatedPenalties(sampleLspData.copy(otherPenalties = None))
+      result shouldBe false
+    }
+
+    "return false when the payload has the 'otherPenalties' field and it's false" in new Setup {
+      val result = service.isOtherUnrelatedPenalties(sampleLspData)
+      result shouldBe false
+    }
+
+    "return true when the payload has the 'otherPenalties' field and it's true" in new Setup {
+      val result = service.isOtherUnrelatedPenalties(sampleLspData.copy(otherPenalties = Some(true)))
+      result shouldBe true
+    }
+  }
 }

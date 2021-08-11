@@ -554,6 +554,41 @@ class IndexPageHelperSpec extends SpecBase {
         result.isDefined shouldBe true
         result.get.body.contains("£223.45 in late VAT") shouldBe true
       }
+
+      "the user has outstanding VAT to pay and has other unrelated penalties" in {
+        val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = None,
+          vatOverview = Some(
+            Seq(
+              OverviewElement(
+                `type` = AmountTypeEnum.VAT,
+                amount = 100.00,
+                estimatedInterest = Some(10.00),
+                crystalizedInterest = Some(10.00)
+              ),
+              OverviewElement(
+                `type` = AmountTypeEnum.Central_Assessment,
+                amount = 123.45,
+                estimatedInterest = Some(12.04),
+                crystalizedInterest = Some(11.23)
+              )
+            )
+          ),
+          otherPenalties = Some(true))
+        val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithOutstandingPayments)
+        result.isDefined shouldBe true
+        result.get.body.contains("£223.45 in late VAT") shouldBe true
+        result.get.body.contains("other penalties not related to late submission or late payment") shouldBe true
+      }
+
+      "the user has other unrelated penalties" in {
+        val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = None,
+          vatOverview = None, otherPenalties = Some(true))
+        val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithOutstandingPayments)
+        result.isDefined shouldBe true
+        result.get.body.contains("other penalties not related to late submission or late payment") shouldBe true
+      }
     }
   }
 }
