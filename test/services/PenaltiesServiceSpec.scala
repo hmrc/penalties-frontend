@@ -23,6 +23,7 @@ import models.financial.{AmountTypeEnum, OverviewElement}
 import models.payment.PaymentFinancial
 import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum, PenaltyPeriod}
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
+import models.reason.PaymentPenaltyReasonEnum
 import models.submission.{Submission, SubmissionStatusEnum}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
@@ -88,7 +89,7 @@ class PenaltiesServiceSpec extends SpecBase {
       LatePaymentPenalty(
         `type` = PenaltyTypeEnum.Financial,
         id = "1234",
-        reason = "",
+        reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
         dateCreated = sampleDate,
         status = PointStatusEnum.Due,
         appealStatus = None,
@@ -123,7 +124,7 @@ class PenaltiesServiceSpec extends SpecBase {
       LatePaymentPenalty(
         `type` = PenaltyTypeEnum.Additional,
         id = "1234",
-        reason = "",
+        reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
         dateCreated = sampleDate,
         status = PointStatusEnum.Due,
         appealStatus = None,
@@ -145,7 +146,7 @@ class PenaltiesServiceSpec extends SpecBase {
       LatePaymentPenalty(
         `type` = PenaltyTypeEnum.Financial,
         id = "1234",
-        reason = "",
+        reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
         dateCreated = sampleDate,
         status = PointStatusEnum.Due,
         appealStatus = None,

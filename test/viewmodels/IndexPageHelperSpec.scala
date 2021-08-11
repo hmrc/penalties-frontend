@@ -563,7 +563,7 @@ class IndexPageHelperSpec extends SpecBase {
               LatePaymentPenalty(
                 `type` = PenaltyTypeEnum.Financial,
                 id = "1234",
-                reason = "",
+                reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
                 dateCreated = sampleDate,
                 status = PointStatusEnum.Due,
                 appealStatus = None,
@@ -599,7 +599,7 @@ class IndexPageHelperSpec extends SpecBase {
               LatePaymentPenalty(
                 `type` = PenaltyTypeEnum.Additional,
                 id = "1234",
-                reason = "",
+                reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
                 dateCreated = sampleDate,
                 status = PointStatusEnum.Due,
                 appealStatus = None,
@@ -621,7 +621,7 @@ class IndexPageHelperSpec extends SpecBase {
               LatePaymentPenalty(
                 `type` = PenaltyTypeEnum.Financial,
                 id = "1234",
-                reason = "",
+                reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
                 dateCreated = sampleDate,
                 status = PointStatusEnum.Due,
                 appealStatus = None,
@@ -657,7 +657,7 @@ class IndexPageHelperSpec extends SpecBase {
               LatePaymentPenalty(
                 `type` = PenaltyTypeEnum.Additional,
                 id = "1234",
-                reason = "",
+                reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
                 dateCreated = sampleDate,
                 status = PointStatusEnum.Due,
                 appealStatus = None,
@@ -679,7 +679,7 @@ class IndexPageHelperSpec extends SpecBase {
               LatePaymentPenalty(
                 `type` = PenaltyTypeEnum.Financial,
                 id = "1234",
-                reason = "",
+                reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
                 dateCreated = sampleDate,
                 status = PointStatusEnum.Due,
                 appealStatus = None,
