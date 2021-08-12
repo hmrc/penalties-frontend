@@ -28,10 +28,10 @@ import stubs.AuthStub
 import stubs.PenaltiesStub.returnLSPDataStub
 import testUtils.IntegrationSpecCommonBase
 import utils.SessionKeys
-
 import java.time.LocalDateTime
+
 import models.communication.{Communication, CommunicationTypeEnum}
-import models.financial.{AmountTypeEnum, OverviewElement}
+import models.financial.{AmountTypeEnum, Financial, OverviewElement}
 import models.payment.PaymentFinancial
 
 class IndexControllerISpec extends IntegrationSpecCommonBase {
@@ -53,7 +53,12 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         reason = None,
         period = None,
         communications = Seq.empty,
-        financial = None
+        financial = Some(Financial(
+          amountDue = 0,
+          dueDate = sampleDate1,
+          estimatedInterest = Some(21.00),
+          crystalizedInterest = Some(32.00)
+        ))
       )
     ),
     latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
@@ -271,7 +276,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     financial = PaymentFinancial(
       amountDue = 400.00,
       outstandingAmountDue = 200.00,
-      dueDate = sampleDate1
+      dueDate = sampleDate1,
+      estimatedInterest = Some(21.00),
+      crystalizedInterest = Some(32.00)
     )
   )))
 
@@ -400,6 +407,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#what-is-owed > p").first().text shouldBe "You owe:"
       parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£121.40 in late VAT"
       parsedBody.select("#main-content h2:nth-child(4)").text shouldBe "Penalty and appeal details"
+      parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "£106 in estimated interest on penalties"
       //TODO: add button and reveal section
     }
 

@@ -20,8 +20,9 @@ import connectors.PenaltiesConnector
 import models.ETMPPayload
 import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import uk.gov.hmrc.http.HeaderCarrier
-
 import javax.inject.Inject
+import models.financial.Financial
+
 import scala.concurrent.Future
 
 class PenaltiesService @Inject()(connector: PenaltiesConnector) {
@@ -46,4 +47,35 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
       }
     }
   }.getOrElse(0)
+
+  def findCrystalizedPenaltiesInterest(payload: ETMPPayload): BigDecimal = {
+    val lspInterest: BigDecimal = payload.penaltyPoints.flatMap(
+      penalty => {
+        penalty.financial.map(_.crystalizedInterest.getOrElse(BigDecimal(0)))
+      }
+    ).foldRight(BigDecimal(0))(_ + _)
+
+    val lppInterest: BigDecimal = payload.latePaymentPenalties.map {
+      _.map { lpp =>
+        lpp.financial.crystalizedInterest.getOrElse(BigDecimal(0))
+      }.foldRight(BigDecimal(0))(_ + _)
+    }.getOrElse(BigDecimal(0))
+
+    lspInterest + lppInterest
+  }
+
+  def findEstimatedPenaltiesInterest(payload: ETMPPayload): BigDecimal = {
+    val estimatedLspInterest: BigDecimal = payload.penaltyPoints.flatMap(
+      _.financial.map(_.estimatedInterest.getOrElse(BigDecimal(0)))
+    ).foldRight(BigDecimal(0))(_ + _)
+
+    val estimatedLppInterest: BigDecimal = payload.latePaymentPenalties.map {
+      _.map { lpp =>
+        lpp.financial.estimatedInterest.getOrElse(BigDecimal(0))
+      }.foldRight(BigDecimal(0))(_ + _)
+    }.getOrElse(BigDecimal(0))
+
+    estimatedLspInterest + estimatedLppInterest
+  }
+
 }

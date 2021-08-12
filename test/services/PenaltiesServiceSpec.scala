@@ -19,7 +19,7 @@ package services
 import base.SpecBase
 import connectors.PenaltiesConnector
 import models.ETMPPayload
-import models.financial.{AmountTypeEnum, OverviewElement}
+import models.financial.{AmountTypeEnum, Financial, OverviewElement}
 import models.penalty.{LatePaymentPenalty, PenaltyPeriod}
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
@@ -27,8 +27,10 @@ import org.mockito.Matchers._
 import org.mockito.Mockito._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
-
 import java.time.LocalDateTime
+
+import models.payment.PaymentFinancial
+
 import scala.concurrent.Future
 
 class PenaltiesServiceSpec extends SpecBase {
@@ -72,6 +74,60 @@ class PenaltiesServiceSpec extends SpecBase {
     vatOverview = Some(Seq()),
     penaltyPoints = Seq.empty[PenaltyPoint],
     latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
+  )
+
+  val sampleLspDataWithNoFinancialElements: ETMPPayload = ETMPPayload(
+    pointsTotal = 0,
+    lateSubmissions = 0,
+    adjustmentPointsTotal = 0,
+    fixedPenaltyAmount = 0.0,
+    penaltyAmountsTotal = 0.0,
+    penaltyPointsThreshold = 4,
+    vatOverview = Some(Seq.empty),
+    penaltyPoints = Seq(sampleFinancialPenaltyPoint.copy(financial = Some(
+      Financial(
+        amountDue = 0,
+        dueDate = LocalDateTime.now(),
+        estimatedInterest = None,
+        crystalizedInterest = None
+      )
+    ))),
+    latePaymentPenalties = Some(Seq(sampleLatePaymentPenaltyDue.copy(financial =
+      PaymentFinancial(
+        amountDue = 0,
+        outstandingAmountDue = 0,
+        dueDate = LocalDateTime.now(),
+        estimatedInterest = None,
+        crystalizedInterest = None
+      )
+    )))
+  )
+
+  val sampleLspDataWithFinancialElements: ETMPPayload = ETMPPayload(
+    pointsTotal = 0,
+    lateSubmissions = 0,
+    adjustmentPointsTotal = 0,
+    fixedPenaltyAmount = 0.0,
+    penaltyAmountsTotal = 0.0,
+    penaltyPointsThreshold = 4,
+    vatOverview = Some(Seq.empty),
+    penaltyPoints = Seq(sampleFinancialPenaltyPoint.copy(financial = Some(
+      Financial(
+        amountDue = 0,
+        dueDate = LocalDateTime.now(),
+        estimatedInterest = Some(15),
+        crystalizedInterest = Some(20)
+      )
+    ))),
+    latePaymentPenalties = Some(Seq(sampleLatePaymentPenaltyDue.copy(financial =
+      PaymentFinancial(
+        amountDue = 0,
+        outstandingAmountDue = 0,
+        dueDate = LocalDateTime.now(),
+        estimatedInterest = Some(15),
+        crystalizedInterest = Some(20)
+      )
+    )))
   )
 
   class Setup {
@@ -194,6 +250,40 @@ class PenaltiesServiceSpec extends SpecBase {
     "return total amount of VAT overdue when the VAT overview is present with elements" in new Setup {
       val result = service.findOverdueVATFromPayload(sampleLspDataWithVATOverview)
       result shouldBe 223.45
+    }
+  }
+
+  "findCrystalizedPenaltiesInterest" should {
+    "return 0 when the payload does not have any financial penalties for LPS or LPP" in new Setup {
+      val result = service.findCrystalizedPenaltiesInterest(sampleLspData)
+      result shouldBe 0
+    }
+
+    "return 0 when the payload contains financial penalties but does not contain crystalized interest penalties for LSP and LPP" in new Setup {
+      val result = service.findCrystalizedPenaltiesInterest(sampleLspDataWithNoFinancialElements)
+      result shouldBe 0
+    }
+
+    "return total amount when the payload contains crystalized interest penalties for LSP and LPP" in new Setup {
+      val result = service.findCrystalizedPenaltiesInterest(sampleLspDataWithFinancialElements)
+      result shouldBe 40
+    }
+  }
+
+  "findEstimatedPenaltiesInterest" should {
+    "return 0 when the payload does not have any financial penalties for LPS or LPP" in new Setup {
+      val result = service.findEstimatedPenaltiesInterest(sampleLspData)
+      result shouldBe 0
+    }
+
+    "return 0 when the payload contains financial penalties but does not contain estimated interest penalties for LSP and LPP" in new Setup {
+      val result = service.findEstimatedPenaltiesInterest(sampleLspDataWithNoFinancialElements)
+      result shouldBe 0
+    }
+
+    "return total amount when the payload contains estimated interest penalties for LSP and LPP" in new Setup {
+      val result = service.findEstimatedPenaltiesInterest(sampleLspDataWithFinancialElements)
+      result shouldBe 30
     }
   }
 }

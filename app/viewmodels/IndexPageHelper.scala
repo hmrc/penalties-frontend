@@ -171,11 +171,14 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
 
   def getWhatYouOweBreakdown(etmpData: ETMPPayload)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
     val amountOfLateVAT = penaltiesService.findOverdueVATFromPayload(etmpData)
+    val penaltiesCrystalizedInterest = penaltiesService.findCrystalizedPenaltiesInterest(etmpData)
+    val penaltiesEstimatedInterest = penaltiesService.findEstimatedPenaltiesInterest(etmpData)
     val stringToConvertToBulletPoints = Seq(
       //TODO: fill this Seq with Option[String]'s with each bullet point - it will render only those which values exist
-      returnMessageIfAmountMoreThanZero(amountOfLateVAT, "whatIsOwed.lateVAT")
-    ).collect{case Some(x) => x}
-    if(stringToConvertToBulletPoints.isEmpty) {
+      returnMessageIfAmountMoreThanZero(amountOfLateVAT, "whatIsOwed.lateVAT"),
+      returnPenaltiesInterestMessages(penaltiesCrystalizedInterest, penaltiesEstimatedInterest)
+    ).collect { case Some(x) => x }
+    if (stringToConvertToBulletPoints.isEmpty) {
       None
     } else {
       Some(bullets(
@@ -187,9 +190,18 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
   }
 
   private def returnMessageIfAmountMoreThanZero(amount: BigDecimal, msgKeyToApply: String)(implicit messages: Messages): Option[String] = {
-    if(amount > 0) {
-      val formattedAmount = if(amount.isWhole()) amount else "%,.2f".format(amount)
+    if (amount > 0) {
+      val formattedAmount = if (amount.isWhole()) amount else "%,.2f".format(amount)
       Some(messages(msgKeyToApply, formattedAmount))
+    } else None
+  }
+
+  private def returnPenaltiesInterestMessages(crystalizedInterest: BigDecimal, estimatedInterest: BigDecimal)(implicit messages: Messages): Option[String] = {
+    if (estimatedInterest > 0) {
+      val totalInterest = crystalizedInterest + estimatedInterest
+      Some(messages("whatIsOwed.allPenalties.estimatedInterest", totalInterest))
+    } else if (estimatedInterest == 0 && crystalizedInterest > 0) {
+      Some(messages("whatIsOwed.allPenalties.Interest", crystalizedInterest))
     } else None
   }
 }

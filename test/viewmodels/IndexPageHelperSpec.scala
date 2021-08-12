@@ -16,10 +16,12 @@
 
 package viewmodels
 
+import java.time.LocalDateTime
+
 import assets.messages.IndexMessages._
 import base.SpecBase
 import models.ETMPPayload
-import models.financial.{AmountTypeEnum, OverviewElement}
+import models.financial.{AmountTypeEnum, Financial, OverviewElement}
 import models.payment.PaymentFinancial
 import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum}
 import models.point.{PenaltyTypeEnum, PointStatusEnum}
@@ -553,6 +555,107 @@ class IndexPageHelperSpec extends SpecBase {
         result.isDefined shouldBe true
         result.get.body.contains("£223.45 in late VAT") shouldBe true
       }
+
+      "the user has crystalized and estimated interest on penalties" in {
+        val etmpPayloadWithInterestOnPenalties: ETMPPayload = ETMPPayload(
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3,
+          penaltyPoints = Seq(sampleFinancialPenaltyPoint.copy(financial = Some(
+            Financial(
+              amountDue = 0,
+              dueDate = LocalDateTime.now(),
+              estimatedInterest = Some(16.10),
+              crystalizedInterest = Some(23.00)
+            )
+          )),
+            sampleFinancialPenaltyPoint.copy(financial = Some(
+              Financial(
+                amountDue = 0,
+                dueDate = LocalDateTime.now(),
+                estimatedInterest = Some(14.05),
+                crystalizedInterest = Some(23.00)
+              )
+            ))
+          ),
+          latePaymentPenalties = Some(Seq(sampleLatePaymentPenaltyDue.copy(financial =
+            PaymentFinancial(
+              amountDue = 0,
+              outstandingAmountDue = 0,
+              dueDate = LocalDateTime.now(),
+              estimatedInterest = Some(15.00),
+              crystalizedInterest = Some(22.00)
+            )
+          ),
+            sampleLatePaymentPenaltyDue.copy(financial =
+              PaymentFinancial(
+                amountDue = 0,
+                outstandingAmountDue = 0,
+                dueDate = LocalDateTime.now(),
+                estimatedInterest = Some(10.00),
+                crystalizedInterest = Some(22.00)
+              )
+            )
+          )),
+          vatOverview = None)
+        val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithInterestOnPenalties)
+        result.isDefined shouldBe true
+        result.get.body.contains("£145.15 in estimated interest on penalties") shouldBe true
+      }
+
+      "the user has just crystalized interest on penalties" in {
+        val etmpPayloadWithCrystalizedButNoEstimatedInterestOnPenalties: ETMPPayload = ETMPPayload(
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3,
+          penaltyPoints = Seq(sampleFinancialPenaltyPoint.copy(financial = Some(
+              Financial(
+                amountDue = 0,
+                dueDate = LocalDateTime.now(),
+                estimatedInterest = None,
+                crystalizedInterest = Some(23.00)
+              )
+            ))
+          ),
+          latePaymentPenalties = Some(Seq(sampleLatePaymentPenaltyDue.copy(financial =
+            PaymentFinancial(
+              amountDue = 0,
+              outstandingAmountDue = 0,
+              dueDate = LocalDateTime.now(),
+              estimatedInterest = None,
+              crystalizedInterest = Some(22.00)
+            )
+          ))
+          ),
+          vatOverview = None)
+        val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithCrystalizedButNoEstimatedInterestOnPenalties)
+        result.isDefined shouldBe true
+        result.get.body.contains("£45 in interest on penalties") shouldBe true
+
+      }
+
+      "the user has no estimated or crystalized interest on penalties" in {
+        val etmpPayloadWithNoInterestPayments: ETMPPayload = ETMPPayload(
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = None,
+          vatOverview = Some(
+            Seq(
+              OverviewElement(
+                `type` = AmountTypeEnum.VAT,
+                amount = 100.00,
+                estimatedInterest = Some(10.00),
+                crystalizedInterest = Some(10.00)
+              ),
+              OverviewElement(
+                `type` = AmountTypeEnum.Central_Assessment,
+                amount = 123.45,
+                estimatedInterest = Some(12.04),
+                crystalizedInterest = Some(11.23)
+              )
+            )
+          ))
+        val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithNoInterestPayments)
+        result.isDefined shouldBe true
+        result.get.body.contains("£223.45 in late VAT") shouldBe true
+        result.get.body.contains("in interest on penalties") shouldBe false
+        result.get.body.contains("in estimated interest on penalties") shouldBe false
+      }
+
     }
   }
 }
