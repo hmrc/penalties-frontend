@@ -73,8 +73,8 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
       allLPPs => {
         val allAdditionalPoints = allLPPs.filter(_.`type` == PenaltyTypeEnum.Additional)
         val allFinancialPoints = allLPPs.filter(_.`type` == PenaltyTypeEnum.Financial)
-        val estimatedLPPs = allAdditionalPoints.map(_.financial.amountDue).foldRight(BigDecimal(0))(_ + _)
-        val crystallisedLPPs = allFinancialPoints.map(_.financial.amountDue).foldRight(BigDecimal(0))(_ + _)
+        val estimatedLPPs = allAdditionalPoints.map(_.financial.outstandingAmountDue).foldRight(BigDecimal(0))(_ + _)
+        val crystallisedLPPs = allFinancialPoints.map(_.financial.outstandingAmountDue).foldRight(BigDecimal(0))(_ + _)
         val isEstimatesIncluded = estimatedLPPs > BigDecimal(0)
         (crystallisedLPPs + estimatedLPPs, isEstimatesIncluded)
       }
@@ -82,7 +82,7 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
   }.getOrElse((0, false))
 
   def findTotalLSPFromPayload(payload: ETMPPayload): BigDecimal = {
-    payload.penaltyPoints.map(_.financial.map(_.amountDue)).collect{ case Some(x) => x }.foldRight(BigDecimal(0))(_ + _)
+    payload.penaltyPoints.map(_.financial.map(_.outstandingAmountDue)).collect{ case Some(x) => x }.foldRight(BigDecimal(0))(_ + _)
   }
 
   def findEstimatedVATInterest(payload: ETMPPayload): (BigDecimal, Boolean) = {

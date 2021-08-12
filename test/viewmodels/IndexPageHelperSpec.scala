@@ -579,7 +579,7 @@ class IndexPageHelperSpec extends SpecBase {
                 communications = Seq.empty,
                 financial = PaymentFinancial(
                   amountDue = 100.34,
-                  outstandingAmountDue = 50.00,
+                  outstandingAmountDue = 50.12,
                   dueDate = sampleDate,
                   estimatedInterest = None,
                   crystalizedInterest = None
@@ -591,7 +591,7 @@ class IndexPageHelperSpec extends SpecBase {
           )
         val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithOutstandingPayments)
         result.isDefined shouldBe true
-        result.get.body.contains("£100.34 in late payment penalties") shouldBe true
+        result.get.body.contains("£50.12 in late payment penalties") shouldBe true
       }
 
       "the user has outstanding LPP's to pay - with estimates" in {
@@ -615,7 +615,7 @@ class IndexPageHelperSpec extends SpecBase {
                 communications = Seq.empty,
                 financial = PaymentFinancial(
                   amountDue = 31.34,
-                  outstandingAmountDue = 10.00,
+                  outstandingAmountDue = 10.12,
                   dueDate = sampleDate,
                   estimatedInterest = None,
                   crystalizedInterest = None
@@ -637,7 +637,7 @@ class IndexPageHelperSpec extends SpecBase {
                 communications = Seq.empty,
                 financial = PaymentFinancial(
                   amountDue = 100.34,
-                  outstandingAmountDue = 50.00,
+                  outstandingAmountDue = 50.12,
                   dueDate = sampleDate,
                   estimatedInterest = None,
                   crystalizedInterest = None
@@ -649,7 +649,7 @@ class IndexPageHelperSpec extends SpecBase {
         )
         val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithOutstandingPayments)
         result.isDefined shouldBe true
-        result.get.body.contains("£131.68 in estimated late payment penalties") shouldBe true
+        result.get.body.contains("£60.24 in estimated late payment penalties") shouldBe true
       }
 
       "the user has outstanding VAT and outstanding LPP's" in {
@@ -673,7 +673,7 @@ class IndexPageHelperSpec extends SpecBase {
                 communications = Seq.empty,
                 financial = PaymentFinancial(
                   amountDue = 31.34,
-                  outstandingAmountDue = 10.00,
+                  outstandingAmountDue = 21.34,
                   dueDate = sampleDate,
                   estimatedInterest = None,
                   crystalizedInterest = None
@@ -695,7 +695,7 @@ class IndexPageHelperSpec extends SpecBase {
                 communications = Seq.empty,
                 financial = PaymentFinancial(
                   amountDue = 100.34,
-                  outstandingAmountDue = 50.00,
+                  outstandingAmountDue = 50.23,
                   dueDate = sampleDate,
                   estimatedInterest = None,
                   crystalizedInterest = None
@@ -722,7 +722,7 @@ class IndexPageHelperSpec extends SpecBase {
         )
         val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithOutstandingPayments)
         result.isDefined shouldBe true
-        result.get.body.contains("£131.68 in estimated late payment penalties") shouldBe true
+        result.get.body.contains("£71.57 in estimated late payment penalties") shouldBe true
         result.get.body.contains("£223.45 in late VAT") shouldBe true
       }
 
@@ -789,6 +789,7 @@ class IndexPageHelperSpec extends SpecBase {
               financial = Some(
                 Financial(
                   amountDue = 200.00,
+                  outstandingAmountDue = 200.00,
                   dueDate = sampleDate,
                   estimatedInterest = None,
                   crystalizedInterest = None
@@ -819,6 +820,7 @@ class IndexPageHelperSpec extends SpecBase {
               financial = Some(
                 Financial(
                   amountDue = 200.00,
+                  outstandingAmountDue = 200.00,
                   dueDate = sampleDate,
                   estimatedInterest = None,
                   crystalizedInterest = None

@@ -422,13 +422,13 @@ class PenaltiesServiceSpec extends SpecBase {
 
     "return the amount of crystallised penalties and false - indicating no estimate" in new Setup {
       val result = service.findEstimatedLPPsFromPayload(sampleLppDataNoAdditionalPenalties)
-      result._1 shouldBe 123.45
+      result._1 shouldBe 50.00
       result._2 shouldBe false
     }
 
     "return the amount of crystallised penalties and true - indicating additional penalties / estimates" in new Setup {
       val result = service.findEstimatedLPPsFromPayload(sampleLppDataWithAdditionalPenalties)
-      result._1 shouldBe 223.45
+      result._1 shouldBe 100.00
       result._2 shouldBe true
     }
   }
@@ -453,26 +453,31 @@ class PenaltiesServiceSpec extends SpecBase {
   "estimatedVATInterest" should {
     "return 0 when the payload does not have any VAT overview field" in new Setup {
       val result = service.findEstimatedVATInterest(sampleLspData)
-      result shouldBe (0,false)
+      result._1 shouldBe 0.00
+      result._2 shouldBe false
     }
 
     "return 0 when the payload contains VAT overview but has no crystalized and estimated interest" in new Setup {
       val result = service.findEstimatedVATInterest(sampleLspDataWithVATOverviewNoElements)
-      result shouldBe (0,false)
+      result._1 shouldBe 0.00
+      result._2 shouldBe false
     }
 
     "return total estimated VAT interest when  crystalized and estimated interest is present" in new Setup {
       val result = service.findEstimatedVATInterest(sampleLspDataWithVATOverview)
-      result shouldBe (40.00,true)
+      result._1 shouldBe 40.00
+      result._2 shouldBe true
     }
 
     "return total VAT interest when the VAT overview is present without estimated interest" in new Setup {
       val result = service.findEstimatedVATInterest(samplePayloadWithVATOverviewWithoutEstimatedInterest)
-      result shouldBe (20.00,false)
+      result._1 shouldBe 20.00
+      result._2 shouldBe false
     }
     "return total VAT interest when the VAT overview is present without crystalized interest" in new Setup {
       val result = service.findEstimatedVATInterest(samplePayloadWithVATOverviewWithoutCrystalizedInterest)
-      result shouldBe (43.00,true)
+      result._1 shouldBe 43.00
+      result._2 shouldBe true
     }
   }
 

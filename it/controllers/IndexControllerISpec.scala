@@ -306,7 +306,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       ),
       financial = PaymentFinancial(
         amountDue = 32.12,
-        outstandingAmountDue = 200.00,
+        outstandingAmountDue = 32.12,
         dueDate = sampleDate1,
         estimatedInterest = None,
         crystalizedInterest = None
@@ -398,6 +398,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         financial = Some(
           Financial(
             amountDue = 200.00,
+            outstandingAmountDue = 200.00,
             dueDate = sampleDate1,
             estimatedInterest = Some(12.34),
             crystalizedInterest = Some(34.21)
@@ -428,6 +429,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         financial = Some(
           Financial(
             amountDue = 200.00,
+            outstandingAmountDue = 200.00,
             dueDate = sampleDate1,
             estimatedInterest = None,
             crystalizedInterest = None
@@ -557,7 +559,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#what-is-owed > p").first().text shouldBe "You owe:"
       parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£121.40 in late VAT"
       parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "£93.10 in estimated VAT interest"
-      parsedBody.select("#what-is-owed > ul > li").get(2).text shouldBe "£400 in late payment penalties"
+      parsedBody.select("#what-is-owed > ul > li").get(2).text shouldBe "£200 in late payment penalties"
       parsedBody.select("#what-is-owed > ul > li").get(3).text shouldBe "£99.55 in estimated interest on penalties"
       parsedBody.select("#what-is-owed > ul > li").get(4).text shouldBe "£400 fixed penalties for late submission"
       parsedBody.select("#what-is-owed > ul > li").get(5).text shouldBe "other penalties not related to late submission or late payment"
@@ -571,7 +573,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val request = await(buildClientForRequestToApp(uri = "/").get())
       request.status shouldBe Status.OK
       val parsedBody = Jsoup.parse(request.body)
-      parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£432.12 in estimated late payment penalties"
+      parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£232.12 in estimated late payment penalties"
       parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "£53 in estimated interest on penalties"
       //TODO: add button and reveal section
     }

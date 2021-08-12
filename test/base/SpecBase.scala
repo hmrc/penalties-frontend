@@ -145,7 +145,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     communications = Seq.empty,
     financial = Some(
       Financial(
-        amountDue = 200.00, dueDate = LocalDateTime.now()
+        amountDue = 200.00, outstandingAmountDue = 200.00, dueDate = LocalDateTime.now()
       )
     )
   )
@@ -369,6 +369,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         financial = Some(
           Financial(
             amountDue = 200.00,
+            outstandingAmountDue = 200.00,
             dueDate = sampleDate,
             estimatedInterest = None,
             crystalizedInterest = None
@@ -399,6 +400,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         financial = Some(
           Financial(
             amountDue = 200.00,
+            outstandingAmountDue = 200.00,
             dueDate = sampleDate,
             estimatedInterest = None,
             crystalizedInterest = None

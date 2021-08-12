@@ -130,6 +130,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     financial = Some(
       Financial(
         amountDue = 200.00,
+        outstandingAmountDue = 200.00,
         dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
       )
     )
@@ -157,6 +158,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     financial = Some(
       Financial(
         amountDue = 200.00,
+        outstandingAmountDue = 200.00,
         dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
       )
     )
@@ -184,6 +186,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     financial = Some(
       Financial(
         amountDue = 200.00,
+        outstandingAmountDue = 200.00,
         dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
       )
     )
@@ -211,6 +214,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     financial = Some(
       Financial(
         amountDue = 200.00,
+        outstandingAmountDue = 200.00,
         dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
       )
     )
@@ -238,6 +242,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     financial = Some(
       Financial(
         amountDue = 200.00,
+        outstandingAmountDue = 200.00,
         dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
       )
     )
@@ -265,6 +270,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     financial = Some(
       Financial(
         amountDue = 200.00,
+        outstandingAmountDue = 200.00,
         dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
       )
     )
@@ -292,6 +298,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     financial = Some(
       Financial(
         amountDue = 200.00,
+        outstandingAmountDue = 200.00,
         dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
       )
     )
@@ -319,6 +326,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     financial = Some(
       Financial(
         amountDue = 200.00,
+        outstandingAmountDue = 200.00,
         dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
       )
     )
@@ -346,6 +354,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     financial = Some(
       Financial(
         amountDue = 200.00,
+        outstandingAmountDue = 200.00,
         dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
       )
     )

@@ -95,19 +95,19 @@ class PenaltyPointSpec extends AnyWordSpec with Matchers {
 
   val penaltyPointAsFinancialPenaltyModel: PenaltyPoint = penaltyPointAsPointModel.copy(
     `type` = PenaltyTypeEnum.Financial,
-    financial = Some(Financial(300.00, sampleDateTime3))
+    financial = Some(Financial(300.00, 300.00, sampleDateTime3))
   )
 
   val penaltyPointAsFinancialPenaltyModelNoDateExpired: PenaltyPoint = penaltyPointAsPointModel.copy(
     `type` = PenaltyTypeEnum.Financial,
     dateExpired = None,
-    financial = Some(Financial(300.00, sampleDateTime3))
+    financial = Some(Financial(300.00, 300.00, sampleDateTime3))
   )
 
   "PenaltyPoint" should {
     s"be writeable to JSON when the point type is ${PenaltyTypeEnum.Financial}" in {
       val result = Json.toJson(penaltyPointAsFinancialPenaltyModel)
-      result shouldBe penaltyPointAsJson(PenaltyTypeEnum.Financial, Some(sampleDateTime2), Some(Financial(300.00, sampleDateTime3)), true, PointStatusEnum.Active)
+      result shouldBe penaltyPointAsJson(PenaltyTypeEnum.Financial, Some(sampleDateTime2), Some(Financial(300.00, 300.00, sampleDateTime3)), true, PointStatusEnum.Active)
     }
 
     s"be writeable to JSON when the point type is ${PenaltyTypeEnum.Point}" in {
@@ -116,7 +116,7 @@ class PenaltyPointSpec extends AnyWordSpec with Matchers {
     }
 
     s"be readable from JSON when the point type is ${PenaltyTypeEnum.Financial}" in {
-      val result = Json.fromJson(penaltyPointAsJson(PenaltyTypeEnum.Financial, Some(sampleDateTime2), Some(Financial(300.00, sampleDateTime3)), true, PointStatusEnum.Active
+      val result = Json.fromJson(penaltyPointAsJson(PenaltyTypeEnum.Financial, Some(sampleDateTime2), Some(Financial(300.00, 300.00, sampleDateTime3)), true, PointStatusEnum.Active
       ))(PenaltyPoint.format)
       result.isSuccess shouldBe true
       result.get shouldBe penaltyPointAsFinancialPenaltyModel
@@ -129,7 +129,7 @@ class PenaltyPointSpec extends AnyWordSpec with Matchers {
     }
 
     "be readable from JSON when there is no dateExpired KV in the JSON" in {
-      val result = Json.fromJson(penaltyPointAsJson(PenaltyTypeEnum.Financial, None, Some(Financial(300.00, sampleDateTime3)), true, PointStatusEnum.Active))(PenaltyPoint.format)
+      val result = Json.fromJson(penaltyPointAsJson(PenaltyTypeEnum.Financial, None, Some(Financial(300.00, 300.00, sampleDateTime3)), true, PointStatusEnum.Active))(PenaltyPoint.format)
       result.isSuccess shouldBe true
       result.get shouldBe penaltyPointAsFinancialPenaltyModelNoDateExpired
     }
