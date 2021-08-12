@@ -396,26 +396,26 @@ class PenaltiesServiceSpec extends SpecBase {
 
   "estimatedVATInterest" should {
     "return 0 when the payload does not have any VAT overview field" in new Setup {
-      val result = service.estimatedVATInterest(sampleLspData)
+      val result = service.findEstimatedVATInterest(sampleLspData)
       result shouldBe (0,false)
     }
 
     "return 0 when the payload contains VAT overview but has no crystalized and estimated interest" in new Setup {
-      val result = service.estimatedVATInterest(sampleLspDataWithVATOverviewNoElements)
+      val result = service.findEstimatedVATInterest(sampleLspDataWithVATOverviewNoElements)
       result shouldBe (0,false)
     }
 
     "return total estimated VAT interest when  crystalized and estimated interest is present" in new Setup {
-      val result = service.estimatedVATInterest(sampleLspDataWithVATOverview)
+      val result = service.findEstimatedVATInterest(sampleLspDataWithVATOverview)
       result shouldBe (40.00,true)
     }
 
     "return total VAT interest when the VAT overview is present without estimated interest" in new Setup {
-      val result = service.estimatedVATInterest(samplePayloadWithVATOverviewWithoutEstimatedInterest)
+      val result = service.findEstimatedVATInterest(samplePayloadWithVATOverviewWithoutEstimatedInterest)
       result shouldBe (20.00,false)
     }
     "return total VAT interest when the VAT overview is present without crystalized interest" in new Setup {
-      val result = service.estimatedVATInterest(samplePayloadWithVATOverviewWithoutCrystalizedInterest)
+      val result = service.findEstimatedVATInterest(samplePayloadWithVATOverviewWithoutCrystalizedInterest)
       result shouldBe (43.00,true)
     }
   }

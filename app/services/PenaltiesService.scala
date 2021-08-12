@@ -84,9 +84,9 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
     payload.penaltyPoints.map(_.financial.map(_.amountDue)).collect{ case Some(x) => x }.foldRight(BigDecimal(0))(_ + _)
   }
 
-  def estimatedVATInterest(payload: ETMPPayload): (BigDecimal, Boolean) = {
+  def findEstimatedVATInterest(payload: ETMPPayload): (BigDecimal, Boolean) = {
         val estimatedVAT = findEstimatedVatInterestFromPayload(payload)
         val crystallisedVAT = findCrystalizedInterestFromPayload(payload)
-        Option(crystallisedVAT + estimatedVAT, estimatedVAT > 0).getOrElse(0,false)
+        (crystallisedVAT + estimatedVAT, estimatedVAT > 0)
   }
 }
