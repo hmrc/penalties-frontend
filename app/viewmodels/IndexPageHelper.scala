@@ -173,13 +173,15 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     val lppAmount = penaltiesService.findEstimatedLPPsFromPayload(etmpData)
     val otherUnrelatedPenalties = penaltiesService.isOtherUnrelatedPenalties(etmpData)
     val totalAmountOfLSPs = penaltiesService.findTotalLSPFromPayload(etmpData)
+    val estimatedVATInterest = penaltiesService.findEstimatedVATInterest(etmpData)
     val stringToConvertToBulletPoints = Seq(
       //TODO: fill this Seq with Option[String]'s with each bullet point - it will render only those which values exist
       returnMessageIfAmountMoreThanZero(amountOfLateVAT, "whatIsOwed.lateVAT"),
+      returnEstimatedVATMessageIfMoreThanZero(estimatedVATInterest._1,estimatedVATInterest._2,"whatIsOwed.VATInterest"),
       returnEstimatedMessageIfHasEstimatedCharges(lppAmount._1, lppAmount._2, "whatIsOwed.lppAmount"),
       returnMessageIfAmountMoreThanZero(totalAmountOfLSPs, "whatIsOwed.amountOfLSPs"),
       returnMessageIfOtherUnrelatedPenalties(otherUnrelatedPenalties, "whatIsOwed.otherPenalties")
-    ).collect{case Some(x) => x}
+          ).collect{case Some(x) => x}
     if(stringToConvertToBulletPoints.isEmpty) {
       None
     } else {
@@ -209,5 +211,17 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     if(isUnrelatedPenalties) {
       Some(messages(msgKey))
     } else None
+  }
+
+  private def returnEstimatedVATMessageIfMoreThanZero(vatInterest: BigDecimal, isEstimatedVAT: Boolean, msgKeyToApply: String)(implicit messages: Messages): Option[String]={
+   if(vatInterest > 0) {
+    (isEstimatedVAT,vatInterest.isWhole() ) match {
+      case(true,true) => Some(messages(s"$msgKeyToApply.estimated", vatInterest))
+      case(true,false) => Some(messages(s"$msgKeyToApply.estimated", "%,.2f".format(vatInterest)))
+      case(false,false) => Some(messages(s"$msgKeyToApply", "%,.2f".format(vatInterest)))
+      case(false,true) => Some(messages(s"$msgKeyToApply", vatInterest))
+    }
+   }
+   else None
   }
 }

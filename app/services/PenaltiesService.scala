@@ -39,6 +39,22 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
       penalty.period.isDefined && penalty.period.get.submission.submittedDate.isEmpty && !penalty.appealStatus.contains(AppealStatusEnum.Accepted) && !penalty.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal))
   }
 
+  private def findEstimatedVatInterestFromPayload(payload: ETMPPayload): BigDecimal = {
+    payload.vatOverview.map {
+      estimatedVATInterest => {
+        estimatedVATInterest.map(_.estimatedInterest.getOrElse(BigDecimal(0))).foldRight(BigDecimal(0))(_ + _)
+      }
+    }
+  }.getOrElse(0)
+
+  private def findCrystalizedInterestFromPayload(payload: ETMPPayload): BigDecimal = {
+    payload.vatOverview.map {
+      crystalizedInterest => {
+        crystalizedInterest.map(_.crystalizedInterest.getOrElse(BigDecimal(0))).foldRight(BigDecimal(0))(_ + _)
+      }
+    }
+  }.getOrElse(0)
+
   def findOverdueVATFromPayload(payload: ETMPPayload): BigDecimal = {
     payload.vatOverview.map {
       allCharges => {
@@ -66,5 +82,11 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
 
   def findTotalLSPFromPayload(payload: ETMPPayload): BigDecimal = {
     payload.penaltyPoints.map(_.financial.map(_.amountDue)).collect{ case Some(x) => x }.foldRight(BigDecimal(0))(_ + _)
+  }
+
+  def findEstimatedVATInterest(payload: ETMPPayload): (BigDecimal, Boolean) = {
+        val estimatedVAT = findEstimatedVatInterestFromPayload(payload)
+        val crystallisedVAT = findCrystalizedInterestFromPayload(payload)
+        (crystallisedVAT + estimatedVAT, estimatedVAT > 0)
   }
 }

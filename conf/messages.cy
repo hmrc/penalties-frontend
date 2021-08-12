@@ -165,3 +165,5 @@ whatIsOwed.details.body.2 = . This allows you to pay your bill in instalments.
 whatIsOwed.button.checkAndPay = Check amounts and pay
 whatIsOwed.lppAmount = £{0} in late payment penalties
 whatIsOwed.lppAmount.estimated = £{0} in estimated late payment penalties
+whatIsOwed.VATInterest.estimated = £{0} in estimated VAT interest
+whatIsOwed.VATInterest = £{0} in VAT interest
