@@ -25,7 +25,6 @@ import utils.MessageRenderer.getMessage
 import utils.ViewUtils
 
 import javax.inject.Inject
-import scala.math.BigDecimal.RoundingMode
 
 class IndexPageHelper @Inject()(p: views.html.components.p,
                                 strong: views.html.components.strong,
@@ -171,14 +170,22 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
 
   def getWhatYouOweBreakdown(etmpData: ETMPPayload)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
     val amountOfLateVAT = penaltiesService.findOverdueVATFromPayload(etmpData)
+    val lppAmount = penaltiesService.findEstimatedLPPsFromPayload(etmpData)
+    val otherUnrelatedPenalties = penaltiesService.isOtherUnrelatedPenalties(etmpData)
+    val totalAmountOfLSPs = penaltiesService.findTotalLSPFromPayload(etmpData)
+    val estimatedVATInterest = penaltiesService.findEstimatedVATInterest(etmpData)
     val penaltiesCrystalizedInterest = penaltiesService.findCrystalizedPenaltiesInterest(etmpData)
     val penaltiesEstimatedInterest = penaltiesService.findEstimatedPenaltiesInterest(etmpData)
     val stringToConvertToBulletPoints = Seq(
       //TODO: fill this Seq with Option[String]'s with each bullet point - it will render only those which values exist
       returnMessageIfAmountMoreThanZero(amountOfLateVAT, "whatIsOwed.lateVAT"),
-      returnPenaltiesInterestMessages(penaltiesCrystalizedInterest, penaltiesEstimatedInterest)
-    ).collect { case Some(x) => x }
-    if (stringToConvertToBulletPoints.isEmpty) {
+      returnEstimatedVATMessageIfMoreThanZero(estimatedVATInterest._1,estimatedVATInterest._2,"whatIsOwed.VATInterest"),
+      returnEstimatedMessageIfHasEstimatedCharges(lppAmount._1, lppAmount._2, "whatIsOwed.lppAmount"),
+      returnPenaltiesInterestMessages(penaltiesCrystalizedInterest, penaltiesEstimatedInterest),
+      returnMessageIfAmountMoreThanZero(totalAmountOfLSPs, "whatIsOwed.amountOfLSPs"),
+      returnMessageIfOtherUnrelatedPenalties(otherUnrelatedPenalties, "whatIsOwed.otherPenalties")
+    ).collect{case Some(x) => x}
+    if(stringToConvertToBulletPoints.isEmpty) {
       None
     } else {
       Some(bullets(
@@ -190,10 +197,35 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
   }
 
   private def returnMessageIfAmountMoreThanZero(amount: BigDecimal, msgKeyToApply: String)(implicit messages: Messages): Option[String] = {
-    if (amount > 0) {
+    if(amount > 0) {
       val formattedAmount = if (amount.isWhole()) amount else "%,.2f".format(amount)
       Some(messages(msgKeyToApply, formattedAmount))
     } else None
+  }
+
+  private def returnEstimatedMessageIfHasEstimatedCharges(amount: BigDecimal, isEstimate: Boolean, msgKeyToApply: String)(implicit messages: Messages): Option[String] = {
+    if(amount > 0) {
+      val msgKey = if(isEstimate) s"$msgKeyToApply.estimated" else msgKeyToApply
+      Some(messages(msgKey, amount))
+    } else None
+  }
+
+  private def returnMessageIfOtherUnrelatedPenalties(isUnrelatedPenalties: Boolean, msgKey: String)(implicit messages: Messages): Option[String] = {
+    if(isUnrelatedPenalties) {
+      Some(messages(msgKey))
+    } else None
+  }
+
+  private def returnEstimatedVATMessageIfMoreThanZero(vatInterest: BigDecimal, isEstimatedVAT: Boolean, msgKeyToApply: String)(implicit messages: Messages): Option[String]={
+   if(vatInterest > 0) {
+    (isEstimatedVAT,vatInterest.isWhole() ) match {
+      case(true,true) => Some(messages(s"$msgKeyToApply.estimated", vatInterest))
+      case(true,false) => Some(messages(s"$msgKeyToApply.estimated", "%,.2f".format(vatInterest)))
+      case(false,false) => Some(messages(s"$msgKeyToApply", "%,.2f".format(vatInterest)))
+      case(false,true) => Some(messages(s"$msgKeyToApply", vatInterest))
+    }
+   }
+   else None
   }
 
   private def returnPenaltiesInterestMessages(crystalizedInterest: BigDecimal, estimatedInterest: BigDecimal)(implicit messages: Messages): Option[String] = {

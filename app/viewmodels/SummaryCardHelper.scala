@@ -29,6 +29,8 @@ import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
+import models.reason.PaymentPenaltyReasonEnum
+import play.api.mvc.Request
 import utils.{ImplicitDateFormatter, ViewUtils}
 
 class SummaryCardHelper @Inject()(link: views.html.components.link) extends ImplicitDateFormatter with ViewUtils {
@@ -166,7 +168,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     }
   }
 
-  def lppCardBody(lpp: LatePaymentPenalty)(implicit messages: Messages): Seq[SummaryListRow] = {
+  def lppCardBody(lpp: LatePaymentPenalty)(implicit messages: Messages, request: Request[_]): Seq[SummaryListRow] = {
     val period = lpp.period
     Seq(
       summaryListRow(
@@ -179,8 +181,15 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
           )
         )
       ),
-      summaryListRow(messages("summaryCard.lpp.key2"), Html(messages("summaryCard.lpp.15days")))
+      summaryListRow(messages("summaryCard.lpp.key2"), Html(messages(getPenaltyReasonKey(lpp))))
     )
+  }
+  private def getPenaltyReasonKey(lpp: LatePaymentPenalty):String = {
+    lpp.reason match{
+      case PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS => "summaryCard.lpp.15days"
+      case PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS => "summaryCard.lpp.30days"
+      case PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS => "summaryCard.lpp.additional.30days"
+    }
   }
 
   def returnNotSubmittedCardBody(period: PenaltyPeriod)(implicit messages: Messages): Seq[SummaryListRow] = Seq(

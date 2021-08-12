@@ -19,6 +19,7 @@ package models
 import models.communication.{Communication, CommunicationTypeEnum}
 import models.financial.{AmountTypeEnum, Financial, OverviewElement}
 import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum, PenaltyPeriod}
+import models.reason.PaymentPenaltyReasonEnum
 import models.submission.{Submission, SubmissionStatusEnum}
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
@@ -252,7 +253,7 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
       | "latePaymentPenalties": [
       |   {
       |       "type": "additional",
-      |       "reason": "VAT_OVERDUE_BY_31_DAYS",
+      |       "reason": "VAT_NOT_PAID_AFTER_30_DAYS",
       |       "id": "1234567892",
       |       "dateCreated": "2021-04-23T18:25:43.511",
       |       "status": "ACTIVE",
@@ -277,7 +278,7 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
       |     },
       |     {
       |       "type": "financial",
-      |       "reason": "VAT_NOT_PAID_ON_TIME",
+      |       "reason": "VAT_NOT_PAID_WITHIN_30_DAYS",
       |       "id": "1234567891",
       |       "dateCreated": "2021-04-23T18:25:43.511",
       |       "status": "ACTIVE",
@@ -461,7 +462,7 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
         LatePaymentPenalty(
           `type` = PenaltyTypeEnum.Additional,
           id = "1234567892",
-          reason = "VAT_OVERDUE_BY_31_DAYS",
+          reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
           dateCreated = sampleDate,
           status = PointStatusEnum.Active,
           appealStatus = None,
@@ -487,7 +488,7 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
         LatePaymentPenalty(
           `type` = PenaltyTypeEnum.Financial,
           id = "1234567891",
-          reason = "VAT_NOT_PAID_ON_TIME",
+          reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
           dateCreated = sampleDate,
           status = PointStatusEnum.Active,
           appealStatus = None,

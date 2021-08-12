@@ -23,8 +23,10 @@ import base.SpecBase
 import models.ETMPPayload
 import models.financial.{AmountTypeEnum, Financial, OverviewElement}
 import models.payment.PaymentFinancial
-import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum}
-import models.point.{PenaltyTypeEnum, PointStatusEnum}
+import models.penalty._
+import models.point._
+import models.reason.PaymentPenaltyReasonEnum
+import models.submission.{Submission, SubmissionStatusEnum}
 import org.jsoup.Jsoup
 
 class IndexPageHelperSpec extends SpecBase {
@@ -456,7 +458,7 @@ class IndexPageHelperSpec extends SpecBase {
             LatePaymentPenalty(
               `type` = PenaltyTypeEnum.Financial,
               id = "1234567891",
-              reason = "VAT_NOT_PAID_ON_TIME",
+              reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
               dateCreated = sampleDate,
               status = PointStatusEnum.Due,
               appealStatus = None,
@@ -492,7 +494,7 @@ class IndexPageHelperSpec extends SpecBase {
             LatePaymentPenalty(
               `type` = PenaltyTypeEnum.Financial,
               id = "1234567891",
-              reason = "VAT_NOT_PAID_ON_TIME",
+              reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
               dateCreated = sampleDate,
               status = PointStatusEnum.Active,
               appealStatus = None,
@@ -533,7 +535,7 @@ class IndexPageHelperSpec extends SpecBase {
 
     "return Some" when {
       "the user has outstanding VAT to pay" in {
-        val etmpPayloadWithNoOutstandingPayments: ETMPPayload = ETMPPayload(
+        val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
           pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = None,
           vatOverview = Some(
             Seq(
@@ -551,9 +553,354 @@ class IndexPageHelperSpec extends SpecBase {
               )
             )
           ))
-        val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithNoOutstandingPayments)
+        val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithOutstandingPayments)
         result.isDefined shouldBe true
         result.get.body.contains("£223.45 in late VAT") shouldBe true
+      }
+
+      "the user has outstanding LPP's to pay - no estimates" in {
+        val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty,
+          latePaymentPenalties = Some(
+            Seq(
+              LatePaymentPenalty(
+                `type` = PenaltyTypeEnum.Financial,
+                id = "1234",
+                reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
+                dateCreated = sampleDate,
+                status = PointStatusEnum.Due,
+                appealStatus = None,
+                period = PaymentPeriod(
+                  startDate = sampleDate,
+                  endDate = sampleDate,
+                  dueDate = sampleDate,
+                  paymentStatus = PaymentStatusEnum.Paid
+                ),
+                communications = Seq.empty,
+                financial = PaymentFinancial(
+                  amountDue = 100.34,
+                  outstandingAmountDue = 50.00,
+                  dueDate = sampleDate,
+                  estimatedInterest = None,
+                  crystalizedInterest = None
+                )
+              )
+            )
+          ),
+          vatOverview = None
+          )
+        val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithOutstandingPayments)
+        result.isDefined shouldBe true
+        result.get.body.contains("£100.34 in late payment penalties") shouldBe true
+      }
+
+      "the user has outstanding LPP's to pay - with estimates" in {
+        val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty,
+          latePaymentPenalties = Some(
+            Seq(
+              LatePaymentPenalty(
+                `type` = PenaltyTypeEnum.Additional,
+                id = "1234",
+                reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
+                dateCreated = sampleDate,
+                status = PointStatusEnum.Due,
+                appealStatus = None,
+                period = PaymentPeriod(
+                  startDate = sampleDate,
+                  endDate = sampleDate,
+                  dueDate = sampleDate,
+                  paymentStatus = PaymentStatusEnum.Paid
+                ),
+                communications = Seq.empty,
+                financial = PaymentFinancial(
+                  amountDue = 31.34,
+                  outstandingAmountDue = 10.00,
+                  dueDate = sampleDate,
+                  estimatedInterest = None,
+                  crystalizedInterest = None
+                )
+              ),
+              LatePaymentPenalty(
+                `type` = PenaltyTypeEnum.Financial,
+                id = "1234",
+                reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
+                dateCreated = sampleDate,
+                status = PointStatusEnum.Due,
+                appealStatus = None,
+                period = PaymentPeriod(
+                  startDate = sampleDate,
+                  endDate = sampleDate,
+                  dueDate = sampleDate,
+                  paymentStatus = PaymentStatusEnum.Paid
+                ),
+                communications = Seq.empty,
+                financial = PaymentFinancial(
+                  amountDue = 100.34,
+                  outstandingAmountDue = 50.00,
+                  dueDate = sampleDate,
+                  estimatedInterest = None,
+                  crystalizedInterest = None
+                )
+              )
+            )
+          ),
+          vatOverview = None
+        )
+        val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithOutstandingPayments)
+        result.isDefined shouldBe true
+        result.get.body.contains("£131.68 in estimated late payment penalties") shouldBe true
+      }
+
+      "the user has outstanding VAT and outstanding LPP's" in {
+        val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty,
+          latePaymentPenalties = Some(
+            Seq(
+              LatePaymentPenalty(
+                `type` = PenaltyTypeEnum.Additional,
+                id = "1234",
+                reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
+                dateCreated = sampleDate,
+                status = PointStatusEnum.Due,
+                appealStatus = None,
+                period = PaymentPeriod(
+                  startDate = sampleDate,
+                  endDate = sampleDate,
+                  dueDate = sampleDate,
+                  paymentStatus = PaymentStatusEnum.Paid
+                ),
+                communications = Seq.empty,
+                financial = PaymentFinancial(
+                  amountDue = 31.34,
+                  outstandingAmountDue = 10.00,
+                  dueDate = sampleDate,
+                  estimatedInterest = None,
+                  crystalizedInterest = None
+                )
+              ),
+              LatePaymentPenalty(
+                `type` = PenaltyTypeEnum.Financial,
+                id = "1234",
+                reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
+                dateCreated = sampleDate,
+                status = PointStatusEnum.Due,
+                appealStatus = None,
+                period = PaymentPeriod(
+                  startDate = sampleDate,
+                  endDate = sampleDate,
+                  dueDate = sampleDate,
+                  paymentStatus = PaymentStatusEnum.Paid
+                ),
+                communications = Seq.empty,
+                financial = PaymentFinancial(
+                  amountDue = 100.34,
+                  outstandingAmountDue = 50.00,
+                  dueDate = sampleDate,
+                  estimatedInterest = None,
+                  crystalizedInterest = None
+                )
+              )
+            )
+          ),
+          vatOverview = Some(
+            Seq(
+              OverviewElement(
+                `type` = AmountTypeEnum.VAT,
+                amount = 100.00,
+                estimatedInterest = Some(10.00),
+                crystalizedInterest = Some(10.00)
+              ),
+              OverviewElement(
+                `type` = AmountTypeEnum.Central_Assessment,
+                amount = 123.45,
+                estimatedInterest = Some(12.04),
+                crystalizedInterest = Some(11.23)
+              )
+            )
+          )
+        )
+        val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithOutstandingPayments)
+        result.isDefined shouldBe true
+        result.get.body.contains("£131.68 in estimated late payment penalties") shouldBe true
+        result.get.body.contains("£223.45 in late VAT") shouldBe true
+      }
+
+      "the user has outstanding VAT to pay and has other unrelated penalties" in {
+        val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = None,
+          vatOverview = Some(
+            Seq(
+              OverviewElement(
+                `type` = AmountTypeEnum.VAT,
+                amount = 100.00,
+                estimatedInterest = Some(10.00),
+                crystalizedInterest = Some(10.00)
+              ),
+              OverviewElement(
+                `type` = AmountTypeEnum.Central_Assessment,
+                amount = 123.45,
+                estimatedInterest = Some(12.04),
+                crystalizedInterest = Some(11.23)
+              )
+            )
+          ),
+          otherPenalties = Some(true))
+        val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithOutstandingPayments)
+        result.isDefined shouldBe true
+        result.get.body.contains("£223.45 in late VAT") shouldBe true
+        result.get.body.contains("other penalties not related to late submission or late payment") shouldBe true
+      }
+
+      "the user has other unrelated penalties" in {
+        val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = None,
+          vatOverview = None, otherPenalties = Some(true))
+        val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithOutstandingPayments)
+        result.isDefined shouldBe true
+        result.get.body.contains("other penalties not related to late submission or late payment") shouldBe true
+      }
+
+      "the user has outstanding VAT to pay and outstanding LSP's" in {
+        val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3,
+          penaltyPoints = Seq(
+            PenaltyPoint(
+              `type` = PenaltyTypeEnum.Financial,
+              id = "1236",
+              number = "3",
+              appealStatus = None,
+              dateCreated = sampleDate,
+              dateExpired = Some(sampleDate),
+              status = PointStatusEnum.Due,
+              reason = None,
+              period = Some(
+                PenaltyPeriod(
+                  startDate = sampleDate,
+                  endDate = sampleDate,
+                  submission = Submission(
+                    dueDate = sampleDate,
+                    submittedDate = Some(sampleDate),
+                    status = SubmissionStatusEnum.Submitted
+                  )
+                )
+              ),
+              communications = Seq.empty,
+              financial = Some(
+                Financial(
+                  amountDue = 200.00,
+                  dueDate = sampleDate,
+                  estimatedInterest = None,
+                  crystalizedInterest = None
+                )
+              )
+            ),
+            PenaltyPoint(
+              `type` = PenaltyTypeEnum.Financial,
+              id = "1235",
+              number = "2",
+              appealStatus = None,
+              dateCreated = sampleDate,
+              dateExpired = Some(sampleDate),
+              status = PointStatusEnum.Due,
+              reason = None,
+              period = Some(
+                PenaltyPeriod(
+                  startDate = sampleDate,
+                  endDate = sampleDate,
+                  submission = Submission(
+                    dueDate = sampleDate,
+                    submittedDate = Some(sampleDate),
+                    status = SubmissionStatusEnum.Submitted
+                  )
+                )
+              ),
+              communications = Seq.empty,
+              financial = Some(
+                Financial(
+                  amountDue = 200.00,
+                  dueDate = sampleDate,
+                  estimatedInterest = None,
+                  crystalizedInterest = None
+                )
+              )
+            ),
+            PenaltyPoint(
+              `type` = PenaltyTypeEnum.Point,
+              id = "1234",
+              number = "1",
+              appealStatus = None,
+              dateCreated = sampleDate,
+              dateExpired = Some(sampleDate),
+              status = PointStatusEnum.Active,
+              reason = None,
+              period = Some(
+                PenaltyPeriod(
+                  startDate = sampleDate,
+                  endDate = sampleDate,
+                  submission = Submission(
+                    dueDate = sampleDate,
+                    submittedDate = Some(sampleDate),
+                    status = SubmissionStatusEnum.Submitted
+                  )
+                )
+              ),
+              communications = Seq.empty,
+              financial = None
+            )
+          ),
+          latePaymentPenalties = None,
+          vatOverview = Some(
+            Seq(
+              OverviewElement(
+                `type` = AmountTypeEnum.VAT,
+                amount = 100.00,
+                estimatedInterest = Some(10.00),
+                crystalizedInterest = Some(10.00)
+              ),
+              OverviewElement(
+                `type` = AmountTypeEnum.Central_Assessment,
+                amount = 123.45,
+                estimatedInterest = Some(12.04),
+                crystalizedInterest = Some(11.23)
+              )
+            )
+          ))
+        val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithOutstandingPayments)
+        result.isDefined shouldBe true
+        result.get.body.contains("£223.45 in late VAT") shouldBe true
+        result.get.body.contains("£400 fixed penalties for late submission") shouldBe true
+        result.get.body.contains("£43.27 in estimated VAT interest") shouldBe true
+      }
+
+      "the user has outstanding LSP's" in {
+        val result = pageHelper.getWhatYouOweBreakdown(sampleLspDataWithDueFinancialPenalties)
+        result.isDefined shouldBe true
+        result.get.body.contains("£400 fixed penalties for late submission") shouldBe true
+      }
+
+      "the user has outstanding VAT Interest to pay - no estimated interest " in {
+        val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3,
+          penaltyPoints = Seq.empty,
+          latePaymentPenalties = None,
+          vatOverview = Some(
+            Seq(
+              OverviewElement(
+                `type` = AmountTypeEnum.VAT,
+                amount = 100.00,
+                crystalizedInterest = Some(10.00)
+              ),
+              OverviewElement(
+                `type` = AmountTypeEnum.Central_Assessment,
+                amount = 123.45,
+                crystalizedInterest = Some(11.23)
+              )
+            )
+          ))
+        val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithOutstandingPayments)
+        result.isDefined shouldBe true
+        result.get.body.contains("£21.23 in VAT interest") shouldBe true
       }
 
       "the user has crystalized and estimated interest on penalties" in {

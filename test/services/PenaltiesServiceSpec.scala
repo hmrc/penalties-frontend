@@ -20,8 +20,10 @@ import base.SpecBase
 import connectors.PenaltiesConnector
 import models.ETMPPayload
 import models.financial.{AmountTypeEnum, Financial, OverviewElement}
-import models.penalty.{LatePaymentPenalty, PenaltyPeriod}
+import models.payment.PaymentFinancial
+import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum, PenaltyPeriod}
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
+import models.reason.PaymentPenaltyReasonEnum
 import models.submission.{Submission, SubmissionStatusEnum}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
@@ -64,6 +66,55 @@ class PenaltiesServiceSpec extends SpecBase {
     latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
   )
 
+  val samplePayloadWithVATOverviewWithoutEstimatedInterest: ETMPPayload = ETMPPayload(
+    pointsTotal = 0,
+    lateSubmissions = 0,
+    adjustmentPointsTotal = 0,
+    fixedPenaltyAmount = 0.0,
+    penaltyAmountsTotal = 0.0,
+    penaltyPointsThreshold = 4,
+    vatOverview = Some(
+      Seq(
+        OverviewElement(
+          `type` = AmountTypeEnum.VAT,
+          amount = 100.00,
+          crystalizedInterest = Some(10.00)
+        ),
+        OverviewElement(
+          `type` = AmountTypeEnum.Central_Assessment,
+          amount = 123.45,
+          crystalizedInterest = Some(10.00)
+        )
+      )
+    ),
+    penaltyPoints = Seq.empty[PenaltyPoint],
+    latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
+  )
+  val samplePayloadWithVATOverviewWithoutCrystalizedInterest: ETMPPayload = ETMPPayload(
+    pointsTotal = 0,
+    lateSubmissions = 0,
+    adjustmentPointsTotal = 0,
+    fixedPenaltyAmount = 0.0,
+    penaltyAmountsTotal = 0.0,
+    penaltyPointsThreshold = 4,
+    vatOverview = Some(
+      Seq(
+        OverviewElement(
+          `type` = AmountTypeEnum.VAT,
+          amount = 100.00,
+          estimatedInterest = Some(13.00)
+        ),
+        OverviewElement(
+          `type` = AmountTypeEnum.Central_Assessment,
+          amount = 123.45,
+          estimatedInterest = Some(30.00)
+        )
+      )
+    ),
+    penaltyPoints = Seq.empty[PenaltyPoint],
+    latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
+  )
+
   val sampleLspDataWithVATOverviewNoElements: ETMPPayload = ETMPPayload(
     pointsTotal = 0,
     lateSubmissions = 0,
@@ -74,6 +125,98 @@ class PenaltiesServiceSpec extends SpecBase {
     vatOverview = Some(Seq()),
     penaltyPoints = Seq.empty[PenaltyPoint],
     latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
+  )
+
+  val sampleLppDataNoAdditionalPenalties: ETMPPayload = ETMPPayload(
+    pointsTotal = 0,
+    lateSubmissions = 0,
+    adjustmentPointsTotal = 0,
+    fixedPenaltyAmount = 0.0,
+    penaltyAmountsTotal = 0.0,
+    penaltyPointsThreshold = 4,
+    vatOverview = None,
+    penaltyPoints = Seq.empty[PenaltyPoint],
+    latePaymentPenalties = Some(Seq(
+      LatePaymentPenalty(
+        `type` = PenaltyTypeEnum.Financial,
+        id = "1234",
+        reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
+        dateCreated = sampleDate,
+        status = PointStatusEnum.Due,
+        appealStatus = None,
+        period = PaymentPeriod(
+          startDate = sampleDate,
+          endDate = sampleDate,
+          dueDate = sampleDate,
+          paymentStatus = PaymentStatusEnum.Paid
+        ),
+        communications = Seq.empty,
+        financial = PaymentFinancial(
+          amountDue = 123.45,
+          outstandingAmountDue = 50.00,
+          dueDate = sampleDate,
+          estimatedInterest = Some(10.12),
+          crystalizedInterest = Some(10.12)
+        )
+      )
+    ))
+  )
+
+  val sampleLppDataWithAdditionalPenalties: ETMPPayload = ETMPPayload(
+    pointsTotal = 0,
+    lateSubmissions = 0,
+    adjustmentPointsTotal = 0,
+    fixedPenaltyAmount = 0.0,
+    penaltyAmountsTotal = 0.0,
+    penaltyPointsThreshold = 4,
+    vatOverview = None,
+    penaltyPoints = Seq.empty[PenaltyPoint],
+    latePaymentPenalties = Some(Seq(
+      LatePaymentPenalty(
+        `type` = PenaltyTypeEnum.Additional,
+        id = "1234",
+        reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
+        dateCreated = sampleDate,
+        status = PointStatusEnum.Due,
+        appealStatus = None,
+        period = PaymentPeriod(
+          startDate = sampleDate,
+          endDate = sampleDate,
+          dueDate = sampleDate,
+          paymentStatus = PaymentStatusEnum.Paid
+        ),
+        communications = Seq.empty,
+        financial = PaymentFinancial(
+          amountDue = 100.00,
+          outstandingAmountDue = 50.00,
+          dueDate = sampleDate,
+          estimatedInterest = None,
+          crystalizedInterest = None
+        )
+      ),
+      LatePaymentPenalty(
+        `type` = PenaltyTypeEnum.Financial,
+        id = "1234",
+        reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
+        dateCreated = sampleDate,
+        status = PointStatusEnum.Due,
+        appealStatus = None,
+        period = PaymentPeriod(
+          startDate = sampleDate,
+          endDate = sampleDate,
+          dueDate = sampleDate,
+          paymentStatus = PaymentStatusEnum.Paid
+        ),
+        communications = Seq.empty,
+        financial = PaymentFinancial(
+          amountDue = 123.45,
+          outstandingAmountDue = 50.00,
+          dueDate = sampleDate,
+          estimatedInterest = Some(10.12),
+          crystalizedInterest = Some(10.12)
+        )
+      )
+    ))
   )
 
   val sampleLspDataWithNoFinancialElements: ETMPPayload = ETMPPayload(
@@ -250,6 +393,86 @@ class PenaltiesServiceSpec extends SpecBase {
     "return total amount of VAT overdue when the VAT overview is present with elements" in new Setup {
       val result = service.findOverdueVATFromPayload(sampleLspDataWithVATOverview)
       result shouldBe 223.45
+    }
+  }
+
+  "isOtherUnrelatedPenalties" should {
+    "return false when the payload does not have the 'otherPenalties' field" in new Setup {
+      val result = service.isOtherUnrelatedPenalties(sampleLspData.copy(otherPenalties = None))
+      result shouldBe false
+    }
+
+    "return false when the payload has the 'otherPenalties' field and it's false" in new Setup {
+      val result = service.isOtherUnrelatedPenalties(sampleLspData)
+      result shouldBe false
+    }
+
+    "return true when the payload has the 'otherPenalties' field and it's true" in new Setup {
+      val result = service.isOtherUnrelatedPenalties(sampleLspData.copy(otherPenalties = Some(true)))
+      result shouldBe true
+    }
+  }
+
+  "findEstimatedLPPsFromPayload" should {
+    "return 0 when the user has no LPP's" in new Setup {
+      val result = service.findEstimatedLPPsFromPayload(sampleLspData)
+      result._1 shouldBe 0
+      result._2 shouldBe false
+    }
+
+    "return the amount of crystallised penalties and false - indicating no estimate" in new Setup {
+      val result = service.findEstimatedLPPsFromPayload(sampleLppDataNoAdditionalPenalties)
+      result._1 shouldBe 123.45
+      result._2 shouldBe false
+    }
+
+    "return the amount of crystallised penalties and true - indicating additional penalties / estimates" in new Setup {
+      val result = service.findEstimatedLPPsFromPayload(sampleLppDataWithAdditionalPenalties)
+      result._1 shouldBe 223.45
+      result._2 shouldBe true
+    }
+  }
+
+  "findTotalLSPFromPayload" should {
+    "return 0 when the payload does not have any LSPP's" in new Setup {
+      val result = service.findTotalLSPFromPayload(sampleLspData)
+      result shouldBe 0
+    }
+
+    "return 0 when the payload does not have any LSP's" in new Setup {
+      val result = service.findTotalLSPFromPayload(etmpDataWithOneLSP)
+      result shouldBe 0
+    }
+
+    "return total amount of VAT overdue when the VAT overview is present with elements" in new Setup {
+      val result = service.findTotalLSPFromPayload(sampleLspDataWithDueFinancialPenalties)
+      result shouldBe 400.00
+    }
+  }
+
+  "estimatedVATInterest" should {
+    "return 0 when the payload does not have any VAT overview field" in new Setup {
+      val result = service.findEstimatedVATInterest(sampleLspData)
+      result shouldBe (0,false)
+    }
+
+    "return 0 when the payload contains VAT overview but has no crystalized and estimated interest" in new Setup {
+      val result = service.findEstimatedVATInterest(sampleLspDataWithVATOverviewNoElements)
+      result shouldBe (0,false)
+    }
+
+    "return total estimated VAT interest when  crystalized and estimated interest is present" in new Setup {
+      val result = service.findEstimatedVATInterest(sampleLspDataWithVATOverview)
+      result shouldBe (40.00,true)
+    }
+
+    "return total VAT interest when the VAT overview is present without estimated interest" in new Setup {
+      val result = service.findEstimatedVATInterest(samplePayloadWithVATOverviewWithoutEstimatedInterest)
+      result shouldBe (20.00,false)
+    }
+    "return total VAT interest when the VAT overview is present without crystalized interest" in new Setup {
+      val result = service.findEstimatedVATInterest(samplePayloadWithVATOverviewWithoutCrystalizedInterest)
+      result shouldBe (43.00,true)
     }
   }
 

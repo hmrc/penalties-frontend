@@ -23,6 +23,7 @@ import models.communication.{Communication, CommunicationTypeEnum}
 import models.payment.PaymentFinancial
 import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum, PenaltyPeriod}
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
+import models.reason.PaymentPenaltyReasonEnum
 import models.submission.{Submission, SubmissionStatusEnum}
 import org.jsoup.nodes.Document
 import play.twirl.api.{Html, HtmlFormat}
@@ -119,7 +120,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
     Some(Seq(LatePaymentPenalty(
       `type` = PenaltyTypeEnum.Financial,
       id = penaltyId,
-      reason = "reason",
+      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
       dateCreated = LocalDateTime.now,
       status = PointStatusEnum.Active,
       appealStatus = None,
@@ -288,7 +289,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           vatTraderDocLPPAdditionalPenalty.select(Selectors.rowItem(Selectors.summaryLPPCard, 2)).text shouldBe penaltyReason
           vatTraderDocLPPAdditionalPenalty.select(Selectors.rowItem(Selectors.summaryLPPCard, 3)).text shouldBe chargedDailyFrom
           vatTraderDocLPPAdditionalPenalty.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).text shouldBe appealPointText
-          vatTraderDocLPPAdditionalPenalty.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).attr("href") shouldBe redirectToAppealUrlForLPP
+          vatTraderDocLPPAdditionalPenalty.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).attr("href") shouldBe redirectToAppealObligationUrlForLPPAdditional
         }
 
         "populate summary card when user has LPPs and has appealed them" in {
@@ -327,8 +328,9 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           implicit val doc: Document = asDocument(applyView())
           doc.select("#what-is-owed > h2").text shouldBe "Overview"
           doc.select("#what-is-owed > p").first().text shouldBe "You owe:"
-          //TODO: add button and reveal section
           doc.select("#main-content h2:nth-child(4)").text shouldBe "Penalty and appeal details"
+          doc.select("#what-is-owed > a").text shouldBe "Check amounts and pay"
+          doc.select("#main-content .govuk-details__summary-text").text shouldBe "I cannot pay today"
         }
       }
     }

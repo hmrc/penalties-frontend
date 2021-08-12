@@ -90,28 +90,35 @@ class IndexControllerSpec extends SpecBase {
         val result = Controller.redirectToAppeals("123456789")(fakeRequest)
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=false")
+        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=false&isAdditional=false")
       }
 
       "the user wants to appeal a penalty for LPP" in new Setup(AuthTestModels.successfulAuthResult) {
         val result = Controller.redirectToAppeals("123456789", isLPP = true)(fakeRequest)
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=true")
+        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=true&isAdditional=false")
+      }
+
+      "the user wants to appeal a penalty for LPP - Additional" in new Setup(AuthTestModels.successfulAuthResult) {
+        val result = Controller.redirectToAppeals("123456789", isLPP = true, isAdditional = true)(fakeRequest)
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=true&isAdditional=true")
       }
 
       "the user wants to appeal an obligation" in new Setup(AuthTestModels.successfulAuthResult) {
         val result = Controller.redirectToAppeals("123456789", isObligation = true)(fakeRequest)
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal-against-the-obligation?penaltyId=$penaltyId&isLPP=false")
+        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal-against-the-obligation?penaltyId=$penaltyId&isLPP=false&isAdditional=false")
       }
 
       "the user wats to appeal an obligation for LPP" in new Setup(AuthTestModels.successfulAuthResult) {
         val result = Controller.redirectToAppeals("123456789", isLPP = true, isObligation = true)(fakeRequest)
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal-against-the-obligation?penaltyId=$penaltyId&isLPP=true")
+        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal-against-the-obligation?penaltyId=$penaltyId&isLPP=true&isAdditional=false")
       }
     }
 
