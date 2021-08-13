@@ -56,6 +56,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         communications = Seq.empty,
         financial = Some(Financial(
           amountDue = 0,
+          outstandingAmountDue = 0,
           dueDate = sampleDate1,
           estimatedInterest = Some(21.00),
           crystalizedInterest = Some(32.00)

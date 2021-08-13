@@ -911,6 +911,7 @@ class IndexPageHelperSpec extends SpecBase {
           penaltyPoints = Seq(sampleFinancialPenaltyPoint.copy(financial = Some(
             Financial(
               amountDue = 0,
+              outstandingAmountDue = 0,
               dueDate = LocalDateTime.now(),
               estimatedInterest = Some(16.10),
               crystalizedInterest = Some(23.00)
@@ -919,6 +920,7 @@ class IndexPageHelperSpec extends SpecBase {
             sampleFinancialPenaltyPoint.copy(financial = Some(
               Financial(
                 amountDue = 0,
+                outstandingAmountDue = 0,
                 dueDate = LocalDateTime.now(),
                 estimatedInterest = Some(14.05),
                 crystalizedInterest = Some(23.00)
@@ -956,6 +958,7 @@ class IndexPageHelperSpec extends SpecBase {
           penaltyPoints = Seq(sampleFinancialPenaltyPoint.copy(financial = Some(
               Financial(
                 amountDue = 0,
+                outstandingAmountDue = 0,
                 dueDate = LocalDateTime.now(),
                 estimatedInterest = None,
                 crystalizedInterest = Some(23.00)
@@ -968,14 +971,14 @@ class IndexPageHelperSpec extends SpecBase {
               outstandingAmountDue = 0,
               dueDate = LocalDateTime.now(),
               estimatedInterest = None,
-              crystalizedInterest = Some(22.00)
+              crystalizedInterest = Some(22.10)
             )
           ))
           ),
           vatOverview = None)
         val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithCrystalizedButNoEstimatedInterestOnPenalties)
         result.isDefined shouldBe true
-        result.get.body.contains("£45 in interest on penalties") shouldBe true
+        result.get.body.contains("£45.10 in interest on penalties") shouldBe true
 
       }
 
@@ -994,7 +997,7 @@ class IndexPageHelperSpec extends SpecBase {
                 `type` = AmountTypeEnum.Central_Assessment,
                 amount = 123.45,
                 estimatedInterest = Some(12.04),
-                crystalizedInterest = Some(11.23)
+                crystalizedInterest = Some(11.20)
               )
             )
           ))

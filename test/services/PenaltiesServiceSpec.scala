@@ -230,6 +230,7 @@ class PenaltiesServiceSpec extends SpecBase {
     penaltyPoints = Seq(sampleFinancialPenaltyPoint.copy(financial = Some(
       Financial(
         amountDue = 0,
+        outstandingAmountDue = 0,
         dueDate = LocalDateTime.now(),
         estimatedInterest = None,
         crystalizedInterest = None
@@ -257,6 +258,7 @@ class PenaltiesServiceSpec extends SpecBase {
     penaltyPoints = Seq(sampleFinancialPenaltyPoint.copy(financial = Some(
       Financial(
         amountDue = 0,
+        outstandingAmountDue = 0,
         dueDate = LocalDateTime.now(),
         estimatedInterest = Some(15),
         crystalizedInterest = Some(20)
