@@ -177,11 +177,11 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     val penaltiesCrystalizedInterest = penaltiesService.findCrystalizedPenaltiesInterest(etmpData)
     val penaltiesEstimatedInterest = penaltiesService.findEstimatedPenaltiesInterest(etmpData)
     val stringToConvertToBulletPoints = Seq(
-      returnMessageIfAmountMoreThanZero(amountOfLateVAT, "whatIsOwed.lateVAT"),
-      returnEstimatedVATMessageIfMoreThanZero(estimatedVATInterest._1, estimatedVATInterest._2, "whatIsOwed.VATInterest"),
-      returnEstimatedMessageIfHasEstimatedCharges(lppAmount._1, lppAmount._2, "whatIsOwed.lppAmount"),
-      returnPenaltiesInterestMessages(penaltiesCrystalizedInterest, penaltiesEstimatedInterest),
-      returnMessageIfAmountMoreThanZero(totalAmountOfLSPs, "whatIsOwed.amountOfLSPs"),
+      returnEstimatedMessageIfInterestMoreThanZero(amountOfLateVAT, isEstimatedVAT = false, "whatIsOwed.lateVAT"),
+      returnEstimatedMessageIfInterestMoreThanZero(estimatedVATInterest._1, estimatedVATInterest._2, "whatIsOwed.VATInterest"),
+      returnEstimatedMessageIfInterestMoreThanZero(lppAmount._1, lppAmount._2, "whatIsOwed.lppAmount"),
+      returnEstimatedMessageIfInterestMoreThanZero(penaltiesCrystalizedInterest + penaltiesEstimatedInterest, penaltiesEstimatedInterest > BigDecimal(0), "whatIsOwed.allPenalties.interest"),
+      returnEstimatedMessageIfInterestMoreThanZero(totalAmountOfLSPs, isEstimatedVAT = false, "whatIsOwed.amountOfLSPs"),
       returnMessageIfOtherUnrelatedPenalties(otherUnrelatedPenalties, "whatIsOwed.otherPenalties")
     ).collect { case Some(x) => x }
     if (stringToConvertToBulletPoints.isEmpty) {
@@ -195,27 +195,13 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     }
   }
 
-  private def returnMessageIfAmountMoreThanZero(amount: BigDecimal, msgKeyToApply: String)(implicit messages: Messages): Option[String] = {
-    if (amount > 0) {
-      val formattedAmount = if (amount.isWhole()) amount else "%,.2f".format(amount)
-      Some(messages(msgKeyToApply, formattedAmount))
-    } else None
-  }
-
-  private def returnEstimatedMessageIfHasEstimatedCharges(amount: BigDecimal, isEstimate: Boolean, msgKeyToApply: String)(implicit messages: Messages): Option[String] = {
-    if (amount > 0) {
-      val msgKey = if (isEstimate) s"$msgKeyToApply.estimated" else msgKeyToApply
-      Some(messages(msgKey, amount))
-    } else None
-  }
-
   private def returnMessageIfOtherUnrelatedPenalties(isUnrelatedPenalties: Boolean, msgKey: String)(implicit messages: Messages): Option[String] = {
     if (isUnrelatedPenalties) {
       Some(messages(msgKey))
     } else None
   }
 
-  private def returnEstimatedVATMessageIfMoreThanZero(vatInterest: BigDecimal, isEstimatedVAT: Boolean, msgKeyToApply: String)(implicit messages: Messages): Option[String] = {
+  private def returnEstimatedMessageIfInterestMoreThanZero(vatInterest: BigDecimal, isEstimatedVAT: Boolean, msgKeyToApply: String)(implicit messages: Messages): Option[String] = {
     if (vatInterest > 0) {
       (isEstimatedVAT, vatInterest.isWhole()) match {
         case (true, true) => Some(messages(s"$msgKeyToApply.estimated", vatInterest))
@@ -225,14 +211,5 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       }
     }
     else None
-  }
-
-  private def returnPenaltiesInterestMessages(crystalizedInterest: BigDecimal, estimatedInterest: BigDecimal)(implicit messages: Messages): Option[String] = {
-    if (estimatedInterest > 0) {
-      val totalInterest = crystalizedInterest + estimatedInterest
-      returnMessageIfAmountMoreThanZero(totalInterest, "whatIsOwed.allPenalties.estimatedInterest")
-    } else if (estimatedInterest == 0 && crystalizedInterest > 0) {
-      returnMessageIfAmountMoreThanZero(crystalizedInterest, "whatIsOwed.allPenalties.interest")
-    } else None
   }
 }

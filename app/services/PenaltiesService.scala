@@ -21,7 +21,6 @@ import models.ETMPPayload
 import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
-import models.financial.Financial
 
 import scala.concurrent.Future
 
