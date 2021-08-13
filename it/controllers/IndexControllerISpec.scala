@@ -28,8 +28,8 @@ import stubs.AuthStub
 import stubs.PenaltiesStub.returnLSPDataStub
 import testUtils.IntegrationSpecCommonBase
 import utils.SessionKeys
-
 import java.time.LocalDateTime
+
 import models.communication.{Communication, CommunicationTypeEnum}
 import models.financial.{AmountTypeEnum, Financial, OverviewElement}
 import models.payment.PaymentFinancial
@@ -54,7 +54,12 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         reason = None,
         period = None,
         communications = Seq.empty,
-        financial = None
+        financial = Some(Financial(
+          amountDue = 0,
+          dueDate = sampleDate1,
+          estimatedInterest = Some(21.00),
+          crystalizedInterest = Some(32.00)
+        ))
       )
     ),
     latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
@@ -272,7 +277,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     financial = PaymentFinancial(
       amountDue = 400.00,
       outstandingAmountDue = 200.00,
-      dueDate = sampleDate1
+      dueDate = sampleDate1,
+      estimatedInterest = Some(21.00),
+      crystalizedInterest = Some(32.00)
     )
   )))
 
@@ -300,7 +307,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       financial = PaymentFinancial(
         amountDue = 32.12,
         outstandingAmountDue = 200.00,
-        dueDate = sampleDate1
+        dueDate = sampleDate1,
+        estimatedInterest = None,
+        crystalizedInterest = None
       )
     ),
     LatePaymentPenalty(
@@ -326,7 +335,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       financial = PaymentFinancial(
         amountDue = 400.00,
         outstandingAmountDue = 200.00,
-        dueDate = sampleDate1
+        dueDate = sampleDate1,
+        estimatedInterest = None,
+        crystalizedInterest = None
       )
     )))
 
@@ -388,8 +399,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           Financial(
             amountDue = 200.00,
             dueDate = sampleDate1,
-            estimatedInterest = None,
-            crystalizedInterest = None
+            estimatedInterest = Some(12.34),
+            crystalizedInterest = Some(34.21)
           )
         )
       ),
@@ -547,8 +558,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£121.40 in late VAT"
       parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "£93.10 in estimated VAT interest"
       parsedBody.select("#what-is-owed > ul > li").get(2).text shouldBe "£400 in late payment penalties"
-      parsedBody.select("#what-is-owed > ul > li").get(3).text shouldBe "£400 fixed penalties for late submission"
-      parsedBody.select("#what-is-owed > ul > li").get(4).text shouldBe "other penalties not related to late submission or late payment"
+      parsedBody.select("#what-is-owed > ul > li").get(3).text shouldBe "£99.55 in estimated interest on penalties"
+      parsedBody.select("#what-is-owed > ul > li").get(4).text shouldBe "£400 fixed penalties for late submission"
+      parsedBody.select("#what-is-owed > ul > li").get(5).text shouldBe "other penalties not related to late submission or late payment"
       parsedBody.select("#main-content h2:nth-child(4)").text shouldBe "Penalty and appeal details"
       parsedBody.select("#what-is-owed > a").text shouldBe "Check amounts and pay"
       parsedBody.select("#main-content .govuk-details__summary-text").text shouldBe "I cannot pay today"
@@ -560,6 +572,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       request.status shouldBe Status.OK
       val parsedBody = Jsoup.parse(request.body)
       parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£432.12 in estimated late payment penalties"
+      parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "£53 in estimated interest on penalties"
       //TODO: add button and reveal section
     }
 

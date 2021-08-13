@@ -174,14 +174,17 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     val otherUnrelatedPenalties = penaltiesService.isOtherUnrelatedPenalties(etmpData)
     val totalAmountOfLSPs = penaltiesService.findTotalLSPFromPayload(etmpData)
     val estimatedVATInterest = penaltiesService.findEstimatedVATInterest(etmpData)
+    val penaltiesCrystalizedInterest = penaltiesService.findCrystalizedPenaltiesInterest(etmpData)
+    val penaltiesEstimatedInterest = penaltiesService.findEstimatedPenaltiesInterest(etmpData)
     val stringToConvertToBulletPoints = Seq(
       //TODO: fill this Seq with Option[String]'s with each bullet point - it will render only those which values exist
       returnMessageIfAmountMoreThanZero(amountOfLateVAT, "whatIsOwed.lateVAT"),
       returnEstimatedVATMessageIfMoreThanZero(estimatedVATInterest._1,estimatedVATInterest._2,"whatIsOwed.VATInterest"),
       returnEstimatedMessageIfHasEstimatedCharges(lppAmount._1, lppAmount._2, "whatIsOwed.lppAmount"),
+      returnPenaltiesInterestMessages(penaltiesCrystalizedInterest, penaltiesEstimatedInterest),
       returnMessageIfAmountMoreThanZero(totalAmountOfLSPs, "whatIsOwed.amountOfLSPs"),
       returnMessageIfOtherUnrelatedPenalties(otherUnrelatedPenalties, "whatIsOwed.otherPenalties")
-          ).collect{case Some(x) => x}
+    ).collect{case Some(x) => x}
     if(stringToConvertToBulletPoints.isEmpty) {
       None
     } else {
@@ -195,7 +198,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
 
   private def returnMessageIfAmountMoreThanZero(amount: BigDecimal, msgKeyToApply: String)(implicit messages: Messages): Option[String] = {
     if(amount > 0) {
-      val formattedAmount = if(amount.isWhole()) amount else "%,.2f".format(amount)
+      val formattedAmount = if (amount.isWhole()) amount else "%,.2f".format(amount)
       Some(messages(msgKeyToApply, formattedAmount))
     } else None
   }
@@ -223,5 +226,14 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     }
    }
    else None
+  }
+
+  private def returnPenaltiesInterestMessages(crystalizedInterest: BigDecimal, estimatedInterest: BigDecimal)(implicit messages: Messages): Option[String] = {
+    if (estimatedInterest > 0) {
+      val totalInterest = crystalizedInterest + estimatedInterest
+      Some(messages("whatIsOwed.allPenalties.estimatedInterest", totalInterest))
+    } else if (estimatedInterest == 0 && crystalizedInterest > 0) {
+      Some(messages("whatIsOwed.allPenalties.Interest", crystalizedInterest))
+    } else None
   }
 }

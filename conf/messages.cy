@@ -167,3 +167,6 @@ whatIsOwed.lppAmount = £{0} in late payment penalties
 whatIsOwed.lppAmount.estimated = £{0} in estimated late payment penalties
 whatIsOwed.VATInterest.estimated = £{0} in estimated VAT interest
 whatIsOwed.VATInterest = £{0} in VAT interest
+whatIsOwed.lateVAT = £{0} in late VAT
+whatIsOwed.allPenalties.estimatedInterest = £{0} in estimated interest on penalties
+whatIsOwed.allPenalties.Interest = £{0} in interest on penalties
