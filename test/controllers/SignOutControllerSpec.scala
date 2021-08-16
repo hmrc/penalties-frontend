@@ -22,12 +22,12 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import testUtils.AuthMocks
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class SignOutControllerSpec extends SpecBase with AuthMocks {
   val controller = new SignOutController(
-    mcc
+    mcc,
+    appConfig
   )
 
   lazy val result: Future[Result] = {

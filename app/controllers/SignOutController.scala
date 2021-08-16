@@ -18,20 +18,14 @@ package controllers
 
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, _}
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
 
 @Singleton
-class SignOutController @Inject()(val mcc: MessagesControllerComponents)
-                                 (implicit ec: ExecutionContext,
+class SignOutController @Inject()(val mcc: MessagesControllerComponents,
                                   appConfig: AppConfig) extends FrontendController(mcc) {
   def signOut: Action[AnyContent] = Action { implicit request =>
-    implicit val hc: HeaderCarrier =
-      HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     Redirect(appConfig.signOutUrl)
   }
 }

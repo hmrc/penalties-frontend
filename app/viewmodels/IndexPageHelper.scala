@@ -177,15 +177,14 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     val penaltiesCrystalizedInterest = penaltiesService.findCrystalizedPenaltiesInterest(etmpData)
     val penaltiesEstimatedInterest = penaltiesService.findEstimatedPenaltiesInterest(etmpData)
     val stringToConvertToBulletPoints = Seq(
-      //TODO: fill this Seq with Option[String]'s with each bullet point - it will render only those which values exist
-      returnMessageIfAmountMoreThanZero(amountOfLateVAT, "whatIsOwed.lateVAT"),
-      returnEstimatedVATMessageIfMoreThanZero(estimatedVATInterest._1,estimatedVATInterest._2,"whatIsOwed.VATInterest"),
-      returnEstimatedMessageIfHasEstimatedCharges(lppAmount._1, lppAmount._2, "whatIsOwed.lppAmount"),
-      returnPenaltiesInterestMessages(penaltiesCrystalizedInterest, penaltiesEstimatedInterest),
-      returnMessageIfAmountMoreThanZero(totalAmountOfLSPs, "whatIsOwed.amountOfLSPs"),
+      returnEstimatedMessageIfInterestMoreThanZero(amountOfLateVAT, isEstimatedAmount = false, "whatIsOwed.lateVAT"),
+      returnEstimatedMessageIfInterestMoreThanZero(estimatedVATInterest._1, estimatedVATInterest._2, "whatIsOwed.VATInterest"),
+      returnEstimatedMessageIfInterestMoreThanZero(lppAmount._1, lppAmount._2, "whatIsOwed.lppAmount"),
+      returnEstimatedMessageIfInterestMoreThanZero(penaltiesCrystalizedInterest + penaltiesEstimatedInterest, penaltiesEstimatedInterest > BigDecimal(0), "whatIsOwed.allPenalties.interest"),
+      returnEstimatedMessageIfInterestMoreThanZero(totalAmountOfLSPs, isEstimatedAmount = false, "whatIsOwed.amountOfLSPs"),
       returnMessageIfOtherUnrelatedPenalties(otherUnrelatedPenalties, "whatIsOwed.otherPenalties")
-    ).collect{case Some(x) => x}
-    if(stringToConvertToBulletPoints.isEmpty) {
+    ).collect { case Some(x) => x }
+    if (stringToConvertToBulletPoints.isEmpty) {
       None
     } else {
       Some(bullets(
@@ -196,44 +195,21 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     }
   }
 
-  private def returnMessageIfAmountMoreThanZero(amount: BigDecimal, msgKeyToApply: String)(implicit messages: Messages): Option[String] = {
-    if(amount > 0) {
-      val formattedAmount = if (amount.isWhole()) amount else "%,.2f".format(amount)
-      Some(messages(msgKeyToApply, formattedAmount))
-    } else None
-  }
-
-  private def returnEstimatedMessageIfHasEstimatedCharges(amount: BigDecimal, isEstimate: Boolean, msgKeyToApply: String)(implicit messages: Messages): Option[String] = {
-    if(amount > 0) {
-      val msgKey = if(isEstimate) s"$msgKeyToApply.estimated" else msgKeyToApply
-      Some(messages(msgKey, amount))
-    } else None
-  }
-
   private def returnMessageIfOtherUnrelatedPenalties(isUnrelatedPenalties: Boolean, msgKey: String)(implicit messages: Messages): Option[String] = {
-    if(isUnrelatedPenalties) {
+    if (isUnrelatedPenalties) {
       Some(messages(msgKey))
     } else None
   }
 
-  private def returnEstimatedVATMessageIfMoreThanZero(vatInterest: BigDecimal, isEstimatedVAT: Boolean, msgKeyToApply: String)(implicit messages: Messages): Option[String]={
-   if(vatInterest > 0) {
-    (isEstimatedVAT,vatInterest.isWhole() ) match {
-      case(true,true) => Some(messages(s"$msgKeyToApply.estimated", vatInterest))
-      case(true,false) => Some(messages(s"$msgKeyToApply.estimated", "%,.2f".format(vatInterest)))
-      case(false,false) => Some(messages(s"$msgKeyToApply", "%,.2f".format(vatInterest)))
-      case(false,true) => Some(messages(s"$msgKeyToApply", vatInterest))
+  private def returnEstimatedMessageIfInterestMoreThanZero(interestAmount: BigDecimal, isEstimatedAmount: Boolean, msgKeyToApply: String)(implicit messages: Messages): Option[String] = {
+    if (interestAmount > 0) {
+      (isEstimatedAmount, interestAmount.isWhole()) match {
+        case (true, true) => Some(messages(s"$msgKeyToApply.estimated", interestAmount))
+        case (true, false) => Some(messages(s"$msgKeyToApply.estimated", "%,.2f".format(interestAmount)))
+        case (false, false) => Some(messages(s"$msgKeyToApply", "%,.2f".format(interestAmount)))
+        case (false, true) => Some(messages(s"$msgKeyToApply", interestAmount))
+      }
     }
-   }
-   else None
-  }
-
-  private def returnPenaltiesInterestMessages(crystalizedInterest: BigDecimal, estimatedInterest: BigDecimal)(implicit messages: Messages): Option[String] = {
-    if (estimatedInterest > 0) {
-      val totalInterest = crystalizedInterest + estimatedInterest
-      Some(messages("whatIsOwed.allPenalties.estimatedInterest", totalInterest))
-    } else if (estimatedInterest == 0 && crystalizedInterest > 0) {
-      Some(messages("whatIsOwed.allPenalties.Interest", crystalizedInterest))
-    } else None
+    else None
   }
 }

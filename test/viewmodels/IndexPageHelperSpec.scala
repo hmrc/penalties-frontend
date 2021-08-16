@@ -22,7 +22,6 @@ import assets.messages.IndexMessages._
 import base.SpecBase
 import models.ETMPPayload
 import models.financial.{AmountTypeEnum, Financial, OverviewElement}
-import models.payment.PaymentFinancial
 import models.penalty._
 import models.point._
 import models.reason.PaymentPenaltyReasonEnum
@@ -469,7 +468,7 @@ class IndexPageHelperSpec extends SpecBase {
                 paymentStatus = PaymentStatusEnum.Due
               ),
               communications = Seq.empty,
-              financial = PaymentFinancial(
+              financial = Financial(
                 amountDue = 400.00,
                 outstandingAmountDue = 11.00,
                 dueDate = sampleDate
@@ -505,7 +504,7 @@ class IndexPageHelperSpec extends SpecBase {
                 paymentStatus = PaymentStatusEnum.Paid
               ),
               communications = Seq.empty,
-              financial = PaymentFinancial(
+              financial = Financial(
                 amountDue = 400.00,
                 outstandingAmountDue = 0.00,
                 dueDate = sampleDate
@@ -577,9 +576,9 @@ class IndexPageHelperSpec extends SpecBase {
                   paymentStatus = PaymentStatusEnum.Paid
                 ),
                 communications = Seq.empty,
-                financial = PaymentFinancial(
+                financial = Financial(
                   amountDue = 100.34,
-                  outstandingAmountDue = 50.00,
+                  outstandingAmountDue = 50.12,
                   dueDate = sampleDate,
                   estimatedInterest = None,
                   crystalizedInterest = None
@@ -591,7 +590,7 @@ class IndexPageHelperSpec extends SpecBase {
           )
         val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithOutstandingPayments)
         result.isDefined shouldBe true
-        result.get.body.contains("£100.34 in late payment penalties") shouldBe true
+        result.get.body.contains("£50.12 in late payment penalties") shouldBe true
       }
 
       "the user has outstanding LPP's to pay - with estimates" in {
@@ -613,9 +612,9 @@ class IndexPageHelperSpec extends SpecBase {
                   paymentStatus = PaymentStatusEnum.Paid
                 ),
                 communications = Seq.empty,
-                financial = PaymentFinancial(
+                financial = Financial(
                   amountDue = 31.34,
-                  outstandingAmountDue = 10.00,
+                  outstandingAmountDue = 10.12,
                   dueDate = sampleDate,
                   estimatedInterest = None,
                   crystalizedInterest = None
@@ -635,9 +634,9 @@ class IndexPageHelperSpec extends SpecBase {
                   paymentStatus = PaymentStatusEnum.Paid
                 ),
                 communications = Seq.empty,
-                financial = PaymentFinancial(
+                financial = Financial(
                   amountDue = 100.34,
-                  outstandingAmountDue = 50.00,
+                  outstandingAmountDue = 50.12,
                   dueDate = sampleDate,
                   estimatedInterest = None,
                   crystalizedInterest = None
@@ -649,7 +648,7 @@ class IndexPageHelperSpec extends SpecBase {
         )
         val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithOutstandingPayments)
         result.isDefined shouldBe true
-        result.get.body.contains("£131.68 in estimated late payment penalties") shouldBe true
+        result.get.body.contains("£60.24 in estimated late payment penalties") shouldBe true
       }
 
       "the user has outstanding VAT and outstanding LPP's" in {
@@ -671,9 +670,9 @@ class IndexPageHelperSpec extends SpecBase {
                   paymentStatus = PaymentStatusEnum.Paid
                 ),
                 communications = Seq.empty,
-                financial = PaymentFinancial(
+                financial = Financial(
                   amountDue = 31.34,
-                  outstandingAmountDue = 10.00,
+                  outstandingAmountDue = 21.34,
                   dueDate = sampleDate,
                   estimatedInterest = None,
                   crystalizedInterest = None
@@ -693,9 +692,9 @@ class IndexPageHelperSpec extends SpecBase {
                   paymentStatus = PaymentStatusEnum.Paid
                 ),
                 communications = Seq.empty,
-                financial = PaymentFinancial(
+                financial = Financial(
                   amountDue = 100.34,
-                  outstandingAmountDue = 50.00,
+                  outstandingAmountDue = 50.23,
                   dueDate = sampleDate,
                   estimatedInterest = None,
                   crystalizedInterest = None
@@ -722,7 +721,7 @@ class IndexPageHelperSpec extends SpecBase {
         )
         val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithOutstandingPayments)
         result.isDefined shouldBe true
-        result.get.body.contains("£131.68 in estimated late payment penalties") shouldBe true
+        result.get.body.contains("£71.57 in estimated late payment penalties") shouldBe true
         result.get.body.contains("£223.45 in late VAT") shouldBe true
       }
 
@@ -789,6 +788,7 @@ class IndexPageHelperSpec extends SpecBase {
               financial = Some(
                 Financial(
                   amountDue = 200.00,
+                  outstandingAmountDue = 200.00,
                   dueDate = sampleDate,
                   estimatedInterest = None,
                   crystalizedInterest = None
@@ -819,6 +819,7 @@ class IndexPageHelperSpec extends SpecBase {
               financial = Some(
                 Financial(
                   amountDue = 200.00,
+                  outstandingAmountDue = 200.00,
                   dueDate = sampleDate,
                   estimatedInterest = None,
                   crystalizedInterest = None
@@ -909,6 +910,7 @@ class IndexPageHelperSpec extends SpecBase {
           penaltyPoints = Seq(sampleFinancialPenaltyPoint.copy(financial = Some(
             Financial(
               amountDue = 0,
+              outstandingAmountDue = 0,
               dueDate = LocalDateTime.now(),
               estimatedInterest = Some(16.10),
               crystalizedInterest = Some(23.00)
@@ -917,6 +919,7 @@ class IndexPageHelperSpec extends SpecBase {
             sampleFinancialPenaltyPoint.copy(financial = Some(
               Financial(
                 amountDue = 0,
+                outstandingAmountDue = 0,
                 dueDate = LocalDateTime.now(),
                 estimatedInterest = Some(14.05),
                 crystalizedInterest = Some(23.00)
@@ -924,7 +927,7 @@ class IndexPageHelperSpec extends SpecBase {
             ))
           ),
           latePaymentPenalties = Some(Seq(sampleLatePaymentPenaltyDue.copy(financial =
-            PaymentFinancial(
+            Financial(
               amountDue = 0,
               outstandingAmountDue = 0,
               dueDate = LocalDateTime.now(),
@@ -933,7 +936,7 @@ class IndexPageHelperSpec extends SpecBase {
             )
           ),
             sampleLatePaymentPenaltyDue.copy(financial =
-              PaymentFinancial(
+              Financial(
                 amountDue = 0,
                 outstandingAmountDue = 0,
                 dueDate = LocalDateTime.now(),
@@ -954,6 +957,7 @@ class IndexPageHelperSpec extends SpecBase {
           penaltyPoints = Seq(sampleFinancialPenaltyPoint.copy(financial = Some(
               Financial(
                 amountDue = 0,
+                outstandingAmountDue = 0,
                 dueDate = LocalDateTime.now(),
                 estimatedInterest = None,
                 crystalizedInterest = Some(23.00)
@@ -961,19 +965,19 @@ class IndexPageHelperSpec extends SpecBase {
             ))
           ),
           latePaymentPenalties = Some(Seq(sampleLatePaymentPenaltyDue.copy(financial =
-            PaymentFinancial(
+            Financial(
               amountDue = 0,
               outstandingAmountDue = 0,
               dueDate = LocalDateTime.now(),
               estimatedInterest = None,
-              crystalizedInterest = Some(22.00)
+              crystalizedInterest = Some(22.10)
             )
           ))
           ),
           vatOverview = None)
         val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithCrystalizedButNoEstimatedInterestOnPenalties)
         result.isDefined shouldBe true
-        result.get.body.contains("£45 in interest on penalties") shouldBe true
+        result.get.body.contains("£45.10 in interest on penalties") shouldBe true
 
       }
 
@@ -992,7 +996,7 @@ class IndexPageHelperSpec extends SpecBase {
                 `type` = AmountTypeEnum.Central_Assessment,
                 amount = 123.45,
                 estimatedInterest = Some(12.04),
-                crystalizedInterest = Some(11.23)
+                crystalizedInterest = Some(11.20)
               )
             )
           ))
