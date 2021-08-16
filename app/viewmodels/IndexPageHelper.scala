@@ -177,11 +177,11 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     val penaltiesCrystalizedInterest = penaltiesService.findCrystalizedPenaltiesInterest(etmpData)
     val penaltiesEstimatedInterest = penaltiesService.findEstimatedPenaltiesInterest(etmpData)
     val stringToConvertToBulletPoints = Seq(
-      returnEstimatedMessageIfInterestMoreThanZero(amountOfLateVAT, isEstimatedVAT = false, "whatIsOwed.lateVAT"),
+      returnEstimatedMessageIfInterestMoreThanZero(amountOfLateVAT, isEstimatedAmount = false, "whatIsOwed.lateVAT"),
       returnEstimatedMessageIfInterestMoreThanZero(estimatedVATInterest._1, estimatedVATInterest._2, "whatIsOwed.VATInterest"),
       returnEstimatedMessageIfInterestMoreThanZero(lppAmount._1, lppAmount._2, "whatIsOwed.lppAmount"),
       returnEstimatedMessageIfInterestMoreThanZero(penaltiesCrystalizedInterest + penaltiesEstimatedInterest, penaltiesEstimatedInterest > BigDecimal(0), "whatIsOwed.allPenalties.interest"),
-      returnEstimatedMessageIfInterestMoreThanZero(totalAmountOfLSPs, isEstimatedVAT = false, "whatIsOwed.amountOfLSPs"),
+      returnEstimatedMessageIfInterestMoreThanZero(totalAmountOfLSPs, isEstimatedAmount = false, "whatIsOwed.amountOfLSPs"),
       returnMessageIfOtherUnrelatedPenalties(otherUnrelatedPenalties, "whatIsOwed.otherPenalties")
     ).collect { case Some(x) => x }
     if (stringToConvertToBulletPoints.isEmpty) {
@@ -201,13 +201,13 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     } else None
   }
 
-  private def returnEstimatedMessageIfInterestMoreThanZero(vatInterest: BigDecimal, isEstimatedVAT: Boolean, msgKeyToApply: String)(implicit messages: Messages): Option[String] = {
-    if (vatInterest > 0) {
-      (isEstimatedVAT, vatInterest.isWhole()) match {
-        case (true, true) => Some(messages(s"$msgKeyToApply.estimated", vatInterest))
-        case (true, false) => Some(messages(s"$msgKeyToApply.estimated", "%,.2f".format(vatInterest)))
-        case (false, false) => Some(messages(s"$msgKeyToApply", "%,.2f".format(vatInterest)))
-        case (false, true) => Some(messages(s"$msgKeyToApply", vatInterest))
+  private def returnEstimatedMessageIfInterestMoreThanZero(interestAmount: BigDecimal, isEstimatedAmount: Boolean, msgKeyToApply: String)(implicit messages: Messages): Option[String] = {
+    if (interestAmount > 0) {
+      (isEstimatedAmount, interestAmount.isWhole()) match {
+        case (true, true) => Some(messages(s"$msgKeyToApply.estimated", interestAmount))
+        case (true, false) => Some(messages(s"$msgKeyToApply.estimated", "%,.2f".format(interestAmount)))
+        case (false, false) => Some(messages(s"$msgKeyToApply", "%,.2f".format(interestAmount)))
+        case (false, true) => Some(messages(s"$msgKeyToApply", interestAmount))
       }
     }
     else None
