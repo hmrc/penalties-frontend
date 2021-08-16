@@ -20,7 +20,6 @@ import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
 import models.compliance.{CompliancePayload, MissingReturn, Return}
 import models.financial.Financial
-import models.payment.PaymentFinancial
 import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum, PenaltyPeriod}
 import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.reason.PaymentPenaltyReasonEnum
@@ -206,7 +205,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
       PaymentStatusEnum.Paid
     ),
     communications = Seq.empty,
-    financial = PaymentFinancial(
+    financial = Financial(
       amountDue = 400.00,
       outstandingAmountDue = 200.00,
       dueDate = LocalDateTime.now
@@ -227,7 +226,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
       PaymentStatusEnum.Paid
     ),
     communications = Seq.empty,
-    financial = PaymentFinancial(
+    financial = Financial(
       amountDue = 123.45,
       outstandingAmountDue = 12.34,
       dueDate = LocalDateTime.now
@@ -248,7 +247,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
       PaymentStatusEnum.Paid
     ),
     communications = Seq.empty,
-    financial = PaymentFinancial(
+    financial = Financial(
       amountDue = 400.00,
       outstandingAmountDue = 200.00,
       dueDate = LocalDateTime.now
@@ -269,7 +268,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
       PaymentStatusEnum.Due
     ),
     communications = Seq.empty,
-    financial = PaymentFinancial(
+    financial = Financial(
       amountDue = 400.00,
       outstandingAmountDue = 200.00,
       dueDate = LocalDateTime.now

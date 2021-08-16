@@ -18,7 +18,7 @@ package views.components
 
 import base.{BaseSelectors, SpecBase}
 import models.User
-import models.payment.PaymentFinancial
+import models.financial.Financial
 import models.penalty.{PaymentPeriod, PaymentStatusEnum}
 import models.point.PenaltyTypeEnum
 import models.reason.PaymentPenaltyReasonEnum
@@ -56,7 +56,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         dueDate = LocalDateTime.of(2020, 3, 7, 1, 1, 1),
         paymentStatus = PaymentStatusEnum.Paid
       ),
-      financial = PaymentFinancial(
+      financial = Financial(
         amountDue = 123.45, outstandingAmountDue = 0.00, dueDate = LocalDateTime.of(2020,2,1,1,1,1)
       ))))
   ).get.head
@@ -70,7 +70,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         LocalDateTime.of(2020,2,1,1,1,1),
         PaymentStatusEnum.Paid
       ),
-      financial = PaymentFinancial(
+      financial = Financial(
         amountDue = 123.45, outstandingAmountDue = 0.00, dueDate = LocalDateTime.of(2020,2,1,1,1,1)
       ))))
   ).get.head

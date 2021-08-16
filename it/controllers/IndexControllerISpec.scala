@@ -32,7 +32,6 @@ import java.time.LocalDateTime
 
 import models.communication.{Communication, CommunicationTypeEnum}
 import models.financial.{AmountTypeEnum, Financial, OverviewElement}
-import models.payment.PaymentFinancial
 import models.reason.PaymentPenaltyReasonEnum
 
 class IndexControllerISpec extends IntegrationSpecCommonBase {
@@ -193,7 +192,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           documentId = "123456789"
         )
       ),
-      financial = PaymentFinancial(
+      financial = Financial(
         amountDue = 400.00,
         outstandingAmountDue = 200.00,
         dueDate = sampleDate1
@@ -221,7 +220,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           documentId = "123456789"
         )
       ),
-      financial = PaymentFinancial(
+      financial = Financial(
         amountDue = 123.45,
         outstandingAmountDue = 0.00,
         dueDate = sampleDate1
@@ -247,7 +246,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           documentId = "123456789"
         )
       ),
-      financial = PaymentFinancial(
+      financial = Financial(
         amountDue = 400.00,
         outstandingAmountDue = 200.00,
         dueDate = sampleDate1
@@ -275,7 +274,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         documentId = "123456789"
       )
     ),
-    financial = PaymentFinancial(
+    financial = Financial(
       amountDue = 400.00,
       outstandingAmountDue = 200.00,
       dueDate = sampleDate1,
@@ -305,7 +304,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           documentId = "123456789"
         )
       ),
-      financial = PaymentFinancial(
+      financial = Financial(
         amountDue = 32.12,
         outstandingAmountDue = 32.12,
         dueDate = sampleDate1,
@@ -333,7 +332,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           documentId = "123456789"
         )
       ),
-      financial = PaymentFinancial(
+      financial = Financial(
         amountDue = 400.00,
         outstandingAmountDue = 200.00,
         dueDate = sampleDate1,

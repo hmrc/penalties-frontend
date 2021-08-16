@@ -18,7 +18,7 @@ package models.penalty
 
 import java.time.LocalDateTime
 import models.communication.Communication
-import models.payment.PaymentFinancial
+import models.financial.Financial
 import models.point.{AppealStatusEnum, PenaltyTypeEnum, PointStatusEnum}
 import models.reason.PaymentPenaltyReasonEnum
 import play.api.libs.json.{Json, OFormat}
@@ -32,7 +32,7 @@ case class LatePaymentPenalty(
                           appealStatus: Option[AppealStatusEnum.Value] = None,
                           period: PaymentPeriod,
                           communications: Seq[Communication],
-                          financial: PaymentFinancial
+                          financial: Financial
                         )
 
 object LatePaymentPenalty {

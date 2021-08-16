@@ -27,7 +27,6 @@ import play.api.libs.json.{JsValue, Json}
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-import models.payment.PaymentFinancial
 import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 
 class ETMPPayloadSpec extends AnyWordSpec with Matchers {
@@ -484,7 +483,7 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
               documentId = "1234567890"
             )
           ),
-          financial = PaymentFinancial(
+          financial = Financial(
             amountDue = 123.45,
             outstandingAmountDue = 2.00,
             dueDate = sampleDate
@@ -510,7 +509,7 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
               documentId = "1234567890"
             )
           ),
-          financial = PaymentFinancial(
+          financial = Financial(
             amountDue = 400.00,
             outstandingAmountDue = 2.00,
             dueDate = sampleDate

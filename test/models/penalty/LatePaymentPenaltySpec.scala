@@ -16,7 +16,7 @@
 
 package models.penalty
 
-import models.payment.PaymentFinancial
+import models.financial.Financial
 import models.point.{AppealStatusEnum, PenaltyTypeEnum, PointStatusEnum}
 import models.reason.PaymentPenaltyReasonEnum
 import org.scalatest.matchers.should.Matchers
@@ -63,7 +63,7 @@ class LatePaymentPenaltySpec extends AnyWordSpec with Matchers {
       paymentStatus = PaymentStatusEnum.Paid
     ),
     communications = Seq.empty,
-    financial = PaymentFinancial(
+    financial = Financial(
       amountDue = 400.00,
       outstandingAmountDue = 0.00,
       dueDate = LocalDateTime.parse("2020-01-01T01:00:00.123")

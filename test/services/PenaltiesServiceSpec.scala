@@ -20,7 +20,6 @@ import base.SpecBase
 import connectors.PenaltiesConnector
 import models.ETMPPayload
 import models.financial.{AmountTypeEnum, Financial, OverviewElement}
-import models.payment.PaymentFinancial
 import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum, PenaltyPeriod}
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.reason.PaymentPenaltyReasonEnum
@@ -30,8 +29,6 @@ import org.mockito.Mockito._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import java.time.LocalDateTime
-
-import models.payment.PaymentFinancial
 
 import scala.concurrent.Future
 
@@ -151,7 +148,7 @@ class PenaltiesServiceSpec extends SpecBase {
           paymentStatus = PaymentStatusEnum.Paid
         ),
         communications = Seq.empty,
-        financial = PaymentFinancial(
+        financial = Financial(
           amountDue = 123.45,
           outstandingAmountDue = 50.00,
           dueDate = sampleDate,
@@ -186,7 +183,7 @@ class PenaltiesServiceSpec extends SpecBase {
           paymentStatus = PaymentStatusEnum.Paid
         ),
         communications = Seq.empty,
-        financial = PaymentFinancial(
+        financial = Financial(
           amountDue = 100.00,
           outstandingAmountDue = 50.00,
           dueDate = sampleDate,
@@ -208,7 +205,7 @@ class PenaltiesServiceSpec extends SpecBase {
           paymentStatus = PaymentStatusEnum.Paid
         ),
         communications = Seq.empty,
-        financial = PaymentFinancial(
+        financial = Financial(
           amountDue = 123.45,
           outstandingAmountDue = 50.00,
           dueDate = sampleDate,
@@ -237,7 +234,7 @@ class PenaltiesServiceSpec extends SpecBase {
       )
     ))),
     latePaymentPenalties = Some(Seq(sampleLatePaymentPenaltyDue.copy(financial =
-      PaymentFinancial(
+      Financial(
         amountDue = 0,
         outstandingAmountDue = 0,
         dueDate = LocalDateTime.now(),
@@ -265,7 +262,7 @@ class PenaltiesServiceSpec extends SpecBase {
       )
     ))),
     latePaymentPenalties = Some(Seq(sampleLatePaymentPenaltyDue.copy(financial =
-      PaymentFinancial(
+      Financial(
         amountDue = 0,
         outstandingAmountDue = 0,
         dueDate = LocalDateTime.now(),

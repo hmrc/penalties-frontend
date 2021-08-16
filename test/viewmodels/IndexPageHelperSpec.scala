@@ -22,7 +22,6 @@ import assets.messages.IndexMessages._
 import base.SpecBase
 import models.ETMPPayload
 import models.financial.{AmountTypeEnum, Financial, OverviewElement}
-import models.payment.PaymentFinancial
 import models.penalty._
 import models.point._
 import models.reason.PaymentPenaltyReasonEnum
@@ -469,7 +468,7 @@ class IndexPageHelperSpec extends SpecBase {
                 paymentStatus = PaymentStatusEnum.Due
               ),
               communications = Seq.empty,
-              financial = PaymentFinancial(
+              financial = Financial(
                 amountDue = 400.00,
                 outstandingAmountDue = 11.00,
                 dueDate = sampleDate
@@ -505,7 +504,7 @@ class IndexPageHelperSpec extends SpecBase {
                 paymentStatus = PaymentStatusEnum.Paid
               ),
               communications = Seq.empty,
-              financial = PaymentFinancial(
+              financial = Financial(
                 amountDue = 400.00,
                 outstandingAmountDue = 0.00,
                 dueDate = sampleDate
@@ -577,7 +576,7 @@ class IndexPageHelperSpec extends SpecBase {
                   paymentStatus = PaymentStatusEnum.Paid
                 ),
                 communications = Seq.empty,
-                financial = PaymentFinancial(
+                financial = Financial(
                   amountDue = 100.34,
                   outstandingAmountDue = 50.12,
                   dueDate = sampleDate,
@@ -613,7 +612,7 @@ class IndexPageHelperSpec extends SpecBase {
                   paymentStatus = PaymentStatusEnum.Paid
                 ),
                 communications = Seq.empty,
-                financial = PaymentFinancial(
+                financial = Financial(
                   amountDue = 31.34,
                   outstandingAmountDue = 10.12,
                   dueDate = sampleDate,
@@ -635,7 +634,7 @@ class IndexPageHelperSpec extends SpecBase {
                   paymentStatus = PaymentStatusEnum.Paid
                 ),
                 communications = Seq.empty,
-                financial = PaymentFinancial(
+                financial = Financial(
                   amountDue = 100.34,
                   outstandingAmountDue = 50.12,
                   dueDate = sampleDate,
@@ -671,7 +670,7 @@ class IndexPageHelperSpec extends SpecBase {
                   paymentStatus = PaymentStatusEnum.Paid
                 ),
                 communications = Seq.empty,
-                financial = PaymentFinancial(
+                financial = Financial(
                   amountDue = 31.34,
                   outstandingAmountDue = 21.34,
                   dueDate = sampleDate,
@@ -693,7 +692,7 @@ class IndexPageHelperSpec extends SpecBase {
                   paymentStatus = PaymentStatusEnum.Paid
                 ),
                 communications = Seq.empty,
-                financial = PaymentFinancial(
+                financial = Financial(
                   amountDue = 100.34,
                   outstandingAmountDue = 50.23,
                   dueDate = sampleDate,
@@ -928,7 +927,7 @@ class IndexPageHelperSpec extends SpecBase {
             ))
           ),
           latePaymentPenalties = Some(Seq(sampleLatePaymentPenaltyDue.copy(financial =
-            PaymentFinancial(
+            Financial(
               amountDue = 0,
               outstandingAmountDue = 0,
               dueDate = LocalDateTime.now(),
@@ -937,7 +936,7 @@ class IndexPageHelperSpec extends SpecBase {
             )
           ),
             sampleLatePaymentPenaltyDue.copy(financial =
-              PaymentFinancial(
+              Financial(
                 amountDue = 0,
                 outstandingAmountDue = 0,
                 dueDate = LocalDateTime.now(),
@@ -966,7 +965,7 @@ class IndexPageHelperSpec extends SpecBase {
             ))
           ),
           latePaymentPenalties = Some(Seq(sampleLatePaymentPenaltyDue.copy(financial =
-            PaymentFinancial(
+            Financial(
               amountDue = 0,
               outstandingAmountDue = 0,
               dueDate = LocalDateTime.now(),

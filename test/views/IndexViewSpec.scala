@@ -20,7 +20,7 @@ import assets.messages.IndexMessages._
 import base.{BaseSelectors, SpecBase}
 import models.User
 import models.communication.{Communication, CommunicationTypeEnum}
-import models.payment.PaymentFinancial
+import models.financial.Financial
 import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum, PenaltyPeriod}
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.reason.PaymentPenaltyReasonEnum
@@ -135,7 +135,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         dateSent = LocalDateTime.now,
         documentId = "123456789"
       )),
-      financial = PaymentFinancial(
+      financial = Financial(
         amountDue = 0.00,
         outstandingAmountDue = 0.00,
         dueDate = LocalDateTime.now
