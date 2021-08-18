@@ -30,11 +30,11 @@
 
     <h1 class="govuk-heading-xl">@{messages("compliance.heading")}</h1>
 
-    <p class="govuk-body">@messages("compliance.p1")</p>
+    <p class="govuk-body">@getMessage("compliance.p1")</p>
     <p class="govuk-body">@messages("compliance.p2")</p>
     <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("compliance.b1")</li>
-        <li>@messages("compliance.b2")</li>
+        <li>@getMessage("compliance.b1")</li>
+        <li>@getMessage("compliance.b2")</li>
     </ul>
 
     @if(isUnsubmittedReturns) {
