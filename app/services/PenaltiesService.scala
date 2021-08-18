@@ -42,7 +42,7 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
   private def findEstimatedVatInterestFromPayload(payload: ETMPPayload): BigDecimal = {
     payload.vatOverview.map {
       estimatedVATInterest => {
-        estimatedVATInterest.map(_.estimatedInterest.getOrElse(BigDecimal(0))).foldRight(BigDecimal(0))(_ + _)
+        estimatedVATInterest.map(_.estimatedInterest.getOrElse(BigDecimal(0))).sum
       }
     }
   }.getOrElse(0)
@@ -50,7 +50,7 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
   private def findCrystalizedInterestFromPayload(payload: ETMPPayload): BigDecimal = {
     payload.vatOverview.map {
       crystalizedInterest => {
-        crystalizedInterest.map(_.crystalizedInterest.getOrElse(BigDecimal(0))).foldRight(BigDecimal(0))(_ + _)
+        crystalizedInterest.map(_.crystalizedInterest.getOrElse(BigDecimal(0))).sum
       }
     }
   }.getOrElse(0)
@@ -58,7 +58,7 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
   def findOverdueVATFromPayload(payload: ETMPPayload): BigDecimal = {
     payload.vatOverview.map {
       allCharges => {
-        allCharges.map(_.amount).foldRight(BigDecimal(0))(_ + _)
+        allCharges.map(_.amount).sum
       }
     }
   }.getOrElse(0)
@@ -72,8 +72,8 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
       allLPPs => {
         val allAdditionalPoints = allLPPs.filter(_.`type` == PenaltyTypeEnum.Additional)
         val allFinancialPoints = allLPPs.filter(_.`type` == PenaltyTypeEnum.Financial)
-        val estimatedLPPs = allAdditionalPoints.map(_.financial.outstandingAmountDue).foldRight(BigDecimal(0))(_ + _)
-        val crystallisedLPPs = allFinancialPoints.map(_.financial.outstandingAmountDue).foldRight(BigDecimal(0))(_ + _)
+        val estimatedLPPs = allAdditionalPoints.map(_.financial.outstandingAmountDue).sum
+        val crystallisedLPPs = allFinancialPoints.map(_.financial.outstandingAmountDue).sum
         val isEstimatesIncluded = estimatedLPPs > BigDecimal(0)
         (crystallisedLPPs + estimatedLPPs, isEstimatesIncluded)
       }
@@ -81,13 +81,13 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
   }.getOrElse((0, false))
 
   def findTotalLSPFromPayload(payload: ETMPPayload): BigDecimal = {
-    payload.penaltyPoints.map(_.financial.map(_.outstandingAmountDue)).collect{ case Some(x) => x }.foldRight(BigDecimal(0))(_ + _)
+    payload.penaltyPoints.map(_.financial.map(_.outstandingAmountDue)).collect { case Some(x) => x }.sum
   }
 
   def findEstimatedVATInterest(payload: ETMPPayload): (BigDecimal, Boolean) = {
-        val estimatedVAT = findEstimatedVatInterestFromPayload(payload)
-        val crystallisedVAT = findCrystalizedInterestFromPayload(payload)
-        (crystallisedVAT + estimatedVAT, estimatedVAT > 0)
+    val estimatedVAT = findEstimatedVatInterestFromPayload(payload)
+    val crystallisedVAT = findCrystalizedInterestFromPayload(payload)
+    (crystallisedVAT + estimatedVAT, estimatedVAT > 0)
   }
 
   def findCrystalizedPenaltiesInterest(payload: ETMPPayload): BigDecimal = {
@@ -95,28 +95,26 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
       penalty => {
         penalty.financial.map(_.crystalizedInterest.getOrElse(BigDecimal(0)))
       }
-    ).foldRight(BigDecimal(0))(_ + _)
+    ).sum
 
     val lppInterest: BigDecimal = payload.latePaymentPenalties.map {
       _.map { lpp =>
         lpp.financial.crystalizedInterest.getOrElse(BigDecimal(0))
-      }.foldRight(BigDecimal(0))(_ + _)
+      }.sum
     }.getOrElse(BigDecimal(0))
-
     lspInterest + lppInterest
   }
 
   def findEstimatedPenaltiesInterest(payload: ETMPPayload): BigDecimal = {
     val estimatedLspInterest: BigDecimal = payload.penaltyPoints.flatMap(
       _.financial.map(_.estimatedInterest.getOrElse(BigDecimal(0)))
-    ).foldRight(BigDecimal(0))(_ + _)
+    ).sum
 
     val estimatedLppInterest: BigDecimal = payload.latePaymentPenalties.map {
       _.map { lpp =>
         lpp.financial.estimatedInterest.getOrElse(BigDecimal(0))
-      }.foldRight(BigDecimal(0))(_ + _)
+      }.sum
     }.getOrElse(BigDecimal(0))
-
     estimatedLspInterest + estimatedLppInterest
   }
 
