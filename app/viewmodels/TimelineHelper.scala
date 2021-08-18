@@ -19,15 +19,17 @@ package viewmodels
 import java.time.LocalDateTime
 
 import javax.inject.Inject
+import models.User
 import models.compliance.Return
 import play.api.i18n.Messages
 import play.twirl.api.Html
+import utils.MessageRenderer.getMessage
 import utils.{ImplicitDateFormatter, ViewUtils}
 
 class TimelineHelper @Inject()(timeline: views.html.components.timeline,
                                p: views.html.components.p) extends ImplicitDateFormatter with ViewUtils {
 
-  def getTimelineContent(complianceReturns: Seq[Return], pointExpiryDate: LocalDateTime)(implicit messages: Messages): Html = {
+  def getTimelineContent(complianceReturns: Seq[Return], pointExpiryDate: LocalDateTime)(implicit messages: Messages, user: User[_]): Html = {
     if (complianceReturns.nonEmpty) {
       val events: Seq[TimelineEvent] = complianceReturns.map { compReturn =>
         TimelineEvent(
@@ -41,7 +43,7 @@ class TimelineHelper @Inject()(timeline: views.html.components.timeline,
       html(
         timeline(events),
         p(
-          content = html(stringAsHtml(messages("compliance.point.expiry", dateTimeToMonthYearString(pointExpiryDate)))),
+          content = html(stringAsHtml(getMessage("compliance.point.expiry", dateTimeToMonthYearString(pointExpiryDate)))),
           classes = "govuk-body-l govuk-!-padding-top-3",
           id = Some("point-expiry-date")
         )

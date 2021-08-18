@@ -35,19 +35,37 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter {
   )
 
   "TimelineHelper" when {
-    "getTimelineContent is called and given compliance returns to take action on" should {
-      "return the timeline component wrapped in html" in {
-        val result = helper.getTimelineContent(complianceReturns, sampleExpiryDate)
-        val parsedHtmlResult = Jsoup.parse(result.body)
-        parsedHtmlResult.select("ol").attr("class") shouldBe "hmrc-timeline"
-        parsedHtmlResult.select("h2").get(0).text() shouldBe "VAT period 23 April 2021 to 30 April 2021"
-        parsedHtmlResult.select("span").get(0).text() shouldBe "Submit VAT Return by 23 May 2021"
-        parsedHtmlResult.select("strong").text shouldBe "Submitted on time"
+    "getTimelineContent is called and given compliance returns" should {
+      "when the user is a VAT trader" must {
+        "return the timeline component with VAT trader content wrapped in html" in {
+          val result = helper.getTimelineContent(complianceReturns, sampleExpiryDate)(implicitly, vatTraderUser)
+          val parsedHtmlResult = Jsoup.parse(result.body)
+          parsedHtmlResult.select("ol").attr("class") shouldBe "hmrc-timeline"
+          parsedHtmlResult.select("h2").get(0).text() shouldBe "VAT period 23 April 2021 to 30 April 2021"
+          parsedHtmlResult.select("span").get(0).text() shouldBe "Submit VAT Return by 23 May 2021"
+          parsedHtmlResult.select("strong").text shouldBe "Submitted on time"
 
-        parsedHtmlResult.select("h2").get(1).text() shouldBe "VAT period 23 April 2021 to 30 April 2021"
-        parsedHtmlResult.select("span").get(1).text() shouldBe "Submit VAT Return by 23 May 2021"
+          parsedHtmlResult.select("h2").get(1).text() shouldBe "VAT period 23 April 2021 to 30 April 2021"
+          parsedHtmlResult.select("span").get(1).text() shouldBe "Submit VAT Return by 23 May 2021"
 
-        parsedHtmlResult.select("#point-expiry-date").text shouldBe "If you complete these actions we will remove your points in March 2023."
+          parsedHtmlResult.select("#point-expiry-date").text shouldBe "If you complete these actions we will remove your points in March 2023."
+        }
+      }
+
+      "when the user is an agent" must {
+        "return the timeline component with Agent content wrapped in html" in {
+          val result = helper.getTimelineContent(complianceReturns, sampleExpiryDate)(implicitly, agentUser)
+          val parsedHtmlResult = Jsoup.parse(result.body)
+          parsedHtmlResult.select("ol").attr("class") shouldBe "hmrc-timeline"
+          parsedHtmlResult.select("h2").get(0).text() shouldBe "VAT period 23 April 2021 to 30 April 2021"
+          parsedHtmlResult.select("span").get(0).text() shouldBe "Submit VAT Return by 23 May 2021"
+          parsedHtmlResult.select("strong").text shouldBe "Submitted on time"
+
+          parsedHtmlResult.select("h2").get(1).text() shouldBe "VAT period 23 April 2021 to 30 April 2021"
+          parsedHtmlResult.select("span").get(1).text() shouldBe "Submit VAT Return by 23 May 2021"
+
+          parsedHtmlResult.select("#point-expiry-date").text shouldBe "If these actions are completed we will remove your client’s points in March 2023."
+        }
       }
     }
   }

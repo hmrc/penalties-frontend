@@ -21,10 +21,12 @@ import java.time.LocalDateTime
 import models.compliance.{CompliancePayload, MissingReturn, Return, ReturnStatusEnum}
 import org.jsoup.Jsoup
 import play.api.http.Status
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.AuthStub
 import stubs.ComplianceStub._
 import testUtils.IntegrationSpecCommonBase
+import utils.SessionKeys
 
 class ComplianceControllerISpec extends IntegrationSpecCommonBase {
   val sampleDate1 = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
@@ -32,6 +34,9 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
   val sampleDate3 = LocalDateTime.of(2021, 2, 28, 1, 1, 1)
   val sampleDate4 = LocalDateTime.of(2021, 4, 1, 1, 1, 1)
   val sampleDate5 = LocalDateTime.of(2021, 1, 31, 1, 1, 1)
+
+  val controller = injector.instanceOf[ComplianceController]
+  val fakeAgentRequest = FakeRequest("GET", "/").withSession(SessionKeys.agentSessionVrn -> "123456789")
 
   val compliancePayloadWithMissingReturns: CompliancePayload = CompliancePayload(
     noOfMissingReturns = "1",
@@ -100,6 +105,18 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.body().toString.contains("VAT period 1 January 2021 to 31 January 2021") shouldBe true
         parsedBody.body().toString.contains("Submit VAT Return by 7 March 2021") shouldBe true
         parsedBody.body().toString.contains("Submitted on time") shouldBe false
+      }
+
+      "an agent is present" in {
+        AuthStub.agentAuthorised()
+        returnComplianceDataStub(compliancePayloadWithNoMissingReturns)
+        val request = controller.onPageLoad()(fakeAgentRequest)
+        await(request).header.status shouldBe OK
+        val parsedBody = Jsoup.parse(contentAsString(request))
+        parsedBody.body().toString.contains("Your client needs to take action to bring their VAT account up to date.") shouldBe true
+        parsedBody.body().toString.contains("allow HMRC to remove all your client’s penalty points") shouldBe true
+        parsedBody.body().toString.contains("help your client to stop paying late submission financial penalties") shouldBe true
+        parsedBody.body().toString.contains("If these actions are completed we will remove your client’s points in February 2023.") shouldBe true
       }
     }
 
