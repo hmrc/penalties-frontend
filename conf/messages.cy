@@ -175,4 +175,3 @@ whatIsOwed.VATInterest.estimated = £{0} in estimated VAT interest
 whatIsOwed.VATInterest = £{0} in VAT interest
 whatIsOwed.allPenalties.interest.estimated = £{0} in estimated interest on penalties
 whatIsOwed.allPenalties.interest = £{0} in interest on penalties
-whatIsOwed.button.checkAmounts = Check amounts
