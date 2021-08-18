@@ -118,7 +118,6 @@ status.removed = removed
 status.paid = paid
 status.cancelled = cancelled
 status.reinstated = reinstated
-status.estimated = estimated
 
 site.opensInNewTab = (opens in a new tab)
 site.warning = Warning:
