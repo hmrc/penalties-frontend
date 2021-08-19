@@ -24,11 +24,17 @@ object ComplianceMessages {
 
   val p1 = "You need to take action to bring your VAT account up to date."
 
+  val agentP1 = "Your client needs to take action to bring their VAT account up to date."
+
   val p2 = "Taking this action will:"
 
   val li1 = "allow HMRC to remove all your penalty points"
 
+  val agentLi1 = "allow HMRC to remove all your client’s penalty points"
+
   val li2 = "help you stop paying late submission financial penalties"
+
+  val agentLi2 = "help your client to stop paying late submission financial penalties"
 
   val h2MissingReturns = "Submit these missing returns"
 
