@@ -168,7 +168,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     }
   }
 
-  def lppCardBody(lpp: LatePaymentPenalty)(implicit messages: Messages, request: Request[_]): Seq[SummaryListRow] = {
+  def lppCardBody(lpp: LatePaymentPenalty)(implicit messages: Messages): Seq[SummaryListRow] = {
     val period = lpp.period
     Seq(
       summaryListRow(
