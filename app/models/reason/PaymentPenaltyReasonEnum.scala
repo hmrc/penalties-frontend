@@ -18,25 +18,41 @@ package models.reason
 
 import play.api.libs.json.{Format, JsError, JsResult, JsString, JsSuccess, JsValue}
 
-object PaymentPenaltyReasonEnum   extends Enumeration {
+object PaymentPenaltyReasonEnum  extends Enumeration {
+ val VAT_NOT_PAID_WITHIN_15_DAYS = Value
+ val VAT_NOT_PAID_WITHIN_30_DAYS = Value
+ val VAT_NOT_PAID_AFTER_30_DAYS = Value
+ val CENTRAL_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS = Value
+ val CENTRAL_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS = Value
+ val CENTRAL_ASSESSMENT_NOT_PAID_AFTER_30_DAYS = Value
+ val ERROR_CORRECTION_NOTICE_NOT_PAID_WITHIN_15_DAYS = Value
+ val ERROR_CORRECTION_NOTICE_NOT_PAID_WITHIN_30_DAYS = Value
+ val ERROR_CORRECTION_NOTICE_NOT_PAID_AFTER_30_DAYS = Value
+ val OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS = Value
+ val OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS = Value
+ val OFFICERS_ASSESSMENT_NOT_PAID_AFTER_30_DAYS = Value
 
-  val VAT_NOT_PAID_WITHIN_15_DAYS = Value
-  val VAT_NOT_PAID_WITHIN_30_DAYS = Value
-  val VAT_NOT_PAID_AFTER_30_DAYS = Value
-
-  implicit val format: Format[PaymentPenaltyReasonEnum.Value] = new Format[PaymentPenaltyReasonEnum.Value] {
-    override def writes(o: PaymentPenaltyReasonEnum.Value): JsValue = {
-      JsString(o.toString.toUpperCase)
-    }
-
-    override def reads(json: JsValue): JsResult[PaymentPenaltyReasonEnum.Value] = {
-      json.as[String].toUpperCase match {
-        case "VAT_NOT_PAID_WITHIN_15_DAYS" => JsSuccess(VAT_NOT_PAID_WITHIN_15_DAYS)
-        case "VAT_NOT_PAID_WITHIN_30_DAYS" => JsSuccess(VAT_NOT_PAID_WITHIN_30_DAYS)
-        case "VAT_NOT_PAID_AFTER_30_DAYS"  => JsSuccess(VAT_NOT_PAID_AFTER_30_DAYS)
-        case e => JsError(s"$e Penalty Reason not recognised")
-      }
-    }
+ implicit val format: Format[PaymentPenaltyReasonEnum.Value] = new Format[PaymentPenaltyReasonEnum.Value] {
+  override def writes(o: PaymentPenaltyReasonEnum.Value): JsValue = {
+   JsString(o.toString.toUpperCase)
   }
+  override def reads(json: JsValue): JsResult[PaymentPenaltyReasonEnum.Value] = {
+   json.as[String].toUpperCase match {
+    case "VAT_NOT_PAID_WITHIN_15_DAYS" => JsSuccess(VAT_NOT_PAID_WITHIN_15_DAYS)
+    case "VAT_NOT_PAID_WITHIN_30_DAYS" => JsSuccess(VAT_NOT_PAID_WITHIN_30_DAYS)
+    case "VAT_NOT_PAID_AFTER_30_DAYS"  => JsSuccess(VAT_NOT_PAID_AFTER_30_DAYS)
+    case "CENTRAL_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS" => JsSuccess(CENTRAL_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS)
+    case "CENTRAL_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS" => JsSuccess(CENTRAL_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS)
+    case "CENTRAL_ASSESSMENT_NOT_PAID_AFTER_30_DAYS" => JsSuccess(CENTRAL_ASSESSMENT_NOT_PAID_AFTER_30_DAYS)
+    case "ERROR_CORRECTION_NOTICE_NOT_PAID_WITHIN_15_DAYS" => JsSuccess(ERROR_CORRECTION_NOTICE_NOT_PAID_WITHIN_15_DAYS)
+    case "ERROR_CORRECTION_NOTICE_NOT_PAID_WITHIN_30_DAYS" => JsSuccess(ERROR_CORRECTION_NOTICE_NOT_PAID_WITHIN_30_DAYS)
+    case "ERROR_CORRECTION_NOTICE_NOT_PAID_AFTER_30_DAYS" => JsSuccess(ERROR_CORRECTION_NOTICE_NOT_PAID_AFTER_30_DAYS)
+    case "OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS" => JsSuccess(OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS)
+    case "OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS" => JsSuccess(OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS)
+    case "OFFICERS_ASSESSMENT_NOT_PAID_AFTER_30_DAYS" => JsSuccess(OFFICERS_ASSESSMENT_NOT_PAID_AFTER_30_DAYS)
+    case e => JsError(s"$e Penalty Reason not recognised")
+   }
+  }
+ }
 }
 

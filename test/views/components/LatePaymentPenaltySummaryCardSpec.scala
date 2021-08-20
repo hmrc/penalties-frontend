@@ -64,6 +64,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
   val summaryCardModelForAdditionalPenaltyDue: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
     Some(Seq(sampleLatePaymentPenaltyDue.copy(
       `type` = PenaltyTypeEnum.Additional,
+      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
       period = PaymentPeriod(
         LocalDateTime.of(2020,1,1,1,1,1),
         LocalDateTime.of(2020,2,1,1,1,1),
