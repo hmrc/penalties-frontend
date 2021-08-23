@@ -233,6 +233,29 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     )
   )
 
+  val sampleLatePaymentPenaltyReasonVATNotPaidWithin30Days =LatePaymentPenalty(
+    `type` = PenaltyTypeEnum.Financial,
+    id = "123456789",
+    reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
+    dateCreated = LocalDateTime.now,
+    status = PointStatusEnum.Paid,
+    appealStatus = None,
+    period = PaymentPeriod(
+      LocalDateTime.now,
+      LocalDateTime.now,
+      LocalDateTime.now,
+      PaymentStatusEnum.Paid
+    ),
+    communications = Seq.empty,
+    financial = Financial(
+      amountDue = 123.45,
+      outstandingAmountDue = 12.34,
+      dueDate = LocalDateTime.now
+    )
+  )
+
+
+
   val sampleLatePaymentPenaltyPaid = LatePaymentPenalty(
     `type` = PenaltyTypeEnum.Financial,
     id = "123456789",
@@ -291,6 +314,18 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   val sampleLatePaymentPenaltyAppealedRejectedTribunal = sampleLatePaymentPenaltyDue.copy(appealStatus = Some(AppealStatusEnum.Tribunal_Rejected))
   val sampleLatePaymentPenaltyAppealedReinstated = sampleLatePaymentPenaltyDue.copy(appealStatus = Some(AppealStatusEnum.Reinstated))
   val sampleLatePaymentPenaltyEstimated = sampleLatePaymentPenaltyDue.copy(status = PointStatusEnum.Estimated)
+
+  val sampleLatePaymentPenaltyReasonCentralAssessmentNotPaidWithin15Days = sampleLatePaymentPenaltyPaid.copy(reason = PaymentPenaltyReasonEnum.CENTRAL_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS)
+  val sampleLatePaymentPenaltyReasonCentralAssessmentNotPaidWithin30Days = sampleLatePaymentPenaltyPaid.copy(reason = PaymentPenaltyReasonEnum.CENTRAL_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS)
+  val sampleLatePaymentPenaltyAdditionalReasonCentralAssessment = sampleLatePaymentPenaltyAdditional.copy(reason = PaymentPenaltyReasonEnum.CENTRAL_ASSESSMENT_NOT_PAID_AFTER_30_DAYS)
+
+  val sampleLatePaymentPenaltyReasonErrorCorrectionNoticeNotPaidWithin15Days = sampleLatePaymentPenaltyPaid.copy(reason = PaymentPenaltyReasonEnum.ERROR_CORRECTION_NOTICE_NOT_PAID_WITHIN_15_DAYS)
+  val sampleLatePaymentPenaltyReasonErrorCorrectionNoticeNotPaidWithin30Days = sampleLatePaymentPenaltyPaid.copy(reason = PaymentPenaltyReasonEnum.ERROR_CORRECTION_NOTICE_NOT_PAID_WITHIN_30_DAYS)
+  val sampleLatePaymentPenaltyAdditionalReasonErrorCorrectionNotice = sampleLatePaymentPenaltyAdditional.copy(reason = PaymentPenaltyReasonEnum.ERROR_CORRECTION_NOTICE_NOT_PAID_AFTER_30_DAYS)
+
+  val sampleLatePaymentPenaltyReasonOfficersAssessmentNotPaidWithin15Days = sampleLatePaymentPenaltyPaid.copy(reason = PaymentPenaltyReasonEnum.OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS)
+  val sampleLatePaymentPenaltyReasonOfficersAssessmentNotPaidWithin30Days = sampleLatePaymentPenaltyPaid.copy(reason = PaymentPenaltyReasonEnum.OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS)
+  val sampleLatePaymentPenaltyAdditionalReasonOfficersAssessment = sampleLatePaymentPenaltyAdditional.copy(reason = PaymentPenaltyReasonEnum.OFFICERS_ASSESSMENT_NOT_PAID_AFTER_30_DAYS)
 
   val sampleRemovedPenaltyPoint = PenaltyPoint(
     PenaltyTypeEnum.Point,
@@ -440,6 +475,12 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   val sampleLatePaymentPenaltyData: Seq[LatePaymentPenalty] = Seq(
     sampleLatePaymentPenaltyPaid
+  )
+  val sampleLatePaymentPenaltyReason: Seq[LatePaymentPenalty] = Seq(
+    sampleLatePaymentPenaltyPaid
+  )
+    val sampleLatePaymentPenaltyAdditionalReason: Seq[LatePaymentPenalty] = Seq(
+    sampleLatePaymentPenaltyAdditional
   )
 
   val sampleLatePaymentPenaltyDataUnpaidVAT: Seq[LatePaymentPenalty] = Seq(

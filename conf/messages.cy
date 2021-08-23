@@ -108,8 +108,17 @@ summaryCard.appealCheck = Check if you can appeal
 summaryCard.lpp.key2 = Penalty reason
 summaryCard.lpp.15days = VAT not paid within 15 days
 summaryCard.lpp.30days = VAT not paid within 30 days
+summaryCard.lpp.15days.centralAssessment = Central Assessment not paid within 15 days
+summaryCard.lpp.30days.centralAssessment = Central Assessment not paid within 30 days
+summaryCard.lpp.15days.ecn = Error Correction Notice not paid within 15 days
+summaryCard.lpp.30days.ecn = Error Correction Notice not paid within 30 days
+summaryCard.lpp.15days.officersAssessment = Officer'''s Assessment not paid within 15 days
+summaryCard.lpp.30days.officersAssessment = Officer'''s Assessment not paid within 30 days
 summaryCard.lpp.additional.key = Charged daily from
 summaryCard.lpp.additional.30days = VAT more than 30 days late
+summaryCard.lpp.additional.30days.centralAssessment = Central Assessment more than 30 days late
+summaryCard.lpp.additional.30days.ecn = Error Correction Notice more than 30 days late
+summaryCard.lpp.additional.30days.officersAssessment = Officer'''s Assessment more than 30 days late
 
 status.active = active
 status.due = due
