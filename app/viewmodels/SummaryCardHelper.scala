@@ -187,11 +187,34 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   }
 
   private def getPenaltyReasonKey(lpp: LatePaymentPenalty): String = {
-    lpp.reason match {
+    if (lpp.`type` == PenaltyTypeEnum.Additional) {
+      getLPPAdditionalPenaltyReasonKey(lpp.reason)
+    }
+    else {
+      getLPPPenaltyReasonKey(lpp.reason)
+    }
+  }
+
+  private def getLPPAdditionalPenaltyReasonKey(reason: PaymentPenaltyReasonEnum.Value): String = {
+    reason match {
+      case PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS => "summaryCard.lpp.additional.30days"
+      case PaymentPenaltyReasonEnum.CENTRAL_ASSESSMENT_NOT_PAID_AFTER_30_DAYS => "summaryCard.lpp.additional.30days.centralAssessment"
+      case PaymentPenaltyReasonEnum.ERROR_CORRECTION_NOTICE_NOT_PAID_AFTER_30_DAYS => "summaryCard.lpp.additional.30days.ecn"
+      case PaymentPenaltyReasonEnum.OFFICERS_ASSESSMENT_NOT_PAID_AFTER_30_DAYS => "summaryCard.lpp.additional.30days.officersAssessment"
+    }
+  }
+
+  private def getLPPPenaltyReasonKey(reason: PaymentPenaltyReasonEnum.Value): String = {
+    reason match {
       case PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS => "summaryCard.lpp.15days"
       case PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS => "summaryCard.lpp.30days"
-      case PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS => "summaryCard.lpp.additional.30days"
-    }
+      case PaymentPenaltyReasonEnum.CENTRAL_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS=> "summaryCard.lpp.15days.centralAssessment"
+      case PaymentPenaltyReasonEnum.CENTRAL_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS => "summaryCard.lpp.30days.centralAssessment"
+      case PaymentPenaltyReasonEnum.ERROR_CORRECTION_NOTICE_NOT_PAID_WITHIN_15_DAYS => "summaryCard.lpp.15days.ecn"
+      case PaymentPenaltyReasonEnum.ERROR_CORRECTION_NOTICE_NOT_PAID_WITHIN_30_DAYS => "summaryCard.lpp.30days.ecn"
+      case PaymentPenaltyReasonEnum.OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS => "summaryCard.lpp.15days.officersAssessment"
+      case PaymentPenaltyReasonEnum.OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS => "summaryCard.lpp.30days.officersAssessment"
+     }
   }
 
   def returnNotSubmittedCardBody(period: PenaltyPeriod)(implicit messages: Messages): Seq[SummaryListRow] = Seq(

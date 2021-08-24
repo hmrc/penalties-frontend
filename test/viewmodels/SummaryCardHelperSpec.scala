@@ -66,6 +66,73 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
     isVatPaid = true
   )
 
+  val sampleLPPAdditionalSummaryCardPenaltyPaid: LatePaymentPenaltySummaryCard = LatePaymentPenaltySummaryCard(
+    Seq(
+      helper.summaryListRow(
+        period,
+        Html(vatPeriodValue(dateTimeToString(LocalDateTime.now), dateTimeToString(LocalDateTime.now)))
+      ),
+      helper.summaryListRow(penaltyReason, Html("VAT more than 30 days late")),
+      helper.summaryListRow(chargedDailyFrom, Html(dateTimeToString(LocalDateTime.now.plusDays(31))))
+    ),
+    Tag(content = Text("paid"), classes = "govuk-tag "),
+    "123456789",
+    isPenaltyPaid = true,
+    123.45,
+    isVatPaid = true,
+    isAdditionalPenalty = true
+  )
+
+  val sampleLPPAdditionalSummaryCardReasonCentralAssessment: LatePaymentPenaltySummaryCard = LatePaymentPenaltySummaryCard(
+    Seq(
+      helper.summaryListRow(
+        period,
+        Html(vatPeriodValue(dateTimeToString(LocalDateTime.now), dateTimeToString(LocalDateTime.now)))
+      ),
+      helper.summaryListRow(penaltyReason, Html("Central Assessment more than 30 days late")),
+      helper.summaryListRow(chargedDailyFrom, Html(dateTimeToString(LocalDateTime.now.plusDays(31))))
+    ),
+    Tag(content = Text("paid"), classes = "govuk-tag "),
+    "123456789",
+    isPenaltyPaid = true,
+    123.45,
+    isVatPaid = true,
+    isAdditionalPenalty = true
+  )
+
+  val sampleLPPAdditionalSummaryCardReasonErrorCorrectionNotice: LatePaymentPenaltySummaryCard = LatePaymentPenaltySummaryCard(
+    Seq(
+      helper.summaryListRow(
+        period,
+        Html(vatPeriodValue(dateTimeToString(LocalDateTime.now), dateTimeToString(LocalDateTime.now)))
+      ),
+      helper.summaryListRow(penaltyReason, Html("Error Correction Notice more than 30 days late")),
+      helper.summaryListRow(chargedDailyFrom, Html(dateTimeToString(LocalDateTime.now.plusDays(31))))
+    ),
+    Tag(content = Text("paid"), classes = "govuk-tag "),
+    "123456789",
+    isPenaltyPaid = true,
+    123.45,
+    isVatPaid = true,
+    isAdditionalPenalty = true
+  )
+
+  val sampleLPPAdditionalSummaryCardReasonOfficersAssessment: LatePaymentPenaltySummaryCard = LatePaymentPenaltySummaryCard(
+    Seq(
+      helper.summaryListRow(
+        period,
+        Html(vatPeriodValue(dateTimeToString(LocalDateTime.now), dateTimeToString(LocalDateTime.now)))
+      ),
+      helper.summaryListRow(penaltyReason, Html("Officer's Assessment more than 30 days late")),
+      helper.summaryListRow(chargedDailyFrom, Html(dateTimeToString(LocalDateTime.now.plusDays(31))))
+    ),
+    Tag(content = Text("paid"), classes = "govuk-tag "),
+    "123456789",
+    isPenaltyPaid = true,
+    123.45,
+    isVatPaid = true,
+    isAdditionalPenalty = true
+  )
   val sampleLPPSummaryCardPenaltyUnpaidVAT: LatePaymentPenaltySummaryCard = sampleLPPSummaryCardPenaltyPaid.copy(isPenaltyPaid = false, isVatPaid = false,
     status = Tag(content = Text("£200 due"), classes = "govuk-tag penalty-due-tag"))
 
@@ -288,10 +355,87 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "given a Late Payment penalty" when {
-        "return SummaryCards when given Late Payment penalty" when {
+        "return SummaryCards when given Late Payment penalty with penalty Reason VAT_NOT_PAID_WITHIN_15_DAYS" when {
           "populateLatePaymentPenaltyCard is called" in {
             val result = helper.populateLatePaymentPenaltyCard(Some(sampleLatePaymentPenaltyData))
             result shouldBe Some(Seq(sampleLPPSummaryCardPenaltyPaid))
+          }
+
+          "return SummaryCards when given Late Payment penalty reason VAT_NOT_PAID_WITHIN_30_DAYS" when {
+            "populateLatePaymentPenaltyCard is called" in {
+              val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyReasonVATNotPaidWithin30Days)))
+              result.get.map(_.cardRows.exists(_.value.content == HtmlContent("VAT not paid within 30 days"))) shouldBe List(true)
+            }
+          }
+
+          "return SummaryCards when given Late Payment penalty 'Additional' show reason VAT_NOT_PAID_AFTER_30_DAYS" when {
+            "populateLatePaymentPenaltyAdditionalCard is called" in {
+              val result = helper.populateLatePaymentPenaltyCard(Some(sampleLatePaymentPenaltyAdditionalReason))
+              result shouldBe Some(Seq(sampleLPPAdditionalSummaryCardPenaltyPaid))
+            }
+          }
+
+          "return SummaryCards when given Late Payment penalty show reason CENTRAL_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS" when {
+            "populateLatePaymentPenaltyAdditionalCard is called" in {
+              val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyReasonCentralAssessmentNotPaidWithin15Days)))
+              result.get.map(_.cardRows.exists(_.value.content == HtmlContent("Central Assessment not paid within 15 days"))) shouldBe List(true)
+            }
+          }
+
+          "return SummaryCards when given Late Payment penalty show reason CENTRAL_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS" when {
+            "populateLatePaymentPenaltyAdditionalCard is called" in {
+              val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyReasonCentralAssessmentNotPaidWithin30Days)))
+              result.get.map(_.cardRows.exists(_.value.content == HtmlContent("Central Assessment not paid within 30 days"))) shouldBe List(true)
+            }
+          }
+
+          "return SummaryCards when given Late Payment penalty 'Additional' show reason CENTRAL_ASSESSMENT_NOT_PAID_AFTER_30_DAYS" when {
+            "populateLatePaymentPenaltyAdditionalCard is called" in {
+              val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyAdditionalReasonCentralAssessment)))
+              result shouldBe Some(Seq(sampleLPPAdditionalSummaryCardReasonCentralAssessment))
+            }
+          }
+
+          "return SummaryCards when given Late Payment penalty show reason ERROR_CORRECTION_NOTICE_NOT_PAID_WITHIN_15_DAYS" when {
+            "populateLatePaymentPenaltyAdditionalCard is called" in {
+              val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyReasonErrorCorrectionNoticeNotPaidWithin15Days)))
+              result.get.map(_.cardRows.exists(_.value.content == HtmlContent("Error Correction Notice not paid within 15 days"))) shouldBe List(true)
+            }
+          }
+
+          "return SummaryCards when given Late Payment penalty show reason ERROR_CORRECTION_NOTICE_NOT_PAID_WITHIN_30_DAYS" when {
+            "populateLatePaymentPenaltyAdditionalCard is called" in {
+              val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyReasonErrorCorrectionNoticeNotPaidWithin30Days)))
+              result.get.map(_.cardRows.exists(_.value.content == HtmlContent("Error Correction Notice not paid within 30 days"))) shouldBe List(true)
+            }
+          }
+
+          "return SummaryCards when given Late Payment penalty 'Additional' show reason ERROR_CORRECTION_NOTICE_NOT_PAID_AFTER_30_DAYS" when {
+            "populateLatePaymentPenaltyAdditionalCard is called" in {
+              val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyAdditionalReasonErrorCorrectionNotice)))
+              result shouldBe Some(Seq(sampleLPPAdditionalSummaryCardReasonErrorCorrectionNotice))
+            }
+          }
+
+          "return SummaryCards when given Late Payment penalty show reason OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS" when {
+            "populateLatePaymentPenaltyAdditionalCard is called" in {
+              val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyReasonOfficersAssessmentNotPaidWithin15Days)))
+              result.get.map(_.cardRows.exists(_.value.content == HtmlContent("Officer's Assessment not paid within 15 days"))) shouldBe List(true)
+            }
+          }
+
+          "return SummaryCards when given Late Payment penalty show reason OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS" when {
+            "populateLatePaymentPenaltyAdditionalCard is called" in {
+              val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyReasonOfficersAssessmentNotPaidWithin30Days)))
+              result.get.map(_.cardRows.exists(_.value.content == HtmlContent("Officer's Assessment not paid within 30 days"))) shouldBe List(true)
+            }
+          }
+
+          "return SummaryCards when given Late Payment penalty 'Additional' show reason OFFICERS_ASSESSMENT_NOT_PAID_AFTER_30_DAYS" when {
+            "populateLatePaymentPenaltyAdditionalCard is called" in {
+              val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyAdditionalReasonOfficersAssessment)))
+              result shouldBe Some(Seq(sampleLPPAdditionalSummaryCardReasonOfficersAssessment))
+            }
           }
 
           "set the isVatPaid boolean to false when the VAT is unpaid" in {
