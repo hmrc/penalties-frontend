@@ -379,22 +379,10 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     }
   }
 
-  def showDueOrPartiallyPaidDueTag(financial: Option[Financial])(implicit messages: Messages): Tag = if (financial.isDefined){
-      val amountDue = financial.get.amountDue
-      val outstandingAmountDue = financial.get.outstandingAmountDue
-      if (outstandingAmountDue < amountDue && outstandingAmountDue > 0) {
-        renderTag(messages("status.partialPayment.due", outstandingAmountDue), "penalty-due-tag")
-      } else {
-        renderTag(messages("status.due"), "penalty-due-tag")
-      }
-  }else {
-    renderTag(messages("status.due"), "penalty-due-tag")
+  def showDueOrPartiallyPaidDueTag(financial: Option[Financial])(implicit messages: Messages): Tag = financial match {
+    case Some(financial) if (financial.outstandingAmountDue < financial.amountDue && financial.outstandingAmountDue > 0) =>
+      renderTag(messages("status.partialPayment.due", financial.outstandingAmountDue), "penalty-due-tag")
+    case _ => renderTag(messages("status.due"), "penalty-due-tag")
   }
-
-//  def showDueOrPartiallyPaidDueTag(financial: Option[Financial])(implicit messages: Messages): Tag = financial match {
-//    case Some(financial) if (financial.outstandingAmountDue < financial.amountDue && financial.outstandingAmountDue > 0) =>
-//      renderTag(messages("status.partialPayment.due", financial.outstandingAmountDue), "penalty-due-tag")
-//    case _ => renderTag(messages("status.due"), "penalty-due-tag")
-//  }
 
 }
