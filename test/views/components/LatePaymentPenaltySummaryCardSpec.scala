@@ -141,7 +141,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
 
       "display the 'DUE' status" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDue))
-        doc.select("strong").text() shouldBe "due"
+        doc.select("strong").text() shouldBe "£200 due"
       }
 
       "display the VAT period" in {

@@ -113,6 +113,7 @@ summaryCard.lpp.additional.30days = VAT more than 30 days late
 
 status.active = active
 status.due = due
+status.partialPayment.due = £{0} due
 status.rejected = rejected
 status.removed = removed
 status.paid = paid

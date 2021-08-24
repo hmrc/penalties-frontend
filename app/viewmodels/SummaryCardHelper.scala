@@ -17,9 +17,10 @@
 package viewmodels
 
 import models.User
-
 import java.time.LocalDateTime
+
 import javax.inject.Inject
+import models.financial.Financial
 import models.penalty.{LatePaymentPenalty, PaymentStatusEnum, PenaltyPeriod}
 import models.point.PointStatusEnum.{Active, Due, Paid, Rejected, Removed}
 import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
@@ -184,8 +185,9 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       summaryListRow(messages("summaryCard.lpp.key2"), Html(messages(getPenaltyReasonKey(lpp))))
     )
   }
-  private def getPenaltyReasonKey(lpp: LatePaymentPenalty):String = {
-    lpp.reason match{
+
+  private def getPenaltyReasonKey(lpp: LatePaymentPenalty): String = {
+    lpp.reason match {
       case PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS => "summaryCard.lpp.15days"
       case PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS => "summaryCard.lpp.30days"
       case PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS => "summaryCard.lpp.additional.30days"
@@ -225,7 +227,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
 
   def lppSummaryCard(lpp: LatePaymentPenalty)(implicit messages: Messages, user: User[_]): LatePaymentPenaltySummaryCard = {
     val dueDatePlus31Days: String = dateTimeToString(lpp.period.dueDate.plusDays(31))
-    val cardBody = if(lpp.`type` == PenaltyTypeEnum.Additional) lppCardBody(lpp) :+ summaryListRow(messages("summaryCard.lpp.additional.key"), Html(dueDatePlus31Days)) else lppCardBody(lpp)
+    val cardBody = if (lpp.`type` == PenaltyTypeEnum.Additional) lppCardBody(lpp) :+ summaryListRow(messages("summaryCard.lpp.additional.key"), Html(dueDatePlus31Days)) else lppCardBody(lpp)
     val isPaid = lpp.status == Paid
     val isVatPaid = lpp.period.paymentStatus == PaymentStatusEnum.Paid
     if (lpp.appealStatus.isDefined) {
@@ -322,9 +324,10 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
 
       (penaltyAppealStatus, periodSubmissionStatus, penaltyPointStatus) match {
         case (Some(AppealStatusEnum.Accepted | AppealStatusEnum.Accepted_By_Tribunal), _, _) => renderTag(messages("status.cancelled"))
-        case (_, Some(Submitted), Due) => renderTag(messages("status.due"), "penalty-due-tag")
+//        case (_, Some(Submitted), Due) => renderTag(messages("status.due"), "penalty-due-tag")
+        case (_, Some(Submitted), Due) => showDueOrPartiallyPaidDueTag(penalty.get.financial)
         case (_, Some(_), Paid) => renderTag(messages("status.paid"))
-        case (_, Some(Overdue), _) => renderTag(messages("status.due"), "penalty-due-tag")
+        case (_, Some(Overdue), _) => showDueOrPartiallyPaidDueTag(penalty.get.financial)
         case (Some(AppealStatusEnum.Reinstated), _, _) => renderTag(messages("status.reinstated"))
         case (Some(AppealStatusEnum.Tribunal_Rejected), _, _) => renderTag(messages("status.active"))
         case (Some(AppealStatusEnum.Under_Review | AppealStatusEnum.Under_Tribunal_Review), _, _) => renderTag(messages("status.active"))
@@ -338,11 +341,11 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       val latePaymentPenaltyStatus = lpp.get.status
       val latePaymentPenaltyAppealStatus = lpp.get.appealStatus
 
-      (latePaymentPenaltyAppealStatus,latePaymentPenaltyStatus) match {
-        case (Some(AppealStatusEnum.Accepted | AppealStatusEnum.Accepted_By_Tribunal),_) => renderTag(messages("status.cancelled"))
-        case (_,PointStatusEnum.Estimated) => renderTag(messages("status.estimated"))
-        case (_,PointStatusEnum.Paid) => renderTag(messages("status.paid"))
-        case (_,_) => renderTag(messages("status.due"), "penalty-due-tag")
+      (latePaymentPenaltyAppealStatus, latePaymentPenaltyStatus) match {
+        case (Some(AppealStatusEnum.Accepted | AppealStatusEnum.Accepted_By_Tribunal), _) => renderTag(messages("status.cancelled"))
+        case (_, PointStatusEnum.Estimated) => renderTag(messages("status.estimated"))
+        case (_, PointStatusEnum.Paid) => renderTag(messages("status.paid"))
+        case (_, _) => showDueOrPartiallyPaidDueTag(Some(lpp.get.financial))
       }
     }
   }
@@ -350,20 +353,20 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   def pointsThresholdMet(threshold: Int, activePoints: Int): Boolean = activePoints >= threshold
 
   private def returnAppealStatusMessageBasedOnPenalty(penaltyPoint: Option[PenaltyPoint], lpp: Option[LatePaymentPenalty])(implicit messages: Messages, user: User[_]): Html = {
-    val penalty = if(penaltyPoint.isDefined) penaltyPoint.get.appealStatus else lpp.get.appealStatus
+    val penalty = if (penaltyPoint.isDefined) penaltyPoint.get.appealStatus else lpp.get.appealStatus
     penalty.get match {
       case AppealStatusEnum.Accepted | AppealStatusEnum.Rejected | AppealStatusEnum.Tribunal_Rejected | AppealStatusEnum.Accepted_By_Tribunal => {
         html(
           Html(messages(s"summaryCard.appeal.${penalty.get.toString}")),
           Html("<br>"),
-          if(!user.isAgent) link("#", "summaryCard.appeal.readMessage") else HtmlFormat.empty
+          if (!user.isAgent) link("#", "summaryCard.appeal.readMessage") else HtmlFormat.empty
         )
       }
       case AppealStatusEnum.Reinstated => {
         html(
           Html(messages(s"summaryCard.appeal.${penalty.get.toString}")),
           Html("<br>"),
-          if(!user.isAgent) link("#", "summaryCard.appeal.readMessageReinstated") else HtmlFormat.empty
+          if (!user.isAgent) link("#", "summaryCard.appeal.readMessageReinstated") else HtmlFormat.empty
         )
       }
       case _ => {
@@ -375,4 +378,23 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       }
     }
   }
+
+  def showDueOrPartiallyPaidDueTag(financial: Option[Financial])(implicit messages: Messages): Tag = if (financial.isDefined){
+      val amountDue = financial.get.amountDue
+      val outstandingAmountDue = financial.get.outstandingAmountDue
+      if (outstandingAmountDue < amountDue && outstandingAmountDue > 0) {
+        renderTag(messages("status.partialPayment.due", outstandingAmountDue), "penalty-due-tag")
+      } else {
+        renderTag(messages("status.due"), "penalty-due-tag")
+      }
+  }else {
+    renderTag(messages("status.due"), "penalty-due-tag")
+  }
+
+//  def showDueOrPartiallyPaidDueTag(financial: Option[Financial])(implicit messages: Messages): Tag = financial match {
+//    case Some(financial) if (financial.outstandingAmountDue < financial.amountDue && financial.outstandingAmountDue > 0) =>
+//      renderTag(messages("status.partialPayment.due", financial.outstandingAmountDue), "penalty-due-tag")
+//    case _ => renderTag(messages("status.due"), "penalty-due-tag")
+//  }
+
 }

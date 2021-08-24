@@ -96,6 +96,7 @@ object IndexMessages {
   val cancelledTag = "cancelled"
   val rejectedTag = "rejected"
   val overdueTag = "due"
+  val overduePartiallyPaidTag: BigDecimal => String = amount => s"£$amount due"
   val paidTag = "paid"
   val estimated = "estimated"
 
