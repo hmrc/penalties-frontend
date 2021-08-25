@@ -347,7 +347,6 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
 
       (penaltyAppealStatus, periodSubmissionStatus, penaltyPointStatus) match {
         case (Some(AppealStatusEnum.Accepted | AppealStatusEnum.Accepted_By_Tribunal), _, _) => renderTag(messages("status.cancelled"))
-//        case (_, Some(Submitted), Due) => renderTag(messages("status.due"), "penalty-due-tag")
         case (_, Some(Submitted), Due) => showDueOrPartiallyPaidDueTag(penalty.get.financial)
         case (_, Some(_), Paid) => renderTag(messages("status.paid"))
         case (_, Some(Overdue), _) => showDueOrPartiallyPaidDueTag(penalty.get.financial)
@@ -403,6 +402,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   }
 
   def showDueOrPartiallyPaidDueTag(financial: Option[Financial])(implicit messages: Messages): Tag = financial match {
+    case Some(financial) if (financial.outstandingAmountDue == 0) => renderTag(messages("status.paid"))
     case Some(financial) if (financial.outstandingAmountDue < financial.amountDue && financial.outstandingAmountDue > 0) =>
       renderTag(messages("status.partialPayment.due", financial.outstandingAmountDue), "penalty-due-tag")
     case _ => renderTag(messages("status.due"), "penalty-due-tag")

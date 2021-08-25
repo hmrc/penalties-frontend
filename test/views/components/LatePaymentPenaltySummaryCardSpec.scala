@@ -72,12 +72,35 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         PaymentStatusEnum.Paid
       ),
       financial = Financial(
-        amountDue = 123.45, outstandingAmountDue = 0.00, dueDate = LocalDateTime.of(2020,2,1,1,1,1)
+        amountDue = 123.45, outstandingAmountDue = 123.45, dueDate = LocalDateTime.of(2020,2,1,1,1,1)
+      ))))
+  ).get.head
+
+  val summaryCardModelForAdditionalPenaltyDuePartiallyPaid: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
+    Some(Seq(sampleLatePaymentPenaltyDue.copy(
+      `type` = PenaltyTypeEnum.Additional,
+      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
+      period = PaymentPeriod(
+        LocalDateTime.of(2020,1,1,1,1,1),
+        LocalDateTime.of(2020,2,1,1,1,1),
+        LocalDateTime.of(2020,2,1,1,1,1),
+        PaymentStatusEnum.Paid
+      ),
+      financial = Financial(
+        amountDue = 123.45, outstandingAmountDue = 60.22, dueDate = LocalDateTime.of(2020,2,1,1,1,1)
       ))))
   ).get.head
 
   val summaryCardModelDue: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
     Some(Seq(sampleLatePaymentPenaltyDue))
+  ).get.head
+
+  val summaryCardModelDueNoPaymentsMade: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
+    Some(Seq(sampleLatePaymentPenaltyDue.copy(financial = Financial(
+      amountDue = 400.00,
+      outstandingAmountDue = 400.00,
+      dueDate = LocalDateTime.now
+    ))))
   ).get.head
 
   val summaryCardModelWithAppealedPenalty: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
@@ -141,6 +164,11 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       }
 
       "display the 'DUE' status" in {
+        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMade))
+        doc.select("strong").text() shouldBe "due"
+      }
+
+      "display the '£200 DUE' status" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDue))
         doc.select("strong").text() shouldBe "£200 due"
       }
@@ -174,6 +202,11 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       "display the 'DUE' status" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelForAdditionalPenaltyDue))
         doc.select("strong").text() shouldBe "due"
+      }
+
+      "display the '£60.22 DUE' status" in {
+        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelForAdditionalPenaltyDuePartiallyPaid))
+        doc.select("strong").text() shouldBe "£60.22 due"
       }
 
       "display the VAT period" in {
