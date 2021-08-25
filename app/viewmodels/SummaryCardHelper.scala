@@ -403,7 +403,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
 
   def showDueOrPartiallyPaidDueTag(financial: Option[Financial])(implicit messages: Messages): Tag = financial match {
     case Some(financial) if (financial.outstandingAmountDue == 0) => renderTag(messages("status.paid"))
-    case Some(financial) if (financial.outstandingAmountDue < financial.amountDue && financial.outstandingAmountDue > 0) =>
+    case Some(financial) if financial.outstandingAmountDue < financial.amountDue =>
       renderTag(messages("status.partialPayment.due", financial.outstandingAmountDue), "penalty-due-tag")
     case _ => renderTag(messages("status.due"), "penalty-due-tag")
   }
