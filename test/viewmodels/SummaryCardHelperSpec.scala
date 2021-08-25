@@ -25,8 +25,9 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 import utils.ImplicitDateFormatter
-
 import java.time.LocalDateTime
+
+import models.financial.Financial
 
 class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
@@ -133,7 +134,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
     isAdditionalPenalty = true
   )
   val sampleLPPSummaryCardPenaltyUnpaidVAT: LatePaymentPenaltySummaryCard = sampleLPPSummaryCardPenaltyPaid.copy(isPenaltyPaid = false, isVatPaid = false,
-    status = Tag(content = Text("due"), classes = "govuk-tag penalty-due-tag"))
+    status = Tag(content = Text("£200 due"), classes = "govuk-tag penalty-due-tag"))
 
   "SummaryCard helper" should {
     "findAndReindexPointIfIsActive" should {
@@ -611,7 +612,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       "a financial penalty has been added and the user has paid - appealStatus Reinstated " in {
         val result = helper.tagStatus(None,Some(sampleLatePaymentPenaltyAppealedReinstated))
         result shouldBe Tag(
-          content = Text(overdueTag),
+          content = Text(overduePartiallyPaidTag(200)),
           classes = "govuk-tag penalty-due-tag"
         )
       }
@@ -626,7 +627,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       "a financial penalty has been added and the user has not paid the penalty - appealStatus Rejected" in {
         val result = helper.tagStatus(None,Some(sampleLatePaymentPenaltyAppealedRejected))
         result shouldBe Tag(
-          content = Text(overdueTag),
+          content = Text(overduePartiallyPaidTag(200)),
           classes = "govuk-tag penalty-due-tag"
         )
       }
@@ -779,6 +780,71 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       val result = helper.lppSummaryCard(sampleLatePaymentPenaltyAdditional)
       result.isAdditionalPenalty shouldBe true
       result.cardRows.exists(_.key.content == Text("Charged daily from")) shouldBe true
+    }
+  }
+
+  "showDueOrPartiallyPaidDueTag" should {
+    "when lsp financial data is passed in" should {
+
+      "render a due tag - when there is financial data with an amount to be paid but no payments have been made" in {
+        val lspFinancialDataNoPaymentsMade = Some(Financial(400, 400, LocalDateTime.now))
+
+        val result = helper.showDueOrPartiallyPaidDueTag(lspFinancialDataNoPaymentsMade)
+        result shouldBe Tag(
+          content = Text(overdueTag),
+          classes = "govuk-tag penalty-due-tag"
+        )
+      }
+
+      "render a due tag - when there is no financial data for the penalty" in {
+        val result = helper.showDueOrPartiallyPaidDueTag(None)
+        result shouldBe Tag(
+          content = Text(overdueTag),
+          classes = "govuk-tag penalty-due-tag"
+        )
+      }
+
+
+      "render a due tag with the outstanding amount shown - when a partial payment has been made" in {
+        val lspFinancialDataNoPaymentsMade = Some(Financial(400, 146.12, LocalDateTime.now))
+
+        val result = helper.showDueOrPartiallyPaidDueTag(lspFinancialDataNoPaymentsMade)
+        result shouldBe Tag(
+          content = Text(overduePartiallyPaidTag(146.12)),
+          classes = "govuk-tag penalty-due-tag"
+        )
+      }
+    }
+
+    "when lpp financial data is passed in" should {
+
+      "render a due tag - when there is financial data with an amount to be paid but no payments have been made" in {
+        val lppFinancialDataNoPaymentsMade = Some(Financial(600, 600, LocalDateTime.now))
+
+        val result = helper.showDueOrPartiallyPaidDueTag(lppFinancialDataNoPaymentsMade)
+        result shouldBe Tag(
+          content = Text(overdueTag),
+          classes = "govuk-tag penalty-due-tag"
+        )
+      }
+
+      "render a due tag - when there is no financial data for the penalty" in {
+        val result = helper.showDueOrPartiallyPaidDueTag(None)
+        result shouldBe Tag(
+          content = Text(overdueTag),
+          classes = "govuk-tag penalty-due-tag"
+        )
+      }
+
+      "render a due tag with the outstanding amount shown - when a partial payment has been made" in {
+        val lspFinancialDataNoPaymentsMade = Some(Financial(600, 383.94, LocalDateTime.now))
+
+        val result = helper.showDueOrPartiallyPaidDueTag(lspFinancialDataNoPaymentsMade)
+        result shouldBe Tag(
+          content = Text(overduePartiallyPaidTag(383.94)),
+          classes = "govuk-tag penalty-due-tag"
+        )
+      }
     }
   }
 }
