@@ -444,7 +444,7 @@ class IndexPageHelperSpec extends SpecBase {
         val etmpPayloadModelWithNoActivePaymentPenalty: ETMPPayload = ETMPPayload(
           pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = Some(Seq.empty)
         )
-        val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(etmpPayloadModelWithNoActivePaymentPenalty)
+        val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(etmpPayloadModelWithNoActivePaymentPenalty)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
         parsedHtmlResult.select("p.govuk-body").text() shouldBe noActivePaymentPenalty
       }
@@ -477,9 +477,43 @@ class IndexPageHelperSpec extends SpecBase {
           )
           )
         )
-        val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(etmpPayloadWithOutstandingVAT)
+        val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(etmpPayloadWithOutstandingVAT)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
         parsedHtmlResult.select("p.govuk-body").get(0).text shouldBe unpaidVATText
+        parsedHtmlResult.select("a.govuk-link").text shouldBe howLppCalculatedLinkText
+        //TODO: change this when we have link to calculation page
+        parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe "#"
+      }
+
+      "client has outstanding vat to pay" in {
+        val etmpPayloadWithOutstandingVAT: ETMPPayload = ETMPPayload(
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = Some(Seq(
+            LatePaymentPenalty(
+              `type` = PenaltyTypeEnum.Financial,
+              id = "1234567891",
+              reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
+              dateCreated = sampleDate,
+              status = PointStatusEnum.Due,
+              appealStatus = None,
+              period = PaymentPeriod(
+                startDate = sampleDate,
+                endDate = sampleDate,
+                dueDate = sampleDate,
+                paymentStatus = PaymentStatusEnum.Due
+              ),
+              communications = Seq.empty,
+              financial = Financial(
+                amountDue = 400.00,
+                outstandingAmountDue = 11.00,
+                dueDate = sampleDate
+              )
+            )
+          )
+          )
+        )
+        val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(etmpPayloadWithOutstandingVAT)(implicitly, agentUser)
+        val parsedHtmlResult = Jsoup.parse(result.body)
+        parsedHtmlResult.select("p.govuk-body").get(0).text shouldBe agentClientUnpaidVATText
         parsedHtmlResult.select("a.govuk-link").text shouldBe howLppCalculatedLinkText
         //TODO: change this when we have link to calculation page
         parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe "#"
@@ -513,7 +547,7 @@ class IndexPageHelperSpec extends SpecBase {
           )
           )
         )
-        val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(etmpPayloadWithOutstandingVAT)
+        val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(etmpPayloadWithOutstandingVAT)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
         parsedHtmlResult.select("a.govuk-link").text shouldBe howLppCalculatedLinkText
         //TODO: change this when we have link to calculation page
