@@ -168,6 +168,7 @@ feedback.after = will help us to improve it.
 
 # What is owed messages
 # ----------------------------------------------------------
+whatIsOwed.heading = Overview
 whatIsOwed.p1 = You have not paid your VAT. It must be paid as soon as possible.
 agent.whatIsOwed.p1 = Your client has not paid their VAT. It must be paid as soon as possible.
 whatIsOwed.penaltyAndAppealsHeading = Penalty and appeal details

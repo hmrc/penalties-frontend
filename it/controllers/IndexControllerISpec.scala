@@ -572,6 +572,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val request = await(buildClientForRequestToApp(uri = "/").get())
       request.status shouldBe Status.OK
       val parsedBody = Jsoup.parse(request.body)
+      parsedBody.select("#what-is-owed > h2").text shouldBe "Overview"
       parsedBody.select("#what-is-owed > p").first().text shouldBe "You have not paid your VAT. It must be paid as soon as possible."
       parsedBody.select("#what-is-owed > p").get(1).text shouldBe "You owe:"
       parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£121.40 in late VAT"
@@ -722,6 +723,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val request = controller.onPageLoad()(fakeAgentRequest)
       await(request).header.status shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
+      parsedBody.select("#what-is-owed > h2").text shouldBe "Overview"
       parsedBody.select("#what-is-owed > p").first.text shouldBe "Your client has not paid their VAT. It must be paid as soon as possible."
       parsedBody.select("#what-is-owed > p").get(1).text shouldBe "They owe:"
       parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£121.40 in late VAT"

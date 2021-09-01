@@ -198,6 +198,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
               1), helper.populateLatePaymentPenaltyCard(Some(sampleLatePaymentPenaltyData)), "0", whatYouOweContent = Some(sampleContent))(agentRequest, implicitly, implicitly, agentUser)
           }
           implicit val doc: Document = asDocument(applyView())
+          doc.select("#what-is-owed > h2").text shouldBe "Overview"
           doc.select("#what-is-owed > p").first.text shouldBe "Your client has not paid their VAT. It must be paid as soon as possible."
           doc.select("#what-is-owed > p").get(1).text shouldBe "They owe:"
           doc.select("#main-content h2:nth-child(3)").text shouldBe "Penalty and appeal details"
@@ -340,6 +341,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
               1), helper.populateLatePaymentPenaltyCard(Some(sampleLatePaymentPenaltyData)), "0", whatYouOweContent = Some(sampleContent))(fakeRequest, implicitly, implicitly, vatTraderUser)
           }
           implicit val doc: Document = asDocument(applyView())
+          doc.select("#what-is-owed > h2").text shouldBe "Overview"
           doc.select("#what-is-owed > p").first().text shouldBe "You have not paid your VAT. It must be paid as soon as possible."
           doc.select("#what-is-owed > p").get(1).text shouldBe "You owe:"
           doc.select("#main-content h2:nth-child(4)").text shouldBe "Penalty and appeal details"
