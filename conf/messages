@@ -121,6 +121,8 @@ summaryCard.lpp.additional.30days.centralAssessment = Central Assessment more th
 summaryCard.lpp.additional.30days.ecn = Error Correction Notice more than 30 days late
 summaryCard.lpp.additional.30days.officersAssessment = Officer'''s Assessment more than 30 days late
 
+summaryCard.viewCalculation = View calculation
+
 status.active = active
 status.due = due
 status.partialPayment.due = £{0} due

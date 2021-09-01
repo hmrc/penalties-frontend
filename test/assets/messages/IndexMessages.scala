@@ -90,6 +90,8 @@ object IndexMessages {
 
   val bringAccountUpToDate = "Show me how to bring this account up to date"
 
+  val viewCalculationLink = "View calculation"
+
   val lspHeader = "Penalty point 1"
   val lppHeader = "£400 penalty"
   val additionalPenaltyHeader = "£123.45 additional penalty"

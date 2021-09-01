@@ -280,6 +280,8 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
         "populate summary card when user has LPPs" in {
           vatTraderDoc.select(Selectors.summaryCardHeaderTitle(Selectors.summaryLPPCard)).text shouldBe lppHeader
+          vatTraderDoc.select(Selectors.viewCalculation).text shouldBe viewCalculationLink
+          vatTraderDoc.select(Selectors.viewCalculation).attr("href") shouldBe "#" //update to Calculation controller url once PRM-573 is merged
           vatTraderDoc.select(Selectors.summaryCardHeaderTag(Selectors.summaryLPPCard)).text shouldBe paidTag
           vatTraderDoc.select(Selectors.rowItem(Selectors.summaryLPPCard, 1)).text shouldBe period
           vatTraderDoc.select(Selectors.rowItem(Selectors.summaryLPPCard, 2)).text shouldBe penaltyReason
@@ -289,6 +291,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
         "populate summary card when user has LPPs with VAT unpaid" in {
           vatTraderDocWithLPPVATUnpaid.select(Selectors.summaryCardHeaderTitle(Selectors.summaryLPPCard)).text shouldBe lppHeader
+          vatTraderDocWithLPPVATUnpaid.select(Selectors.viewCalculation).text shouldBe viewCalculationLink
           vatTraderDocWithLPPVATUnpaid.select(Selectors.summaryCardHeaderTag(Selectors.summaryLPPCard)).text shouldBe overduePartiallyPaidTag(200)
           vatTraderDocWithLPPVATUnpaid.select(Selectors.rowItem(Selectors.summaryLPPCard, 1)).text shouldBe period
           vatTraderDocWithLPPVATUnpaid.select(Selectors.rowItem(Selectors.summaryLPPCard, 2)).text shouldBe penaltyReason
