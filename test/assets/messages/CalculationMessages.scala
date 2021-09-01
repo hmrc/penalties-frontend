@@ -29,7 +29,7 @@ object CalculationMessages {
 
   val th1LPP = "Penalty amount"
 
-  val th1Additional = "Amount to date (estimate)"
+  val th1Additional = "Penalty amount (estimate)"
 
   val th2LPP = "Calculation"
 
