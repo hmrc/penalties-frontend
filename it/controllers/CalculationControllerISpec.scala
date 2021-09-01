@@ -179,7 +179,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
     )
   )
 
-  "GET /calculation" should {
+  "GET /calculation when it is not an additional penalty" should {
     "return 200 (OK)" when {
       "the user has specified a valid penalty ID" in {
         returnLSPDataStub(etmpPayload)
@@ -211,13 +211,52 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
 
     "return 500 (ISE) when the user specifies a penalty not within their data" in {
       returnLSPDataStub(etmpPayload)
-      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456800").get())
+      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456800&isAdditional=false").get())
       request.status shouldBe Status.INTERNAL_SERVER_ERROR
     }
 
     "return 303 (SEE_OTHER) when the user is not authorised" in {
       AuthStub.unauthorised()
-      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=12345").get())
+      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=12345&isAdditional=false").get())
+      request.status shouldBe Status.SEE_OTHER
+    }
+  }
+
+  "GET /calculation when it is an additional penalty" should {
+    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in { //TODO: implement without placeholders
+      returnLSPDataStub(etmpPayload)
+      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456789&isAdditional=true").get())
+      request.status shouldBe Status.OK
+      val parsedBody = Jsoup.parse(request.body)
+      parsedBody.select("#main-content h1").text() shouldBe "Additional penalty"
+      parsedBody.select("#main-content p").get(0).text() shouldBe
+        "The additional penalty is charged from 31 days after the payment due date, until the total is paid."
+      parsedBody.select("#main-content tr").get(0).select("th").text() shouldBe "Amount to date (estimate)"
+      parsedBody.select("#main-content tr").get(0).select("td").text() shouldBe "£0" //TODO: placeholder value
+      parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Number of days since day 31"
+      parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "0 days" //TODO: placeholder value
+      parsedBody.select("#main-content tr").get(2).select("th").text() shouldBe "Additional penalty rate"
+      parsedBody.select("#main-content tr").get(2).select("td").text() shouldBe "0%" //TODO: placeholder value
+      parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Calculation"
+      parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "Central assessment amount unpaid × 4% × number of days since day 31 ÷ 365"
+      parsedBody.select("#main-content p").get(1).text() shouldBe
+        "Penalties and interest will show as estimates if HMRC does not have enough information to calculate the final amounts."
+      parsedBody.select("#main-content p").get(2).text() shouldBe "This could be because:"
+      parsedBody.select("#main-content li").get(0).text() shouldBe "we have not received your VAT payment"
+      parsedBody.select("#main-content li").get(1).text() shouldBe "you have an unpaid penalty on your account"
+      parsedBody.select("#main-content a").text() shouldBe "Return to VAT penalties and appeals"
+      parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
+    }
+
+    "return 500 (ISE) when the user specifies a penalty not within their data" in {
+      returnLSPDataStub(etmpPayload)
+      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456800&isAdditional=true").get())
+      request.status shouldBe Status.INTERNAL_SERVER_ERROR
+    }
+
+    "return 303 (SEE_OTHER) when the user is not authorised" in {
+      AuthStub.unauthorised()
+      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=12345&isAdditional=true").get())
       request.status shouldBe Status.SEE_OTHER
     }
   }

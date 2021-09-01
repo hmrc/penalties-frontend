@@ -17,17 +17,41 @@
 package assets.messages
 
 object CalculationMessages {
-  val title = "Late payment penalty - Penalties - GOV.UK"
+  val titleLPP = "Late payment penalty - Penalties - GOV.UK"
 
-  val heading = "Late payment penalty"
+  val titleAdd = "Additional penalty - Penalties - GOV.UK"
 
-  val th1 = "Penalty amount"
+  val headingLPP = "Late payment penalty"
 
-  val th2 = "Calculation"
+  val headingAdd = "Additional penalty"
 
-  val th3 = "Amount received"
+  val p1Add = "The additional penalty is charged from 31 days after the payment due date, until the total is paid."
 
-  val th4 = "Amount left to pay"
+  val th1LPP = "Penalty amount"
+
+  val th1Add = "Amount to date (estimate)"
+
+  val th2LPP = "Calculation"
+
+  val th2Add = "Number of days since day 31"
+
+  val th3LPP = "Amount received"
+
+  val th3Add = "Additional penalty rate"
+
+  val th4LPP = "Amount left to pay"
+
+  val th4Add = "Calculation"
+
+  val h2Add = "Estimates"
+
+  val p2Add = "Penalties and interest will show as estimates if HMRC does not have enough information to calculate the final amounts."
+
+  val p3Add = "This could be because:"
+
+  val bullet1Add = "we have not received your VAT payment"
+
+  val bullet2Add = "you have an unpaid penalty on your account"
 
   val link = "Return to VAT penalties and appeals"
 }

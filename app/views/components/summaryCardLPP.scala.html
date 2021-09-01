@@ -26,9 +26,15 @@
         <div class="app-summary-card__actions">
             <ul class="app-summary-card__actions-list">
                 <li class="app-summary-card__actions-list-item">
-                    <a class="govuk-link" href="@{controllers.routes.CalculationController.onPageLoad(summaryCard.penaltyId).url}">
-                        @messages("summaryCard.viewCalculation")
-                    </a>
+                        @if(summaryCard.isAdditionalPenalty) {
+                        <a class="govuk-link" href="@{controllers.routes.CalculationController.onPageLoad(summaryCard.penaltyId, true).url}">
+                            @{messages("summaryCard.viewCalculation")}
+                        </a>
+                        } else {
+                        <a class="govuk-link" href="@{controllers.routes.CalculationController.onPageLoad(summaryCard.penaltyId, false).url}">
+                            @{messages("summaryCard.viewCalculation")}
+                        </a>
+                        }
                 </li>
                 <li class="app-summary-card__actions-list-item">
                     @govukTag(summaryCard.status)
