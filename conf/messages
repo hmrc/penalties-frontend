@@ -195,3 +195,16 @@ whatIsOwed.VATInterest.estimated = £{0} in estimated VAT interest
 whatIsOwed.VATInterest = £{0} in VAT interest
 whatIsOwed.allPenalties.interest.estimated = £{0} in estimated interest on penalties
 whatIsOwed.allPenalties.interest = £{0} in interest on penalties
+
+calculation.title.lpp = Late payment penalty
+calculation.heading.lpp = Late payment penalty
+calculation.key1 = Penalty amount
+calculation.key1.text = £{0}
+calculation.key2 = Calculation
+calculation.key2.text = {0}% of £{1} (VAT amount unpaid on {2})
+calculation.key3 = Amount received
+calculation.key3.text = £{0}
+calculation.key4 = Amount left to pay
+calculation.key4.text = £{0}
+calculation.returnLink = Return to VAT penalties and appeals
+
