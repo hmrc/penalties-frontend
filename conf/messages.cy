@@ -70,17 +70,6 @@ lpp.penaltiesSummary.unpaid = The earlier you pay your VAT, the lower your penal
 agent.lpp.penaltiesSummary.unpaid = The earlier your client pays their VAT, the lower their penalties and interest will be.
 lpp.penaltiesSummary.howLppCalculated.link = Find out how late payment penalties are calculated {0}
 
-lpp.calculation.title = Late payment penalty
-lpp.calculation.key1 = Penalty amount
-lpp.calculation.key1.text = £{0}
-lpp.calculation.key2 = Calculation
-lpp.calculation.key2.text = {0}% of £{1} (VAT amount unpaid on {2})
-lpp.calculation.key3 = Amount received
-lpp.calculation.key3.text = £{0}
-lpp.calculation.key4 = Amount left to pay
-lpp.calculation.key4.text = £{0}
-lpp.calculation.returnLink = Return to VAT penalties and appeals
-
 common.pageTitle = {0} - {1} - GOV.UK
 
 # SummaryCard
@@ -155,9 +144,12 @@ compliance.heading = Bring your VAT account up to date
 compliance.heading.completeActions = Complete these actions on time
 
 compliance.p1 = You need to take action to bring your VAT account up to date.
+agent.compliance.p1 = Your client needs to take action to bring their VAT account up to date.
 compliance.p2 = Taking this action will:
 compliance.b1 = allow HMRC to remove all your penalty points
+agent.compliance.b1 = allow HMRC to remove all your client’s penalty points
 compliance.b2 = help you stop paying late submission financial penalties
+agent.compliance.b2 = help your client to stop paying late submission financial penalties
 compliance.vat.missingReturn = VAT period {0} to {1}
 
 compliance.unsubmitted.header = Submit these missing returns
@@ -166,6 +158,7 @@ compliance.timeline.actionEvent.header = VAT period {0} to {1}
 compliance.timeline.actionEvent.body = Submit VAT Return by {0}
 compliance.timeline.actionEvent.tag.submitted = Submitted on time
 compliance.point.expiry = If you complete these actions we will remove your points in {0}.
+agent.compliance.point.expiry = If these actions are completed we will remove your client’s points in {0}.
 
 # BETA Banner
 # ----------------------------------------------------------
@@ -198,3 +191,16 @@ whatIsOwed.VATInterest.estimated = £{0} in estimated VAT interest
 whatIsOwed.VATInterest = £{0} in VAT interest
 whatIsOwed.allPenalties.interest.estimated = £{0} in estimated interest on penalties
 whatIsOwed.allPenalties.interest = £{0} in interest on penalties
+
+# Calculation messages
+# ----------------------------------------------------------
+calculation.title.lpp = Late payment penalty
+calculation.heading.lpp = Late payment penalty
+calculation.key1 = Penalty amount
+calculation.value.amount = £{0}
+calculation.key2 = Calculation
+calculation.key2.text = {0}% of £{1} (VAT amount unpaid on {2})
+calculation.key3 = Amount received
+calculation.key4 = Amount left to pay
+calculation.returnLink = Return to VAT penalties and appeals
+

@@ -38,7 +38,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
   "CalculationView" should {
 
     def applyView(): HtmlFormat.Appendable = {
-      calculationPage.apply()(implicitly, implicitly, implicitly, vatTraderUser)
+      calculationPage.apply(amountPaid = "100")(implicitly, implicitly, implicitly, vatTraderUser)
     }
 
     implicit val doc: Document = asDocument(applyView())
@@ -51,7 +51,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       Selector.listRow(2) -> th2,
 //    Selector.listValue(2) -> "0% of £0 (VAT amount unpaid on 0)" //TODO: Implement with actual values
       Selector.listRow(3) -> th3,
-//    Selector.listValue(3) -> "£0" //TODO: Implement with actual values
+      Selector.listValue(3) -> "£100",
       Selector.listRow(4) -> th4,
 //    Selector.listValue(4) -> "£0" //TODO: Implement with actual values
       Selector.link -> link
