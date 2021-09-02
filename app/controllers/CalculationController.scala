@@ -16,23 +16,51 @@
 
 package controllers
 
-import config.AppConfig
+import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
+import models.ETMPPayload
+import models.penalty.LatePaymentPenalty
 import views.html.CalculationView
+
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.PenaltiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.CurrencyFormatter
+import utils.Logger.logger
+import utils.{CurrencyFormatter, EnrolmentKeys}
 
 import scala.concurrent.ExecutionContext
 
-class CalculationController @Inject()(view: CalculationView)(implicit ec: ExecutionContext,
+class CalculationController @Inject()(view: CalculationView,
+                                      penaltiesService: PenaltiesService)(implicit ec: ExecutionContext,
                                                                         appConfig: AppConfig,
+                                                                        errorHandler: ErrorHandler,
                                                                         authorise: AuthPredicate,
                                                                         controllerComponents: MessagesControllerComponents)
   extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter {
-  def onPageLoad: Action[AnyContent] = authorise { implicit request =>
-    Ok(view())
+
+  def onPageLoad(penaltyId: String): Action[AnyContent] = authorise.async { implicit request =>
+    penaltiesService.getETMPDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn)).map {
+      payload => {
+        val penalty: Option[LatePaymentPenalty] = payload.latePaymentPenalties.flatMap(_.find(_.id == penaltyId))
+        if(penalty.isEmpty) {
+          logger.error("[CalculationController][onPageLoad] - Tried to render calculation page but could not find penalty specified.")
+          errorHandler.showInternalServerError
+        } else {
+          logger.debug(s"[CalculationController][onPageLoad] - found penalty: ${penalty.get}")
+          val amountPaid = parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue - penalty.get.financial.outstandingAmountDue)
+          Ok(view(amountPaid))
+        }
+      }
+    }
+  }
+
+  private def parseBigDecimalToFriendlyValue(value: BigDecimal): String = {
+    if(value.isWhole()) {
+      s"$value"
+    } else {
+      "%,.2f".format(value)
+    }
   }
 }

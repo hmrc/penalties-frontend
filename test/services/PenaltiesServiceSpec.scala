@@ -283,7 +283,7 @@ class PenaltiesServiceSpec extends SpecBase {
 
       when(mockPenaltiesConnector.getPenaltiesData(any())(any())).thenReturn(Future.successful(sampleLspData))
 
-      val result = await(service.getLspDataWithVrn(vrn)(HeaderCarrier()))
+      val result = await(service.getETMPDataFromEnrolmentKey(vrn)(HeaderCarrier()))
 
       result shouldBe sampleLspData
     }
@@ -292,7 +292,7 @@ class PenaltiesServiceSpec extends SpecBase {
 
       when(mockPenaltiesConnector.getPenaltiesData(any())(any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", INTERNAL_SERVER_ERROR)))
 
-      val result = intercept[Exception](await(service.getLspDataWithVrn(vrn)(HeaderCarrier())))
+      val result = intercept[Exception](await(service.getETMPDataFromEnrolmentKey(vrn)(HeaderCarrier())))
 
       result.getMessage shouldBe "Upstream error"
     }

@@ -17,26 +17,59 @@
 package controllers
 
 import base.SpecBase
-import org.mockito.Matchers
 import org.mockito.Matchers.any
+import models.ETMPPayload
+import models.financial.Financial
+import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum}
+import models.point.{PenaltyTypeEnum, PointStatusEnum}
+import models.reason.PaymentPenaltyReasonEnum
+import org.mockito.Matchers
 import org.mockito.Mockito.{mock, reset, when}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.PenaltiesService
 import testUtils.AuthTestModels
-import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
+import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import views.html.CalculationView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-class CalculationControllerSpec extends SpecBase {
 
-  val page: CalculationView = injector.instanceOf[CalculationView]
+class CalculationControllerSpec extends SpecBase {
+  val calculationView: CalculationView = injector.instanceOf[CalculationView]
   val mockPenaltiesService: PenaltiesService = mock(classOf[PenaltiesService])
 
-  class Setup(authResult: Future[~[Option[AffinityGroup], Enrolments]]) {
+  val etmpPayload = ETMPPayload(
+    pointsTotal = 0,
+    lateSubmissions = 0,
+    adjustmentPointsTotal = 0,
+    fixedPenaltyAmount = 0,
+    penaltyAmountsTotal = 0,
+    penaltyPointsThreshold = 4,
+    otherPenalties = None,
+    vatOverview = None,
+    penaltyPoints = Seq.empty,
+    latePaymentPenalties = Some(Seq(
+      LatePaymentPenalty(
+        `type` = PenaltyTypeEnum.Financial,
+        id = "123456789",
+        reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
+        dateCreated = sampleDate,
+        status = PointStatusEnum.Due,
+        appealStatus = None,
+        period = PaymentPeriod(
+          startDate = sampleDate, endDate = sampleDate, dueDate = sampleDate, paymentStatus = PaymentStatusEnum.Paid
+        ),
+        communications = Seq.empty,
+        financial = Financial(
+          amountDue = 300, outstandingAmountDue = 10.21, dueDate = sampleDate, estimatedInterest = None, crystalizedInterest = None
+        )
+      )
+    ))
+  )
 
+  class Setup(authResult: Future[~[Option[AffinityGroup], Enrolments]]) {
     reset(mockAuthConnector)
     when(mockAuthConnector.authorise[~[Option[AffinityGroup], Enrolments]](
       Matchers.any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
@@ -44,33 +77,44 @@ class CalculationControllerSpec extends SpecBase {
     ).thenReturn(authResult)
 
     reset(mockPenaltiesService)
-    when(mockPenaltiesService.getLspDataWithVrn(any())(any())).thenReturn(Future.successful(sampleLspData))
+    when(mockPenaltiesService.getETMPDataFromEnrolmentKey(any())(any())).thenReturn(Future.successful(sampleLspData))
   }
 
   object Controller extends CalculationController(
-    page
-  )(implicitly, implicitly, authPredicate, stubMessagesControllerComponents())
+    calculationView,
+    mockPenaltiesService
+  )(implicitly, implicitly, errorHandler, authPredicate, stubMessagesControllerComponents())
 
-  "CalculationController" should {
-    "onPageLoad" when {
-      "the user is authorised" must {
-        "return OK and correct view" in new Setup(AuthTestModels.successfulAuthResult) {
-          val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
-          status(result) shouldBe OK
-        }
+  "onPageLoad" should {
+
+    "the user is authorised" when {
+      "show the page when the penalty ID specified matches the payload" in new Setup(AuthTestModels.successfulAuthResult) {
+        when(mockPenaltiesService.getETMPDataFromEnrolmentKey(Matchers.any())(Matchers.any()))
+          .thenReturn(Future.successful(etmpPayload))
+
+        val result = Controller.onPageLoad("123456789")(fakeRequest)
+        status(result) shouldBe OK
       }
 
-      "the user is unauthorised" when {
+      "show an ISE when the user specifies a penalty ID not in their data" in new Setup(AuthTestModels.successfulAuthResult) {
+        when(mockPenaltiesService.getETMPDataFromEnrolmentKey(Matchers.any())(Matchers.any()))
+          .thenReturn(Future.successful(sampleLspData))
 
-        "return 403 (FORBIDDEN) when user has no enrolments" in new Setup(AuthTestModels.failedAuthResultNoEnrolments) {
-          val result: Future[Result] = Controller.onPageLoad(fakeRequest)
-          status(result) shouldBe FORBIDDEN
-        }
+        val result = Controller.onPageLoad("1234")(fakeRequest)
+        status(result) shouldBe INTERNAL_SERVER_ERROR
+      }
+    }
 
-        "return 303 (SEE_OTHER) when user can not be authorised" in new Setup(AuthTestModels.failedAuthResultUnauthorised) {
-          val result: Future[Result] = Controller.onPageLoad(fakeRequest)
-          status(result) shouldBe SEE_OTHER
-        }
+    "the user is unauthorised" when {
+
+      "return 403 (FORBIDDEN) when user has no enrolments" in new Setup(AuthTestModels.failedAuthResultNoEnrolments) {
+        val result: Future[Result] = Controller.onPageLoad("1234")(fakeRequest)
+        status(result) shouldBe FORBIDDEN
+      }
+
+      "return 303 (SEE_OTHER) when user can not be authorised" in new Setup(AuthTestModels.failedAuthResultUnauthorised) {
+        val result: Future[Result] = Controller.onPageLoad("1234")(fakeRequest)
+        status(result) shouldBe SEE_OTHER
       }
     }
   }
