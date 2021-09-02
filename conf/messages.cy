@@ -144,9 +144,12 @@ compliance.heading = Bring your VAT account up to date
 compliance.heading.completeActions = Complete these actions on time
 
 compliance.p1 = You need to take action to bring your VAT account up to date.
+agent.compliance.p1 = Your client needs to take action to bring their VAT account up to date.
 compliance.p2 = Taking this action will:
 compliance.b1 = allow HMRC to remove all your penalty points
+agent.compliance.b1 = allow HMRC to remove all your client’s penalty points
 compliance.b2 = help you stop paying late submission financial penalties
+agent.compliance.b2 = help your client to stop paying late submission financial penalties
 compliance.vat.missingReturn = VAT period {0} to {1}
 
 compliance.unsubmitted.header = Submit these missing returns
@@ -155,6 +158,7 @@ compliance.timeline.actionEvent.header = VAT period {0} to {1}
 compliance.timeline.actionEvent.body = Submit VAT Return by {0}
 compliance.timeline.actionEvent.tag.submitted = Submitted on time
 compliance.point.expiry = If you complete these actions we will remove your points in {0}.
+agent.compliance.point.expiry = If these actions are completed we will remove your client’s points in {0}.
 
 # BETA Banner
 # ----------------------------------------------------------
@@ -166,9 +170,11 @@ feedback.after = will help us to improve it.
 # What is owed messages
 # ----------------------------------------------------------
 whatIsOwed.heading = Overview
+whatIsOwed.p1 = You have not paid your VAT. It must be paid as soon as possible.
+agent.whatIsOwed.p1 = Your client has not paid their VAT. It must be paid as soon as possible.
 whatIsOwed.penaltyAndAppealsHeading = Penalty and appeal details
-whatIsOwed.p1 = You owe:
-agent.whatIsOwed.p1 = Your client owes:
+whatIsOwed.p2 = You owe:
+agent.whatIsOwed.p2 = They owe:
 whatIsOwed.lateVAT = £{0} in late VAT
 whatIsOwed.otherPenalties = other penalties not related to late submission or late payment
 whatIsOwed.details.heading = I cannot pay today

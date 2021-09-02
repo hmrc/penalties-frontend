@@ -65,6 +65,7 @@
         <div id="what-is-owed">
             <h2 class="govuk-heading-l">@messages("whatIsOwed.heading")</h2>
             <p class="govuk-body">@getMessage("whatIsOwed.p1")</p>
+            <p class="govuk-body">@getMessage("whatIsOwed.p2")</p>
             @breakdownContent
             @if(user.isAgent) {
                 @link("#", "whatIsOwed.button.checkAmounts", button = true, classes = "govuk-button")
