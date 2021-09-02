@@ -25,7 +25,8 @@
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
 
 @layout(pageTitle = messages("calculation.title.lpp"), isPageFullWidth = false) {
-    <h1 class="govuk-heading-l">@messages("calculation.heading.lpp")</h1>
+    <span class="govuk-caption-xl">@messages("calculation.caption", "PLACEHOLDER", "PLACEHOLDER")</span>
+    <h1 class="govuk-heading-xl">@messages("calculation.heading.lpp")</h1>
 
     <table class="govuk-table">
         <tbody class="govuk-table__body">
@@ -35,7 +36,7 @@
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header govuk-!-width-one-third">@messages("calculation.key2")</th>
-                <td class="govuk-table__cell">@messages("calculation.key2.text", "0", "0", "0")</td>
+                <td class="govuk-table__cell">@messages("calculation.key2.text", "0", "0", "PLACEHOLDER")</td>
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header govuk-!-width-one-third">@messages("calculation.key3")</th>
