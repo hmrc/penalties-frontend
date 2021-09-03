@@ -26,9 +26,6 @@ import utils.SessionKeys
 
 class CalculationControllerISpec extends IntegrationSpecCommonBase {
 
-  val controller = injector.instanceOf[CalculationController]
-  val fakeAgentRequest = FakeRequest("GET", "/calculation").withSession(SessionKeys.agentSessionVrn -> "123456789")
-
   "GET /" should {
     "return 200 (OK) when the user is authorised" in {
       val request = await(buildClientForRequestToApp(uri = "/calculation").get())
