@@ -9,3 +9,5 @@ GET        /                            controllers.IndexController.onPageLoad
 GET        /appeal-penalty              controllers.IndexController.redirectToAppeals(penaltyId : String, isLPP : Boolean, isObligation : Boolean, isAdditional: Boolean)
 
 GET        /compliance                  controllers.ComplianceController.onPageLoad
+
+GET        /calculation                 controllers.CalculationController.onPageLoad

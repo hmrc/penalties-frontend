@@ -161,7 +161,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
 
       "display the View calculation link" in {
         doc.select("header > div > ul > li > a").text() shouldBe "View calculation"
-        doc.select("a").attr("href") shouldBe "#" //update to Calculation controller url once PRM-573 is merged
+        doc.select("a").attr("href") shouldBe "/penalties/calculation"
       }
 
       "display the 'PAID' status" in {
