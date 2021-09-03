@@ -26,7 +26,7 @@
         <div class="app-summary-card__actions">
             <ul class="app-summary-card__actions-list">
                 <li class="app-summary-card__actions-list-item">
-                    <a class="govuk-link" href="/penalties/calculation?penaltyId=@summaryCard.penaltyId">
+                    <a class="govuk-link" href="@{controllers.routes.CalculationController.onPageLoad(summaryCard.penaltyId).url}">
                         @messages("summaryCard.viewCalculation")
                     </a>
                 </li>
