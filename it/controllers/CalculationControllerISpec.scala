@@ -125,7 +125,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.select("#main-content tr:nth-child(1) > th").text() shouldBe "Penalty amount"
         parsedBody.select("#main-content tr:nth-child(1) > td").text() shouldBe "£400"
         parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Calculation"
-        parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "0% of £0 (PLACEHOLDER)" //TODO: placeholder value
+        parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "0% of £0 (VAT amount unpaid on 0)" //TODO: placeholder value
         parsedBody.select("#main-content tr:nth-child(3) > th").text() shouldBe "Amount received"
         parsedBody.select("#main-content tr:nth-child(3) > td").text() shouldBe "£277"
         parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Amount left to pay"
