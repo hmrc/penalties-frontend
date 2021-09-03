@@ -41,7 +41,7 @@ class IndexController @Inject()(view: IndexView,
 
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
     for {
-      lSPData <- penaltiesService.getLspDataWithVrn(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))
+      lSPData <- penaltiesService.getETMPDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))
       contentToDisplayAboveCards = pageHelper.getContentBasedOnPointsFromModel(lSPData)
       contentLPPToDisplayAboveCards = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(lSPData)
       whatYouOweBreakdown = pageHelper.getWhatYouOweBreakdown(lSPData)
