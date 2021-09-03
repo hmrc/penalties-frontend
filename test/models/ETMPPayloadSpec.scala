@@ -300,6 +300,9 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
       |       "financial": {
       |         "amountDue": 400.00,
       |         "outstandingAmountDue": 2.00,
+      |         "outstandingAmountDay15": 2.00,
+      |         "outstandingAmountDay31": 2.00,
+      |         "percentageOfOutstandingAmtCharged": 2,
       |         "dueDate": "2021-04-23T18:25:43.511"
       |       }
       |    }
@@ -512,6 +515,9 @@ class ETMPPayloadSpec extends AnyWordSpec with Matchers {
           financial = Financial(
             amountDue = 400.00,
             outstandingAmountDue = 2.00,
+            outstandingAmountDay15 = Some(2.00),
+            outstandingAmountDay31 = Some(2.00),
+            percentageOfOutstandingAmtCharged = Some(2),
             dueDate = sampleDate
           )
         )
