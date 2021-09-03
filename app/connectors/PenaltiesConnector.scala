@@ -17,7 +17,7 @@
 package connectors
 
 import config.AppConfig
-import models.ETMPPayload
+import models.{ETMPPayload, User}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import javax.inject.Inject
@@ -27,9 +27,12 @@ class PenaltiesConnector @Inject()(httpClient: HttpClient,
                                    appConfig: AppConfig)(implicit ec: ExecutionContext) {
 
   private val penaltiesBaseUrl: String = appConfig.penaltiesUrl
-  private def getPenaltiesDataUrl(enrolmentKey: String): String = s"/etmp/penalties/$enrolmentKey"
+  private def getPenaltiesDataUrl(enrolmentKey: String)(implicit user: User[_]): String = {
+    val arnParameter = user.arn.fold("")(arn => s"?arn=$arn")
+    s"/etmp/penalties/$enrolmentKey$arnParameter"
+  }
 
-  def getPenaltiesData(enrolmentKey: String)(implicit hc: HeaderCarrier): Future[ETMPPayload] = {
+  def getPenaltiesData(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[ETMPPayload] = {
     httpClient.GET[ETMPPayload](s"$penaltiesBaseUrl${getPenaltiesDataUrl(enrolmentKey)}")
   }
 }

@@ -17,7 +17,9 @@
 package connectors
 
 
+import models.User
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.PenaltiesStub._
 import testUtils.IntegrationSpecCommonBase
@@ -26,26 +28,27 @@ import uk.gov.hmrc.http.HeaderCarrier
 class PenaltiesConnectorISpec extends IntegrationSpecCommonBase {
 
   implicit private lazy val hc = HeaderCarrier()
+  val vatTraderUser: User[_] = User("1234", true, None)(FakeRequest())
 
   val connector: PenaltiesConnector = app.injector.instanceOf[PenaltiesConnector]
 
   "getPenaltiesData" should {
     "generate a ETMPPayload when valid JSON is returned from penalties" in {
-      val result = connector.getPenaltiesData(vrn).futureValue
+      val result = connector.getPenaltiesData(vrn)(vatTraderUser, implicitly).futureValue
       result shouldBe sampleLspData
     }
 
     "throw an exception when invalid JSON is returned from penalties" in {
       wireMockServer.editStubMapping(invalidLspDataStub())
 
-      val result = intercept[Exception](await(connector.getPenaltiesData(vrn)))
+      val result = intercept[Exception](await(connector.getPenaltiesData(vrn)(vatTraderUser, implicitly)))
       result.getMessage should include("invalid json")
     }
 
     "throw an exception when an upstream error is returned from penalties" in {
       wireMockServer.editStubMapping(upstreamErrorStub())
 
-      val result = intercept[Exception](await(connector.getPenaltiesData(vrn)))
+      val result = intercept[Exception](await(connector.getPenaltiesData(vrn)(vatTraderUser, implicitly)))
       result.getMessage should include("Upstream Error")
     }
   }

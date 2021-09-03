@@ -25,11 +25,11 @@ import play.api.http.{HeaderNames, Status}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.AuthStub
-import stubs.PenaltiesStub.returnLSPDataStub
+import stubs.PenaltiesStub.{returnAgentLSPDataStub, returnLSPDataStub}
 import testUtils.IntegrationSpecCommonBase
 import utils.SessionKeys
-import java.time.LocalDateTime
 
+import java.time.LocalDateTime
 import models.communication.{Communication, CommunicationTypeEnum}
 import models.financial.{AmountTypeEnum, Financial, OverviewElement}
 import models.reason.PaymentPenaltyReasonEnum
@@ -658,7 +658,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     "agent view" must {
       "return 200 (OK) and render the view when there are added points that are retrieved from the backend" in {
         AuthStub.agentAuthorised()
-        returnLSPDataStub(etmpPayloadWithAddedPoints)
+        returnAgentLSPDataStub(etmpPayloadWithAddedPoints)
         val request = controller.onPageLoad()(fakeAgentRequest)
         await(request).header.status shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
@@ -680,7 +680,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
 
       "return 200 (OK) and render the view when there are removed points that are retrieved from the backend" in {
         AuthStub.agentAuthorised()
-        returnLSPDataStub(etmpPayloadWithRemovedPoints)
+        returnAgentLSPDataStub(etmpPayloadWithRemovedPoints)
         val request = controller.onPageLoad()(fakeAgentRequest)
         await(request).header.status shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
@@ -702,7 +702,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
 
       "return 200 (OK) and render the view when removed points are below active points (active points are reindexed)" in {
         AuthStub.agentAuthorised()
-        returnLSPDataStub(etmpPayloadWith2PointsandOneRemovedPoint)
+        returnAgentLSPDataStub(etmpPayloadWith2PointsandOneRemovedPoint)
         val request = controller.onPageLoad()(fakeAgentRequest)
         await(request).header.status shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
@@ -719,7 +719,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
 
     "return 200 (OK) and render the view when there is outstanding payments for the client" in {
       AuthStub.agentAuthorised()
-      returnLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue)
+      returnAgentLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue)
       val request = controller.onPageLoad()(fakeAgentRequest)
       await(request).header.status shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
