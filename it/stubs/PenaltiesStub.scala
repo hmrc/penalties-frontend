@@ -27,6 +27,7 @@ import play.api.libs.json.Json
 object PenaltiesStub {
   val vrn: String = "HMRC-MTD-VAT~VRN~123456789"
   val getLspDataUrl: String = s"/penalties/etmp/penalties/$vrn"
+  val getLspDataUrlAgent: String = s"/penalties/etmp/penalties/$vrn\\?arn=123456789"
   val sampleLspData: ETMPPayload = ETMPPayload(
     pointsTotal = 0,
     lateSubmissions = 0,
@@ -49,6 +50,16 @@ object PenaltiesStub {
   )
 
   def returnLSPDataStub(lspDataToReturn: ETMPPayload): StubMapping = stubFor(get(urlMatching(getLspDataUrl))
+    .willReturn(
+      aResponse()
+        .withStatus(Status.OK)
+        .withBody(
+          Json.toJson(lspDataToReturn).toString()
+        )
+    )
+  )
+
+  def returnAgentLSPDataStub(lspDataToReturn: ETMPPayload): StubMapping = stubFor(get(urlMatching(getLspDataUrlAgent))
     .willReturn(
       aResponse()
         .withStatus(Status.OK)

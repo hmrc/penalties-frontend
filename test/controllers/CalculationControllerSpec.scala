@@ -87,7 +87,7 @@ class CalculationControllerSpec extends SpecBase {
 
     "the user is authorised" when {
       "show the page when the penalty ID specified matches the payload" in new Setup(AuthTestModels.successfulAuthResult) {
-        when(mockPenaltiesService.getETMPDataFromEnrolmentKey(Matchers.any())(Matchers.any()))
+        when(mockPenaltiesService.getETMPDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(etmpPayload))
 
         val result = Controller.onPageLoad("123456789")(fakeRequest)
@@ -95,7 +95,7 @@ class CalculationControllerSpec extends SpecBase {
       }
 
       "show an ISE when the user specifies a penalty ID not in their data" in new Setup(AuthTestModels.successfulAuthResult) {
-        when(mockPenaltiesService.getETMPDataFromEnrolmentKey(Matchers.any())(Matchers.any()))
+        when(mockPenaltiesService.getETMPDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(sampleLspData))
 
         val result = Controller.onPageLoad("1234")(fakeRequest)

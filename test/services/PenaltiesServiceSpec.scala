@@ -281,18 +281,18 @@ class PenaltiesServiceSpec extends SpecBase {
   "getLspDataWithVrn" should {
     s"return a successful response and pass the result back to the controller" in new Setup {
 
-      when(mockPenaltiesConnector.getPenaltiesData(any())(any())).thenReturn(Future.successful(sampleLspData))
+      when(mockPenaltiesConnector.getPenaltiesData(any())(any(), any())).thenReturn(Future.successful(sampleLspData))
 
-      val result = await(service.getETMPDataFromEnrolmentKey(vrn)(HeaderCarrier()))
+      val result = await(service.getETMPDataFromEnrolmentKey(vrn)(vatTraderUser, HeaderCarrier()))
 
       result shouldBe sampleLspData
     }
 
     s"return an exception and pass the result back to the controller" in new Setup {
 
-      when(mockPenaltiesConnector.getPenaltiesData(any())(any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", INTERNAL_SERVER_ERROR)))
+      when(mockPenaltiesConnector.getPenaltiesData(any())(any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", INTERNAL_SERVER_ERROR)))
 
-      val result = intercept[Exception](await(service.getETMPDataFromEnrolmentKey(vrn)(HeaderCarrier())))
+      val result = intercept[Exception](await(service.getETMPDataFromEnrolmentKey(vrn)(vatTraderUser, HeaderCarrier())))
 
       result.getMessage shouldBe "Upstream error"
     }

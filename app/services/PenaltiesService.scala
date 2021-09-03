@@ -17,16 +17,16 @@
 package services
 
 import connectors.PenaltiesConnector
-import models.ETMPPayload
+import models.{ETMPPayload, User}
 import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import uk.gov.hmrc.http.HeaderCarrier
-import javax.inject.Inject
 
+import javax.inject.Inject
 import scala.concurrent.Future
 
 class PenaltiesService @Inject()(connector: PenaltiesConnector) {
 
-  def getETMPDataFromEnrolmentKey(enrolmentKey: String)(implicit hc: HeaderCarrier): Future[ETMPPayload] = connector.getPenaltiesData(enrolmentKey)
+  def getETMPDataFromEnrolmentKey(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[ETMPPayload] = connector.getPenaltiesData(enrolmentKey)
 
   def isAnyLSPUnpaid(penaltyPoints: Seq[PenaltyPoint]): Boolean = {
     penaltyPoints.exists(penalty => penalty.`type` == PenaltyTypeEnum.Financial &&
