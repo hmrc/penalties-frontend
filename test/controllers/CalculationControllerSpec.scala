@@ -28,8 +28,8 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.PenaltiesService
 import testUtils.AuthTestModels
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
+import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import views.html.CalculationView
 
 import scala.concurrent.ExecutionContext.Implicits.global
