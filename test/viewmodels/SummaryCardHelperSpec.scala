@@ -123,7 +123,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         period,
         Html(vatPeriodValue(dateTimeToString(LocalDateTime.now), dateTimeToString(LocalDateTime.now)))
       ),
-      helper.summaryListRow(penaltyReason, Html("Officer's Assessment more than 30 days late")),
+      helper.summaryListRow(penaltyReason, Html("Officer’s Assessment more than 30 days late")),
       helper.summaryListRow(chargedDailyFrom, Html(dateTimeToString(LocalDateTime.now.plusDays(31))))
     ),
     Tag(content = Text("paid"), classes = "govuk-tag "),
@@ -420,14 +420,14 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           "return SummaryCards when given Late Payment penalty show reason OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS" when {
             "populateLatePaymentPenaltyAdditionalCard is called" in {
               val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyReasonOfficersAssessmentNotPaidWithin15Days)))
-              result.get.map(_.cardRows.exists(_.value.content == HtmlContent("Officer's Assessment not paid within 15 days"))) shouldBe List(true)
+              result.get.map(_.cardRows.exists(_.value.content == HtmlContent("Officer’s Assessment not paid within 15 days"))) shouldBe List(true)
             }
           }
 
           "return SummaryCards when given Late Payment penalty show reason OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS" when {
             "populateLatePaymentPenaltyAdditionalCard is called" in {
               val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyReasonOfficersAssessmentNotPaidWithin30Days)))
-              result.get.map(_.cardRows.exists(_.value.content == HtmlContent("Officer's Assessment not paid within 30 days"))) shouldBe List(true)
+              result.get.map(_.cardRows.exists(_.value.content == HtmlContent("Officer’s Assessment not paid within 30 days"))) shouldBe List(true)
             }
           }
 

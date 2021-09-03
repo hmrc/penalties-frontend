@@ -31,7 +31,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 import models.reason.PaymentPenaltyReasonEnum
-import play.api.mvc.Request
 import utils.{ImplicitDateFormatter, ViewUtils}
 
 class SummaryCardHelper @Inject()(link: views.html.components.link) extends ImplicitDateFormatter with ViewUtils {

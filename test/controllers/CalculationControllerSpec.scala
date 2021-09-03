@@ -30,6 +30,7 @@ import services.PenaltiesService
 import testUtils.AuthTestModels
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
+import viewmodels.CalculationPageHelper
 import views.html.CalculationView
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -38,6 +39,7 @@ import scala.concurrent.Future
 class CalculationControllerSpec extends SpecBase {
   val calculationView: CalculationView = injector.instanceOf[CalculationView]
   val mockPenaltiesService: PenaltiesService = mock(classOf[PenaltiesService])
+  val calculationPageHelper: CalculationPageHelper = injector.instanceOf[CalculationPageHelper]
 
   val etmpPayload = ETMPPayload(
     pointsTotal = 0,
@@ -62,7 +64,50 @@ class CalculationControllerSpec extends SpecBase {
         ),
         communications = Seq.empty,
         financial = Financial(
-          amountDue = 300, outstandingAmountDue = 10.21, dueDate = sampleDate, estimatedInterest = None, crystalizedInterest = None
+          amountDue = 300,
+          outstandingAmountDue = 10.21,
+          dueDate = sampleDate,
+          outstandingAmountDay15 = Some(10),
+          outstandingAmountDay31 = None,
+          percentageOfOutstandingAmtCharged = Some(2),
+          estimatedInterest = None,
+          crystalizedInterest = None
+        )
+      )
+    ))
+  )
+
+  val etmpPayloadNo15Or30DayAmount = ETMPPayload(
+    pointsTotal = 0,
+    lateSubmissions = 0,
+    adjustmentPointsTotal = 0,
+    fixedPenaltyAmount = 0,
+    penaltyAmountsTotal = 0,
+    penaltyPointsThreshold = 4,
+    otherPenalties = None,
+    vatOverview = None,
+    penaltyPoints = Seq.empty,
+    latePaymentPenalties = Some(Seq(
+      LatePaymentPenalty(
+        `type` = PenaltyTypeEnum.Financial,
+        id = "123456789",
+        reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
+        dateCreated = sampleDate,
+        status = PointStatusEnum.Due,
+        appealStatus = None,
+        period = PaymentPeriod(
+          startDate = sampleDate, endDate = sampleDate, dueDate = sampleDate, paymentStatus = PaymentStatusEnum.Paid
+        ),
+        communications = Seq.empty,
+        financial = Financial(
+          amountDue = 300,
+          outstandingAmountDue = 10.21,
+          dueDate = sampleDate,
+          outstandingAmountDay15 = None,
+          outstandingAmountDay31 = None,
+          percentageOfOutstandingAmtCharged = Some(2),
+          estimatedInterest = None,
+          crystalizedInterest = None
         )
       )
     ))
@@ -80,7 +125,8 @@ class CalculationControllerSpec extends SpecBase {
 
   object Controller extends CalculationController(
     calculationView,
-    mockPenaltiesService
+    mockPenaltiesService,
+    calculationPageHelper
   )(implicitly, implicitly, errorHandler, authPredicate, stubMessagesControllerComponents())
 
   "onPageLoad" should {
@@ -92,6 +138,15 @@ class CalculationControllerSpec extends SpecBase {
 
         val result = Controller.onPageLoad("123456789")(fakeRequest)
         status(result) shouldBe OK
+      }
+
+      "show an ISE when the calculation row can not be rendered - because the payload is invalid (missing both 15/30 day payment amounts)" in
+        new Setup(AuthTestModels.successfulAuthResult) {
+        when(mockPenaltiesService.getETMPDataFromEnrolmentKey(Matchers.any())(Matchers.any()))
+          .thenReturn(Future.successful(etmpPayloadNo15Or30DayAmount))
+
+        val result = Controller.onPageLoad("123456789")(fakeRequest)
+        status(result) shouldBe INTERNAL_SERVER_ERROR
       }
 
       "show an ISE when the user specifies a penalty ID not in their data" in new Setup(AuthTestModels.successfulAuthResult) {
