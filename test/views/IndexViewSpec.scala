@@ -282,7 +282,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         "populate summary card when user has LPPs" in {
           vatTraderDoc.select(Selectors.summaryCardHeaderTitle(Selectors.summaryLPPCard)).text shouldBe lppHeader
           vatTraderDoc.select(Selectors.viewCalculation).text shouldBe viewCalculationLink
-          vatTraderDoc.select(Selectors.viewCalculation).attr("href") shouldBe "/penalties/calculation"
+          vatTraderDoc.select(Selectors.viewCalculation).attr("href") shouldBe "/penalties/calculation?penaltyId=123456789"
           vatTraderDoc.select(Selectors.summaryCardHeaderTag(Selectors.summaryLPPCard)).text shouldBe paidTag
           vatTraderDoc.select(Selectors.rowItem(Selectors.summaryLPPCard, 1)).text shouldBe period
           vatTraderDoc.select(Selectors.rowItem(Selectors.summaryLPPCard, 2)).text shouldBe penaltyReason

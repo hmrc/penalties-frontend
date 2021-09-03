@@ -161,7 +161,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
 
       "display the View calculation link" in {
         doc.select("header > div > ul > li > a").text() shouldBe "View calculation"
-        doc.select("a").attr("href") shouldBe "/penalties/calculation"
+        doc.select("a").attr("href") shouldBe "/penalties/calculation?penaltyId=123456789"
       }
 
       "display the 'PAID' status" in {

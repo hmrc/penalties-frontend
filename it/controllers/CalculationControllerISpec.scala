@@ -115,6 +115,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
 
   "GET /calculation" should {
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in { //TODO: implement without placeholders
+      returnLSPDataStub(etmpPayload)
       val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456789").get())
       request.status shouldBe Status.OK
       val parsedBody = Jsoup.parse(request.body)
@@ -124,7 +125,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Calculation"
       parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "0% of £0 (PLACEHOLDER)" //TODO: placeholder value
       parsedBody.select("#main-content tr").get(2).select("th").text() shouldBe "Amount received"
-      parsedBody.select("#main-content tr").get(2).select("td").text() shouldBe "£0" //TODO: placeholder value
+      parsedBody.select("#main-content tr").get(2).select("td").text() shouldBe "£277"
       parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Amount left to pay"
       parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "£0" //TODO: placeholder value
       parsedBody.select("#main-content a").text() shouldBe "Return to VAT penalties and appeals"
