@@ -18,7 +18,6 @@ package controllers
 
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
-import models.ETMPPayload
 import models.penalty.LatePaymentPenalty
 import views.html.CalculationView
 
@@ -50,7 +49,8 @@ class CalculationController @Inject()(view: CalculationView,
         } else {
           logger.debug(s"[CalculationController][onPageLoad] - found penalty: ${penalty.get}")
           val amountPaid = parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue - penalty.get.financial.outstandingAmountDue)
-          Ok(view(amountPaid))
+          val penaltyAmount = parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue)
+          Ok(view(amountPaid, penaltyAmount))
         }
       }
     }

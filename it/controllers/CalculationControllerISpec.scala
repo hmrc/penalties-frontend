@@ -121,6 +121,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
         val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456789").get())
         request.status shouldBe Status.OK
         val parsedBody = Jsoup.parse(request.body)
+        parsedBody.select("#main-content tr:nth-child(1) > th").text() shouldBe "Penalty amount"
+        parsedBody.select("#main-content tr:nth-child(1) > td").text() shouldBe "£400"
         parsedBody.select("#main-content tr:nth-child(3) > th").text() shouldBe "Amount received"
         parsedBody.select("#main-content tr:nth-child(3) > td").text() shouldBe "£277"
       }
