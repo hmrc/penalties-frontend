@@ -17,7 +17,6 @@
 package controllers
 
 import base.SpecBase
-import org.mockito.Matchers.any
 import models.ETMPPayload
 import models.financial.Financial
 import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum}
@@ -77,7 +76,6 @@ class CalculationControllerSpec extends SpecBase {
     ).thenReturn(authResult)
 
     reset(mockPenaltiesService)
-    when(mockPenaltiesService.getETMPDataFromEnrolmentKey(any())(any())).thenReturn(Future.successful(sampleLspData))
   }
 
   object Controller extends CalculationController(

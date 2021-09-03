@@ -32,6 +32,7 @@ import testUtils.IntegrationSpecCommonBase
 import java.time.LocalDateTime
 
 class CalculationControllerISpec extends IntegrationSpecCommonBase {
+  val controller = injector.instanceOf[CalculationController]
   val sampleDate1 = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
 
   val etmpPayload = ETMPPayload(
@@ -114,22 +115,24 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
   )
 
   "GET /calculation" should {
-    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in { //TODO: implement without placeholders
-      returnLSPDataStub(etmpPayload)
-      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456789").get())
-      request.status shouldBe Status.OK
-      val parsedBody = Jsoup.parse(request.body)
-      parsedBody.select("#main-content h1").text() shouldBe "Late payment penalty"
-      parsedBody.select("#main-content tr").get(0).select("th").text() shouldBe "Penalty amount"
-      parsedBody.select("#main-content tr").get(0).select("td").text() shouldBe "£0" //TODO: placeholder value
-      parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Calculation"
-      parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "0% of £0 (PLACEHOLDER)" //TODO: placeholder value
-      parsedBody.select("#main-content tr").get(2).select("th").text() shouldBe "Amount received"
-      parsedBody.select("#main-content tr").get(2).select("td").text() shouldBe "£277"
-      parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Amount left to pay"
-      parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "£0" //TODO: placeholder value
-      parsedBody.select("#main-content a").text() shouldBe "Return to VAT penalties and appeals"
-      parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
+    "return 200 (OK)" when {
+      "the user has specified a valid penalty ID (checking amount paid is correct)" in {
+        returnLSPDataStub(etmpPayload)
+        val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456789").get())
+        request.status shouldBe Status.OK
+        val parsedBody = Jsoup.parse(request.body)
+        parsedBody.select("#main-content h1").text() shouldBe "Late payment penalty"
+        parsedBody.select("#main-content tr:nth-child(1) > th").text() shouldBe "Penalty amount"
+        parsedBody.select("#main-content tr:nth-child(1) > td").text() shouldBe "£400"
+        parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Calculation"
+        parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "0% of £0 (VAT amount unpaid on 0)" //TODO: placeholder value
+        parsedBody.select("#main-content tr:nth-child(3) > th").text() shouldBe "Amount received"
+        parsedBody.select("#main-content tr:nth-child(3) > td").text() shouldBe "£277"
+        parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Amount left to pay"
+        parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "£0" //TODO: placeholder value
+        parsedBody.select("#main-content a").text() shouldBe "Return to VAT penalties and appeals"
+        parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
+      }
     }
 
     "return 500 (ISE) when the user specifies a penalty not within their data" in {
