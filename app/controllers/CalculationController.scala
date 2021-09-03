@@ -50,7 +50,8 @@ class CalculationController @Inject()(view: CalculationView,
           logger.debug(s"[CalculationController][onPageLoad] - found penalty: ${penalty.get}")
           val amountPaid = parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue - penalty.get.financial.outstandingAmountDue)
           val penaltyAmount = parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue)
-          Ok(view(amountPaid, penaltyAmount))
+          val amountLeftToPay = parseBigDecimalToFriendlyValue(penalty.get.financial.outstandingAmountDue)
+          Ok(view(amountPaid, penaltyAmount,amountLeftToPay))
         }
       }
     }
