@@ -183,7 +183,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
     "return 200 (OK)" when {
       "the user has specified a valid penalty ID" in {
         returnLSPDataStub(etmpPayload)
-        val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456789").get())
+        val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456789&isAdditional=false").get())
         request.status shouldBe Status.OK
         val parsedBody = Jsoup.parse(request.body)
         parsedBody.select("#main-content h1").text() shouldBe "Late payment penalty"
@@ -202,7 +202,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
 
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID (only one interest charge)" in {
       returnLSPDataStub(etmpPayloadWithOnlyDay15Charge)
-      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456789").get())
+      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456789&isAdditional=false").get())
       request.status shouldBe Status.OK
       val parsedBody = Jsoup.parse(request.body)
       parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Calculation"

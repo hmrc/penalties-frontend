@@ -29,15 +29,15 @@ class CalculationPageHelper @Inject()() extends ViewUtils with ImplicitDateForma
     val chargeType = getChargeTypeBasedOnReason(lpp.reason)
     (lpp.financial.outstandingAmountDay15, lpp.financial.outstandingAmountDay31) match {
       case (Some(amountOnDay15), Some(amountOnDay31)) => {
-        val firstPaymentDetail = messages("calculation.key2.paymentDetail", chargeType, dateTimeToString(lpp.period.dueDate.plusDays(15)))
-        val firstCalculation = messages("calculation.key2.text", s"${lpp.financial.percentageOfOutstandingAmtCharged.get}", amountOnDay15, firstPaymentDetail)
-        val secondPaymentDetail = messages("calculation.key2.paymentDetail", chargeType, dateTimeToString(lpp.period.dueDate.plusDays(30)))
-        val secondCalculation = messages("calculation.key2.text", s"${lpp.financial.percentageOfOutstandingAmtCharged.get}", amountOnDay31, secondPaymentDetail)
+        val firstPaymentDetail = messages("calculation.key.2.paymentDetail", chargeType, dateTimeToString(lpp.period.dueDate.plusDays(15)))
+        val firstCalculation = messages("calculation.key.2.text", s"${lpp.financial.percentageOfOutstandingAmtCharged.get}", amountOnDay15, firstPaymentDetail)
+        val secondPaymentDetail = messages("calculation.key.2.paymentDetail", chargeType, dateTimeToString(lpp.period.dueDate.plusDays(30)))
+        val secondCalculation = messages("calculation.key.2.text", s"${lpp.financial.percentageOfOutstandingAmtCharged.get}", amountOnDay31, secondPaymentDetail)
         Some(Seq(firstCalculation, secondCalculation))
       }
       case (Some(amountOnDay15), None) => {
-        val paymentDetail = messages("calculation.key2.paymentDetail", chargeType, dateTimeToString(lpp.period.dueDate.plusDays(15)))
-        val calculation = messages("calculation.key2.text", s"${lpp.financial.percentageOfOutstandingAmtCharged.get}", amountOnDay15, paymentDetail)
+        val paymentDetail = messages("calculation.key.2.paymentDetail", chargeType, dateTimeToString(lpp.period.dueDate.plusDays(15)))
+        val calculation = messages("calculation.key.2.text", s"${lpp.financial.percentageOfOutstandingAmtCharged.get}", amountOnDay15, paymentDetail)
         Some(Seq(calculation))
       }
       case _ => {

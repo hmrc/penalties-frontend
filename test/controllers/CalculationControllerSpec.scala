@@ -147,7 +147,7 @@ class CalculationControllerSpec extends SpecBase {
         when(mockPenaltiesService.getETMPDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(etmpPayloadNo15Or30DayAmount))
 
-        val result = Controller.onPageLoad("123456789")(fakeRequest)
+        val result = Controller.onPageLoad("123456789", false)(fakeRequest)
         status(result) shouldBe INTERNAL_SERVER_ERROR
       }
 

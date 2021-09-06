@@ -44,7 +44,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
     "it is an additional penalty" must {
       def applyView(): HtmlFormat.Appendable = {
-        calculationAdditionalPage.apply(amountPaid = "100")(implicitly, implicitly, implicitly, vatTraderUser)
+        calculationAdditionalPage.apply()(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
       implicit val doc: Document = asDocument(applyView())
@@ -86,15 +86,15 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         "2% of £10,000.00 (Central assessment amount unpaid on 6 June 2025"), isMultipleAmounts = true))
 
       val expectedContent = Seq(
-        Selector.title -> title,
-        Selector.h1 -> heading,
-        Selector.listRow(1) -> th1,
+        Selector.title -> titleLPP,
+        Selector.h1 -> headingLPP,
+        Selector.listRow(1) -> th1LPP,
         Selector.listValue(1) -> "£400",
-        Selector.listRow(2) -> th2,
+        Selector.listRow(2) -> th2LPP,
         Selector.listValue(2) -> "2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)",
-        Selector.listRow(3) -> th3,
+        Selector.listRow(3) -> th3LPP,
         Selector.listValue(3) -> "£100",
-        Selector.listRow(4) -> th4,
+        Selector.listRow(4) -> th4LPP,
         Selector.listValue(4) -> "£50",
         Selector.link -> link
       )
@@ -103,15 +103,15 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
       "when there is 2 calculations - show both" must {
         val expectedContent = Seq(
-          Selector.title -> title,
-          Selector.h1 -> heading,
-          Selector.listRow(1) -> th1,
+          Selector.title -> titleLPP,
+          Selector.h1 -> headingLPP,
+          Selector.listRow(1) -> th1LPP,
           Selector.listValue(1) -> "£400",
-          Selector.listRow(2) -> th2,
+          Selector.listRow(2) -> th2LPP,
           Selector.listValue(2) -> "2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025) + 2% of £10,000.00 (Central assessment amount unpaid on 6 June 2025",
-          Selector.listRow(3) -> th3,
+          Selector.listRow(3) -> th3LPP,
           Selector.listValue(3) -> "£100",
-          Selector.listRow(4) -> th4,
+          Selector.listRow(4) -> th4LPP,
           //    Selector.listValue(4) -> "£0" //TODO: Implement with actual values
           Selector.link -> link
         )
