@@ -65,7 +65,8 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView, viewAdd: Calc
               }
             )
           } else {
-            Ok(viewAdd())
+            val additionalPenaltyRate = "4"
+            Ok(viewAdd(additionalPenaltyRate))
           }
         }
       }
