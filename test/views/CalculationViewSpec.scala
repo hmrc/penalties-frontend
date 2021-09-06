@@ -70,7 +70,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
     "if it is an additional penalty and the vat is paid" must {
       def applyView(): HtmlFormat.Appendable = {
-        calculationAdditionalPage.apply(7, vatDue = false)(implicitly, implicitly, implicitly, vatTraderUser)
+        calculationAdditionalPage.apply(7, vatDue = false, additionalPenaltyRate = "4")(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
       implicit val doc: Document = asDocument(applyView())
@@ -84,7 +84,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.listRow(2) -> th2Additional,
         Selector.listValue(2) -> "7 days",
         Selector.listRow(3) -> th3Additional,
-        //    Selector.listValue(3) -> "£0" //TODO: Implement with actual values
+        Selector.listValue(3) -> "4%",
         Selector.listRow(4) -> th4Additional,
         //    Selector.listValue(4) -> "£0" //TODO: Implement with actual values
         Selector.link -> link
