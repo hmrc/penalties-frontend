@@ -65,7 +65,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView, viewAdd: Calc
               }
             )
           } else {
-            val additionalPenaltyRate = parseBigDecimalToFriendlyValue(penalty.get.financial.percentageOfOutstandingAmtCharged.getOrElse(0))
+            val additionalPenaltyRate = "4"
             Ok(viewAdd(additionalPenaltyRate))
           }
         }

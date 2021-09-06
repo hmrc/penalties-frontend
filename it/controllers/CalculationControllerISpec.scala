@@ -236,7 +236,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Number of days since day 31"
       parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "0 days" //TODO: placeholder value
       parsedBody.select("#main-content tr").get(2).select("th").text() shouldBe "Additional penalty rate"
-      parsedBody.select("#main-content tr").get(2).select("td").text() shouldBe "2%"
+      parsedBody.select("#main-content tr").get(2).select("td").text() shouldBe "4%"
       parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Calculation"
       parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "Central assessment amount unpaid × 4% × number of days since day 31 ÷ 365"
       parsedBody.select("#main-content p").get(1).text() shouldBe
