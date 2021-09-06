@@ -31,7 +31,8 @@ import viewmodels.CalculationPageHelper
 
 import scala.concurrent.ExecutionContext
 
-class CalculationController @Inject()(viewLPP: CalculationLPPView, viewAdd: CalculationAdditionalView,
+class CalculationController @Inject()(viewLPP: CalculationLPPView,
+                                      viewAdd: CalculationAdditionalView,
                                       penaltiesService: PenaltiesService,
                                       calculationPageHelper: CalculationPageHelper)(implicit ec: ExecutionContext,
                                                                                     appConfig: AppConfig,
@@ -53,7 +54,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView, viewAdd: Calc
             val amountPaid = parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue - penalty.get.financial.outstandingAmountDue)
             val penaltyAmount = parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue)
             val amountLeftToPay = parseBigDecimalToFriendlyValue(penalty.get.financial.outstandingAmountDue)
-            val calculationRow = calculationPageHelper.getCalculationRow(penalty.get)
+            val calculationRow = calculationPageHelper.getCalculationRowForLPP(penalty.get)
             calculationRow.fold({
               //TODO: log a PD
               logger.error("[CalculationController][onPageLoad] - Calculation row returned None - this could be because the user did not have a defined amount after 15 and/or 30 days of due date")
@@ -66,7 +67,8 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView, viewAdd: Calc
             )
           } else {
             val additionalPenaltyRate = "4"
-            Ok(viewAdd(additionalPenaltyRate))
+            val parentCharge = calculationPageHelper.getChargeTypeBasedOnReason(penalty.get.reason)
+            Ok(viewAdd(additionalPenaltyRate, parentCharge))
           }
         }
       }
