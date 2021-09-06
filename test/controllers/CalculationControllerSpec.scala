@@ -142,7 +142,7 @@ class CalculationControllerSpec extends SpecBase {
 
       "show an ISE when the calculation row can not be rendered - because the payload is invalid (missing both 15/30 day payment amounts)" in
         new Setup(AuthTestModels.successfulAuthResult) {
-        when(mockPenaltiesService.getETMPDataFromEnrolmentKey(Matchers.any())(Matchers.any()))
+        when(mockPenaltiesService.getETMPDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(etmpPayloadNo15Or30DayAmount))
 
         val result = Controller.onPageLoad("123456789")(fakeRequest)
