@@ -47,27 +47,11 @@ class CalculationPageHelper @Inject()() extends ViewUtils with ImplicitDateForma
   }
 
   def getChargeTypeBasedOnReason(reason: PaymentPenaltyReasonEnum.Value)(implicit messages: Messages): String = {
-    reason match {
-      case PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS
-           | PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS
-           | PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS => {
-        messages("calculation.parentCharge.VAT")
-      }
-      case PaymentPenaltyReasonEnum.ERROR_CORRECTION_NOTICE_NOT_PAID_WITHIN_15_DAYS
-           | PaymentPenaltyReasonEnum.ERROR_CORRECTION_NOTICE_NOT_PAID_WITHIN_30_DAYS
-           | PaymentPenaltyReasonEnum.ERROR_CORRECTION_NOTICE_NOT_PAID_AFTER_30_DAYS => {
-        messages("calculation.parentCharge.ecn")
-      }
-      case PaymentPenaltyReasonEnum.CENTRAL_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS
-           | PaymentPenaltyReasonEnum.CENTRAL_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS
-           | PaymentPenaltyReasonEnum.CENTRAL_ASSESSMENT_NOT_PAID_AFTER_30_DAYS => {
-        messages("calculation.parentCharge.centralAssessment")
-      }
-      case PaymentPenaltyReasonEnum.OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS
-           | PaymentPenaltyReasonEnum.OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS
-           | PaymentPenaltyReasonEnum.OFFICERS_ASSESSMENT_NOT_PAID_AFTER_30_DAYS => {
-        messages("calculation.parentCharge.officersAssessment")
-      }
+    reason.toString match {
+      case x if x.contains("VAT") => messages("calculation.parentCharge.VAT")
+      case x if x.contains("ERROR_CORRECTION_NOTICE") => messages("calculation.parentCharge.ecn")
+      case x if x.contains("CENTRAL_ASSESSMENT") => messages("calculation.parentCharge.centralAssessment")
+      case x if x.contains("OFFICERS_ASSESSMENT") => messages("calculation.parentCharge.officersAssessment")
     }
   }
 }
