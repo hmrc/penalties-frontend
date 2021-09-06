@@ -113,13 +113,15 @@ summaryCard.lpp.15days.centralAssessment = Central Assessment not paid within 15
 summaryCard.lpp.30days.centralAssessment = Central Assessment not paid within 30 days
 summaryCard.lpp.15days.ecn = Error Correction Notice not paid within 15 days
 summaryCard.lpp.30days.ecn = Error Correction Notice not paid within 30 days
-summaryCard.lpp.15days.officersAssessment = Officer'''s Assessment not paid within 15 days
-summaryCard.lpp.30days.officersAssessment = Officer'''s Assessment not paid within 30 days
+summaryCard.lpp.15days.officersAssessment = Officer’s Assessment not paid within 15 days
+summaryCard.lpp.30days.officersAssessment = Officer’s Assessment not paid within 30 days
 summaryCard.lpp.additional.key = Charged daily from
 summaryCard.lpp.additional.30days = VAT more than 30 days late
 summaryCard.lpp.additional.30days.centralAssessment = Central Assessment more than 30 days late
 summaryCard.lpp.additional.30days.ecn = Error Correction Notice more than 30 days late
-summaryCard.lpp.additional.30days.officersAssessment = Officer'''s Assessment more than 30 days late
+summaryCard.lpp.additional.30days.officersAssessment = Officer’s Assessment more than 30 days late
+
+summaryCard.viewCalculation = View calculation
 
 status.active = active
 status.due = due
@@ -197,12 +199,18 @@ whatIsOwed.allPenalties.interest = £{0} in interest on penalties
 # Calculation messages
 # ----------------------------------------------------------
 calculation.title.lpp = Late payment penalty
+calculation.caption = {0} to {1}
 calculation.heading.lpp = Late payment penalty
 calculation.key1 = Penalty amount
 calculation.value.amount = £{0}
 calculation.key2 = Calculation
-calculation.key2.text = {0}% of £{1} (VAT amount unpaid on {2})
+calculation.key2.text = {0}% of £{1} ({2})
+calculation.key2.paymentDetail = {0} amount unpaid on {1}
 calculation.key3 = Amount received
 calculation.key4 = Amount left to pay
 calculation.returnLink = Return to VAT penalties and appeals
+calculation.parentCharge.VAT = VAT
+calculation.parentCharge.centralAssessment = Central Assessment
+calculation.parentCharge.ecn = Error Correction Notice
+calculation.parentCharge.officersAssessment = Officer’s Assessment
 

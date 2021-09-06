@@ -107,6 +107,71 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
           financial = Financial(
             amountDue = 400.00,
             outstandingAmountDue = 123.00,
+            outstandingAmountDay15 = Some(123),
+            outstandingAmountDay31 = Some(123),
+            percentageOfOutstandingAmtCharged = Some(2),
+            dueDate = sampleDate1
+          )
+        )
+      )
+    )
+  )
+
+  val etmpPayloadWithOnlyDay15Charge = etmpPayload.copy(
+    latePaymentPenalties = Some(
+      Seq(
+        LatePaymentPenalty(
+          `type` = PenaltyTypeEnum.Additional,
+          id = "123456790",
+          PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
+          dateCreated = sampleDate1,
+          status = PointStatusEnum.Paid,
+          appealStatus = None,
+          period = PaymentPeriod(
+            sampleDate1,
+            sampleDate1.plusMonths(1),
+            sampleDate1.plusMonths(2).plusDays(7),
+            PaymentStatusEnum.Paid
+          ),
+          communications = Seq(
+            Communication(
+              `type` = CommunicationTypeEnum.letter,
+              dateSent = sampleDate1,
+              documentId = "123456789"
+            )
+          ),
+          financial = Financial(
+            amountDue = 123.45,
+            outstandingAmountDue = 0.00,
+            dueDate = sampleDate1
+          )
+        ),
+        LatePaymentPenalty(
+          `type` = PenaltyTypeEnum.Financial,
+          id = "123456789",
+          reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
+          dateCreated = sampleDate1,
+          status = PointStatusEnum.Due,
+          appealStatus = None,
+          period = PaymentPeriod(
+            sampleDate1,
+            sampleDate1.plusMonths(1),
+            sampleDate1.plusMonths(2).plusDays(7),
+            PaymentStatusEnum.Paid
+          ),
+          communications = Seq(
+            Communication(
+              `type` = CommunicationTypeEnum.letter,
+              dateSent = sampleDate1,
+              documentId = "123456789"
+            )
+          ),
+          financial = Financial(
+            amountDue = 400.00,
+            outstandingAmountDue = 123.00,
+            outstandingAmountDay15 = Some(123),
+            outstandingAmountDay31 = None,
+            percentageOfOutstandingAmtCharged = Some(2),
             dueDate = sampleDate1
           )
         )
@@ -116,7 +181,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
 
   "GET /calculation" should {
     "return 200 (OK)" when {
-      "the user has specified a valid penalty ID (checking amount paid is correct)" in {
+      "the user has specified a valid penalty ID" in {
         returnLSPDataStub(etmpPayload)
         val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456789").get())
         request.status shouldBe Status.OK
@@ -125,7 +190,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.select("#main-content tr:nth-child(1) > th").text() shouldBe "Penalty amount"
         parsedBody.select("#main-content tr:nth-child(1) > td").text() shouldBe "£400"
         parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Calculation"
-        parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "0% of £0 (VAT amount unpaid on 0)" //TODO: placeholder value
+        parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "2% of £123 (VAT amount unpaid on 23 March 2021) + 2% of £123 (VAT amount unpaid on 7 April 2021)"
         parsedBody.select("#main-content tr:nth-child(3) > th").text() shouldBe "Amount received"
         parsedBody.select("#main-content tr:nth-child(3) > td").text() shouldBe "£277"
         parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Amount left to pay"
@@ -133,6 +198,15 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.select("#main-content a").text() shouldBe "Return to VAT penalties and appeals"
         parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
       }
+    }
+
+    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID (only one interest charge)" in {
+      returnLSPDataStub(etmpPayloadWithOnlyDay15Charge)
+      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456789").get())
+      request.status shouldBe Status.OK
+      val parsedBody = Jsoup.parse(request.body)
+      parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Calculation"
+      parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "2% of £123 (VAT amount unpaid on 23 March 2021)"
     }
 
     "return 500 (ISE) when the user specifies a penalty not within their data" in {

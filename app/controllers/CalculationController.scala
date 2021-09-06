@@ -28,15 +28,17 @@ import services.PenaltiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
 import utils.{CurrencyFormatter, EnrolmentKeys}
+import viewmodels.CalculationPageHelper
 
 import scala.concurrent.ExecutionContext
 
 class CalculationController @Inject()(view: CalculationView,
-                                      penaltiesService: PenaltiesService)(implicit ec: ExecutionContext,
-                                                                        appConfig: AppConfig,
-                                                                        errorHandler: ErrorHandler,
-                                                                        authorise: AuthPredicate,
-                                                                        controllerComponents: MessagesControllerComponents)
+                                      penaltiesService: PenaltiesService,
+                                      calculationPageHelper: CalculationPageHelper)(implicit ec: ExecutionContext,
+                                                                                    appConfig: AppConfig,
+                                                                                    errorHandler: ErrorHandler,
+                                                                                    authorise: AuthPredicate,
+                                                                                    controllerComponents: MessagesControllerComponents)
   extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter {
 
   def onPageLoad(penaltyId: String): Action[AnyContent] = authorise.async { implicit request =>
@@ -51,7 +53,17 @@ class CalculationController @Inject()(view: CalculationView,
           val amountPaid = parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue - penalty.get.financial.outstandingAmountDue)
           val penaltyAmount = parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue)
           val amountLeftToPay = parseBigDecimalToFriendlyValue(penalty.get.financial.outstandingAmountDue)
-          Ok(view(amountPaid, penaltyAmount,amountLeftToPay))
+          val calculationRow = calculationPageHelper.getCalculationRow(penalty.get)
+          calculationRow.fold({
+            //TODO: log a PD
+            logger.error("[CalculationController][onPageLoad] - Calculation row returned None - this could be because the user did not have a defined amount after 15 and/or 30 days of due date")
+            errorHandler.showInternalServerError
+          })(
+            rowSeq => {
+              val isTwoCalculations: Boolean = rowSeq.size == 2
+              Ok(view(amountPaid, penaltyAmount, amountLeftToPay, rowSeq, isTwoCalculations))
+            }
+          )
         }
       }
     }

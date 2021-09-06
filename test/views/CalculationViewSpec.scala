@@ -37,11 +37,18 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
   "CalculationView" should {
 
-    def applyView(): HtmlFormat.Appendable = {
-      calculationPage.apply(amountPaid = "100", penaltyAmount = "400", amountLeftToPay = "50")(implicitly, implicitly, implicitly, vatTraderUser)
+    def applyView(calculationRow: Seq[String], isMultipleAmounts: Boolean): HtmlFormat.Appendable = {
+      calculationPage.apply(
+        amountPaid = "100",
+        penaltyAmount = "400",
+        amountLeftToPay = "50",
+        calculationRowSeq = calculationRow,
+        isCalculationRowMultipleAmounts = isMultipleAmounts)(implicitly, implicitly, implicitly, vatTraderUser)
     }
 
-    implicit val doc: Document = asDocument(applyView())
+    implicit val docWithOnlyOneCalculation: Document = asDocument(applyView(Seq("2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)"), isMultipleAmounts = false))
+    implicit val docWith2Calculations: Document = asDocument(applyView(Seq("2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)",
+      "2% of £10,000.00 (Central assessment amount unpaid on 6 June 2025"), isMultipleAmounts = true))
 
     val expectedContent = Seq(
       Selector.title -> title,
@@ -49,7 +56,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       Selector.listRow(1) -> th1,
       Selector.listValue(1) -> "£400",
       Selector.listRow(2) -> th2,
-//    Selector.listValue(2) -> "0% of £0 (VAT amount unpaid on 0)" //TODO: Implement with actual values
+      Selector.listValue(2) -> "2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)",
       Selector.listRow(3) -> th3,
       Selector.listValue(3) -> "£100",
       Selector.listRow(4) -> th4,
@@ -57,6 +64,23 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       Selector.link -> link
     )
 
-    behave like pageWithExpectedMessages(expectedContent)
+    behave like pageWithExpectedMessages(expectedContent)(docWithOnlyOneCalculation)
+
+    "when there is 2 calculations - show both" must {
+      val expectedContent = Seq(
+        Selector.title -> title,
+        Selector.h1 -> heading,
+        Selector.listRow(1) -> th1,
+        Selector.listValue(1) -> "£400",
+        Selector.listRow(2) -> th2,
+        Selector.listValue(2) -> "2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025) + 2% of £10,000.00 (Central assessment amount unpaid on 6 June 2025",
+        Selector.listRow(3) -> th3,
+        Selector.listValue(3) -> "£100",
+        Selector.listRow(4) -> th4,
+        //    Selector.listValue(4) -> "£0" //TODO: Implement with actual values
+        Selector.link -> link
+      )
+      behave like pageWithExpectedMessages(expectedContent)(docWith2Calculations)
+    }
   }
 }

@@ -153,5 +153,10 @@ class PaymentPenaltyReasonEnumSpec extends AnyWordSpec with Matchers {
     result.get shouldBe PaymentPenaltyReasonEnum.OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS
   }
 
+  "return a JSError when there is no matches for the specified value" in {
+    val result = Json.fromJson(JsString("invalid"))(PaymentPenaltyReasonEnum.format)
+    result.isError shouldBe true
+  }
+
 }
 
