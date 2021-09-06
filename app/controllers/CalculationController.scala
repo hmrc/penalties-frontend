@@ -60,8 +60,10 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView, viewAdd: Calc
               errorHandler.showInternalServerError
             })(
               rowSeq => {
+                val startDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.period.startDate)
+                val endDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.period.endDate)
                 val isTwoCalculations: Boolean = rowSeq.size == 2
-                Ok(viewLPP(amountPaid, penaltyAmount, amountLeftToPay, rowSeq, isTwoCalculations))
+                Ok(viewLPP(amountPaid, penaltyAmount, amountLeftToPay, rowSeq, isTwoCalculations, startDateOfPeriod, endDateOfPeriod))
               }
             )
           } else {

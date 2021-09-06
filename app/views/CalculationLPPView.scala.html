@@ -22,10 +22,21 @@
     details: govukDetails
 )
 
-@(amountPaid: String, penaltyAmount: String, amountLeftToPay: String, calculationRowSeq: Seq[String], isCalculationRowMultipleAmounts: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
+@(
+        amountPaid: String,
+        penaltyAmount: String,
+        amountLeftToPay: String,
+        calculationRowSeq: Seq[String],
+        isCalculationRowMultipleAmounts: Boolean,
+        startDate: String,
+        endDate: String
+)(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
 
 @layout(pageTitle = messages("calculation.title.lpp"), isPageFullWidth = false) {
-    <h1 class="govuk-heading-l">@messages("calculation.heading.lpp")</h1>
+    <h1 class="govuk-heading-l">
+        <span class="govuk-caption-l">@messages("calculation.caption", startDate, endDate)</span>
+        @messages("calculation.heading.lpp")
+    </h1>
 
     <table class="govuk-table">
         <tbody class="govuk-table__body">

@@ -21,6 +21,7 @@ import models.reason.PaymentPenaltyReasonEnum
 import play.api.i18n.Messages
 import utils.{ImplicitDateFormatter, ViewUtils}
 
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 class CalculationPageHelper @Inject()() extends ViewUtils with ImplicitDateFormatter {
@@ -53,5 +54,9 @@ class CalculationPageHelper @Inject()() extends ViewUtils with ImplicitDateForma
       case x if x.contains("CENTRAL_ASSESSMENT") => messages("calculation.parentCharge.centralAssessment")
       case x if x.contains("OFFICERS_ASSESSMENT") => messages("calculation.parentCharge.officersAssessment")
     }
+  }
+
+  def getDateAsDayMonthYear(dateTime: LocalDateTime): String = {
+    dateTimeToString(dateTime)
   }
 }
