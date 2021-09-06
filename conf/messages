@@ -199,6 +199,7 @@ whatIsOwed.allPenalties.interest = £{0} in interest on penalties
 # Calculation messages
 # ----------------------------------------------------------
 calculation.title.lpp = Late payment penalty
+calculation.caption = {0} to {1}
 calculation.heading.lpp = Late payment penalty
 calculation.title.additional = Additional penalty
 calculation.heading.additional = Additional penalty
@@ -216,7 +217,7 @@ calculation.key.3.additional = Additional penalty rate
 calculation.key.3.additional.text = {0}%
 calculation.key.4 = Amount left to pay
 calculation.key.4.additional = Calculation
-calculation.key.4.additional.text = Central assessment amount unpaid × 4% × number of days since day 31 ÷ 365
+calculation.key.4.additional.text = {0} amount unpaid x 4% x number of days since day 31 ÷ 365
 calculation.h2.additional = Estimates
 calculation.p.2.additional = Penalties and interest will show as estimates if HMRC does not have enough information to calculate the final amounts.
 calculation.p.3.additional = This could be because:

@@ -116,14 +116,14 @@ class CalculationPageHelperSpec extends SpecBase {
     )
 
     "return only one 'row' when the user has amount after 15 days" in {
-      val rows = calculationPageHelper.getCalculationRow(lppWith15DayAmount)
+      val rows = calculationPageHelper.getCalculationRowForLPP(lppWith15DayAmount)
       rows.isDefined shouldBe true
       rows.get.size shouldBe 1
       rows.get.head shouldBe "2% of £14 (VAT amount unpaid on 22 February 2021)"
     }
     
     "return 2 rows when the user has amount after 15 and 30 days" in {
-      val rows = calculationPageHelper.getCalculationRow(lppWith30DayAmount)
+      val rows = calculationPageHelper.getCalculationRowForLPP(lppWith30DayAmount)
       rows.isDefined shouldBe true
       rows.get.size shouldBe 2
       rows.get.head shouldBe "2% of £14 (VAT amount unpaid on 22 February 2021)"
@@ -131,7 +131,7 @@ class CalculationPageHelperSpec extends SpecBase {
     }
     
     "return None when the user does not have either" in {
-      val rows = calculationPageHelper.getCalculationRow(lppWithNoAmounts)
+      val rows = calculationPageHelper.getCalculationRowForLPP(lppWithNoAmounts)
       rows.isDefined shouldBe false
     }
   }

@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 class CalculationPageHelper @Inject()() extends ViewUtils with ImplicitDateFormatter {
 
-  def getCalculationRow(lpp: LatePaymentPenalty)(implicit messages: Messages): Option[Seq[String]] = {
+  def getCalculationRowForLPP(lpp: LatePaymentPenalty)(implicit messages: Messages): Option[Seq[String]] = {
     val chargeType = getChargeTypeBasedOnReason(lpp.reason)
     (lpp.financial.outstandingAmountDay15, lpp.financial.outstandingAmountDay31) match {
       case (Some(amountOnDay15), Some(amountOnDay31)) => {
