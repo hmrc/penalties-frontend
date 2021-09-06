@@ -23,6 +23,8 @@ object CalculationMessages {
 
   val headingAdditional = "Additional penalty"
 
+  val headingLPPWithPeriod = "1 October 2022 to 31 December 2022 Late payment penalty"
+
   val p1Additional = "The additional penalty is charged from 31 days after the payment due date, until the total is paid."
 
   val th1LPP = "Penalty amount"

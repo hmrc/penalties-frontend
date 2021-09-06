@@ -90,7 +90,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
       val expectedContent = Seq(
         Selector.title -> titleLPP,
-        Selector.h1 -> periodWithHeading,
+        Selector.h1 -> headingLPPWithPeriod,
         Selector.listRow(1) -> th1LPP,
         Selector.listValue(1) -> "£400",
         Selector.listRow(2) -> th2LPP,
@@ -107,7 +107,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       "when there is 2 calculations - show both" must {
         val expectedContent = Seq(
           Selector.title -> titleLPP,
-          Selector.h1 -> periodWithHeading,
+          Selector.h1 -> headingLPPWithPeriod,
           Selector.listRow(1) -> th1LPP,
           Selector.listValue(1) -> "£400",
           Selector.listRow(2) -> th2LPP,
