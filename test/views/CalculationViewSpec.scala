@@ -50,21 +50,21 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       implicit val doc: Document = asDocument(applyView())
 
       val expectedContent = Seq(
-        Selector.title -> titleAdd,
-        Selector.h1 -> headingAdd,
-        Selector.govukBody(1) -> p1Add,
-        Selector.listRow(1) -> th1Add,
+        Selector.title -> titleAdditional,
+        Selector.h1 -> headingAdditional,
+        Selector.govukBody(1) -> p1Additional,
+        Selector.listRow(1) -> th1Additional,
         //    Selector.listValue(1) -> "£0" //TODO: Implement with actual values
-        Selector.listRow(2) -> th2Add,
+        Selector.listRow(2) -> th2Additional,
         //    Selector.listValue(2) -> "0% of £0 (VAT amount unpaid on 0)" //TODO: Implement with actual values
-        Selector.listRow(3) -> th3Add,
+        Selector.listRow(3) -> th3Additional,
         //    Selector.listValue(3) -> "£0" //TODO: Implement with actual values
-        Selector.listRow(4) -> th4Add,
+        Selector.listRow(4) -> th4Additional,
         //    Selector.listValue(4) -> "£0" //TODO: Implement with actual values
-        Selector.govukBody(2) -> p2Add,
-        Selector.govukBody(3) -> p3Add,
-        Selector.bulletNthChild(1) -> bullet1Add,
-        Selector.bulletNthChild(2) -> bullet2Add,
+        Selector.govukBody(2) -> p2Additional,
+        Selector.govukBody(3) -> p3Additional,
+        Selector.bulletNthChild(1) -> bullet1Additional,
+        Selector.bulletNthChild(2) -> bullet2Additional,
         Selector.link -> link
       )
 

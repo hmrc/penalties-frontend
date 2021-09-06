@@ -308,6 +308,8 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           vatTraderDocLPPAdditionalPenalty.select(Selectors.rowItem(Selectors.summaryLPPCard, 3)).text shouldBe chargedDailyFrom
           vatTraderDocLPPAdditionalPenalty.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).text shouldBe appealPointText
           vatTraderDocLPPAdditionalPenalty.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).attr("href") shouldBe redirectToAppealObligationUrlForLPPAdditional
+          vatTraderDocLPPAdditionalPenalty.select(Selectors.viewCalculation).text shouldBe viewCalculationLink
+          vatTraderDocLPPAdditionalPenalty.select(Selectors.viewCalculation).attr("href") shouldBe "/penalties/calculation?penaltyId=123456789&isAdditional=true"
         }
 
         "populate summary card when user has LPPs and has appealed them" in {

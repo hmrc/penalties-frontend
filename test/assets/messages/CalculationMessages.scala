@@ -19,39 +19,39 @@ package assets.messages
 object CalculationMessages {
   val titleLPP = "Late payment penalty - Penalties - GOV.UK"
 
-  val titleAdd = "Additional penalty - Penalties - GOV.UK"
+  val titleAdditional = "Additional penalty - Penalties - GOV.UK"
 
   val headingLPP = "Late payment penalty"
 
-  val headingAdd = "Additional penalty"
+  val headingAdditional = "Additional penalty"
 
-  val p1Add = "The additional penalty is charged from 31 days after the payment due date, until the total is paid."
+  val p1Additional = "The additional penalty is charged from 31 days after the payment due date, until the total is paid."
 
   val th1LPP = "Penalty amount"
 
-  val th1Add = "Amount to date (estimate)"
+  val th1Additional = "Amount to date (estimate)"
 
   val th2LPP = "Calculation"
 
-  val th2Add = "Number of days since day 31"
+  val th2Additional = "Number of days since day 31"
 
   val th3LPP = "Amount received"
 
-  val th3Add = "Additional penalty rate"
+  val th3Additional = "Additional penalty rate"
 
   val th4LPP = "Amount left to pay"
 
-  val th4Add = "Calculation"
+  val th4Additional = "Calculation"
 
-  val h2Add = "Estimates"
+  val h2Additional = "Estimates"
 
-  val p2Add = "Penalties and interest will show as estimates if HMRC does not have enough information to calculate the final amounts."
+  val p2Additional = "Penalties and interest will show as estimates if HMRC does not have enough information to calculate the final amounts."
 
-  val p3Add = "This could be because:"
+  val p3Additional = "This could be because:"
 
-  val bullet1Add = "we have not received your VAT payment"
+  val bullet1Additional = "we have not received your VAT payment"
 
-  val bullet2Add = "you have an unpaid penalty on your account"
+  val bullet2Additional = "you have an unpaid penalty on your account"
 
   val link = "Return to VAT penalties and appeals"
 }
