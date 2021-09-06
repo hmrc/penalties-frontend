@@ -30,11 +30,11 @@
     <table class="govuk-table">
         <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header govuk-!-width-one-third">@messages("calculation.key1")</th>
+                <th scope="row" class="govuk-table__header govuk-!-width-one-third">@messages("calculation.key.1")</th>
                 <td class="govuk-table__cell">@messages("calculation.value.amount", penaltyAmount)</td>
             </tr>
             <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header govuk-!-width-one-third">@messages("calculation.key2")</th>
+                <th scope="row" class="govuk-table__header govuk-!-width-one-third">@messages("calculation.key.2")</th>
                 <td class="govuk-table__cell">@{calculationRowSeq.head}
                 @if(isCalculationRowMultipleAmounts) {
                      + <br>@{calculationRowSeq(1)}
@@ -42,11 +42,11 @@
                 </td>
             </tr>
             <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header govuk-!-width-one-third">@messages("calculation.key3")</th>
+                <th scope="row" class="govuk-table__header govuk-!-width-one-third">@messages("calculation.key.3")</th>
                 <td class="govuk-table__cell">@messages("calculation.value.amount", amountPaid)</td>
             </tr>
             <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header govuk-!-width-one-third">@messages("calculation.key4")</th>
+                <th scope="row" class="govuk-table__header govuk-!-width-one-third">@messages("calculation.key.4")</th>
                 <td class="govuk-table__cell">@messages("calculation.value.amount", amountLeftToPay)</td>
             </tr>
         </tbody>

@@ -10,4 +10,4 @@ GET        /appeal-penalty              controllers.IndexController.redirectToAp
 
 GET        /compliance                  controllers.ComplianceController.onPageLoad
 
-GET        /calculation                 controllers.CalculationController.onPageLoad(penaltyId: String)
+GET        /calculation                 controllers.CalculationController.onPageLoad(penaltyId: String, isAdditional: Boolean)
