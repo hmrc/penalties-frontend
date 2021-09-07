@@ -68,7 +68,8 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
           } else {
             val additionalPenaltyRate = "4"
             val parentCharge = calculationPageHelper.getChargeTypeBasedOnReason(penalty.get.reason)
-            Ok(viewAdd(additionalPenaltyRate, parentCharge))
+            val amountToDate = penalty.get.financial.amountDue
+            Ok(viewAdd(additionalPenaltyRate, parentCharge, amountToDate))
           }
         }
       }
