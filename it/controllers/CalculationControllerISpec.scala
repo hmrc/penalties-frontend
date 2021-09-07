@@ -129,7 +129,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
         period = PaymentPeriod(
           sampleDate1,
           sampleDate1.plusMonths(1),
-          sampleDate1.plusMonths(2).plusDays(7),
+          sampleDate1.plusMonths(2).plusDays(31),
           PaymentStatusEnum.Paid
         ),
         communications = Seq(
@@ -142,7 +142,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
         financial = Financial(
           amountDue = 123.45,
           outstandingAmountDue = 0.00,
-          dueDate = LocalDateTime.now().minusDays(7)
+          dueDate = LocalDateTime.now().minusDays(40)
         )
       )
     )
@@ -173,7 +173,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
         financial = Financial(
           amountDue = 123.45,
           outstandingAmountDue = 0.00,
-          dueDate = LocalDateTime.now().minusDays(7)
+          dueDate = LocalDateTime.now().minusDays(40)
         )
       )
     )
@@ -295,11 +295,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#main-content tr").get(0).select("th").text() shouldBe "Penalty amount"
       parsedBody.select("#main-content tr").get(0).select("td").text() shouldBe "£0" //TODO: placeholder value
       parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Number of days since day 31"
-      parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "7 days"
+      parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "9 days"
       parsedBody.select("#main-content tr").get(2).select("th").text() shouldBe "Additional penalty rate"
       parsedBody.select("#main-content tr").get(2).select("td").text() shouldBe "4%"
       parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Calculation"
-      parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "Central assessment amount unpaid × 4% × number of days since day 31 ÷ 365"
+      parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "VAT amount unpaid x 4% x number of days since day 31 ÷ 365"
       parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
     }
 
@@ -314,7 +314,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#main-content tr").get(0).select("th").text() shouldBe "Penalty amount (estimate)"
       parsedBody.select("#main-content tr").get(0).select("td").text() shouldBe "£0" //TODO: placeholder value
       parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Number of days since day 31"
-      parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "7 days"
+      parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "9 days"
       parsedBody.select("#main-content tr").get(2).select("th").text() shouldBe "Additional penalty rate"
       parsedBody.select("#main-content tr").get(2).select("td").text() shouldBe "4%"
       parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Calculation"
