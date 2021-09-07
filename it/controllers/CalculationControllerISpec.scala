@@ -117,6 +117,68 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
     )
   )
 
+  val etmpPayloadWithAdditionalPenalty = etmpPayload.copy(latePaymentPenalties = Some(
+    Seq(
+      LatePaymentPenalty(
+        `type` = PenaltyTypeEnum.Additional,
+        id = "987654321",
+        PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
+        dateCreated = sampleDate1,
+        status = PointStatusEnum.Paid,
+        appealStatus = None,
+        period = PaymentPeriod(
+          sampleDate1,
+          sampleDate1.plusMonths(1),
+          sampleDate1.plusMonths(2).plusDays(7),
+          PaymentStatusEnum.Paid
+        ),
+        communications = Seq(
+          Communication(
+            `type` = CommunicationTypeEnum.letter,
+            dateSent = sampleDate1,
+            documentId = "123456789"
+          )
+        ),
+        financial = Financial(
+          amountDue = 123.45,
+          outstandingAmountDue = 0.00,
+          dueDate = LocalDateTime.now().minusDays(7)
+        )
+      )
+    )
+  ))
+
+  val etmpPayloadWithAdditionalDuePenalty = etmpPayloadWithAdditionalPenalty.copy(latePaymentPenalties = Some(
+    Seq(
+      LatePaymentPenalty(
+        `type` = PenaltyTypeEnum.Additional,
+        id = "987654322",
+        PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
+        dateCreated = sampleDate1,
+        status = PointStatusEnum.Due,
+        appealStatus = None,
+        period = PaymentPeriod(
+          sampleDate1,
+          sampleDate1.plusMonths(1),
+          sampleDate1.plusMonths(2).plusDays(7),
+          PaymentStatusEnum.Due
+        ),
+        communications = Seq(
+          Communication(
+            `type` = CommunicationTypeEnum.letter,
+            dateSent = sampleDate1,
+            documentId = "123456789"
+          )
+        ),
+        financial = Financial(
+          amountDue = 123.45,
+          outstandingAmountDue = 0.00,
+          dueDate = LocalDateTime.now().minusDays(7)
+        )
+      )
+    )
+  ))
+
   val etmpPayloadWithOnlyDay15Charge = etmpPayload.copy(
     latePaymentPenalties = Some(
       Seq(
@@ -180,24 +242,22 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
   )
 
   "GET /calculation when it is not an additional penalty" should {
-    "return 200 (OK)" when {
-      "the user has specified a valid penalty ID" in {
-        returnLSPDataStub(etmpPayload)
-        val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456789&isAdditional=false").get())
-        request.status shouldBe Status.OK
-        val parsedBody = Jsoup.parse(request.body)
-        parsedBody.select("#main-content h1").text() shouldBe "Late payment penalty"
-        parsedBody.select("#main-content tr:nth-child(1) > th").text() shouldBe "Penalty amount"
-        parsedBody.select("#main-content tr:nth-child(1) > td").text() shouldBe "£400"
-        parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Calculation"
-        parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "2% of £123 (VAT amount unpaid on 23 March 2021) + 2% of £123 (VAT amount unpaid on 7 April 2021)"
-        parsedBody.select("#main-content tr:nth-child(3) > th").text() shouldBe "Amount received"
-        parsedBody.select("#main-content tr:nth-child(3) > td").text() shouldBe "£277"
-        parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Amount left to pay"
-        parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "£123"
-        parsedBody.select("#main-content a").text() shouldBe "Return to VAT penalties and appeals"
-        parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
-      }
+    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in { //TODO: implement without placeholders
+      returnLSPDataStub(etmpPayload)
+      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456789&isAdditional=false").get())
+      request.status shouldBe Status.OK
+      val parsedBody = Jsoup.parse(request.body)
+      parsedBody.select("#main-content h1").text() shouldBe "Late payment penalty"
+      parsedBody.select("#main-content tr:nth-child(1) > th").text() shouldBe "Penalty amount"
+      parsedBody.select("#main-content tr:nth-child(1) > td").text() shouldBe "£400"
+      parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Calculation"
+      parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "2% of £123 (VAT amount unpaid on 23 March 2021) + 2% of £123 (VAT amount unpaid on 7 April 2021)"
+      parsedBody.select("#main-content tr:nth-child(3) > th").text() shouldBe "Amount received"
+      parsedBody.select("#main-content tr:nth-child(3) > td").text() shouldBe "£277"
+      parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Amount left to pay"
+      parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "£123"
+      parsedBody.select("#main-content a").text() shouldBe "Return to VAT penalties and appeals"
+      parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
     }
 
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID (only one interest charge)" in {
@@ -224,27 +284,42 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
 
   "GET /calculation when it is an additional penalty" should {
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in { //TODO: implement without placeholders
-      returnLSPDataStub(etmpPayload)
-      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456789&isAdditional=true").get())
+      returnLSPDataStub(etmpPayloadWithAdditionalPenalty)
+      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=987654321&isAdditional=true").get())
       request.status shouldBe Status.OK
       val parsedBody = Jsoup.parse(request.body)
       parsedBody.select("#main-content h1").text() shouldBe "Additional penalty"
       parsedBody.select("#main-content p").get(0).text() shouldBe
         "The additional penalty is charged from 31 days after the payment due date, until the total is paid."
-      parsedBody.select("#main-content tr").get(0).select("th").text() shouldBe "Amount to date (estimate)"
-      parsedBody.select("#main-content tr").get(0).select("td").text() shouldBe "£0" //TODO: placeholder value
+      parsedBody.select("#main-content tr").get(0).select("th").text() shouldBe "Penalty amount"
+      parsedBody.select("#main-content tr").get(0).select("td").text() shouldBe "£123.45"
       parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Number of days since day 31"
-      parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "0 days" //TODO: placeholder value
+      parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "7 days"
+      parsedBody.select("#main-content tr").get(2).select("th").text() shouldBe "Additional penalty rate"
+      parsedBody.select("#main-content tr").get(2).select("td").text() shouldBe "4%"
+      parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Calculation"
+      parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "VAT amount unpaid x 4% x number of days since day 31 ÷ 365"
+      parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
+    }
+
+    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due" in { //TODO: implement without placeholders
+      returnLSPDataStub(etmpPayloadWithAdditionalDuePenalty)
+      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=987654322&isAdditional=true").get())
+      request.status shouldBe Status.OK
+      val parsedBody = Jsoup.parse(request.body)
+      parsedBody.select("#main-content h1").text() shouldBe "Additional penalty"
+      parsedBody.select("#main-content p").get(0).text() shouldBe
+        "The additional penalty is charged from 31 days after the payment due date, until the total is paid."
+      parsedBody.select("#main-content tr").get(0).select("th").text() shouldBe "Penalty amount (estimate)"
+      parsedBody.select("#main-content tr").get(0).select("td").text() shouldBe "£123.45"
+      parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Number of days since day 31"
+      parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "7 days"
       parsedBody.select("#main-content tr").get(2).select("th").text() shouldBe "Additional penalty rate"
       parsedBody.select("#main-content tr").get(2).select("td").text() shouldBe "4%"
       parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Calculation"
       parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "VAT amount unpaid x 4% x number of days since day 31 ÷ 365"
       parsedBody.select("#main-content p").get(1).text() shouldBe
         "Penalties and interest will show as estimates if HMRC does not have enough information to calculate the final amounts."
-      parsedBody.select("#main-content p").get(2).text() shouldBe "This could be because:"
-      parsedBody.select("#main-content li").get(0).text() shouldBe "we have not received your VAT payment"
-      parsedBody.select("#main-content li").get(1).text() shouldBe "you have an unpaid penalty on your account"
-      parsedBody.select("#main-content a").text() shouldBe "Return to VAT penalties and appeals"
       parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
     }
 

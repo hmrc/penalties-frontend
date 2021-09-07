@@ -16,11 +16,15 @@
 
 package controllers
 
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
+
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
 import models.penalty.LatePaymentPenalty
 import views.html.{CalculationAdditionalView, CalculationLPPView}
 import javax.inject.Inject
+import org.joda.time.Days
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.PenaltiesService
@@ -28,6 +32,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
 import utils.{CurrencyFormatter, EnrolmentKeys}
 import viewmodels.CalculationPageHelper
+import models.point.PointStatusEnum
 
 import scala.concurrent.ExecutionContext
 
@@ -67,9 +72,10 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
             )
           } else {
             val additionalPenaltyRate = "4"
+            val daysSince31 = ChronoUnit.DAYS.between(penalty.get.financial.dueDate, LocalDateTime.now())
             val parentCharge = calculationPageHelper.getChargeTypeBasedOnReason(penalty.get.reason)
             val amountToDate = penalty.get.financial.amountDue
-            Ok(viewAdd(additionalPenaltyRate, parentCharge, amountToDate))
+            Ok(viewAdd(daysSince31, penalty.get.status.equals(PointStatusEnum.Due), additionalPenaltyRate, parentCharge, amountToDate))
           }
         }
       }
