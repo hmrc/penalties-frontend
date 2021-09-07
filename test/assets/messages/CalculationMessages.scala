@@ -27,6 +27,8 @@ object CalculationMessages {
 
   val p1Additional = "The additional penalty is charged from 31 days after the payment due date, until the total is paid."
 
+  val th1LPPEstimate = "Penalty amount (estimate)"
+
   val th1LPP = "Penalty amount"
 
   val th1Additional = "Amount to date (estimate)"

@@ -55,6 +55,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
             val penaltyAmount = parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue)
             val amountLeftToPay = parseBigDecimalToFriendlyValue(penalty.get.financial.outstandingAmountDue)
             val calculationRow = calculationPageHelper.getCalculationRowForLPP(penalty.get)
+            val isEstimateAmount = penalty.get.financial.dueDate.plusDays(30).isBefore(java.time.LocalDateTime.now())
             calculationRow.fold({
               //TODO: log a PD
               logger.error("[CalculationController][onPageLoad] - Calculation row returned None - this could be because the user did not have a defined amount after 15 and/or 30 days of due date")
@@ -64,7 +65,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
                 val startDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.period.startDate)
                 val endDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.period.endDate)
                 val isTwoCalculations: Boolean = rowSeq.size == 2
-                Ok(viewLPP(amountPaid, penaltyAmount, amountLeftToPay, rowSeq, isTwoCalculations, startDateOfPeriod, endDateOfPeriod))
+                Ok(viewLPP(amountPaid, penaltyAmount, amountLeftToPay, rowSeq, isTwoCalculations,isEstimateAmount, startDateOfPeriod, endDateOfPeriod))
               }
             )
           } else {

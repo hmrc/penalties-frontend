@@ -179,6 +179,61 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
     )
   )
 
+  val etmpPayloadWithDueDateMoreThan30days = ETMPPayload(
+    pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, otherPenalties = Some(false), vatOverview = Some(Seq.empty), penaltyPoints = Seq(
+      PenaltyPoint(
+        `type` = PenaltyTypeEnum.Point,
+        id = "1234567890",
+        number = "1",
+        dateCreated = sampleDate1,
+        dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
+        status = PointStatusEnum.Added,
+        reason = None,
+        period = None,
+        communications = Seq.empty,
+        financial = Some(Financial(
+          amountDue = 0,
+          outstandingAmountDue = 0,
+          dueDate = sampleDate1,
+          estimatedInterest = Some(21.00),
+          crystalizedInterest = Some(32.00)
+        ))
+      )
+    ),
+    latePaymentPenalties = Some(
+      Seq(LatePaymentPenalty(
+        `type` = PenaltyTypeEnum.Financial,
+        id = "123456789",
+        reason = PaymentPenaltyReasonEnum.OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS,
+        dateCreated = sampleDate1,
+        status = PointStatusEnum.Due,
+        appealStatus = None,
+        period = PaymentPeriod(
+          sampleDate1,
+          sampleDate1.plusMonths(1),
+          sampleDate1.plusMonths(2).plusDays(7),
+          PaymentStatusEnum.Paid
+        ),
+        communications = Seq(
+          Communication(
+            `type` = CommunicationTypeEnum.letter,
+            dateSent = sampleDate1,
+            documentId = "123456789"
+          )
+        ),
+        financial = Financial(
+          amountDue = 400.00,
+          outstandingAmountDue = 123.00,
+          outstandingAmountDay15 = Some(123),
+          outstandingAmountDay31 = None,
+          percentageOfOutstandingAmtCharged = Some(2),
+          dueDate = LocalDateTime.now().minusDays(29)
+        )
+      )
+      )
+    )
+  )
+
   "GET /calculation when it is not an additional penalty" should {
     "return 200 (OK)" when {
       "the user has specified a valid penalty ID" in {
@@ -188,8 +243,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
         val parsedBody = Jsoup.parse(request.body)
         parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
         parsedBody.select("#main-content h1 span").text() shouldBe "1 January 2021 to 1 February 2021"
-        parsedBody.select("#main-content tr:nth-child(1) > th").text() shouldBe "Penalty amount"
-        parsedBody.select("#main-content tr:nth-child(1) > td").text() shouldBe "£400"
+        parsedBody.select("#main-content tr").get(0).select("th").text() shouldBe  "Penalty amount (estimate)"
+        parsedBody.select("#main-content tr").get(0).select("td").text() shouldBe "£400"
         parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Calculation"
         parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "2% of £123 (VAT amount unpaid on 23 March 2021) + 2% of £123 (VAT amount unpaid on 7 April 2021)"
         parsedBody.select("#main-content tr:nth-child(3) > th").text() shouldBe "Amount received"
@@ -208,6 +263,15 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
       val parsedBody = Jsoup.parse(request.body)
       parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Calculation"
       parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "2% of £123 (VAT amount unpaid on 23 March 2021)"
+    }
+
+    "return 200 (OK) and render the view correctly with Penalty Amount)" in {
+      returnLSPDataStub(etmpPayloadWithDueDateMoreThan30days)
+      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456789&isAdditional=false").get())
+      request.status shouldBe Status.OK
+      val parsedBody = Jsoup.parse(request.body)
+      parsedBody.select("#main-content tr").get(0).select("th").text() shouldBe  "Penalty amount"
+      parsedBody.select("#main-content tr").get(0).select("td").text() shouldBe "£400"
     }
 
     "return 500 (ISE) when the user specifies a penalty not within their data" in {

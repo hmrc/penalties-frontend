@@ -28,6 +28,7 @@
         amountLeftToPay: String,
         calculationRowSeq: Seq[String],
         isCalculationRowMultipleAmounts: Boolean,
+        isEstimateAmount:Boolean,
         startDate: String,
         endDate: String
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
@@ -41,7 +42,15 @@
     <table class="govuk-table">
         <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header govuk-!-width-one-third">@messages("calculation.key.1")</th>
+                <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+                    @{
+                    if(isEstimateAmount){
+                    messages("calculation.key.1.estimate")
+                    }else{
+                    messages("calculation.key.1")
+                    }
+                    }
+                </th>
                 <td class="govuk-table__cell">@messages("calculation.value.amount", penaltyAmount)</td>
             </tr>
             <tr class="govuk-table__row">
