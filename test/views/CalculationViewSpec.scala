@@ -78,16 +78,19 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           penaltyAmount = "400",
           amountLeftToPay = "50",
           calculationRowSeq = calculationRow,
-          isCalculationRowMultipleAmounts = isMultipleAmounts)(implicitly, implicitly, implicitly, vatTraderUser)
+          isCalculationRowMultipleAmounts = isMultipleAmounts,
+          "1 October 2022",
+          "31 December 2022")(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
       implicit val docWithOnlyOneCalculation: Document = asDocument(applyView(Seq("2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)"), isMultipleAmounts = false))
       implicit val docWith2Calculations: Document = asDocument(applyView(Seq("2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)",
         "2% of £10,000.00 (Central assessment amount unpaid on 6 June 2025"), isMultipleAmounts = true))
 
+
       val expectedContent = Seq(
         Selector.title -> titleLPP,
-        Selector.h1 -> headingLPP,
+        Selector.h1 -> headingLPPWithPeriod,
         Selector.listRow(1) -> th1LPP,
         Selector.listValue(1) -> "£400",
         Selector.listRow(2) -> th2LPP,
@@ -104,7 +107,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       "when there is 2 calculations - show both" must {
         val expectedContent = Seq(
           Selector.title -> titleLPP,
-          Selector.h1 -> headingLPP,
+          Selector.h1 -> headingLPPWithPeriod,
           Selector.listRow(1) -> th1LPP,
           Selector.listValue(1) -> "£400",
           Selector.listRow(2) -> th2LPP,
