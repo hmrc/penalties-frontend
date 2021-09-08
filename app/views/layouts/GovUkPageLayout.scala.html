@@ -14,11 +14,13 @@
  * limitations under the License.
  *@
 @import utils.SessionKeys
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcReportTechnicalIssueHelper
 
 @this(
         govukTemplate: GovukTemplate,
         govukHeader: GovukHeader,
-        govukFooter: GovukFooter
+        govukFooter: GovukFooter,
+        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
 )
 
 @(
@@ -66,6 +68,7 @@
         @contentBlock
         </div>
     </div>
+    @hmrcReportTechnicalIssueHelper()
 }
 
 @govukTemplate(

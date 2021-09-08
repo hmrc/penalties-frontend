@@ -22,7 +22,7 @@
     details: govukDetails
 )
 
-@(additionalPenaltyRate:String, parentCharge: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
+@(daysSince31: Long, vatDue: Boolean, additionalPenaltyRate: String , parentCharge: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
 
 @layout(pageTitle = messages("calculation.title.additional"), isPageFullWidth = false) {
     <span class="govuk-caption-xl">@messages("calculation.caption", "PLACEHOLDER", "PLACEHOLDER")</span>
@@ -33,12 +33,18 @@
     <table class="govuk-table">
         <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header govuk-!-width-one-third">@messages("calculation.key.1.additional")</th>
+                <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+                    @if(!vatDue) {
+                        @messages("calculation.key.1")
+                    } else {
+                        @messages("calculation.key.1.additional")
+                    }
+                </th>
                 <td class="govuk-table__cell">@messages("calculation.value.amount", "0")</td>
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header govuk-!-width-one-third">@messages("calculation.key.2.additional")</th>
-                <td class="govuk-table__cell">@messages("calculation.key.2.additional.text", "0")</td>
+                <td class="govuk-table__cell">@messages("calculation.key.2.additional.text", daysSince31)</td>
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header govuk-!-width-one-third">@messages("calculation.key.3.additional")</th>
@@ -51,13 +57,10 @@
         </tbody>
     </table>
 
-    <h2 class="govuk-heading-s">@messages("calculation.h2.additional")</h2>
-    <p class="govuk-body">@messages("calculation.p.2.additional")</p>
-    <p class="govuk-body">@messages("calculation.p.3.additional")</p>
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("calculation.bullet.1.additional")</li>
-        <li>@messages("calculation.bullet.2.additional")</li>
-    </ul>
+    @if(vatDue){
+        <h2 class="govuk-heading-s">@messages("calculation.h2.additional")</h2>
+        <p class="govuk-body">@messages("calculation.p.2.additional")</p>
+    }
 
     <a class="govuk-link" href="@controllers.routes.IndexController.onPageLoad().url">@messages("calculation.returnLink")</a>
 }

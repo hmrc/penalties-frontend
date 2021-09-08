@@ -42,9 +42,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
   "CalculationView" should {
 
-    "it is an additional penalty" must {
+    "if it is an additional penalty and the vat is not paid" must {
       def applyView(): HtmlFormat.Appendable = {
-        calculationAdditionalPage.apply(additionalPenaltyRate = "4", parentCharge = "VAT")(implicitly, implicitly, implicitly, vatTraderUser)
+        calculationAdditionalPage.apply(7, vatDue = true, additionalPenaltyRate = "4", parentCharge = "VAT")(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
       implicit val doc: Document = asDocument(applyView())
@@ -56,15 +56,12 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.listRow(1) -> th1Additional,
         //    Selector.listValue(1) -> "£0" //TODO: Implement with actual values
         Selector.listRow(2) -> th2Additional,
-        //    Selector.listValue(2) -> "0% of £0 (VAT amount unpaid on 0)" //TODO: Implement with actual values
+        Selector.listValue(2) -> "7 days",
         Selector.listRow(3) -> th3Additional,
         Selector.listValue(3) -> "4%",
         Selector.listRow(4) -> th4Additional,
         Selector.listValue(4) -> "VAT amount unpaid x 4% x number of days since day 31 ÷ 365",
         Selector.govukBody(2) -> p2Additional,
-        Selector.govukBody(3) -> p3Additional,
-        Selector.bulletNthChild(1) -> bullet1Additional,
-        Selector.bulletNthChild(2) -> bullet2Additional,
         Selector.link -> link
       )
 

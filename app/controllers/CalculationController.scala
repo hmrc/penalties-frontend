@@ -16,11 +16,15 @@
 
 package controllers
 
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
+
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
 import models.penalty.LatePaymentPenalty
 import views.html.{CalculationAdditionalView, CalculationLPPView}
 import javax.inject.Inject
+import org.joda.time.Days
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.PenaltiesService
@@ -28,6 +32,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
 import utils.{CurrencyFormatter, EnrolmentKeys}
 import viewmodels.CalculationPageHelper
+import models.point.PointStatusEnum
 
 import scala.concurrent.ExecutionContext
 
@@ -51,9 +56,9 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
         } else {
           logger.debug(s"[CalculationController][onPageLoad] - found penalty: ${penalty.get}")
           if(!isAdditional) {
-            val amountPaid = parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue - penalty.get.financial.outstandingAmountDue)
-            val penaltyAmount = parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue)
-            val amountLeftToPay = parseBigDecimalToFriendlyValue(penalty.get.financial.outstandingAmountDue)
+            val amountPaid = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue - penalty.get.financial.outstandingAmountDue)
+            val penaltyAmount = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue)
+            val amountLeftToPay = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.outstandingAmountDue)
             val calculationRow = calculationPageHelper.getCalculationRowForLPP(penalty.get)
             val isEstimateAmount = penalty.get.financial.dueDate.plusDays(30).isBefore(java.time.LocalDateTime.now())
             calculationRow.fold({
@@ -70,19 +75,12 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
             )
           } else {
             val additionalPenaltyRate = "4"
+            val daysSince31 = ChronoUnit.DAYS.between(penalty.get.financial.dueDate.plusDays(31), LocalDateTime.now())
             val parentCharge = calculationPageHelper.getChargeTypeBasedOnReason(penalty.get.reason)
-            Ok(viewAdd(additionalPenaltyRate, parentCharge))
+            Ok(viewAdd(daysSince31, penalty.get.status.equals(PointStatusEnum.Due), additionalPenaltyRate, parentCharge))
           }
         }
       }
-    }
-  }
-
-  private def parseBigDecimalToFriendlyValue(value: BigDecimal): String = {
-    if(value.isWhole()) {
-      s"$value"
-    } else {
-      "%,.2f".format(value)
     }
   }
 }
