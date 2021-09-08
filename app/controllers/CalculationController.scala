@@ -56,9 +56,9 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
         } else {
           logger.debug(s"[CalculationController][onPageLoad] - found penalty: ${penalty.get}")
           if(!isAdditional) {
-            val amountPaid = parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue - penalty.get.financial.outstandingAmountDue)
-            val penaltyAmount = parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue)
-            val amountLeftToPay = parseBigDecimalToFriendlyValue(penalty.get.financial.outstandingAmountDue)
+            val amountPaid = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue - penalty.get.financial.outstandingAmountDue)
+            val penaltyAmount = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue)
+            val amountLeftToPay = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.outstandingAmountDue)
             val calculationRow = calculationPageHelper.getCalculationRowForLPP(penalty.get)
             calculationRow.fold({
               //TODO: log a PD
@@ -80,14 +80,6 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
           }
         }
       }
-    }
-  }
-
-  private def parseBigDecimalToFriendlyValue(value: BigDecimal): String = {
-    if(value.isWhole()) {
-      s"$value"
-    } else {
-      "%,.2f".format(value)
     }
   }
 }
