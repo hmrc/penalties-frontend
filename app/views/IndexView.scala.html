@@ -34,6 +34,7 @@
         totalAmountToPay: String,
         isUnpaidLSPExists: Boolean = false,
         isAnyUnpaidLSPAndNotSubmittedReturn: Boolean = false,
+        isAnyUnpaidVAT: Boolean = false,
         whatYouOweContent: Option[Html] = None)(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
 
 @unableToPayTodayContent = {
@@ -62,7 +63,9 @@
     @whatYouOweContent.map { breakdownContent =>
         <div id="what-is-owed">
             <h2 class="govuk-heading-l">@messages("whatIsOwed.heading")</h2>
-            <p class="govuk-body">@getMessage("whatIsOwed.p1")</p>
+            @if(isAnyUnpaidVAT){
+                <p class="govuk-body">@getMessage("whatIsOwed.p1")</p>
+            }
             <p class="govuk-body">@getMessage("whatIsOwed.p2")</p>
             @breakdownContent
             @if(user.isAgent) {

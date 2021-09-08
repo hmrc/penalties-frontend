@@ -39,6 +39,14 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
       penalty.period.isDefined && penalty.period.get.submission.submittedDate.isEmpty && !penalty.appealStatus.contains(AppealStatusEnum.Accepted) && !penalty.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal))
   }
 
+  def isAnyVATUnpaid(penaltyPoints: Seq[PenaltyPoint]): Boolean = {
+    penaltyPoints.exists(penalty =>
+      penalty.status == PointStatusEnum.Due &&
+        penalty.period.isDefined && penalty.period.get.submission.submittedDate.isEmpty &&
+        !penalty.appealStatus.contains(AppealStatusEnum.Accepted) && !penalty.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal)
+    )
+  }
+
   private def findEstimatedVatInterestFromPayload(payload: ETMPPayload): BigDecimal = {
     payload.vatOverview.map {
       estimatedVATInterest => {
