@@ -340,8 +340,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.select("#main-content tr:nth-child(3) > td").text() shouldBe "£277.00"
         parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Amount left to pay"
         parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "£123.00"
-        parsedBody.select("#main-content a").text() shouldBe "Return to VAT penalties and appeals"
-        parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
+        parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
+        parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
       }
 
       "the user has specified a valid penalty ID (parses decimals correctly)" in {
@@ -359,8 +359,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.select("#main-content tr:nth-child(3) > td").text() shouldBe "£2.90"
         parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Amount left to pay"
         parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "£2.03"
-        parsedBody.select("#main-content a").text() shouldBe "Return to VAT penalties and appeals"
-        parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
+        parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
+        parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
       }
     }
 
