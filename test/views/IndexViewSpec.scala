@@ -195,12 +195,26 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           val sampleContent = pElement(content = Html("sample content"))
           def applyView(): HtmlFormat.Appendable = {
             indexViewPage.apply(contentToDisplayOnPage, contentLPPToDisplayOnPage, helper.populateLateSubmissionPenaltyCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold,
-              1), helper.populateLatePaymentPenaltyCard(Some(sampleLatePaymentPenaltyData)), "0", whatYouOweContent = Some(sampleContent))(agentRequest, implicitly, implicitly, agentUser)
+              1), helper.populateLatePaymentPenaltyCard(Some(sampleLatePaymentPenaltyData)), "0", isAnyUnpaidVAT = true, whatYouOweContent = Some(sampleContent))(agentRequest, implicitly, implicitly, agentUser)
           }
           implicit val doc: Document = asDocument(applyView())
           doc.select("#what-is-owed > h2").text shouldBe "Overview"
           doc.select("#what-is-owed > p").first.text shouldBe "Your client has not paid their VAT. It must be paid as soon as possible."
           doc.select("#what-is-owed > p").get(1).text shouldBe "They owe:"
+          doc.select("#main-content h2:nth-child(3)").text shouldBe "Penalty and appeal details"
+          doc.select("#what-is-owed > a").text shouldBe "Check amounts"
+          doc.select("#main-content .govuk-details__summary-text").text shouldBe "Payment help"
+        }
+
+        "show the content and headings when the client has outstanding payments - not including VAT" in {
+          val sampleContent = pElement(content = Html("sample content"))
+          def applyView(): HtmlFormat.Appendable = {
+            indexViewPage.apply(contentToDisplayOnPage, contentLPPToDisplayOnPage, helper.populateLateSubmissionPenaltyCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold,
+              1), helper.populateLatePaymentPenaltyCard(Some(sampleLatePaymentPenaltyData)), "0", whatYouOweContent = Some(sampleContent))(agentRequest, implicitly, implicitly, agentUser)
+          }
+          implicit val doc: Document = asDocument(applyView())
+          doc.select("#what-is-owed > h2").text shouldBe "Overview"
+          doc.select("#what-is-owed > p").first.text shouldBe "They owe:"
           doc.select("#main-content h2:nth-child(3)").text shouldBe "Penalty and appeal details"
           doc.select("#what-is-owed > a").text shouldBe "Check amounts"
           doc.select("#main-content .govuk-details__summary-text").text shouldBe "Payment help"
@@ -343,12 +357,26 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           val sampleContent = pElement(content = Html("sample content"))
           def applyView(): HtmlFormat.Appendable = {
             indexViewPage.apply(contentToDisplayOnPage, contentLPPToDisplayOnPage, helper.populateLateSubmissionPenaltyCard(sampleReturnNotSubmittedPenaltyPointData, quarterlyThreshold,
-              1), helper.populateLatePaymentPenaltyCard(Some(sampleLatePaymentPenaltyData)), "0", whatYouOweContent = Some(sampleContent))(fakeRequest, implicitly, implicitly, vatTraderUser)
+              1), helper.populateLatePaymentPenaltyCard(Some(sampleLatePaymentPenaltyData)), "0", isAnyUnpaidVAT = true, whatYouOweContent = Some(sampleContent))(fakeRequest, implicitly, implicitly, vatTraderUser)
           }
           implicit val doc: Document = asDocument(applyView())
           doc.select("#what-is-owed > h2").text shouldBe "Overview"
           doc.select("#what-is-owed > p").first().text shouldBe "You have not paid your VAT. It must be paid as soon as possible."
           doc.select("#what-is-owed > p").get(1).text shouldBe "You owe:"
+          doc.select("#main-content h2:nth-child(4)").text shouldBe "Penalty and appeal details"
+          doc.select("#what-is-owed > a").text shouldBe "Check amounts and pay"
+          doc.select("#main-content .govuk-details__summary-text").text shouldBe "I cannot pay today"
+        }
+
+        "show the content and the headings when the user has outstanding payments - not including unpaid VAT" in {
+          val sampleContent = pElement(content = Html("sample content"))
+          def applyView(): HtmlFormat.Appendable = {
+            indexViewPage.apply(contentToDisplayOnPage, contentLPPToDisplayOnPage, helper.populateLateSubmissionPenaltyCard(Seq(samplePenaltyPoint), quarterlyThreshold,
+              1), helper.populateLatePaymentPenaltyCard(Some(sampleLatePaymentPenaltyData)), "0", whatYouOweContent = Some(sampleContent))(fakeRequest, implicitly, implicitly, vatTraderUser)
+          }
+          implicit val doc: Document = asDocument(applyView())
+          doc.select("#what-is-owed > h2").text shouldBe "Overview"
+          doc.select("#what-is-owed > p").first.text shouldBe "You owe:"
           doc.select("#main-content h2:nth-child(4)").text shouldBe "Penalty and appeal details"
           doc.select("#what-is-owed > a").text shouldBe "Check amounts and pay"
           doc.select("#main-content .govuk-details__summary-text").text shouldBe "I cannot pay today"
