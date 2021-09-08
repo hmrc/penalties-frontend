@@ -20,8 +20,9 @@ import connectors.PenaltiesConnector
 import models.{ETMPPayload, User}
 import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import uk.gov.hmrc.http.HeaderCarrier
-
 import javax.inject.Inject
+import models.penalty.{LatePaymentPenalty, PaymentStatusEnum}
+
 import scala.concurrent.Future
 
 class PenaltiesService @Inject()(connector: PenaltiesConnector) {
@@ -39,12 +40,14 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
       penalty.period.isDefined && penalty.period.get.submission.submittedDate.isEmpty && !penalty.appealStatus.contains(AppealStatusEnum.Accepted) && !penalty.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal))
   }
 
-  def isAnyVATUnpaid(penaltyPoints: Seq[PenaltyPoint]): Boolean = {
-    penaltyPoints.exists(penalty =>
-      penalty.status == PointStatusEnum.Due &&
-        penalty.period.isDefined && penalty.period.get.submission.submittedDate.isEmpty &&
-        !penalty.appealStatus.contains(AppealStatusEnum.Accepted) && !penalty.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal)
-    )
+  def isAnyVATUnpaid(penalties: Option[Seq[LatePaymentPenalty]]): Boolean = {
+    penalties match {
+      case Some(_) => penalties.get.exists { penalty =>
+          penalty.period.paymentStatus != PaymentStatusEnum.Paid &&
+            !penalty.appealStatus.contains(AppealStatusEnum.Accepted) && !penalty.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal)
+      }
+      case None => false
+    }
   }
 
   private def findEstimatedVatInterestFromPayload(payload: ETMPPayload): BigDecimal = {

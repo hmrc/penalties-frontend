@@ -372,7 +372,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           val sampleContent = pElement(content = Html("sample content"))
           def applyView(): HtmlFormat.Appendable = {
             indexViewPage.apply(contentToDisplayOnPage, contentLPPToDisplayOnPage, helper.populateLateSubmissionPenaltyCard(Seq(samplePenaltyPoint), quarterlyThreshold,
-              1), helper.populateLatePaymentPenaltyCard(Some(sampleLatePaymentPenaltyData)), "0", whatYouOweContent = Some(sampleContent))(fakeRequest, implicitly, implicitly, vatTraderUser)
+              1), helper.populateLatePaymentPenaltyCard(Some(sampleLatePaymentPenaltyDataUnpaidVAT)), "0", whatYouOweContent = Some(sampleContent))(fakeRequest, implicitly, implicitly, vatTraderUser)
           }
           implicit val doc: Document = asDocument(applyView())
           doc.select("#what-is-owed > h2").text shouldBe "Overview"
