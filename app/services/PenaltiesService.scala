@@ -40,16 +40,6 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
       penalty.period.isDefined && penalty.period.get.submission.submittedDate.isEmpty && !penalty.appealStatus.contains(AppealStatusEnum.Accepted) && !penalty.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal))
   }
 
-  def isAnyVATUnpaid(penalties: Option[Seq[LatePaymentPenalty]]): Boolean = {
-    penalties match {
-      case Some(_) => penalties.get.exists { penalty =>
-          penalty.period.paymentStatus != PaymentStatusEnum.Paid &&
-            !penalty.appealStatus.contains(AppealStatusEnum.Accepted) && !penalty.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal)
-      }
-      case None => false
-    }
-  }
-
   private def findEstimatedVatInterestFromPayload(payload: ETMPPayload): BigDecimal = {
     payload.vatOverview.map {
       estimatedVATInterest => {
@@ -91,8 +81,9 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
     }
   }.getOrElse((0, false))
 
-  def findTotalLSPFromPayload(payload: ETMPPayload): BigDecimal = {
-    payload.penaltyPoints.map(_.financial.map(_.outstandingAmountDue)).collect { case Some(x) => x }.sum
+  def findTotalLSPFromPayload(payload: ETMPPayload): (BigDecimal, Int) = {
+    val lspAmountList = payload.penaltyPoints.map(_.financial.map(_.outstandingAmountDue)).collect { case Some(x) => x }
+    (lspAmountList.sum, lspAmountList.size)
   }
 
   def findEstimatedVATInterest(payload: ETMPPayload): (BigDecimal, Boolean) = {

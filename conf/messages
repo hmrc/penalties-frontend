@@ -172,11 +172,9 @@ feedback.after = will help us to improve it.
 # What is owed messages
 # ----------------------------------------------------------
 whatIsOwed.heading = Overview
-whatIsOwed.p1 = You have not paid your VAT. It must be paid as soon as possible.
-agent.whatIsOwed.p1 = Your client has not paid their VAT. It must be paid as soon as possible.
 whatIsOwed.penaltyAndAppealsHeading = Penalty and appeal details
-whatIsOwed.p2 = You owe:
-agent.whatIsOwed.p2 = They owe:
+whatIsOwed.p1 = You owe:
+agent.whatIsOwed.p1 = They owe:
 whatIsOwed.lateVAT = £{0} in late VAT
 whatIsOwed.otherPenalties = other penalties not related to late submission or late payment
 whatIsOwed.details.heading = I cannot pay today
@@ -190,7 +188,8 @@ whatIsOwed.button.checkAndPay = Check amounts and pay
 whatIsOwed.button.checkAmounts = Check amounts
 whatIsOwed.lppAmount = £{0} in late payment penalties
 whatIsOwed.lppAmount.estimated = £{0} in estimated late payment penalties
-whatIsOwed.amountOfLSPs = £{0} fixed penalties for late submission
+whatIsOwed.amountOfLSPs.plural = £{0} fixed penalties for late submission
+whatIsOwed.amountOfLSPs.singular = £{0} fixed penalty for late submission
 whatIsOwed.VATInterest.estimated = £{0} in estimated VAT interest
 whatIsOwed.VATInterest = £{0} in VAT interest
 whatIsOwed.allPenalties.interest.estimated = £{0} in estimated interest on penalties

@@ -332,50 +332,6 @@ class PenaltiesServiceSpec extends SpecBase {
     }
   }
 
-  "isAnyVATUnpaid" should {
-    val sampleLatePaymentPenaltyPointUnpaid: Option[Seq[LatePaymentPenalty]] = Some(Seq(
-      LatePaymentPenalty(
-        `type` = PenaltyTypeEnum.Financial,
-        id = "123456789",
-        reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
-        dateCreated = LocalDateTime.of(2021, 3, 8, 0, 0),
-        status = PointStatusEnum.Due,
-        appealStatus = None,
-        period = PaymentPeriod(
-          startDate = LocalDateTime.of(2021, 1, 1, 0, 0),
-          endDate = LocalDateTime.of(2021, 2, 1, 0, 0),
-          dueDate = LocalDateTime.of(2021, 4, 7, 0, 0),
-          paymentStatus = PaymentStatusEnum.Due
-        ),
-        communications = Seq.empty,
-        financial = Financial(
-          amountDue = 400.00,
-          outstandingAmountDue = 200.00,
-          dueDate = LocalDateTime.now
-        )
-      )
-    ))
-    s"return true when there is an unpaid VAT penalty - LPP ${PointStatusEnum.Due}" in new Setup {
-      val result = service.isAnyVATUnpaid(sampleLatePaymentPenaltyPointUnpaid)
-      result shouldBe true
-    }
-
-    s"return false when there are no unpaid VAT penalties - LPP ${PointStatusEnum.Paid}" in new Setup {
-      val result = service.isAnyVATUnpaid(Some(Seq(sampleLatePaymentPenaltyPointUnpaid.get.head.copy(period = PaymentPeriod(
-        startDate = LocalDateTime.of(2021, 1, 1, 0, 0),
-        endDate = LocalDateTime.of(2021, 2, 1, 0, 0),
-        dueDate = LocalDateTime.of(2021, 4, 7, 0, 0),
-        paymentStatus = PaymentStatusEnum.Paid
-      )))))
-      result shouldBe false
-    }
-
-    "return false when there is no LPP present" in new Setup {
-      val result = service.isAnyVATUnpaid(None)
-      result shouldBe false
-    }
-  }
-
   "isAnyLSPUnpaidAndSubmissionIsDue" should {
     val sampleFinancialPenaltyPointUnpaidAndNotSubmitted: Seq[PenaltyPoint] = Seq(
       PenaltyPoint(
@@ -479,17 +435,17 @@ class PenaltiesServiceSpec extends SpecBase {
   "findTotalLSPFromPayload" should {
     "return 0 when the payload does not have any LSPP's" in new Setup {
       val result = service.findTotalLSPFromPayload(sampleLspData)
-      result shouldBe 0
+      result shouldBe (0, 0)
     }
 
     "return 0 when the payload does not have any LSP's" in new Setup {
       val result = service.findTotalLSPFromPayload(etmpDataWithOneLSP)
-      result shouldBe 0
+      result shouldBe (0, 0)
     }
 
     "return total amount of VAT overdue when the VAT overview is present with elements" in new Setup {
       val result = service.findTotalLSPFromPayload(sampleLspDataWithDueFinancialPenalties)
-      result shouldBe 400.00
+      result shouldBe (400.00, 2)
     }
   }
 

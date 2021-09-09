@@ -49,7 +49,6 @@ class IndexController @Inject()(view: IndexView,
       lppSummaryCards = cardHelper.populateLatePaymentPenaltyCard(lSPData.latePaymentPenalties)
       isAnyUnpaidLSPAndNotSubmittedReturn = penaltiesService.isAnyLSPUnpaidAndSubmissionIsDue(lSPData.penaltyPoints)
       isAnyUnpaidLSP = penaltiesService.isAnyLSPUnpaid(lSPData.penaltyPoints)
-      isAnyUnpaidVAT = penaltiesService.isAnyVATUnpaid(lSPData.latePaymentPenalties)
     } yield {
       Ok(view(contentToDisplayAboveCards,
         contentLPPToDisplayAboveCards,
@@ -58,7 +57,6 @@ class IndexController @Inject()(view: IndexView,
         currencyFormatAsNonHTMLString(lSPData.penaltyAmountsTotal),
         isAnyUnpaidLSP,
         isAnyUnpaidLSPAndNotSubmittedReturn,
-        isAnyUnpaidVAT,
         whatYouOweBreakdown))
     }
   }
