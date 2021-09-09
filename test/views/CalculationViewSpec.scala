@@ -37,6 +37,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
     val govukBody = (nthChild: Int) => s"#main-content .govuk-body:nth-of-type($nthChild)"
 
+    val warning = "#main-content div .govuk-warning-text"
+
     val link = "#main-content a"
   }
 
@@ -101,8 +103,12 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           amountLeftToPay = "50",
           calculationRowSeq = calculationRow,
           isCalculationRowMultipleAmounts = isMultipleAmounts,
+          isPenaltyEstimate = false,
           "1 October 2022",
-          "31 December 2022")(implicitly, implicitly, implicitly, vatTraderUser)
+          "31 December 2022",
+          warningPenaltyAmount="",
+          warningDate="",
+          parentCharge = "VAT")(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
       implicit val docWithOnlyOneCalculation: Document = asDocument(applyView(Seq("2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)"), isMultipleAmounts = false))
@@ -143,5 +149,47 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         behave like pageWithExpectedMessages(expectedContent)(docWith2Calculations)
       }
     }
-  }
+
+    "it is not an additional penalty and with Penalty Amount " must {
+      def applyView(calculationRow: Seq[String], isMultipleAmounts: Boolean): HtmlFormat.Appendable = {
+        calculationPage.apply(
+          amountPaid = "100",
+          penaltyAmount = "400",
+          amountLeftToPay = "50",
+          calculationRowSeq = calculationRow,
+          isCalculationRowMultipleAmounts = isMultipleAmounts,
+          isPenaltyEstimate = true,
+          "1 October 2022",
+          "31 December 2022",
+          warningPenaltyAmount="800",
+          warningDate="15 January 2023",
+          parentCharge = "VAT")(implicitly, implicitly, implicitly, vatTraderUser)
+      }
+
+      implicit val docWithOnlyOneCalculation: Document = asDocument(applyView(Seq("2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)"), isMultipleAmounts = false))
+      implicit val docWith2Calculations: Document = asDocument(applyView(Seq("2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)",
+        "2% of £10,000.00 (Central assessment amount unpaid on 6 June 2025"), isMultipleAmounts = true))
+
+
+      val expectedContent = Seq(
+        Selector.title -> titleLPP,
+        Selector.h1 -> headingLPPWithPeriod,
+        Selector.listRow(1) -> th1LPPEstimate,
+        Selector.listValue(1) -> "£400",
+        Selector.listRow(2) -> th2LPP,
+        Selector.listValue(2) -> "2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)",
+        Selector.listRow(3) -> th3LPP,
+        Selector.listValue(3) -> "£100",
+        Selector.listRow(4) -> th4LPP,
+        Selector.listValue(4) -> "£50",
+        Selector.warning -> estimateFooterNoteWarning,
+        Selector.govukBody(1) -> estimateFooterNoteBillPayment,
+        Selector.govukBody(2) -> estimateFooterNoteText,
+        Selector.h2 -> h2Additional,
+        Selector.link -> link
+      )
+
+      behave like pageWithExpectedMessages(expectedContent)(docWithOnlyOneCalculation)
+    }
+    }
 }
