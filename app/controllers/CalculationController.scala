@@ -56,9 +56,9 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
         } else {
           logger.debug(s"[CalculationController][onPageLoad] - found penalty: ${penalty.get}")
           if(!isAdditional) {
-            val amountPaid = parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue - penalty.get.financial.outstandingAmountDue)
-            val penaltyAmount = parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue)
-            val amountLeftToPay = parseBigDecimalToFriendlyValue(penalty.get.financial.outstandingAmountDue)
+            val amountPaid = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue - penalty.get.financial.outstandingAmountDue)
+            val penaltyAmount = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue)
+            val amountLeftToPay = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.outstandingAmountDue)
             val calculationRow = calculationPageHelper.getCalculationRowForLPP(penalty.get)
             calculationRow.fold({
               //TODO: log a PD
@@ -74,21 +74,13 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
             )
           } else {
             val additionalPenaltyRate = "4"
-            val daysSince31 = ChronoUnit.DAYS.between(penalty.get.financial.dueDate, LocalDateTime.now())
+            val daysSince31 = ChronoUnit.DAYS.between(penalty.get.financial.dueDate.plusDays(31), LocalDateTime.now())
             val parentCharge = calculationPageHelper.getChargeTypeBasedOnReason(penalty.get.reason)
             val amountToDate = penalty.get.financial.amountDue
             Ok(viewAdd(daysSince31, penalty.get.status.equals(PointStatusEnum.Due), additionalPenaltyRate, parentCharge, amountToDate))
           }
         }
       }
-    }
-  }
-
-  private def parseBigDecimalToFriendlyValue(value: BigDecimal): String = {
-    if(value.isWhole()) {
-      s"$value"
-    } else {
-      "%,.2f".format(value)
     }
   }
 }
