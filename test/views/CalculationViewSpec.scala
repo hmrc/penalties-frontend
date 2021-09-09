@@ -61,7 +61,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
       val expectedContent = Seq(
         Selector.title -> titleAdditional,
-        Selector.h1 -> headingAdditional,
+        Selector.h1 -> headingAdditionalWithPeriod,
         Selector.govukBody(1) -> p1Additional,
         Selector.listRow(1) -> th1Additional,
         Selector.listValue(1) -> "£16.12",
@@ -94,7 +94,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
       val expectedContent = Seq(
         Selector.title -> titleAdditional,
-        Selector.h1 -> headingAdditional,
+        Selector.h1 -> headingAdditionalWithPeriod,
         Selector.govukBody(1) -> p1Additional,
         Selector.listRow(1) -> th1LPP,
         Selector.listValue(1) -> "£16.12",

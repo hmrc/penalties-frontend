@@ -458,7 +458,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
       val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=987654321&isAdditional=true").get())
       request.status shouldBe Status.OK
       val parsedBody = Jsoup.parse(request.body)
-      parsedBody.select("#main-content h1").text() shouldBe "Additional penalty"
+      parsedBody.select("#main-content h1").first().ownText() shouldBe "Additional penalty"
+      parsedBody.select("#main-content h1 span").text() shouldBe "1 January 2021 to 1 February 2021"
       parsedBody.select("#main-content p").get(0).text() shouldBe
         "The additional penalty is charged from 31 days after the payment due date, until the total is paid."
       parsedBody.select("#main-content tr").get(0).select("th").text() shouldBe "Penalty amount"
@@ -477,7 +478,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
       val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=987654322&isAdditional=true").get())
       request.status shouldBe Status.OK
       val parsedBody = Jsoup.parse(request.body)
-      parsedBody.select("#main-content h1").text() shouldBe "Additional penalty"
+      parsedBody.select("#main-content h1").first().ownText() shouldBe "Additional penalty"
+      parsedBody.select("#main-content h1 span").text() shouldBe "1 January 2021 to 1 February 2021"
       parsedBody.select("#main-content p").get(0).text() shouldBe
         "The additional penalty is charged from 31 days after the payment due date, until the total is paid."
       parsedBody.select("#main-content tr").get(0).select("th").text() shouldBe "Penalty amount (estimate)"
