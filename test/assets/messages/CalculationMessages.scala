@@ -55,5 +55,11 @@ object CalculationMessages {
 
   val bullet2Additional = "you have an unpaid penalty on your account"
 
+  val estimateFooterNoteBillPayment = "Paying part of your VAT bill will reduce further penalties."
+
+  val estimateFooterNoteWarning = "! This penalty will rise to £800 (a further 2% of the unpaid VAT) if you do not make a VAT payment by 15 January 2023."
+
+  val estimateFooterNoteText ="Penalties and interest will show as estimates if HMRC has not been given enough information to calculate the final amounts."
+
   val link = "Return to VAT penalties and appeals"
 }

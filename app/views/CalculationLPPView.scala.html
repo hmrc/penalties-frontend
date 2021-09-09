@@ -28,9 +28,12 @@
         amountLeftToPay: String,
         calculationRowSeq: Seq[String],
         isCalculationRowMultipleAmounts: Boolean,
-        isEstimateAmount:Boolean,
+        isPenaltyEstimate:Boolean,
         startDate: String,
-        endDate: String
+        endDate: String,
+        warningPenaltyAmount: String,
+        warningDate: String,
+        parentCharge: String
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
 
 @layout(pageTitle = messages("calculation.title.lpp"), isPageFullWidth = false) {
@@ -44,7 +47,7 @@
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header govuk-!-width-one-third">
                     @{
-                    if(isEstimateAmount){
+                    if(isPenaltyEstimate){
                     messages("calculation.key.1.estimate")
                     }else{
                     messages("calculation.key.1")
@@ -72,6 +75,18 @@
         </tbody>
     </table>
 
+    @if(isPenaltyEstimate){
+    <div class="govuk-warning-text">
+        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+        <strong class="govuk-warning-text__text">
+            @messages("calculation.estimate.footerNote.warning",warningPenaltyAmount,warningDate,parentCharge)
+        </strong>
+    </div>
+    <p class="govuk-body">@messages("calculation.estimate.footerNote.billPayment",parentCharge)</p>
+    <h2 class="govuk-heading-s">@messages("calculation.h2.additional")</h2>
+
+    <p class="govuk-body">@messages("calculation.estimate.footerNote.text")</p>
+    }
     <p class="govuk-body">
         <a class="govuk-link" href="@{controllers.routes.IndexController.onPageLoad()}">@messages("calculation.returnLink")</a>
     </p>
