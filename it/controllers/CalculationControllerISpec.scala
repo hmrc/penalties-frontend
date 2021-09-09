@@ -379,22 +379,21 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
   )
 
   "GET /calculation when it is not an additional penalty and  penalty is shown with estimate" should {
-    "return 200 (OK)" when {
-      "the user has specified a valid penalty ID" in {
-        returnLSPDataStub(etmpPayload)
-        val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456789&isAdditional=false").get())
-        request.status shouldBe Status.OK
-        val parsedBody = Jsoup.parse(request.body)
-        parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
+    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in { //TODO: implement without placeholders
+      returnLSPDataStub(etmpPayload)
+      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456789&isAdditional=false").get())
+      request.status shouldBe Status.OK
+      val parsedBody = Jsoup.parse(request.body)
+      parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
         parsedBody.select("#main-content h1 span").text() shouldBe "1 January 2021 to 1 February 2021"
-        parsedBody.select("#main-content tr:nth-child(1) > th").text() shouldBe "Penalty amount (estimate)"
-        parsedBody.select("#main-content tr:nth-child(1) > td").text() shouldBe "£400.00"
-        parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Calculation"
-        parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "2% of £123.00 (VAT amount unpaid on 23 March 2021) + 2% of £123.00 (VAT amount unpaid on 7 April 2021)"
-        parsedBody.select("#main-content tr:nth-child(3) > th").text() shouldBe "Amount received"
-        parsedBody.select("#main-content tr:nth-child(3) > td").text() shouldBe "£277.00"
-        parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Amount left to pay"
-        parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "£123.00"
+      parsedBody.select("#main-content tr:nth-child(1) > th").text() shouldBe "Penalty amount (estimate)"
+      parsedBody.select("#main-content tr:nth-child(1) > td").text() shouldBe "£400.00"
+      parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Calculation"
+      parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "2% of £123.00 (VAT amount unpaid on 23 March 2021) + 2% of £123.00 (VAT amount unpaid on 7 April 2021)"
+      parsedBody.select("#main-content tr:nth-child(3) > th").text() shouldBe "Amount received"
+      parsedBody.select("#main-content tr:nth-child(3) > td").text() shouldBe "£277.00"
+      parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Amount left to pay"
+      parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "£123.00"
         parsedBody.select("#main-content div .govuk-warning-text").text() shouldBe "! This penalty will rise to £800.00 (a further 2% of the unpaid VAT) if you do not make a VAT payment by 31 January 2021."
         parsedBody.select("#main-content .govuk-body").get(0).text() shouldBe "Paying part of your VAT bill will reduce further penalties."
         parsedBody.select("#main-content .govuk-body").get(1).text() shouldBe "Penalties and interest will show as estimates if HMRC has not been given enough information to calculate the final amounts."
@@ -418,9 +417,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.select("#main-content tr:nth-child(3) > td").text() shouldBe "£2.90"
         parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Amount left to pay"
         parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "£2.03"
-        parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
-        parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
-      }
+      parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
+      parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
     }
 
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID (only one interest charge)" in {
@@ -465,7 +463,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#main-content p").get(0).text() shouldBe
         "The additional penalty is charged from 31 days after the payment due date, until the total is paid."
       parsedBody.select("#main-content tr").get(0).select("th").text() shouldBe "Penalty amount"
-      parsedBody.select("#main-content tr").get(0).select("td").text() shouldBe "£0" //TODO: placeholder value
+      parsedBody.select("#main-content tr").get(0).select("td").text() shouldBe "£123.45"
       parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Number of days since day 31"
       parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "9 days"
       parsedBody.select("#main-content tr").get(2).select("th").text() shouldBe "Additional penalty rate"
@@ -485,7 +483,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#main-content p").get(0).text() shouldBe
         "The additional penalty is charged from 31 days after the payment due date, until the total is paid."
       parsedBody.select("#main-content tr").get(0).select("th").text() shouldBe "Penalty amount (estimate)"
-      parsedBody.select("#main-content tr").get(0).select("td").text() shouldBe "£0" //TODO: placeholder value
+      parsedBody.select("#main-content tr").get(0).select("td").text() shouldBe "£123.45"
       parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Number of days since day 31"
       parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "9 days"
       parsedBody.select("#main-content tr").get(2).select("th").text() shouldBe "Additional penalty rate"
