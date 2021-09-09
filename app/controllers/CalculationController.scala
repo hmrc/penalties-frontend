@@ -33,7 +33,6 @@ import utils.{CurrencyFormatter, EnrolmentKeys}
 import viewmodels.CalculationPageHelper
 import models.point.PointStatusEnum
 
-import java.time.format.DateTimeFormatter
 import scala.concurrent.ExecutionContext
 
 class CalculationController @Inject()(viewLPP: CalculationLPPView,
@@ -63,7 +62,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
             val penaltyAmount = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue)
             val amountLeftToPay = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.outstandingAmountDue)
             val penaltyEstimatedDate = penalty.get.financial.dueDate.plusDays(30)
-            val isPenaltyEstimate = penaltyEstimatedDate.isBefore(java.time.LocalDateTime.now())
+            val isPenaltyEstimate = penalty.get.status.equals(PointStatusEnum.Estimated)
             val calculationRow = calculationPageHelper.getCalculationRowForLPP(penalty.get)
             calculationRow.fold({
               //TODO: log a PD
@@ -72,20 +71,20 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
             })(
               rowSeq => {
                 val isTwoCalculations: Boolean = rowSeq.size == 2
-                val warningPenaltyAmount = Some(calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue * 2))
-                val warningDate = Some(DateTimeFormatter.ofPattern("d MMMM yyyy")
-                  .format(penaltyEstimatedDate))
+                val warningPenaltyAmount = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue * 2)
+                val warningDate = calculationPageHelper.getDateAsDayMonthYear(penaltyEstimatedDate)
                 Ok(viewLPP(amountPaid, penaltyAmount,
                   amountLeftToPay, rowSeq,
                   isTwoCalculations, isPenaltyEstimate,
                   startDateOfPeriod, endDateOfPeriod,
-                  warningPenaltyAmount.getOrElse(""), warningDate.getOrElse(""), parentCharge))
+                  warningPenaltyAmount, warningDate, parentCharge))
               })
-          } else {
+          } else {           
             val additionalPenaltyRate = "4"
             val daysSince31 = ChronoUnit.DAYS.between(penalty.get.financial.dueDate.plusDays(31), LocalDateTime.now())
             val amountToDate = penalty.get.financial.amountDue
-            Ok(viewAdd(daysSince31, penalty.get.status.equals(PointStatusEnum.Due), additionalPenaltyRate, startDateOfPeriod, endDateOfPeriod, parentCharge, amountToDate))
+            val isEstimate = penalty.get.status.equals(PointStatusEnum.Estimated)
+            Ok(viewAdd(daysSince31, isEstimate, penalty.get.status.equals(PointStatusEnum.Due), additionalPenaltyRate, startDateOfPeriod, endDateOfPeriod, parentCharge, amountToDate))
           }
         }
       }

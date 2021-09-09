@@ -23,7 +23,13 @@
 )
 
 
-@(daysSince31: Long, vatDue: Boolean, additionalPenaltyRate: String ,startDate:String, endDate:String, parentCharge: String, amountToDate: BigDecimal)(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
+@(daysSince31: Long,
+        isEstimate: Boolean,
+        additionalPenaltyRate: String,
+        parentCharge: String,
+        startDate: String,
+        endDate: String,
+        amountToDate: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
 
 @layout(pageTitle = messages("calculation.title.additional"), isPageFullWidth = false) {
        <h1 class="govuk-heading-l">
@@ -36,10 +42,10 @@
         <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header govuk-!-width-one-third">
-                    @if(!vatDue) {
+                    @if(!isEstimate) {
                         @messages("calculation.key.1")
                     } else {
-                        @messages("calculation.key.1.additional")
+                        @messages("calculation.key.1.estimate")
                     }
                 </th>
                 <td class="govuk-table__cell">@messages("calculation.value.amount", amountToDate)</td>
@@ -59,7 +65,7 @@
         </tbody>
     </table>
 
-    @if(vatDue){
+    @if(isEstimate){
         <h2 class="govuk-heading-s">@messages("calculation.h2.additional")</h2>
         <p class="govuk-body">@messages("calculation.p.2.additional")</p>
     }

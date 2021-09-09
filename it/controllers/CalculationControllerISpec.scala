@@ -89,7 +89,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
           id = "123456789",
           reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
           dateCreated = sampleDate1,
-          status = PointStatusEnum.Due,
+          status = PointStatusEnum.Estimated,
           appealStatus = None,
           period = PaymentPeriod(
             sampleDate1,
@@ -155,7 +155,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
         id = "987654322",
         PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
         dateCreated = sampleDate1,
-        status = PointStatusEnum.Due,
+        status = PointStatusEnum.Estimated,
         appealStatus = None,
         period = PaymentPeriod(
           sampleDate1,
