@@ -206,7 +206,6 @@ calculation.heading.additional = Additional penalty
 calculation.p.1.additional = The additional penalty is charged from 31 days after the payment due date, until the total is paid.
 calculation.key.1 = Penalty amount
 calculation.key.1.estimate = Penalty amount (estimate)
-calculation.key.1.additional = Penalty amount (estimate)
 calculation.value.amount = £{0}
 calculation.key.2 = Calculation
 calculation.key.2.additional = Number of days since day 31
