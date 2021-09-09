@@ -22,11 +22,13 @@
     details: govukDetails
 )
 
-@(daysSince31: Long, vatDue: Boolean, additionalPenaltyRate: String , parentCharge: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
+@(daysSince31: Long, vatDue: Boolean, additionalPenaltyRate: String , startDate:String, endDate:String, parentCharge: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
 
 @layout(pageTitle = messages("calculation.title.additional"), isPageFullWidth = false) {
-    <span class="govuk-caption-xl">@messages("calculation.caption", "PLACEHOLDER", "PLACEHOLDER")</span>
-    <h1 class="govuk-heading-xl">@messages("calculation.heading.additional")</h1>
+
+    <h1 class="govuk-heading-xl">
+        <span class="govuk-caption-xl">@messages("calculation.caption", startDate, endDate)</span>
+        @messages("calculation.heading.additional")</h1>
 
     <p class="govuk-body">@messages("calculation.p.1.additional")</p>
 

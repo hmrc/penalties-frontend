@@ -55,6 +55,8 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
           errorHandler.showInternalServerError
         } else {
           val parentCharge = calculationPageHelper.getChargeTypeBasedOnReason(penalty.get.reason)
+          val startDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.period.startDate)
+          val endDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.period.endDate)
           logger.debug(s"[CalculationController][onPageLoad] - found penalty: ${penalty.get}")
           if(!isAdditional) {
             val amountPaid = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue - penalty.get.financial.outstandingAmountDue)
@@ -69,8 +71,6 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
               errorHandler.showInternalServerError
             })(
               rowSeq => {
-                val startDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.period.startDate)
-                val endDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.period.endDate)
                 val isTwoCalculations: Boolean = rowSeq.size == 2
                 val warningPenaltyAmount = Some(calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue * 2))
                 val warningDate = Some(DateTimeFormatter.ofPattern("d MMMM yyyy")
@@ -84,7 +84,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
           } else {
             val additionalPenaltyRate = "4"
             val daysSince31 = ChronoUnit.DAYS.between(penalty.get.financial.dueDate.plusDays(31), LocalDateTime.now())
-            Ok(viewAdd(daysSince31, penalty.get.status.equals(PointStatusEnum.Due), additionalPenaltyRate, parentCharge))
+            Ok(viewAdd(daysSince31, penalty.get.status.equals(PointStatusEnum.Due), additionalPenaltyRate, startDateOfPeriod, endDateOfPeriod, parentCharge))
           }
         }
       }

@@ -46,14 +46,14 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
     "if it is an additional penalty and the vat is not paid" must {
       def applyView(): HtmlFormat.Appendable = {
-        calculationAdditionalPage.apply(7, vatDue = true, additionalPenaltyRate = "4", parentCharge = "VAT")(implicitly, implicitly, implicitly, vatTraderUser)
+        calculationAdditionalPage.apply(7, vatDue = true, additionalPenaltyRate = "4", "1 October 2022","31 December 2022",parentCharge = "VAT")(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
       implicit val doc: Document = asDocument(applyView())
 
       val expectedContent = Seq(
         Selector.title -> titleAdditional,
-        Selector.h1 -> headingAdditional,
+        Selector.h1 -> headingAdditionalWithPeriod,
         Selector.govukBody(1) -> p1Additional,
         Selector.listRow(1) -> th1Additional,
         //    Selector.listValue(1) -> "£0" //TODO: Implement with actual values
@@ -72,14 +72,14 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
     "if it is an additional penalty and the vat is paid" must {
       def applyView(): HtmlFormat.Appendable = {
-        calculationAdditionalPage.apply(7, vatDue = false, additionalPenaltyRate = "4", parentCharge = "VAT")(implicitly, implicitly, implicitly, vatTraderUser)
+        calculationAdditionalPage.apply(7, vatDue = false, additionalPenaltyRate = "4", "1 October 2022","31 December 2022",parentCharge = "VAT")(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
       implicit val doc: Document = asDocument(applyView())
 
       val expectedContent = Seq(
         Selector.title -> titleAdditional,
-        Selector.h1 -> headingAdditional,
+        Selector.h1 -> headingAdditionalWithPeriod,
         Selector.govukBody(1) -> p1Additional,
         Selector.listRow(1) -> th1LPP,
         //    Selector.listValue(1) -> "£0" //TODO: Implement with actual values
