@@ -46,7 +46,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
     "if it is an additional penalty and the vat is not paid" must {
       def applyView(): HtmlFormat.Appendable = {
-        calculationAdditionalPage.apply(7, vatDue = true, additionalPenaltyRate = "4", parentCharge = "VAT")(implicitly, implicitly, implicitly, vatTraderUser)
+        calculationAdditionalPage.apply(7, vatDue = true, additionalPenaltyRate = "4", parentCharge = "VAT", amountToDate = BigDecimal(16.12))(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
       implicit val doc: Document = asDocument(applyView())
@@ -56,7 +56,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.h1 -> headingAdditional,
         Selector.govukBody(1) -> p1Additional,
         Selector.listRow(1) -> th1Additional,
-        //    Selector.listValue(1) -> "£0" //TODO: Implement with actual values
+        Selector.listValue(1) -> "£16.12",
         Selector.listRow(2) -> th2Additional,
         Selector.listValue(2) -> "7 days",
         Selector.listRow(3) -> th3Additional,
@@ -72,7 +72,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
     "if it is an additional penalty and the vat is paid" must {
       def applyView(): HtmlFormat.Appendable = {
-        calculationAdditionalPage.apply(7, vatDue = false, additionalPenaltyRate = "4", parentCharge = "VAT")(implicitly, implicitly, implicitly, vatTraderUser)
+        calculationAdditionalPage.apply(7, vatDue = false, additionalPenaltyRate = "4", parentCharge = "VAT", amountToDate = 16.12)(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
       implicit val doc: Document = asDocument(applyView())
@@ -82,7 +82,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.h1 -> headingAdditional,
         Selector.govukBody(1) -> p1Additional,
         Selector.listRow(1) -> th1LPP,
-        //    Selector.listValue(1) -> "£0" //TODO: Implement with actual values
+        Selector.listValue(1) -> "£16.12",
         Selector.listRow(2) -> th2Additional,
         Selector.listValue(2) -> "7 days",
         Selector.listRow(3) -> th3Additional,
