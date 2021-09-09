@@ -44,9 +44,17 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
   "CalculationView" should {
 
-    "if it is an additional penalty and the vat is not paid" must {
+    "if it is an additional penalty and the penalty is estimated" must {
       def applyView(): HtmlFormat.Appendable = {
-        calculationAdditionalPage.apply(7, vatDue = true, additionalPenaltyRate = "4", parentCharge = "VAT", amountToDate = BigDecimal(16.12))(implicitly, implicitly, implicitly, vatTraderUser)
+        calculationAdditionalPage.apply(
+          daysSince31 = 7,
+          isEstimate = true,
+          additionalPenaltyRate = "4",
+          parentCharge = "VAT",
+          startDate = "1 October 2022",
+          endDate = "31 December 2022",
+          amountToDate = "16.12"
+        )(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
       implicit val doc: Document = asDocument(applyView())
@@ -70,9 +78,16 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       behave like pageWithExpectedMessages(expectedContent)
     }
 
-    "if it is an additional penalty and the vat is paid" must {
+    "if it is an additional penalty and the penalty is not estimated" must {
       def applyView(): HtmlFormat.Appendable = {
-        calculationAdditionalPage.apply(7, vatDue = false, additionalPenaltyRate = "4", parentCharge = "VAT", amountToDate = 16.12)(implicitly, implicitly, implicitly, vatTraderUser)
+        calculationAdditionalPage.apply(
+          daysSince31 = 7,
+          isEstimate = false,
+          additionalPenaltyRate = "4",
+          parentCharge = "VAT",
+          startDate = "1 October 2022",
+          endDate = "31 December 2022",
+          amountToDate = "16.12")(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
       implicit val doc: Document = asDocument(applyView())
