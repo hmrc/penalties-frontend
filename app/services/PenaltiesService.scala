@@ -20,8 +20,9 @@ import connectors.PenaltiesConnector
 import models.{ETMPPayload, User}
 import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import uk.gov.hmrc.http.HeaderCarrier
-
 import javax.inject.Inject
+import models.penalty.{LatePaymentPenalty, PaymentStatusEnum}
+
 import scala.concurrent.Future
 
 class PenaltiesService @Inject()(connector: PenaltiesConnector) {
@@ -80,8 +81,9 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
     }
   }.getOrElse((0, false))
 
-  def findTotalLSPFromPayload(payload: ETMPPayload): BigDecimal = {
-    payload.penaltyPoints.map(_.financial.map(_.outstandingAmountDue)).collect { case Some(x) => x }.sum
+  def findTotalLSPFromPayload(payload: ETMPPayload): (BigDecimal, Int) = {
+    val lspAmountList = payload.penaltyPoints.map(_.financial.map(_.outstandingAmountDue)).collect { case Some(x) => x }
+    (lspAmountList.sum, lspAmountList.size)
   }
 
   def findEstimatedVATInterest(payload: ETMPPayload): (BigDecimal, Boolean) = {

@@ -914,6 +914,25 @@ class IndexPageHelperSpec extends SpecBase {
         result.get.body.contains("£400 fixed penalties for late submission") shouldBe true
       }
 
+      "the user has a single outstanding LSP" in {
+        val etmpPayloadWithSingleLSP: ETMPPayload = ETMPPayload(
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3,
+          penaltyPoints = Seq(sampleFinancialPenaltyPoint.copy(financial = Some(
+            Financial(
+              amountDue = 200.00,
+              outstandingAmountDue = 200.00,
+              dueDate = LocalDateTime.now(),
+              estimatedInterest = None,
+              crystalizedInterest = Some(23.00)
+            )
+          ))),
+          latePaymentPenalties = None,
+          vatOverview = None)
+        val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithSingleLSP)
+        result.isDefined shouldBe true
+        result.get.body.contains("£200 fixed penalty for late submission") shouldBe true
+      }
+
       "the user has outstanding VAT Interest to pay - no estimated interest " in {
         val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
           pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3,

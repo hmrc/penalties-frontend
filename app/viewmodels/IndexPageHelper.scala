@@ -176,12 +176,17 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     val estimatedVATInterest = penaltiesService.findEstimatedVATInterest(etmpData)
     val penaltiesCrystalizedInterest = penaltiesService.findCrystalizedPenaltiesInterest(etmpData)
     val penaltiesEstimatedInterest = penaltiesService.findEstimatedPenaltiesInterest(etmpData)
+    val singularOrPluralAmountOfLSPs = if (totalAmountOfLSPs._2 > 1) {
+      returnEstimatedMessageIfInterestMoreThanZero(totalAmountOfLSPs._1, isEstimatedAmount = false, "whatIsOwed.amountOfLSPs.plural")
+    }else{
+      returnEstimatedMessageIfInterestMoreThanZero(totalAmountOfLSPs._1, isEstimatedAmount = false, "whatIsOwed.amountOfLSPs.singular")
+    }
     val stringToConvertToBulletPoints = Seq(
       returnEstimatedMessageIfInterestMoreThanZero(amountOfLateVAT, isEstimatedAmount = false, "whatIsOwed.lateVAT"),
       returnEstimatedMessageIfInterestMoreThanZero(estimatedVATInterest._1, estimatedVATInterest._2, "whatIsOwed.VATInterest"),
       returnEstimatedMessageIfInterestMoreThanZero(lppAmount._1, lppAmount._2, "whatIsOwed.lppAmount"),
       returnEstimatedMessageIfInterestMoreThanZero(penaltiesCrystalizedInterest + penaltiesEstimatedInterest, penaltiesEstimatedInterest > BigDecimal(0), "whatIsOwed.allPenalties.interest"),
-      returnEstimatedMessageIfInterestMoreThanZero(totalAmountOfLSPs, isEstimatedAmount = false, "whatIsOwed.amountOfLSPs"),
+      singularOrPluralAmountOfLSPs,
       returnMessageIfOtherUnrelatedPenalties(otherUnrelatedPenalties, "whatIsOwed.otherPenalties")
     ).collect { case Some(x) => x }
     if (stringToConvertToBulletPoints.isEmpty) {
