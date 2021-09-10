@@ -469,6 +469,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#main-content tr").get(2).select("th").text() shouldBe "Additional penalty rate"
       parsedBody.select("#main-content tr").get(2).select("td").text() shouldBe "4%"
       parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Calculation"
+      parsedBody.select("#main-content tr").get(4).select("th").text() shouldBe "Amount received"
+      parsedBody.select("#main-content tr").get(4).select("td").text() shouldBe "£123.45"
       parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "VAT amount unpaid x 4% x number of days since day 31 ÷ 365"
       parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
     }
@@ -490,6 +492,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#main-content tr").get(2).select("td").text() shouldBe "4%"
       parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Calculation"
       parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "VAT amount unpaid x 4% x number of days since day 31 ÷ 365"
+      parsedBody.select("#main-content tr").get(4).select("th").text() shouldBe "Amount received"
+      parsedBody.select("#main-content tr").get(4).select("td").text() shouldBe "£123.45"
       parsedBody.select("#main-content p").get(1).text() shouldBe
         "Penalties and interest will show as estimates if HMRC does not have enough information to calculate the final amounts."
       parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
