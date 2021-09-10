@@ -62,7 +62,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
           logger.debug(s"[CalculationController][onPageLoad] - found penalty: ${penalty.get}")
           if(!isAdditional) {
             val amountLeftToPay = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.outstandingAmountDue)
-            val penaltyEstimatedDate = penalty.get.financial.dueDate.plusDays(30)
+            val penaltyEstimatedDate = penalty.get.period.dueDate.plusDays(30)
             val calculationRow = calculationPageHelper.getCalculationRowForLPP(penalty.get)
             calculationRow.fold({
               //TODO: log a PD
