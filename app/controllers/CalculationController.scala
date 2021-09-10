@@ -53,7 +53,6 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
           logger.error("[CalculationController][onPageLoad] - Tried to render calculation page but could not find penalty specified.")
           errorHandler.showInternalServerError
         } else {
-          val parentCharge = calculationPageHelper.getChargeTypeBasedOnReason(penalty.get.reason)
           val startDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.period.startDate)
           val endDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.period.endDate)
           val amountReceived = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue - penalty.get.financial.outstandingAmountDue)
@@ -77,12 +76,14 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
                   amountLeftToPay, rowSeq,
                   isTwoCalculations, isPenaltyEstimate,
                   startDateOfPeriod, endDateOfPeriod,
-                  warningPenaltyAmount, warningDate, parentCharge))
+                  warningPenaltyAmount, warningDate))
               })
           } else {
             val additionalPenaltyRate = "4"
             val daysSince31 = ChronoUnit.DAYS.between(penalty.get.financial.dueDate.plusDays(31), LocalDateTime.now())
-            Ok(viewAdd(daysSince31, isPenaltyEstimate, additionalPenaltyRate, parentCharge, startDateOfPeriod, endDateOfPeriod, penaltyAmount,amountReceived))
+            val amountToDate = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue)
+            val isEstimate = penalty.get.status.equals(PointStatusEnum.Estimated)
+            Ok(viewAdd(daysSince31, isEstimate, additionalPenaltyRate, startDateOfPeriod, endDateOfPeriod, amountToDate, amountReceived))
           }
         }
       }

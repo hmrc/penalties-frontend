@@ -26,7 +26,6 @@
 @(daysSince31: Long,
         isPenaltyEstimate: Boolean,
         additionalPenaltyRate: String,
-        parentCharge: String,
         startDate: String,
         endDate: String,
         penaltyAmount: String,
@@ -61,7 +60,7 @@
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header govuk-!-width-one-third">@messages("calculation.key.4.additional")</th>
-                <td class="govuk-table__cell">@messages("calculation.key.4.additional.text", parentCharge)</td>
+                <td class="govuk-table__cell">@messages("calculation.key.4.additional.text")</td>
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header govuk-!-width-one-third">@messages("calculation.key.3")</th>
