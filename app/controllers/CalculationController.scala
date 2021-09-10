@@ -83,7 +83,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
             val daysSince31 = ChronoUnit.DAYS.between(penalty.get.financial.dueDate.plusDays(31), LocalDateTime.now())
             val amountToDate = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue)
             val isEstimate = penalty.get.status.equals(PointStatusEnum.Estimated)
-            Ok(viewAdd(daysSince31, isEstimate, additionalPenaltyRate, startDateOfPeriod, endDateOfPeriod, amountToDate))
+            Ok(viewAdd(daysSince31, isEstimate, additionalPenaltyRate, startDateOfPeriod, endDateOfPeriod, amountToDate, amountReceived))
           }
         }
       }
