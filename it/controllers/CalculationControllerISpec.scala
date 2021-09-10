@@ -394,7 +394,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#main-content tr:nth-child(3) > td").text() shouldBe "£277.00"
       parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Amount left to pay"
       parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "£123.00"
-        parsedBody.select("#main-content div .govuk-warning-text").text() shouldBe "! This penalty will rise to £800.00 (a further 2% of the unpaid VAT) if you do not make a VAT payment by 31 January 2021."
+        parsedBody.select("#main-content div .govuk-warning-text").text() shouldBe "! This penalty will rise to £800.00 (a further 2% of the unpaid VAT) if you do not make a VAT payment by 7 April 2021."
         parsedBody.select("#main-content .govuk-body").get(0).text() shouldBe "Paying part of your VAT bill will reduce further penalties."
         parsedBody.select("#main-content .govuk-body").get(1).text() shouldBe "Penalties and interest will show as estimates if HMRC has not been given enough information to calculate the final amounts."
         parsedBody.select("#main-content h2").text() shouldBe "Estimates"

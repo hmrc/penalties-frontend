@@ -50,7 +50,6 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           daysSince31 = 7,
           isEstimate = true,
           additionalPenaltyRate = "4",
-          parentCharge = "VAT",
           startDate = "1 October 2022",
           endDate = "31 December 2022",
           amountToDate = "16.12",
@@ -87,7 +86,6 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           daysSince31 = 7,
           isEstimate = false,
           additionalPenaltyRate = "4",
-          parentCharge = "VAT",
           startDate = "1 October 2022",
           endDate = "31 December 2022",
           amountToDate = "16.12",amountLeftToPay = "50.50")(implicitly, implicitly, implicitly, vatTraderUser)
@@ -127,8 +125,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           "1 October 2022",
           "31 December 2022",
           warningPenaltyAmount="",
-          warningDate="",
-          parentCharge = "VAT")(implicitly, implicitly, implicitly, vatTraderUser)
+          warningDate="")(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
       implicit val docWithOnlyOneCalculation: Document = asDocument(applyView(Seq("2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)"), isMultipleAmounts = false))
@@ -181,9 +178,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           isPenaltyEstimate = true,
           "1 October 2022",
           "31 December 2022",
-          warningPenaltyAmount="800",
-          warningDate="15 January 2023",
-          parentCharge = "VAT")(implicitly, implicitly, implicitly, vatTraderUser)
+          warningPenaltyAmount = "800",
+          warningDate = "15 January 2023")(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
       implicit val docWithOnlyOneCalculation: Document = asDocument(applyView(Seq("2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)"), isMultipleAmounts = false))
