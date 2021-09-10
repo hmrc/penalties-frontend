@@ -118,7 +118,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
     "if it is not an additional penalty" must {
       def applyView(calculationRow: Seq[String], isMultipleAmounts: Boolean): HtmlFormat.Appendable = {
         calculationPage.apply(
-          amountPaid = "100",
+          amountReceived = "100",
           penaltyAmount = "400",
           amountLeftToPay = "50",
           calculationRowSeq = calculationRow,
@@ -173,7 +173,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
     "it is not an additional penalty and with Penalty Amount " must {
       def applyView(calculationRow: Seq[String], isMultipleAmounts: Boolean): HtmlFormat.Appendable = {
         calculationPage.apply(
-          amountPaid = "100",
+          amountReceived = "100",
           penaltyAmount = "400",
           amountLeftToPay = "50",
           calculationRowSeq = calculationRow,
