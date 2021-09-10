@@ -57,11 +57,11 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
           val endDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.period.endDate)
           val amountReceived = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue - penalty.get.financial.outstandingAmountDue)
           val isPenaltyEstimate = penalty.get.status.equals(PointStatusEnum.Estimated)
+          val amountLeftToPay = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.outstandingAmountDue)
           val penaltyAmount = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue)
           logger.debug(s"[CalculationController][onPageLoad] - found penalty: ${penalty.get}")
           if(!isAdditional) {
-            val amountLeftToPay = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.outstandingAmountDue)
-            val penaltyEstimatedDate = penalty.get.period.dueDate.plusDays(30)
+             val penaltyEstimatedDate = penalty.get.period.dueDate.plusDays(30)
             val calculationRow = calculationPageHelper.getCalculationRowForLPP(penalty.get)
             calculationRow.fold({
               //TODO: log a PD
@@ -81,9 +81,8 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
           } else {
             val additionalPenaltyRate = "4"
             val daysSince31 = ChronoUnit.DAYS.between(penalty.get.financial.dueDate.plusDays(31), LocalDateTime.now())
-            val amountToDate = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue)
             val isEstimate = penalty.get.status.equals(PointStatusEnum.Estimated)
-            Ok(viewAdd(daysSince31, isEstimate, additionalPenaltyRate, startDateOfPeriod, endDateOfPeriod, amountToDate, amountReceived))
+            Ok(viewAdd(daysSince31, isEstimate, additionalPenaltyRate, startDateOfPeriod, endDateOfPeriod, penaltyAmount, amountReceived,amountLeftToPay))
           }
         }
       }

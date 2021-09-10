@@ -48,12 +48,13 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       def applyView(): HtmlFormat.Appendable = {
         calculationAdditionalPage.apply(
           daysSince31 = 7,
-          isPenaltyEstimate = true,
+          isEstimate = true,
           additionalPenaltyRate = "4",
           startDate = "1 October 2022",
           endDate = "31 December 2022",
           penaltyAmount = "16.12",
-          amountReceived = "12.00"
+          amountReceived ="11.10",
+          amountLeftToPay = "50.50"
         )(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
@@ -72,7 +73,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.listRow(4) -> th4Additional,
         Selector.listValue(4) -> "VAT amount unpaid x 4% x number of days since day 31 ÷ 365",
         Selector.listRow(5) -> th3LPP,
-        Selector.listValue(5) -> "£12.00",
+        Selector.listValue(5) -> "£11.10",
+        Selector.listRow(6) -> th4LPP,
+        Selector.listValue(6) -> "£50.50",
         Selector.govukBody(2) -> p2Additional,
         Selector.link -> link
       )
@@ -84,11 +87,13 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       def applyView(): HtmlFormat.Appendable = {
         calculationAdditionalPage.apply(
           daysSince31 = 7,
-          isPenaltyEstimate = false,
+          isEstimate = false,
           additionalPenaltyRate = "4",
           startDate = "1 October 2022",
           endDate = "31 December 2022",
-          penaltyAmount = "16.12",amountReceived = "12.00")(implicitly, implicitly, implicitly, vatTraderUser)
+          penaltyAmount = "16.12",
+          amountReceived ="11.10",
+          amountLeftToPay = "50.50")(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
       implicit val doc: Document = asDocument(applyView())
@@ -106,7 +111,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.listRow(4) -> th4Additional,
         Selector.listValue(4) -> "VAT amount unpaid x 4% x number of days since day 31 ÷ 365",
         Selector.listRow(5) -> th3LPP,
-        Selector.listValue(5) -> "£12.00",
+        Selector.listValue(5) -> "£11.10",
+        Selector.listRow(6) -> th4LPP,
+        Selector.listValue(6) -> "£50.50",
         Selector.link -> link
       )
 
