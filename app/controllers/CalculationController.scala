@@ -56,13 +56,13 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
           val parentCharge = calculationPageHelper.getChargeTypeBasedOnReason(penalty.get.reason)
           val startDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.period.startDate)
           val endDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.period.endDate)
+          val amountReceived = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue - penalty.get.financial.outstandingAmountDue)
+          val isPenaltyEstimate = penalty.get.status.equals(PointStatusEnum.Estimated)
+          val penaltyAmount = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue)
           logger.debug(s"[CalculationController][onPageLoad] - found penalty: ${penalty.get}")
           if(!isAdditional) {
-            val amountPaid = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue - penalty.get.financial.outstandingAmountDue)
-            val penaltyAmount = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue)
             val amountLeftToPay = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.outstandingAmountDue)
             val penaltyEstimatedDate = penalty.get.financial.dueDate.plusDays(30)
-            val isPenaltyEstimate = penalty.get.status.equals(PointStatusEnum.Estimated)
             val calculationRow = calculationPageHelper.getCalculationRowForLPP(penalty.get)
             calculationRow.fold({
               //TODO: log a PD
@@ -73,7 +73,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
                 val isTwoCalculations: Boolean = rowSeq.size == 2
                 val warningPenaltyAmount = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue * 2)
                 val warningDate = calculationPageHelper.getDateAsDayMonthYear(penaltyEstimatedDate)
-                Ok(viewLPP(amountPaid, penaltyAmount,
+                Ok(viewLPP(amountReceived, penaltyAmount,
                   amountLeftToPay, rowSeq,
                   isTwoCalculations, isPenaltyEstimate,
                   startDateOfPeriod, endDateOfPeriod,
@@ -82,10 +82,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
           } else {
             val additionalPenaltyRate = "4"
             val daysSince31 = ChronoUnit.DAYS.between(penalty.get.financial.dueDate.plusDays(31), LocalDateTime.now())
-            val amountToDate = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue)
-            val isEstimate = penalty.get.status.equals(PointStatusEnum.Estimated)
-            val amountReceived = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue - penalty.get.financial.outstandingAmountDue)
-            Ok(viewAdd(daysSince31, isEstimate, additionalPenaltyRate, parentCharge, startDateOfPeriod, endDateOfPeriod, amountToDate,amountReceived))
+            Ok(viewAdd(daysSince31, isPenaltyEstimate, additionalPenaltyRate, parentCharge, startDateOfPeriod, endDateOfPeriod, penaltyAmount,amountReceived))
           }
         }
       }
