@@ -417,8 +417,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.select("#main-content tr:nth-child(3) > td").text() shouldBe "£2.90"
         parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Amount left to pay"
         parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "£2.03"
-      parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
-      parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
+        parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
+        parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
     }
 
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID (only one interest charge)" in {
@@ -470,8 +470,10 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#main-content tr").get(2).select("td").text() shouldBe "4%"
       parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Calculation"
       parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "VAT amount unpaid x 4% x number of days since day 31 ÷ 365"
-      parsedBody.select("#main-content tr").get(4).select("th").text() shouldBe "Amount left to pay"
-      parsedBody.select("#main-content tr").get(4).select("td").text() shouldBe "£10.00"
+      parsedBody.select("#main-content tr").get(4).select("th").text() shouldBe "Amount received"
+      parsedBody.select("#main-content tr").get(4).select("td").text() shouldBe "£113.45"
+      parsedBody.select("#main-content tr").get(5).select("th").text() shouldBe "Amount left to pay"
+      parsedBody.select("#main-content tr").get(5).select("td").text() shouldBe "£10.00"
 
       parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
     }
@@ -493,8 +495,10 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#main-content tr").get(2).select("td").text() shouldBe "4%"
       parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Calculation"
       parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "VAT amount unpaid x 4% x number of days since day 31 ÷ 365"
-      parsedBody.select("#main-content tr").get(4).select("th").text() shouldBe "Amount left to pay"
-      parsedBody.select("#main-content tr").get(4).select("td").text() shouldBe "£10.00"
+      parsedBody.select("#main-content tr").get(4).select("th").text() shouldBe "Amount received"
+      parsedBody.select("#main-content tr").get(4).select("td").text() shouldBe "£113.45"
+      parsedBody.select("#main-content tr").get(5).select("th").text() shouldBe "Amount left to pay"
+      parsedBody.select("#main-content tr").get(5).select("td").text() shouldBe "£10.00"
       parsedBody.select("#main-content p").get(1).text() shouldBe
         "Penalties and interest will show as estimates if HMRC does not have enough information to calculate the final amounts."
       parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
