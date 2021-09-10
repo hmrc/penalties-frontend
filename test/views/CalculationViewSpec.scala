@@ -53,7 +53,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           parentCharge = "VAT",
           startDate = "1 October 2022",
           endDate = "31 December 2022",
-          amountToDate = "16.12"
+          amountToDate = "16.12",
+          amountLeftToPay = "50.50"
         )(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
@@ -71,6 +72,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.listValue(3) -> "4%",
         Selector.listRow(4) -> th4Additional,
         Selector.listValue(4) -> "VAT amount unpaid x 4% x number of days since day 31 ÷ 365",
+        Selector.listRow(5) -> th4LPP,
+        Selector.listValue(5) -> "£50.50",
         Selector.govukBody(2) -> p2Additional,
         Selector.link -> link
       )
@@ -87,7 +90,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           parentCharge = "VAT",
           startDate = "1 October 2022",
           endDate = "31 December 2022",
-          amountToDate = "16.12")(implicitly, implicitly, implicitly, vatTraderUser)
+          amountToDate = "16.12",amountLeftToPay = "50.50")(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
       implicit val doc: Document = asDocument(applyView())
@@ -103,7 +106,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.listRow(3) -> th3Additional,
         Selector.listValue(3) -> "4%",
         Selector.listRow(4) -> th4Additional,
-        //    Selector.listValue(4) -> "£0" //TODO: Implement with actual values
+        Selector.listValue(4) -> "VAT amount unpaid x 4% x number of days since day 31 ÷ 365",
+        Selector.listRow(5) -> th4LPP,
+        Selector.listValue(5) -> "£50.50",
         Selector.link -> link
       )
 
