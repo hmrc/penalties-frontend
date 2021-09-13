@@ -17,11 +17,10 @@
 package services
 
 import connectors.PenaltiesConnector
-import models.{ETMPPayload, User}
-import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
-import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
-import models.penalty.{LatePaymentPenalty, PaymentStatusEnum}
+import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
+import models.{ETMPPayload, User}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 

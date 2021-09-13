@@ -42,7 +42,7 @@ class CalculationControllerSpec extends SpecBase {
   val mockPenaltiesService: PenaltiesService = mock(classOf[PenaltiesService])
   val calculationPageHelper: CalculationPageHelper = injector.instanceOf[CalculationPageHelper]
 
-  val etmpPayload = ETMPPayload(
+  val etmpPayload: ETMPPayload = ETMPPayload(
     pointsTotal = 0,
     lateSubmissions = 0,
     adjustmentPointsTotal = 0,
@@ -78,7 +78,7 @@ class CalculationControllerSpec extends SpecBase {
     ))
   )
 
-  val etmpPayloadNo15Or30DayAmount = ETMPPayload(
+  val etmpPayloadNo15Or30DayAmount: ETMPPayload = ETMPPayload(
     pointsTotal = 0,
     lateSubmissions = 0,
     adjustmentPointsTotal = 0,
@@ -138,7 +138,7 @@ class CalculationControllerSpec extends SpecBase {
         when(mockPenaltiesService.getETMPDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(etmpPayload))
 
-        val result = Controller.onPageLoad("123456789", false)(fakeRequest)
+        val result: Future[Result] = Controller.onPageLoad("123456789", isAdditional = false)(fakeRequest)
         status(result) shouldBe OK
       }
 
@@ -147,7 +147,7 @@ class CalculationControllerSpec extends SpecBase {
         when(mockPenaltiesService.getETMPDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(etmpPayloadNo15Or30DayAmount))
 
-        val result = Controller.onPageLoad("123456789", false)(fakeRequest)
+        val result: Future[Result] = Controller.onPageLoad("123456789", isAdditional = false)(fakeRequest)
         status(result) shouldBe INTERNAL_SERVER_ERROR
       }
 
@@ -155,7 +155,7 @@ class CalculationControllerSpec extends SpecBase {
         when(mockPenaltiesService.getETMPDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(sampleLspData))
 
-        val result = Controller.onPageLoad("1234", false)(fakeRequest)
+        val result: Future[Result] = Controller.onPageLoad("1234", isAdditional = false)(fakeRequest)
         status(result) shouldBe INTERNAL_SERVER_ERROR
       }
     }
@@ -163,12 +163,12 @@ class CalculationControllerSpec extends SpecBase {
     "the user is unauthorised" when {
 
       "return 403 (FORBIDDEN) when user has no enrolments" in new Setup(AuthTestModels.failedAuthResultNoEnrolments) {
-        val result: Future[Result] = Controller.onPageLoad("1234", false)(fakeRequest)
+        val result: Future[Result] = Controller.onPageLoad("1234", isAdditional = false)(fakeRequest)
         status(result) shouldBe FORBIDDEN
       }
 
       "return 303 (SEE_OTHER) when user can not be authorised" in new Setup(AuthTestModels.failedAuthResultUnauthorised) {
-        val result: Future[Result] = Controller.onPageLoad("1234", false)(fakeRequest)
+        val result: Future[Result] = Controller.onPageLoad("1234", isAdditional = false)(fakeRequest)
         status(result) shouldBe SEE_OTHER
       }
     }

@@ -238,21 +238,24 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "show the appeal status when the point has been appealed - for under tribunal review" in {
-        val result = helper.financialSummaryCard(sampleFinancialPenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Under_Tribunal_Review)), quarterlyThreshold)
+        val result = helper.financialSummaryCard(sampleFinancialPenaltyPoint.copy(appealStatus =
+          Some(AppealStatusEnum.Under_Tribunal_Review)), quarterlyThreshold)
         result.isAppealedPoint shouldBe true
         result.appealStatus.isDefined shouldBe true
         result.appealStatus.get shouldBe AppealStatusEnum.Under_Tribunal_Review
       }
 
       "show the appeal status when the point has been appealed - for accepted" in {
-        val result = helper.financialSummaryCard(sampleFinancialPenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Accepted)), quarterlyThreshold)
+        val result = helper.financialSummaryCard(sampleFinancialPenaltyPoint.copy(appealStatus =
+          Some(AppealStatusEnum.Accepted)), quarterlyThreshold)
         result.isAppealedPoint shouldBe true
         result.appealStatus.isDefined shouldBe true
         result.appealStatus.get shouldBe AppealStatusEnum.Accepted
       }
 
       "show the appeal status when the point has been appealed - for accepted by tribunal" in {
-        val result = helper.financialSummaryCard(sampleFinancialPenaltyPoint.copy(appealStatus = Some(AppealStatusEnum.Accepted_By_Tribunal)), quarterlyThreshold)
+        val result = helper.financialSummaryCard(sampleFinancialPenaltyPoint.copy(appealStatus =
+          Some(AppealStatusEnum.Accepted_By_Tribunal)), quarterlyThreshold)
         result.isAppealedPoint shouldBe true
         result.appealStatus.isDefined shouldBe true
         result.appealStatus.get shouldBe AppealStatusEnum.Accepted_By_Tribunal
@@ -349,7 +352,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
             ))
 
 
-          val result = helper.populateLateSubmissionPenaltyCard(sample3ReturnsSubmittedPenaltyPointDataAndOneRemovedPoint, quarterlyThreshold, quarterlyThreshold - 1)
+          val result = helper.populateLateSubmissionPenaltyCard(sample3ReturnsSubmittedPenaltyPointDataAndOneRemovedPoint,
+            quarterlyThreshold, quarterlyThreshold - 1)
           result shouldBe expectedResult
         }
       }
@@ -645,9 +649,9 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
   "pointsThresholdMet" should {
     "return true" when {
       "active points is above threshold" in {
-        val annuallyResult = helper.pointsThresholdMet(annualThreshold, annualThreshold+1)
-        val quarterlyResult = helper.pointsThresholdMet(quarterlyThreshold, quarterlyThreshold+1)
-        val monthlyResult = helper.pointsThresholdMet(monthlyThreshold, monthlyThreshold+1)
+        val annuallyResult = helper.pointsThresholdMet(annualThreshold, annualThreshold + 1)
+        val quarterlyResult = helper.pointsThresholdMet(quarterlyThreshold, quarterlyThreshold + 1)
+        val monthlyResult = helper.pointsThresholdMet(monthlyThreshold, monthlyThreshold + 1)
 
         annuallyResult shouldBe true
         quarterlyResult shouldBe true

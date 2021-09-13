@@ -48,7 +48,7 @@ class BaseSelectors {
 
   val externalGuidance = "#guidance-link"
 
-  val pNthChild = (nThChild: Int) => s"#main-content p:nth-child($nThChild)"
+  val pNthChild: Int => String = (nThChild: Int) => s"#main-content p:nth-child($nThChild)"
 
   val viewCalculation = "#late-payment-penalties > section > header > div > ul > li > a"
 }

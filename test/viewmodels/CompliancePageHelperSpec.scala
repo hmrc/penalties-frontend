@@ -23,8 +23,8 @@ import org.jsoup.Jsoup
 import java.time.LocalDateTime
 
 class CompliancePageHelperSpec extends SpecBase {
-  val sampleDate1 = LocalDateTime.of(2022, 1, 1, 1, 1, 1)
-  val sampleDate2 = LocalDateTime.of(2022, 1, 31, 0, 0, 0)
+  val sampleDate1: LocalDateTime = LocalDateTime.of(2022, 1, 1, 1, 1, 1)
+  val sampleDate2: LocalDateTime = LocalDateTime.of(2022, 1, 31, 0, 0, 0)
 
   val singleMissingReturn = Seq(
     MissingReturn(

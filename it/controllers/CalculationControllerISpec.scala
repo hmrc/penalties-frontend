@@ -32,11 +32,12 @@ import testUtils.IntegrationSpecCommonBase
 import java.time.LocalDateTime
 
 class CalculationControllerISpec extends IntegrationSpecCommonBase {
-  val controller = injector.instanceOf[CalculationController]
-  val sampleDate1 = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
+  val controller: CalculationController = injector.instanceOf[CalculationController]
+  val sampleDate1: LocalDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
 
-  val etmpPayload = ETMPPayload(
-    pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, otherPenalties = Some(false), vatOverview = Some(Seq.empty), penaltyPoints = Seq(
+  val etmpPayload: ETMPPayload = ETMPPayload(
+    pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0,
+    penaltyPointsThreshold = 4, otherPenalties = Some(false), vatOverview = Some(Seq.empty), penaltyPoints = Seq(
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Point,
         id = "1234567890",
@@ -117,7 +118,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
     )
   )
 
-  val etmpPayloadWithAdditionalPenalty = etmpPayload.copy(latePaymentPenalties = Some(
+  val etmpPayloadWithAdditionalPenalty: ETMPPayload = etmpPayload.copy(latePaymentPenalties = Some(
     Seq(
       LatePaymentPenalty(
         `type` = PenaltyTypeEnum.Additional,
@@ -148,7 +149,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
     )
   ))
 
-  val etmpPayloadWithAdditionalDuePenalty = etmpPayloadWithAdditionalPenalty.copy(latePaymentPenalties = Some(
+  val etmpPayloadWithAdditionalDuePenalty: ETMPPayload = etmpPayloadWithAdditionalPenalty.copy(latePaymentPenalties = Some(
     Seq(
       LatePaymentPenalty(
         `type` = PenaltyTypeEnum.Additional,
@@ -179,8 +180,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
     )
   ))
 
-  val etmpPayloadWithDecimals = ETMPPayload(
-    pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, otherPenalties = Some(false), vatOverview = Some(Seq.empty), penaltyPoints = Seq(
+  val etmpPayloadWithDecimals: ETMPPayload = ETMPPayload(
+    pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0,
+    penaltyPointsThreshold = 4, otherPenalties = Some(false), vatOverview = Some(Seq.empty), penaltyPoints = Seq(
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Point,
         id = "1234567890",
@@ -261,7 +263,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
     )
   )
 
-  val etmpPayloadWithOnlyDay15Charge = etmpPayload.copy(
+  val etmpPayloadWithOnlyDay15Charge: ETMPPayload = etmpPayload.copy(
     latePaymentPenalties = Some(
       Seq(
         LatePaymentPenalty(
@@ -323,8 +325,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
     )
   )
 
-  val etmpPayloadWithDueDateMoreThan30days = ETMPPayload(
-    pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, otherPenalties = Some(false), vatOverview = Some(Seq.empty), penaltyPoints = Seq(
+  val etmpPayloadWithDueDateMoreThan30days: ETMPPayload = ETMPPayload(
+    pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0,
+    penaltyPointsThreshold = 4, otherPenalties = Some(false), vatOverview = Some(Seq.empty), penaltyPoints = Seq(
       PenaltyPoint(
         `type` = PenaltyTypeEnum.Point,
         id = "1234567890",

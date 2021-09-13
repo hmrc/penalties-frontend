@@ -28,8 +28,8 @@ import views.html.components.{p, timeline}
 
 class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
   val compliancePage: ComplianceView = injector.instanceOf[ComplianceView]
-  val timeline = injector.instanceOf[timeline]
-  val p = injector.instanceOf[p]
+  val timeline: timeline = injector.instanceOf[timeline]
+  val p: p = injector.instanceOf[p]
   val sampleMissingReturns: String = "VAT Period 1 October 2021 to 31 December 2021"
   val sampleTimelineEvent: TimelineEvent = TimelineEvent(
     sampleMissingReturns,
@@ -52,13 +52,13 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
   )
 
   object Selectors extends BaseSelectors {
-    val staticListItem = (item: Int) => s"#main-content li:nth-child($item)"
+    val staticListItem: Int => String = (item: Int) => s"#main-content li:nth-child($item)"
 
     val submitTheseMissingReturnsH2 = "#submit-these-missing-returns"
 
     val completeTheseActionsOnTimeH2 = "#complete-these-actions-on-time"
 
-    val timelineEvent = (item: Int) => s"#main-content > div > div > ol > li:nth-child($item)"
+    val timelineEvent: Int => String = (item: Int) => s"#main-content > div > div > ol > li:nth-child($item)"
 
     val pointExpiryContent = "#point-expiry-date"
   }
@@ -70,7 +70,8 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         compliancePage.apply(isUnsubmittedReturns, contentForMissingReturns, timelineContent)(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
-      implicit val docWithMissingReturns: Document = asDocument(applyView(isUnsubmittedReturns = true, html(stringAsHtml(sampleMissingReturns)), sampleTimelineHtml))
+      implicit val docWithMissingReturns: Document =
+        asDocument(applyView(isUnsubmittedReturns = true, html(stringAsHtml(sampleMissingReturns)), sampleTimelineHtml))
 
       val expectedContent = Seq(
         Selectors.title -> title,
@@ -107,7 +108,8 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         compliancePage.apply(isUnsubmittedReturns, contentForMissingReturns, timelineContent)(implicitly, implicitly, implicitly, agentUser)
       }
 
-      implicit val agentDocWithMissingReturns: Document = asDocument(applyView(isUnsubmittedReturns = true, html(stringAsHtml(sampleMissingReturns)), sampleAgentTimelineHtml))
+      implicit val agentDocWithMissingReturns: Document =
+        asDocument(applyView(isUnsubmittedReturns = true, html(stringAsHtml(sampleMissingReturns)), sampleAgentTimelineHtml))
 
       val expectedContent = Seq(
         Selectors.title -> title,

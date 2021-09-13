@@ -21,8 +21,7 @@ import models.penalty.PenaltyPeriod
 import models.submission.{Submission, SubmissionStatusEnum}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.libs.json.Json
-
+import play.api.libs.json.{JsObject, Json}
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -33,8 +32,9 @@ class PenaltyPointSpec extends AnyWordSpec with Matchers {
   val sampleDateTime3: LocalDateTime = LocalDateTime.of(2019, 5, 31, 23, 59, 59).plus(999, ChronoUnit.MILLIS)
   val sampleDateTime4: LocalDateTime = LocalDateTime.of(2019, 6, 1, 23, 59, 59).plus(999, ChronoUnit.MILLIS)
 
-  val penaltyPointAsJson = (pointType: PenaltyTypeEnum.Value, dateExpired: Option[LocalDateTime], financial: Option[Financial],
-                            withPeriod: Boolean, status: PointStatusEnum.Value) => {
+  val penaltyPointAsJson: (PenaltyTypeEnum.Value, Option[LocalDateTime], Option[Financial], Boolean, PointStatusEnum.Value) => JsObject =
+    (pointType: PenaltyTypeEnum.Value, dateExpired: Option[LocalDateTime], financial: Option[Financial],
+     withPeriod, status: PointStatusEnum.Value) => {
     val base = Json.obj(
       "type" -> pointType,
       "id" -> "123456789",
@@ -107,7 +107,8 @@ class PenaltyPointSpec extends AnyWordSpec with Matchers {
   "PenaltyPoint" should {
     s"be writeable to JSON when the point type is ${PenaltyTypeEnum.Financial}" in {
       val result = Json.toJson(penaltyPointAsFinancialPenaltyModel)
-      result shouldBe penaltyPointAsJson(PenaltyTypeEnum.Financial, Some(sampleDateTime2), Some(Financial(300.00, 300.00, sampleDateTime3)), true, PointStatusEnum.Active)
+      result shouldBe penaltyPointAsJson(PenaltyTypeEnum.Financial,
+        Some(sampleDateTime2), Some(Financial(300.00, 300.00, sampleDateTime3)), true, PointStatusEnum.Active)
     }
 
     s"be writeable to JSON when the point type is ${PenaltyTypeEnum.Point}" in {
@@ -116,7 +117,8 @@ class PenaltyPointSpec extends AnyWordSpec with Matchers {
     }
 
     s"be readable from JSON when the point type is ${PenaltyTypeEnum.Financial}" in {
-      val result = Json.fromJson(penaltyPointAsJson(PenaltyTypeEnum.Financial, Some(sampleDateTime2), Some(Financial(300.00, 300.00, sampleDateTime3)), true, PointStatusEnum.Active
+      val result = Json.fromJson(penaltyPointAsJson(PenaltyTypeEnum.Financial,
+        Some(sampleDateTime2), Some(Financial(300.00, 300.00, sampleDateTime3)), true, PointStatusEnum.Active
       ))(PenaltyPoint.format)
       result.isSuccess shouldBe true
       result.get shouldBe penaltyPointAsFinancialPenaltyModel
@@ -129,7 +131,8 @@ class PenaltyPointSpec extends AnyWordSpec with Matchers {
     }
 
     "be readable from JSON when there is no dateExpired KV in the JSON" in {
-      val result = Json.fromJson(penaltyPointAsJson(PenaltyTypeEnum.Financial, None, Some(Financial(300.00, 300.00, sampleDateTime3)), true, PointStatusEnum.Active))(PenaltyPoint.format)
+      val result = Json.fromJson(penaltyPointAsJson(PenaltyTypeEnum.Financial,
+        None, Some(Financial(300.00, 300.00, sampleDateTime3)), true, PointStatusEnum.Active))(PenaltyPoint.format)
       result.isSuccess shouldBe true
       result.get shouldBe penaltyPointAsFinancialPenaltyModelNoDateExpired
     }
