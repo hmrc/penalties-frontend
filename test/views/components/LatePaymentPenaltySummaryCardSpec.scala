@@ -240,18 +240,30 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
     }
 
     "given an appealed penalty" should {
-      val docWithAppealedPenalty: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenalty))
-      val docWithAppealedPenaltyUnderTribunalReview: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyUnderTribunalReview))
-      val docWithAppealedPenaltyAccepted: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyAccepted))
-      val docWithAppealedPenaltyAcceptedAgent: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyAcceptedAgent))
-      val docWithAppealedPenaltyAcceptedByTribunal: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyAcceptedByTribunal))
-      val docWithAppealedPenaltyAcceptedByTribunalAgent: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyAcceptedByTribunalAgent))
-      val docWithAppealedPenaltyRejected: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyRejected))
-      val docWithAppealedPenaltyRejectedAgent: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyRejectedAgent))
-      val docWithAppealedPenaltyTribunalRejected: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyRejectedTribunal))
-      val docWithAppealedPenaltyTribunalRejectedAgent: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyRejectedTribunalAgent))
-      val docWithAppealedPenaltyTribunalReinstated: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyReinstated))
-      val docWithAppealedPenaltyTribunalReinstatedAgent: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyReinstatedAgent))
+      val docWithAppealedPenalty: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenalty))
+      val docWithAppealedPenaltyUnderTribunalReview: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyUnderTribunalReview))
+      val docWithAppealedPenaltyAccepted: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyAccepted))
+      val docWithAppealedPenaltyAcceptedAgent: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyAcceptedAgent))
+      val docWithAppealedPenaltyAcceptedByTribunal: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyAcceptedByTribunal))
+      val docWithAppealedPenaltyAcceptedByTribunalAgent: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyAcceptedByTribunalAgent))
+      val docWithAppealedPenaltyRejected: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyRejected))
+      val docWithAppealedPenaltyRejectedAgent: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyRejectedAgent))
+      val docWithAppealedPenaltyTribunalRejected: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyRejectedTribunal))
+      val docWithAppealedPenaltyTribunalRejectedAgent: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyRejectedTribunalAgent))
+      val docWithAppealedPenaltyTribunalReinstated: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyReinstated))
+      val docWithAppealedPenaltyTribunalReinstatedAgent: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyReinstatedAgent))
 
       "not show the appeal link" in {
         docWithAppealedPenalty.select(".app-summary-card__footer a").isEmpty shouldBe true

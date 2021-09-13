@@ -21,6 +21,7 @@ import java.time.LocalDateTime
 import models.compliance.{CompliancePayload, MissingReturn, Return, ReturnStatusEnum}
 import org.jsoup.Jsoup
 import play.api.http.Status
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.AuthStub
@@ -29,14 +30,14 @@ import testUtils.IntegrationSpecCommonBase
 import utils.SessionKeys
 
 class ComplianceControllerISpec extends IntegrationSpecCommonBase {
-  val sampleDate1 = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
-  val sampleDate2 = LocalDateTime.of(2021, 2, 1, 1, 1, 1)
-  val sampleDate3 = LocalDateTime.of(2021, 2, 28, 1, 1, 1)
-  val sampleDate4 = LocalDateTime.of(2021, 4, 1, 1, 1, 1)
-  val sampleDate5 = LocalDateTime.of(2021, 1, 31, 1, 1, 1)
+  val sampleDate1: LocalDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
+  val sampleDate2: LocalDateTime = LocalDateTime.of(2021, 2, 1, 1, 1, 1)
+  val sampleDate3: LocalDateTime = LocalDateTime.of(2021, 2, 28, 1, 1, 1)
+  val sampleDate4: LocalDateTime = LocalDateTime.of(2021, 4, 1, 1, 1, 1)
+  val sampleDate5: LocalDateTime = LocalDateTime.of(2021, 1, 31, 1, 1, 1)
 
-  val controller = injector.instanceOf[ComplianceController]
-  val fakeAgentRequest = FakeRequest("GET", "/").withSession(SessionKeys.agentSessionVrn -> "123456789")
+  val controller: ComplianceController = injector.instanceOf[ComplianceController]
+  val fakeAgentRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(SessionKeys.agentSessionVrn -> "123456789")
 
   val compliancePayloadWithMissingReturns: CompliancePayload = CompliancePayload(
     noOfMissingReturns = "1",

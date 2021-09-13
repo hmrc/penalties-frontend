@@ -21,18 +21,18 @@ import org.scalatest.wordspec.AnyWordSpec
 import play.twirl.api.Html
 
 class ViewUtilsSpec extends AnyWordSpec with Matchers {
-  object Viewtils extends ViewUtils
+  object ViewUtils extends ViewUtils
 
   "stringAsHtml" should {
     "convert a string to HTML" in {
       val content: String = "This is some content."
-      Viewtils.stringAsHtml(content).body shouldBe "This is some content."
+      ViewUtils.stringAsHtml(content).body shouldBe "This is some content."
     }
   }
 
   "html" should {
     "take a sequence of HTML content and format as one HTML element" in {
-      val result = Viewtils.html(Html("1"), Html("2"), Html("3"), Html("4"))
+      val result = ViewUtils.html(Html("1"), Html("2"), Html("3"), Html("4"))
       result.body shouldBe "1234"
     }
   }

@@ -41,15 +41,17 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.Tag
 import utils.SessionKeys
 import viewmodels.{LateSubmissionPenaltySummaryCard, SummaryCardHelper, TimelineHelper}
 import views.html.errors.Unauthorised
-
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
+
+import play.api.inject.Injector
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-  lazy val injector = app.injector
+  lazy val injector: Injector = app.injector
 
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
@@ -67,11 +69,14 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   val mockAuthService: AuthService = new AuthService(mockAuthConnector)
 
-  val summaryCardHelper = injector.instanceOf[SummaryCardHelper]
+  val summaryCardHelper: SummaryCardHelper = injector.instanceOf[SummaryCardHelper]
 
-  val timelineHelper = injector.instanceOf[TimelineHelper]
+  val timelineHelper: TimelineHelper = injector.instanceOf[TimelineHelper]
 
   val vrn: String = "123456789"
+
+  val sampleDate: LocalDateTime = LocalDateTime.of(2021, 4, 23, 18, 25, 43)
+    .plus(511, ChronoUnit.MILLIS)
 
   lazy val authPredicate: AuthPredicate = new AuthPredicate(
     messagesApi,
@@ -102,7 +107,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     returns = Seq.empty[Return]
   )
 
-  val samplePenaltyPoint = PenaltyPoint(
+  val samplePenaltyPoint: PenaltyPoint = PenaltyPoint(
     `type` = PenaltyTypeEnum.Point,
     id = "123456789",
     number = "1",
@@ -123,7 +128,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     communications = Seq.empty
   )
 
-  val sampleFinancialPenaltyPoint = PenaltyPoint(
+  val sampleFinancialPenaltyPoint: PenaltyPoint = PenaltyPoint(
     `type` = PenaltyTypeEnum.Financial,
     id = "123456789",
     number = "1",
@@ -149,7 +154,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     )
   )
 
-  val sampleOverduePenaltyPoint = PenaltyPoint(
+  val sampleOverduePenaltyPoint: PenaltyPoint = PenaltyPoint(
     `type` = PenaltyTypeEnum.Point,
     id = "123456789",
     number = "1",
@@ -170,7 +175,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     communications = Seq.empty
   )
 
-  val samplePenaltyPointAppealedUnderReview = PenaltyPoint(
+  val samplePenaltyPointAppealedUnderReview: PenaltyPoint = PenaltyPoint(
     `type` = PenaltyTypeEnum.Point,
     id = "123456789",
     number = "1",
@@ -191,7 +196,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     communications = Seq.empty
   )
 
-  val sampleLatePaymentPenaltyDue = LatePaymentPenalty(
+  val sampleLatePaymentPenaltyDue: LatePaymentPenalty = LatePaymentPenalty(
     `type` = PenaltyTypeEnum.Financial,
     id = "123456789",
     reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
@@ -212,7 +217,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     )
   )
 
-  val sampleLatePaymentPenaltyAdditional = LatePaymentPenalty(
+  val sampleLatePaymentPenaltyAdditional: LatePaymentPenalty = LatePaymentPenalty(
     `type` = PenaltyTypeEnum.Additional,
     id = "123456789",
     reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
@@ -233,7 +238,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     )
   )
 
-  val sampleLatePaymentPenaltyReasonVATNotPaidWithin30Days =LatePaymentPenalty(
+  val sampleLatePaymentPenaltyReasonVATNotPaidWithin30Days: LatePaymentPenalty =LatePaymentPenalty(
     `type` = PenaltyTypeEnum.Financial,
     id = "123456789",
     reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
@@ -256,7 +261,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
 
 
-  val sampleLatePaymentPenaltyPaid = LatePaymentPenalty(
+  val sampleLatePaymentPenaltyPaid: LatePaymentPenalty = LatePaymentPenalty(
     `type` = PenaltyTypeEnum.Financial,
     id = "123456789",
     reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
@@ -277,7 +282,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     )
   )
 
-  val sampleLatePaymentPenaltyUnpaidVAT = LatePaymentPenalty(
+  val sampleLatePaymentPenaltyUnpaidVAT: LatePaymentPenalty = LatePaymentPenalty(
     `type` = PenaltyTypeEnum.Financial,
     id = "123456789",
     reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
@@ -298,36 +303,52 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     )
   )
 
-  val samplePenaltyPointAppealedAccepted = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Accepted), status = PointStatusEnum.Removed)
-  val samplePenaltyPointAppealedAcceptedByTribunal = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Accepted_By_Tribunal), status = PointStatusEnum.Removed)
-  val samplePenaltyPointAppealedRejected = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Rejected))
-  val samplePenaltyPointAppealedReinstated = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Reinstated))
-  val samplePenaltyPointAppealedTribunalRejected = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Tribunal_Rejected))
-  val samplePenaltyPointAppealedUnderTribunalReview = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Under_Tribunal_Review))
+  val samplePenaltyPointAppealedAccepted: PenaltyPoint =
+    samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Accepted), status = PointStatusEnum.Removed)
+  val samplePenaltyPointAppealedAcceptedByTribunal: PenaltyPoint =
+    samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Accepted_By_Tribunal), status = PointStatusEnum.Removed)
+  val samplePenaltyPointAppealedRejected: PenaltyPoint = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Rejected))
+  val samplePenaltyPointAppealedReinstated: PenaltyPoint = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Reinstated))
+  val samplePenaltyPointAppealedTribunalRejected: PenaltyPoint =
+    samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Tribunal_Rejected))
+  val samplePenaltyPointAppealedUnderTribunalReview: PenaltyPoint =
+    samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Under_Tribunal_Review))
 
-  val sampleLatePaymentPenaltyAppealedUnderReview = sampleLatePaymentPenaltyDue.copy(appealStatus = Some(AppealStatusEnum.Under_Review))
-  val sampleLatePaymentPenaltyAppealedUnderTribunalReview = sampleLatePaymentPenaltyDue.copy(appealStatus = Some(AppealStatusEnum.Under_Tribunal_Review))
-  val sampleLatePaymentPenaltyAppealedAccepted = sampleLatePaymentPenaltyDue.copy(appealStatus = Some(AppealStatusEnum.Accepted))
-  val sampleLatePaymentPenaltyAppealedAcceptedTribunal = sampleLatePaymentPenaltyDue.copy(appealStatus = Some(AppealStatusEnum.Accepted_By_Tribunal))
-  val sampleLatePaymentPenaltyAppealedRejected = sampleLatePaymentPenaltyDue.copy(appealStatus = Some(AppealStatusEnum.Rejected))
-  val sampleLatePaymentPenaltyAppealedRejectedLPPPaid = sampleLatePaymentPenaltyPaid.copy(appealStatus = Some(AppealStatusEnum.Rejected))
-  val sampleLatePaymentPenaltyAppealedRejectedTribunal = sampleLatePaymentPenaltyDue.copy(appealStatus = Some(AppealStatusEnum.Tribunal_Rejected))
-  val sampleLatePaymentPenaltyAppealedReinstated = sampleLatePaymentPenaltyDue.copy(appealStatus = Some(AppealStatusEnum.Reinstated))
-  val sampleLatePaymentPenaltyEstimated = sampleLatePaymentPenaltyDue.copy(status = PointStatusEnum.Estimated)
+  val sampleLatePaymentPenaltyAppealedUnderReview: LatePaymentPenalty = sampleLatePaymentPenaltyDue.copy(appealStatus = Some(AppealStatusEnum.Under_Review))
+  val sampleLatePaymentPenaltyAppealedUnderTribunalReview: LatePaymentPenalty =
+    sampleLatePaymentPenaltyDue.copy(appealStatus = Some(AppealStatusEnum.Under_Tribunal_Review))
+  val sampleLatePaymentPenaltyAppealedAccepted: LatePaymentPenalty = sampleLatePaymentPenaltyDue.copy(appealStatus = Some(AppealStatusEnum.Accepted))
+  val sampleLatePaymentPenaltyAppealedAcceptedTribunal: LatePaymentPenalty =
+    sampleLatePaymentPenaltyDue.copy(appealStatus = Some(AppealStatusEnum.Accepted_By_Tribunal))
+  val sampleLatePaymentPenaltyAppealedRejected: LatePaymentPenalty = sampleLatePaymentPenaltyDue.copy(appealStatus = Some(AppealStatusEnum.Rejected))
+  val sampleLatePaymentPenaltyAppealedRejectedLPPPaid: LatePaymentPenalty = sampleLatePaymentPenaltyPaid.copy(appealStatus = Some(AppealStatusEnum.Rejected))
+  val sampleLatePaymentPenaltyAppealedRejectedTribunal: LatePaymentPenalty =
+    sampleLatePaymentPenaltyDue.copy(appealStatus = Some(AppealStatusEnum.Tribunal_Rejected))
+  val sampleLatePaymentPenaltyAppealedReinstated: LatePaymentPenalty = sampleLatePaymentPenaltyDue.copy(appealStatus = Some(AppealStatusEnum.Reinstated))
+  val sampleLatePaymentPenaltyEstimated: LatePaymentPenalty = sampleLatePaymentPenaltyDue.copy(status = PointStatusEnum.Estimated)
 
-  val sampleLatePaymentPenaltyReasonCentralAssessmentNotPaidWithin15Days = sampleLatePaymentPenaltyPaid.copy(reason = PaymentPenaltyReasonEnum.CENTRAL_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS)
-  val sampleLatePaymentPenaltyReasonCentralAssessmentNotPaidWithin30Days = sampleLatePaymentPenaltyPaid.copy(reason = PaymentPenaltyReasonEnum.CENTRAL_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS)
-  val sampleLatePaymentPenaltyAdditionalReasonCentralAssessment = sampleLatePaymentPenaltyAdditional.copy(reason = PaymentPenaltyReasonEnum.CENTRAL_ASSESSMENT_NOT_PAID_AFTER_30_DAYS)
+  val sampleLatePaymentPenaltyReasonCentralAssessmentNotPaidWithin15Days: LatePaymentPenalty =
+    sampleLatePaymentPenaltyPaid.copy(reason = PaymentPenaltyReasonEnum.CENTRAL_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS)
+  val sampleLatePaymentPenaltyReasonCentralAssessmentNotPaidWithin30Days: LatePaymentPenalty =
+    sampleLatePaymentPenaltyPaid.copy(reason = PaymentPenaltyReasonEnum.CENTRAL_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS)
+  val sampleLatePaymentPenaltyAdditionalReasonCentralAssessment: LatePaymentPenalty =
+    sampleLatePaymentPenaltyAdditional.copy(reason = PaymentPenaltyReasonEnum.CENTRAL_ASSESSMENT_NOT_PAID_AFTER_30_DAYS)
 
-  val sampleLatePaymentPenaltyReasonErrorCorrectionNoticeNotPaidWithin15Days = sampleLatePaymentPenaltyPaid.copy(reason = PaymentPenaltyReasonEnum.ERROR_CORRECTION_NOTICE_NOT_PAID_WITHIN_15_DAYS)
-  val sampleLatePaymentPenaltyReasonErrorCorrectionNoticeNotPaidWithin30Days = sampleLatePaymentPenaltyPaid.copy(reason = PaymentPenaltyReasonEnum.ERROR_CORRECTION_NOTICE_NOT_PAID_WITHIN_30_DAYS)
-  val sampleLatePaymentPenaltyAdditionalReasonErrorCorrectionNotice = sampleLatePaymentPenaltyAdditional.copy(reason = PaymentPenaltyReasonEnum.ERROR_CORRECTION_NOTICE_NOT_PAID_AFTER_30_DAYS)
+  val sampleLatePaymentPenaltyReasonErrorCorrectionNoticeNotPaidWithin15Days: LatePaymentPenalty =
+    sampleLatePaymentPenaltyPaid.copy(reason = PaymentPenaltyReasonEnum.ERROR_CORRECTION_NOTICE_NOT_PAID_WITHIN_15_DAYS)
+  val sampleLatePaymentPenaltyReasonErrorCorrectionNoticeNotPaidWithin30Days: LatePaymentPenalty =
+    sampleLatePaymentPenaltyPaid.copy(reason = PaymentPenaltyReasonEnum.ERROR_CORRECTION_NOTICE_NOT_PAID_WITHIN_30_DAYS)
+  val sampleLatePaymentPenaltyAdditionalReasonErrorCorrectionNotice: LatePaymentPenalty =
+    sampleLatePaymentPenaltyAdditional.copy(reason = PaymentPenaltyReasonEnum.ERROR_CORRECTION_NOTICE_NOT_PAID_AFTER_30_DAYS)
 
-  val sampleLatePaymentPenaltyReasonOfficersAssessmentNotPaidWithin15Days = sampleLatePaymentPenaltyPaid.copy(reason = PaymentPenaltyReasonEnum.OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS)
-  val sampleLatePaymentPenaltyReasonOfficersAssessmentNotPaidWithin30Days = sampleLatePaymentPenaltyPaid.copy(reason = PaymentPenaltyReasonEnum.OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS)
-  val sampleLatePaymentPenaltyAdditionalReasonOfficersAssessment = sampleLatePaymentPenaltyAdditional.copy(reason = PaymentPenaltyReasonEnum.OFFICERS_ASSESSMENT_NOT_PAID_AFTER_30_DAYS)
+  val sampleLatePaymentPenaltyReasonOfficersAssessmentNotPaidWithin15Days: LatePaymentPenalty =
+    sampleLatePaymentPenaltyPaid.copy(reason = PaymentPenaltyReasonEnum.OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS)
+  val sampleLatePaymentPenaltyReasonOfficersAssessmentNotPaidWithin30Days: LatePaymentPenalty =
+    sampleLatePaymentPenaltyPaid.copy(reason = PaymentPenaltyReasonEnum.OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS)
+  val sampleLatePaymentPenaltyAdditionalReasonOfficersAssessment: LatePaymentPenalty =
+    sampleLatePaymentPenaltyAdditional.copy(reason = PaymentPenaltyReasonEnum.OFFICERS_ASSESSMENT_NOT_PAID_AFTER_30_DAYS)
 
-  val sampleRemovedPenaltyPoint = PenaltyPoint(
+  val sampleRemovedPenaltyPoint: PenaltyPoint = PenaltyPoint(
     PenaltyTypeEnum.Point,
     "123456789",
     "1",
@@ -348,7 +369,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     Seq.empty
   )
 
-  val sampleReturnNotSubmittedPenaltyPeriod = PenaltyPeriod(
+  val sampleReturnNotSubmittedPenaltyPeriod: PenaltyPeriod = PenaltyPeriod(
     LocalDateTime.now,
     LocalDateTime.now,
     Submission(
@@ -358,7 +379,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     )
   )
 
-  val etmpDataWithOneLSP = ETMPPayload(
+  val etmpDataWithOneLSP: ETMPPayload = ETMPPayload(
     pointsTotal = 1,
     lateSubmissions = 1,
     adjustmentPointsTotal = 0,
@@ -539,19 +560,21 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   val penaltyId = "123456789"
 
-  val redirectToAppealUrlForLSP: String = controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = false, isObligation = false, isAdditional = false).url
+  val redirectToAppealUrlForLSP: String =
+    controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = false, isObligation = false, isAdditional = false).url
 
-  val redirectToAppealUrlForLPP: String = controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = true, isObligation = false, isAdditional = false).url
+  val redirectToAppealUrlForLPP: String =
+    controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = true, isObligation = false, isAdditional = false).url
 
-  val redirectToAppealObligationUrlForLSP: String = controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = false, isObligation = true, isAdditional = false).url
+  val redirectToAppealObligationUrlForLSP: String =
+    controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = false, isObligation = true, isAdditional = false).url
 
-  val redirectToAppealObligationUrlForLPP: String = controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = true, isObligation = true, isAdditional = false).url
+  val redirectToAppealObligationUrlForLPP: String =
+    controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = true, isObligation = true, isAdditional = false).url
 
-  val redirectToAppealObligationUrlForLPPAdditional: String = controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = true, isObligation = false, isAdditional = true).url
+  val redirectToAppealObligationUrlForLPPAdditional: String =
+    controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = true, isObligation = false, isAdditional = true).url
 
-  val sampleDate: LocalDateTime = LocalDateTime.of(2021, 4, 23, 18, 25, 43)
-    .plus(511, ChronoUnit.MILLIS)
-
-  val vatTraderUser = User("123456789", arn = None)(fakeRequest)
-  val agentUser = User("123456789", arn = Some("AGENT1"))(fakeRequest.withSession(SessionKeys.agentSessionVrn -> "VRN1234"))
+  val vatTraderUser: User[AnyContent] = User("123456789", arn = None)(fakeRequest)
+  val agentUser: User[AnyContent] = User("123456789", arn = Some("AGENT1"))(fakeRequest.withSession(SessionKeys.agentSessionVrn -> "VRN1234"))
 }

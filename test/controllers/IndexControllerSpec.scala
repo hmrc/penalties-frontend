@@ -35,7 +35,7 @@ class IndexControllerSpec extends SpecBase {
 
   val page: IndexView = injector.instanceOf[IndexView]
   val indexPageHelper: IndexPageHelper = injector.instanceOf[IndexPageHelper]
-  val cardHelper = injector.instanceOf[SummaryCardHelper]
+  val cardHelper: SummaryCardHelper = injector.instanceOf[SummaryCardHelper]
   val mockPenaltiesService: PenaltiesService = mock(classOf[PenaltiesService])
 
   class Setup(authResult: Future[~[Option[AffinityGroup], Enrolments]]) {
@@ -87,38 +87,40 @@ class IndexControllerSpec extends SpecBase {
 
     "redirectToAppeals" when {
       "the user wants to appeal a penalty" in new Setup(AuthTestModels.successfulAuthResult) {
-        val result = Controller.redirectToAppeals("123456789")(fakeRequest)
+        val result: Future[Result] = Controller.redirectToAppeals("123456789")(fakeRequest)
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=false&isAdditional=false")
       }
 
       "the user wants to appeal a penalty for LPP" in new Setup(AuthTestModels.successfulAuthResult) {
-        val result = Controller.redirectToAppeals("123456789", isLPP = true)(fakeRequest)
+        val result: Future[Result] = Controller.redirectToAppeals("123456789", isLPP = true)(fakeRequest)
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=true&isAdditional=false")
       }
 
       "the user wants to appeal a penalty for LPP - Additional" in new Setup(AuthTestModels.successfulAuthResult) {
-        val result = Controller.redirectToAppeals("123456789", isLPP = true, isAdditional = true)(fakeRequest)
+        val result: Future[Result] = Controller.redirectToAppeals("123456789", isLPP = true, isAdditional = true)(fakeRequest)
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=true&isAdditional=true")
       }
 
       "the user wants to appeal an obligation" in new Setup(AuthTestModels.successfulAuthResult) {
-        val result = Controller.redirectToAppeals("123456789", isObligation = true)(fakeRequest)
+        val result: Future[Result] = Controller.redirectToAppeals("123456789", isObligation = true)(fakeRequest)
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal-against-the-obligation?penaltyId=$penaltyId&isLPP=false&isAdditional=false")
+        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}" +
+          s"/initialise-appeal-against-the-obligation?penaltyId=$penaltyId&isLPP=false&isAdditional=false")
       }
 
       "the user wats to appeal an obligation for LPP" in new Setup(AuthTestModels.successfulAuthResult) {
-        val result = Controller.redirectToAppeals("123456789", isLPP = true, isObligation = true)(fakeRequest)
+        val result: Future[Result] = Controller.redirectToAppeals("123456789", isLPP = true, isObligation = true)(fakeRequest)
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal-against-the-obligation?penaltyId=$penaltyId&isLPP=true&isAdditional=false")
+        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}" +
+          s"/initialise-appeal-against-the-obligation?penaltyId=$penaltyId&isLPP=true&isAdditional=false")
       }
     }
 

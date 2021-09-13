@@ -31,14 +31,14 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val cy: String            = "cy"
   val defaultLanguage: Lang = Lang(en)
 
-  lazy val vatOverviewUrl = servicesConfig.getString("urls.vatOverview")
+  lazy val vatOverviewUrl: String = servicesConfig.getString("urls.vatOverview")
   lazy val penaltiesUrl: String = s"${servicesConfig.baseUrl("penalties")}/penalties"
 
   lazy val signInUrl: String = config.get[String]("signIn.url")
 
   lazy val signInContinueBaseUrl: String = config.get[String]("signIn.continueBaseUrl")
 
-  lazy val signInContinueUrl: String = SafeRedirectUrl(signInContinueBaseUrl + controllers.routes.IndexController.onPageLoad.url).encodedUrl
+  lazy val signInContinueUrl: String = SafeRedirectUrl(signInContinueBaseUrl + controllers.routes.IndexController.onPageLoad().url).encodedUrl
 
   lazy val signOutUrl: String = config.get[String]("signOut.url") + signInContinueUrl
 
@@ -48,7 +48,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   lazy val feedbackUrl: String = config.get[String]("feedback.url")
 
-  lazy val penaltiesAppealsBaseUrl = config.get[String]("urls.penaltiesAppealsBaseurl") + "/penalties-appeals"
+  lazy val penaltiesAppealsBaseUrl: String = config.get[String]("urls.penaltiesAppealsBaseurl") + "/penalties-appeals"
 
   val vatAgentClientLookupFrontendHost: String = "vat-agent-client-lookup-frontend.host"
   val vatAgentClientLookupFrontendStartUrl: String = "vat-agent-client-lookup-frontend.startUrl"
@@ -59,7 +59,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   private lazy val agentClientLookupRedirectUrl: String => String = uri => SafeRedirectUrl(platformHost + uri).encodedUrl
 
-  lazy val agentClientLookupStartUrl = (uri: String) =>
+  lazy val agentClientLookupStartUrl: String => String = (uri: String) =>
     agentClientLookupHost +
       servicesConfig.getConfString(vatAgentClientLookupFrontendStartUrl, "") +
       s"?redirectUrl=${agentClientLookupRedirectUrl(uri)}"

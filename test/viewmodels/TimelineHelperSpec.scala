@@ -25,9 +25,9 @@ import java.time.LocalDateTime
 
 class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter {
 
-  val helper = injector.instanceOf[TimelineHelper]
+  val helper: TimelineHelper = injector.instanceOf[TimelineHelper]
 
-  val sampleExpiryDate = LocalDateTime.of(2023,3,1,1,1,1)
+  val sampleExpiryDate: LocalDateTime = LocalDateTime.of(2023,3,1,1,1,1)
 
   val complianceReturns = Seq(
     Return(sampleDate,sampleDate.plusDays(7), sampleDate.plusMonths(1), Some(ReturnStatusEnum.Submitted)),

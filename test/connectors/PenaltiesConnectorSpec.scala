@@ -48,7 +48,7 @@ class PenaltiesConnectorSpec extends SpecBase {
           any(),
           any())).thenReturn(Future.successful(sampleLspData))
 
-      val result = await(connector.getPenaltiesData(vrn)(vatTraderUser, HeaderCarrier()))
+      val result: ETMPPayload = await(connector.getPenaltiesData(vrn)(vatTraderUser, HeaderCarrier()))
       result shouldBe sampleLspData
     }
   }
@@ -62,7 +62,7 @@ class PenaltiesConnectorSpec extends SpecBase {
         any()))
       .thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", INTERNAL_SERVER_ERROR)))
 
-    val result = intercept[Exception](await(connector.getPenaltiesData("123456789")(vatTraderUser, HeaderCarrier())))
+    val result: Exception = intercept[Exception](await(connector.getPenaltiesData("123456789")(vatTraderUser, HeaderCarrier())))
     result.getMessage shouldBe "Upstream error"
   }
 }

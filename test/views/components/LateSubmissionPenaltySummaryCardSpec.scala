@@ -136,7 +136,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     )
   ), quarterlyThreshold)
 
-  val summaryCardModelWithFinancialPointBelowThresholdAndAppealInProgress: LateSubmissionPenaltySummaryCard = summaryCardHelper.financialSummaryCard(PenaltyPoint(
+  val summaryCardModelWithFinancialPointBelowThresholdAndAppealInProgress: LateSubmissionPenaltySummaryCard =
+    summaryCardHelper.financialSummaryCard(PenaltyPoint(
     PenaltyTypeEnum.Financial,
     "123456789",
     "1",
@@ -164,7 +165,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     )
   ), quarterlyThreshold)
 
-  val summaryCardModelWithFinancialPointBelowThresholdAndAppealAccepted = (user: User[_]) => summaryCardHelper.financialSummaryCard(PenaltyPoint(
+  val summaryCardModelWithFinancialPointBelowThresholdAndAppealAccepted: User[_] => LateSubmissionPenaltySummaryCard =
+    (user: User[_]) => summaryCardHelper.financialSummaryCard(PenaltyPoint(
     PenaltyTypeEnum.Financial,
     "123456789",
     "1",
@@ -192,7 +194,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     )
   ), quarterlyThreshold)(implicitly, user)
 
-  val summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected = (user: User[_]) => summaryCardHelper.financialSummaryCard(PenaltyPoint(
+  val summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected: User[_] => LateSubmissionPenaltySummaryCard =
+    (user: User[_]) => summaryCardHelper.financialSummaryCard(PenaltyPoint(
     PenaltyTypeEnum.Financial,
     "123456789",
     "1",
@@ -220,7 +223,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     )
   ), quarterlyThreshold)(implicitly, user)
 
-  val summaryCardModelWithFinancialPointBelowThresholdAndAppealReinstated = (user: User[_]) => summaryCardHelper.financialSummaryCard(PenaltyPoint(
+  val summaryCardModelWithFinancialPointBelowThresholdAndAppealReinstated: User[_] => LateSubmissionPenaltySummaryCard =
+    (user: User[_]) => summaryCardHelper.financialSummaryCard(PenaltyPoint(
     PenaltyTypeEnum.Financial,
     "123456789",
     "1",
@@ -248,7 +252,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     )
   ), quarterlyThreshold)(implicitly, user)
 
-  val summaryCardModelWithFinancialPointBelowThresholdAndAppealUnderTribunalReview = summaryCardHelper.financialSummaryCard(PenaltyPoint(
+  val summaryCardModelWithFinancialPointBelowThresholdAndAppealUnderTribunalReview: LateSubmissionPenaltySummaryCard =
+    summaryCardHelper.financialSummaryCard(PenaltyPoint(
     PenaltyTypeEnum.Financial,
     "123456789",
     "1",
@@ -276,7 +281,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     )
   ), quarterlyThreshold)
 
-  val summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected = (user: User[_]) => summaryCardHelper.financialSummaryCard(PenaltyPoint(
+  val summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected: User[_] => LateSubmissionPenaltySummaryCard =
+    (user: User[_]) => summaryCardHelper.financialSummaryCard(PenaltyPoint(
     PenaltyTypeEnum.Financial,
     "123456789",
     "1",
@@ -304,7 +310,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     )
   ), quarterlyThreshold)(implicitly, user)
 
-  val summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalAccepted = (user: User[_]) => summaryCardHelper.financialSummaryCard(PenaltyPoint(
+  val summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalAccepted: User[_] => LateSubmissionPenaltySummaryCard =
+    (user: User[_]) => summaryCardHelper.financialSummaryCard(PenaltyPoint(
     PenaltyTypeEnum.Financial,
     "123456789",
     "1",
@@ -332,7 +339,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     )
   ), quarterlyThreshold)(implicitly, user)
 
-  val summaryCardModelWithFinancialPointAboveThreshold = summaryCardHelper.financialSummaryCard(PenaltyPoint(
+  val summaryCardModelWithFinancialPointAboveThreshold: LateSubmissionPenaltySummaryCard = summaryCardHelper.financialSummaryCard(PenaltyPoint(
     PenaltyTypeEnum.Financial,
     "123456789",
     "3",
@@ -446,20 +453,34 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     }
 
     "given a financial point" should {
-      val docWithFinancialPointBelowThreshold: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThreshold))
-      val docWithFinancialPointAboveThreshold: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointAboveThreshold))
-      val docWithFinancialPointAppealUnderReview: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealInProgress))
-      val docWithFinancialPointAppealAccepted: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealAccepted(user)))
-      val docWithFinancialPointAppealAcceptedAgent: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealAccepted(agentUser)))
-      val docWithFinancialPointAppealRejected: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected(user)))
-      val docWithFinancialPointAppealRejectedAgent: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected(agentUser)))
-      val docWithFinancialPointAppealReinstated: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealReinstated(user)))
-      val docWithFinancialPointAppealReinstatedAgent: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealReinstated(agentUser)))
-      val docWithFinancialPointAppealUnderTribunalReview: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealUnderTribunalReview))
-      val docWithFinancialPointAppealTribunalRejected: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected(user)))
-      val docWithFinancialPointAppealTribunalRejectedAgent: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected(agentUser)))
-      val docWithFinancialPointAppealTribunalAccepted: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalAccepted(user)))
-      val docWithFinancialPointAppealTribunalAcceptedAgent: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalAccepted(agentUser)))
+      val docWithFinancialPointBelowThreshold: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThreshold))
+      val docWithFinancialPointAboveThreshold: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointAboveThreshold))
+      val docWithFinancialPointAppealUnderReview: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealInProgress))
+      val docWithFinancialPointAppealAccepted: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealAccepted(user)))
+      val docWithFinancialPointAppealAcceptedAgent: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealAccepted(agentUser)))
+      val docWithFinancialPointAppealRejected: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected(user)))
+      val docWithFinancialPointAppealRejectedAgent: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected(agentUser)))
+      val docWithFinancialPointAppealReinstated: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealReinstated(user)))
+      val docWithFinancialPointAppealReinstatedAgent: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealReinstated(agentUser)))
+      val docWithFinancialPointAppealUnderTribunalReview: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealUnderTribunalReview))
+      val docWithFinancialPointAppealTribunalRejected: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected(user)))
+      val docWithFinancialPointAppealTribunalRejectedAgent: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected(agentUser)))
+      val docWithFinancialPointAppealTribunalAccepted: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalAccepted(user)))
+      val docWithFinancialPointAppealTribunalAcceptedAgent: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalAccepted(agentUser)))
 
       "shows the financial heading with point number when the point is below/at threshold for filing frequency" in {
         docWithFinancialPointBelowThreshold.select(".app-summary-card__title").get(0).text shouldBe "Penalty point 1: £200 penalty"

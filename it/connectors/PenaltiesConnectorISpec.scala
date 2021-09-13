@@ -27,8 +27,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 class PenaltiesConnectorISpec extends IntegrationSpecCommonBase {
 
-  implicit private lazy val hc = HeaderCarrier()
-  val vatTraderUser: User[_] = User("1234", true, None)(FakeRequest())
+  implicit private lazy val hc: HeaderCarrier = HeaderCarrier()
+  val vatTraderUser: User[_] = User("1234", active = true, None)(FakeRequest())
 
   val connector: PenaltiesConnector = app.injector.instanceOf[PenaltiesConnector]
 

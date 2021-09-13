@@ -28,19 +28,20 @@ import stubs.AuthStub
 import stubs.PenaltiesStub.{returnAgentLSPDataStub, returnLSPDataStub}
 import testUtils.IntegrationSpecCommonBase
 import utils.SessionKeys
-
 import java.time.LocalDateTime
+
 import models.communication.{Communication, CommunicationTypeEnum}
 import models.financial.{AmountTypeEnum, Financial, OverviewElement}
 import models.reason.PaymentPenaltyReasonEnum
+import play.api.mvc.AnyContentAsEmpty
 
 class IndexControllerISpec extends IntegrationSpecCommonBase {
-  val sampleDate1 = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
-  val sampleDate2 = LocalDateTime.of(2021, 2, 1, 1, 1, 1)
-  val sampleDate3 = LocalDateTime.of(2021, 3, 1, 1, 1, 1)
-  val sampleDate4 = LocalDateTime.of(2021, 4, 1, 1, 1, 1)
-  val controller = injector.instanceOf[IndexController]
-  val fakeAgentRequest = FakeRequest("GET", "/").withSession(SessionKeys.agentSessionVrn -> "123456789")
+  val sampleDate1: LocalDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
+  val sampleDate2: LocalDateTime = LocalDateTime.of(2021, 2, 1, 1, 1, 1)
+  val sampleDate3: LocalDateTime = LocalDateTime.of(2021, 3, 1, 1, 1, 1)
+  val sampleDate4: LocalDateTime = LocalDateTime.of(2021, 4, 1, 1, 1, 1)
+  val controller: IndexController = injector.instanceOf[IndexController]
+  val fakeAgentRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(SessionKeys.agentSessionVrn -> "123456789")
   val etmpPayloadWithAddedPoints: ETMPPayload = ETMPPayload(
     pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, otherPenalties = Some(false), vatOverview = Some(Seq.empty), penaltyPoints = Seq(
       PenaltyPoint(
@@ -341,7 +342,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       )
     )))
 
-  val latePaymentPenaltyWithAppeal: Option[Seq[LatePaymentPenalty]] = Some(Seq(latePaymentPenalty.get.head.copy(appealStatus = Some(AppealStatusEnum.Under_Review))))
+  val latePaymentPenaltyWithAppeal: Option[Seq[LatePaymentPenalty]] =
+    Some(Seq(latePaymentPenalty.get.head.copy(appealStatus = Some(AppealStatusEnum.Under_Review))))
 
   val etmpPayloadWithLPP: ETMPPayload = etmpPayloadWithAddedPoints.copy(
     latePaymentPenalties = latePaymentPenalty
@@ -746,37 +748,43 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     "redirect the user to the appeals service when the penalty is not a LPP" in {
       val request = buildClientForRequestToApp(uri = "/appeal-penalty?penaltyId=1234&isLPP=false&isObligation=false&isAdditional=false").get()
       await(request).status shouldBe Status.SEE_OTHER
-      await(request).header(HeaderNames.LOCATION).get shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=false&isAdditional=false"
+      await(request).header(HeaderNames.LOCATION).get shouldBe
+        "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=false&isAdditional=false"
     }
 
     "redirect the user to the appeals service when the penalty is a LPP" in {
       val request = buildClientForRequestToApp(uri = "/appeal-penalty?penaltyId=1234&isLPP=true&isObligation=false&isAdditional=false").get()
       await(request).status shouldBe Status.SEE_OTHER
-      await(request).header(HeaderNames.LOCATION).get shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=true&isAdditional=false"
+      await(request).header(HeaderNames.LOCATION).get shouldBe
+        "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=true&isAdditional=false"
     }
 
     "redirect the user to the appeals service when the penalty is a LPP - Additional" in {
       val request = buildClientForRequestToApp(uri = "/appeal-penalty?penaltyId=1234&isLPP=true&isObligation=false&isAdditional=true").get()
       await(request).status shouldBe Status.SEE_OTHER
-      await(request).header(HeaderNames.LOCATION).get shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=true&isAdditional=true"
+      await(request).header(HeaderNames.LOCATION).get shouldBe
+        "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=true&isAdditional=true"
     }
 
     "redirect the user to the obligations appeals service when the penalty is not a LPP" in {
       val request = buildClientForRequestToApp(uri = "/appeal-penalty?penaltyId=1234&isLPP=false&isObligation=true&isAdditional=false").get()
       await(request).status shouldBe Status.SEE_OTHER
-      await(request).header(HeaderNames.LOCATION).get shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234&isLPP=false&isAdditional=false"
+      await(request).header(HeaderNames.LOCATION).get shouldBe
+        "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234&isLPP=false&isAdditional=false"
     }
 
     "redirect the user to the obligations appeals service when the penalty is a LPP" in {
       val request = buildClientForRequestToApp(uri = "/appeal-penalty?penaltyId=1234&isLPP=true&isObligation=true&isAdditional=false").get()
       await(request).status shouldBe Status.SEE_OTHER
-      await(request).header(HeaderNames.LOCATION).get shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234&isLPP=true&isAdditional=false"
+      await(request).header(HeaderNames.LOCATION).get shouldBe
+        "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234&isLPP=true&isAdditional=false"
     }
 
     "redirect the user to the obligations appeals service when the penalty is a LPP - Additional" in {
       val request = buildClientForRequestToApp(uri = "/appeal-penalty?penaltyId=1234&isLPP=true&isObligation=true&isAdditional=true").get()
       await(request).status shouldBe Status.SEE_OTHER
-      await(request).header(HeaderNames.LOCATION).get shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234&isLPP=true&isAdditional=true"
+      await(request).header(HeaderNames.LOCATION).get shouldBe
+        "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234&isLPP=true&isAdditional=true"
     }
 
   }

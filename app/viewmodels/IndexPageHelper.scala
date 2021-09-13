@@ -36,10 +36,9 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
   //scalastyle:off
   def getContentBasedOnPointsFromModel(etmpData: ETMPPayload)(implicit messages: Messages, user: User[_]): Html = {
     (etmpData.pointsTotal, etmpData.penaltyPointsThreshold, etmpData.adjustmentPointsTotal) match {
-      case (0, _, _) => {
+      case (0, _, _) =>
         p(content = stringAsHtml(messages("lsp.pointSummary.noActivePoints")))
-      }
-      case (currentPoints, threshold, _) if currentPoints >= threshold => {
+      case (currentPoints, threshold, _) if currentPoints >= threshold =>
         html(
           p(content = html(stringAsHtml(getMessage("lsp.onThreshold.p1"))),
             classes = "govuk-body govuk-!-font-size-24"),
@@ -50,8 +49,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           )),
           p(link(link = controllers.routes.ComplianceController.onPageLoad().url, messages("lsp.onThreshold.link")))
         )
-      }
-      case (currentPoints, threshold, adjustedPoints) if adjustedPoints > 0 => {
+      case (currentPoints, threshold, adjustedPoints) if adjustedPoints > 0 =>
         val base = Seq(
           p(content = getPluralOrSingular(currentPoints, currentPoints)("lsp.pointSummary.penaltyPoints.adjusted.singular", "lsp.pointSummary.penaltyPoints.adjusted.plural")),
           bullets(Seq(
@@ -70,9 +68,8 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
         } else {
           html(base: _*)
         }
-      }
 
-      case (currentPoints, threshold, adjustedPoints) if adjustedPoints < 0 => {
+      case (currentPoints, threshold, adjustedPoints) if adjustedPoints < 0 =>
         val base = Seq(
           p(content = getPluralOrSingular(currentPoints, currentPoints)("lsp.pointSummary.penaltyPoints.adjusted.singular", "lsp.pointSummary.penaltyPoints.adjusted.plural")),
           bullets(Seq(
@@ -91,9 +88,8 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
         } else {
           html(base: _*)
         }
-      }
 
-      case (currentPoints, threshold, _) if currentPoints < threshold - 1 => {
+      case (currentPoints, threshold, _) if currentPoints < threshold - 1 =>
         html(
           renderPointsTotal(currentPoints),
           p(content = getPluralOrSingularContentForOverview(currentPoints, etmpData.lateSubmissions)),
@@ -105,15 +101,13 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           )),
           getGuidanceLink
         )
-      }
-      case (currentPoints, threshold, _) if currentPoints == threshold - 1 => {
+      case (currentPoints, threshold, _) if currentPoints == threshold - 1 =>
         html(
           renderPointsTotal(currentPoints),
           warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText"))),
           p(getPluralOrSingularContentForOverview(currentPoints, etmpData.lateSubmissions)),
           getGuidanceLink
         )
-      }
       case _ => p(content = html(stringAsHtml("")))
     }
   }

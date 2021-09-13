@@ -283,16 +283,17 @@ class PenaltiesServiceSpec extends SpecBase {
 
       when(mockPenaltiesConnector.getPenaltiesData(any())(any(), any())).thenReturn(Future.successful(sampleLspData))
 
-      val result = await(service.getETMPDataFromEnrolmentKey(vrn)(vatTraderUser, HeaderCarrier()))
+      val result: ETMPPayload = await(service.getETMPDataFromEnrolmentKey(vrn)(vatTraderUser, HeaderCarrier()))
 
       result shouldBe sampleLspData
     }
 
     s"return an exception and pass the result back to the controller" in new Setup {
 
-      when(mockPenaltiesConnector.getPenaltiesData(any())(any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", INTERNAL_SERVER_ERROR)))
+      when(mockPenaltiesConnector.getPenaltiesData(any())(any(), any()))
+        .thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", INTERNAL_SERVER_ERROR)))
 
-      val result = intercept[Exception](await(service.getETMPDataFromEnrolmentKey(vrn)(vatTraderUser, HeaderCarrier())))
+      val result: Exception = intercept[Exception](await(service.getETMPDataFromEnrolmentKey(vrn)(vatTraderUser, HeaderCarrier())))
 
       result.getMessage shouldBe "Upstream error"
     }
@@ -322,12 +323,12 @@ class PenaltiesServiceSpec extends SpecBase {
       )
     )
     s"return true when there is a ${PenaltyTypeEnum.Financial} penalty point and it is not paid" in new Setup {
-      val result = service.isAnyLSPUnpaid(sampleFinancialPenaltyPointUnpaid)
+      val result: Boolean = service.isAnyLSPUnpaid(sampleFinancialPenaltyPointUnpaid)
       result shouldBe true
     }
 
     s"return false when there is a ${PenaltyTypeEnum.Financial} penalty point and IT IS paid" in new Setup {
-      val result = service.isAnyLSPUnpaid(Seq(sampleFinancialPenaltyPointUnpaid.head.copy(status = PointStatusEnum.Paid)))
+      val result: Boolean = service.isAnyLSPUnpaid(Seq(sampleFinancialPenaltyPointUnpaid.head.copy(status = PointStatusEnum.Paid)))
       result shouldBe false
     }
   }
@@ -368,65 +369,65 @@ class PenaltiesServiceSpec extends SpecBase {
     )
 
     s"return true when there is a ${PenaltyTypeEnum.Financial} penalty point, it is due and there is no submission" in new Setup {
-      val result = service.isAnyLSPUnpaidAndSubmissionIsDue(sampleFinancialPenaltyPointUnpaidAndNotSubmitted)
+      val result: Boolean = service.isAnyLSPUnpaidAndSubmissionIsDue(sampleFinancialPenaltyPointUnpaidAndNotSubmitted)
       result shouldBe true
     }
 
     s"return false when there is a ${PenaltyTypeEnum.Financial} penalty point, it is due BUT there is a submission" in new Setup {
-      val result = service.isAnyLSPUnpaidAndSubmissionIsDue(sampleFinancialPenaltyPointUnpaidAndSubmitted)
+      val result: Boolean = service.isAnyLSPUnpaidAndSubmissionIsDue(sampleFinancialPenaltyPointUnpaidAndSubmitted)
       result shouldBe false
     }
   }
 
   "findOverdueVATFromPayload" should {
     "return 0 when the payload does not have any VAT overview field" in new Setup {
-      val result = service.findOverdueVATFromPayload(sampleLspData)
+      val result: BigDecimal = service.findOverdueVATFromPayload(sampleLspData)
       result shouldBe 0
     }
 
     "return 0 when the payload contains VAT overview but has no elements" in new Setup {
-      val result = service.findOverdueVATFromPayload(sampleLspDataWithVATOverviewNoElements)
+      val result: BigDecimal = service.findOverdueVATFromPayload(sampleLspDataWithVATOverviewNoElements)
       result shouldBe 0
     }
 
     "return total amount of VAT overdue when the VAT overview is present with elements" in new Setup {
-      val result = service.findOverdueVATFromPayload(sampleLspDataWithVATOverview)
+      val result: BigDecimal = service.findOverdueVATFromPayload(sampleLspDataWithVATOverview)
       result shouldBe 223.45
     }
   }
 
   "isOtherUnrelatedPenalties" should {
     "return false when the payload does not have the 'otherPenalties' field" in new Setup {
-      val result = service.isOtherUnrelatedPenalties(sampleLspData.copy(otherPenalties = None))
+      val result: Boolean = service.isOtherUnrelatedPenalties(sampleLspData.copy(otherPenalties = None))
       result shouldBe false
     }
 
     "return false when the payload has the 'otherPenalties' field and it's false" in new Setup {
-      val result = service.isOtherUnrelatedPenalties(sampleLspData)
+      val result: Boolean = service.isOtherUnrelatedPenalties(sampleLspData)
       result shouldBe false
     }
 
     "return true when the payload has the 'otherPenalties' field and it's true" in new Setup {
-      val result = service.isOtherUnrelatedPenalties(sampleLspData.copy(otherPenalties = Some(true)))
+      val result: Boolean = service.isOtherUnrelatedPenalties(sampleLspData.copy(otherPenalties = Some(true)))
       result shouldBe true
     }
   }
 
   "findEstimatedLPPsFromPayload" should {
     "return 0 when the user has no LPP's" in new Setup {
-      val result = service.findEstimatedLPPsFromPayload(sampleLspData)
+      val result: (BigDecimal, Boolean) = service.findEstimatedLPPsFromPayload(sampleLspData)
       result._1 shouldBe 0
       result._2 shouldBe false
     }
 
     "return the amount of crystallised penalties and false - indicating no estimate" in new Setup {
-      val result = service.findEstimatedLPPsFromPayload(sampleLppDataNoAdditionalPenalties)
+      val result: (BigDecimal, Boolean) = service.findEstimatedLPPsFromPayload(sampleLppDataNoAdditionalPenalties)
       result._1 shouldBe 50.00
       result._2 shouldBe false
     }
 
     "return the amount of crystallised penalties and true - indicating additional penalties / estimates" in new Setup {
-      val result = service.findEstimatedLPPsFromPayload(sampleLppDataWithAdditionalPenalties)
+      val result: (BigDecimal, Boolean) = service.findEstimatedLPPsFromPayload(sampleLppDataWithAdditionalPenalties)
       result._1 shouldBe 100.00
       result._2 shouldBe true
     }
@@ -434,47 +435,47 @@ class PenaltiesServiceSpec extends SpecBase {
 
   "findTotalLSPFromPayload" should {
     "return 0 when the payload does not have any LSPP's" in new Setup {
-      val result = service.findTotalLSPFromPayload(sampleLspData)
-      result shouldBe (0, 0)
+      val result: (BigDecimal, Int) = service.findTotalLSPFromPayload(sampleLspData)
+      result shouldBe ((0, 0): (Int, Int))
     }
 
     "return 0 when the payload does not have any LSP's" in new Setup {
-      val result = service.findTotalLSPFromPayload(etmpDataWithOneLSP)
-      result shouldBe (0, 0)
+      val result: (BigDecimal, Int) = service.findTotalLSPFromPayload(etmpDataWithOneLSP)
+      result shouldBe ((0, 0): (Int, Int))
     }
 
     "return total amount of VAT overdue when the VAT overview is present with elements" in new Setup {
-      val result = service.findTotalLSPFromPayload(sampleLspDataWithDueFinancialPenalties)
-      result shouldBe (400.00, 2)
+      val result: (BigDecimal, Int) = service.findTotalLSPFromPayload(sampleLspDataWithDueFinancialPenalties)
+      result shouldBe ((400.00, 2): (Double, Int))
     }
   }
 
   "estimatedVATInterest" should {
     "return 0 when the payload does not have any VAT overview field" in new Setup {
-      val result = service.findEstimatedVATInterest(sampleLspData)
+      val result: (BigDecimal, Boolean) = service.findEstimatedVATInterest(sampleLspData)
       result._1 shouldBe 0.00
       result._2 shouldBe false
     }
 
     "return 0 when the payload contains VAT overview but has no crystalized and estimated interest" in new Setup {
-      val result = service.findEstimatedVATInterest(sampleLspDataWithVATOverviewNoElements)
+      val result: (BigDecimal, Boolean) = service.findEstimatedVATInterest(sampleLspDataWithVATOverviewNoElements)
       result._1 shouldBe 0.00
       result._2 shouldBe false
     }
 
     "return total estimated VAT interest when  crystalized and estimated interest is present" in new Setup {
-      val result = service.findEstimatedVATInterest(sampleLspDataWithVATOverview)
+      val result: (BigDecimal, Boolean) = service.findEstimatedVATInterest(sampleLspDataWithVATOverview)
       result._1 shouldBe 40.00
       result._2 shouldBe true
     }
 
     "return total VAT interest when the VAT overview is present without estimated interest" in new Setup {
-      val result = service.findEstimatedVATInterest(samplePayloadWithVATOverviewWithoutEstimatedInterest)
+      val result: (BigDecimal, Boolean) = service.findEstimatedVATInterest(samplePayloadWithVATOverviewWithoutEstimatedInterest)
       result._1 shouldBe 20.00
       result._2 shouldBe false
     }
     "return total VAT interest when the VAT overview is present without crystalized interest" in new Setup {
-      val result = service.findEstimatedVATInterest(samplePayloadWithVATOverviewWithoutCrystalizedInterest)
+      val result: (BigDecimal, Boolean) = service.findEstimatedVATInterest(samplePayloadWithVATOverviewWithoutCrystalizedInterest)
       result._1 shouldBe 43.00
       result._2 shouldBe true
     }
@@ -482,34 +483,34 @@ class PenaltiesServiceSpec extends SpecBase {
 
   "findCrystalizedPenaltiesInterest" should {
     "return 0 when the payload does not have any financial penalties for LPS or LPP" in new Setup {
-      val result = service.findCrystalizedPenaltiesInterest(sampleLspData)
+      val result: BigDecimal = service.findCrystalizedPenaltiesInterest(sampleLspData)
       result shouldBe 0
     }
 
     "return 0 when the payload contains financial penalties but does not contain crystalized interest penalties for LSP and LPP" in new Setup {
-      val result = service.findCrystalizedPenaltiesInterest(sampleLspDataWithNoFinancialElements)
+      val result: BigDecimal = service.findCrystalizedPenaltiesInterest(sampleLspDataWithNoFinancialElements)
       result shouldBe 0
     }
 
     "return total amount when the payload contains crystalized interest penalties for LSP and LPP" in new Setup {
-      val result = service.findCrystalizedPenaltiesInterest(sampleLspDataWithFinancialElements)
+      val result: BigDecimal = service.findCrystalizedPenaltiesInterest(sampleLspDataWithFinancialElements)
       result shouldBe 40
     }
   }
 
   "findEstimatedPenaltiesInterest" should {
     "return 0 when the payload does not have any financial penalties for LPS or LPP" in new Setup {
-      val result = service.findEstimatedPenaltiesInterest(sampleLspData)
+      val result: BigDecimal = service.findEstimatedPenaltiesInterest(sampleLspData)
       result shouldBe 0
     }
 
     "return 0 when the payload contains financial penalties but does not contain estimated interest penalties for LSP and LPP" in new Setup {
-      val result = service.findEstimatedPenaltiesInterest(sampleLspDataWithNoFinancialElements)
+      val result: BigDecimal = service.findEstimatedPenaltiesInterest(sampleLspDataWithNoFinancialElements)
       result shouldBe 0
     }
 
     "return total amount when the payload contains estimated interest penalties for LSP and LPP" in new Setup {
-      val result = service.findEstimatedPenaltiesInterest(sampleLspDataWithFinancialElements)
+      val result: BigDecimal = service.findEstimatedPenaltiesInterest(sampleLspDataWithFinancialElements)
       result shouldBe 30
     }
   }

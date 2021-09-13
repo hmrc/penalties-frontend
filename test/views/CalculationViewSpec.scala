@@ -29,13 +29,13 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
   val calculationAdditionalPage: CalculationAdditionalView = injector.instanceOf[CalculationAdditionalView]
 
   object Selector extends BaseSelectors {
-    val listRow = (item: Int) => s"#main-content tr:nth-child($item) th"
+    val listRow: Int => String = (item: Int) => s"#main-content tr:nth-child($item) th"
 
-    val listValue = (item: Int) => s"#main-content tr:nth-child($item) td"
+    val listValue: Int => String = (item: Int) => s"#main-content tr:nth-child($item) td"
 
-    val bulletNthChild = (nThChild: Int) => s"#main-content > div > div > ul > li:nth-child($nThChild)"
+    val bulletNthChild: Int => String = (nThChild: Int) => s"#main-content > div > div > ul > li:nth-child($nThChild)"
 
-    val govukBody = (nthChild: Int) => s"#main-content .govuk-body:nth-of-type($nthChild)"
+    val govukBody: Int => String = (nthChild: Int) => s"#main-content .govuk-body:nth-of-type($nthChild)"
 
     val warning = "#main-content div .govuk-warning-text"
 
@@ -135,7 +135,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           warningDate="")(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
-      implicit val docWithOnlyOneCalculation: Document = asDocument(applyView(Seq("2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)"), isMultipleAmounts = false))
+      implicit val docWithOnlyOneCalculation: Document =
+        asDocument(applyView(Seq("2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)"), isMultipleAmounts = false))
       implicit val docWith2Calculations: Document = asDocument(applyView(Seq("2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)",
         "2% of £10,000.00 (Central assessment amount unpaid on 6 June 2025"), isMultipleAmounts = true))
 
@@ -163,7 +164,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           Selector.listRow(1) -> th1LPP,
           Selector.listValue(1) -> "£400",
           Selector.listRow(2) -> th2LPP,
-          Selector.listValue(2) -> "2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025) + 2% of £10,000.00 (Central assessment amount unpaid on 6 June 2025",
+          Selector.listValue(2) ->
+            "2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025) + 2% of £10,000.00 (Central assessment amount unpaid on 6 June 2025",
           Selector.listRow(3) -> th3LPP,
           Selector.listValue(3) -> "£100",
           Selector.listRow(4) -> th4LPP,
@@ -189,7 +191,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           warningDate = "15 January 2023")(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
-      implicit val docWithOnlyOneCalculation: Document = asDocument(applyView(Seq("2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)"), isMultipleAmounts = false))
+      implicit val docWithOnlyOneCalculation: Document =
+        asDocument(applyView(Seq("2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)"), isMultipleAmounts = false))
       implicit val docWith2Calculations: Document = asDocument(applyView(Seq("2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)",
         "2% of £10,000.00 (Central assessment amount unpaid on 6 June 2025"), isMultipleAmounts = true))
 

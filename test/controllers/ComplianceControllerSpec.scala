@@ -63,7 +63,7 @@ class ComplianceControllerSpec extends SpecBase {
     "the user is authorised" must {
       "return OK - calling the service to retrieve missing returns " +
         "and a compliance summary and pass the data to the view" in new Setup(AuthTestModels.successfulAuthResult) {
-        val result = Controller.onPageLoad()(fakeRequest)
+        val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
         status(result) shouldBe OK
       }
 
@@ -71,7 +71,7 @@ class ComplianceControllerSpec extends SpecBase {
         "and compliance summary but failing" in new Setup(AuthTestModels.successfulAuthResult) {
         when(mockComplianceService.getComplianceDataWithEnrolmentKey(any())(any())).thenReturn(Future.failed(new Exception("Something went wrong.")))
 
-        val result = intercept[Exception](await(Controller.onPageLoad()(fakeRequest)))
+        val result: Exception = intercept[Exception](await(Controller.onPageLoad()(fakeRequest)))
         result.getMessage shouldBe "Something went wrong."
 
       }
