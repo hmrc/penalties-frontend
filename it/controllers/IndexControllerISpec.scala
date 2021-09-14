@@ -724,7 +724,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         await(request).header.status shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
         parsedBody.select("#what-is-owed > h2").text shouldBe "Overview"
-        parsedBody.select("#what-is-owed > p").first.text shouldBe "They owe:"
+        parsedBody.select("#what-is-owed > p").first.text shouldBe "Your client owes:"
         parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£121.40 in late VAT"
         parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "£93.10 in estimated VAT interest"
         parsedBody.select("#what-is-owed > ul > li").get(2).text shouldBe "£200 in late payment penalties"
