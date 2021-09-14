@@ -201,7 +201,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           }
           implicit val doc: Document = asDocument(applyView())
           doc.select("#what-is-owed > h2").text shouldBe "Overview"
-          doc.select("#what-is-owed > p").first.text shouldBe "They owe:"
+          doc.select("#what-is-owed > p").first.text shouldBe "Your client owes:"
           doc.select("#main-content h2:nth-child(3)").text shouldBe "Penalty and appeal details"
           doc.select("#what-is-owed > a").text shouldBe "Check amounts"
           doc.select("#main-content .govuk-details__summary-text").text shouldBe "Payment help"
