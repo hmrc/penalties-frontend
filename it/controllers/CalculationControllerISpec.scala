@@ -130,7 +130,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
         period = PaymentPeriod(
           sampleDate1,
           sampleDate1.plusMonths(1),
-          sampleDate1.plusMonths(2).plusDays(31),
+          LocalDateTime.now().minusDays(40),
           PaymentStatusEnum.Paid
         ),
         communications = Seq(
@@ -161,7 +161,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
         period = PaymentPeriod(
           sampleDate1,
           sampleDate1.plusMonths(1),
-          sampleDate1.plusMonths(2).plusDays(7),
+          LocalDateTime.now().minusDays(40),
           PaymentStatusEnum.Due
         ),
         communications = Seq(
