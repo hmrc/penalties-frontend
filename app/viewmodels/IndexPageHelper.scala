@@ -183,9 +183,10 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       singularOrPluralAmountOfLSPs,
       returnMessageIfOtherUnrelatedPenalties(otherUnrelatedPenalties, "whatIsOwed.otherPenalties")
     ).collect { case Some(x) => x }
-    if (stringToConvertToBulletPoints.isEmpty) {
+    if (stringToConvertToBulletPoints.isEmpty || (stringToConvertToBulletPoints.size == 1 && otherUnrelatedPenalties)) {
       None
-    } else {
+    }
+    else {
       Some(bullets(
         stringToConvertToBulletPoints.map {
           stringAsHtml
