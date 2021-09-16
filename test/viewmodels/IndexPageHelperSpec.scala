@@ -785,13 +785,12 @@ class IndexPageHelperSpec extends SpecBase {
         result.get.body.contains("other penalties not related to late submission or late payment") shouldBe true
       }
 
-      "the user has other unrelated penalties" in {
+      "the user has other unrelated penalties only" in {
         val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
           pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = None,
           vatOverview = None, otherPenalties = Some(true))
         val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithOutstandingPayments)
-        result.isDefined shouldBe true
-        result.get.body.contains("other penalties not related to late submission or late payment") shouldBe true
+        result.isDefined shouldBe false
       }
 
       "the user has outstanding VAT to pay and outstanding LSP's" in {
