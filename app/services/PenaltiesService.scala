@@ -67,18 +67,23 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
     payload.otherPenalties.contains(true)
   }
 
-  def findEstimatedLPPsFromPayload(payload: ETMPPayload): (BigDecimal, Boolean) = {
+  def findCrystallisedLPPsFromPayload(payload: ETMPPayload): BigDecimal = {
     payload.latePaymentPenalties.map {
       allLPPs => {
-        val allAdditionalPoints = allLPPs.filter(_.`type` == PenaltyTypeEnum.Additional)
-        val allFinancialPoints = allLPPs.filter(_.`type` == PenaltyTypeEnum.Financial)
-        val estimatedLPPs = allAdditionalPoints.map(_.financial.outstandingAmountDue).sum
-        val crystallisedLPPs = allFinancialPoints.map(_.financial.outstandingAmountDue).sum
-        val isEstimatesIncluded = estimatedLPPs > BigDecimal(0)
-        (crystallisedLPPs + estimatedLPPs, isEstimatesIncluded)
+        val allCrystallisedDueLPPs = allLPPs.filter(_.status == PointStatusEnum.Due)
+        allCrystallisedDueLPPs.map(_.financial.outstandingAmountDue).sum
       }
     }
-  }.getOrElse((0, false))
+  }.getOrElse(0)
+
+  def findEstimatedLPPsFromPayload(payload: ETMPPayload): BigDecimal = {
+    payload.latePaymentPenalties.map {
+      allLPPs => {
+        val allEstimatedLPPs = allLPPs.filter(_.status == PointStatusEnum.Estimated)
+        allEstimatedLPPs.map(_.financial.outstandingAmountDue).sum
+      }
+    }
+  }.getOrElse(0)
 
   def findTotalLSPFromPayload(payload: ETMPPayload): (BigDecimal, Int) = {
     val lspAmountList = payload.penaltyPoints.map(_.financial.map(_.outstandingAmountDue)).collect { case Some(x) => x }

@@ -164,7 +164,10 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
 
   def getWhatYouOweBreakdown(etmpData: ETMPPayload)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
     val amountOfLateVAT = penaltiesService.findOverdueVATFromPayload(etmpData)
-    val lppAmount = penaltiesService.findEstimatedLPPsFromPayload(etmpData)
+
+    val crystallisedLPPAmount = penaltiesService.findCrystallisedLPPsFromPayload(etmpData)
+    val estimatedLPPAmount = penaltiesService.findEstimatedLPPsFromPayload(etmpData)
+
     val otherUnrelatedPenalties = penaltiesService.isOtherUnrelatedPenalties(etmpData)
     val totalAmountOfLSPs = penaltiesService.findTotalLSPFromPayload(etmpData)
     val estimatedVATInterest = penaltiesService.findEstimatedVATInterest(etmpData)
@@ -178,7 +181,10 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     val stringToConvertToBulletPoints = Seq(
       returnEstimatedMessageIfInterestMoreThanZero(amountOfLateVAT, isEstimatedAmount = false, "whatIsOwed.lateVAT"),
       returnEstimatedMessageIfInterestMoreThanZero(estimatedVATInterest._1, estimatedVATInterest._2, "whatIsOwed.VATInterest"),
-      returnEstimatedMessageIfInterestMoreThanZero(lppAmount._1, lppAmount._2, "whatIsOwed.lppAmount"),
+
+      returnEstimatedMessageIfInterestMoreThanZero(crystallisedLPPAmount, isEstimatedAmount = false, "whatIsOwed.lppAmount"),
+      returnEstimatedMessageIfInterestMoreThanZero(estimatedLPPAmount, isEstimatedAmount = true, "whatIsOwed.lppAmount"),
+
       returnEstimatedMessageIfInterestMoreThanZero(penaltiesCrystalizedInterest + penaltiesEstimatedInterest, penaltiesEstimatedInterest > BigDecimal(0), "whatIsOwed.allPenalties.interest"),
       singularOrPluralAmountOfLSPs,
       returnMessageIfOtherUnrelatedPenalties(otherUnrelatedPenalties, "whatIsOwed.otherPenalties")

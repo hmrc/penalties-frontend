@@ -637,7 +637,7 @@ class IndexPageHelperSpec extends SpecBase {
                 id = "1234",
                 reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
                 dateCreated = sampleDate,
-                status = PointStatusEnum.Due,
+                status = PointStatusEnum.Estimated,
                 appealStatus = None,
                 period = PaymentPeriod(
                   startDate = sampleDate,
@@ -657,9 +657,9 @@ class IndexPageHelperSpec extends SpecBase {
               LatePaymentPenalty(
                 `type` = PenaltyTypeEnum.Financial,
                 id = "1234",
-                reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
+                reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
                 dateCreated = sampleDate,
-                status = PointStatusEnum.Due,
+                status = PointStatusEnum.Estimated,
                 appealStatus = None,
                 period = PaymentPeriod(
                   startDate = sampleDate,
@@ -695,7 +695,7 @@ class IndexPageHelperSpec extends SpecBase {
                 id = "1234",
                 reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
                 dateCreated = sampleDate,
-                status = PointStatusEnum.Due,
+                status = PointStatusEnum.Estimated,
                 appealStatus = None,
                 period = PaymentPeriod(
                   startDate = sampleDate,
@@ -715,9 +715,9 @@ class IndexPageHelperSpec extends SpecBase {
               LatePaymentPenalty(
                 `type` = PenaltyTypeEnum.Financial,
                 id = "1234",
-                reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
+                reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
                 dateCreated = sampleDate,
-                status = PointStatusEnum.Due,
+                status = PointStatusEnum.Estimated,
                 appealStatus = None,
                 period = PaymentPeriod(
                   startDate = sampleDate,

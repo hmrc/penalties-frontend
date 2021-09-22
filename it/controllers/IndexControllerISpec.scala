@@ -172,11 +172,11 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
   )
 
-  val latePaymentPenalty: Option[Seq[LatePaymentPenalty]] = Some(Seq(
+  val paidLatePaymentPenalty: Option[Seq[LatePaymentPenalty]] = Some(Seq(
     LatePaymentPenalty(
       `type` = PenaltyTypeEnum.Financial,
       id = "123456789",
-      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
+      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
       dateCreated = sampleDate1,
       status = PointStatusEnum.Paid,
       appealStatus = None,
@@ -195,7 +195,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       ),
       financial = Financial(
         amountDue = 400.00,
-        outstandingAmountDue = 200.00,
+        outstandingAmountDue = 0.00,
         dueDate = sampleDate1
       )
     )))
@@ -290,7 +290,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       id = "123456789",
       reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
       dateCreated = sampleDate1,
-      status = PointStatusEnum.Due,
+      status = PointStatusEnum.Estimated,
       appealStatus = None,
       period = PaymentPeriod(
         sampleDate1,
@@ -316,9 +316,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     LatePaymentPenalty(
       `type` = PenaltyTypeEnum.Financial,
       id = "123456789",
-      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
+      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
       dateCreated = sampleDate1,
-      status = PointStatusEnum.Due,
+      status = PointStatusEnum.Estimated,
       appealStatus = None,
       period = PaymentPeriod(
         sampleDate1,
@@ -343,10 +343,10 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     )))
 
   val latePaymentPenaltyWithAppeal: Option[Seq[LatePaymentPenalty]] =
-    Some(Seq(latePaymentPenalty.get.head.copy(appealStatus = Some(AppealStatusEnum.Under_Review))))
+    Some(Seq(paidLatePaymentPenalty.get.head.copy(appealStatus = Some(AppealStatusEnum.Under_Review))))
 
-  val etmpPayloadWithLPP: ETMPPayload = etmpPayloadWithAddedPoints.copy(
-    latePaymentPenalties = latePaymentPenalty
+  val etmpPayloadWithPaidLPP: ETMPPayload = etmpPayloadWithAddedPoints.copy(
+    latePaymentPenalties = paidLatePaymentPenalty
   )
 
   val etmpPayloadWithLPPAndAdditionalPenalty: ETMPPayload = etmpPayloadWithAddedPoints.copy(
@@ -470,7 +470,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     latePaymentPenalties = latePaymentPenaltiesWithEstimate
   )
 
-  val etmpPayloadWithLPPAppeal: ETMPPayload = etmpPayloadWithLPP.copy(
+  val etmpPayloadWithLPPAppeal: ETMPPayload = etmpPayloadWithPaidLPP.copy(
     latePaymentPenalties = latePaymentPenaltyWithAppeal
   )
 
@@ -482,7 +482,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     crystalizedInterest = Some(6.00)
   )
 
-  val unpaidLatePaymentPenalty: Option[Seq[LatePaymentPenalty]] = Some(Seq(latePaymentPenalty.get.head.copy(status = PointStatusEnum.Due,
+  val unpaidLatePaymentPenalty: Option[Seq[LatePaymentPenalty]] = Some(Seq(paidLatePaymentPenalty.get.head.copy(status = PointStatusEnum.Due,
     period = PaymentPeriod(
       sampleDate1,
       sampleDate1.plusMonths(1),
@@ -555,22 +555,25 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     }
 
     "return 200 (OK) and render the view when there are LPPs paid that are retrieved from the backend" in {
-      returnLSPDataStub(etmpPayloadWithLPP)
+      returnLSPDataStub(etmpPayloadWithPaidLPP)
       val request = await(buildClientForRequestToApp(uri = "/").get())
       request.status shouldBe Status.OK
       val parsedBody = Jsoup.parse(request.body)
+      println(parsedBody.select("#late-payment-penalties section").text)
       parsedBody.select("#late-payment-penalties section header h3").text shouldBe "£400 penalty"
       parsedBody.select("#late-payment-penalties section header strong").text shouldBe "paid"
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
+      println(summaryCardBody.text)
       summaryCardBody.select("dt").get(0).text shouldBe "VAT Period"
       summaryCardBody.select("dd").get(0).text shouldBe "1 January 2021 to 1 February 2021"
       summaryCardBody.select("dt").get(1).text shouldBe "Penalty reason"
-      summaryCardBody.select("dd").get(1).text shouldBe "VAT not paid within 15 days"
+      summaryCardBody.select("dd").get(1).text shouldBe "VAT not paid within 30 days"
       parsedBody.select("#late-payment-penalties footer li").text() shouldBe "Appeal this penalty"
     }
-    
+
     "return 200 (OK) and render the view when there is outstanding payments" in {
-      returnLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalties = latePaymentPenalty))
+      //returnLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalties = paidLatePaymentPenalty))
+      returnLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue)
       val request = await(buildClientForRequestToApp(uri = "/").get())
       request.status shouldBe Status.OK
       val parsedBody = Jsoup.parse(request.body)
@@ -579,7 +582,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£121.40 in late VAT"
       parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "£93.10 in estimated VAT interest"
       parsedBody.select("#what-is-owed > ul > li").get(2).text shouldBe "£200 in late payment penalties"
-      parsedBody.select("#what-is-owed > ul > li").get(3).text shouldBe "£46.55 in estimated interest on penalties"
+      parsedBody.select("#what-is-owed > ul > li").get(3).text shouldBe "£99.55 in estimated interest on penalties"
       parsedBody.select("#what-is-owed > ul > li").get(4).text shouldBe "£400 fixed penalties for late submission"
       parsedBody.select("#what-is-owed > ul > li").get(5).text shouldBe "other penalties not related to late submission or late payment"
       parsedBody.select("#main-content h2:nth-child(4)").text shouldBe "Penalty and appeal details"
@@ -645,13 +648,14 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val request = await(buildClientForRequestToApp(uri = "/").get())
       request.status shouldBe Status.OK
       val parsedBody = Jsoup.parse(request.body)
+      println(parsedBody.select("#late-payment-penalties section").text)
       parsedBody.select("#late-payment-penalties section header h3").text shouldBe "£400 penalty"
       parsedBody.select("#late-payment-penalties section header strong").text shouldBe "paid"
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
       summaryCardBody.select("dt").get(0).text shouldBe "VAT Period"
       summaryCardBody.select("dd").get(0).text shouldBe "1 January 2021 to 1 February 2021"
       summaryCardBody.select("dt").get(1).text shouldBe "Penalty reason"
-      summaryCardBody.select("dd").get(1).text shouldBe "VAT not paid within 15 days"
+      summaryCardBody.select("dd").get(1).text shouldBe "VAT not paid within 30 days"
       summaryCardBody.select("dt").get(2).text shouldBe "Appeal status"
       summaryCardBody.select("dd").get(2).text shouldBe "Under review by HMRC"
     }
@@ -719,18 +723,18 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
 
       "return 200 (OK) and render the view when there is outstanding payments for the client" in {
         AuthStub.agentAuthorised()
-        returnAgentLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalties = latePaymentPenalty))
+        returnAgentLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalties = paidLatePaymentPenalty))
         val request = controller.onPageLoad()(fakeAgentRequest)
         await(request).header.status shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
+        println(parsedBody.select("#what-is-owed").text)
         parsedBody.select("#what-is-owed > h2").text shouldBe "Overview"
         parsedBody.select("#what-is-owed > p").first.text shouldBe "Your client owes:"
         parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£121.40 in late VAT"
         parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "£93.10 in estimated VAT interest"
-        parsedBody.select("#what-is-owed > ul > li").get(2).text shouldBe "£200 in late payment penalties"
-        parsedBody.select("#what-is-owed > ul > li").get(3).text shouldBe "£46.55 in estimated interest on penalties"
-        parsedBody.select("#what-is-owed > ul > li").get(4).text shouldBe "£400 fixed penalties for late submission"
-        parsedBody.select("#what-is-owed > ul > li").get(5).text shouldBe "other penalties not related to late submission or late payment"
+        parsedBody.select("#what-is-owed > ul > li").get(2).text shouldBe "£46.55 in estimated interest on penalties"
+        parsedBody.select("#what-is-owed > ul > li").get(3).text shouldBe "£400 fixed penalties for late submission"
+        parsedBody.select("#what-is-owed > ul > li").get(4).text shouldBe "other penalties not related to late submission or late payment"
         parsedBody.select("#main-content h2:nth-child(3)").text shouldBe "Penalty and appeal details"
         parsedBody.select("#what-is-owed > a").text shouldBe "Check amounts"
         parsedBody.select("#main-content .govuk-details__summary-text").text shouldBe "Payment help"
