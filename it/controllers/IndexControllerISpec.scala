@@ -559,11 +559,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val request = await(buildClientForRequestToApp(uri = "/").get())
       request.status shouldBe Status.OK
       val parsedBody = Jsoup.parse(request.body)
-      println(parsedBody.select("#late-payment-penalties section").text)
       parsedBody.select("#late-payment-penalties section header h3").text shouldBe "£400 penalty"
       parsedBody.select("#late-payment-penalties section header strong").text shouldBe "paid"
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
-      println(summaryCardBody.text)
       summaryCardBody.select("dt").get(0).text shouldBe "VAT Period"
       summaryCardBody.select("dd").get(0).text shouldBe "1 January 2021 to 1 February 2021"
       summaryCardBody.select("dt").get(1).text shouldBe "Penalty reason"
@@ -572,7 +570,6 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     }
 
     "return 200 (OK) and render the view when there is outstanding payments" in {
-      //returnLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalties = paidLatePaymentPenalty))
       returnLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue)
       val request = await(buildClientForRequestToApp(uri = "/").get())
       request.status shouldBe Status.OK
@@ -648,7 +645,6 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val request = await(buildClientForRequestToApp(uri = "/").get())
       request.status shouldBe Status.OK
       val parsedBody = Jsoup.parse(request.body)
-      println(parsedBody.select("#late-payment-penalties section").text)
       parsedBody.select("#late-payment-penalties section header h3").text shouldBe "£400 penalty"
       parsedBody.select("#late-payment-penalties section header strong").text shouldBe "paid"
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
@@ -727,7 +723,6 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         val request = controller.onPageLoad()(fakeAgentRequest)
         await(request).header.status shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
-        println(parsedBody.select("#what-is-owed").text)
         parsedBody.select("#what-is-owed > h2").text shouldBe "Overview"
         parsedBody.select("#what-is-owed > p").first.text shouldBe "Your client owes:"
         parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£121.40 in late VAT"
