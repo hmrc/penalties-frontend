@@ -47,7 +47,7 @@ class IndexControllerSpec extends SpecBase {
     ).thenReturn(authResult)
 
     reset(mockPenaltiesService)
-    when(mockPenaltiesService.getETMPDataFromEnrolmentKey(any())(any(), any())).thenReturn(Future.successful(sampleLspData))
+    when(mockPenaltiesService.getETMPDataFromEnrolmentKey(any())(any(), any())).thenReturn(Future.successful(sampleEmptyLspData))
   }
 
   object Controller extends IndexController(

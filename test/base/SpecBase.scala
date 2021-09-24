@@ -86,7 +86,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     unauthorised
   )
 
-  val sampleLspData: ETMPPayload = ETMPPayload(
+  val sampleEmptyLspData: ETMPPayload = ETMPPayload(
     pointsTotal = 0,
     lateSubmissions = 0,
     adjustmentPointsTotal = 0,

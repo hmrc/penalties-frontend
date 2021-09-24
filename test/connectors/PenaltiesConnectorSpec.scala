@@ -46,10 +46,10 @@ class PenaltiesConnectorSpec extends SpecBase {
         any())
         (any(),
           any(),
-          any())).thenReturn(Future.successful(sampleLspData))
+          any())).thenReturn(Future.successful(sampleEmptyLspData))
 
       val result: ETMPPayload = await(connector.getPenaltiesData(vrn)(vatTraderUser, HeaderCarrier()))
-      result shouldBe sampleLspData
+      result shouldBe sampleEmptyLspData
     }
   }
 

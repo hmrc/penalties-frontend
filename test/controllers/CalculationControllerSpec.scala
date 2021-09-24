@@ -153,7 +153,7 @@ class CalculationControllerSpec extends SpecBase {
 
       "show an ISE when the user specifies a penalty ID not in their data" in new Setup(AuthTestModels.successfulAuthResult) {
         when(mockPenaltiesService.getETMPDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(sampleLspData))
+          .thenReturn(Future.successful(sampleEmptyLspData))
 
         val result: Future[Result] = Controller.onPageLoad("1234", isAdditional = false)(fakeRequest)
         status(result) shouldBe INTERNAL_SERVER_ERROR
