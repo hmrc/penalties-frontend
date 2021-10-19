@@ -584,7 +584,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#what-is-owed > ul > li").get(5).text shouldBe "other penalties not related to late submission or late payment"
       parsedBody.select("#main-content h2:nth-child(4)").text shouldBe "Penalty and appeal details"
       parsedBody.select("#what-is-owed > a").text shouldBe "Check amounts and pay"
-      parsedBody.select("#what-is-owed > h3").text shouldBe "I cannot pay today"
+      parsedBody.select("#what-is-owed > h3").text shouldBe "If you cannot pay today"
     }
 
     "return 200 (OK) and render the view when there is outstanding estimate payments" in {
@@ -596,7 +596,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "£53 in estimated interest on penalties"
       parsedBody.select("#main-content h2:nth-child(4)").text shouldBe "Penalty and appeal details"
       parsedBody.select("#what-is-owed > a").text shouldBe "Check amounts and pay"
-      parsedBody.select("#what-is-owed > h3").text shouldBe "I cannot pay today"
+      parsedBody.select("#what-is-owed > h3").text shouldBe "If you cannot pay today"
     }
 
     "return 200 (OK) and render the view when there are LPPs and additional penalties paid that are retrieved from the backend" in {
