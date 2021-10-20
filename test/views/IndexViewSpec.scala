@@ -358,7 +358,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           doc.select("#what-is-owed > p").first.text shouldBe "You owe:"
           doc.select("#main-content h2:nth-child(4)").text shouldBe "Penalty and appeal details"
           doc.select("#what-is-owed > a").text shouldBe "Check amounts and pay"
-          doc.select("#what-is-owed > h3").text shouldBe "I cannot pay today"
+          doc.select("#what-is-owed > h3").text shouldBe "If you cannot pay today"
         }
       }
     }
