@@ -51,4 +51,6 @@ class BaseSelectors {
   val pNthChild: Int => String = (nThChild: Int) => s"#main-content p:nth-child($nThChild)"
 
   val viewCalculation = "#late-payment-penalties > section > header > div > ul > li > a"
+
+  val periodSpan = "#main-content > div > div > span"
 }
