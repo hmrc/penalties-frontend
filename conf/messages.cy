@@ -1,4 +1,4 @@
-service.name = VAT Penalties and Appeals
+service.name = Penalties
 agent.service.name = Your client’s VAT details
 service.homePageUrl = /penalties
 common.pageTitle = {0} - {1} - GOV.UK
