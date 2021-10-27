@@ -57,6 +57,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         period,
         Html(vatPeriodValue(dateTimeToString(LocalDateTime.now), dateTimeToString(LocalDateTime.now)))
     ),
+      helper.summaryListRow(paymentDue , Html(dateTimeToString(LocalDateTime.now))),
       helper.summaryListRow(penaltyReason, Html("VAT not paid within 15 days"))
   ),
     Tag(content = Text("paid"), classes = "govuk-tag "),

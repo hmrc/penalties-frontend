@@ -183,9 +183,14 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         doc.select("dd").get(0).text() shouldBe "1 January 2020 to 1 February 2020"
       }
 
+      "display the 'VAT payment due' row" in {
+        doc.select("dt").get(1).text() shouldBe "VAT payment due"
+        doc.select("dd").get(1).text() shouldBe "1 February 2020"
+      }
+
       "display the penalty reason" in {
-        doc.select("dt").get(1).text() shouldBe "Penalty reason"
-        doc.select("dd").get(1).text() shouldBe "VAT not paid within 15 days"
+        doc.select("dt").get(2).text() shouldBe "Penalty reason"
+        doc.select("dd").get(2).text() shouldBe "VAT not paid within 15 days"
       }
 
       "display the appeal link" in {
@@ -270,63 +275,63 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       }
 
       "have the appeal status for UNDER_REVIEW" in {
-        docWithAppealedPenalty.select("dt").get(2).text() shouldBe "Appeal status"
-        docWithAppealedPenalty.select("dd").get(2).text() shouldBe "Under review by HMRC"
+        docWithAppealedPenalty.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithAppealedPenalty.select("dd").get(3).text() shouldBe "Under review by HMRC"
       }
 
       "have the appeal status for UNDER_TRIBUNAL_REVIEW" in {
-        docWithAppealedPenaltyUnderTribunalReview.select("dt").get(2).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyUnderTribunalReview.select("dd").get(2).text() shouldBe "Under review by the tax tribunal"
+        docWithAppealedPenaltyUnderTribunalReview.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithAppealedPenaltyUnderTribunalReview.select("dd").get(3).text() shouldBe "Under review by the tax tribunal"
       }
 
       "have the appeal status for ACCEPTED" in {
-        docWithAppealedPenaltyAccepted.select("dt").get(2).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyAccepted.select("dd").get(2).text() shouldBe "Appeal accepted Read outcome message"
+        docWithAppealedPenaltyAccepted.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithAppealedPenaltyAccepted.select("dd").get(3).text() shouldBe "Appeal accepted Read outcome message"
       }
 
       "have the appeal status for ACCEPTED - no outcome message for agents" in {
-        docWithAppealedPenaltyAcceptedAgent.select("dt").get(2).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyAcceptedAgent.select("dd").get(2).text() shouldBe "Appeal accepted"
+        docWithAppealedPenaltyAcceptedAgent.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithAppealedPenaltyAcceptedAgent.select("dd").get(3).text() shouldBe "Appeal accepted"
       }
 
       "have the appeal status ACCEPTED_BY_TRIBUNAL" in {
-        docWithAppealedPenaltyAcceptedByTribunal.select("dt").get(2).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyAcceptedByTribunal.select("dd").get(2).text() shouldBe "Appeal accepted by tax tribunal Read outcome message"
+        docWithAppealedPenaltyAcceptedByTribunal.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithAppealedPenaltyAcceptedByTribunal.select("dd").get(3).text() shouldBe "Appeal accepted by tax tribunal Read outcome message"
       }
 
       "have the appeal status ACCEPTED_BY_TRIBUNAL - no outcome message for agents" in {
-        docWithAppealedPenaltyAcceptedByTribunalAgent.select("dt").get(2).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyAcceptedByTribunalAgent.select("dd").get(2).text() shouldBe "Appeal accepted by tax tribunal"
+        docWithAppealedPenaltyAcceptedByTribunalAgent.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithAppealedPenaltyAcceptedByTribunalAgent.select("dd").get(3).text() shouldBe "Appeal accepted by tax tribunal"
       }
 
       "have the appeal status for REJECTED" in {
-        docWithAppealedPenaltyRejected.select("dt").get(2).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyRejected.select("dd").get(2).text() shouldBe "Appeal rejected Read outcome message"
+        docWithAppealedPenaltyRejected.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithAppealedPenaltyRejected.select("dd").get(3).text() shouldBe "Appeal rejected Read outcome message"
       }
 
       "have the appeal status for REJECTED - no outcome message for agents" in {
-        docWithAppealedPenaltyRejectedAgent.select("dt").get(2).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyRejectedAgent.select("dd").get(2).text() shouldBe "Appeal rejected"
+        docWithAppealedPenaltyRejectedAgent.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithAppealedPenaltyRejectedAgent.select("dd").get(3).text() shouldBe "Appeal rejected"
       }
 
       "have the appeal status for TRIBUNAL REJECTED" in {
-        docWithAppealedPenaltyTribunalRejected.select("dt").get(2).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyTribunalRejected.select("dd").get(2).text() shouldBe "Appeal rejected by tax tribunal Read outcome message"
+        docWithAppealedPenaltyTribunalRejected.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithAppealedPenaltyTribunalRejected.select("dd").get(3).text() shouldBe "Appeal rejected by tax tribunal Read outcome message"
       }
 
       "have the appeal status for TRIBUNAL REJECTED - no outcome message for agents" in {
-        docWithAppealedPenaltyTribunalRejectedAgent.select("dt").get(2).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyTribunalRejectedAgent.select("dd").get(2).text() shouldBe "Appeal rejected by tax tribunal"
+        docWithAppealedPenaltyTribunalRejectedAgent.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithAppealedPenaltyTribunalRejectedAgent.select("dd").get(3).text() shouldBe "Appeal rejected by tax tribunal"
       }
 
       "have the appeal status for REINSTATED" in {
-        docWithAppealedPenaltyTribunalReinstated.select("dt").get(2).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyTribunalReinstated.select("dd").get(2).text() shouldBe "Appeal outcome changed Read message"
+        docWithAppealedPenaltyTribunalReinstated.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithAppealedPenaltyTribunalReinstated.select("dd").get(3).text() shouldBe "Appeal outcome changed Read message"
       }
 
       "have the appeal status for REINSTATED - no outcome message for agents" in {
-        docWithAppealedPenaltyTribunalReinstatedAgent.select("dt").get(2).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyTribunalReinstatedAgent.select("dd").get(2).text() shouldBe "Appeal outcome changed"
+        docWithAppealedPenaltyTribunalReinstatedAgent.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithAppealedPenaltyTribunalReinstatedAgent.select("dd").get(3).text() shouldBe "Appeal outcome changed"
       }
     }
   }

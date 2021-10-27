@@ -286,7 +286,8 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           vatTraderDoc.select(Selectors.viewCalculation).attr("href") shouldBe "/penalties/calculation?penaltyId=123456789&isAdditional=false"
           vatTraderDoc.select(Selectors.summaryCardHeaderTag(Selectors.summaryLPPCard)).text shouldBe paidTag
           vatTraderDoc.select(Selectors.rowItem(Selectors.summaryLPPCard, 1)).text shouldBe period
-          vatTraderDoc.select(Selectors.rowItem(Selectors.summaryLPPCard, 2)).text shouldBe penaltyReason
+          vatTraderDoc.select(Selectors.rowItem(Selectors.summaryLPPCard, 2)).text shouldBe paymentDue
+          vatTraderDoc.select(Selectors.rowItem(Selectors.summaryLPPCard, 3)).text shouldBe penaltyReason
           vatTraderDoc.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).text shouldBe appealPointText
           vatTraderDoc.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).attr("href") shouldBe redirectToAppealUrlForLPP
         }
@@ -297,7 +298,8 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           vatTraderDocWithLPPVATUnpaid.select(Selectors.summaryCardHeaderTag(Selectors.summaryLPPCard)).text shouldBe
             overduePartiallyPaidTag(200)
           vatTraderDocWithLPPVATUnpaid.select(Selectors.rowItem(Selectors.summaryLPPCard, 1)).text shouldBe period
-          vatTraderDocWithLPPVATUnpaid.select(Selectors.rowItem(Selectors.summaryLPPCard, 2)).text shouldBe penaltyReason
+          vatTraderDocWithLPPVATUnpaid.select(Selectors.rowItem(Selectors.summaryLPPCard, 2)).text shouldBe paymentDue
+          vatTraderDocWithLPPVATUnpaid.select(Selectors.rowItem(Selectors.summaryLPPCard, 3)).text shouldBe penaltyReason
           vatTraderDocWithLPPVATUnpaid.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).text shouldBe
             checkAppeal
           vatTraderDocWithLPPVATUnpaid.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).attr("href") shouldBe
@@ -325,7 +327,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
           implicit val vatTraderDocWithLPPAppeal: Document = asDocument(applyVATTraderViewWithLPPAppeal())
 
-          vatTraderDocWithLPPAppeal.select(Selectors.rowItem(Selectors.summaryLPPCard, 3)).text shouldBe appealStatus
+          vatTraderDocWithLPPAppeal.select(Selectors.rowItem(Selectors.summaryLPPCard, 4)).text shouldBe appealStatus
         }
 
         "populate summary card when user has a penalty point from un-submitted VAT return with due status" in {

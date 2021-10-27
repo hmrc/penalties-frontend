@@ -173,9 +173,9 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     }
   }
 
-  def lppCardBody(lpp: LatePaymentPenalty)(implicit messages: Messages): Seq[SummaryListRow] = {
+  def lppCardBody(lpp: LatePaymentPenalty, isAdditional: Boolean = false)(implicit messages: Messages): Seq[SummaryListRow] = {
     val period = lpp.period
-    Seq(
+    val periodRow =  Seq(
       summaryListRow(
         messages("summaryCard.key1"),
         Html(
@@ -185,9 +185,15 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
             dateTimeToString(period.endDate)
           )
         )
-      ),
-      summaryListRow(messages("summaryCard.lpp.key2"), Html(messages(getPenaltyReasonKey(lpp))))
-    )
+      ))
+    if (isAdditional){
+      periodRow :+ summaryListRow(messages("summaryCard.lpp.key4"), Html(messages(getPenaltyReasonKey(lpp))))
+    } else {
+      periodRow ++ Seq(
+          summaryListRow(messages("summaryCard.lpp.key2"), Html(dateTimeToString(lpp.period.dueDate))),
+          summaryListRow(messages("summaryCard.lpp.key4"), Html(messages(getPenaltyReasonKey(lpp))))
+        )
+    }
   }
 
   private def getPenaltyReasonKey(lpp: LatePaymentPenalty): String = {
@@ -254,7 +260,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
 
   def lppSummaryCard(lpp: LatePaymentPenalty)(implicit messages: Messages, user: User[_]): LatePaymentPenaltySummaryCard = {
     val dueDatePlus31Days: String = dateTimeToString(lpp.period.dueDate.plusDays(31))
-    val cardBody = if (lpp.`type` == PenaltyTypeEnum.Additional) lppCardBody(lpp) :+
+    val cardBody = if (lpp.`type` == PenaltyTypeEnum.Additional) lppCardBody(lpp, true) :+
       summaryListRow(messages("summaryCard.lpp.additional.key"), Html(dueDatePlus31Days)) else lppCardBody(lpp)
     val isPaid = lpp.status == Paid
     val isVatPaid = lpp.period.paymentStatus == PaymentStatusEnum.Paid
