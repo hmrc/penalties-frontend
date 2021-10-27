@@ -108,6 +108,8 @@ object IndexMessages {
   val returnDue = "VAT Return due"
   val reason = "Reason"
   val penaltyReason = "Penalty reason"
+  val vatPaymentDate = "VAT payment date"
+  val paymentNotReceived = "Payment not yet received"
   val chargedDailyFrom = "Charged daily from"
   val returnSubmitted = "Return submitted"
   val pointExpiration = "Point due to expire"
