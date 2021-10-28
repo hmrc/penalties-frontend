@@ -184,7 +184,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         sampleDate1,
         sampleDate1.plusMonths(1),
         sampleDate1.plusMonths(2).plusDays(7),
-        PaymentStatusEnum.Paid
+        PaymentStatusEnum.Paid,
+        Some(sampleDate1.plusMonths(2).plusDays(7))
       ),
       communications = Seq(
         Communication(
@@ -564,8 +565,10 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
       summaryCardBody.select("dt").get(0).text shouldBe "VAT Period"
       summaryCardBody.select("dd").get(0).text shouldBe "1 January 2021 to 1 February 2021"
-      summaryCardBody.select("dt").get(1).text shouldBe "Penalty reason"
-      summaryCardBody.select("dd").get(1).text shouldBe "VAT not paid within 30 days"
+      summaryCardBody.select("dt").get(1).text shouldBe "VAT payment date"
+      summaryCardBody.select("dd").get(1).text shouldBe "8 March 2021"
+      summaryCardBody.select("dt").get(2).text shouldBe "Penalty reason"
+      summaryCardBody.select("dd").get(2).text shouldBe "VAT not paid within 30 days"
       parsedBody.select("#late-payment-penalties footer li").text() shouldBe "Appeal this penalty"
     }
 
@@ -626,8 +629,10 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
       summaryCardBody.select("dt").get(0).text shouldBe "VAT Period"
       summaryCardBody.select("dd").get(0).text shouldBe "1 January 2021 to 1 February 2021"
-      summaryCardBody.select("dt").get(1).text shouldBe "Penalty reason"
-      summaryCardBody.select("dd").get(1).text shouldBe "VAT not paid within 15 days"
+      summaryCardBody.select("dt").get(1).text shouldBe "VAT payment date"
+      summaryCardBody.select("dd").get(1).text shouldBe "Payment not yet received"
+      summaryCardBody.select("dt").get(2).text shouldBe "Penalty reason"
+      summaryCardBody.select("dd").get(2).text shouldBe "VAT not paid within 15 days"
       parsedBody.select("#late-payment-penalties footer li").text() shouldBe "Check if you can appeal"
     }
 
@@ -650,10 +655,12 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
       summaryCardBody.select("dt").get(0).text shouldBe "VAT Period"
       summaryCardBody.select("dd").get(0).text shouldBe "1 January 2021 to 1 February 2021"
-      summaryCardBody.select("dt").get(1).text shouldBe "Penalty reason"
-      summaryCardBody.select("dd").get(1).text shouldBe "VAT not paid within 30 days"
-      summaryCardBody.select("dt").get(2).text shouldBe "Appeal status"
-      summaryCardBody.select("dd").get(2).text shouldBe "Under review by HMRC"
+      summaryCardBody.select("dt").get(1).text shouldBe "VAT payment date"
+      summaryCardBody.select("dd").get(1).text shouldBe "8 March 2021"
+      summaryCardBody.select("dt").get(2).text shouldBe "Penalty reason"
+      summaryCardBody.select("dd").get(2).text shouldBe "VAT not paid within 30 days"
+      summaryCardBody.select("dt").get(3).text shouldBe "Appeal status"
+      summaryCardBody.select("dd").get(3).text shouldBe "Under review by HMRC"
     }
 
     "agent view" must {

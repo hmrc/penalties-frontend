@@ -217,6 +217,28 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     )
   )
 
+  val sampleLatePaymentPenaltyVATPaymentDueDate: LatePaymentPenalty = LatePaymentPenalty(
+    `type` = PenaltyTypeEnum.Financial,
+    id = "123456789",
+    reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
+    dateCreated = LocalDateTime.now,
+    status = PointStatusEnum.Due,
+    appealStatus = None,
+    period = PaymentPeriod(
+      LocalDateTime.now,
+      LocalDateTime.now,
+      LocalDateTime.now,
+      PaymentStatusEnum.Paid,
+      Some(LocalDateTime.now)
+    ),
+    communications = Seq.empty,
+    financial = Financial(
+      amountDue = 00.00,
+      outstandingAmountDue = 00.00,
+      dueDate = LocalDateTime.now
+    )
+  )
+
   val sampleLatePaymentPenaltyAdditional: LatePaymentPenalty = LatePaymentPenalty(
     `type` = PenaltyTypeEnum.Additional,
     id = "123456789",
@@ -294,6 +316,27 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
       LocalDateTime.now,
       LocalDateTime.now,
       PaymentStatusEnum.Due
+    ),
+    communications = Seq.empty,
+    financial = Financial(
+      amountDue = 400.00,
+      outstandingAmountDue = 200.00,
+      dueDate = LocalDateTime.now
+    )
+  )
+  val sampleLatePaymentPenaltyVATPaymentDate: LatePaymentPenalty = LatePaymentPenalty(
+    `type` = PenaltyTypeEnum.Financial,
+    id = "123456789",
+    reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
+    dateCreated = LocalDateTime.now,
+    status = PointStatusEnum.Due,
+    appealStatus = None,
+    period = PaymentPeriod(
+      LocalDateTime.now,
+      LocalDateTime.now,
+      LocalDateTime.now,
+      PaymentStatusEnum.Due,
+      Some(LocalDateTime.now)
     ),
     communications = Seq.empty,
     financial = Financial(
@@ -506,6 +549,10 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   val sampleLatePaymentPenaltyDataUnpaidVAT: Seq[LatePaymentPenalty] = Seq(
     sampleLatePaymentPenaltyUnpaidVAT
+  )
+
+  val sampleLatePaymentPenaltyDataVATPaymentDate: Seq[LatePaymentPenalty] = Seq(
+    sampleLatePaymentPenaltyVATPaymentDate
   )
 
   val sampleLatePaymentPenaltyAppealedData: Seq[LatePaymentPenalty] = Seq(
