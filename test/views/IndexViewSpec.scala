@@ -168,6 +168,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
       implicit val vatTraderDoc: Document = asDocument(applyVATTraderView(sampleLatePaymentPenaltyData))
       implicit val vatTraderDocLPPAdditionalPenalty: Document = asDocument(applyVATTraderView(Seq(sampleLatePaymentPenaltyAdditional)))
       implicit val vatTraderDocWithLPPVATUnpaid: Document = asDocument(applyVATTraderView(sampleLatePaymentPenaltyDataUnpaidVAT))
+      implicit val vatTraderDocWithLPPVATPaymentDate: Document = asDocument(applyVATTraderView(sampleLatePaymentPenaltyDataVATPaymentDate))
 
       def applyAgentView(): HtmlFormat.Appendable = indexViewPage.apply(contentToDisplayOnPage, contentLPPToDisplayOnPage,
         helper.populateLateSubmissionPenaltyCard(sampleReturnSubmittedPenaltyPointData, quarterlyThreshold, 1)
@@ -287,7 +288,8 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           vatTraderDoc.select(Selectors.summaryCardHeaderTag(Selectors.summaryLPPCard)).text shouldBe paidTag
           vatTraderDoc.select(Selectors.rowItem(Selectors.summaryLPPCard, 1)).text shouldBe period
           vatTraderDoc.select(Selectors.rowItem(Selectors.summaryLPPCard, 2)).text shouldBe paymentDue
-          vatTraderDoc.select(Selectors.rowItem(Selectors.summaryLPPCard, 3)).text shouldBe penaltyReason
+          vatTraderDoc.select(Selectors.rowItem(Selectors.summaryLPPCard, 3)).text shouldBe vatPaymentDate
+          vatTraderDoc.select(Selectors.rowItem(Selectors.summaryLPPCard, 4)).text shouldBe penaltyReason
           vatTraderDoc.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).text shouldBe appealPointText
           vatTraderDoc.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).attr("href") shouldBe redirectToAppealUrlForLPP
         }
@@ -299,10 +301,26 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
             overduePartiallyPaidTag(200)
           vatTraderDocWithLPPVATUnpaid.select(Selectors.rowItem(Selectors.summaryLPPCard, 1)).text shouldBe period
           vatTraderDocWithLPPVATUnpaid.select(Selectors.rowItem(Selectors.summaryLPPCard, 2)).text shouldBe paymentDue
-          vatTraderDocWithLPPVATUnpaid.select(Selectors.rowItem(Selectors.summaryLPPCard, 3)).text shouldBe penaltyReason
+          vatTraderDocWithLPPVATUnpaid.select(Selectors.rowItem(Selectors.summaryLPPCard, 3)).text shouldBe vatPaymentDate
+          vatTraderDocWithLPPVATUnpaid.select(Selectors.rowItem(Selectors.summaryLPPCard, 4)).text shouldBe penaltyReason
           vatTraderDocWithLPPVATUnpaid.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).text shouldBe
             checkAppeal
           vatTraderDocWithLPPVATUnpaid.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).attr("href") shouldBe
+            redirectToAppealObligationUrlForLPP
+        }
+
+        "populate summary card when user has LPPs with VAT payment date" in {
+          vatTraderDocWithLPPVATPaymentDate.select(Selectors.summaryCardHeaderTitle(Selectors.summaryLPPCard)).text shouldBe lppHeader
+          vatTraderDocWithLPPVATPaymentDate.select(Selectors.viewCalculation).text shouldBe viewCalculationLink
+          vatTraderDocWithLPPVATPaymentDate.select(Selectors.summaryCardHeaderTag(Selectors.summaryLPPCard)).text shouldBe
+            overduePartiallyPaidTag(200)
+          vatTraderDocWithLPPVATPaymentDate.select(Selectors.rowItem(Selectors.summaryLPPCard, 1)).text shouldBe period
+          vatTraderDocWithLPPVATPaymentDate.select(Selectors.rowItem(Selectors.summaryLPPCard, 2)).text shouldBe paymentDue
+          vatTraderDocWithLPPVATPaymentDate.select(Selectors.rowItem(Selectors.summaryLPPCard, 3)).text shouldBe vatPaymentDate
+          vatTraderDocWithLPPVATPaymentDate.select(Selectors.rowItem(Selectors.summaryLPPCard, 4)).text shouldBe penaltyReason
+          vatTraderDocWithLPPVATPaymentDate.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).text shouldBe
+            checkAppeal
+          vatTraderDocWithLPPVATPaymentDate.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).attr("href") shouldBe
             redirectToAppealObligationUrlForLPP
         }
 
