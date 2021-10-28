@@ -212,7 +212,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     if(lpp.period.paymentReceivedDate.isDefined) {
       dateTimeToString(lpp.period.paymentReceivedDate.get)
     } else {
-      "summaryCard.lpp.key4"
+      "summaryCard.lpp.key5"
     }
   }
 

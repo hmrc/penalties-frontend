@@ -345,7 +345,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
           implicit val vatTraderDocWithLPPAppeal: Document = asDocument(applyVATTraderViewWithLPPAppeal())
 
-          vatTraderDocWithLPPAppeal.select(Selectors.rowItem(Selectors.summaryLPPCard, 4)).text shouldBe appealStatus
+          vatTraderDocWithLPPAppeal.select(Selectors.rowItem(Selectors.summaryLPPCard, 5)).text shouldBe appealStatus
         }
 
         "populate summary card when user has a penalty point from un-submitted VAT return with due status" in {
