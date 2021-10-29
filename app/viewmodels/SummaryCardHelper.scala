@@ -184,7 +184,8 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
         )
       )
     ),
-        summaryListRow(messages("summaryCard.lpp.key3"), Html(messages(getVATPaymentDate(lpp)))),
+        summaryListRow(messages("summaryCard.lpp.key3"), Html(dateTimeToString(lpp.period.dueDate))),
+        summaryListRow(messages("summaryCard.lpp.key4"), Html(messages(getVATPaymentDate(lpp)))),
         summaryListRow(messages("summaryCard.lpp.key2"), Html(messages(getLPPPenaltyReasonKey(lpp.reason))))
 
     )
@@ -211,7 +212,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     if(lpp.period.paymentReceivedDate.isDefined) {
       dateTimeToString(lpp.period.paymentReceivedDate.get)
     } else {
-      "summaryCard.lpp.key4"
+      "summaryCard.lpp.key5"
     }
   }
 
