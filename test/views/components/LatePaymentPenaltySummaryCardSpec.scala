@@ -190,7 +190,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       }
 
       "display the VAT period" in {
-        doc.select("dt").get(0).text() shouldBe "VAT Period"
+        doc.select("dt").get(0).text() shouldBe "VAT period"
         doc.select("dd").get(0).text() shouldBe "1 January 2020 to 1 February 2020"
       }
 
@@ -247,7 +247,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       }
 
       "display the VAT period" in {
-        docWithAdditionalPenalty.select("dt").get(0).text() shouldBe "VAT Period"
+        docWithAdditionalPenalty.select("dt").get(0).text() shouldBe "VAT period"
         docWithAdditionalPenalty.select("dd").get(0).text() shouldBe "1 January 2020 to 1 February 2020"
       }
 

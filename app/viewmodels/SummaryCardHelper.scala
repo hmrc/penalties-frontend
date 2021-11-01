@@ -175,7 +175,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
 
   private def lppCardBody(lpp: LatePaymentPenalty)(implicit messages: Messages): Seq[SummaryListRow] = {
     Seq(summaryListRow(
-      messages("summaryCard.key1"),
+      messages("summaryCard.lpp.key1"),
       Html(
         messages(
           "summaryCard.value1",
@@ -195,7 +195,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     val dueDatePlus31Days: String = dateTimeToString(lpp.period.dueDate.plusDays(31))
     Seq(
         summaryListRow(
-        messages("summaryCard.key1"),
+        messages("summaryCard.lpp.key1"),
         Html(
           messages(
             "summaryCard.value1",

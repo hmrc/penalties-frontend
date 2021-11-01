@@ -563,7 +563,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#late-payment-penalties section header h3").text shouldBe "£400 penalty"
       parsedBody.select("#late-payment-penalties section header strong").text shouldBe "paid"
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
-      summaryCardBody.select("dt").get(0).text shouldBe "VAT Period"
+      summaryCardBody.select("dt").get(0).text shouldBe "VAT period"
       summaryCardBody.select("dd").get(0).text shouldBe "1 January 2021 to 1 February 2021"
       summaryCardBody.select("dt").get(1).text shouldBe "VAT payment due"
       summaryCardBody.select("dd").get(1).text shouldBe "8 March 2021"
@@ -612,7 +612,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#late-payment-penalties section header h3").text.contains("£123.45 additional penalty") shouldBe true
       parsedBody.select("#late-payment-penalties section header strong").text.contains("paid") shouldBe true
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body").first()
-      summaryCardBody.select("dt").get(0).text shouldBe "VAT Period"
+      summaryCardBody.select("dt").get(0).text shouldBe "VAT period"
       summaryCardBody.select("dd").get(0).text shouldBe "1 January 2021 to 1 February 2021"
       summaryCardBody.select("dt").get(1).text shouldBe "Penalty reason"
       summaryCardBody.select("dd").get(1).text shouldBe "VAT more than 30 days late"
@@ -629,7 +629,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#late-payment-penalties section header h3").text shouldBe "£400 penalty"
       parsedBody.select("#late-payment-penalties section header strong").text shouldBe "£200 due"
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
-      summaryCardBody.select("dt").get(0).text shouldBe "VAT Period"
+      summaryCardBody.select("dt").get(0).text shouldBe "VAT period"
       summaryCardBody.select("dd").get(0).text shouldBe "1 January 2021 to 1 February 2021"
       summaryCardBody.select("dt").get(1).text shouldBe "VAT payment due"
       summaryCardBody.select("dd").get(1).text shouldBe "8 February 2021"
@@ -657,7 +657,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#late-payment-penalties section header h3").text shouldBe "£400 penalty"
       parsedBody.select("#late-payment-penalties section header strong").text shouldBe "paid"
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
-      summaryCardBody.select("dt").get(0).text shouldBe "VAT Period"
+      summaryCardBody.select("dt").get(0).text shouldBe "VAT period"
       summaryCardBody.select("dd").get(0).text shouldBe "1 January 2021 to 1 February 2021"
       summaryCardBody.select("dt").get(1).text shouldBe "VAT payment due"
       summaryCardBody.select("dd").get(1).text shouldBe "8 March 2021"

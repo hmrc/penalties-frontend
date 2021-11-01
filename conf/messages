@@ -106,6 +106,7 @@ summaryCard.addedOnKey = Added on
 summaryCard.removedReason = Reason
 summaryCard.infoOnAdjustmentPointsLinkText = Find out more about adjustment points
 summaryCard.appealCheck = Check if you can appeal
+summaryCard.lpp.key1 = VAT period
 summaryCard.lpp.key2 = Penalty reason
 summaryCard.lpp.key3 = VAT payment due
 summaryCard.lpp.key4 = VAT payment date

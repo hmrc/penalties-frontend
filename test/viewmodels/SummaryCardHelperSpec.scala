@@ -54,7 +54,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
   val sampleLPPSummaryCardPenaltyPaid: LatePaymentPenaltySummaryCard = LatePaymentPenaltySummaryCard(
     Seq(
       helper.summaryListRow(
-        period,
+        periodLPP,
         Html(vatPeriodValue(dateTimeToString(LocalDateTime.now), dateTimeToString(LocalDateTime.now)))
     ),
       helper.summaryListRow(paymentDue , Html(dateTimeToString(LocalDateTime.now))),
@@ -71,7 +71,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
   val sampleLPPSummaryCardVATPaymentDate: LatePaymentPenaltySummaryCard = LatePaymentPenaltySummaryCard(
     Seq(
       helper.summaryListRow(
-        period,
+        periodLPP,
         Html(vatPeriodValue(dateTimeToString(LocalDateTime.now), dateTimeToString(LocalDateTime.now)))
       ),
       helper.summaryListRow(paymentDue , Html(dateTimeToString(LocalDateTime.now))),
@@ -88,7 +88,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
   val sampleLPPAdditionalSummaryCardPenaltyPaid: LatePaymentPenaltySummaryCard = LatePaymentPenaltySummaryCard(
     Seq(
       helper.summaryListRow(
-        period,
+        periodLPP,
         Html(vatPeriodValue(dateTimeToString(LocalDateTime.now), dateTimeToString(LocalDateTime.now)))
       ),
       helper.summaryListRow(penaltyReason, Html("VAT more than 30 days late")),
@@ -105,7 +105,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
   val sampleLPPAdditionalSummaryCardReasonCentralAssessment: LatePaymentPenaltySummaryCard = LatePaymentPenaltySummaryCard(
     Seq(
       helper.summaryListRow(
-        period,
+        periodLPP,
         Html(vatPeriodValue(dateTimeToString(LocalDateTime.now), dateTimeToString(LocalDateTime.now)))
       ),
       helper.summaryListRow(penaltyReason, Html("Central Assessment more than 30 days late")),
@@ -122,7 +122,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
   val sampleLPPAdditionalSummaryCardReasonErrorCorrectionNotice: LatePaymentPenaltySummaryCard = LatePaymentPenaltySummaryCard(
     Seq(
       helper.summaryListRow(
-        period,
+        periodLPP,
         Html(vatPeriodValue(dateTimeToString(LocalDateTime.now), dateTimeToString(LocalDateTime.now)))
       ),
       helper.summaryListRow(penaltyReason, Html("Error Correction Notice more than 30 days late")),
@@ -139,7 +139,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
   val sampleLPPAdditionalSummaryCardReasonOfficersAssessment: LatePaymentPenaltySummaryCard = LatePaymentPenaltySummaryCard(
     Seq(
       helper.summaryListRow(
-        period,
+        periodLPP,
         Html(vatPeriodValue(dateTimeToString(LocalDateTime.now), dateTimeToString(LocalDateTime.now)))
       ),
       helper.summaryListRow(penaltyReason, Html("Officer’s Assessment more than 30 days late")),

@@ -105,6 +105,7 @@ object IndexMessages {
   val estimated = "estimated"
 
   val period = "VAT Period"
+  val periodLPP = "VAT period"
   val returnDue = "VAT Return due"
   val reason = "Reason"
   val penaltyReason = "Penalty reason"
