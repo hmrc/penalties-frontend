@@ -104,7 +104,7 @@ object IndexMessages {
   val paidTag = "paid"
   val estimated = "estimated"
 
-  val period = "VAT Period"
+  val period = "VAT period"
   val returnDue = "VAT Return due"
   val reason = "Reason"
   val penaltyReason = "Penalty reason"

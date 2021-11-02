@@ -240,7 +240,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           summaryCard.select("header h3").text shouldBe "Penalty point"
           summaryCard.select("strong").text shouldBe "removed"
           val summaryCardBody = summaryCard.select(".app-summary-card__body")
-          summaryCardBody.select("dt").get(0).text shouldBe "VAT Period"
+          summaryCardBody.select("dt").get(0).text shouldBe "VAT period"
           summaryCardBody.select("dd").get(0).text() shouldBe "1 January 2021 to 1 February 2021"
           summaryCardBody.select("dt").get(1).text() shouldBe "Reason"
           summaryCardBody.select("dd").get(1).text() shouldBe "This is a great reason."
