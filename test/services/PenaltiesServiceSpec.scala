@@ -518,4 +518,65 @@ class PenaltiesServiceSpec extends SpecBase {
       result shouldBe 30
     }
   }
+
+  "getLatestLSPCreationDate" should {
+    "return Some" when {
+      "the user has penalties excluding appealed points" in new Setup {
+        val result: Option[LocalDateTime] = service.getLatestLSPCreationDate(etmpDataWithOneLSP)
+        result.isDefined shouldBe true
+        result.get shouldBe sampleOverduePenaltyPoint.dateCreated
+      }
+
+      "the user has appealed points - return the next valid point" in new Setup {
+        val acceptedPoint: PenaltyPoint = samplePenaltyPointAppealedAccepted.copy(dateCreated = sampleDate)
+        val appealUnderReviewPoint: PenaltyPoint = samplePenaltyPointAppealedUnderReview.copy(dateCreated = sampleDate.minusMonths(3))
+        val dataWithAppealedPoint: ETMPPayload = ETMPPayload(
+          pointsTotal = 1,
+          lateSubmissions = 2,
+          adjustmentPointsTotal = 0,
+          fixedPenaltyAmount = 0,
+          penaltyAmountsTotal = 0,
+          penaltyPointsThreshold = 4,
+          otherPenalties = None,
+          vatOverview = None,
+          penaltyPoints = Seq(
+            acceptedPoint,
+            appealUnderReviewPoint
+          ),
+          latePaymentPenalties = None
+        )
+        val result: Option[LocalDateTime] = service.getLatestLSPCreationDate(dataWithAppealedPoint)
+        result.isDefined shouldBe true
+        result.get shouldBe appealUnderReviewPoint.dateCreated
+      }
+    }
+
+    "return None" when {
+
+      "the user has no penalties" in new Setup {
+        val result: Option[LocalDateTime] = service.getLatestLSPCreationDate(sampleEmptyLspData)
+        result.isEmpty shouldBe true
+      }
+
+      "the user only has appealed points" in new Setup {
+        val acceptedPoint: PenaltyPoint = samplePenaltyPointAppealedAccepted.copy(dateCreated = sampleDate)
+        val dataWithAppealedPoint: ETMPPayload = ETMPPayload(
+          pointsTotal = 0,
+          lateSubmissions = 1,
+          adjustmentPointsTotal = 0,
+          fixedPenaltyAmount = 0,
+          penaltyAmountsTotal = 0,
+          penaltyPointsThreshold = 4,
+          otherPenalties = None,
+          vatOverview = None,
+          penaltyPoints = Seq(
+            acceptedPoint
+          ),
+          latePaymentPenalties = None
+        )
+        val result: Option[LocalDateTime] = service.getLatestLSPCreationDate(dataWithAppealedPoint)
+        result.isEmpty shouldBe true
+      }
+    }
+  }
 }

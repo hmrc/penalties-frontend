@@ -18,5 +18,6 @@ package utils
 
 object SessionKeys {
   val agentSessionVrn = "CLIENT_VRN"
+  val latestLSPCreationDate = "latestLSPCreationDate"
 
 }

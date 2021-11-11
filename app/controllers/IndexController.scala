@@ -23,6 +23,7 @@ import play.api.mvc._
 import services.PenaltiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger.logger
+import utils.SessionKeys.latestLSPCreationDate
 import utils.{CurrencyFormatter, EnrolmentKeys}
 import viewmodels.{IndexPageHelper, SummaryCardHelper}
 import views.html.IndexView
@@ -41,23 +42,29 @@ class IndexController @Inject()(view: IndexView,
 
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
     for {
-      lSPData <- penaltiesService.getETMPDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))
-      contentToDisplayAboveCards = pageHelper.getContentBasedOnPointsFromModel(lSPData)
-      contentLPPToDisplayAboveCards = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(lSPData)
-      whatYouOweBreakdown = pageHelper.getWhatYouOweBreakdown(lSPData)
-      lspSummaryCards = cardHelper.populateLateSubmissionPenaltyCard(lSPData.penaltyPoints, lSPData.penaltyPointsThreshold, lSPData.pointsTotal)
-      lppSummaryCards = cardHelper.populateLatePaymentPenaltyCard(lSPData.latePaymentPenalties)
-      isAnyUnpaidLSPAndNotSubmittedReturn = penaltiesService.isAnyLSPUnpaidAndSubmissionIsDue(lSPData.penaltyPoints)
-      isAnyUnpaidLSP = penaltiesService.isAnyLSPUnpaid(lSPData.penaltyPoints)
+      etmpData <- penaltiesService.getETMPDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))
+      contentToDisplayAboveCards = pageHelper.getContentBasedOnPointsFromModel(etmpData)
+      contentLPPToDisplayAboveCards = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(etmpData)
+      whatYouOweBreakdown = pageHelper.getWhatYouOweBreakdown(etmpData)
+      lspSummaryCards = cardHelper.populateLateSubmissionPenaltyCard(etmpData.penaltyPoints, etmpData.penaltyPointsThreshold, etmpData.pointsTotal)
+      lppSummaryCards = cardHelper.populateLatePaymentPenaltyCard(etmpData.latePaymentPenalties)
+      isAnyUnpaidLSPAndNotSubmittedReturn = penaltiesService.isAnyLSPUnpaidAndSubmissionIsDue(etmpData.penaltyPoints)
+      isAnyUnpaidLSP = penaltiesService.isAnyLSPUnpaid(etmpData.penaltyPoints)
+      latestLSPCreation = penaltiesService.getLatestLSPCreationDate(etmpData)
     } yield {
-      Ok(view(contentToDisplayAboveCards,
+      lazy val result = Ok(view(contentToDisplayAboveCards,
         contentLPPToDisplayAboveCards,
         lspSummaryCards,
         lppSummaryCards,
-        currencyFormatAsNonHTMLString(lSPData.penaltyAmountsTotal),
+        currencyFormatAsNonHTMLString(etmpData.penaltyAmountsTotal),
         isAnyUnpaidLSP,
         isAnyUnpaidLSPAndNotSubmittedReturn,
         whatYouOweBreakdown))
+      if(latestLSPCreation.isDefined) {
+        result.removingFromSession(latestLSPCreationDate).addingToSession(latestLSPCreationDate -> latestLSPCreation.get.toString)
+      } else {
+        result.removingFromSession(latestLSPCreationDate)
+      }
     }
   }
 

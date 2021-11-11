@@ -747,6 +747,15 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.select("#what-is-owed > a").text shouldBe "Check amounts"
         parsedBody.select("#main-content .govuk-details__summary-text").text shouldBe "Payment help"
       }
+
+      "return 200 (OK) and add the latest lsp creation date to the session" in {
+        AuthStub.agentAuthorised()
+        returnAgentLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalties = paidLatePaymentPenalty))
+        val request = controller.onPageLoad()(fakeAgentRequest)
+        await(request).header.status shouldBe Status.OK
+        await(request).session(fakeAgentRequest).get(SessionKeys.latestLSPCreationDate).isDefined shouldBe true
+        await(request).session(fakeAgentRequest).get(SessionKeys.latestLSPCreationDate).get shouldBe sampleDate1.toString
+      }
     }
 
     "return 303 (SEE_OTHER) when the user is not authorised" in {

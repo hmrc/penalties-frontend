@@ -17,11 +17,13 @@
 package services
 
 import connectors.PenaltiesConnector
+
 import javax.inject.Inject
 import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.{ETMPPayload, User}
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class PenaltiesService @Inject()(connector: PenaltiesConnector) {
@@ -122,6 +124,12 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
       }.sum
     }.getOrElse(BigDecimal(0))
     estimatedLspInterest + estimatedLppInterest
+  }
+
+  def getLatestLSPCreationDate(payload: ETMPPayload): Option[LocalDateTime] = {
+    payload.penaltyPoints.find(
+      point => !point.appealStatus.contains(AppealStatusEnum.Accepted) && !point.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal)
+    ).map(_.dateCreated)
   }
 
 }
