@@ -128,8 +128,8 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
 
   def getLatestLSPCreationDate(payload: ETMPPayload): Option[LocalDateTime] = {
     payload.penaltyPoints.find(
-      point => !point.appealStatus.contains(AppealStatusEnum.Accepted) && !point.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal)
+      point => point.`type` == PenaltyTypeEnum.Financial &&
+        !point.appealStatus.contains(AppealStatusEnum.Accepted) && !point.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal)
     ).map(_.dateCreated)
   }
-
 }

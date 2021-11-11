@@ -521,15 +521,113 @@ class PenaltiesServiceSpec extends SpecBase {
 
   "getLatestLSPCreationDate" should {
     "return Some" when {
-      "the user has penalties excluding appealed points" in new Setup {
-        val result: Option[LocalDateTime] = service.getLatestLSPCreationDate(etmpDataWithOneLSP)
+      "the user has LSP's" in new Setup {
+        val sampleLspDataWithDueFinancialPenalties: ETMPPayload = ETMPPayload(
+          pointsTotal = 3,
+          lateSubmissions = 3,
+          adjustmentPointsTotal = 0,
+          fixedPenaltyAmount = 400.0,
+          penaltyAmountsTotal = 0.0,
+          penaltyPointsThreshold = 2,
+          vatOverview = None,
+          penaltyPoints = Seq(
+            PenaltyPoint(
+              `type` = PenaltyTypeEnum.Financial,
+              id = "1236",
+              number = "3",
+              appealStatus = None,
+              dateCreated = sampleDate.plusMonths(3),
+              dateExpired = Some(sampleDate),
+              status = PointStatusEnum.Due,
+              reason = None,
+              period = Some(
+                PenaltyPeriod(
+                  startDate = sampleDate,
+                  endDate = sampleDate,
+                  submission = Submission(
+                    dueDate = sampleDate,
+                    submittedDate = Some(sampleDate),
+                    status = SubmissionStatusEnum.Submitted
+                  )
+                )
+              ),
+              communications = Seq.empty,
+              financial = Some(
+                Financial(
+                  amountDue = 200.00,
+                  outstandingAmountDue = 200.00,
+                  dueDate = sampleDate,
+                  estimatedInterest = None,
+                  crystalizedInterest = None
+                )
+              )
+            ),
+            PenaltyPoint(
+              `type` = PenaltyTypeEnum.Financial,
+              id = "1235",
+              number = "2",
+              appealStatus = None,
+              dateCreated = sampleDate,
+              dateExpired = Some(sampleDate),
+              status = PointStatusEnum.Due,
+              reason = None,
+              period = Some(
+                PenaltyPeriod(
+                  startDate = sampleDate,
+                  endDate = sampleDate,
+                  submission = Submission(
+                    dueDate = sampleDate,
+                    submittedDate = Some(sampleDate),
+                    status = SubmissionStatusEnum.Submitted
+                  )
+                )
+              ),
+              communications = Seq.empty,
+              financial = Some(
+                Financial(
+                  amountDue = 200.00,
+                  outstandingAmountDue = 200.00,
+                  dueDate = sampleDate,
+                  estimatedInterest = None,
+                  crystalizedInterest = None
+                )
+              )
+            ),
+            PenaltyPoint(
+              `type` = PenaltyTypeEnum.Point,
+              id = "1234",
+              number = "1",
+              appealStatus = None,
+              dateCreated = sampleDate,
+              dateExpired = Some(sampleDate),
+              status = PointStatusEnum.Active,
+              reason = None,
+              period = Some(
+                PenaltyPeriod(
+                  startDate = sampleDate,
+                  endDate = sampleDate,
+                  submission = Submission(
+                    dueDate = sampleDate,
+                    submittedDate = Some(sampleDate),
+                    status = SubmissionStatusEnum.Submitted
+                  )
+                )
+              ),
+              communications = Seq.empty,
+              financial = None
+            )
+          ),
+          latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
+        )
+        val result: Option[LocalDateTime] = service.getLatestLSPCreationDate(sampleLspDataWithDueFinancialPenalties)
         result.isDefined shouldBe true
-        result.get shouldBe sampleOverduePenaltyPoint.dateCreated
+        result.get shouldBe sampleDate.plusMonths(3)
       }
 
       "the user has appealed points - return the next valid point" in new Setup {
-        val acceptedPoint: PenaltyPoint = samplePenaltyPointAppealedAccepted.copy(dateCreated = sampleDate)
-        val appealUnderReviewPoint: PenaltyPoint = samplePenaltyPointAppealedUnderReview.copy(dateCreated = sampleDate.minusMonths(3))
+        val acceptedPoint: PenaltyPoint = samplePenaltyPointAppealedAccepted.copy(dateCreated = sampleDate, `type` = PenaltyTypeEnum.Financial)
+        val appealUnderReviewPoint: PenaltyPoint = samplePenaltyPointAppealedUnderReview.copy(dateCreated = sampleDate.minusMonths(3),
+          `type` = PenaltyTypeEnum.Financial)
         val dataWithAppealedPoint: ETMPPayload = ETMPPayload(
           pointsTotal = 1,
           lateSubmissions = 2,
@@ -558,23 +656,8 @@ class PenaltiesServiceSpec extends SpecBase {
         result.isEmpty shouldBe true
       }
 
-      "the user only has appealed points" in new Setup {
-        val acceptedPoint: PenaltyPoint = samplePenaltyPointAppealedAccepted.copy(dateCreated = sampleDate)
-        val dataWithAppealedPoint: ETMPPayload = ETMPPayload(
-          pointsTotal = 0,
-          lateSubmissions = 1,
-          adjustmentPointsTotal = 0,
-          fixedPenaltyAmount = 0,
-          penaltyAmountsTotal = 0,
-          penaltyPointsThreshold = 4,
-          otherPenalties = None,
-          vatOverview = None,
-          penaltyPoints = Seq(
-            acceptedPoint
-          ),
-          latePaymentPenalties = None
-        )
-        val result: Option[LocalDateTime] = service.getLatestLSPCreationDate(dataWithAppealedPoint)
+      "the user only has no LSPs" in new Setup {
+        val result: Option[LocalDateTime] = service.getLatestLSPCreationDate(etmpDataWithOneLSP)
         result.isEmpty shouldBe true
       }
     }
