@@ -42,6 +42,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
   val sampleDate4: LocalDateTime = LocalDateTime.of(2021, 4, 1, 1, 1, 1)
   val controller: IndexController = injector.instanceOf[IndexController]
   val fakeAgentRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(SessionKeys.agentSessionVrn -> "123456789")
+  val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/")
   val etmpPayloadWithAddedPoints: ETMPPayload = ETMPPayload(
     pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, otherPenalties = Some(false), vatOverview = Some(Seq.empty), penaltyPoints = Seq(
       PenaltyPoint(
@@ -669,6 +670,14 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("dd").get(4).text shouldBe "Under review by HMRC"
     }
 
+    "return 200 (OK) and add the latest lsp creation date to the session" in {
+      returnLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalties = paidLatePaymentPenalty))
+      val request = controller.onPageLoad()(fakeRequest)
+      await(request).header.status shouldBe Status.OK
+      await(request).session(fakeRequest).get(SessionKeys.latestLSPCreationDate).isDefined shouldBe true
+      await(request).session(fakeRequest).get(SessionKeys.latestLSPCreationDate).get shouldBe sampleDate1.toString
+    }
+
     "agent view" must {
       "return 200 (OK) and render the view when there are added points that are retrieved from the backend" in {
         AuthStub.agentAuthorised()
@@ -746,6 +755,15 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.select("#main-content h2:nth-child(3)").text shouldBe "Penalty and appeal details"
         parsedBody.select("#what-is-owed > a").text shouldBe "Check amounts"
         parsedBody.select("#main-content .govuk-details__summary-text").text shouldBe "Payment help"
+      }
+
+      "return 200 (OK) and add the latest lsp creation date to the session" in {
+        AuthStub.agentAuthorised()
+        returnAgentLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalties = paidLatePaymentPenalty))
+        val request = controller.onPageLoad()(fakeAgentRequest)
+        await(request).header.status shouldBe Status.OK
+        await(request).session(fakeAgentRequest).get(SessionKeys.latestLSPCreationDate).isDefined shouldBe true
+        await(request).session(fakeAgentRequest).get(SessionKeys.latestLSPCreationDate).get shouldBe sampleDate1.toString
       }
     }
 
