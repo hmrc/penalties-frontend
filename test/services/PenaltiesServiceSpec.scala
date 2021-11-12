@@ -28,13 +28,15 @@ import org.mockito.Matchers._
 import org.mockito.Mockito._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
-import java.time.LocalDateTime
+import utils.PenaltyPeriodHelper
 
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class PenaltiesServiceSpec extends SpecBase {
 
   val mockPenaltiesConnector: PenaltiesConnector = mock(classOf[PenaltiesConnector])
+  val mockPenaltyPeriodHelper: PenaltyPeriodHelper = mock(classOf[PenaltyPeriodHelper])
 
   val sampleLspDataWithVATOverview: ETMPPayload = ETMPPayload(
     pointsTotal = 0,
@@ -273,7 +275,7 @@ class PenaltiesServiceSpec extends SpecBase {
   )
 
   class Setup {
-    val service: PenaltiesService = new PenaltiesService(mockPenaltiesConnector)
+    val service: PenaltiesService = new PenaltiesService(mockPenaltiesConnector,mockPenaltyPeriodHelper)
 
     reset(mockPenaltiesConnector)
   }
@@ -309,7 +311,7 @@ class PenaltiesServiceSpec extends SpecBase {
         dateExpired = Some(LocalDateTime.of(2023, 1, 1, 0, 0)),
         status = PointStatusEnum.Due,
         reason = None,
-        period = Some(PenaltyPeriod(
+        period = Some(Seq(PenaltyPeriod(
           startDate = LocalDateTime.of(2021, 1, 1, 0, 0),
           endDate = LocalDateTime.of(2021, 2, 1, 0, 0),
           submission = Submission(
@@ -317,7 +319,7 @@ class PenaltiesServiceSpec extends SpecBase {
             submittedDate = Some(LocalDateTime.of(2021, 3, 9, 0, 0)),
             status = SubmissionStatusEnum.Submitted
           )
-        )),
+        ))),
         communications = Seq.empty,
         financial = None
       )
@@ -343,21 +345,47 @@ class PenaltiesServiceSpec extends SpecBase {
         dateExpired = Some(LocalDateTime.of(2023, 1, 1, 0, 0)),
         status = PointStatusEnum.Due,
         reason = None,
-        period = Some(PenaltyPeriod(
+        period = Some(Seq(PenaltyPeriod(
           startDate = LocalDateTime.of(2021, 1, 1, 0, 0),
           endDate = LocalDateTime.of(2021, 2, 1, 0, 0),
           submission = Submission(
             dueDate = LocalDateTime.of(2021, 3, 7, 0, 0),
             status = SubmissionStatusEnum.Overdue
           )
-        )),
+        ))),
         communications = Seq.empty,
         financial = None
       )
     )
 
     val sampleFinancialPenaltyPointUnpaidAndSubmitted: Seq[PenaltyPoint] = Seq(
-      sampleFinancialPenaltyPointUnpaidAndNotSubmitted.head.copy(period = Some(PenaltyPeriod(
+      sampleFinancialPenaltyPointUnpaidAndNotSubmitted.head.copy(period = Some(Seq(PenaltyPeriod(
+        startDate = LocalDateTime.of(2021, 1, 1, 0, 0),
+        endDate = LocalDateTime.of(2021, 2, 1, 0, 0),
+        submission = Submission(
+          dueDate = LocalDateTime.of(2021, 3, 7, 0, 0),
+          submittedDate = Some(LocalDateTime.of(2021, 3, 9, 0, 0)),
+          status = SubmissionStatusEnum.Submitted
+        )
+      ))))
+    )
+
+    s"return true when there is a ${PenaltyTypeEnum.Financial} penalty point, it is due and there is no submission" in new Setup {
+      when(mockPenaltyPeriodHelper.sortedPenaltyPeriod(any())).thenReturn(Seq(PenaltyPeriod(
+        startDate = LocalDateTime.of(2021, 1, 1, 0, 0),
+        endDate = LocalDateTime.of(2021, 2, 1, 0, 0),
+        submission = Submission(
+          dueDate = LocalDateTime.of(2021, 3, 7, 0, 0),
+          status = SubmissionStatusEnum.Overdue
+        )
+      )))
+      val result: Boolean = service.isAnyLSPUnpaidAndSubmissionIsDue(sampleFinancialPenaltyPointUnpaidAndNotSubmitted)
+      result shouldBe true
+    }
+
+    s"return false when there is a ${PenaltyTypeEnum.Financial} penalty point, it is due BUT there is a submission" in new Setup {
+
+      when(mockPenaltyPeriodHelper.sortedPenaltyPeriod(any())).thenReturn(Seq(PenaltyPeriod(
         startDate = LocalDateTime.of(2021, 1, 1, 0, 0),
         endDate = LocalDateTime.of(2021, 2, 1, 0, 0),
         submission = Submission(
@@ -366,14 +394,6 @@ class PenaltiesServiceSpec extends SpecBase {
           status = SubmissionStatusEnum.Submitted
         )
       )))
-    )
-
-    s"return true when there is a ${PenaltyTypeEnum.Financial} penalty point, it is due and there is no submission" in new Setup {
-      val result: Boolean = service.isAnyLSPUnpaidAndSubmissionIsDue(sampleFinancialPenaltyPointUnpaidAndNotSubmitted)
-      result shouldBe true
-    }
-
-    s"return false when there is a ${PenaltyTypeEnum.Financial} penalty point, it is due BUT there is a submission" in new Setup {
       val result: Boolean = service.isAnyLSPUnpaidAndSubmissionIsDue(sampleFinancialPenaltyPointUnpaidAndSubmitted)
       result shouldBe false
     }
@@ -516,6 +536,150 @@ class PenaltiesServiceSpec extends SpecBase {
     "return total amount when the payload contains estimated interest penalties for LSP and LPP" in new Setup {
       val result: BigDecimal = service.findEstimatedPenaltiesInterest(sampleLspDataWithFinancialElements)
       result shouldBe 30
+    }
+  }
+
+  "getLatestLSPCreationDate" should {
+    "return Some" when {
+      "the user has LSP's" in new Setup {
+        val sampleLspDataWithDueFinancialPenalties: ETMPPayload = ETMPPayload(
+          pointsTotal = 3,
+          lateSubmissions = 3,
+          adjustmentPointsTotal = 0,
+          fixedPenaltyAmount = 400.0,
+          penaltyAmountsTotal = 0.0,
+          penaltyPointsThreshold = 2,
+          vatOverview = None,
+          penaltyPoints = Seq(
+            PenaltyPoint(
+              `type` = PenaltyTypeEnum.Financial,
+              id = "1236",
+              number = "3",
+              appealStatus = None,
+              dateCreated = sampleDate.plusMonths(3),
+              dateExpired = Some(sampleDate),
+              status = PointStatusEnum.Due,
+              reason = None,
+              period = Some(
+                Seq(PenaltyPeriod(
+                  startDate = sampleDate,
+                  endDate = sampleDate,
+                  submission = Submission(
+                    dueDate = sampleDate,
+                    submittedDate = Some(sampleDate),
+                    status = SubmissionStatusEnum.Submitted
+                  )
+                )
+              )),
+              communications = Seq.empty,
+              financial = Some(
+                Financial(
+                  amountDue = 200.00,
+                  outstandingAmountDue = 200.00,
+                  dueDate = sampleDate,
+                  estimatedInterest = None,
+                  crystalizedInterest = None
+                )
+              )
+            ),
+            PenaltyPoint(
+              `type` = PenaltyTypeEnum.Financial,
+              id = "1235",
+              number = "2",
+              appealStatus = None,
+              dateCreated = sampleDate,
+              dateExpired = Some(sampleDate),
+              status = PointStatusEnum.Due,
+              reason = None,
+              period = Some(
+                Seq(PenaltyPeriod(
+                  startDate = sampleDate,
+                  endDate = sampleDate,
+                  submission = Submission(
+                    dueDate = sampleDate,
+                    submittedDate = Some(sampleDate),
+                    status = SubmissionStatusEnum.Submitted
+                  )
+                )
+              )),
+              communications = Seq.empty,
+              financial = Some(
+                Financial(
+                  amountDue = 200.00,
+                  outstandingAmountDue = 200.00,
+                  dueDate = sampleDate,
+                  estimatedInterest = None,
+                  crystalizedInterest = None
+                )
+              )
+            ),
+            PenaltyPoint(
+              `type` = PenaltyTypeEnum.Point,
+              id = "1234",
+              number = "1",
+              appealStatus = None,
+              dateCreated = sampleDate,
+              dateExpired = Some(sampleDate),
+              status = PointStatusEnum.Active,
+              reason = None,
+              period = Some(
+                Seq(PenaltyPeriod(
+                  startDate = sampleDate,
+                  endDate = sampleDate,
+                  submission = Submission(
+                    dueDate = sampleDate,
+                    submittedDate = Some(sampleDate),
+                    status = SubmissionStatusEnum.Submitted
+                  )
+                )
+              )),
+              communications = Seq.empty,
+              financial = None
+            )
+          ),
+          latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
+        )
+        val result: Option[LocalDateTime] = service.getLatestLSPCreationDate(sampleLspDataWithDueFinancialPenalties)
+        result.isDefined shouldBe true
+        result.get shouldBe sampleDate.plusMonths(3)
+      }
+
+      "the user has appealed points - return the next valid point" in new Setup {
+        val acceptedPoint: PenaltyPoint = samplePenaltyPointAppealedAccepted.copy(dateCreated = sampleDate, `type` = PenaltyTypeEnum.Financial)
+        val appealUnderReviewPoint: PenaltyPoint = samplePenaltyPointAppealedUnderReview.copy(dateCreated = sampleDate.minusMonths(3),
+          `type` = PenaltyTypeEnum.Financial)
+        val dataWithAppealedPoint: ETMPPayload = ETMPPayload(
+          pointsTotal = 1,
+          lateSubmissions = 2,
+          adjustmentPointsTotal = 0,
+          fixedPenaltyAmount = 0,
+          penaltyAmountsTotal = 0,
+          penaltyPointsThreshold = 4,
+          otherPenalties = None,
+          vatOverview = None,
+          penaltyPoints = Seq(
+            acceptedPoint,
+            appealUnderReviewPoint
+          ),
+          latePaymentPenalties = None
+        )
+        val result: Option[LocalDateTime] = service.getLatestLSPCreationDate(dataWithAppealedPoint)
+        result.isDefined shouldBe true
+        result.get shouldBe appealUnderReviewPoint.dateCreated
+      }
+    }
+
+    "return None" when {
+
+      "the user has no penalties" in new Setup {
+        val result: Option[LocalDateTime] = service.getLatestLSPCreationDate(sampleEmptyLspData)
+        result.isEmpty shouldBe true
+      }
+
+      "the user only has no LSPs" in new Setup {
+        val result: Option[LocalDateTime] = service.getLatestLSPCreationDate(etmpDataWithOneLSP)
+        result.isEmpty shouldBe true
+      }
     }
   }
 }

@@ -16,8 +16,18 @@
 
 package utils
 
-object SessionKeys {
-  val agentSessionVrn = "CLIENT_VRN"
-  val latestLSPCreationDate = "latestLSPCreationDate"
+import models.penalty.PenaltyPeriod
 
+class PenaltyPeriodHelper {
+
+  def sortByPenaltyStartDate(p1: PenaltyPeriod, p2: PenaltyPeriod):Int = {
+    p1.startDate.compareTo(p2.startDate)
+  }
+
+  def sortedPenaltyPeriod(penaltyPeriod: Seq[PenaltyPeriod]):Seq[PenaltyPeriod]= {
+    if(penaltyPeriod.nonEmpty)
+      penaltyPeriod.sortWith(sortByPenaltyStartDate(_ , _) < 0)
+    else
+      Seq.empty
+  }
 }

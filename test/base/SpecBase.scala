@@ -116,7 +116,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     dateExpired = Some(LocalDateTime.now),
     status = PointStatusEnum.Active,
     reason = None,
-    period = Some(PenaltyPeriod(
+    period = Some(Seq(PenaltyPeriod(
       LocalDateTime.now,
       LocalDateTime.now,
       Submission(
@@ -124,7 +124,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         Some(LocalDateTime.now),
         SubmissionStatusEnum.Submitted
       )
-    )),
+    ))),
     communications = Seq.empty
   )
 
@@ -137,7 +137,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     dateExpired = Some(LocalDateTime.now),
     status = PointStatusEnum.Active,
     reason = None,
-    period = Some(PenaltyPeriod(
+    period = Some(Seq(PenaltyPeriod(
       LocalDateTime.now,
       LocalDateTime.now,
       Submission(
@@ -145,7 +145,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         None,
         SubmissionStatusEnum.Overdue
       )
-    )),
+    ))),
     communications = Seq.empty,
     financial = Some(
       Financial(
@@ -163,7 +163,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     dateExpired = Some(LocalDateTime.now),
     status = PointStatusEnum.Active,
     reason = None,
-    period = Some(PenaltyPeriod(
+    period = Some(Seq(PenaltyPeriod(
       LocalDateTime.now,
       LocalDateTime.now,
       Submission(
@@ -171,7 +171,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         None,
         SubmissionStatusEnum.Overdue
       )
-    )),
+    ))),
     communications = Seq.empty
   )
 
@@ -184,7 +184,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     dateExpired = Some(LocalDateTime.now),
     status = PointStatusEnum.Active,
     reason = None,
-    period = Some(PenaltyPeriod(
+    period = Some(Seq(PenaltyPeriod(
       LocalDateTime.now,
       LocalDateTime.now,
       Submission(
@@ -192,7 +192,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         None,
         SubmissionStatusEnum.Submitted
       )
-    )),
+    ))),
     communications = Seq.empty
   )
 
@@ -400,7 +400,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     Some(LocalDateTime.now),
     PointStatusEnum.Removed,
     Some("reason"),
-    Some(PenaltyPeriod(
+    Some(Seq(PenaltyPeriod(
       LocalDateTime.now,
       LocalDateTime.now,
       Submission(
@@ -408,7 +408,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         Some(LocalDateTime.now),
         SubmissionStatusEnum.Submitted
       )
-    )),
+    ))),
     Seq.empty
   )
 
@@ -453,7 +453,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         dateExpired = Some(sampleDate),
         status = PointStatusEnum.Due,
         reason = None,
-        period = Some(
+        period = Some(Seq(
           PenaltyPeriod(
             startDate = sampleDate,
             endDate = sampleDate,
@@ -463,7 +463,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
               status = SubmissionStatusEnum.Submitted
             )
           )
-        ),
+        )),
         communications = Seq.empty,
         financial = Some(
           Financial(
@@ -485,7 +485,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         status = PointStatusEnum.Due,
         reason = None,
         period = Some(
-          PenaltyPeriod(
+          Seq(PenaltyPeriod(
             startDate = sampleDate,
             endDate = sampleDate,
             submission = Submission(
@@ -494,7 +494,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
               status = SubmissionStatusEnum.Submitted
             )
           )
-        ),
+        )),
         communications = Seq.empty,
         financial = Some(
           Financial(
@@ -516,7 +516,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         status = PointStatusEnum.Active,
         reason = None,
         period = Some(
-          PenaltyPeriod(
+          Seq(PenaltyPeriod(
             startDate = sampleDate,
             endDate = sampleDate,
             submission = Submission(
@@ -525,7 +525,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
               status = SubmissionStatusEnum.Submitted
             )
           )
-        ),
+        )),
         communications = Seq.empty,
         financial = None
       )
@@ -576,7 +576,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
       Some(LocalDateTime.now),
       PointStatusEnum.Active,
       None,
-      Some(PenaltyPeriod(
+      Some(Seq(PenaltyPeriod(
         LocalDateTime.now,
         LocalDateTime.now,
         Submission(
@@ -584,7 +584,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
           None,
           SubmissionStatusEnum.Overdue
         )
-      )),
+      ))),
       Seq.empty
     )
   )

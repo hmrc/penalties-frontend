@@ -26,6 +26,7 @@ import services.PenaltiesService
 import testUtils.AuthTestModels
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
+import utils.SessionKeys
 import viewmodels.{IndexPageHelper, SummaryCardHelper}
 import views.html.IndexView
 
@@ -40,13 +41,11 @@ class IndexControllerSpec extends SpecBase {
 
   class Setup(authResult: Future[~[Option[AffinityGroup], Enrolments]]) {
 
-    reset(mockAuthConnector)
+    reset(mockAuthConnector, mockPenaltiesService)
     when(mockAuthConnector.authorise[~[Option[AffinityGroup], Enrolments]](
       Matchers.any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
       Matchers.any(), Matchers.any())
     ).thenReturn(authResult)
-
-    reset(mockPenaltiesService)
     when(mockPenaltiesService.getETMPDataFromEnrolmentKey(any())(any(), any())).thenReturn(Future.successful(sampleEmptyLspData))
   }
 
@@ -64,10 +63,21 @@ class IndexControllerSpec extends SpecBase {
       "the user is authorised" must {
 
         "return OK and correct view" in new Setup(AuthTestModels.successfulAuthResult) {
-
+          when(mockPenaltiesService.getLatestLSPCreationDate(any()))
+            .thenReturn(None)
           val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
-
           status(result) shouldBe OK
+          await(result).session.get(SessionKeys.latestLSPCreationDate).isEmpty shouldBe true
+        }
+
+        "return OK and correct view - adding the latest LSP creation date into the session in case of compliance view" in
+          new Setup(AuthTestModels.successfulAuthResult) {
+          when(mockPenaltiesService.getLatestLSPCreationDate(any()))
+            .thenReturn(Some(sampleDate))
+          val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
+          status(result) shouldBe OK
+          await(result).session.get(SessionKeys.latestLSPCreationDate).isDefined shouldBe true
+          await(result).session.get(SessionKeys.latestLSPCreationDate).get shouldBe sampleDate.toString
         }
       }
 

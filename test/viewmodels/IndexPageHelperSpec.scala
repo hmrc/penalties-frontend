@@ -807,7 +807,7 @@ class IndexPageHelperSpec extends SpecBase {
               status = PointStatusEnum.Due,
               reason = None,
               period = Some(
-                PenaltyPeriod(
+                Seq(PenaltyPeriod(
                   startDate = sampleDate,
                   endDate = sampleDate,
                   submission = Submission(
@@ -816,7 +816,7 @@ class IndexPageHelperSpec extends SpecBase {
                     status = SubmissionStatusEnum.Submitted
                   )
                 )
-              ),
+              )),
               communications = Seq.empty,
               financial = Some(
                 Financial(
@@ -838,7 +838,7 @@ class IndexPageHelperSpec extends SpecBase {
               status = PointStatusEnum.Due,
               reason = None,
               period = Some(
-                PenaltyPeriod(
+                Seq(PenaltyPeriod(
                   startDate = sampleDate,
                   endDate = sampleDate,
                   submission = Submission(
@@ -847,7 +847,7 @@ class IndexPageHelperSpec extends SpecBase {
                     status = SubmissionStatusEnum.Submitted
                   )
                 )
-              ),
+              )),
               communications = Seq.empty,
               financial = Some(
                 Financial(
@@ -869,7 +869,7 @@ class IndexPageHelperSpec extends SpecBase {
               status = PointStatusEnum.Active,
               reason = None,
               period = Some(
-                PenaltyPeriod(
+                Seq(PenaltyPeriod(
                   startDate = sampleDate,
                   endDate = sampleDate,
                   submission = Submission(
@@ -878,7 +878,7 @@ class IndexPageHelperSpec extends SpecBase {
                     status = SubmissionStatusEnum.Submitted
                   )
                 )
-              ),
+              )),
               communications = Seq.empty,
               financial = None
             )

@@ -96,7 +96,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
     PointStatusEnum.Removed,
     Some("A really great reason."),
-    Some(PenaltyPeriod(
+    Some(Seq(PenaltyPeriod(
       LocalDateTime.of(2020, 1, 1, 1, 1, 1),
       LocalDateTime.of(2020, 2, 1, 1, 1, 1),
       Submission(
@@ -104,7 +104,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         None,
         SubmissionStatusEnum.Overdue
       )
-    )),
+    ))),
     Seq.empty
   )), quarterlyThreshold, 1).head
 
@@ -117,7 +117,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
     PointStatusEnum.Due,
     None,
-    Some(PenaltyPeriod(
+    Some(Seq(PenaltyPeriod(
       LocalDateTime.of(2020, 1, 1, 1, 1, 1),
       LocalDateTime.of(2020, 2, 1, 1, 1, 1),
       Submission(
@@ -125,7 +125,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         Some(LocalDateTime.of(2020, 1, 1, 1, 1, 1)),
         SubmissionStatusEnum.Submitted
       )
-    )),
+    ))),
     Seq.empty,
     financial = Some(
       Financial(
@@ -146,7 +146,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
     PointStatusEnum.Due,
     None,
-    Some(PenaltyPeriod(
+    Some(Seq(PenaltyPeriod(
       LocalDateTime.of(2020, 1, 1, 1, 1, 1),
       LocalDateTime.of(2020, 2, 1, 1, 1, 1),
       Submission(
@@ -154,7 +154,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         Some(LocalDateTime.of(2020, 1, 1, 1, 1, 1)),
         SubmissionStatusEnum.Submitted
       )
-    )),
+    ))),
     Seq.empty,
     financial = Some(
       Financial(
@@ -175,7 +175,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
     PointStatusEnum.Removed,
     None,
-    Some(PenaltyPeriod(
+    Some(Seq(PenaltyPeriod(
       LocalDateTime.of(2020, 1, 1, 1, 1, 1),
       LocalDateTime.of(2020, 2, 1, 1, 1, 1),
       Submission(
@@ -183,7 +183,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         Some(LocalDateTime.of(2020, 1, 1, 1, 1, 1)),
         SubmissionStatusEnum.Submitted
       )
-    )),
+    ))),
     Seq.empty,
     financial = Some(
       Financial(
@@ -204,7 +204,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
     PointStatusEnum.Due,
     None,
-    Some(PenaltyPeriod(
+    Some(Seq(PenaltyPeriod(
       LocalDateTime.of(2020, 1, 1, 1, 1, 1),
       LocalDateTime.of(2020, 2, 1, 1, 1, 1),
       Submission(
@@ -212,7 +212,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         Some(LocalDateTime.of(2020, 1, 1, 1, 1, 1)),
         SubmissionStatusEnum.Submitted
       )
-    )),
+    ))),
     Seq.empty,
     financial = Some(
       Financial(
@@ -233,7 +233,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
     PointStatusEnum.Due,
     None,
-    Some(PenaltyPeriod(
+    Some(Seq(PenaltyPeriod(
       LocalDateTime.of(2020, 1, 1, 1, 1, 1),
       LocalDateTime.of(2020, 2, 1, 1, 1, 1),
       Submission(
@@ -241,7 +241,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         Some(LocalDateTime.of(2020, 1, 1, 1, 1, 1)),
         SubmissionStatusEnum.Submitted
       )
-    )),
+    ))),
     Seq.empty,
     financial = Some(
       Financial(
@@ -262,7 +262,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
     PointStatusEnum.Due,
     None,
-    Some(PenaltyPeriod(
+    Some(Seq(PenaltyPeriod(
       LocalDateTime.of(2020, 1, 1, 1, 1, 1),
       LocalDateTime.of(2020, 2, 1, 1, 1, 1),
       Submission(
@@ -270,7 +270,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         Some(LocalDateTime.of(2020, 1, 1, 1, 1, 1)),
         SubmissionStatusEnum.Submitted
       )
-    )),
+    ))),
     Seq.empty,
     financial = Some(
       Financial(
@@ -291,7 +291,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
     PointStatusEnum.Due,
     None,
-    Some(PenaltyPeriod(
+    Some(Seq(PenaltyPeriod(
       LocalDateTime.of(2020, 1, 1, 1, 1, 1),
       LocalDateTime.of(2020, 2, 1, 1, 1, 1),
       Submission(
@@ -299,7 +299,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         Some(LocalDateTime.of(2020, 1, 1, 1, 1, 1)),
         SubmissionStatusEnum.Submitted
       )
-    )),
+    ))),
     Seq.empty,
     financial = Some(
       Financial(
@@ -320,7 +320,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
     PointStatusEnum.Removed,
     None,
-    Some(PenaltyPeriod(
+    Some(Seq(PenaltyPeriod(
       LocalDateTime.of(2020, 1, 1, 1, 1, 1),
       LocalDateTime.of(2020, 2, 1, 1, 1, 1),
       Submission(
@@ -328,7 +328,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         Some(LocalDateTime.of(2020, 1, 1, 1, 1, 1)),
         SubmissionStatusEnum.Submitted
       )
-    )),
+    ))),
     Seq.empty,
     financial = Some(
       Financial(
@@ -348,7 +348,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
     PointStatusEnum.Due,
     None,
-    Some(PenaltyPeriod(
+    Some(Seq(PenaltyPeriod(
       LocalDateTime.of(2020, 1, 1, 1, 1, 1),
       LocalDateTime.of(2020, 2, 1, 1, 1, 1),
       Submission(
@@ -356,7 +356,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         Some(LocalDateTime.of(2020, 1, 1, 1, 1, 1)),
         SubmissionStatusEnum.Submitted
       )
-    )),
+    ))),
     Seq.empty,
     financial = Some(
       Financial(
