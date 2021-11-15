@@ -32,7 +32,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListR
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 import utils.{ImplicitDateFormatter, PenaltyPeriodHelper, ViewUtils}
 
-class SummaryCardHelper @Inject()(link: views.html.components.link, penaltyPeriodHelper: PenaltyPeriodHelper) extends ImplicitDateFormatter with ViewUtils {
+class SummaryCardHelper @Inject()(link: views.html.components.link) extends ImplicitDateFormatter with ViewUtils {
 
   def populateLateSubmissionPenaltyCard(penalties: Seq[PenaltyPoint],
                                         threshold: Int, activePoints: Int)
@@ -98,8 +98,8 @@ class SummaryCardHelper @Inject()(link: views.html.components.link, penaltyPerio
         Html(
           messages(
             "summaryCard.value1",
-            dateTimeToString(penalty.period.map(penaltyPeriod => penaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head.startDate).get),
-            dateTimeToString(penalty.period.map(penaltyPeriod => penaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head.endDate).get)
+            dateTimeToString(penalty.period.map(penaltyPeriod => PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head.startDate).get),
+            dateTimeToString(penalty.period.map(penaltyPeriod => PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head.endDate).get)
           )
         )
       )),
@@ -116,7 +116,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link, penaltyPerio
 
   private def buildLSPSummaryCard(rows: Seq[SummaryListRow], penalty: PenaltyPoint, isAnAddedPoint: Boolean = false,
                                   isAnAdjustedPoint: Boolean = false)(implicit messages: Messages): LateSubmissionPenaltySummaryCard = {
-    val isReturnSubmitted = penalty.period.map(penaltyPeriod => penaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head).fold(false)(_.submission.submittedDate.isDefined)
+    val isReturnSubmitted = penalty.period.map(penaltyPeriod => PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head).fold(false)(_.submission.submittedDate.isDefined)
 
     LateSubmissionPenaltySummaryCard(
       rows,
@@ -154,13 +154,13 @@ class SummaryCardHelper @Inject()(link: views.html.components.link, penaltyPerio
         Html(
           messages(
             "summaryCard.value1",
-            dateTimeToString(penaltyPeriodHelper.sortedPenaltyPeriod(period.get).head.startDate),
-            dateTimeToString(penaltyPeriodHelper.sortedPenaltyPeriod(period.get).head.endDate)
+            dateTimeToString(PenaltyPeriodHelper.sortedPenaltyPeriod(period.get).head.startDate),
+            dateTimeToString(PenaltyPeriodHelper.sortedPenaltyPeriod(period.get).head.endDate)
           )
         )
       ),
-      summaryListRow(messages("summaryCard.key2"), Html(dateTimeToString(penaltyPeriodHelper.sortedPenaltyPeriod(period.get).head.submission.dueDate))),
-      summaryListRow(messages("summaryCard.key3"), Html(dateTimeToString(penaltyPeriodHelper.sortedPenaltyPeriod(period.get).head.submission.submittedDate.get)))
+      summaryListRow(messages("summaryCard.key2"), Html(dateTimeToString(PenaltyPeriodHelper.sortedPenaltyPeriod(period.get).head.submission.dueDate))),
+      summaryListRow(messages("summaryCard.key3"), Html(dateTimeToString(PenaltyPeriodHelper.sortedPenaltyPeriod(period.get).head.submission.submittedDate.get)))
     )
 
     if (penalty.dateExpired.isDefined && !thresholdMet && !penalty.appealStatus.contains(AppealStatusEnum.Accepted) &&
@@ -252,9 +252,9 @@ class SummaryCardHelper @Inject()(link: views.html.components.link, penaltyPerio
   )
 
   def pointSummaryCard(penalty: PenaltyPoint, thresholdMet: Boolean)(implicit messages: Messages, user: User[_]): LateSubmissionPenaltySummaryCard = {
-    val cardBody = penaltyPeriodHelper.sortedPenaltyPeriod(penalty.period.get).head.submission.submittedDate match {
+    val cardBody = PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.period.get).head.submission.submittedDate match {
       case Some(_: LocalDateTime) => returnSubmittedCardBody(penalty, thresholdMet)
-      case None => returnNotSubmittedCardBody(penaltyPeriodHelper.sortedPenaltyPeriod(penalty.period.get).head)
+      case None => returnNotSubmittedCardBody(PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.period.get).head)
     }
 
     if (penalty.appealStatus.isDefined) {
@@ -289,18 +289,18 @@ class SummaryCardHelper @Inject()(link: views.html.components.link, penaltyPerio
         Html(
           messages(
             "summaryCard.value1",
-            dateTimeToString(penaltyPeriodHelper.sortedPenaltyPeriod(penalty.period.get).head.startDate),
-            dateTimeToString(penaltyPeriodHelper.sortedPenaltyPeriod(penalty.period.get).head.endDate)
+            dateTimeToString(PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.period.get).head.startDate),
+            dateTimeToString(PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.period.get).head.endDate)
           )
         )
       ),
       summaryListRow(
         messages("summaryCard.key2"),
         Html(
-          dateTimeToString(penaltyPeriodHelper.sortedPenaltyPeriod(penalty.period.get).head.submission.dueDate)
+          dateTimeToString(PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.period.get).head.submission.dueDate)
         )
       ),
-      penaltyPeriodHelper.sortedPenaltyPeriod(penalty.period.get).head.submission.submittedDate.fold(
+      PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.period.get).head.submission.submittedDate.fold(
         summaryListRow(
           messages("summaryCard.key3"),
           Html(
@@ -327,7 +327,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link, penaltyPerio
       tagStatus(Some(penalty), None),
       getPenaltyNumberBasedOnThreshold(penalty.number, threshold),
       penalty.id,
-      penalty.period.map(penaltyPeriod => penaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head).fold(false)(_.submission.submittedDate.isDefined),
+      penalty.period.map(penaltyPeriod => PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head).fold(false)(_.submission.submittedDate.isDefined),
       isFinancialPoint = penalty.`type` == PenaltyTypeEnum.Financial,
       isAppealedPoint = penalty.appealStatus.isDefined,
       appealStatus = penalty.appealStatus,
@@ -358,7 +358,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link, penaltyPerio
   def tagStatus(penalty: Option[PenaltyPoint], lpp: Option[LatePaymentPenalty])(implicit messages: Messages): Tag = {
 
     if (penalty.isDefined) {
-      val periodSubmissionStatus = penalty.get.period.map(penaltyPeriod => penaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head.submission.status)
+      val periodSubmissionStatus = penalty.get.period.map(penaltyPeriod => PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head.submission.status)
       val penaltyPointStatus = penalty.get.status
       val penaltyAppealStatus = penalty.get.appealStatus
 

@@ -38,6 +38,12 @@ class PenaltiesConnectorISpec extends IntegrationSpecCommonBase {
       result shouldBe sampleLspData
     }
 
+    "generate a ETMPPayload when valid JSON is returned from penalties with multiple penalty period" in {
+      wireMockServer.editStubMapping(lspWithMultiplePenaltyPeriodDataStub())
+      val result = connector.getPenaltiesData(vrn)(vatTraderUser, implicitly).futureValue
+      result shouldBe sampleLspDataWithMultiplePenaltyPeriod
+    }
+
     "throw an exception when invalid JSON is returned from penalties" in {
       wireMockServer.editStubMapping(invalidLspDataStub())
 

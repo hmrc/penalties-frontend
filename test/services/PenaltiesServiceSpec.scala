@@ -36,7 +36,6 @@ import scala.concurrent.Future
 class PenaltiesServiceSpec extends SpecBase {
 
   val mockPenaltiesConnector: PenaltiesConnector = mock(classOf[PenaltiesConnector])
-  val mockPenaltyPeriodHelper: PenaltyPeriodHelper = mock(classOf[PenaltyPeriodHelper])
 
   val sampleLspDataWithVATOverview: ETMPPayload = ETMPPayload(
     pointsTotal = 0,
@@ -275,7 +274,7 @@ class PenaltiesServiceSpec extends SpecBase {
   )
 
   class Setup {
-    val service: PenaltiesService = new PenaltiesService(mockPenaltiesConnector,mockPenaltyPeriodHelper)
+    val service: PenaltiesService = new PenaltiesService(mockPenaltiesConnector)
 
     reset(mockPenaltiesConnector)
   }
@@ -371,29 +370,13 @@ class PenaltiesServiceSpec extends SpecBase {
     )
 
     s"return true when there is a ${PenaltyTypeEnum.Financial} penalty point, it is due and there is no submission" in new Setup {
-      when(mockPenaltyPeriodHelper.sortedPenaltyPeriod(any())).thenReturn(Seq(PenaltyPeriod(
-        startDate = LocalDateTime.of(2021, 1, 1, 0, 0),
-        endDate = LocalDateTime.of(2021, 2, 1, 0, 0),
-        submission = Submission(
-          dueDate = LocalDateTime.of(2021, 3, 7, 0, 0),
-          status = SubmissionStatusEnum.Overdue
-        )
-      )))
+
       val result: Boolean = service.isAnyLSPUnpaidAndSubmissionIsDue(sampleFinancialPenaltyPointUnpaidAndNotSubmitted)
       result shouldBe true
     }
 
     s"return false when there is a ${PenaltyTypeEnum.Financial} penalty point, it is due BUT there is a submission" in new Setup {
 
-      when(mockPenaltyPeriodHelper.sortedPenaltyPeriod(any())).thenReturn(Seq(PenaltyPeriod(
-        startDate = LocalDateTime.of(2021, 1, 1, 0, 0),
-        endDate = LocalDateTime.of(2021, 2, 1, 0, 0),
-        submission = Submission(
-          dueDate = LocalDateTime.of(2021, 3, 7, 0, 0),
-          submittedDate = Some(LocalDateTime.of(2021, 3, 9, 0, 0)),
-          status = SubmissionStatusEnum.Submitted
-        )
-      )))
       val result: Boolean = service.isAnyLSPUnpaidAndSubmissionIsDue(sampleFinancialPenaltyPointUnpaidAndSubmitted)
       result shouldBe false
     }

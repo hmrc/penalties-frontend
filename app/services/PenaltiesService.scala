@@ -26,7 +26,7 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class PenaltiesService @Inject()(connector: PenaltiesConnector, penaltyPeriodHelper: PenaltyPeriodHelper) {
+class PenaltiesService @Inject()(connector: PenaltiesConnector) {
 
   def getETMPDataFromEnrolmentKey(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[ETMPPayload] = connector.getPenaltiesData(enrolmentKey)
 
@@ -38,7 +38,7 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector, penaltyPeriodHel
   def isAnyLSPUnpaidAndSubmissionIsDue(penaltyPoints: Seq[PenaltyPoint]): Boolean = {
     penaltyPoints.exists(penalty => penalty.status == PointStatusEnum.Due
       && penalty.`type` == PenaltyTypeEnum.Financial && penalty.period.isDefined
-      && penalty.period.map(penaltyPeriod => penaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head.submission.submittedDate.isEmpty).get
+      && penalty.period.map(penaltyPeriod => PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head.submission.submittedDate.isEmpty).fold(false)(identity)
       && !penalty.appealStatus.contains(AppealStatusEnum.Accepted)
       && !penalty.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal))
   }
