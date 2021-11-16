@@ -216,7 +216,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           "123456789",
           isReturnSubmitted = false,
           isFinancialPoint = true,
-          amountDue = 200.0
+          amountDue = 200.0,
+          multiplePenaltyPeriod = None
         )
 
         val pointToPassIn: PenaltyPoint = sampleFinancialPenaltyPoint.copy(number = "5")
@@ -299,6 +300,32 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         result.isAppealedPoint shouldBe true
         result.appealStatus.isDefined shouldBe true
         result.appealStatus.get shouldBe AppealStatusEnum.Tribunal_Rejected
+      }
+
+      "show message for multiple penalty period " in {
+
+        val sampleSummaryCardReturnSubmitted: LateSubmissionPenaltySummaryCard = LateSubmissionPenaltySummaryCard(
+          Seq(
+            helper.summaryListRow(
+              period,
+              Html(vatPeriodValue(dateTimeToString(sampleOldestDate), dateTimeToString(sampleOldestDate.plusDays(15))))
+            ),
+            helper.summaryListRow(returnDue, Html(dateTimeToString(sampleOldestDate.plusMonths(4).plusDays(7)))),
+            helper.summaryListRow(returnSubmitted, Html(dateTimeToString(sampleOldestDate.plusMonths(4).plusDays(12))))
+          ),
+          Tag(content = Text("active"), classes = "govuk-tag "),
+          "1",
+          "123456789",
+          isReturnSubmitted = true,
+          isFinancialPoint = true,
+          amountDue = 200.0,
+          multiplePenaltyPeriod = Some(Html(lspMultiplePenaltyPeriodMessage(dateTimeToString(sampleOldestDate.plusMonths(4).plusDays(23)))))
+        )
+
+        val multiplePenaltyPeriod: PenaltyPoint = sampleFinancialPenaltyPointWithMultiplePenaltyPeriod
+        val actualResult = helper.financialSummaryCard(multiplePenaltyPeriod, quarterlyThreshold)
+        val expectedResult = sampleSummaryCardReturnSubmitted
+        actualResult shouldBe expectedResult
       }
     }
 
