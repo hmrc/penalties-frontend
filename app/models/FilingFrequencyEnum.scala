@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-package models.compliance
+package models
 
-import play.api.libs.json.{Json, OFormat}
-
-//TODO: rename this model when we switch to new API
-case class CompliancePayloadObligationAPI(
-                                            identification: ObligationIdentification,
-                                            obligationDetails: Seq[ObligationDetail]
-                                         )
-
-object CompliancePayloadObligationAPI {
-  implicit val format: OFormat[CompliancePayloadObligationAPI] = Json.format[CompliancePayloadObligationAPI]
+object FilingFrequencyEnum extends Enumeration {
+  val monthly: FilingFrequencyEnum.Value = Value
+  val quarterly: FilingFrequencyEnum.Value = Value
+  val annually: FilingFrequencyEnum.Value = Value
 }

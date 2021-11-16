@@ -16,15 +16,10 @@
 
 package models.compliance
 
-import java.time.LocalDateTime
+import models.FilingFrequencyEnum
 
-import play.api.libs.json.{Json, OFormat}
-
-case class Return (startDate: LocalDateTime,
-                   endDate: LocalDateTime,
-                   dueDate: LocalDateTime,
-                   status: Option[ReturnStatusEnum.Value] = None)
-
-object Return {
-  implicit val format: OFormat[Return] = Json.format[Return]
-}
+case class ComplianceData(
+                           compliancePayload: CompliancePayload,
+                           amountOfSubmissionsRequiredFor24MthsHistory: Option[Int],
+                           filingFrequency: FilingFrequencyEnum.Value
+                         )

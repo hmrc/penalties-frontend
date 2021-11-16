@@ -35,6 +35,10 @@ class ImplicitDateFormatterSpec extends SpecBase with ImplicitDateFormatter {
       "dateTimeToMonthYearString is called" in {
         dateTimeToMonthYearString(LocalDateTime.of(2021, 1, 1, 1, 1, 1)) shouldBe "January 2021"
       }
+
+      "dateToMonthYearString is called" in {
+        dateToMonthYearString(LocalDate.of(2021, 1, 1)) shouldBe "January 2021"
+      }
     }
   }
 }

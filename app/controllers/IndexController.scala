@@ -23,7 +23,7 @@ import play.api.mvc._
 import services.PenaltiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger.logger
-import utils.SessionKeys.latestLSPCreationDate
+import utils.SessionKeys._
 import utils.{CurrencyFormatter, EnrolmentKeys}
 import viewmodels.{IndexPageHelper, SummaryCardHelper}
 import views.html.IndexView
@@ -61,9 +61,13 @@ class IndexController @Inject()(view: IndexView,
         isAnyUnpaidLSPAndNotSubmittedReturn,
         whatYouOweBreakdown))
       if(latestLSPCreation.isDefined) {
-        result.removingFromSession(latestLSPCreationDate).addingToSession(latestLSPCreationDate -> latestLSPCreation.get.toString)
+        result
+          .removingFromSession(allKeys: _*)
+          .addingToSession(latestLSPCreationDate -> latestLSPCreation.get.toString,
+                           pointsThreshold -> etmpData.penaltyPointsThreshold.toString)
       } else {
-        result.removingFromSession(latestLSPCreationDate)
+        result
+          .removingFromSession(allKeys: _*)
       }
     }
   }

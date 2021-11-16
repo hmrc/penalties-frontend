@@ -16,30 +16,38 @@
 
 package viewmodels
 
-import javax.inject.Inject
-import models.compliance.MissingReturn
+import models.User
+import models.compliance.{CompliancePayload, ComplianceStatusEnum, ObligationDetail}
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import utils.{ImplicitDateFormatter, ViewUtils}
 
-class CompliancePageHelper @Inject()(p: views.html.components.p,
-                                     bullets: views.html.components.bullets) extends ViewUtils with ImplicitDateFormatter {
+import java.time.LocalDate
+import javax.inject.Inject
 
-  def getUnsubmittedReturnContentFromSequence(unsubmittedReturns: Seq[MissingReturn])(implicit messages: Messages): Html = {
-    if(unsubmittedReturns.nonEmpty) {
+class CompliancePageHelper @Inject()(bullets: views.html.components.bullets) extends ViewUtils with ImplicitDateFormatter {
+
+  def getUnsubmittedReturnContentFromSequence(missingReturns: Seq[ObligationDetail])(implicit messages: Messages): Html = {
+    if(missingReturns.nonEmpty) {
       html(
         bullets(
-          unsubmittedReturns.map(unsubmittedReturn => {
+          missingReturns.map(unsubmittedReturn => {
             html(stringAsHtml(
               messages("compliance.vat.missingReturn",
-                dateTimeToString(unsubmittedReturn.startDate),
-                dateTimeToString(unsubmittedReturn.endDate))))
+                dateToString(unsubmittedReturn.inboundCorrespondenceFromDate),
+                dateToString(unsubmittedReturn.inboundCorrespondenceToDate))))
           }),
           classes = "govuk-list govuk-list--bullet govuk-body-l")
       )
     } else {
       html()
     }
+  }
+
+  def findMissingReturns(compliancePayload: CompliancePayload, latestLSPCreationDate: LocalDate): Seq[ObligationDetail] = {
+    compliancePayload.obligationDetails.filter(obligation =>
+      obligation.status == ComplianceStatusEnum.open && obligation.inboundCorrespondenceDueDate.isBefore(latestLSPCreationDate)
+    )
   }
 }
 

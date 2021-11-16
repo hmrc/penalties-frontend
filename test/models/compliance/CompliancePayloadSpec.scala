@@ -20,68 +20,67 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.{JsValue, Json}
 
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
+import java.time.LocalDate
 
 class CompliancePayloadSpec extends AnyWordSpec with Matchers {
-
-  val sampleDate: LocalDateTime = LocalDateTime.of(2021, 4, 23, 18, 25, 43)
-    .plus(511, ChronoUnit.MILLIS)
-
   val compliancePayloadAsJson: JsValue = Json.parse(
     """
-      {
-      | "noOfMissingReturns": "1",
-      | "noOfSubmissionsReqForCompliance": "1",
-      | "expiryDateOfAllPenaltyPoints": "2021-04-23T18:25:43.511",
-      | "missingReturns": [
-      | {
-      |   "startDate": "2021-04-23T18:25:43.511",
-      |   "endDate": "2021-04-30T18:25:43.511"
-      |   }
-      | ],
-      | "returns" : [
-      | {
-      |   "startDate": "2021-04-23T18:25:43.511",
-      |   "endDate": "2021-04-30T18:25:43.511",
-      |   "dueDate": "2021-05-23T18:25:43.511",
-      |   "status": "SUBMITTED"
-      | }
-      | ]
-      |}
-      | """.stripMargin
-  )
-
-  val compliancePayloadModel: CompliancePayload = CompliancePayload(
-    noOfMissingReturns = "1",
-    noOfSubmissionsReqForCompliance = "1",
-    expiryDateOfAllPenaltyPoints = sampleDate,
-    missingReturns = Seq(
-      MissingReturn(
-        startDate = sampleDate,
-        endDate = sampleDate.plusDays(7)
-      )
+      |		{
+      |			"identification": {
+      |				"referenceNumber": "123456789",
+      |				"referenceType": "VRN"
+      |			},
+      |			"obligationDetails": [
+      |				{
+      |					"status": "O",
+      |					"inboundCorrespondenceFromDate": "1920-02-29",
+      |					"inboundCorrespondenceToDate": "1920-02-29",
+      |					"inboundCorrespondenceDueDate": "1920-02-29",
+      |					"periodKey": "#001"
+      |				},
+      |				{
+      |					"status": "F",
+      |					"inboundCorrespondenceFromDate": "1920-02-29",
+      |					"inboundCorrespondenceToDate": "1920-02-29",
+      |					"inboundCorrespondenceDateReceived": "1920-02-29",
+      |					"inboundCorrespondenceDueDate": "1920-02-29",
+      |					"periodKey": "#001"
+      |				}
+      |			]
+      |		}
+      |""".stripMargin)
+  
+  val compliancePayloadAsModel: CompliancePayload = CompliancePayload(
+    identification = ObligationIdentification(
+      incomeSourceType = None,
+      referenceNumber = "123456789",
+      referenceType = "VRN"
     ),
-    returns = Seq(
-      Return(
-        startDate = sampleDate,
-        endDate = sampleDate.plusDays(7),
-        dueDate = sampleDate.plusMonths(1),
-        status = Some(ReturnStatusEnum.Submitted)
+    obligationDetails = Seq(
+      ObligationDetail(
+        status = ComplianceStatusEnum.open,
+        inboundCorrespondenceFromDate = LocalDate.of(1920, 2, 29),
+        inboundCorrespondenceToDate = LocalDate.of(1920, 2, 29),
+        inboundCorrespondenceDateReceived = None,
+        inboundCorrespondenceDueDate = LocalDate.of(1920, 2, 29),
+        periodKey = "#001"
+      ),
+      ObligationDetail(
+        status = ComplianceStatusEnum.fulfilled,
+        inboundCorrespondenceFromDate = LocalDate.of(1920, 2, 29),
+        inboundCorrespondenceToDate = LocalDate.of(1920, 2, 29),
+        inboundCorrespondenceDateReceived = Some(LocalDate.of(1920, 2, 29)),
+        inboundCorrespondenceDueDate = LocalDate.of(1920, 2, 29),
+        periodKey = "#001"
       )
     )
   )
 
-  "CompliancePayload" should {
-    "be writable to JSON" in {
-      val result = Json.toJson(compliancePayloadModel)
-      result shouldBe compliancePayloadAsJson
-    }
-
-    "be readable from JSON" in {
+  "CompliancePayloadSpec" should {
+    "parse the model from JSON" in {
       val result = Json.fromJson(compliancePayloadAsJson)(CompliancePayload.format)
       result.isSuccess shouldBe true
-      result.get shouldBe compliancePayloadModel
+      result.get shouldBe compliancePayloadAsModel
     }
   }
 }

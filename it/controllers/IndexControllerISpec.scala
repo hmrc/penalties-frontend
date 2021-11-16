@@ -712,12 +712,14 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("dd").get(4).text shouldBe "Under review by HMRC"
     }
 
-    "return 200 (OK) and add the latest lsp creation date to the session" in {
+    "return 200 (OK) and add the latest lsp creation date and penalty threshold to the session" in {
       returnLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalties = paidLatePaymentPenalty))
       val request = controller.onPageLoad()(fakeRequest)
       await(request).header.status shouldBe Status.OK
       await(request).session(fakeRequest).get(SessionKeys.latestLSPCreationDate).isDefined shouldBe true
       await(request).session(fakeRequest).get(SessionKeys.latestLSPCreationDate).get shouldBe sampleDate1.toString
+      await(request).session(fakeRequest).get(SessionKeys.pointsThreshold).isDefined shouldBe true
+      await(request).session(fakeRequest).get(SessionKeys.pointsThreshold).get shouldBe "4"
     }
 
     "agent view" must {
@@ -799,13 +801,15 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.select("#main-content .govuk-details__summary-text").text shouldBe "Payment help"
       }
 
-      "return 200 (OK) and add the latest lsp creation date to the session" in {
+      "return 200 (OK) and add the latest lsp creation date and the penalty threshold to the session" in {
         AuthStub.agentAuthorised()
         returnAgentLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalties = paidLatePaymentPenalty))
         val request = controller.onPageLoad()(fakeAgentRequest)
         await(request).header.status shouldBe Status.OK
         await(request).session(fakeAgentRequest).get(SessionKeys.latestLSPCreationDate).isDefined shouldBe true
         await(request).session(fakeAgentRequest).get(SessionKeys.latestLSPCreationDate).get shouldBe sampleDate1.toString
+        await(request).session(fakeAgentRequest).get(SessionKeys.pointsThreshold).isDefined shouldBe true
+        await(request).session(fakeAgentRequest).get(SessionKeys.pointsThreshold).get shouldBe "4"
       }
     }
 

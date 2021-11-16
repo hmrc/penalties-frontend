@@ -18,12 +18,15 @@ package services
 
 import base.SpecBase
 import connectors.ComplianceConnector
-import models.compliance.CompliancePayload
+import models.{FilingFrequencyEnum, User}
+import models.compliance.ComplianceData
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
+import utils.SessionKeys
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ComplianceServiceSpec extends SpecBase {
@@ -36,23 +39,34 @@ class ComplianceServiceSpec extends SpecBase {
     reset(mockComplianceConnector)
   }
 
-  "getComplianceDataWithVrn" should {
+  "getDESComplianceData" should {
     s"return a successful response and pass the result back to the controller" in new Setup {
+      when(mockComplianceConnector.getComplianceDataFromDES(any(), any(), any())(any())).thenReturn(Future.successful(sampleCompliancePayload))
+      val result: Option[ComplianceData] = await(service.getDESComplianceData(vrn)(HeaderCarrier(), User("123456789")(fakeRequest.withSession(
+        SessionKeys.latestLSPCreationDate -> "2020-01-01T01:01:00.000",
+        SessionKeys.pointsThreshold -> "5"
+      )), implicitly))
+      val expectedResult = ComplianceData(
+        sampleCompliancePayload,
+        amountOfSubmissionsRequiredFor24MthsHistory = Some(17),
+        filingFrequency = FilingFrequencyEnum.monthly
+      )
+      result.isDefined shouldBe true
+      result.get shouldBe expectedResult
+    }
 
-      when(mockComplianceConnector.getComplianceData(any())(any())).thenReturn(Future.successful(sampleComplianceData))
-
-      val result: CompliancePayload = await(service.getComplianceDataWithEnrolmentKey(vrn)(HeaderCarrier()))
-
-      result shouldBe sampleComplianceData
+    "return None when the session keys are not present" in new Setup {
+      val result: Option[ComplianceData] = await(service.getDESComplianceData(vrn)(HeaderCarrier(), User("123456789")(fakeRequest), implicitly))
+      result shouldBe None
     }
 
     s"return an exception and pass the result back to the controller" in new Setup {
-
-      when(mockComplianceConnector.getComplianceData(any())(any()))
+      when(mockComplianceConnector.getComplianceDataFromDES(any(), any(), any())(any()))
         .thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", INTERNAL_SERVER_ERROR)))
-
-      val result: Exception = intercept[Exception](await(service.getComplianceDataWithEnrolmentKey(vrn)(HeaderCarrier())))
-
+      val result: Exception = intercept[Exception](await(service.getDESComplianceData(vrn)(HeaderCarrier(), User("123456789")(fakeRequest.withSession(
+        SessionKeys.latestLSPCreationDate -> "2020-01-01T01:01:00.000",
+        SessionKeys.pointsThreshold -> "5"
+      )), implicitly)))
       result.getMessage shouldBe "Upstream error"
     }
   }

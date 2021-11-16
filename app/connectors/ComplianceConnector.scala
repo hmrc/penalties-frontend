@@ -17,19 +17,20 @@
 package connectors
 
 import config.AppConfig
-import javax.inject.Inject
 import models.compliance.CompliancePayload
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
+import java.time.LocalDate
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ComplianceConnector @Inject()(httpClient: HttpClient,
                                    appConfig: AppConfig)(implicit ec: ExecutionContext) {
 
   private val penaltiesBaseUrl: String = appConfig.penaltiesUrl
-  private def getComplianceDataUrl(enrolmentKey: String): String = s"/compliance/compliance-data?enrolmentKey=$enrolmentKey"
+  private def getDESComplianceDataUrl(vrn: String, fromDate: String, toDate: String): String = s"/compliance/des/compliance-data?vrn=$vrn&fromDate=$fromDate&toDate=$toDate"
 
-  def getComplianceData(enrolmentKey: String)(implicit hc: HeaderCarrier): Future[CompliancePayload] = {
-    httpClient.GET[CompliancePayload](s"$penaltiesBaseUrl${getComplianceDataUrl(enrolmentKey)}")
+  def getComplianceDataFromDES(vrn: String, fromDate: LocalDate, toDate: LocalDate)(implicit hc: HeaderCarrier): Future[CompliancePayload] = {
+    httpClient.GET[CompliancePayload](s"$penaltiesBaseUrl${getDESComplianceDataUrl(vrn, fromDate.toString, toDate.toString)}")
   }
 }

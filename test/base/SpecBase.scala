@@ -18,13 +18,13 @@ package base
 
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
-import models.compliance.{CompliancePayload, MissingReturn, Return}
+import models.compliance._
 import models.financial.Financial
 import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum, PenaltyPeriod}
 import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.reason.PaymentPenaltyReasonEnum
 import models.submission.{Submission, SubmissionStatusEnum}
-import models.{ETMPPayload, User}
+import models.{ETMPPayload, FilingFrequencyEnum, User}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.Mockito.mock
@@ -32,6 +32,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Messages, MessagesApi}
+import play.api.inject.Injector
 import play.api.mvc.{AnyContent, MessagesControllerComponents}
 import play.api.test.FakeRequest
 import play.twirl.api.Html
@@ -41,11 +42,9 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.Tag
 import utils.SessionKeys
 import viewmodels.{LateSubmissionPenaltySummaryCard, SummaryCardHelper, TimelineHelper}
 import views.html.errors.Unauthorised
-import java.time.LocalDateTime
+
 import java.time.temporal.ChronoUnit
-
-import play.api.inject.Injector
-
+import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
@@ -100,14 +99,37 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
   )
 
-  val sampleComplianceData: CompliancePayload = CompliancePayload(
-    noOfMissingReturns = "0",
-    noOfSubmissionsReqForCompliance = "0",
-    expiryDateOfAllPenaltyPoints = LocalDateTime.now(),
-    missingReturns = Seq.empty[MissingReturn],
-    returns = Seq.empty[Return]
+  val sampleCompliancePayload: CompliancePayload = CompliancePayload(
+    identification = ObligationIdentification(
+      incomeSourceType = None,
+      referenceNumber = "123456789",
+      referenceType = "VRN"
+    ),
+    obligationDetails = Seq(
+      ObligationDetail(
+        status = ComplianceStatusEnum.open,
+        inboundCorrespondenceFromDate = LocalDate.of(1920, 2, 29),
+        inboundCorrespondenceToDate = LocalDate.of(1920, 2, 29),
+        inboundCorrespondenceDateReceived = None,
+        inboundCorrespondenceDueDate = LocalDate.of(1920, 2, 29),
+        periodKey = "#001"
+      ),
+      ObligationDetail(
+        status = ComplianceStatusEnum.fulfilled,
+        inboundCorrespondenceFromDate = LocalDate.of(1920, 2, 29),
+        inboundCorrespondenceToDate = LocalDate.of(1920, 2, 29),
+        inboundCorrespondenceDateReceived = Some(LocalDate.of(1920, 2, 29)),
+        inboundCorrespondenceDueDate = LocalDate.of(1920, 2, 29),
+        periodKey = "#001"
+      )
+    )
   )
 
+  val sampleComplianceData: ComplianceData = ComplianceData(
+    sampleCompliancePayload,
+    amountOfSubmissionsRequiredFor24MthsHistory = None,
+    filingFrequency = FilingFrequencyEnum.quarterly
+  )
   val samplePenaltyPoint: PenaltyPoint = PenaltyPoint(
     `type` = PenaltyTypeEnum.Point,
     id = "123456789",

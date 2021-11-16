@@ -30,6 +30,8 @@ trait ImplicitDateFormatter {
 
   implicit def dateTimeToMonthYearString(dateTime: LocalDateTime): String = monthYearDateFormatter.format(dateTime)
 
+  implicit def dateToMonthYearString(dateTime: LocalDate): String = monthYearDateFormatter.format(dateTime)
+
 }
 
 object ImplicitDateFormatter extends ImplicitDateFormatter
