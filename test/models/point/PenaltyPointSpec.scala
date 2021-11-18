@@ -48,7 +48,7 @@ class PenaltyPointSpec extends AnyWordSpec with Matchers {
       financial.fold(Json.obj())(obj => Json.obj("financial" -> obj))
     )
     if(withPeriod) {
-      base.deepMerge(Json.obj("period" -> Json.obj(
+      base.deepMerge(Json.obj("period" -> Seq(Json.obj(
         "startDate" -> "2019-01-31T23:59:59.998",
         "endDate" -> "2019-01-31T23:59:59.999",
         "submission" -> Json.obj (
@@ -56,7 +56,7 @@ class PenaltyPointSpec extends AnyWordSpec with Matchers {
           "submittedDate" -> "2019-06-01T23:59:59.999",
           "status" -> SubmissionStatusEnum.Submitted
         )
-      )))
+      ))))
     } else {
       base
     }
@@ -70,7 +70,7 @@ class PenaltyPointSpec extends AnyWordSpec with Matchers {
     dateExpired = Some(sampleDateTime2),
     status = PointStatusEnum.Active,
     reason = None,
-    period = Some(PenaltyPeriod(
+    period = Some(Seq(PenaltyPeriod(
       startDate = sampleDateTime1,
       endDate = sampleDateTime2,
       submission = Submission(
@@ -78,7 +78,7 @@ class PenaltyPointSpec extends AnyWordSpec with Matchers {
         submittedDate = Some(sampleDateTime4),
         status = SubmissionStatusEnum.Submitted
       )
-    )),
+    ))),
     communications = Seq.empty,
     financial = None
   )

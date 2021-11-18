@@ -78,13 +78,13 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
         status = PointStatusEnum.Removed,
         reason = Some("This is a great reason."),
-        period = Some(PenaltyPeriod(
+        period = Some(Seq(PenaltyPeriod(
           startDate = sampleDate1, endDate = sampleDate2, submission = Submission(
             sampleDate3,
             Some(sampleDate4),
             SubmissionStatusEnum.Submitted
           )
-        )),
+        ))),
         communications = Seq.empty,
         financial = None
       )
@@ -103,13 +103,13 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
         status = PointStatusEnum.Active,
         None,
-        period = Some(PenaltyPeriod(
+        period = Some(Seq(PenaltyPeriod(
           startDate = sampleDate1, endDate = sampleDate2, submission = Submission(
             sampleDate3,
             Some(sampleDate4),
             SubmissionStatusEnum.Submitted
           )
-        )),
+        ))),
         communications = Seq.empty,
         financial = None
       ),
@@ -122,13 +122,13 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
         status = PointStatusEnum.Active,
         None,
-        period = Some(PenaltyPeriod(
+        period = Some(Seq(PenaltyPeriod(
           startDate = sampleDate1, endDate = sampleDate2, submission = Submission(
             sampleDate3,
             Some(sampleDate4),
             SubmissionStatusEnum.Submitted
           )
-        )),
+        ))),
         communications = Seq.empty,
         financial = None
       ),
@@ -141,13 +141,13 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
         status = PointStatusEnum.Active,
         None,
-        period = Some(PenaltyPeriod(
+        period = Some(Seq(PenaltyPeriod(
           startDate = sampleDate1, endDate = sampleDate2, submission = Submission(
             sampleDate3,
             Some(sampleDate4),
             SubmissionStatusEnum.Submitted
           )
-        )),
+        ))),
         communications = Seq.empty,
         financial = None
       ),
@@ -159,13 +159,13 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
         status = PointStatusEnum.Removed,
         reason = Some("This is a great reason."),
-        period = Some(PenaltyPeriod(
+        period = Some(Seq(PenaltyPeriod(
           startDate = sampleDate1, endDate = sampleDate2, submission = Submission(
             sampleDate3,
             Some(sampleDate4),
             SubmissionStatusEnum.Submitted
           )
-        )),
+        ))),
         communications = Seq.empty,
         financial = None
       )
@@ -388,7 +388,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         status = PointStatusEnum.Due,
         reason = None,
         period = Some(
-          PenaltyPeriod(
+          Seq(PenaltyPeriod(
             startDate = sampleDate1,
             endDate = sampleDate1,
             submission = Submission(
@@ -397,7 +397,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
               status = SubmissionStatusEnum.Submitted
             )
           )
-        ),
+        )),
         communications = Seq.empty,
         financial = Some(
           Financial(
@@ -419,7 +419,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         status = PointStatusEnum.Due,
         reason = None,
         period = Some(
-          PenaltyPeriod(
+          Seq(PenaltyPeriod(
             startDate = sampleDate1,
             endDate = sampleDate1,
             submission = Submission(
@@ -428,7 +428,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
               status = SubmissionStatusEnum.Submitted
             )
           )
-        ),
+        )),
         communications = Seq.empty,
         financial = Some(
           Financial(
@@ -450,7 +450,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         status = PointStatusEnum.Active,
         reason = None,
         period = Some(
-          PenaltyPeriod(
+          Seq(PenaltyPeriod(
             startDate = sampleDate1,
             endDate = sampleDate1,
             submission = Submission(
@@ -459,7 +459,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
               status = SubmissionStatusEnum.Submitted
             )
           )
-        ),
+        )),
         communications = Seq.empty,
         financial = None
       )

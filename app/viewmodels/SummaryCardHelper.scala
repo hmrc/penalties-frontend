@@ -17,7 +17,6 @@
 package viewmodels
 
 import java.time.LocalDateTime
-
 import javax.inject.Inject
 import models.User
 import models.financial.Financial
@@ -31,7 +30,7 @@ import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
-import utils.{ImplicitDateFormatter, ViewUtils}
+import utils.{ImplicitDateFormatter, PenaltyPeriodHelper, ViewUtils}
 
 class SummaryCardHelper @Inject()(link: views.html.components.link) extends ImplicitDateFormatter with ViewUtils {
 
@@ -99,8 +98,8 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
         Html(
           messages(
             "summaryCard.value1",
-            dateTimeToString(penalty.period.get.startDate),
-            dateTimeToString(penalty.period.get.endDate)
+            dateTimeToString(penalty.period.map(penaltyPeriod => PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head.startDate).get),
+            dateTimeToString(penalty.period.map(penaltyPeriod => PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head.endDate).get)
           )
         )
       )),
@@ -117,8 +116,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
 
   private def buildLSPSummaryCard(rows: Seq[SummaryListRow], penalty: PenaltyPoint, isAnAddedPoint: Boolean = false,
                                   isAnAdjustedPoint: Boolean = false)(implicit messages: Messages): LateSubmissionPenaltySummaryCard = {
-
-    val isReturnSubmitted = penalty.period.fold(false)(_.submission.submittedDate.isDefined)
+    val isReturnSubmitted = penalty.period.map(penaltyPeriod => PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head).fold(false)(_.submission.submittedDate.isDefined)
 
     LateSubmissionPenaltySummaryCard(
       rows,
@@ -156,13 +154,13 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
         Html(
           messages(
             "summaryCard.value1",
-            dateTimeToString(period.get.startDate),
-            dateTimeToString(period.get.endDate)
+            dateTimeToString(PenaltyPeriodHelper.sortedPenaltyPeriod(period.get).head.startDate),
+            dateTimeToString(PenaltyPeriodHelper.sortedPenaltyPeriod(period.get).head.endDate)
           )
         )
       ),
-      summaryListRow(messages("summaryCard.key2"), Html(dateTimeToString(period.get.submission.dueDate))),
-      summaryListRow(messages("summaryCard.key3"), Html(dateTimeToString(period.get.submission.submittedDate.get)))
+      summaryListRow(messages("summaryCard.key2"), Html(dateTimeToString(PenaltyPeriodHelper.sortedPenaltyPeriod(period.get).head.submission.dueDate))),
+      summaryListRow(messages("summaryCard.key3"), Html(dateTimeToString(PenaltyPeriodHelper.sortedPenaltyPeriod(period.get).head.submission.submittedDate.get)))
     )
 
     if (penalty.dateExpired.isDefined && !thresholdMet && !penalty.appealStatus.contains(AppealStatusEnum.Accepted) &&
@@ -254,9 +252,9 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   )
 
   def pointSummaryCard(penalty: PenaltyPoint, thresholdMet: Boolean)(implicit messages: Messages, user: User[_]): LateSubmissionPenaltySummaryCard = {
-    val cardBody = penalty.period.get.submission.submittedDate match {
+    val cardBody = PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.period.get).head.submission.submittedDate match {
       case Some(_: LocalDateTime) => returnSubmittedCardBody(penalty, thresholdMet)
-      case None => returnNotSubmittedCardBody(penalty.period.get)
+      case None => returnNotSubmittedCardBody(PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.period.get).head)
     }
 
     if (penalty.appealStatus.isDefined) {
@@ -291,18 +289,18 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
         Html(
           messages(
             "summaryCard.value1",
-            dateTimeToString(penalty.period.get.startDate),
-            dateTimeToString(penalty.period.get.endDate)
+            dateTimeToString(PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.period.get).head.startDate),
+            dateTimeToString(PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.period.get).head.endDate)
           )
         )
       ),
       summaryListRow(
         messages("summaryCard.key2"),
         Html(
-          dateTimeToString(penalty.period.get.submission.dueDate)
+          dateTimeToString(PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.period.get).head.submission.dueDate)
         )
       ),
-      penalty.period.get.submission.submittedDate.fold(
+      PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.period.get).head.submission.submittedDate.fold(
         summaryListRow(
           messages("summaryCard.key3"),
           Html(
@@ -329,14 +327,13 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       tagStatus(Some(penalty), None),
       getPenaltyNumberBasedOnThreshold(penalty.number, threshold),
       penalty.id,
-      penalty.period.fold(false)(_.submission.submittedDate.isDefined),
+      penalty.period.map(penaltyPeriod => PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head).fold(false)(_.submission.submittedDate.isDefined),
       isFinancialPoint = penalty.`type` == PenaltyTypeEnum.Financial,
       isAppealedPoint = penalty.appealStatus.isDefined,
       appealStatus = penalty.appealStatus,
       amountDue = penalty.financial.get.amountDue
     )
   }
-
   def getPenaltyNumberBasedOnThreshold(penaltyNumberAsString: String, threshold: Int): String = {
     if (penaltyNumberAsString.toInt > threshold) "" else penaltyNumberAsString
   }
@@ -361,7 +358,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   def tagStatus(penalty: Option[PenaltyPoint], lpp: Option[LatePaymentPenalty])(implicit messages: Messages): Tag = {
 
     if (penalty.isDefined) {
-      val periodSubmissionStatus = penalty.get.period.map(_.submission.status)
+      val periodSubmissionStatus = penalty.get.period.map(penaltyPeriod => PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head.submission.status)
       val penaltyPointStatus = penalty.get.status
       val penaltyAppealStatus = penalty.get.appealStatus
 

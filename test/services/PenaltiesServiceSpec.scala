@@ -28,8 +28,9 @@ import org.mockito.Matchers._
 import org.mockito.Mockito._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
-import java.time.LocalDateTime
+import utils.PenaltyPeriodHelper
 
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class PenaltiesServiceSpec extends SpecBase {
@@ -309,7 +310,7 @@ class PenaltiesServiceSpec extends SpecBase {
         dateExpired = Some(LocalDateTime.of(2023, 1, 1, 0, 0)),
         status = PointStatusEnum.Due,
         reason = None,
-        period = Some(PenaltyPeriod(
+        period = Some(Seq(PenaltyPeriod(
           startDate = LocalDateTime.of(2021, 1, 1, 0, 0),
           endDate = LocalDateTime.of(2021, 2, 1, 0, 0),
           submission = Submission(
@@ -317,7 +318,7 @@ class PenaltiesServiceSpec extends SpecBase {
             submittedDate = Some(LocalDateTime.of(2021, 3, 9, 0, 0)),
             status = SubmissionStatusEnum.Submitted
           )
-        )),
+        ))),
         communications = Seq.empty,
         financial = None
       )
@@ -343,21 +344,21 @@ class PenaltiesServiceSpec extends SpecBase {
         dateExpired = Some(LocalDateTime.of(2023, 1, 1, 0, 0)),
         status = PointStatusEnum.Due,
         reason = None,
-        period = Some(PenaltyPeriod(
+        period = Some(Seq(PenaltyPeriod(
           startDate = LocalDateTime.of(2021, 1, 1, 0, 0),
           endDate = LocalDateTime.of(2021, 2, 1, 0, 0),
           submission = Submission(
             dueDate = LocalDateTime.of(2021, 3, 7, 0, 0),
             status = SubmissionStatusEnum.Overdue
           )
-        )),
+        ))),
         communications = Seq.empty,
         financial = None
       )
     )
 
     val sampleFinancialPenaltyPointUnpaidAndSubmitted: Seq[PenaltyPoint] = Seq(
-      sampleFinancialPenaltyPointUnpaidAndNotSubmitted.head.copy(period = Some(PenaltyPeriod(
+      sampleFinancialPenaltyPointUnpaidAndNotSubmitted.head.copy(period = Some(Seq(PenaltyPeriod(
         startDate = LocalDateTime.of(2021, 1, 1, 0, 0),
         endDate = LocalDateTime.of(2021, 2, 1, 0, 0),
         submission = Submission(
@@ -365,15 +366,17 @@ class PenaltiesServiceSpec extends SpecBase {
           submittedDate = Some(LocalDateTime.of(2021, 3, 9, 0, 0)),
           status = SubmissionStatusEnum.Submitted
         )
-      )))
+      ))))
     )
 
     s"return true when there is a ${PenaltyTypeEnum.Financial} penalty point, it is due and there is no submission" in new Setup {
+
       val result: Boolean = service.isAnyLSPUnpaidAndSubmissionIsDue(sampleFinancialPenaltyPointUnpaidAndNotSubmitted)
       result shouldBe true
     }
 
     s"return false when there is a ${PenaltyTypeEnum.Financial} penalty point, it is due BUT there is a submission" in new Setup {
+
       val result: Boolean = service.isAnyLSPUnpaidAndSubmissionIsDue(sampleFinancialPenaltyPointUnpaidAndSubmitted)
       result shouldBe false
     }
@@ -541,7 +544,7 @@ class PenaltiesServiceSpec extends SpecBase {
               status = PointStatusEnum.Due,
               reason = None,
               period = Some(
-                PenaltyPeriod(
+                Seq(PenaltyPeriod(
                   startDate = sampleDate,
                   endDate = sampleDate,
                   submission = Submission(
@@ -550,7 +553,7 @@ class PenaltiesServiceSpec extends SpecBase {
                     status = SubmissionStatusEnum.Submitted
                   )
                 )
-              ),
+              )),
               communications = Seq.empty,
               financial = Some(
                 Financial(
@@ -572,7 +575,7 @@ class PenaltiesServiceSpec extends SpecBase {
               status = PointStatusEnum.Due,
               reason = None,
               period = Some(
-                PenaltyPeriod(
+                Seq(PenaltyPeriod(
                   startDate = sampleDate,
                   endDate = sampleDate,
                   submission = Submission(
@@ -581,7 +584,7 @@ class PenaltiesServiceSpec extends SpecBase {
                     status = SubmissionStatusEnum.Submitted
                   )
                 )
-              ),
+              )),
               communications = Seq.empty,
               financial = Some(
                 Financial(
@@ -603,7 +606,7 @@ class PenaltiesServiceSpec extends SpecBase {
               status = PointStatusEnum.Active,
               reason = None,
               period = Some(
-                PenaltyPeriod(
+                Seq(PenaltyPeriod(
                   startDate = sampleDate,
                   endDate = sampleDate,
                   submission = Submission(
@@ -612,7 +615,7 @@ class PenaltiesServiceSpec extends SpecBase {
                     status = SubmissionStatusEnum.Submitted
                   )
                 )
-              ),
+              )),
               communications = Seq.empty,
               financial = None
             )
