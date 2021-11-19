@@ -304,7 +304,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
       "show message for multiple penalty period " in {
 
-        val sampleSummaryCardReturnSubmitted: LateSubmissionPenaltySummaryCard = LateSubmissionPenaltySummaryCard(
+        val expectedResult: LateSubmissionPenaltySummaryCard = LateSubmissionPenaltySummaryCard(
           Seq(
             helper.summaryListRow(
               period,
@@ -324,7 +324,6 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
         val multiplePenaltyPeriod: PenaltyPoint = sampleFinancialPenaltyPointWithMultiplePenaltyPeriod
         val actualResult = helper.financialSummaryCard(multiplePenaltyPeriod, quarterlyThreshold)
-        val expectedResult = sampleSummaryCardReturnSubmitted
         actualResult shouldBe expectedResult
       }
     }

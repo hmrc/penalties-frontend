@@ -424,9 +424,9 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     case _ => renderTag(messages("status.due"), "penalty-due-tag")
   }
 
-  private def getMultiplePenaltyPeriodMessage(penalty : PenaltyPoint)(implicit messages: Messages):Option[Html]={
+  private def getMultiplePenaltyPeriodMessage(penalty : PenaltyPoint)(implicit messages: Messages): Option[Html]={
     if(penalty.period.getOrElse(Seq.empty).size > 1)
-    Some(Html(messages("lsp.multiple.penaltyPeriod",dateTimeToString(PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.period.get).reverse.head.submission.dueDate))))
+      Some(Html(messages("lsp.multiple.penaltyPeriod", dateTimeToString(PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.period.get).last.submission.dueDate))))
     else None
   }
 }

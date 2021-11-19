@@ -677,16 +677,16 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       }
     }
 
-    "given multiple penalty period in LSPP" should{
+    "given multiple penalty period in LSPP" should {
       implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithMultiplePenaltyPeriodLSPP))
-      "show message VAT return submitted earlier in multiple penalty period" in{
+      "show message VAT return submitted earlier in multiple penalty period" in {
         doc.select("p.govuk-body").text() shouldBe "The VAT Return due on 24 May 2021 was also submitted late. HMRC only applies 1 penalty for late submission in each month."
       }
     }
 
-    "given no multiple penalty period in LSP" should{
+    "given no multiple penalty period in LSP" should {
       implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointAboveThreshold))
-      "show message VAT return submitted earlier in multiple penalty period" in{
+      "no message relating to multiple penalties in the same period should appear" in {
         doc.select("p.govuk-body").text().isEmpty shouldBe true
       }
     }

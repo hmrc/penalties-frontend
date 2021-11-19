@@ -33,5 +33,5 @@ case class LateSubmissionPenaltySummaryCard(
                         isAppealedPoint: Boolean = false,
                         appealStatus: Option[AppealStatusEnum.Value] = None,
                         isAdjustedPoint: Boolean = false,
-                        multiplePenaltyPeriod:Option[Html] = None
+                        multiplePenaltyPeriod: Option[Html] = None
                       )
