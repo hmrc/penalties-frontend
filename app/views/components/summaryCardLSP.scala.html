@@ -54,6 +54,7 @@
     </header>
     <div class="app-summary-card__body">
         @govukSummaryList(SummaryList(summaryCard.cardRows))
+        <p class="govuk-body">@summaryCard.multiplePenaltyPeriod</p>
         @if(summaryCard.isAdjustedPoint) {
             <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-3">
             <p class="govuk-body">

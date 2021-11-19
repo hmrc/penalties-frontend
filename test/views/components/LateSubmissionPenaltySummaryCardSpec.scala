@@ -367,6 +367,76 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     )
   ), annualThreshold)(implicitly, user)
 
+  val summaryCardModelWithMultiplePenaltyPeriodLSP: LateSubmissionPenaltySummaryCard = summaryCardHelper.financialSummaryCard(PenaltyPoint(
+    PenaltyTypeEnum.Financial,
+    "123456789",
+    "3",
+    None,
+    LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+    Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
+    PointStatusEnum.Due,
+    None,
+    Some(Seq(PenaltyPeriod(
+      startDate = sampleOldestDate,
+      endDate = sampleOldestDate.plusDays(15),
+      submission = Submission(
+        dueDate = sampleOldestDate.plusMonths(4).plusDays(7),
+        submittedDate = Some(sampleOldestDate.plusMonths(4).plusDays(12)),
+        status = SubmissionStatusEnum.Submitted
+      )
+    ),
+      PenaltyPeriod(
+        startDate = sampleOldestDate.plusDays(16),
+        endDate = sampleOldestDate.plusDays(31),
+        submission = Submission(
+          dueDate = sampleOldestDate.plusMonths(4).plusDays(23),
+          submittedDate = Some(sampleOldestDate.plusMonths(4).plusDays(25)),
+          status = SubmissionStatusEnum.Submitted
+        )
+      )
+    )),
+    Seq.empty,
+    financial = Some(
+      Financial(
+        amountDue = 200.00,
+        outstandingAmountDue = 200.00,
+        dueDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1)
+      )
+    )
+  ), annualThreshold)(implicitly, user)
+
+  val summaryCardModelWithMultiplePenaltyPeriodLSPP: LateSubmissionPenaltySummaryCard = summaryCardHelper.pointSummaryCard(PenaltyPoint(
+    PenaltyTypeEnum.Point,
+    "123456789",
+    "3",
+    None,
+    LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+    Some(LocalDateTime.of(2020, 2, 1, 1, 1, 1)),
+    PointStatusEnum.Due,
+    None,
+    Some(Seq(PenaltyPeriod(
+      startDate = sampleOldestDate,
+      endDate = sampleOldestDate.plusDays(15),
+      submission = Submission(
+        dueDate = sampleOldestDate.plusMonths(4).plusDays(7),
+        submittedDate = Some(sampleOldestDate.plusMonths(4).plusDays(12)),
+        status = SubmissionStatusEnum.Submitted
+      )
+    ),
+      PenaltyPeriod(
+        startDate = sampleOldestDate.plusDays(16),
+        endDate = sampleOldestDate.plusDays(31),
+        submission = Submission(
+          dueDate = sampleOldestDate.plusMonths(4).plusDays(23),
+          submittedDate = Some(sampleOldestDate.plusMonths(4).plusDays(25)),
+          status = SubmissionStatusEnum.Submitted
+        )
+      )
+    )),
+    Seq.empty,
+    financial = None
+  ), true)(implicitly, user)
+
 
   "summaryCard" when {
     "given an added point and the threshold has not been met" should {
@@ -597,6 +667,27 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       "have the appeal status for TRIBUNAL REJECTED" in {
         docWithAppealedPointUnderTribunalRejected.select("dt").get(4).text() shouldBe "Appeal status"
         docWithAppealedPointUnderTribunalRejected.select("dd").get(4).text() shouldBe "Appeal rejected by tax tribunal Read outcome message"
+      }
+    }
+
+    "given multiple penalty period in LSP" should{
+      implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithMultiplePenaltyPeriodLSP))
+      "show message VAT return submitted earlier in multiple penalty period" in{
+        doc.select("p.govuk-body").text() shouldBe "The VAT Return due on 24 May 2021 was also submitted late. HMRC only applies 1 penalty for late submission in each month."
+      }
+    }
+
+    "given multiple penalty period in LSPP" should{
+      implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithMultiplePenaltyPeriodLSPP))
+      "show message VAT return submitted earlier in multiple penalty period" in{
+        doc.select("p.govuk-body").text() shouldBe "The VAT Return due on 24 May 2021 was also submitted late. HMRC only applies 1 penalty for late submission in each month."
+      }
+    }
+
+    "given no multiple penalty period in LSP" should{
+      implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointAboveThreshold))
+      "show message VAT return submitted earlier in multiple penalty period" in{
+        doc.select("p.govuk-body").text().isEmpty shouldBe true
       }
     }
   }

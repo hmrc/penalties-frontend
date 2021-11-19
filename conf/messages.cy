@@ -63,6 +63,8 @@ lsp.onThreshold.p2.b2 = you’ll have to pay a £200 penalty every time you subm
 agent.lsp.onThreshold.p2.b2 = they’ll have to pay a £200 penalty every time they submit a VAT Return late
 lsp.onThreshold.link = Show me how to bring this account up to date
 
+lsp.multiple.penaltyPeriod = The VAT Return due on {0} was also submitted late. <br> HMRC  only applies 1 penalty for late submission in each month.
+
 # LPP Content
 # -------------------------------------------
 lpp.penaltiesSummary.noPaymentPenalties = There are no late payment penalties.

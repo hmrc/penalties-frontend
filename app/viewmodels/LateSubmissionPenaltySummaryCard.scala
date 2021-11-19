@@ -17,6 +17,7 @@
 package viewmodels
 
 import models.point.AppealStatusEnum
+import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 
@@ -31,5 +32,6 @@ case class LateSubmissionPenaltySummaryCard(
                         isAddedPoint: Boolean = false,
                         isAppealedPoint: Boolean = false,
                         appealStatus: Option[AppealStatusEnum.Value] = None,
-                        isAdjustedPoint: Boolean = false
+                        isAdjustedPoint: Boolean = false,
+                        multiplePenaltyPeriod:Option[Html] = None
                       )
