@@ -16,12 +16,12 @@
 
 package viewmodels
 
-import models.{FilingFrequencyEnum, User}
 import models.compliance.{ComplianceData, CompliancePayload, ComplianceStatusEnum, ObligationDetail}
+import models.{FilingFrequencyEnum, User}
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import utils.MessageRenderer.getMessage
-import utils.{ImplicitDateFormatter, SessionKeys, ViewUtils}
+import utils.{ImplicitDateFormatter, ViewUtils}
 
 import java.time.LocalDate
 import javax.inject.Inject

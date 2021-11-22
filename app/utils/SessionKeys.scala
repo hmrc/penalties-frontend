@@ -21,8 +21,7 @@ object SessionKeys {
   val latestLSPCreationDate = "latestLSPCreationDate"
   val pointsThreshold = "penalties_pointsThreshold"
 
-  val allKeys = Seq(
-    agentSessionVrn,
+  val allKeysExcludingAgentVRN = Seq(
     latestLSPCreationDate,
     pointsThreshold
   )

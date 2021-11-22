@@ -62,12 +62,12 @@ class IndexController @Inject()(view: IndexView,
         whatYouOweBreakdown))
       if(latestLSPCreation.isDefined) {
         result
-          .removingFromSession(allKeys: _*)
+          .removingFromSession(allKeysExcludingAgentVRN: _*)
           .addingToSession(latestLSPCreationDate -> latestLSPCreation.get.toString,
                            pointsThreshold -> etmpData.penaltyPointsThreshold.toString)
       } else {
         result
-          .removingFromSession(allKeys: _*)
+          .removingFromSession(allKeysExcludingAgentVRN: _*)
       }
     }
   }

@@ -45,10 +45,10 @@ class ComplianceService @Inject()(connector: ComplianceConnector) {
               obligation.status == ComplianceStatusEnum.fulfilled && obligation.inboundCorrespondenceToDate.isBefore(LocalDate.now()))
             logger.debug(s"[ComplianceService][getDESComplianceData] - Amount of fulfilled submissions in " +
               s"the past 2 years: $amountOfFulfilledSubmissionsInPast2Years")
-            val submissionsForNeededForMonthlyFiler: Int = (amountOfFulfilledSubmissionsInPast2Years + 6) - 24
+            val submissionsNeededForMonthlyFiler: Int = (amountOfFulfilledSubmissionsInPast2Years + 6) - 24
             val amountOfSubmissionsNeededFor24MonthHistory = {
-              if (submissionsForNeededForMonthlyFiler >= 0) None
-              else Some(Math.abs(submissionsForNeededForMonthlyFiler))
+              if (submissionsNeededForMonthlyFiler >= 0) None
+              else Some(Math.abs(submissionsNeededForMonthlyFiler))
             }
             logger.debug(s"[ComplianceService][getDESComplianceData] - Amount of submissions needed " +
               s"for 2 year filing history: $amountOfSubmissionsNeededFor24MonthHistory")

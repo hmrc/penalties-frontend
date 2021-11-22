@@ -16,7 +16,6 @@
 
 package viewmodels
 
-import models.User
 import models.compliance.{CompliancePayload, ComplianceStatusEnum, ObligationDetail}
 import play.api.i18n.Messages
 import play.twirl.api.Html

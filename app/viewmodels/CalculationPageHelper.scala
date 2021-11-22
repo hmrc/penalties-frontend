@@ -16,12 +16,12 @@
 
 package viewmodels
 
-import java.time.LocalDateTime
-
-import javax.inject.Inject
 import models.penalty.LatePaymentPenalty
 import play.api.i18n.Messages
 import utils.{ImplicitDateFormatter, ViewUtils}
+
+import java.time.LocalDateTime
+import javax.inject.Inject
 
 class CalculationPageHelper @Inject()() extends ViewUtils with ImplicitDateFormatter {
 
