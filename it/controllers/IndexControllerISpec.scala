@@ -493,6 +493,48 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     ),
     financial = lppFinancialData)))
 
+  val etmpPayloadWithMultiplePenaltyPeriodInLSP: ETMPPayload = ETMPPayload(
+    pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, otherPenalties = Some(false), vatOverview = Some(Seq.empty), penaltyPoints = Seq(
+      PenaltyPoint(
+        `type` = PenaltyTypeEnum.Point,
+        id = "1234567890",
+        number = "1",
+        dateCreated = sampleDate1,
+        dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
+        status = PointStatusEnum.Active,
+        reason = None,
+        period = Some(Seq(PenaltyPeriod(
+          startDate = sampleDate1,
+          endDate = sampleDate1.plusDays(14),
+          submission = Submission(
+            dueDate = sampleDate1.plusMonths(4).plusDays(7),
+            submittedDate = Some(sampleDate1.plusMonths(4).plusDays(12)),
+            status = SubmissionStatusEnum.Submitted
+          )
+        ),
+          PenaltyPeriod(
+            startDate = sampleDate1.plusDays(16),
+            endDate = sampleDate1.plusDays(31),
+            submission = Submission(
+              dueDate = sampleDate1.plusMonths(4).plusDays(23),
+              submittedDate = Some(sampleDate1.plusMonths(4).plusDays(25)),
+              status = SubmissionStatusEnum.Submitted
+            )
+          )
+        )),
+        communications = Seq.empty,
+        financial = Some(Financial(
+          amountDue = 0,
+          outstandingAmountDue = 0,
+          dueDate = sampleDate1,
+          estimatedInterest = Some(21.00),
+          crystalizedInterest = Some(32.00)
+        ))
+      )
+    ),
+    latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
+  )
+
   "GET /" should {
     "return 200 (OK) when the user is authorised" in {
       val request = await(buildClientForRequestToApp(uri = "/").get())
@@ -772,6 +814,22 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val request = await(buildClientForRequestToApp(uri = "/").get())
       request.status shouldBe Status.SEE_OTHER
     }
+
+    "return 200 (OK) and render the view when there are LSPs with multiple penalty period" in {
+      returnLSPDataStub(etmpPayloadWithMultiplePenaltyPeriodInLSP)
+      val request = await(buildClientForRequestToApp(uri = "/").get())
+      request.status shouldBe Status.OK
+      val parsedBody = Jsoup.parse(request.body)
+      val summaryCardBody = parsedBody.select(" #late-submission-penalties .app-summary-card__body")
+      summaryCardBody.select("dt").get(0).text shouldBe "VAT period"
+      summaryCardBody.select("dd").get(0).text shouldBe "1 January 2021 to 15 January 2021"
+      summaryCardBody.select("dt").get(1).text shouldBe "VAT Return due"
+      summaryCardBody.select("dd").get(1).text shouldBe "8 May 2021"
+      summaryCardBody.select("dt").get(2).text shouldBe "Return submitted"
+      summaryCardBody.select("dd").get(2).text shouldBe "13 May 2021"
+      summaryCardBody.select("p.govuk-body").text() shouldBe "The VAT Return due on 24 May 2021 was also submitted late. HMRC only applies 1 penalty for late submission in each month."
+    }
+
   }
 
   "GET /appeal-penalty" should {

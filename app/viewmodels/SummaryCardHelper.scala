@@ -127,7 +127,8 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       isAddedPoint = isAnAddedPoint,
       isAppealedPoint = penalty.appealStatus.isDefined,
       appealStatus = penalty.appealStatus,
-      isAdjustedPoint = isAnAdjustedPoint
+      isAdjustedPoint = isAnAdjustedPoint,
+      multiplePenaltyPeriod = getMultiplePenaltyPeriodMessage(penalty)
     )
   }
 
@@ -331,7 +332,8 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       isFinancialPoint = penalty.`type` == PenaltyTypeEnum.Financial,
       isAppealedPoint = penalty.appealStatus.isDefined,
       appealStatus = penalty.appealStatus,
-      amountDue = penalty.financial.get.amountDue
+      amountDue = penalty.financial.get.amountDue,
+      multiplePenaltyPeriod = getMultiplePenaltyPeriodMessage(penalty)
     )
   }
   def getPenaltyNumberBasedOnThreshold(penaltyNumberAsString: String, threshold: Int): String = {
@@ -422,4 +424,9 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     case _ => renderTag(messages("status.due"), "penalty-due-tag")
   }
 
+  private def getMultiplePenaltyPeriodMessage(penalty : PenaltyPoint)(implicit messages: Messages): Option[Html]={
+    if(penalty.period.getOrElse(Seq.empty).size > 1)
+      Some(Html(messages("lsp.multiple.penaltyPeriod", dateTimeToString(PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.period.get).last.submission.dueDate))))
+    else None
+  }
 }

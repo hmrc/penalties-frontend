@@ -77,6 +77,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   val sampleDate: LocalDateTime = LocalDateTime.of(2021, 4, 23, 18, 25, 43)
     .plus(511, ChronoUnit.MILLIS)
+  val sampleOldestDate: LocalDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
 
   lazy val authPredicate: AuthPredicate = new AuthPredicate(
     messagesApi,
@@ -146,6 +147,42 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         SubmissionStatusEnum.Overdue
       )
     ))),
+    communications = Seq.empty,
+    financial = Some(
+      Financial(
+        amountDue = 200.00, outstandingAmountDue = 200.00, dueDate = LocalDateTime.now()
+      )
+    )
+  )
+
+  val sampleFinancialPenaltyPointWithMultiplePenaltyPeriod: PenaltyPoint = PenaltyPoint(
+    `type` = PenaltyTypeEnum.Financial,
+    id = "123456789",
+    number = "1",
+    appealStatus = None,
+    dateCreated = LocalDateTime.now,
+    dateExpired = Some(LocalDateTime.now),
+    status = PointStatusEnum.Active,
+    reason = None,
+    period = Some(Seq(PenaltyPeriod(
+      startDate = sampleOldestDate,
+      endDate = sampleOldestDate.plusDays(15),
+      submission = Submission(
+        dueDate = sampleOldestDate.plusMonths(4).plusDays(7),
+        submittedDate = Some(sampleOldestDate.plusMonths(4).plusDays(12)),
+        status = SubmissionStatusEnum.Submitted
+      )
+    ),
+      PenaltyPeriod(
+        startDate = sampleOldestDate.plusDays(16),
+        endDate = sampleOldestDate.plusDays(31),
+        submission = Submission(
+          dueDate = sampleOldestDate.plusMonths(4).plusDays(23),
+          submittedDate = Some(sampleOldestDate.plusMonths(4).plusDays(25)),
+          status = SubmissionStatusEnum.Submitted
+        )
+      )
+    )),
     communications = Seq.empty,
     financial = Some(
       Financial(
