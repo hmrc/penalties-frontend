@@ -70,7 +70,7 @@ class IndexControllerSpec extends SpecBase {
           await(result).session.get(SessionKeys.latestLSPCreationDate).isEmpty shouldBe true
         }
 
-        "return OK and correct view - adding the latest LSP creation date into the session in case of compliance view" in
+        "return OK and correct view - adding the latest LSP creation date and threshold into the session in case of compliance view" in
           new Setup(AuthTestModels.successfulAuthResult) {
           when(mockPenaltiesService.getLatestLSPCreationDate(any()))
             .thenReturn(Some(sampleDate))
@@ -78,6 +78,8 @@ class IndexControllerSpec extends SpecBase {
           status(result) shouldBe OK
           await(result).session.get(SessionKeys.latestLSPCreationDate).isDefined shouldBe true
           await(result).session.get(SessionKeys.latestLSPCreationDate).get shouldBe sampleDate.toString
+          await(result).session.get(SessionKeys.pointsThreshold).isDefined shouldBe true
+          await(result).session.get(SessionKeys.pointsThreshold).get shouldBe "4"
         }
       }
 
@@ -125,7 +127,7 @@ class IndexControllerSpec extends SpecBase {
           s"/initialise-appeal-against-the-obligation?penaltyId=$penaltyId&isLPP=false&isAdditional=false")
       }
 
-      "the user wats to appeal an obligation for LPP" in new Setup(AuthTestModels.successfulAuthResult) {
+      "the user wants to appeal an obligation for LPP" in new Setup(AuthTestModels.successfulAuthResult) {
         val result: Future[Result] = Controller.redirectToAppeals("123456789", isLPP = true, isObligation = true)(fakeRequest)
 
         status(result) shouldBe SEE_OTHER

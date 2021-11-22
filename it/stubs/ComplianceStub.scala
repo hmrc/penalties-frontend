@@ -16,50 +16,76 @@
 
 package stubs
 
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
-
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, stubFor, urlMatching}
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, stubFor, urlPathEqualTo}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import models.compliance.{CompliancePayload, MissingReturn, Return}
+import models.compliance.{CompliancePayload, ComplianceStatusEnum, ObligationDetail, ObligationIdentification}
 import play.api.http.Status
 import play.api.libs.json.Json
 
+import java.time.temporal.ChronoUnit
+import java.time.{LocalDate, LocalDateTime}
+
 object ComplianceStub {
-  val enrolmentKey: String = "HMRC-MTD-VAT~VRN~123456789"
-  val getComplianceDataUrl: String = s"/penalties/compliance/compliance-data\\?enrolmentKey=$enrolmentKey"
+  val getComplianceDataUrl: String = s"/penalties/compliance/des/compliance-data"
   val date: LocalDateTime = LocalDateTime.of(2021, 4, 23, 18, 25, 43)
     .plus(511, ChronoUnit.MILLIS)
+  val startDate: LocalDate = LocalDate.of(2020, 1, 1)
+  val endDate: LocalDate = LocalDate.of(2020, 1, 31)
 
-  val sampleComplianceData: CompliancePayload = CompliancePayload(
-    "0",
-    "0",
-    date,
-    Seq.empty[MissingReturn],
-    Seq.empty[Return]
-  )
-
-  def complianceDataStub(): StubMapping = stubFor(get(urlMatching(getComplianceDataUrl))
-  .willReturn(
-    aResponse()
-      .withStatus(Status.OK)
-      .withBody(
-        Json.toJson(sampleComplianceData).toString()
+  val sampleCompliancePayload: CompliancePayload = CompliancePayload(
+    identification = ObligationIdentification(
+      incomeSourceType = None,
+      referenceNumber = "123456789",
+      referenceType = "VRN"
+    ),
+    obligationDetails = Seq(
+      ObligationDetail(
+        status = ComplianceStatusEnum.fulfilled,
+        inboundCorrespondenceFromDate = LocalDate.of(2022, 1, 1),
+        inboundCorrespondenceToDate = LocalDate.of(2022, 1, 31),
+        inboundCorrespondenceDateReceived = None,
+        inboundCorrespondenceDueDate = LocalDate.of(2022, 3, 7),
+        periodKey = "#001"
+      ),
+      ObligationDetail(
+        status = ComplianceStatusEnum.fulfilled,
+        inboundCorrespondenceFromDate = LocalDate.of(2022, 2, 1),
+        inboundCorrespondenceToDate = LocalDate.of(2022, 2, 28),
+        inboundCorrespondenceDateReceived = Some(LocalDate.of(1920, 3, 29)),
+        inboundCorrespondenceDueDate = LocalDate.of(2022, 4, 7),
+        periodKey = "#001"
+      ),
+      ObligationDetail(
+        status = ComplianceStatusEnum.open,
+        inboundCorrespondenceFromDate = LocalDate.of(2022, 3, 1),
+        inboundCorrespondenceToDate = LocalDate.of(2022, 3, 31),
+        inboundCorrespondenceDateReceived = None,
+        inboundCorrespondenceDueDate = LocalDate.of(2022, 5, 7),
+        periodKey = "#001"
+      ),
+      ObligationDetail(
+        status = ComplianceStatusEnum.open,
+        inboundCorrespondenceFromDate = LocalDate.of(2022, 4, 1),
+        inboundCorrespondenceToDate = LocalDate.of(2022, 4, 30),
+        inboundCorrespondenceDateReceived = None,
+        inboundCorrespondenceDueDate = LocalDate.of(2022, 6, 7),
+        periodKey = "#001"
       )
     )
   )
 
-  def returnComplianceDataStub(complianceDataToReturn: CompliancePayload): StubMapping = stubFor(get(urlMatching(getComplianceDataUrl))
+
+  def complianceDataStub(compliancePayload: Option[CompliancePayload] = None): StubMapping = stubFor(get(urlPathEqualTo(getComplianceDataUrl))
   .willReturn(
     aResponse()
       .withStatus(Status.OK)
       .withBody(
-        Json.toJson(complianceDataToReturn).toString()
+        Json.toJson(compliancePayload.fold(sampleCompliancePayload)(identity)).toString()
       )
     )
   )
 
-  def invalidComplianceDataStub(): StubMapping = stubFor(get(urlMatching(getComplianceDataUrl))
+  def invalidComplianceDataStub(): StubMapping = stubFor(get(urlPathEqualTo(getComplianceDataUrl))
   .willReturn(
     aResponse()
       .withStatus(Status.OK)
@@ -67,7 +93,7 @@ object ComplianceStub {
     )
   )
 
-  def upstreamErrorStub(): StubMapping = stubFor(get(urlMatching(getComplianceDataUrl))
+  def upstreamErrorStub(): StubMapping = stubFor(get(urlPathEqualTo(getComplianceDataUrl))
   .willReturn(
     aResponse()
       .withStatus(Status.INTERNAL_SERVER_ERROR).withBody("Upstream Error")

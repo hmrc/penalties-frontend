@@ -26,6 +26,7 @@ import services.ComplianceService
 import testUtils.AuthTestModels
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
+import utils.SessionKeys
 import viewmodels.{CompliancePageHelper, TimelineHelper}
 import views.html.ComplianceView
 
@@ -48,7 +49,7 @@ class ComplianceControllerSpec extends SpecBase {
     ).thenReturn(authResult)
 
     reset(mockComplianceService)
-    when(mockComplianceService.getComplianceDataWithEnrolmentKey(any())(any())).thenReturn(Future.successful(sampleComplianceData))
+    when(mockComplianceService.getDESComplianceData(any())(any(), any(), any())).thenReturn(Future.successful(Some(sampleComplianceData)))
   }
 
   object Controller extends ComplianceController(
@@ -56,21 +57,27 @@ class ComplianceControllerSpec extends SpecBase {
     mockComplianceService,
     pageHelper,
     timelineHelper
-  )(implicitly, implicitly, authPredicate, stubMessagesControllerComponents())
+  )(implicitly, implicitly, authPredicate, errorHandler, stubMessagesControllerComponents())
 
   "onPageLoad" should {
 
     "the user is authorised" must {
-      "return OK - calling the service to retrieve missing returns " +
-        "and a compliance summary and pass the data to the view" in new Setup(AuthTestModels.successfulAuthResult) {
-        val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
+      "return OK - calling the service to retrieve compliance data to the view" in new Setup(AuthTestModels.successfulAuthResult) {
+        val result: Future[Result] = Controller.onPageLoad()(fakeRequest.withSession(
+          SessionKeys.latestLSPCreationDate -> "2020-01-01T13:00:00.000",
+          SessionKeys.pointsThreshold -> "4"
+        ))
         status(result) shouldBe OK
       }
 
-      "return ISE (exception thrown) - try calling the service to retrieve missing returns " +
-        "and compliance summary but failing" in new Setup(AuthTestModels.successfulAuthResult) {
-        when(mockComplianceService.getComplianceDataWithEnrolmentKey(any())(any())).thenReturn(Future.failed(new Exception("Something went wrong.")))
+      "return ISE - if the service returns None" in new Setup(AuthTestModels.successfulAuthResult) {
+        when(mockComplianceService.getDESComplianceData(any())(any(), any(), any())).thenReturn(Future.successful(None))
+        val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
+        status(result) shouldBe INTERNAL_SERVER_ERROR
+      }
 
+      "return ISE (exception thrown) - try retrieving the compliance data but failing" in new Setup(AuthTestModels.successfulAuthResult) {
+        when(mockComplianceService.getDESComplianceData(any())(any(), any(), any())).thenReturn(Future.failed(new Exception("Something went wrong.")))
         val result: Exception = intercept[Exception](await(Controller.onPageLoad()(fakeRequest)))
         result.getMessage shouldBe "Something went wrong."
 

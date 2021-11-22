@@ -19,5 +19,10 @@ package utils
 object SessionKeys {
   val agentSessionVrn = "CLIENT_VRN"
   val latestLSPCreationDate = "latestLSPCreationDate"
+  val pointsThreshold = "penalties_pointsThreshold"
 
+  val allKeysExcludingAgentVRN = Seq(
+    latestLSPCreationDate,
+    pointsThreshold
+  )
 }

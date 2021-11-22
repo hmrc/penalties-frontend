@@ -16,16 +16,18 @@
 
 package controllers
 
-import config.AppConfig
+import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.ComplianceService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.{CurrencyFormatter, EnrolmentKeys}
+import utils.Logger.logger
+import utils.{CurrencyFormatter, SessionKeys}
 import viewmodels.{CompliancePageHelper, TimelineHelper}
 import views.html.ComplianceView
 
+import java.time.LocalDateTime
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
@@ -35,22 +37,28 @@ class ComplianceController @Inject()(view: ComplianceView,
                                     timelineHelper: TimelineHelper)(implicit ec: ExecutionContext,
                                                                     appConfig: AppConfig,
                                                                     authorise: AuthPredicate,
+                                                                    errorHandler: ErrorHandler,
                                                                     controllerComponents: MessagesControllerComponents)
   extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter {
 
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
-    val enrolmentKey = EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn)
-    for {
-      complianceData <- complianceService.getComplianceDataWithEnrolmentKey(enrolmentKey)
-      missingReturnsBulletContent = pageHelper.getUnsubmittedReturnContentFromSequence(complianceData.missingReturns)
-      timelineContent = timelineHelper.getTimelineContent(complianceData.returns, complianceData.expiryDateOfAllPenaltyPoints)
-    } yield {
-      Ok(view(
-        complianceData.missingReturns.nonEmpty,
-        missingReturnsBulletContent,
-        timelineContent
-      ))
+    complianceService.getDESComplianceData(request.vrn).map {
+      _.fold({
+        logger.error("[ComplianceController][onPageLoad] - Received None from compliance service")
+        errorHandler.showInternalServerError
+      })(
+        complianceData => {
+          val latestLSPCreationDate = LocalDateTime.parse(request.session.get(SessionKeys.latestLSPCreationDate).get).toLocalDate
+          val missingReturns = pageHelper.findMissingReturns(complianceData.compliancePayload, latestLSPCreationDate)
+          val missingReturnsBulletContent = pageHelper.getUnsubmittedReturnContentFromSequence(missingReturns)
+          val timelineContent = timelineHelper.getTimelineContent(complianceData, latestLSPCreationDate)
+          Ok(view(
+            missingReturns.nonEmpty,
+            missingReturnsBulletContent,
+            timelineContent
+          ))
+        }
+      )
     }
   }
-
 }

@@ -24,6 +24,7 @@ import org.mockito.Mockito._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class ComplianceConnectorSpec extends SpecBase {
@@ -39,17 +40,18 @@ class ComplianceConnectorSpec extends SpecBase {
     when(mockAppConfig.penaltiesUrl).thenReturn("/")
   }
 
-  "getComplianceData" should {
+  "getComplianceDataFromDES" should {
     s"return a successful response when the call succeeds and the body can be parsed" in new Setup {
       when(mockHttpClient.GET[CompliancePayload](any(),
       any(),
       any())
         (any(),
         any(),
-        any())).thenReturn(Future.successful(sampleComplianceData))
+        any())).thenReturn(Future.successful(sampleCompliancePayload))
 
-      val result: CompliancePayload = await(connector.getComplianceData(vrn)(HeaderCarrier()))
-      result shouldBe sampleComplianceData
+      val result: CompliancePayload = await(connector.getComplianceDataFromDES(vrn, LocalDate.of(2020, 1, 1),
+        LocalDate.of(2020, 12, 1))(HeaderCarrier()))
+      result shouldBe sampleCompliancePayload
     }
   }
 
@@ -61,7 +63,8 @@ class ComplianceConnectorSpec extends SpecBase {
       any(),
       any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", NOT_FOUND)))
 
-    val result: Exception = intercept[Exception](await(connector.getComplianceData("123456789")(HeaderCarrier())))
+    val result: Exception = intercept[Exception](await(connector.getComplianceDataFromDES(vrn, LocalDate.of(2020, 1, 1),
+      LocalDate.of(2020, 12, 1))(HeaderCarrier())))
     result.getMessage shouldBe "Upstream error"
   }
 }

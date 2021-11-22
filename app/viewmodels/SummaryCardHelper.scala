@@ -16,8 +16,6 @@
 
 package viewmodels
 
-import java.time.LocalDateTime
-import javax.inject.Inject
 import models.User
 import models.financial.Financial
 import models.penalty.{LatePaymentPenalty, PaymentStatusEnum, PenaltyPeriod}
@@ -31,6 +29,9 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 import utils.{ImplicitDateFormatter, PenaltyPeriodHelper, ViewUtils}
+
+import java.time.LocalDateTime
+import javax.inject.Inject
 
 class SummaryCardHelper @Inject()(link: views.html.components.link) extends ImplicitDateFormatter with ViewUtils {
 

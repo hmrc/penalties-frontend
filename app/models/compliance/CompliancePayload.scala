@@ -16,17 +16,12 @@
 
 package models.compliance
 
-import java.time.LocalDateTime
-
 import play.api.libs.json.{Json, OFormat}
 
-case class CompliancePayload (
-                               noOfMissingReturns: String,
-                               noOfSubmissionsReqForCompliance: String,
-                               expiryDateOfAllPenaltyPoints: LocalDateTime,
-                               missingReturns: Seq[MissingReturn],
-                               returns: Seq[Return]
-                             )
+case class CompliancePayload(
+                              identification: ObligationIdentification,
+                              obligationDetails: Seq[ObligationDetail]
+                            )
 
 object CompliancePayload {
   implicit val format: OFormat[CompliancePayload] = Json.format[CompliancePayload]
