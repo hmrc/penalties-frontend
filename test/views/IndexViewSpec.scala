@@ -381,6 +381,11 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           doc.select("#what-is-owed > h3").text shouldBe "If you cannot pay today"
         }
       }
+
+      "have a link to GOV.UK for GOV.UK logo" in {
+        agentDoc.select(".govuk-header__logo > a").attr("href") shouldBe "https://www.gov.uk/"
+        vatTraderDoc.select(".govuk-header__logo > a").attr("href") shouldBe "https://www.gov.uk/"
+      }
     }
   }
 }
