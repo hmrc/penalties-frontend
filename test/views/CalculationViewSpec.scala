@@ -29,15 +29,16 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
   val calculationAdditionalPage: CalculationAdditionalView = injector.instanceOf[CalculationAdditionalView]
 
   object Selector extends BaseSelectors {
-    val listRow: Int => String = (item: Int) => s"#main-content tr:nth-child($item) th"
+    
+    //TODO: rename back to listRow and listValue when both calculation pages are updated
+    val listAdditionalKey: Int => String = (item: Int) => s"#main-content dl > div:nth-child($item) > dt"
 
-    val listValue: Int => String = (item: Int) => s"#main-content tr:nth-child($item) td"
+    val listAdditionalValue: Int => String = (item: Int) => s"#main-content dl > div:nth-child($item) > dd"
 
     val summaryListRowKey: Int => String = (item: Int) => s"#main-content dl > div:nth-child($item) > dt"
 
     val summaryListRowValue: Int => String = (item: Int) => s"#main-content dl > div:nth-child($item) > dd"
-
-
+    
     val bulletNthChild: Int => String = (nThChild: Int) => s"#main-content > div > div > ul > li:nth-child($nThChild)"
 
     val govukBody: Int => String = (nthChild: Int) => s"#main-content .govuk-body:nth-of-type($nthChild)"
@@ -57,9 +58,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           additionalPenaltyRate = "4",
           startDate = "1 October 2022",
           endDate = "31 December 2022",
-          penaltyAmount = "16.12",
-          amountReceived ="11.10",
-          amountLeftToPay = "50.50"
+          penaltyAmount = "50.50",
+          amountReceived = "10.10",
+          amountLeftToPay = "40.40"
         )(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
@@ -70,18 +71,18 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.periodSpan -> period,
         Selector.h1 -> headingAdditional,
         Selector.govukBody(1) -> p1Additional,
-        Selector.listRow(1) -> th1Additional,
-        Selector.listValue(1) -> "£16.12",
-        Selector.listRow(2) -> th2Additional,
-        Selector.listValue(2) -> "7 days",
-        Selector.listRow(3) -> th3Additional,
-        Selector.listValue(3) -> "4%",
-        Selector.listRow(4) -> th4Additional,
-        Selector.listValue(4) -> "VAT amount unpaid x 4% x number of days since day 31 ÷ 365",
-        Selector.listRow(5) -> th3LPP,
-        Selector.listValue(5) -> "£11.10",
-        Selector.listRow(6) -> th4LPP,
-        Selector.listValue(6) -> "£50.50",
+        Selector.listAdditionalKey(1) -> th1Additional,
+        Selector.listAdditionalValue(1) -> "£50.50",
+        Selector.listAdditionalKey(2) -> th2Additional,
+        Selector.listAdditionalValue(2) -> "7 days",
+        Selector.listAdditionalKey(3) -> th3Additional,
+        Selector.listAdditionalValue(3) -> "4%",
+        Selector.listAdditionalKey(4) -> th4Additional,
+        Selector.listAdditionalValue(4) -> "VAT amount unpaid x 4% x number of days since day 31 ÷ 365",
+        Selector.listAdditionalKey(5) -> th3LPP,
+        Selector.listAdditionalValue(5) -> "£10.10",
+        Selector.listAdditionalKey(6) -> th4LPP,
+        Selector.listAdditionalValue(6) -> "£40.40",
         Selector.govukBody(2) -> p2Additional,
         Selector.link -> link
       )
@@ -97,9 +98,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           additionalPenaltyRate = "4",
           startDate = "1 October 2022",
           endDate = "31 December 2022",
-          penaltyAmount = "16.12",
-          amountReceived ="11.10",
-          amountLeftToPay = "50.50")(implicitly, implicitly, implicitly, vatTraderUser)
+          penaltyAmount = "50.50",
+          amountReceived = "40.10",
+          amountLeftToPay = "10.40")(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
       implicit val doc: Document = asDocument(applyView())
@@ -109,18 +110,18 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.periodSpan -> period,
         Selector.h1 -> headingAdditional,
         Selector.govukBody(1) -> p1Additional,
-        Selector.listRow(1) -> th1LPP,
-        Selector.listValue(1) -> "£16.12",
-        Selector.listRow(2) -> th2Additional,
-        Selector.listValue(2) -> "7 days",
-        Selector.listRow(3) -> th3Additional,
-        Selector.listValue(3) -> "4%",
-        Selector.listRow(4) -> th4Additional,
-        Selector.listValue(4) -> "VAT amount unpaid x 4% x number of days since day 31 ÷ 365",
-        Selector.listRow(5) -> th3LPP,
-        Selector.listValue(5) -> "£11.10",
-        Selector.listRow(6) -> th4LPP,
-        Selector.listValue(6) -> "£50.50",
+        Selector.listAdditionalKey(1) -> th1LPP,
+        Selector.listAdditionalValue(1) -> "£50.50",
+        Selector.listAdditionalKey(2) -> th2Additional,
+        Selector.listAdditionalValue(2) -> "7 days",
+        Selector.listAdditionalKey(3) -> th3Additional,
+        Selector.listAdditionalValue(3) -> "4%",
+        Selector.listAdditionalKey(4) -> th4Additional,
+        Selector.listAdditionalValue(4) -> "VAT amount unpaid x 4% x number of days since day 31 ÷ 365",
+        Selector.listAdditionalKey(5) -> th3LPP,
+        Selector.listAdditionalValue(5) -> "£40.10",
+        Selector.listAdditionalKey(6) -> th4LPP,
+        Selector.listAdditionalValue(6) -> "£10.40",
         Selector.link -> link
       )
 
@@ -132,7 +133,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         calculationPage.apply(
           amountReceived = "100",
           penaltyAmount = "400",
-          amountLeftToPay = "50",
+          amountLeftToPay = "300",
           calculationRowSeq = calculationRow,
           isCalculationRowMultipleAmounts = isMultipleAmounts,
           isPenaltyEstimate = false,
@@ -190,7 +191,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         calculationPage.apply(
           amountReceived = "100",
           penaltyAmount = "400",
-          amountLeftToPay = "50",
+          amountLeftToPay = "300",
           calculationRowSeq = calculationRow,
           isCalculationRowMultipleAmounts = isMultipleAmounts,
           isPenaltyEstimate = true,
