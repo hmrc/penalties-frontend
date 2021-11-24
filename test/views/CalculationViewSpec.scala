@@ -29,15 +29,10 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
   val calculationAdditionalPage: CalculationAdditionalView = injector.instanceOf[CalculationAdditionalView]
 
   object Selector extends BaseSelectors {
-    
-    //TODO: rename back to listRow and listValue when both calculation pages are updated
-    val listAdditionalKey: Int => String = (item: Int) => s"#main-content dl > div:nth-child($item) > dt"
 
-    val listAdditionalValue: Int => String = (item: Int) => s"#main-content dl > div:nth-child($item) > dd"
+    val summaryListRowKey: Int => String = (item: Int) => s"#main-content dl > div:nth-child($item) > dt"
 
-    val listRow: Int => String = (item: Int) => s"#main-content tr:nth-child($item) th"
-
-    val listValue: Int => String = (item: Int) => s"#main-content tr:nth-child($item) td"
+    val summaryListRowValue: Int => String = (item: Int) => s"#main-content dl > div:nth-child($item) > dd"
     
     val bulletNthChild: Int => String = (nThChild: Int) => s"#main-content > div > div > ul > li:nth-child($nThChild)"
 
@@ -71,18 +66,18 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.periodSpan -> period,
         Selector.h1 -> headingAdditional,
         Selector.govukBody(1) -> p1Additional,
-        Selector.listAdditionalKey(1) -> th1Additional,
-        Selector.listAdditionalValue(1) -> "£50.50",
-        Selector.listAdditionalKey(2) -> th2Additional,
-        Selector.listAdditionalValue(2) -> "7 days",
-        Selector.listAdditionalKey(3) -> th3Additional,
-        Selector.listAdditionalValue(3) -> "4%",
-        Selector.listAdditionalKey(4) -> th4Additional,
-        Selector.listAdditionalValue(4) -> "VAT amount unpaid x 4% x number of days since day 31 ÷ 365",
-        Selector.listAdditionalKey(5) -> th3LPP,
-        Selector.listAdditionalValue(5) -> "£10.10",
-        Selector.listAdditionalKey(6) -> th4LPP,
-        Selector.listAdditionalValue(6) -> "£40.40",
+        Selector.summaryListRowKey(1) -> th1Additional,
+        Selector.summaryListRowValue(1) -> "£50.50",
+        Selector.summaryListRowKey(2) -> th2Additional,
+        Selector.summaryListRowValue(2) -> "7 days",
+        Selector.summaryListRowKey(3) -> th3Additional,
+        Selector.summaryListRowValue(3) -> "4%",
+        Selector.summaryListRowKey(4) -> th4Additional,
+        Selector.summaryListRowValue(4) -> "VAT amount unpaid x 4% x number of days since day 31 ÷ 365",
+        Selector.summaryListRowKey(5) -> th3LPP,
+        Selector.summaryListRowValue(5) -> "£10.10",
+        Selector.summaryListRowKey(6) -> th4LPP,
+        Selector.summaryListRowValue(6) -> "£40.40",
         Selector.govukBody(2) -> p2Additional,
         Selector.link -> link
       )
@@ -110,18 +105,18 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.periodSpan -> period,
         Selector.h1 -> headingAdditional,
         Selector.govukBody(1) -> p1Additional,
-        Selector.listAdditionalKey(1) -> th1LPP,
-        Selector.listAdditionalValue(1) -> "£50.50",
-        Selector.listAdditionalKey(2) -> th2Additional,
-        Selector.listAdditionalValue(2) -> "7 days",
-        Selector.listAdditionalKey(3) -> th3Additional,
-        Selector.listAdditionalValue(3) -> "4%",
-        Selector.listAdditionalKey(4) -> th4Additional,
-        Selector.listAdditionalValue(4) -> "VAT amount unpaid x 4% x number of days since day 31 ÷ 365",
-        Selector.listAdditionalKey(5) -> th3LPP,
-        Selector.listAdditionalValue(5) -> "£40.10",
-        Selector.listAdditionalKey(6) -> th4LPP,
-        Selector.listAdditionalValue(6) -> "£10.40",
+        Selector.summaryListRowKey(1) -> th1LPP,
+        Selector.summaryListRowValue(1) -> "£50.50",
+        Selector.summaryListRowKey(2) -> th2Additional,
+        Selector.summaryListRowValue(2) -> "7 days",
+        Selector.summaryListRowKey(3) -> th3Additional,
+        Selector.summaryListRowValue(3) -> "4%",
+        Selector.summaryListRowKey(4) -> th4Additional,
+        Selector.summaryListRowValue(4) -> "VAT amount unpaid x 4% x number of days since day 31 ÷ 365",
+        Selector.summaryListRowKey(5) -> th3LPP,
+        Selector.summaryListRowValue(5) -> "£40.10",
+        Selector.summaryListRowKey(6) -> th4LPP,
+        Selector.summaryListRowValue(6) -> "£10.40",
         Selector.link -> link
       )
 
@@ -153,14 +148,14 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.title -> titleLPP,
         Selector.periodSpan -> period,
         Selector.h1 -> headingLPP,
-        Selector.listRow(1) -> th1LPP,
-        Selector.listValue(1) -> "£400",
-        Selector.listRow(2) -> th2LPP,
-        Selector.listValue(2) -> "2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)",
-        Selector.listRow(3) -> th3LPP,
-        Selector.listValue(3) -> "£100",
-        Selector.listRow(4) -> th4LPP,
-        Selector.listValue(4) -> "£300",
+        Selector.summaryListRowKey(1) -> th1LPP,
+        Selector.summaryListRowValue(1) -> "£400",
+        Selector.summaryListRowKey(2) -> th2LPP,
+        Selector.summaryListRowValue(2) -> "2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)",
+        Selector.summaryListRowKey(3) -> th3LPP,
+        Selector.summaryListRowValue(3) -> "£100",
+        Selector.summaryListRowKey(4) -> th4LPP,
+        Selector.summaryListRowValue(4) -> "£300",
         Selector.link -> link
       )
 
@@ -171,15 +166,15 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           Selector.title -> titleLPP,
           Selector.periodSpan -> period,
           Selector.h1 -> headingLPP,
-          Selector.listRow(1) -> th1LPP,
-          Selector.listValue(1) -> "£400",
-          Selector.listRow(2) -> th2LPP,
-          Selector.listValue(2) ->
+          Selector.summaryListRowKey(1) -> th1LPP,
+          Selector.summaryListRowValue(1) -> "£400",
+          Selector.summaryListRowKey(2) -> th2LPP,
+          Selector.summaryListRowValue(2) ->
             "2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025) + 2% of £10,000.00 (Central assessment amount unpaid on 6 June 2025",
-          Selector.listRow(3) -> th3LPP,
-          Selector.listValue(3) -> "£100",
-          Selector.listRow(4) -> th4LPP,
-          Selector.listValue(4) -> "£300",
+          Selector.summaryListRowKey(3) -> th3LPP,
+          Selector.summaryListRowValue(3) -> "£100",
+          Selector.summaryListRowKey(4) -> th4LPP,
+          Selector.summaryListRowValue(4) -> "£300",
           Selector.link -> link
         )
         behave like pageWithExpectedMessages(expectedContent)(docWith2Calculations)
@@ -211,14 +206,14 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.title -> titleLPP,
         Selector.periodSpan -> period,
         Selector.h1 -> headingLPP,
-        Selector.listRow(1) -> th1LPPEstimate,
-        Selector.listValue(1) -> "£400",
-        Selector.listRow(2) -> th2LPP,
-        Selector.listValue(2) -> "2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)",
-        Selector.listRow(3) -> th3LPP,
-        Selector.listValue(3) -> "£100",
-        Selector.listRow(4) -> th4LPP,
-        Selector.listValue(4) -> "£300",
+        Selector.summaryListRowKey(1) -> th1LPPEstimate,
+        Selector.summaryListRowValue(1) -> "£400",
+        Selector.summaryListRowKey(2) -> th2LPP,
+        Selector.summaryListRowValue(2) -> "2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)",
+        Selector.summaryListRowKey(3) -> th3LPP,
+        Selector.summaryListRowValue(3) -> "£100",
+        Selector.summaryListRowKey(4) -> th4LPP,
+        Selector.summaryListRowValue(4) -> "£300",
         Selector.warning -> estimateFooterNoteWarning,
         Selector.govukBody(1) -> estimateFooterNoteBillPayment,
         Selector.govukBody(2) -> estimateFooterNoteText,
