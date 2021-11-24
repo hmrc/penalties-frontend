@@ -26,9 +26,7 @@ import play.api.Application
 import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.ws.{WSClient, WSRequest}
-import stubs.{AuthStub, ComplianceStub, PenaltiesStub}
-
-import java.time.LocalDate
+import stubs.{AuthStub, PenaltiesStub}
 
 trait IntegrationSpecCommonBase extends AnyWordSpec with Matchers with GuiceOneServerPerSuite with
   BeforeAndAfterAll with BeforeAndAfterEach with TestSuite with WiremockHelper {
