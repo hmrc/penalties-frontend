@@ -33,6 +33,11 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
     val listValue: Int => String = (item: Int) => s"#main-content tr:nth-child($item) td"
 
+    val summaryListRowKey: Int => String = (item: Int) => s"#main-content dl > div:nth-child($item) > dt"
+
+    val summaryListRowValue: Int => String = (item: Int) => s"#main-content dl > div:nth-child($item) > dd"
+
+
     val bulletNthChild: Int => String = (nThChild: Int) => s"#main-content > div > div > ul > li:nth-child($nThChild)"
 
     val govukBody: Int => String = (nthChild: Int) => s"#main-content .govuk-body:nth-of-type($nthChild)"
@@ -147,14 +152,14 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.title -> titleLPP,
         Selector.periodSpan -> period,
         Selector.h1 -> headingLPP,
-        Selector.listRow(1) -> th1LPP,
-        Selector.listValue(1) -> "£400",
-        Selector.listRow(2) -> th2LPP,
-        Selector.listValue(2) -> "2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)",
-        Selector.listRow(3) -> th3LPP,
-        Selector.listValue(3) -> "£100",
-        Selector.listRow(4) -> th4LPP,
-        Selector.listValue(4) -> "£50",
+        Selector.summaryListRowKey(1) -> th1LPP,
+        Selector.summaryListRowValue(1) -> "£400",
+        Selector.summaryListRowKey(2) -> th2LPP,
+        Selector.summaryListRowValue(2) -> "2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)",
+        Selector.summaryListRowKey(3) -> th3LPP,
+        Selector.summaryListRowValue(3) -> "£100",
+        Selector.summaryListRowKey(4) -> th4LPP,
+        Selector.summaryListRowValue(4) -> "£50",
         Selector.link -> link
       )
 
@@ -165,15 +170,15 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           Selector.title -> titleLPP,
           Selector.periodSpan -> period,
           Selector.h1 -> headingLPP,
-          Selector.listRow(1) -> th1LPP,
-          Selector.listValue(1) -> "£400",
-          Selector.listRow(2) -> th2LPP,
-          Selector.listValue(2) ->
+          Selector.summaryListRowKey(1) -> th1LPP,
+          Selector.summaryListRowValue(1) -> "£400",
+          Selector.summaryListRowKey(2) -> th2LPP,
+          Selector.summaryListRowValue(2) ->
             "2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025) + 2% of £10,000.00 (Central assessment amount unpaid on 6 June 2025",
-          Selector.listRow(3) -> th3LPP,
-          Selector.listValue(3) -> "£100",
-          Selector.listRow(4) -> th4LPP,
-          //    Selector.listValue(4) -> "£0" //TODO: Implement with actual values
+          Selector.summaryListRowKey(3) -> th3LPP,
+          Selector.summaryListRowValue(3) -> "£100",
+          Selector.summaryListRowKey(4) -> th4LPP,
+          Selector.summaryListRowValue(4) -> "£50",
           Selector.link -> link
         )
         behave like pageWithExpectedMessages(expectedContent)(docWith2Calculations)
@@ -205,14 +210,14 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.title -> titleLPP,
         Selector.periodSpan -> period,
         Selector.h1 -> headingLPP,
-        Selector.listRow(1) -> th1LPPEstimate,
-        Selector.listValue(1) -> "£400",
-        Selector.listRow(2) -> th2LPP,
-        Selector.listValue(2) -> "2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)",
-        Selector.listRow(3) -> th3LPP,
-        Selector.listValue(3) -> "£100",
-        Selector.listRow(4) -> th4LPP,
-        Selector.listValue(4) -> "£50",
+        Selector.summaryListRowKey(1) -> th1LPPEstimate,
+        Selector.summaryListRowValue(1) -> "£400",
+        Selector.summaryListRowKey(2) -> th2LPP,
+        Selector.summaryListRowValue(2) -> "2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)",
+        Selector.summaryListRowKey(3) -> th3LPP,
+        Selector.summaryListRowValue(3) -> "£100",
+        Selector.summaryListRowKey(4) -> th4LPP,
+        Selector.summaryListRowValue(4) -> "£50",
         Selector.warning -> estimateFooterNoteWarning,
         Selector.govukBody(1) -> estimateFooterNoteBillPayment,
         Selector.govukBody(2) -> estimateFooterNoteText,

@@ -389,14 +389,14 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
       val parsedBody = Jsoup.parse(request.body)
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
       parsedBody.select("#main-content span").first.text() shouldBe "1 January 2021 to 1 February 2021"
-      parsedBody.select("#main-content tr:nth-child(1) > th").text() shouldBe "Penalty amount (estimate)"
-      parsedBody.select("#main-content tr:nth-child(1) > td").text() shouldBe "£400.00"
-      parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Calculation"
-      parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "2% of £123.00 (VAT amount unpaid on 23 March 2021) + 2% of £123.00 (VAT amount unpaid on 7 April 2021)"
-      parsedBody.select("#main-content tr:nth-child(3) > th").text() shouldBe "Amount received"
-      parsedBody.select("#main-content tr:nth-child(3) > td").text() shouldBe "£277.00"
-      parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Amount left to pay"
-      parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "£123.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£400.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Calculation"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "2% of £123.00 (VAT amount unpaid on 23 March 2021) + 2% of £123.00 (VAT amount unpaid on 7 April 2021)"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Amount received"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£277.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dt").text() shouldBe "Amount left to pay"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dd").text() shouldBe "£123.00"
         parsedBody.select("#main-content div .govuk-warning-text").text() shouldBe "! This penalty will rise to £800.00 (a further 2% of the unpaid VAT) if you do not make a VAT payment by 7 April 2021."
         parsedBody.select("#main-content .govuk-body").get(0).text() shouldBe "Paying part of your VAT bill will reduce further penalties."
         parsedBody.select("#main-content .govuk-body").get(1).text() shouldBe "Penalties and interest will show as estimates if HMRC has not been given enough information to calculate the final amounts."
@@ -412,14 +412,14 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
         val parsedBody = Jsoup.parse(request.body)
         parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
         parsedBody.select("#main-content span").first.text() shouldBe "1 January 2021 to 1 February 2021"
-        parsedBody.select("#main-content tr:nth-child(1) > th").text() shouldBe "Penalty amount"
-        parsedBody.select("#main-content tr:nth-child(1) > td").text() shouldBe "£4.93"
-        parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Calculation"
-        parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "2% of £123.20 (VAT amount unpaid on 23 March 2021) + 2% of £123.20 (VAT amount unpaid on 7 April 2021)"
-        parsedBody.select("#main-content tr:nth-child(3) > th").text() shouldBe "Amount received"
-        parsedBody.select("#main-content tr:nth-child(3) > td").text() shouldBe "£2.90"
-        parsedBody.select("#main-content tr").get(3).select("th").text() shouldBe "Amount left to pay"
-        parsedBody.select("#main-content tr").get(3).select("td").text() shouldBe "£2.03"
+        parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount"
+        parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£4.93"
+        parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Calculation"
+        parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "2% of £123.20 (VAT amount unpaid on 23 March 2021) + 2% of £123.20 (VAT amount unpaid on 7 April 2021)"
+        parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Amount received"
+        parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£2.90"
+        parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dt").text() shouldBe "Amount left to pay"
+        parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dd").text() shouldBe "£2.03"
         parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
         parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
     }
@@ -429,8 +429,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
       val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456789&isAdditional=false").get())
       request.status shouldBe Status.OK
       val parsedBody = Jsoup.parse(request.body)
-      parsedBody.select("#main-content tr").get(1).select("th").text() shouldBe "Calculation"
-      parsedBody.select("#main-content tr").get(1).select("td").text() shouldBe "2% of £123.00 (VAT amount unpaid on 23 March 2021)"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Calculation"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "2% of £123.00 (VAT amount unpaid on 23 March 2021)"
     }
 
     "return 200 (OK) and render the view correctly with Penalty Amount)" in {
@@ -438,8 +438,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
       val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456789&isAdditional=false").get())
       request.status shouldBe Status.OK
       val parsedBody = Jsoup.parse(request.body)
-      parsedBody.select("#main-content tr").get(0).select("th").text() shouldBe  "Penalty amount"
-      parsedBody.select("#main-content tr").get(0).select("td").text() shouldBe "£400.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe  "Penalty amount"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£400.00"
     }
 
     "return 500 (ISE) when the user specifies a penalty not within their data" in {
