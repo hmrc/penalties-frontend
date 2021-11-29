@@ -17,7 +17,7 @@
 package utils
 
 object SessionKeys {
-  val agentSessionVrn = "CLIENT_VRN"
+  val agentSessionVrn = "mtdVatvcClientVrn"
   val latestLSPCreationDate = "latestLSPCreationDate"
   val pointsThreshold = "penalties_pointsThreshold"
 
