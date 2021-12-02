@@ -28,7 +28,6 @@ import org.mockito.Matchers._
 import org.mockito.Mockito._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
-import utils.PenaltyPeriodHelper
 
 import java.time.LocalDateTime
 import scala.concurrent.Future

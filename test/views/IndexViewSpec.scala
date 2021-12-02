@@ -178,7 +178,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
       "agent is on page" must {
         val expectedAgentContent = Seq(
-          Selectors.serviceNameLink -> agentHeading,
+          Selectors.serviceNameLink -> agentServiceName,
           Selectors.h1 -> heading,
           Selectors.tab(1) -> tab1,
           Selectors.tab(2) -> tab2,
@@ -212,6 +212,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
       "user is on page" must {
 
         val expectedContent = Seq(
+          Selectors.serviceNameLink -> traderServiceName,
           Selectors.h1 -> heading,
           Selectors.breadcrumbWithLink(1) -> breadcrumb1,
           Selectors.breadcrumbs(2) -> breadcrumb2,
