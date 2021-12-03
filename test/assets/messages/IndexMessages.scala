@@ -24,7 +24,9 @@ object IndexMessages {
 
   val heading = "VAT penalties and appeals"
 
-  val agentHeading = "Your client’s VAT details"
+  val agentServiceName = "Your client’s VAT details"
+
+  val traderServiceName = "Manage your VAT account"
 
   val tab1 = "Late submission penalties"
 
