@@ -152,7 +152,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
     object Selectors extends BaseSelectors {
       def rowItem(summaryCard: String, i: Int) = s"$summaryCard > div > dl > div:nth-child($i) > dt"
 
-      val serviceNameLink = ".govuk-header__content a.govuk-header__link"
+      val serviceNameLink = ".govuk-header__content a.hmrc-header__service-name"
     }
 
     "IndexView" when {

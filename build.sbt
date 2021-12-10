@@ -15,7 +15,6 @@ lazy val microservice = Project(appName, file("."))
     TwirlKeys.templateImports ++= Seq(
       "config.AppConfig",
       "uk.gov.hmrc.govukfrontend.views.html.components._",
-      "uk.gov.hmrc.govukfrontend.views.html.helpers._",
       "views.html.layouts.Layout",
       "utils.MessageRenderer.getMessage",
     ),

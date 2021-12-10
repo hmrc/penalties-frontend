@@ -19,6 +19,7 @@ package connectors
 import config.AppConfig
 import models.compliance.CompliancePayload
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import java.time.LocalDate
 import javax.inject.Inject
@@ -28,7 +29,8 @@ class ComplianceConnector @Inject()(httpClient: HttpClient,
                                    appConfig: AppConfig)(implicit ec: ExecutionContext) {
 
   private val penaltiesBaseUrl: String = appConfig.penaltiesUrl
-  private def getDESComplianceDataUrl(vrn: String, fromDate: String, toDate: String): String = s"/compliance/des/compliance-data?vrn=$vrn&fromDate=$fromDate&toDate=$toDate"
+  private def getDESComplianceDataUrl(vrn: String, fromDate: String, toDate: String): String =
+                s"/compliance/des/compliance-data?vrn=$vrn&fromDate=$fromDate&toDate=$toDate"
 
   def getComplianceDataFromDES(vrn: String, fromDate: LocalDate, toDate: LocalDate)(implicit hc: HeaderCarrier): Future[CompliancePayload] = {
     httpClient.GET[CompliancePayload](s"$penaltiesBaseUrl${getDESComplianceDataUrl(vrn, fromDate.toString, toDate.toString)}")

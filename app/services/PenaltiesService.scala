@@ -28,11 +28,13 @@ import scala.concurrent.Future
 
 class PenaltiesService @Inject()(connector: PenaltiesConnector) {
 
-  def getETMPDataFromEnrolmentKey(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[ETMPPayload] = connector.getPenaltiesData(enrolmentKey)
+  def getETMPDataFromEnrolmentKey(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[ETMPPayload] =
+    connector.getPenaltiesData(enrolmentKey)
 
   def isAnyLSPUnpaid(penaltyPoints: Seq[PenaltyPoint]): Boolean = {
     penaltyPoints.exists(penalty => penalty.`type` == PenaltyTypeEnum.Financial &&
-      penalty.status != PointStatusEnum.Paid && !penalty.appealStatus.contains(AppealStatusEnum.Accepted) && !penalty.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal))
+      penalty.status != PointStatusEnum.Paid &&
+      !penalty.appealStatus.contains(AppealStatusEnum.Accepted) && !penalty.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal))
   }
 
   def isAnyLSPUnpaidAndSubmissionIsDue(penaltyPoints: Seq[PenaltyPoint]): Boolean = {

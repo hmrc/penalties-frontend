@@ -77,7 +77,8 @@ class IndexController @Inject()(view: IndexView,
     logger.debug(s"[IndexController][redirectToAppeals] redirect to appeals frontend with id $penaltyId and is late payment penalty: $isLPP " +
       s"and is obligation appeal: $isObligation and is additional: $isAdditional")
     if (isObligation) {
-      Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal-against-the-obligation?penaltyId=$penaltyId&isLPP=$isLPP&isAdditional=$isAdditional"))
+      Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}" +
+        s"/initialise-appeal-against-the-obligation?penaltyId=$penaltyId&isLPP=$isLPP&isAdditional=$isAdditional"))
     } else {
       Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=$isLPP&isAdditional=$isAdditional"))
     }

@@ -117,7 +117,9 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
 
   private def buildLSPSummaryCard(rows: Seq[SummaryListRow], penalty: PenaltyPoint, isAnAddedPoint: Boolean = false,
                                   isAnAdjustedPoint: Boolean = false)(implicit messages: Messages): LateSubmissionPenaltySummaryCard = {
-    val isReturnSubmitted = penalty.period.map(penaltyPeriod => PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head).fold(false)(_.submission.submittedDate.isDefined)
+    val isReturnSubmitted = penalty.period.map(penaltyPeriod =>
+                PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head)
+                  .fold(false)(_.submission.submittedDate.isDefined)
 
     LateSubmissionPenaltySummaryCard(
       rows,
@@ -162,7 +164,8 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
         )
       ),
       summaryListRow(messages("summaryCard.key2"), Html(dateTimeToString(PenaltyPeriodHelper.sortedPenaltyPeriod(period.get).head.submission.dueDate))),
-      summaryListRow(messages("summaryCard.key3"), Html(dateTimeToString(PenaltyPeriodHelper.sortedPenaltyPeriod(period.get).head.submission.submittedDate.get)))
+      summaryListRow(messages("summaryCard.key3"), Html(dateTimeToString(PenaltyPeriodHelper.sortedPenaltyPeriod(period.get)
+        .head.submission.submittedDate.get)))
     )
 
     if (penalty.dateExpired.isDefined && !thresholdMet && !penalty.appealStatus.contains(AppealStatusEnum.Accepted) &&
