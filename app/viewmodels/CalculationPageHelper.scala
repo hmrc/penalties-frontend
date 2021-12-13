@@ -31,14 +31,17 @@ class CalculationPageHelper @Inject()() extends ViewUtils with ImplicitDateForma
         val amountOnDay15ParsedAsString = parseBigDecimalToFriendlyValue(amountOnDay15)
         val amountOnDay31ParsedAsString = parseBigDecimalToFriendlyValue(amountOnDay31)
         val firstPaymentDetail = messages("calculation.key.2.paymentDetail", dateTimeToString(lpp.period.dueDate.plusDays(15)))
-        val firstCalculation = messages("calculation.key.2.text", s"${lpp.financial.percentageOfOutstandingAmtCharged.get}", amountOnDay15ParsedAsString, firstPaymentDetail)
+        val firstCalculation = messages("calculation.key.2.text",
+          s"${lpp.financial.percentageOfOutstandingAmtCharged.get}", amountOnDay15ParsedAsString, firstPaymentDetail)
         val secondPaymentDetail = messages("calculation.key.2.paymentDetail", dateTimeToString(lpp.period.dueDate.plusDays(30)))
-        val secondCalculation = messages("calculation.key.2.text", s"${lpp.financial.percentageOfOutstandingAmtCharged.get}", amountOnDay31ParsedAsString, secondPaymentDetail)
+        val secondCalculation = messages("calculation.key.2.text",
+          s"${lpp.financial.percentageOfOutstandingAmtCharged.get}", amountOnDay31ParsedAsString, secondPaymentDetail)
         Some(Seq(firstCalculation, secondCalculation))
       case (Some(amountOnDay15), None) =>
         val amountOnDay15ParsedAsString = parseBigDecimalToFriendlyValue(amountOnDay15)
         val paymentDetail = messages("calculation.key.2.paymentDetail", dateTimeToString(lpp.period.dueDate.plusDays(15)))
-        val calculation = messages("calculation.key.2.text", s"${lpp.financial.percentageOfOutstandingAmtCharged.get}", amountOnDay15ParsedAsString, paymentDetail)
+        val calculation = messages("calculation.key.2.text",
+          s"${lpp.financial.percentageOfOutstandingAmtCharged.get}", amountOnDay15ParsedAsString, paymentDetail)
         Some(Seq(calculation))
       case _ =>
         None
