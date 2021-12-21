@@ -16,14 +16,15 @@
 
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.{Header, HmrcHeader}
 @import utils.SessionKeys
+@import config.AppConfig
 
 @this(hmrcHeader: HmrcHeader)
 
-@(showSignOut: Boolean = true)(implicit messages: Messages, request: Request[_])
+@(appConfig: AppConfig, showSignOut: Boolean = true)(implicit messages: Messages, request: Request[_])
 
 @hmrcHeader(Header(
     homepageUrl = "https://www.gov.uk/",
-    serviceUrl = controllers.routes.IndexController.onPageLoad.url,
+    serviceUrl = if(request.session.get(SessionKeys.agentSessionVrn).isDefined) {appConfig.vatOverviewUrlAgent + request.session.get(SessionKeys.agentSessionVrn).get} else {appConfig.vatOverviewUrl},
     serviceName = Some(if(request.session.get(SessionKeys.agentSessionVrn).isDefined) { messages("agent.service.name")} else { messages("service.name") }),
     containerClasses = "govuk-width-container",
     navigation = None,

@@ -67,7 +67,7 @@
 @govukLayout(
     pageTitle = Some(messages("common.pageTitle", pageTitle, "Penalties")),
     headBlock = Some(headBlock),
-    headerBlock = Some(header()),
+    headerBlock = Some(header(appConfig)),
     scriptsBlock = Some(scripts),
     beforeContentBlock = Some(beforeContentBlock),
     footerBlock = Some(hmrcStandardFooter()),

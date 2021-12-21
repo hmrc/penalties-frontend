@@ -32,6 +32,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val defaultLanguage: Lang = Lang(en)
 
   lazy val vatOverviewUrl: String = servicesConfig.getString("urls.vatOverview")
+  lazy val vatOverviewUrlAgent: String = servicesConfig.getString("urls.vatAgentClientLookUp")
   lazy val penaltiesUrl: String = s"${servicesConfig.baseUrl("penalties")}/penalties"
 
   lazy val signInUrl: String = config.get[String]("signIn.url")
