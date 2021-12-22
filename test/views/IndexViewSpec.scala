@@ -188,6 +188,10 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
         behave like pageWithExpectedMessages(expectedAgentContent)(agentDoc)
 
+        "have the correct service name link" in {
+          agentDoc.select(Selectors.serviceNameLink).attr("href") shouldBe appConfig.vatOverviewUrlAgent
+        }
+
         "not have breadcrumb links for 'Your VAT account'" in {
           agentDoc.select(Selectors.breadcrumbs(1)).isEmpty shouldBe true
           agentDoc.select(Selectors.breadcrumbWithLink(2)).isEmpty shouldBe true
@@ -223,6 +227,10 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         )
 
         behave like pageWithExpectedMessages(expectedContent)(vatTraderDoc)
+
+        "have the correct service name link" in {
+          vatTraderDoc.select(Selectors.serviceNameLink).attr("href") shouldBe appConfig.vatOverviewUrl
+        }
 
         "have correct route for breadcrumb link" in {
           vatTraderDoc.select(Selectors.breadcrumbWithLink(1)).attr("href") shouldBe appConfig.vatOverviewUrl
