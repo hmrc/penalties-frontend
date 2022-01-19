@@ -28,7 +28,7 @@ import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
-import utils.{ImplicitDateFormatter, PenaltyPeriodHelper, ViewUtils}
+import utils.{CurrencyFormatter, ImplicitDateFormatter, PenaltyPeriodHelper, ViewUtils}
 
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -424,7 +424,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   def showDueOrPartiallyPaidDueTag(financial: Option[Financial])(implicit messages: Messages): Tag = financial match {
     case Some(financial) if financial.outstandingAmountDue == 0 => renderTag(messages("status.paid"))
     case Some(financial) if financial.outstandingAmountDue < financial.amountDue =>
-      renderTag(messages("status.partialPayment.due", financial.outstandingAmountDue), "penalty-due-tag")
+      renderTag(messages("status.partialPayment.due", CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(financial.outstandingAmountDue)), "penalty-due-tag")
     case _ => renderTag(messages("status.due"), "penalty-due-tag")
   }
 

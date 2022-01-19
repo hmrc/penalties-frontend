@@ -53,4 +53,44 @@ class CurrencyFormatterSpec extends AnyWordSpec with Matchers {
       actualResult shouldBe "£419"
     }
   }
+
+  "parseBigDecimalToFriendlyValue" should {
+    "parse a BigDecimal with leading .00 if it is whole" in {
+      val bigDecimalToPassToFormatter = BigDecimal(419)
+      val actualResult = Formatter.parseBigDecimalToFriendlyValue(bigDecimalToPassToFormatter)
+      actualResult shouldBe "419.00"
+    }
+
+    "parse a BigDecimal to 2dp if it is currently 1dp" in {
+      val bigDecimalToPassToFormatter = BigDecimal(419.2)
+      val actualResult = Formatter.parseBigDecimalToFriendlyValue(bigDecimalToPassToFormatter)
+      actualResult shouldBe "419.20"
+    }
+
+    "do not change a BigDecimal with 2dp" in {
+      val bigDecimalToPassToFormatter = BigDecimal(419.12)
+      val actualResult = Formatter.parseBigDecimalToFriendlyValue(bigDecimalToPassToFormatter)
+      actualResult shouldBe "419.12"
+    }
+  }
+
+  "parseBigDecimalNoPaddedZeroToFriendlyValue" should {
+    "parse a BigDecimal and keep it whole" in {
+      val bigDecimalToPassToFormatter = BigDecimal(419)
+      val actualResult = Formatter.parseBigDecimalNoPaddedZeroToFriendlyValue(bigDecimalToPassToFormatter)
+      actualResult shouldBe "419"
+    }
+
+    "parse a BigDecimal to 2dp if it is currently 1dp" in {
+      val bigDecimalToPassToFormatter = BigDecimal(419.2)
+      val actualResult = Formatter.parseBigDecimalNoPaddedZeroToFriendlyValue(bigDecimalToPassToFormatter)
+      actualResult shouldBe "419.20"
+    }
+
+    "do not change a BigDecimal with 2dp" in {
+      val bigDecimalToPassToFormatter = BigDecimal(419.12)
+      val actualResult = Formatter.parseBigDecimalNoPaddedZeroToFriendlyValue(bigDecimalToPassToFormatter)
+      actualResult shouldBe "419.12"
+    }
+  }
 }

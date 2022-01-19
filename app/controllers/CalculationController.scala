@@ -55,11 +55,10 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
         } else {
           val startDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.period.startDate)
           val endDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.period.endDate)
-          val amountReceived = calculationPageHelper
-            .parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue - penalty.get.financial.outstandingAmountDue)
+          val amountReceived = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue - penalty.get.financial.outstandingAmountDue)
           val isPenaltyEstimate = penalty.get.status.equals(PointStatusEnum.Estimated)
-          val amountLeftToPay = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.outstandingAmountDue)
-          val penaltyAmount = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue)
+          val amountLeftToPay = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.financial.outstandingAmountDue)
+          val penaltyAmount = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue)
           logger.debug(s"[CalculationController][onPageLoad] - found penalty: ${penalty.get}")
           if(!isAdditional) {
              val penaltyEstimatedDate = penalty.get.period.dueDate.plusDays(30)
@@ -72,7 +71,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
             })(
               rowSeq => {
                 val isTwoCalculations: Boolean = rowSeq.size == 2
-                val warningPenaltyAmount = calculationPageHelper.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue * 2)
+                val warningPenaltyAmount = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue * 2)
                 val warningDate = calculationPageHelper.getDateAsDayMonthYear(penaltyEstimatedDate)
                 Ok(viewLPP(amountReceived, penaltyAmount,
                   amountLeftToPay, rowSeq,

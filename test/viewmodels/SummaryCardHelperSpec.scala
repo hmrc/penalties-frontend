@@ -860,13 +860,22 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         )
       }
 
-
       "render a due tag with the outstanding amount shown - when a partial payment has been made" in {
         val lspFinancialDataNoPaymentsMade = Some(Financial(400, 146.12, LocalDateTime.now))
 
         val result = helper.showDueOrPartiallyPaidDueTag(lspFinancialDataNoPaymentsMade)
         result shouldBe Tag(
           content = Text(overduePartiallyPaidTag(146.12)),
+          classes = "govuk-tag penalty-due-tag"
+        )
+      }
+
+      "render a due tag with the outstanding amount shown - when a partial payment has been made (with whole tenths)" in {
+        val lspFinancialDataNoPaymentsMade = Some(Financial(400, 146.1, LocalDateTime.now))
+
+        val result = helper.showDueOrPartiallyPaidDueTag(lspFinancialDataNoPaymentsMade)
+        result shouldBe Tag(
+          content = Text("£146.10 due"),
           classes = "govuk-tag penalty-due-tag"
         )
       }
@@ -898,6 +907,16 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         val result = helper.showDueOrPartiallyPaidDueTag(lspFinancialDataNoPaymentsMade)
         result shouldBe Tag(
           content = Text(overduePartiallyPaidTag(383.94)),
+          classes = "govuk-tag penalty-due-tag"
+        )
+      }
+
+      "render a due tag with the outstanding amount shown - when a partial payment has been made (with whole tenths)" in {
+        val lspFinancialDataNoPaymentsMade = Some(Financial(600, 383.9, LocalDateTime.now))
+
+        val result = helper.showDueOrPartiallyPaidDueTag(lspFinancialDataNoPaymentsMade)
+        result shouldBe Tag(
+          content = Text("£383.90 due"),
           classes = "govuk-tag penalty-due-tag"
         )
       }
