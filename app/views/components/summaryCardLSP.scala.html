@@ -17,6 +17,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import viewmodels.LateSubmissionPenaltySummaryCard
 @import models.point.AppealStatusEnum
+@import utils.CurrencyFormatter
 
 @this(
         govukSummaryList: GovukSummaryList,
@@ -33,9 +34,9 @@
         <h3 class="app-summary-card__title">
             @{
                 if(summaryCard.isFinancialPoint && summaryCard.penaltyPoint.nonEmpty) {
-                    messages("summaryCard.header.financial", summaryCard.penaltyPoint, summaryCard.amountDue.intValue)
+                    messages("summaryCard.header.financial", summaryCard.penaltyPoint, CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(summaryCard.amountDue))
                 } else if(summaryCard.isFinancialPoint && summaryCard.penaltyPoint.isEmpty) {
-                    messages("summaryCard.header.financialNoNumber", summaryCard.amountDue.intValue)
+                    messages("summaryCard.header.financialNoNumber", CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(summaryCard.amountDue))
                 } else if(summaryCard.isAddedPoint) {
                     messages("summaryCard.header.addedPoint", summaryCard.penaltyPoint)
                 } else if(summaryCard.isAdjustedPoint || summaryCard.appealStatus.contains(AppealStatusEnum.Accepted) || summaryCard.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal)) {

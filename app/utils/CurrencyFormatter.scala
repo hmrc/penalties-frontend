@@ -18,4 +18,14 @@ package utils
 
 trait CurrencyFormatter {
   def currencyFormatAsNonHTMLString(amt: BigDecimal): String = f"£$amt%,1.2f".replace(".00", "")
+
+  def parseBigDecimalToFriendlyValue(amount: BigDecimal): String = {
+    "%,.2f".format(amount)
+  }
+
+  def parseBigDecimalNoPaddedZeroToFriendlyValue(amount: BigDecimal): String = {
+    "%,.2f".format(amount).replace(".00", "")
+  }
 }
+
+object CurrencyFormatter extends CurrencyFormatter
