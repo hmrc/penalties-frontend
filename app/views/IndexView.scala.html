@@ -40,7 +40,22 @@
     <p class="govuk-body">@getMessage("whatIsOwed.details.body.1") @link("#", "whatIsOwed.details.link.1", isExternal = true)@getMessage("whatIsOwed.details.body.2")</p>
 }
 
-@layout(pageTitle = messages("index.title")) {
+@layout(pageTitle = messages("index.title"), displayBackLink = user.isAgent) {
+
+@if(!user.isAgent) {
+    <div class="govuk-breadcrumbs govuk-breadcrumbs--collapse-on-mobile">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="@{appConfig.vatOverviewUrl}">
+                    @messages("index.breadcrumb.vat-account")
+                </a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                @messages("index.breadcrumb.index")
+            </li>
+        </ol>
+    </div>
+}
 
     <h1 class="govuk-heading-xl">@{messages("index.heading")}</h1>
 

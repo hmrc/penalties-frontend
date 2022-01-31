@@ -192,6 +192,11 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           agentDoc.select(Selectors.serviceNameLink).attr("href") shouldBe appConfig.vatOverviewUrlAgent
         }
 
+        "not have breadcrumb links for 'Your VAT account'" in {
+          agentDoc.select(Selectors.breadcrumbs(1)).isEmpty shouldBe true
+          agentDoc.select(Selectors.breadcrumbWithLink(2)).isEmpty shouldBe true
+        }
+
         "show the content and headings when the client has outstanding payments" in {
           val sampleContent = pElement(content = Html("sample content"))
           def applyView(): HtmlFormat.Appendable = {
@@ -213,6 +218,8 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
         val expectedContent = Seq(
           Selectors.serviceNameLink -> traderServiceName,
           Selectors.h1 -> heading,
+          Selectors.breadcrumbWithLink(1) -> breadcrumb1,
+          Selectors.breadcrumbs(2) -> breadcrumb2,
           Selectors.tab(1) -> tab1,
           Selectors.tab(2) -> tab2,
           Selectors.tabHeading -> subheading,
@@ -223,6 +230,10 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
         "have the correct service name link" in {
           vatTraderDoc.select(Selectors.serviceNameLink).attr("href") shouldBe appConfig.vatOverviewUrl
+        }
+
+        "have correct route for breadcrumb link" in {
+          vatTraderDoc.select(Selectors.breadcrumbWithLink(1)).attr("href") shouldBe appConfig.vatOverviewUrl
         }
 
         "have the specified content displayed on the page" in {
@@ -374,7 +385,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           implicit val doc: Document = asDocument(applyView())
           doc.select("#what-is-owed > h2").text shouldBe "Overview"
           doc.select("#what-is-owed > p").first.text shouldBe "You owe:"
-          doc.select("#main-content h2:nth-child(3)").text shouldBe "Penalty and appeal details"
+          doc.select("#main-content h2:nth-child(4)").text shouldBe "Penalty and appeal details"
           doc.select("#what-is-owed > a").text shouldBe "Check amounts and pay"
           doc.select("#what-is-owed > h3").text shouldBe "If you cannot pay today"
         }

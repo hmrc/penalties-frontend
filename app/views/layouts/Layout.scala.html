@@ -32,14 +32,17 @@
 )
 @(pageTitle: String,
   scriptsBlock: Option[Html] = None,
-    isPageFullWidth: Boolean = true
+    isPageFullWidth: Boolean = true,
+    displayBackLink: Boolean = true
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @beforeContentBlock = {
     @phaseBanner("beta")
     @if(appConfig.welshLanguageSupportEnabled) {@languageSelect()}
 
-    @govukBackLink(BackLink(href = "#", content = Text(messages("app.common.back")), attributes = Map("id" -> "back-link")))
+    @if(displayBackLink) {
+        @govukBackLink(BackLink(href = "#", content = Text(messages("app.common.back")), attributes = Map("id" -> "back-link")))
+    }
 }
 
 @headBlock = {
