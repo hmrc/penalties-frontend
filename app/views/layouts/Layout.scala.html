@@ -33,15 +33,28 @@
 @(pageTitle: String,
   scriptsBlock: Option[Html] = None,
     isPageFullWidth: Boolean = true,
-    displayBackLink: Boolean = true
+    isUserAgent: Boolean = false,
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @beforeContentBlock = {
     @phaseBanner("beta")
     @if(appConfig.welshLanguageSupportEnabled) {@languageSelect()}
 
-    @if(displayBackLink) {
+    @if(isUserAgent) {
         @govukBackLink(BackLink(href = "#", content = Text(messages("app.common.back")), attributes = Map("id" -> "back-link")))
+    } else {
+    <div class="govuk-breadcrumbs govuk-breadcrumbs--collapse-on-mobile">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="@{appConfig.vatOverviewUrl}">
+                    @messages("index.breadcrumb.vat-account")
+                </a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                @messages("index.breadcrumb.index")
+            </li>
+        </ol>
+    </div>
     }
 }
 

@@ -24,7 +24,7 @@ class BaseSelectors {
 
   val h2 = "#main-content h2"
 
-  def breadcrumbs(index: Int): String = s"#main-content > div > div > div.govuk-breadcrumbs.govuk-breadcrumbs--collapse-on-mobile > ol > li:nth-child($index)"
+  def breadcrumbs(index: Int): String = s"body > div > div.govuk-breadcrumbs.govuk-breadcrumbs--collapse-on-mobile > ol > li:nth-child($index)"
 
   def breadcrumbWithLink(index: Int): String = s"${breadcrumbs(index)} > a"
 
