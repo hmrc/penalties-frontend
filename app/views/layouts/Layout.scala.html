@@ -59,6 +59,7 @@
     @if(scriptsBlock.isEmpty) {
         <script src="@controllers.routes.Assets.versioned("javascripts/backLink.js")"></script>
         <script>window.GOVUKFrontend.initAll();</script>
+        <script>window.HMRCFrontend.initAll();</script>
     } else {
         @scriptsBlock.get
     }
