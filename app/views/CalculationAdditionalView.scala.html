@@ -33,7 +33,8 @@
         amountLeftToPay:String
         )(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
 
-@layout(pageTitle = messages("calculation.title.additional"), isPageFullWidth = false) {
+@layout(pageTitle = messages("calculation.title.additional"), isPageFullWidth = false, isUserAgent = user.isAgent,
+        newBreadCrumb = Some("index.breadcrumb.calculation.additional")) {
         <span class="govuk-caption-l">@messages("calculation.caption", startDate, endDate)</span>
        <h1 class="govuk-heading-l">
         @messages("calculation.heading.additional")</h1>

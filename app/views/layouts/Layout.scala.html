@@ -34,6 +34,7 @@
   scriptsBlock: Option[Html] = None,
     isPageFullWidth: Boolean = true,
     isUserAgent: Boolean = false,
+    newBreadCrumb: Option[String] = None
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @beforeContentBlock = {
@@ -50,9 +51,20 @@
                     @messages("index.breadcrumb.vat-account")
                 </a>
             </li>
+            @if(!newBreadCrumb.isDefined) {
+                <li class="govuk-breadcrumbs__list-item">
+                    @messages("index.breadcrumb.index")
+                </li>
+            } else {
             <li class="govuk-breadcrumbs__list-item">
-                @messages("index.breadcrumb.index")
+                <a class="govuk-breadcrumbs__link" href="@{controllers.routes.IndexController.onPageLoad()}">
+                    @messages("index.breadcrumb.index")
+                </a>
             </li>
+            <li class="govuk-breadcrumbs__list-item">
+                    @messages(newBreadCrumb.get)
+            </li>
+            }
         </ol>
     </div>
     }
