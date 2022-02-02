@@ -115,7 +115,7 @@ class IndexPageHelperSpec extends SpecBase {
     "no active penalty points" should {
       "display a message in a <p> tag" in {
         val etmpPayloadModelWithNoActivePenaltyPoints: ETMPPayload = ETMPPayload(
-          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithNoActivePenaltyPoints)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -126,7 +126,7 @@ class IndexPageHelperSpec extends SpecBase {
     "points are below threshold and less than warning level" should {
       "show the summary of penalty points" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 2, lateSubmissions = 2, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 2, lateSubmissions = 2, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -135,7 +135,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "user is agent - show the summary of penalty points" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 2, lateSubmissions = 2, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 2, lateSubmissions = 2, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)(implicitly, agentUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -144,7 +144,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "show the singular wording when there is only one penalty point" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 1, lateSubmissions = 1, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 1, lateSubmissions = 1, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -153,7 +153,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "user is agent - show the singular wording when there is only one penalty point" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 1, lateSubmissions = 1, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 1, lateSubmissions = 1, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)(implicitly, agentUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -162,7 +162,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "show the plural wording when there is multiple penalty points" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 2, lateSubmissions = 2, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 2, lateSubmissions = 2, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -171,7 +171,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "user is agent - show the plural wording when there is multiple penalty points" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 2, lateSubmissions = 2, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 2, lateSubmissions = 2, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)(implicitly, agentUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -180,7 +180,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "show what happens when next submission is late" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 2, lateSubmissions = 2, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 2, lateSubmissions = 2, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -189,7 +189,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "user is agent - show what happens when next submission is late" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 2, lateSubmissions = 2, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 2, lateSubmissions = 2, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)(implicitly, agentUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -198,7 +198,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "show the (threshold) amount of points that need to be accrued before a penalty is applied" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 2, lateSubmissions = 2, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 2, lateSubmissions = 2, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -207,7 +207,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "user is agent - show the (threshold) amount of points that need to be accrued before a penalty is applied" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 2, lateSubmissions = 2, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 2, lateSubmissions = 2, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)(implicitly, agentUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -218,7 +218,7 @@ class IndexPageHelperSpec extends SpecBase {
     "points are at warning level (1 below threshold)" should {
       "show the summary of penalty points" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 1, lateSubmissions = 1, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 2, penaltyPoints = Seq.empty
+          pointsTotal = 1, lateSubmissions = 1, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = 2, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -227,7 +227,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "user is agent - show the summary of penalty points" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 1, lateSubmissions = 1, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 2, penaltyPoints = Seq.empty
+          pointsTotal = 1, lateSubmissions = 1, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = 2, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)(implicitly, agentUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -236,7 +236,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "show some warning text explaining what will happen if another submission is late" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 3, lateSubmissions = 3, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 3, lateSubmissions = 3, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -245,7 +245,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "user is agent - show some warning text explaining what will happen if another submission is late" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 3, lateSubmissions = 3, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 3, lateSubmissions = 3, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)(implicitly, agentUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -254,7 +254,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "show a summary of amount of points accrued and returns submitted late" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 3, lateSubmissions = 3, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 3, lateSubmissions = 3, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -263,7 +263,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "user is agent - show a summary of amount of points accrued and returns submitted late" in {
         val etmpPayloadModelWithActivePenaltyPointsBelowThreshold: ETMPPayload = ETMPPayload(
-          pointsTotal = 3, lateSubmissions = 3, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 3, lateSubmissions = 3, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsBelowThreshold)(implicitly, agentUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -273,7 +273,7 @@ class IndexPageHelperSpec extends SpecBase {
 
     "points are at or above the threshold" should {
       val etmpPayloadModelWithActivePenaltyPointsOnOrAboveThreshold: ETMPPayload = ETMPPayload(
-        pointsTotal = 4, lateSubmissions = 4, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+        pointsTotal = 4, lateSubmissions = 4, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
       )
       val result = pageHelper.getContentBasedOnPointsFromModel(etmpPayloadModelWithActivePenaltyPointsOnOrAboveThreshold)(implicitly, vatTraderUser)
       val parsedHtmlResult = Jsoup.parse(result.body)
@@ -312,7 +312,7 @@ class IndexPageHelperSpec extends SpecBase {
     "points have been added" should {
       "show the total of ALL POINTS (i.e. lateSubmissions + adjustmentPointsTotal)" in {
         val sampleAddedPenaltyPoints: ETMPPayload = ETMPPayload(
-          pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(sampleAddedPenaltyPoints)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -321,7 +321,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "user is agent - show the total of ALL POINTS (i.e. lateSubmissions + adjustmentPointsTotal)" in {
         val sampleAddedPenaltyPoints: ETMPPayload = ETMPPayload(
-          pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(sampleAddedPenaltyPoints)(implicitly, agentUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -330,7 +330,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "have a breakdown of how the points were calculated" in {
         val sampleAddedPenaltyPoints: ETMPPayload = ETMPPayload(
-          pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(sampleAddedPenaltyPoints)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -340,7 +340,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "user is agent - have a breakdown of how the points were calculated" in {
         val sampleAddedPenaltyPoints: ETMPPayload = ETMPPayload(
-          pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(sampleAddedPenaltyPoints)(implicitly, agentUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -350,7 +350,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "all points are 1 below the threshold - show some warning text" in {
         val sampleAddedPenaltyPoints: ETMPPayload = ETMPPayload(
-          pointsTotal = 3, lateSubmissions = 2, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 3, lateSubmissions = 2, adjustmentPointsTotal = 1, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(sampleAddedPenaltyPoints)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -362,7 +362,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "user is agent - all points are 1 below the threshold - show some warning text" in {
         val sampleAddedPenaltyPoints: ETMPPayload = ETMPPayload(
-          pointsTotal = 3, lateSubmissions = 2, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 3, lateSubmissions = 2, adjustmentPointsTotal = 1, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(sampleAddedPenaltyPoints)(implicitly, agentUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -376,7 +376,7 @@ class IndexPageHelperSpec extends SpecBase {
     "points have been removed" should {
       "show the total of ALL POINTS (i.e. lateSubmissions - adjustmentPointsTotal)" in {
         val sampleAddedPenaltyPoints: ETMPPayload = ETMPPayload(
-          pointsTotal = 2, lateSubmissions = 3, adjustmentPointsTotal = -1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 2, lateSubmissions = 3, adjustmentPointsTotal = -1, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(sampleAddedPenaltyPoints)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -385,7 +385,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "user is agent - show the total of ALL POINTS (i.e. lateSubmissions - adjustmentPointsTotal)" in {
         val sampleAddedPenaltyPoints: ETMPPayload = ETMPPayload(
-          pointsTotal = 2, lateSubmissions = 3, adjustmentPointsTotal = -1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 2, lateSubmissions = 3, adjustmentPointsTotal = -1, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(sampleAddedPenaltyPoints)(implicitly, agentUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -394,7 +394,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "have a breakdown of how the points were calculated" in {
         val sampleAddedPenaltyPoints: ETMPPayload = ETMPPayload(
-          pointsTotal = 3, lateSubmissions = 2, adjustmentPointsTotal = -1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 3, lateSubmissions = 2, adjustmentPointsTotal = -1, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(sampleAddedPenaltyPoints)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -404,7 +404,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "user is agent - have a breakdown of how the points were calculated" in {
         val sampleAddedPenaltyPoints: ETMPPayload = ETMPPayload(
-          pointsTotal = 3, lateSubmissions = 2, adjustmentPointsTotal = -1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 3, lateSubmissions = 2, adjustmentPointsTotal = -1, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(sampleAddedPenaltyPoints)(implicitly, agentUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -414,7 +414,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "all points are 1 below the threshold - show some warning text" in {
         val sampleAddedPenaltyPoints: ETMPPayload = ETMPPayload(
-          pointsTotal = 3, lateSubmissions = 4, adjustmentPointsTotal = -1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 3, lateSubmissions = 4, adjustmentPointsTotal = -1, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(sampleAddedPenaltyPoints)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -426,7 +426,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "user is agent - all points are 1 below the threshold - show some warning text" in {
         val sampleAddedPenaltyPoints: ETMPPayload = ETMPPayload(
-          pointsTotal = 3, lateSubmissions = 4, adjustmentPointsTotal = -1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
+          pointsTotal = 3, lateSubmissions = 4, adjustmentPointsTotal = -1, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = quarterlyThreshold, penaltyPoints = Seq.empty
         )
         val result = pageHelper.getContentBasedOnPointsFromModel(sampleAddedPenaltyPoints)(implicitly, agentUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -442,7 +442,7 @@ class IndexPageHelperSpec extends SpecBase {
     "no active payment penalties" should {
       "display a message in a <p> tag" in {
         val etmpPayloadModelWithNoActivePaymentPenalty: ETMPPayload = ETMPPayload(
-          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = Some(Seq.empty)
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = Some(Seq.empty)
         )
         val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(etmpPayloadModelWithNoActivePaymentPenalty)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -453,7 +453,7 @@ class IndexPageHelperSpec extends SpecBase {
     "display unpaid VAT text and 'how lpp calculated' link" when {
       "user has outstanding vat to pay" in {
         val etmpPayloadWithOutstandingVAT: ETMPPayload = ETMPPayload(
-          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = Some(Seq(
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = Some(Seq(
             LatePaymentPenalty(
               `type` = PenaltyTypeEnum.Financial,
               id = "1234567891",
@@ -487,7 +487,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "client has outstanding vat to pay" in {
         val etmpPayloadWithOutstandingVAT: ETMPPayload = ETMPPayload(
-          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = Some(Seq(
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = Some(Seq(
             LatePaymentPenalty(
               `type` = PenaltyTypeEnum.Financial,
               id = "1234567891",
@@ -523,7 +523,7 @@ class IndexPageHelperSpec extends SpecBase {
     "display 'how lpp calculated' link" when {
       "user has no outstanding vat to pay" in {
         val etmpPayloadWithOutstandingVAT: ETMPPayload = ETMPPayload(
-          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = Some(Seq(
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = Some(Seq(
             LatePaymentPenalty(
               `type` = PenaltyTypeEnum.Financial,
               id = "1234567891",
@@ -560,7 +560,7 @@ class IndexPageHelperSpec extends SpecBase {
     "return None" when {
       "the user has no outstanding payments" in {
         val etmpPayloadWithNoOutstandingPayments: ETMPPayload = ETMPPayload(
-          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = None)
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = None)
         val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithNoOutstandingPayments)
         result.isEmpty shouldBe true
       }
@@ -569,7 +569,7 @@ class IndexPageHelperSpec extends SpecBase {
     "return Some" when {
       "the user has outstanding VAT to pay" in {
         val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
-          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = None,
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = None,
           vatOverview = Some(
             Seq(
               OverviewElement(
@@ -593,7 +593,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "the user has outstanding LPP's to pay - no estimates" in {
         val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
-          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty,
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty,
           latePaymentPenalties = Some(
             Seq(
               LatePaymentPenalty(
@@ -629,7 +629,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "the user has outstanding LPP's to pay - with estimates" in {
         val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
-          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty,
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty,
           latePaymentPenalties = Some(
             Seq(
               LatePaymentPenalty(
@@ -687,7 +687,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "the user has outstanding VAT and outstanding LPP's" in {
         val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
-          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty,
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty,
           latePaymentPenalties = Some(
             Seq(
               LatePaymentPenalty(
@@ -761,7 +761,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "the user has outstanding VAT to pay and has other unrelated penalties" in {
         val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
-          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = None,
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = None,
           vatOverview = Some(
             Seq(
               OverviewElement(
@@ -787,7 +787,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "the user has other unrelated penalties only" in {
         val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
-          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = None,
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = None,
           vatOverview = None, otherPenalties = Some(true))
         val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithOutstandingPayments)
         result.isDefined shouldBe false
@@ -795,7 +795,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "the user has outstanding VAT to pay and outstanding LSP's" in {
         val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
-          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3,
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3,
           penaltyPoints = Seq(
             PenaltyPoint(
               `type` = PenaltyTypeEnum.Financial,
@@ -915,7 +915,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "the user has a single outstanding LSP" in {
         val etmpPayloadWithSingleLSP: ETMPPayload = ETMPPayload(
-          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3,
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3,
           penaltyPoints = Seq(sampleFinancialPenaltyPoint.copy(financial = Some(
             Financial(
               amountDue = 200.00,
@@ -934,7 +934,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "the user has outstanding VAT Interest to pay - no estimated interest " in {
         val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
-          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3,
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3,
           penaltyPoints = Seq.empty,
           latePaymentPenalties = None,
           vatOverview = Some(
@@ -958,7 +958,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "the user has crystalized and estimated interest on penalties" in {
         val etmpPayloadWithInterestOnPenalties: ETMPPayload = ETMPPayload(
-          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3,
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3,
           penaltyPoints = Seq(sampleFinancialPenaltyPoint.copy(financial = Some(
             Financial(
               amountDue = 0,
@@ -1005,7 +1005,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "the user has just crystalized interest on penalties" in {
         val etmpPayloadWithCrystalizedButNoEstimatedInterestOnPenalties: ETMPPayload = ETMPPayload(
-          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3,
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3,
           penaltyPoints = Seq(sampleFinancialPenaltyPoint.copy(financial = Some(
               Financial(
                 amountDue = 0,
@@ -1035,7 +1035,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       "the user has no estimated or crystalized interest on penalties" in {
         val etmpPayloadWithNoInterestPayments: ETMPPayload = ETMPPayload(
-          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = None,
+          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = None,
           vatOverview = Some(
             Seq(
               OverviewElement(

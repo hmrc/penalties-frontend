@@ -22,7 +22,7 @@ import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import services.PenaltiesService
 import utils.MessageRenderer.getMessage
-import utils.ViewUtils
+import utils.{CurrencyFormatter, ViewUtils}
 
 import javax.inject.Inject
 
@@ -31,10 +31,11 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
                                 bullets: views.html.components.bullets,
                                 link: views.html.components.link,
                                 warningText: views.html.components.warningText,
-                                penaltiesService: PenaltiesService) extends ViewUtils {
+                                penaltiesService: PenaltiesService) extends ViewUtils with CurrencyFormatter {
 
   //scalastyle:off
   def getContentBasedOnPointsFromModel(etmpData: ETMPPayload)(implicit messages: Messages, user: User[_]): Html = {
+    val fixedPenaltyAmount: String = parseBigDecimalNoPaddedZeroToFriendlyValue(etmpData.fixedPenaltyAmount)  
     (etmpData.pointsTotal, etmpData.penaltyPointsThreshold, etmpData.adjustmentPointsTotal) match {
       case (0, _, _) =>
         p(content = stringAsHtml(messages("lsp.pointSummary.noActivePoints")))
@@ -45,7 +46,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           p(content = html(stringAsHtml(getMessage("lsp.onThreshold.p2")))),
           bullets(Seq(
             stringAsHtml(getMessage("lsp.onThreshold.p2.b1")),
-            stringAsHtml(getMessage("lsp.onThreshold.p2.b2"))
+            stringAsHtml(getMessage("lsp.onThreshold.p2.b2", fixedPenaltyAmount))
           )),
           p(link(link = controllers.routes.ComplianceController.onPageLoad().url, messages("lsp.onThreshold.link")))
         )
@@ -59,12 +60,12 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
               "lsp.pointSummary.penaltyPoints.adjusted.addedPoints.plural")
           )),
           p(content = stringAsHtml(
-            messages("lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded", threshold)
+            messages("lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded", threshold, fixedPenaltyAmount)
           )),
           getGuidanceLink
         )
         if (currentPoints == threshold - 1) {
-          html(base.+:(warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText")))): _*)
+          html(base.+:(warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText", fixedPenaltyAmount)))): _*)
         } else {
           html(base: _*)
         }
@@ -79,12 +80,12 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
               "lsp.pointSummary.penaltyPoints.adjusted.removedPoints.plural")
           )),
           p(content = stringAsHtml(
-            messages("lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded", threshold)
+            messages("lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded", threshold, fixedPenaltyAmount)
           )),
           getGuidanceLink
         )
         if (currentPoints == threshold - 1) {
-          html(base.+:(warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText")))): _*)
+          html(base.+:(warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText", fixedPenaltyAmount)))): _*)
         } else {
           html(base: _*)
         }
@@ -97,14 +98,14 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
             getMessage("lsp.pointSummary.penaltyPoints.overview.anotherPoint")
           )),
           p(content = stringAsHtml(
-            getMessage("lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded", threshold)
+            getMessage("lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded", threshold, fixedPenaltyAmount)
           )),
           getGuidanceLink
         )
       case (currentPoints, threshold, _) if currentPoints == threshold - 1 =>
         html(
           renderPointsTotal(currentPoints),
-          warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText"))),
+          warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText", fixedPenaltyAmount))),
           p(getPluralOrSingularContentForOverview(currentPoints, etmpData.lateSubmissions)),
           getGuidanceLink
         )
