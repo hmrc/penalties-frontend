@@ -630,7 +630,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#what-is-owed > ul > li").get(3).text shouldBe "£99.55 in estimated interest on penalties"
       parsedBody.select("#what-is-owed > ul > li").get(4).text shouldBe "£400 fixed penalties for late submission"
       parsedBody.select("#what-is-owed > ul > li").get(5).text shouldBe "other penalties not related to late submission or late payment"
-      parsedBody.select("#main-content h2:nth-child(4)").text shouldBe "Penalty and appeal details"
+      parsedBody.select("#main-content h2:nth-child(3)").text shouldBe "Penalty and appeal details"
       parsedBody.select("#what-is-owed > a").text shouldBe "Check amounts and pay"
       parsedBody.select("#what-is-owed > h3").text shouldBe "If you cannot pay today"
     }
@@ -642,7 +642,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val parsedBody = Jsoup.parse(request.body)
       parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£232.12 in estimated late payment penalties"
       parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "£53 in estimated interest on penalties"
-      parsedBody.select("#main-content h2:nth-child(4)").text shouldBe "Penalty and appeal details"
+      parsedBody.select("#main-content h2:nth-child(3)").text shouldBe "Penalty and appeal details"
       parsedBody.select("#what-is-owed > a").text shouldBe "Check amounts and pay"
       parsedBody.select("#what-is-owed > h3").text shouldBe "If you cannot pay today"
     }
