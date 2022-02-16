@@ -309,7 +309,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
         summaryListRow(
           messages("summaryCard.key3"),
           Html(
-            messages("summaryCard.notYetSubmitted")
+            messages("summaryCard.key3.defaultValue")
           )
         )
       )(dateSubmitted =>
