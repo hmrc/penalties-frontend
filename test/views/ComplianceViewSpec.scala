@@ -17,6 +17,7 @@
 package views
 
 import assets.messages.ComplianceMessages._
+import assets.messages.IndexMessages.{breadcrumb1, breadcrumb2, breadcrumb3}
 import base.{BaseSelectors, SpecBase}
 import org.jsoup.nodes.Document
 import play.twirl.api.{Html, HtmlFormat}
@@ -78,6 +79,9 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selectors.h1 -> heading,
         Selectors.pNthChild(2) -> p1,
         Selectors.pNthChild(3) -> p2,
+        Selectors.breadcrumbWithLink(1) -> breadcrumb1,
+        Selectors.breadcrumbWithLink(2) -> breadcrumb2,
+        Selectors.breadcrumbWithLink(3) -> breadcrumb3,
         Selectors.staticListItem(1) -> li1,
         Selectors.staticListItem(2) -> li2,
         Selectors.submitTheseMissingReturnsH2 -> h2MissingReturns,
@@ -88,6 +92,12 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
       "contain the VAT period and compliance timeline when there is missing VAT returns" in {
         docWithMissingReturns.body().toString.contains("VAT Period 1 October 2021 to 31 December 2021") shouldBe true
+      }
+
+      "have the correct breadcrumb links" in {
+        docWithMissingReturns.select(Selectors.breadcrumbWithLink(1)).attr("href") shouldBe appConfig.btaUrl
+        docWithMissingReturns.select(Selectors.breadcrumbWithLink(2)).attr("href") shouldBe appConfig.vatOverviewUrl
+        docWithMissingReturns.select(Selectors.breadcrumbWithLink(3)).attr("href") shouldBe controllers.routes.IndexController.onPageLoad().url
       }
 
       "show a timeline with returns to be submitted and a point expiry date " in {

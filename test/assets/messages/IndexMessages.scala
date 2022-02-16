@@ -18,9 +18,11 @@ package assets.messages
 
 object IndexMessages {
 
-  val breadcrumb1 = "Your VAT Account"
+  val breadcrumb1 = "Business tax account"
 
-  val breadcrumb2 = "VAT penalties and appeals"
+  val breadcrumb2 = "Your VAT Account"
+
+  val breadcrumb3 = "VAT penalties and appeals"
 
   val heading = "VAT penalties and appeals"
 

@@ -18,10 +18,11 @@ package views
 
 import base.{BaseSelectors, SpecBase}
 import assets.messages.CalculationMessages._
+import assets.messages.IndexMessages.{breadcrumb1, breadcrumb2, breadcrumb3}
 import play.twirl.api.HtmlFormat
 import utils.ViewUtils
 import views.behaviours.ViewBehaviours
-import views.html.{CalculationLPPView, CalculationAdditionalView}
+import views.html.{CalculationAdditionalView, CalculationLPPView}
 import org.jsoup.nodes.Document
 
 class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
@@ -33,7 +34,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
     val summaryListRowKey: Int => String = (item: Int) => s"#main-content dl > div:nth-child($item) > dt"
 
     val summaryListRowValue: Int => String = (item: Int) => s"#main-content dl > div:nth-child($item) > dd"
-    
+
     val bulletNthChild: Int => String = (nThChild: Int) => s"#main-content > div > div > ul > li:nth-child($nThChild)"
 
     val govukBody: Int => String = (nthChild: Int) => s"#main-content .govuk-body:nth-of-type($nthChild)"
@@ -62,6 +63,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       implicit val doc: Document = asDocument(applyView())
 
       val expectedContent = Seq(
+        Selector.breadcrumbWithLink(1) -> breadcrumb1,
+        Selector.breadcrumbWithLink(2) -> breadcrumb2,
+        Selector.breadcrumbWithLink(3) -> breadcrumb3,
         Selector.title -> titleAdditional,
         Selector.periodSpan -> period,
         Selector.h1 -> headingAdditional,
@@ -83,6 +87,12 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       )
 
       behave like pageWithExpectedMessages(expectedContent)
+
+      "have the correct breadcrumb links" in {
+        doc.select(Selector.breadcrumbWithLink(1)).attr("href") shouldBe appConfig.btaUrl
+        doc.select(Selector.breadcrumbWithLink(2)).attr("href") shouldBe appConfig.vatOverviewUrl
+        doc.select(Selector.breadcrumbWithLink(3)).attr("href") shouldBe controllers.routes.IndexController.onPageLoad().url
+      }
     }
 
     "if it is an additional penalty and the penalty is not estimated" must {
@@ -134,8 +144,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           isPenaltyEstimate = false,
           "1 October 2022",
           "31 December 2022",
-          warningPenaltyAmount="",
-          warningDate="")(implicitly, implicitly, implicitly, vatTraderUser)
+          warningPenaltyAmount = "",
+          warningDate = "")(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
       implicit val docWithOnlyOneCalculation: Document =
@@ -145,6 +155,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
 
       val expectedContent = Seq(
+        Selector.breadcrumbWithLink(1) -> breadcrumb1,
+        Selector.breadcrumbWithLink(2) -> breadcrumb2,
+        Selector.breadcrumbWithLink(3) -> breadcrumb3,
         Selector.title -> titleLPP,
         Selector.periodSpan -> period,
         Selector.h1 -> headingLPP,
@@ -160,6 +173,12 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       )
 
       behave like pageWithExpectedMessages(expectedContent)(docWithOnlyOneCalculation)
+
+      "have the correct breadcrumb links" in {
+        docWithOnlyOneCalculation.select(Selector.breadcrumbWithLink(1)).attr("href") shouldBe appConfig.btaUrl
+        docWithOnlyOneCalculation.select(Selector.breadcrumbWithLink(2)).attr("href") shouldBe appConfig.vatOverviewUrl
+        docWithOnlyOneCalculation.select(Selector.breadcrumbWithLink(3)).attr("href") shouldBe controllers.routes.IndexController.onPageLoad().url
+      }
 
       "when there is 2 calculations - show both" must {
         val expectedContent = Seq(
@@ -223,5 +242,5 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
       behave like pageWithExpectedMessages(expectedContent)(docWithOnlyOneCalculation)
     }
-    }
+  }
 }
