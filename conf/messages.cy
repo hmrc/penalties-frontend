@@ -180,7 +180,6 @@ feedback.after = will help us to improve it.
 
 # What is owed messages
 # ----------------------------------------------------------
-whatIsOwed.heading = Overview
 whatIsOwed.penaltyAndAppealsHeading = Penalty and appeal details
 whatIsOwed.p1 = You owe:
 agent.whatIsOwed.p1 = Your client owes:
