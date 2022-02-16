@@ -18,7 +18,7 @@ package assets.messages
 
 object ComplianceMessages {
 
-  val title = "Bring your VAT account up to date - Penalties - GOV.UK"
+  val title = "Bring your VAT account up to date - Manage your VAT account - GOV.UK"
 
   val heading = "Bring your VAT account up to date"
 
