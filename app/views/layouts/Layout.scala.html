@@ -31,66 +31,70 @@
         hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet
 )
 @(pageTitle: String,
-  scriptsBlock: Option[Html] = None,
-    isPageFullWidth: Boolean = true,
-    isUserAgent: Boolean = false,
-    newBreadCrumb: Option[String] = None
+        scriptsBlock: Option[Html] = None,
+        isPageFullWidth: Boolean = true,
+        isUserAgent: Boolean = false,
+        extraBreadcrumbs: Option[Seq[(String, String)]] = None
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @beforeContentBlock = {
-    @phaseBanner("beta")
-    @if(appConfig.welshLanguageSupportEnabled) {@languageSelect()}
+@phaseBanner("beta")
+@if(appConfig.welshLanguageSupportEnabled) {@languageSelect()}
 
-    @if(isUserAgent) {
-        @govukBackLink(BackLink(href = "#", content = Text(messages("app.common.back")), attributes = Map("id" -> "back-link")))
-    } else {
+@if(isUserAgent) {
+    @govukBackLink(BackLink(href = "#", content = Text(messages("app.common.back")), attributes = Map("id" -> "back-link")))
+} else {
     <div class="govuk-breadcrumbs govuk-breadcrumbs--collapse-on-mobile">
         <ol class="govuk-breadcrumbs__list">
             <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="@{appConfig.btaUrl}">
+                @messages("index.breadcrumb.bta")
+                </a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
                 <a class="govuk-breadcrumbs__link" href="@{appConfig.vatOverviewUrl}">
-                    @messages("index.breadcrumb.vat-account")
+                @messages("index.breadcrumb.vat-account")
                 </a>
             </li>
-            @if(!newBreadCrumb.isDefined) {
-                <li class="govuk-breadcrumbs__list-item">
-                    @messages("index.breadcrumb.index")
-                </li>
-            } else {
-            <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href="@{controllers.routes.IndexController.onPageLoad()}">
-                    @messages("index.breadcrumb.index")
-                </a>
-            </li>
-            <li class="govuk-breadcrumbs__list-item">
-                    @messages(newBreadCrumb.get)
-            </li>
+            @{
+                extraBreadcrumbs.map {
+                    _.map {
+                        breadcrumb => {
+                            <li class="govuk-breadcrumbs__list-item">
+                                <a class="govuk-breadcrumbs__link" href={breadcrumb._2}>
+                                    {breadcrumb._1}
+                                </a>
+                            </li>
+                        }
+                    }
+                }
             }
         </ol>
     </div>
-    }
+}
 }
 
 @headBlock = {
-    @head(
-        Some(hmrcTimeoutDialog(TimeoutDialog(
-            timeout = Some(appConfig.timeoutPeriod),
-            countdown = Some(appConfig.timeoutCountdown),
-            signOutUrl = Some(routes.SignOutController.signOut().url),
-            keepAliveUrl = Some("#"),
-            signOutButtonText = Some(messages("base.signOut"))
-        )))
-    )
-    @hmrcTrackingConsentSnippet()
+@head(
+    Some(hmrcTimeoutDialog(TimeoutDialog(
+        timeout = Some(appConfig.timeoutPeriod),
+        countdown = Some(appConfig.timeoutCountdown),
+        signOutUrl = Some(routes.SignOutController.signOut().url),
+        keepAliveUrl = Some("#"),
+        signOutButtonText = Some(messages("base.signOut"))
+    )))
+)
+@hmrcTrackingConsentSnippet()
 }
 
 @scripts = {
-    @if(scriptsBlock.isEmpty) {
-        <script src="@controllers.routes.Assets.versioned("javascripts/backLink.js")"></script>
-        <script>window.GOVUKFrontend.initAll();</script>
-        <script>window.HMRCFrontend.initAll();</script>
-    } else {
-        @scriptsBlock.get
-    }
+@if(scriptsBlock.isEmpty) {
+    <script src="@controllers.routes.Assets.versioned("javascripts/backLink.js")"></script>
+    <script>window.GOVUKFrontend.initAll();</script>
+    <script>window.HMRCFrontend.initAll();</script>
+} else {
+    @scriptsBlock.get
+}
 }
 
 @govukLayout(

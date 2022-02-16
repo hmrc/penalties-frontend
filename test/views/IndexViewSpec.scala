@@ -219,7 +219,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           Selectors.serviceNameLink -> traderServiceName,
           Selectors.h1 -> heading,
           Selectors.breadcrumbWithLink(1) -> breadcrumb1,
-          Selectors.breadcrumbs(2) -> breadcrumb2,
+          Selectors.breadcrumbWithLink(2) -> breadcrumb2,
           Selectors.tab(1) -> tab1,
           Selectors.tab(2) -> tab2,
           Selectors.tabHeading -> subheading,
@@ -232,8 +232,9 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           vatTraderDoc.select(Selectors.serviceNameLink).attr("href") shouldBe appConfig.vatOverviewUrl
         }
 
-        "have correct route for breadcrumb link" in {
-          vatTraderDoc.select(Selectors.breadcrumbWithLink(1)).attr("href") shouldBe appConfig.vatOverviewUrl
+        "have correct route for breadcrumb links" in {
+          vatTraderDoc.select(Selectors.breadcrumbWithLink(1)).attr("href") shouldBe appConfig.btaUrl
+          vatTraderDoc.select(Selectors.breadcrumbWithLink(2)).attr("href") shouldBe appConfig.vatOverviewUrl
         }
 
         "have the specified content displayed on the page" in {

@@ -12,6 +12,7 @@ index.tab2 = Late payment penalties
 index.subheading = Late submission penalties
 index.subheading.lpp = Late payment penalties
 index.breadcrumb.vat-account = Your VAT Account
+index.breadcrumb.bta = Business tax account
 index.breadcrumb.index = VAT penalties and appeals
 index.breadcrumb.compliance = Bring your VAT account up to date
 index.breadcrumb.calculation.additional = Additional penalty
