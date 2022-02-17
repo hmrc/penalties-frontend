@@ -117,7 +117,7 @@ object IndexMessages {
   val chargedDailyFrom = "Charged daily from"
   val returnSubmitted = "Return submitted"
   val pointExpiration = "Point due to expire"
-  val notSubmitted = "Not yet submitted"
+  val notSubmitted = "Return not yet received"
   val paymentDue = "VAT payment due"
 
   val vatPeriodValue: (String, String) => String = (s1, s2) => s"$s1 to $s2"
