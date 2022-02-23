@@ -16,21 +16,27 @@
 
 package controllers
 
-import config.AppConfig
-import javax.inject.Inject
-import play.api.i18n._
-import play.api.mvc._
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import base.SpecBase
+import play.api.http.Status.OK
+import play.api.test.Helpers.{defaultAwaitTimeout, status, stubMessagesControllerComponents}
+import testUtils.AuthMocks
 import views.html.TimeoutView
 
 import scala.concurrent.ExecutionContext
 
-class TimeoutController @Inject()(view: TimeoutView)(implicit ec: ExecutionContext,
-                                                   appConfig: AppConfig,
-                                                   controllerComponents: MessagesControllerComponents)
-  extends FrontendController(controllerComponents) with I18nSupport {
+class TimeoutControllerSpec extends SpecBase with AuthMocks {
 
-  def onPageLoad(): Action[AnyContent] = Action {
-    implicit request => Ok(view())
+  val page: TimeoutView = injector.instanceOf[TimeoutView]
+  implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
+
+  object Controller extends TimeoutController(
+    page
+  )(implicitly, implicitly, stubMessagesControllerComponents())
+
+  "onPageLoad" should {
+    "return OK" in {
+      val result = Controller.onPageLoad()(fakeRequest)
+      status(result) shouldBe OK
+    }
   }
 }

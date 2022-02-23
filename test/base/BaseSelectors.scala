@@ -53,4 +53,6 @@ class BaseSelectors {
   val viewCalculation = "#late-payment-penalties > section > header > div > ul > li > a"
 
   val periodSpan = "#main-content > div > div > span"
+
+  val button = "#main-content .govuk-button"
 }

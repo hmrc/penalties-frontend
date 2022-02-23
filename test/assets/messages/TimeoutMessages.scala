@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,21 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.AppConfig
+package messages
 
-@this(
-    layout: Layout,
-    link: components.link,
-    button: components.button,
-    details: GovukDetails
-)
+object TimeoutMessages {
+  val title = "For your security, we signed you out - Manage your VAT account - GOV.UK"
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+  val heading = "For your security, we signed you out"
 
-@layout(pageTitle = messages("timeout.title"), isTimeout = true) {
-    <h1 class="govuk-heading-xl">@{messages("timeout.heading")}</h1>
-
-    @link(appConfig.signInUrl, "timeout.button", button = true, classes = "govuk-button")
+  val button = "Sign in"
 }

@@ -108,7 +108,7 @@
 @govukLayout(
     pageTitle = Some(messages("common.pageTitle", pageTitle, messages("service.name"))),
     headBlock = Some(headBlock),
-    headerBlock = Some(header(appConfig)),
+    headerBlock = Some(header(appConfig, !isTimeout)),
     scriptsBlock = Some(scripts),
     beforeContentBlock = Some(beforeContentBlock),
     footerBlock = Some(hmrcStandardFooter()),
