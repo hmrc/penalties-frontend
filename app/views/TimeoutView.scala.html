@@ -1,0 +1,40 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+
+@this(
+    layout: Layout,
+    link: components.link,
+    button: components.button,
+    details: GovukDetails
+)
+
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
+
+@layout(pageTitle = messages("timeout.title"), isTimeout = true) {
+        <h1 class="govuk-heading-xl">@{messages("timeout.heading")}</h1>
+
+        <p class="govuk-body">
+            We did not save your answers.
+        </p>
+
+        <div class="govuk-form-group">
+            <button id="timeout-keep-signin-btn" class="govuk-button govuk-!-margin-bottom-0">
+                Sign in
+            </button>
+        </div>
+}
