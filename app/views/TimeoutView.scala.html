@@ -25,13 +25,9 @@
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = messages("timeout.title"), isTimeout = true) {
+@layout(pageTitle = messages("timeout.title"), isPageFullWidth = false, isTimeout = true) {
 
-    <div class="govuk-grid">
-        <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">@{messages("timeout.heading")}</h1>
+    <h1 class="govuk-heading-xl">@{messages("timeout.heading")}</h1>
 
-            @link(appConfig.signInUrl, "timeout.button", button = true, classes = "govuk-button")
-        </div>
-    </div>
+    @link(appConfig.signInUrl, "timeout.button", button = true, classes = "govuk-button")
 }

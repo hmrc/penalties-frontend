@@ -28,13 +28,9 @@ class TimeoutControllerISpec extends IntegrationSpecCommonBase {
   val appConfig: AppConfig = injector.instanceOf[AppConfig]
 
   "GET /timeout" should {
-    "return 200 (OK) and render the view correctly" in {
+    "return 200 (OK)" in {
       val request = await(buildClientForRequestToApp(uri = "/timeout").get())
       request.status shouldBe Status.OK
-      val parsedBody = Jsoup.parse(request.body)
-      parsedBody.select("#main-content h1").first().ownText() shouldBe "For your security, we signed you out"
-      parsedBody.select("#main-content .govuk-button").first.text() shouldBe "Sign in"
-      parsedBody.select("#main-content .govuk-button").first().attr("href") shouldBe appConfig.signInUrl
     }
   }
 }

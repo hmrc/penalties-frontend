@@ -31,7 +31,7 @@ class TimeoutControllerSpec extends SpecBase with AuthMocks {
 
   object Controller extends TimeoutController(
     page
-  )(implicitly, implicitly, stubMessagesControllerComponents())
+  )(implicitly, stubMessagesControllerComponents())
 
   "onPageLoad" should {
     "return OK" in {

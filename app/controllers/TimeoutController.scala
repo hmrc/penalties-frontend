@@ -23,10 +23,7 @@ import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.TimeoutView
 
-import scala.concurrent.ExecutionContext
-
-class TimeoutController @Inject()(view: TimeoutView)(implicit ec: ExecutionContext,
-                                                   appConfig: AppConfig,
+class TimeoutController @Inject()(view: TimeoutView)(implicit appConfig: AppConfig,
                                                    controllerComponents: MessagesControllerComponents)
   extends FrontendController(controllerComponents) with I18nSupport {
 
