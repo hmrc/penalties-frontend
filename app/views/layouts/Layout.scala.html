@@ -34,56 +34,64 @@
         scriptsBlock: Option[Html] = None,
         isPageFullWidth: Boolean = true,
         isUserAgent: Boolean = false,
-        extraBreadcrumbs: Option[Seq[(String, String)]] = None
+        extraBreadcrumbs: Option[Seq[(String, String)]] = None,
+        isTimeout: Boolean = false
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @beforeContentBlock = {
 @phaseBanner("beta")
 @if(appConfig.welshLanguageSupportEnabled) {@languageSelect()}
 
-@if(isUserAgent) {
-    @govukBackLink(BackLink(href = "#", content = Text(messages("app.common.back")), attributes = Map("id" -> "back-link")))
-} else {
-    <div class="govuk-breadcrumbs govuk-breadcrumbs--collapse-on-mobile">
-        <ol class="govuk-breadcrumbs__list">
-            <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href="@{appConfig.btaUrl}">
-                @messages("index.breadcrumb.bta")
-                </a>
-            </li>
-            <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href="@{appConfig.vatOverviewUrl}">
-                @messages("index.breadcrumb.vat-account")
-                </a>
-            </li>
-            @{
-                extraBreadcrumbs.map {
-                    _.map {
-                        breadcrumb => {
-                            <li class="govuk-breadcrumbs__list-item">
-                                <a class="govuk-breadcrumbs__link" href={breadcrumb._2}>
-                                    {breadcrumb._1}
-                                </a>
-                            </li>
+@if(!isTimeout){
+    @if(isUserAgent) {
+        @govukBackLink(BackLink(href = "#", content = Text(messages("app.common.back")), attributes = Map("id" -> "back-link")))
+    } else {
+        <div class="govuk-breadcrumbs govuk-breadcrumbs--collapse-on-mobile">
+            <ol class="govuk-breadcrumbs__list">
+                <li class="govuk-breadcrumbs__list-item">
+                    <a class="govuk-breadcrumbs__link" href="@{appConfig.btaUrl}">
+                    @messages("index.breadcrumb.bta")
+                    </a>
+                </li>
+                <li class="govuk-breadcrumbs__list-item">
+                    <a class="govuk-breadcrumbs__link" href="@{appConfig.vatOverviewUrl}">
+                    @messages("index.breadcrumb.vat-account")
+                    </a>
+                </li>
+                @{
+                    extraBreadcrumbs.map {
+                        _.map {
+                            breadcrumb => {
+                                <li class="govuk-breadcrumbs__list-item">
+                                    <a class="govuk-breadcrumbs__link" href={breadcrumb._2}>
+                                        {breadcrumb._1}
+                                    </a>
+                                </li>
+                            }
                         }
                     }
                 }
-            }
-        </ol>
-    </div>
+            </ol>
+        </div>
+    }
 }
 }
 
 @headBlock = {
+@if(!isTimeout) {
 @head(
     Some(hmrcTimeoutDialog(TimeoutDialog(
         timeout = Some(appConfig.timeoutPeriod),
         countdown = Some(appConfig.timeoutCountdown),
         signOutUrl = Some(routes.SignOutController.signOut().url),
+        timeoutUrl = Some(routes.TimeoutController.onPageLoad().url),
         keepAliveUrl = Some("#"),
         signOutButtonText = Some(messages("base.signOut"))
     )))
 )
+} else {
+    @head()
+}
 @hmrcTrackingConsentSnippet()
 }
 
@@ -100,7 +108,7 @@
 @govukLayout(
     pageTitle = Some(messages("common.pageTitle", pageTitle, messages("service.name"))),
     headBlock = Some(headBlock),
-    headerBlock = Some(header(appConfig)),
+    headerBlock = Some(header(appConfig, !isTimeout)),
     scriptsBlock = Some(scripts),
     beforeContentBlock = Some(beforeContentBlock),
     footerBlock = Some(hmrcStandardFooter()),

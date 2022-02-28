@@ -230,3 +230,9 @@ calculation.returnLink = Return to VAT penalties and appeals
 calculation.estimate.footerNote.billPayment = Paying part of your VAT bill will reduce further penalties.
 calculation.estimate.footerNote.warning = This penalty will rise to £{0} (a further 2% of the unpaid VAT) if you do not make a VAT payment by {1}.
 calculation.estimate.footerNote.text = Penalties and interest will show as estimates if HMRC has not been given enough information to calculate the final amounts.
+
+# Timeout messages
+# --------------------------
+timeout.title = For your security, we signed you out
+timeout.heading = For your security, we signed you out
+timeout.button = Sign in
