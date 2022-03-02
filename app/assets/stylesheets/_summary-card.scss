@@ -14,11 +14,11 @@
     }
   }
 
-  		   /* Status Tag  */
-    .penalty-due-tag {
-        color: #ffffff;
-        background-color: govuk-colour("red");
-    }
+  /* Status Tag  */
+  .penalty-due-tag {
+    color: #ffffff;
+    background-color: govuk-colour("red");
+  }
 
   /* Card footer */
   .app-summary-card__footer {
@@ -31,6 +31,15 @@
       justify-content: space-between;
       align-items: start;
     }
+  }
+
+  .app-summary-card__link {
+    @include govuk-font($size: 19);
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    display: block;
+    white-space: nowrap;
   }
 
   .app-summary-card__title {
@@ -68,6 +77,21 @@
 
   .app-summary-card__actions-list-item:first-child {
     margin-left: 0;
+  }
+
+  .app-summary-card__tag {
+    @include govuk-font($size: 19);
+    width: 33%;
+    margin: 0;
+    padding: 0;
+    display: block;
+    white-space: nowrap;
+
+    @include govuk-media-query($from: desktop) {
+      display: inline-block;
+      margin-left: govuk-spacing(2);
+      text-align: right;
+    }
   }
 
   /* Card body */
