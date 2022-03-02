@@ -41,15 +41,7 @@
         <div class="app-summary-card__actions">
             <ul class="app-summary-card__actions-list">
                 <li class="app-summary-card__actions-list-item">
-                        @if(summaryCard.isAdditionalPenalty) {
-                        <a class="govuk-link" href="@{controllers.routes.CalculationController.onPageLoad(summaryCard.penaltyId, true).url}">
-                            @{messages("summaryCard.viewCalculation")}
-                        </a>
-                        } else {
-                        <a class="govuk-link" href="@{controllers.routes.CalculationController.onPageLoad(summaryCard.penaltyId, false).url}">
-                            @{messages("summaryCard.viewCalculation")}
-                        </a>
-                        }
+
                 </li>
                 <li class="app-summary-card__actions-list-item">
                     @govukTag(summaryCard.status)
@@ -62,28 +54,35 @@
     </div>
     <footer class="app-summary-card__footer">
         <div class="app-summary-card__actions">
-            @{
-            if(summaryCard.appealStatus.isEmpty){
-                <ul class="app-summary-card__actions-list">
-                    <li class="app-summary-card__actions-list-item">
-                        {
-                            if(!summaryCard.isVatPaid) {
-                                <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, true, true, summaryCard.isAdditionalPenalty).url}>
-                                    {messages("summaryCard.appealCheck")}
-                                </a>
-                            } else {
-                                <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, true, false, summaryCard.isAdditionalPenalty).url}>
-                                    {messages("summaryCard.footerLinkTextNoPointNumber")}
-                                </a>
-                            }
-                        }
+            <ul class="app-summary-card__actions-list">
+                <li class="app-summary-card__actions-list-item">
+                @if(summaryCard.isAdditionalPenalty) {
+                    <a class="govuk-link" href="@{controllers.routes.CalculationController.onPageLoad(summaryCard.penaltyId, true).url}">
+                    @{messages("summaryCard.viewCalculation")}
+                    </a>
+                } else {
+                    <a class="govuk-link" href="@{controllers.routes.CalculationController.onPageLoad(summaryCard.penaltyId, false).url}">
+                    @{messages("summaryCard.viewCalculation")}
+                    </a>
+                }
+                </li>
 
-                    </li>
-                </ul>
-            } else {
-                <div style="padding:.8rem;"></div>
-            }
-            }
+                @{
+                    if(summaryCard.appealStatus.isEmpty) {
+                        <li class="app-summary-card__actions-list-item">
+                        {if(!summaryCard.isVatPaid) {
+                                <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, true, true, summaryCard.isAdditionalPenalty).url}>
+                                {messages("summaryCard.appealCheck")}
+                                </a>
+                        } else {
+                                <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, true, false, summaryCard.isAdditionalPenalty).url}>
+                                {messages("summaryCard.footerLinkTextNoPointNumber")}
+                                </a>
+                        }}
+                        </li>
+                    }
+                }
+            </ul>
         </div>
     </footer>
 </section>

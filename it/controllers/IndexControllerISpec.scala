@@ -614,7 +614,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("dd").get(2).text shouldBe "8 March 2021"
       summaryCardBody.select("dt").get(3).text shouldBe "Penalty reason"
       summaryCardBody.select("dd").get(3).text shouldBe "VAT not paid within 30 days"
-      parsedBody.select("#late-payment-penalties footer li").text() shouldBe "Appeal this penalty"
+      parsedBody.select("#late-payment-penalties footer li").get(1).text() shouldBe "Appeal this penalty"
     }
 
     "return 200 (OK) and render the view when there is outstanding payments" in {
@@ -679,7 +679,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("dd").get(2).text shouldBe "Payment not yet received"
       summaryCardBody.select("dt").get(3).text shouldBe "Penalty reason"
       summaryCardBody.select("dd").get(3).text shouldBe "VAT not paid within 15 days"
-      parsedBody.select("#late-payment-penalties footer li").text() shouldBe "Check if you can appeal"
+      parsedBody.select("#late-payment-penalties footer li").get(1).text() shouldBe "Check if you can appeal"
     }
 
     "return 200 (OK) and render the view when there are LPPs with VAT unpaid that are retrieved from the backend" in {

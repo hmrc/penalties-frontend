@@ -294,45 +294,48 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
 
         "populate summary card when user has LPPs" in {
           vatTraderDoc.select(Selectors.summaryCardHeaderTitle(Selectors.summaryLPPCard)).text shouldBe lppHeader
-          vatTraderDoc.select(Selectors.viewCalculation).text shouldBe viewCalculationLink
-          vatTraderDoc.select(Selectors.viewCalculation).attr("href") shouldBe "/penalties/calculation?penaltyId=123456789&isAdditional=false"
           vatTraderDoc.select(Selectors.summaryCardHeaderTag(Selectors.summaryLPPCard)).text shouldBe paidTag
           vatTraderDoc.select(Selectors.rowItem(Selectors.summaryLPPCard, 1)).text shouldBe period
           vatTraderDoc.select(Selectors.rowItem(Selectors.summaryLPPCard, 2)).text shouldBe paymentDue
           vatTraderDoc.select(Selectors.rowItem(Selectors.summaryLPPCard, 3)).text shouldBe vatPaymentDate
           vatTraderDoc.select(Selectors.rowItem(Selectors.summaryLPPCard, 4)).text shouldBe penaltyReason
-          vatTraderDoc.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).text shouldBe appealPointText
-          vatTraderDoc.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).attr("href") shouldBe redirectToAppealUrlForLPP
+          vatTraderDoc.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).get(1).text shouldBe appealPointText
+          vatTraderDoc.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).get(1).attr("href") shouldBe redirectToAppealUrlForLPP
+          vatTraderDoc.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).get(0).text shouldBe viewCalculationLink
+          vatTraderDoc.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).get(0).attr("href") shouldBe "/penalties/calculation?penaltyId=123456789&isAdditional=false"
+
         }
 
         "populate summary card when user has LPPs with VAT unpaid" in {
           vatTraderDocWithLPPVATUnpaid.select(Selectors.summaryCardHeaderTitle(Selectors.summaryLPPCard)).text shouldBe lppHeader
-          vatTraderDocWithLPPVATUnpaid.select(Selectors.viewCalculation).text shouldBe viewCalculationLink
           vatTraderDocWithLPPVATUnpaid.select(Selectors.summaryCardHeaderTag(Selectors.summaryLPPCard)).text shouldBe
             overduePartiallyPaidTag(200)
           vatTraderDocWithLPPVATUnpaid.select(Selectors.rowItem(Selectors.summaryLPPCard, 1)).text shouldBe period
           vatTraderDocWithLPPVATUnpaid.select(Selectors.rowItem(Selectors.summaryLPPCard, 2)).text shouldBe paymentDue
           vatTraderDocWithLPPVATUnpaid.select(Selectors.rowItem(Selectors.summaryLPPCard, 3)).text shouldBe vatPaymentDate
           vatTraderDocWithLPPVATUnpaid.select(Selectors.rowItem(Selectors.summaryLPPCard, 4)).text shouldBe penaltyReason
-          vatTraderDocWithLPPVATUnpaid.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).text shouldBe
+          vatTraderDocWithLPPVATUnpaid.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).get(1).text shouldBe
             checkAppeal
-          vatTraderDocWithLPPVATUnpaid.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).attr("href") shouldBe
+          vatTraderDocWithLPPVATUnpaid.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).get(1).attr("href") shouldBe
             redirectToAppealObligationUrlForLPP
+          vatTraderDocWithLPPVATUnpaid.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).get(0).text shouldBe viewCalculationLink
+
         }
 
         "populate summary card when user has LPPs with VAT payment date" in {
           vatTraderDocWithLPPVATPaymentDate.select(Selectors.summaryCardHeaderTitle(Selectors.summaryLPPCard)).text shouldBe lppHeader
-          vatTraderDocWithLPPVATPaymentDate.select(Selectors.viewCalculation).text shouldBe viewCalculationLink
           vatTraderDocWithLPPVATPaymentDate.select(Selectors.summaryCardHeaderTag(Selectors.summaryLPPCard)).text shouldBe
             overduePartiallyPaidTag(200)
           vatTraderDocWithLPPVATPaymentDate.select(Selectors.rowItem(Selectors.summaryLPPCard, 1)).text shouldBe period
           vatTraderDocWithLPPVATPaymentDate.select(Selectors.rowItem(Selectors.summaryLPPCard, 2)).text shouldBe paymentDue
           vatTraderDocWithLPPVATPaymentDate.select(Selectors.rowItem(Selectors.summaryLPPCard, 3)).text shouldBe vatPaymentDate
           vatTraderDocWithLPPVATPaymentDate.select(Selectors.rowItem(Selectors.summaryLPPCard, 4)).text shouldBe penaltyReason
-          vatTraderDocWithLPPVATPaymentDate.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).text shouldBe
+          vatTraderDocWithLPPVATPaymentDate.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).get(1).text shouldBe
             checkAppeal
-          vatTraderDocWithLPPVATPaymentDate.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).attr("href") shouldBe
+          vatTraderDocWithLPPVATPaymentDate.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).get(1).attr("href") shouldBe
             redirectToAppealObligationUrlForLPP
+          vatTraderDocWithLPPVATPaymentDate.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).get(0).text shouldBe viewCalculationLink
+
         }
 
         "populate summary card when user has LPPs with additional penalties" in {
@@ -341,12 +344,11 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           vatTraderDocLPPAdditionalPenalty.select(Selectors.rowItem(Selectors.summaryLPPCard, 1)).text shouldBe period
           vatTraderDocLPPAdditionalPenalty.select(Selectors.rowItem(Selectors.summaryLPPCard, 2)).text shouldBe penaltyReason
           vatTraderDocLPPAdditionalPenalty.select(Selectors.rowItem(Selectors.summaryLPPCard, 3)).text shouldBe chargedDailyFrom
-          vatTraderDocLPPAdditionalPenalty.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).text shouldBe appealPointText
+          vatTraderDocLPPAdditionalPenalty.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).get(1).text shouldBe appealPointText
           vatTraderDocLPPAdditionalPenalty.select(Selectors.summaryCardFooterLink(
-            Selectors.summaryLPPCard)).attr("href") shouldBe redirectToAppealObligationUrlForLPPAdditional
-          vatTraderDocLPPAdditionalPenalty.select(Selectors.viewCalculation).text shouldBe viewCalculationLink
-          vatTraderDocLPPAdditionalPenalty.select(
-            Selectors.viewCalculation).attr("href") shouldBe "/penalties/calculation?penaltyId=123456789&isAdditional=true"
+            Selectors.summaryLPPCard)).get(1).attr("href") shouldBe redirectToAppealObligationUrlForLPPAdditional
+          vatTraderDocLPPAdditionalPenalty.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).get(0).text shouldBe viewCalculationLink
+          vatTraderDocLPPAdditionalPenalty.select(Selectors.summaryCardFooterLink(Selectors.summaryLPPCard)).get(0).attr("href") shouldBe "/penalties/calculation?penaltyId=123456789&isAdditional=true"
         }
 
         "populate summary card when user has LPPs and has appealed them" in {

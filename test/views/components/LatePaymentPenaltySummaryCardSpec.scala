@@ -206,8 +206,8 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       }
 
       "display the View calculation link" in {
-        doc.select("header > div > ul > li > a").text() shouldBe "View calculation"
-        doc.select("a").attr("href") shouldBe "/penalties/calculation?penaltyId=123456789&isAdditional=false"
+        doc.select("footer > div a").get(0).text() shouldBe "View calculation"
+        doc.select("a").get(0).attr("href") shouldBe "/penalties/calculation?penaltyId=123456789&isAdditional=false"
       }
 
       "display the 'PAID' status" in {
@@ -251,7 +251,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       }
 
       "display the appeal link" in {
-        doc.select(".app-summary-card__footer a").get(0).text shouldBe "Appeal this penalty"
+        doc.select(".app-summary-card__footer a").get(1).text shouldBe "Appeal this penalty"
       }
     }
 
@@ -268,8 +268,8 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       }
 
       "display the View calculation link" in {
-        docWithAdditionalPenalty.select("header > div > ul > li > a").text() shouldBe "View calculation"
-        docWithAdditionalPenalty.select("a").attr("href") shouldBe "/penalties/calculation?penaltyId=123456789&isAdditional=true"
+        docWithAdditionalPenalty.select("footer > div a").get(0).text() shouldBe "View calculation"
+        docWithAdditionalPenalty.select("a").get(0).attr("href") shouldBe "/penalties/calculation?penaltyId=123456789&isAdditional=true"
       }
 
       "display the 'PAID' status" in {
@@ -302,7 +302,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       }
 
       "display the appeal link" in {
-        docWithAdditionalPenalty.select(".app-summary-card__footer a").get(0).text shouldBe "Appeal this penalty"
+        docWithAdditionalPenalty.select(".app-summary-card__footer a").get(1).text shouldBe "Appeal this penalty"
       }
     }
 
@@ -333,7 +333,8 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyReinstatedAgent))
 
       "not show the appeal link" in {
-        docWithAppealedPenalty.select(".app-summary-card__footer a").isEmpty shouldBe true
+        docWithAppealedPenalty.select(".app-summary-card__footer a").size shouldBe 1
+        docWithAppealedPenalty.select(".app-summary-card__footer a").first().text() shouldBe "View calculation"
       }
 
       "have the appeal status for UNDER_REVIEW" in {
