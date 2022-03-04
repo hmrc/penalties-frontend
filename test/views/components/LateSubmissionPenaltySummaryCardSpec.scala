@@ -466,7 +466,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       }
 
       "display that the user can not appeal an added point" in {
-        doc.select("footer li").text() shouldBe "You cannot appeal this point"
+        doc.select("footer").text() shouldBe "You cannot appeal this point"
       }
     }
 
@@ -497,7 +497,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       }
 
       "display that the user can not appeal an added point" in {
-        doc.select("footer li").text() shouldBe "You cannot appeal this point"
+        doc.select("footer").text() shouldBe "You cannot appeal this point"
       }
     }
 

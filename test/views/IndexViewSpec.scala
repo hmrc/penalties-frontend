@@ -277,7 +277,7 @@ class IndexViewSpec extends SpecBase with ViewBehaviours {
           summaryCardBody.select("p.govuk-body a").text() shouldBe "Find out more about adjustment points (opens in a new tab)"
           //TODO: Change to external guidance when available
           summaryCardBody.select("p.govuk-body a").attr("href") shouldBe "#"
-          summaryCard.select("footer li").text shouldBe "You cannot appeal this point"
+          summaryCard.select("footer span").text shouldBe "You cannot appeal this point"
         }
 
         "populate summary card when user has LSPs" in {
