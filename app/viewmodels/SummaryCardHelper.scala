@@ -358,7 +358,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
 
   def renderTag(status: String, cssClass: String = ""): Tag = Tag(
     content = Text(status),
-    classes = s"govuk-tag $cssClass"
+    classes = s"$cssClass"
   )
 
   def tagStatus(penalty: Option[PenaltyPoint], lpp: Option[LatePaymentPenalty])(implicit messages: Messages): Tag = {
