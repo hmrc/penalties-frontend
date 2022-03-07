@@ -71,7 +71,7 @@
             @{
                 if(!summaryCard.isAppealedPoint) {
                     if(summaryCard.isAddedPoint) {
-                            <span class="govuk-body">{messages("summaryCard.adjustedPoint.cannotAppeal")}</span>
+                            {messages("summaryCard.adjustedPoint.cannotAppeal")}
                     } else if(summaryCard.penaltyPoint.isEmpty && !summaryCard.isAdjustedPoint) {
                             {if(!summaryCard.isReturnSubmitted) {
                                     <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}>

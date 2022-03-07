@@ -559,7 +559,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("p.govuk-body a").text() shouldBe "Find out more about adjustment points (opens in a new tab)"
       //TODO: Change to external guidance when available
       summaryCardBody.select("p.govuk-body a").attr("href") shouldBe "#"
-      parsedBody.select(".app-summary-card footer span").text shouldBe "You cannot appeal this point"
+      parsedBody.select(".app-summary-card footer div").text shouldBe "You cannot appeal this point"
     }
 
     "return 200 (OK) and render the view when there are removed points that are retrieved from the backend" in {
@@ -580,7 +580,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("p.govuk-body a").text() shouldBe "Find out more about adjustment points (opens in a new tab)"
       //TODO: Change to external guidance when available
       summaryCardBody.select("p.govuk-body a").attr("href") shouldBe "#"
-      parsedBody.select(".app-summary-card footer span").text shouldBe ""
+      parsedBody.select(".app-summary-card footer div").text shouldBe ""
       parsedBody.select(".app-summary-card footer a").text shouldBe  ""
     }
 
@@ -742,7 +742,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         summaryCardBody.select("p.govuk-body a").text() shouldBe "Find out more about adjustment points (opens in a new tab)"
         //TODO: Change to external guidance when available
         summaryCardBody.select("p.govuk-body a").attr("href") shouldBe "#"
-        parsedBody.select(".app-summary-card footer span").text shouldBe "You cannot appeal this point"
+        parsedBody.select(".app-summary-card footer div").text shouldBe "You cannot appeal this point"
       }
 
       "return 200 (OK) and render the view when there are removed points that are retrieved from the backend" in {
@@ -764,7 +764,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         summaryCardBody.select("p.govuk-body a").text() shouldBe "Find out more about adjustment points (opens in a new tab)"
         //TODO: Change to external guidance when available
         summaryCardBody.select("p.govuk-body a").attr("href") shouldBe "#"
-        parsedBody.select(".app-summary-card footer span").text shouldBe  ""
+        parsedBody.select(".app-summary-card footer div").text shouldBe  ""
         parsedBody.select(".app-summary-card footer a").text shouldBe  ""
       }
 
