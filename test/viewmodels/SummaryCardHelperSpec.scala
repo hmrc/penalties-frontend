@@ -45,7 +45,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       helper.summaryListRow(returnSubmitted, Html(dateTimeToString(LocalDateTime.now))),
       helper.summaryListRow(pointExpiration, Html(dateTimeToMonthYearString(LocalDateTime.now)))
     ),
-    Tag(content = Text("active"), classes = "govuk-tag "),
+    Tag(content = Text("active")),
     "1",
     "123456789",
     isReturnSubmitted = true
@@ -61,7 +61,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       helper.summaryListRow(vatPaymentDate, Html("Payment not yet received")),
       helper.summaryListRow(penaltyReason, Html("VAT not paid within 15 days"))
   ),
-    Tag(content = Text("paid"), classes = "govuk-tag "),
+    Tag(content = Text("paid")),
     "123456789",
     isPenaltyPaid = true,
     400.00,
@@ -78,7 +78,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       helper.summaryListRow(vatPaymentDate, Html(dateTimeToString(LocalDateTime.now))),
       helper.summaryListRow(penaltyReason, Html("VAT not paid within 15 days"))
     ),
-    Tag(content = Text("paid"), classes = "govuk-tag "),
+    Tag(content = Text("paid")),
     "123456789",
     isPenaltyPaid = false,
     0.0,
@@ -94,7 +94,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       helper.summaryListRow(penaltyReason, Html("VAT more than 30 days late")),
       helper.summaryListRow(chargedDailyFrom, Html(dateTimeToString(LocalDateTime.now.plusDays(31))))
     ),
-    Tag(content = Text("paid"), classes = "govuk-tag "),
+    Tag(content = Text("paid")),
     "123456789",
     isPenaltyPaid = true,
     123.45,
@@ -111,7 +111,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       helper.summaryListRow(penaltyReason, Html("Central Assessment more than 30 days late")),
       helper.summaryListRow(chargedDailyFrom, Html(dateTimeToString(LocalDateTime.now.plusDays(31))))
     ),
-    Tag(content = Text("paid"), classes = "govuk-tag "),
+    Tag(content = Text("paid")),
     "123456789",
     isPenaltyPaid = true,
     123.45,
@@ -128,7 +128,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       helper.summaryListRow(penaltyReason, Html("Error Correction Notice more than 30 days late")),
       helper.summaryListRow(chargedDailyFrom, Html(dateTimeToString(LocalDateTime.now.plusDays(31))))
     ),
-    Tag(content = Text("paid"), classes = "govuk-tag "),
+    Tag(content = Text("paid")),
     "123456789",
     isPenaltyPaid = true,
     123.45,
@@ -145,7 +145,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       helper.summaryListRow(penaltyReason, Html("Officer’s Assessment more than 30 days late")),
       helper.summaryListRow(chargedDailyFrom, Html(dateTimeToString(LocalDateTime.now.plusDays(31))))
     ),
-    Tag(content = Text("paid"), classes = "govuk-tag "),
+    Tag(content = Text("paid")),
     "123456789",
     isPenaltyPaid = true,
     123.45,
@@ -153,7 +153,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
     isAdditionalPenalty = true
   )
   val sampleLPPSummaryCardPenaltyUnpaidVAT: LatePaymentPenaltySummaryCard = sampleLPPSummaryCardPenaltyPaid.copy(isPenaltyPaid = false, isVatPaid = false,
-    status = Tag(content = Text("£200 due"), classes = "govuk-tag penalty-due-tag"))
+    status = Tag(content = Text("£200 due"), classes = "penalty-due-tag"))
 
   "SummaryCard helper" should {
     "findAndReindexPointIfIsActive" should {
@@ -211,7 +211,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
             helper.summaryListRow(returnDue, Html(dateTimeToString(LocalDateTime.now))),
             helper.summaryListRow(returnSubmitted, Html(notSubmitted))
           ),
-          Tag(content = Text("due"), classes = "govuk-tag penalty-due-tag"),
+          Tag(content = Text("due"), classes = "penalty-due-tag"),
           "",
           "123456789",
           isReturnSubmitted = false,
@@ -236,7 +236,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
             helper.summaryListRow(returnDue, Html(dateTimeToString(LocalDateTime.now))),
             helper.summaryListRow(returnSubmitted, Html(notSubmitted))
           ),
-          Tag(content = Text("due"), classes = "govuk-tag penalty-due-tag"),
+          Tag(content = Text("due"), classes = "penalty-due-tag"),
           "1",
           "123456789",
           isReturnSubmitted = false,
@@ -313,7 +313,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
             helper.summaryListRow(returnDue, Html(dateTimeToString(sampleOldestDate.plusMonths(4).plusDays(7)))),
             helper.summaryListRow(returnSubmitted, Html(dateTimeToString(sampleOldestDate.plusMonths(4).plusDays(12))))
           ),
-          Tag(content = Text("active"), classes = "govuk-tag "),
+          Tag(content = Text("active")),
           "1",
           "123456789",
           isReturnSubmitted = true,
@@ -346,7 +346,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               helper.summaryListRow(returnSubmitted, Html(dateTimeToString(LocalDateTime.now))),
               helper.summaryListRow(pointExpiration, Html(dateTimeToMonthYearString(LocalDateTime.now)))
             ),
-            Tag(content = Text("active"), classes = "govuk-tag "),
+            Tag(content = Text("active")),
             "3",
             "123456789",
             isReturnSubmitted = true,
@@ -361,7 +361,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
                 helper.summaryListRow(returnSubmitted, Html(dateTimeToString(LocalDateTime.now))),
                 helper.summaryListRow(pointExpiration, Html(dateTimeToMonthYearString(LocalDateTime.now)))
               ),
-              Tag(content = Text("active"), classes = "govuk-tag "),
+              Tag(content = Text("active")),
               "2",
               "123456789",
               isReturnSubmitted = true,
@@ -376,7 +376,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
                 helper.summaryListRow(returnSubmitted, Html(dateTimeToString(LocalDateTime.now))),
                 helper.summaryListRow(pointExpiration, Html(dateTimeToMonthYearString(LocalDateTime.now)))
               ),
-              Tag(content = Text("active"), classes = "govuk-tag "),
+              Tag(content = Text("active")),
               "1",
               "123456789",
               isReturnSubmitted = true,
@@ -389,7 +389,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
                 ),
                 helper.summaryListRow(reason, Html("reason"))
               ),
-              Tag(content = Text("removed"), classes = "govuk-tag "),
+              Tag(content = Text("removed")),
               "",
               "123456789",
               isReturnSubmitted = true,
@@ -566,8 +566,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
     "renderedTag is called" in {
       val result = helper.renderTag("test", "")
       result shouldBe Tag(
-        content = Text("test"),
-        classes = s"govuk-tag "
+        content = Text("test")
       )
     }
 
@@ -575,48 +574,42 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       "an appealed point is provided - under review" in {
         val result = helper.tagStatus(Some(samplePenaltyPointAppealedUnderReview), None)
         result shouldBe Tag(
-          content = Text(activeTag),
-          classes = "govuk-tag "
+          content = Text(activeTag)
         )
       }
 
       "an appealed point is provided - accepted" in {
         val result = helper.tagStatus(Some(samplePenaltyPointAppealedAccepted), None)
         result shouldBe Tag(
-          content = Text(cancelledTag),
-          classes = "govuk-tag "
+          content = Text(cancelledTag)
         )
       }
 
       "an appealed point is provided - accepted by tax tribunal" in {
         val result = helper.tagStatus(Some(samplePenaltyPointAppealedAcceptedByTribunal), None)
         result shouldBe Tag(
-          content = Text(cancelledTag),
-          classes = "govuk-tag "
+          content = Text(cancelledTag)
         )
       }
 
       "an appealed point is provided - rejected" in {
         val result = helper.tagStatus(Some(samplePenaltyPointAppealedRejected), None)
         result shouldBe Tag(
-          content = Text(activeTag),
-          classes = "govuk-tag "
+          content = Text(activeTag)
         )
       }
 
       "an appealed point is provided - reinstated" in {
         val result = helper.tagStatus(Some(samplePenaltyPointAppealedReinstated), None)
         result shouldBe Tag(
-          content = Text(reinstatedTag),
-          classes = "govuk-tag "
+          content = Text(reinstatedTag)
         )
       }
 
       "an appealed point is provided - tribunal rejected" in {
         val result = helper.tagStatus(Some(samplePenaltyPointAppealedTribunalRejected), None)
         result shouldBe Tag(
-          content = Text(activeTag),
-          classes = "govuk-tag "
+          content = Text(activeTag)
         )
       }
 
@@ -624,59 +617,53 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         val result = helper.tagStatus(Some(sampleOverduePenaltyPoint), None)
         result shouldBe Tag(
           content = Text(overdueTag),
-          classes = "govuk-tag penalty-due-tag"
+          classes = "penalty-due-tag"
         )
       }
 
       "an active penalty point is provided" in {
         val result = helper.tagStatus(Some(samplePenaltyPoint), None)
         result shouldBe Tag(
-          content = Text(activeTag),
-          classes = "govuk-tag "
+          content = Text(activeTag)
         )
       }
 
       "a penalty is submitted but the appeal is rejected - return the appropriate tag" in {
         val result = helper.tagStatus(Some(samplePenaltyPoint.copy(status = PointStatusEnum.Rejected)), None)
         result shouldBe Tag(
-          content = Text(rejectedTag),
-          classes = "govuk-tag "
+          content = Text(rejectedTag)
         )
       }
 
       "a financial penalty has been added and the user has paid" in {
         val result = helper.tagStatus(Some(samplePenaltyPoint.copy(status = PointStatusEnum.Paid)), None)
         result shouldBe Tag(
-          content = Text(paidTag),
-          classes = "govuk-tag "
+          content = Text(paidTag)
         )
       }
       "a financial penalty has been added and the user has paid - appealStatus Accepted" in {
         val result = helper.tagStatus(None,Some(sampleLatePaymentPenaltyAppealedAccepted))
         result shouldBe Tag(
-          content = Text(cancelledTag),
-          classes = "govuk-tag "
+          content = Text(cancelledTag)
         )
       }
       "a financial penalty has been added and the user has paid - appealStatus AcceptedByTribunal" in {
         val result = helper.tagStatus(None,Some(sampleLatePaymentPenaltyAppealedAcceptedTribunal))
         result shouldBe Tag(
-          content = Text(cancelledTag),
-          classes = "govuk-tag "
+          content = Text(cancelledTag)
         )
       }
       "a financial penalty has been added and the user has paid - appealStatus Reinstated " in {
         val result = helper.tagStatus(None,Some(sampleLatePaymentPenaltyAppealedReinstated))
         result shouldBe Tag(
           content = Text(overduePartiallyPaidTag(200)),
-          classes = "govuk-tag penalty-due-tag"
+          classes = "penalty-due-tag"
         )
       }
       "a financial penalty has been added and the user has paid - appealStatus Rejected" in {
         val result = helper.tagStatus(None,Some(sampleLatePaymentPenaltyAppealedRejectedLPPPaid))
         result shouldBe Tag(
-          content = Text(paidTag),
-          classes = "govuk-tag "
+          content = Text(paidTag)
         )
       }
 
@@ -684,15 +671,14 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         val result = helper.tagStatus(None,Some(sampleLatePaymentPenaltyAppealedRejected))
         result shouldBe Tag(
           content = Text(overduePartiallyPaidTag(200)),
-          classes = "govuk-tag penalty-due-tag"
+          classes = "penalty-due-tag"
         )
       }
 
       "a financial penalty has been added and the user has estimated penalty" in {
         val result = helper.tagStatus(None,Some(sampleLatePaymentPenaltyEstimated))
         result shouldBe Tag(
-          content = Text(estimated),
-          classes = "govuk-tag "
+          content = Text(estimated)
         )
       }
     }
@@ -848,7 +834,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         val result = helper.showDueOrPartiallyPaidDueTag(lspFinancialDataNoPaymentsMade)
         result shouldBe Tag(
           content = Text(overdueTag),
-          classes = "govuk-tag penalty-due-tag"
+          classes = "penalty-due-tag"
         )
       }
 
@@ -856,7 +842,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         val result = helper.showDueOrPartiallyPaidDueTag(None)
         result shouldBe Tag(
           content = Text(overdueTag),
-          classes = "govuk-tag penalty-due-tag"
+          classes = "penalty-due-tag"
         )
       }
 
@@ -866,7 +852,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         val result = helper.showDueOrPartiallyPaidDueTag(lspFinancialDataNoPaymentsMade)
         result shouldBe Tag(
           content = Text(overduePartiallyPaidTag(146.12)),
-          classes = "govuk-tag penalty-due-tag"
+          classes = "penalty-due-tag"
         )
       }
 
@@ -876,7 +862,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         val result = helper.showDueOrPartiallyPaidDueTag(lspFinancialDataNoPaymentsMade)
         result shouldBe Tag(
           content = Text("£146.10 due"),
-          classes = "govuk-tag penalty-due-tag"
+          classes = "penalty-due-tag"
         )
       }
     }
@@ -889,7 +875,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         val result = helper.showDueOrPartiallyPaidDueTag(lppFinancialDataNoPaymentsMade)
         result shouldBe Tag(
           content = Text(overdueTag),
-          classes = "govuk-tag penalty-due-tag"
+          classes = "penalty-due-tag"
         )
       }
 
@@ -897,7 +883,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         val result = helper.showDueOrPartiallyPaidDueTag(None)
         result shouldBe Tag(
           content = Text(overdueTag),
-          classes = "govuk-tag penalty-due-tag"
+          classes = "penalty-due-tag"
         )
       }
 
@@ -907,7 +893,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         val result = helper.showDueOrPartiallyPaidDueTag(lspFinancialDataNoPaymentsMade)
         result shouldBe Tag(
           content = Text(overduePartiallyPaidTag(383.94)),
-          classes = "govuk-tag penalty-due-tag"
+          classes = "penalty-due-tag"
         )
       }
 
@@ -917,7 +903,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         val result = helper.showDueOrPartiallyPaidDueTag(lspFinancialDataNoPaymentsMade)
         result shouldBe Tag(
           content = Text("£383.90 due"),
-          classes = "govuk-tag penalty-due-tag"
+          classes = "penalty-due-tag"
         )
       }
     }

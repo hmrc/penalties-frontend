@@ -46,12 +46,8 @@
                 }
             }
         </h3>
-        <div class="app-summary-card__actions">
-            <ul class="app-summary-card__actions-list">
-                <li class="app-summary-card__actions-list-item">
-                @govukTag(summaryCard.status)
-                </li>
-            </ul>
+        <div class="app-summary-card__tag">
+            @govukTag(summaryCard.status)
         </div>
     </header>
     <div class="app-summary-card__body">
@@ -71,14 +67,12 @@
         }
     </div>
     <footer class="app-summary-card__footer">
-        <div class="app-summary-card__actions">
-            <ul class="app-summary-card__actions-list">
+        <div class="app-summary-card__link">
             @{
                 if(!summaryCard.isAppealedPoint) {
                     if(summaryCard.isAddedPoint) {
-                            <li class="app-summary-card__actions-list-item">{messages("summaryCard.adjustedPoint.cannotAppeal")}</li>
+                            {messages("summaryCard.adjustedPoint.cannotAppeal")}
                     } else if(summaryCard.penaltyPoint.isEmpty && !summaryCard.isAdjustedPoint) {
-                            <li class="app-summary-card__actions-list-item">
                             {if(!summaryCard.isReturnSubmitted) {
                                     <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}>
                                     {messages("summaryCard.appealCheck")}
@@ -88,25 +82,19 @@
                                     {messages("summaryCard.footerLinkTextNoPointNumber")}
                                     </a>
                             }}
-                            </li>
                     } else if(!summaryCard.isAdjustedPoint) {
                         if(!summaryCard.isReturnSubmitted) {
-                                <li class="app-summary-card__actions-list-item">
                                 <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}>
                                 {messages("summaryCard.appealCheck")}
                                 </a>
-                                </li>
                         } else {
-                                <li class="app-summary-card__actions-list-item">
                                 <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, false, false).url}>
                                 {messages("summaryCard.footerLinkText", summaryCard.penaltyPoint)}
                                 </a>
-                                </li>
                         }
                     }
                 }
             }
-            </ul>
         </div>
     </footer>
 </section>

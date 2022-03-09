@@ -34,7 +34,7 @@ class BaseSelectors {
 
   def summaryCardHeaderTitle(summaryCard: String): String = s"$summaryCard > header > h3"
 
-  def summaryCardHeaderTag(summaryCard: String): String = s"$summaryCard > header > div > ul > li > strong"
+  def summaryCardHeaderTag(summaryCard: String): String = s"$summaryCard > header > div > strong"
 
   def summaryCardBody(summaryCard: String): String = s"$summaryCard > div"
 
