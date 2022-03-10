@@ -35,7 +35,8 @@
         isPageFullWidth: Boolean = true,
         isUserAgent: Boolean = false,
         extraBreadcrumbs: Option[Seq[(String, String)]] = None,
-        isTimeout: Boolean = false
+        isTimeout: Boolean = false,
+        isCustomLayout: Boolean = false
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @beforeContentBlock = {
@@ -112,5 +113,6 @@
     scriptsBlock = Some(scripts),
     beforeContentBlock = Some(beforeContentBlock),
     footerBlock = Some(hmrcStandardFooter()),
-    isFullWidth = isPageFullWidth
+    isFullWidth = isPageFullWidth,
+    isPageCustomLayout = isCustomLayout
 )(contentBlock)

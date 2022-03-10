@@ -9,6 +9,7 @@ index.title = VAT penalties and appeals
 index.heading = VAT penalties and appeals
 index.tab1 = Late submission penalties
 index.tab2 = Late payment penalties
+index.contents = Contents
 index.subheading = Late submission penalties
 index.subheading.lpp = Late payment penalties
 index.breadcrumb.vat-account = Your VAT Account
@@ -235,5 +236,4 @@ calculation.estimate.footerNote.text = Penalties and interest will show as estim
 # --------------------------
 timeout.title = For your security, we signed you out
 timeout.heading = For your security, we signed you out
-timeout.body = We did not save your answers.
 timeout.button = Sign in
