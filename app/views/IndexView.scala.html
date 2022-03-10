@@ -55,7 +55,7 @@
             }
 
             @if(!user.isAgent){
-                <h3 class="govuk-heading-s">@getMessage("whatIsOwed.details.heading")</h3>
+                <h2 class="govuk-heading-s">@messages("whatIsOwed.details.heading")</h2>
                 @unableToPayTodayContent
             }else{
                 @details(Details(
