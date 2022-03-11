@@ -76,7 +76,6 @@ lpp.penaltiesSummary.unpaid = The earlier you pay your VAT, the lower your penal
 agent.lpp.penaltiesSummary.unpaid = The earlier your client pays their VAT, the lower their penalties and interest will be.
 lpp.penaltiesSummary.howLppCalculated.link = Find out how late payment penalties are calculated {0}
 
-common.pageTitle = {0} - {1} - GOV.UK
 
 # SummaryCard
 # -------------------------------------------
