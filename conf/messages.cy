@@ -14,13 +14,7 @@ index.subheading.lpp = Late payment penalties
 index.breadcrumb.vat-account = Your VAT Account
 index.breadcrumb.bta = Business tax account
 index.breadcrumb.index = VAT penalties and appeals
-index.breadcrumb.compliance = Bring your VAT account up to date
-index.breadcrumb.calculation.additional = Additional penalty
-index.breadcrumb.calculation.lpp = Late payment penalty
 index.guidance.link = Read the guidance about late submission penalties
-index.lsp.unpaid.bringAccountUpToDate = You need to submit your VAT Return and pay any VAT you owe immediately.
-index.lsp.unpaid.amount = Total penalty to pay: {0}
-index.lsp.unpaid.payBtn.text = Check and pay what you owe
 unauthorised.title = You are not authorised to use this service
 unauthorised.signUp = You need to sign up to view your VAT penalties.
 unauthorised.alreadySignedUp = If you have already signed up, you need to sign in with the correct Government Gateway details.
@@ -76,7 +70,6 @@ lpp.penaltiesSummary.unpaid = The earlier you pay your VAT, the lower your penal
 agent.lpp.penaltiesSummary.unpaid = The earlier your client pays their VAT, the lower their penalties and interest will be.
 lpp.penaltiesSummary.howLppCalculated.link = Find out how late payment penalties are calculated {0}
 
-common.pageTitle = {0} - {1} - GOV.UK
 
 # SummaryCard
 # -------------------------------------------
@@ -86,7 +79,6 @@ summaryCard.header.adjustedPoint = Penalty point
 summaryCard.header.financial = Penalty point {0}: £{1} penalty
 summaryCard.header.financialNoNumber = £{0} penalty
 summaryCard.header.financialAdditionalPenalty = £{0} additional penalty
-summaryCard.header.financialAdjustedPoint = Penalty point: £{0} penalty
 
 summaryCard.key1 = VAT period
 summaryCard.value1 = {0} to {1}
