@@ -33,7 +33,8 @@
         footerItems: Seq[FooterItem] = Seq.empty,
         bodyEndBlock: Option[Html] = None,
         scriptsBlock: Option[Html] = None,
-        isFullWidth: Boolean = false
+        isFullWidth: Boolean = false,
+        isPageCustomLayout: Boolean = false
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 @headerDefault = {
@@ -58,17 +59,21 @@
 }
 
 @mainContentDefault = {
-    <div class="govuk-grid-row">
-        <div class='@{
-            if(isFullWidth) {
-                "govuk-grid-column-full"
-            } else {
-                "govuk-grid-column-two-thirds"
-            }
-        }'>
+    @if(isPageCustomLayout) {
         @contentBlock
+    } else {
+        <div class="govuk-grid-row">
+            <div class='@{
+                if(isFullWidth) {
+                    "govuk-grid-column-full"
+                } else {
+                    "govuk-grid-column-two-thirds"
+                }
+            }'>
+            @contentBlock
+            </div>
         </div>
-    </div>
+    }
     @hmrcReportTechnicalIssueHelper()
 }
 
