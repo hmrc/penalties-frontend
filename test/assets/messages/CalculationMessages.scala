@@ -23,6 +23,8 @@ object CalculationMessages {
 
   val period = "1 October 2022 to 31 December 2022"
 
+  val periodWithHiddenText = "The period dates are1 October 2022 to 31 December 2022"
+
   val periodHiddenText = "The period dates are"
 
   val periodWithText = "The period dates are 1 October 2022 to 31 December 2022"

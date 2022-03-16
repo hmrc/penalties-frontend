@@ -203,6 +203,7 @@ calculation.heading.lpp = Late payment penalty
 calculation.heading.lpp.hiddenText = The period dates are
 calculation.title.additional = Additional penalty
 calculation.heading.additional = Additional penalty
+calculation.heading.additional.hiddenText = The period dates are
 calculation.p.1.additional = The additional penalty is charged from 31 days after the payment due date, until the total is paid.
 calculation.key.1 = Penalty amount
 calculation.key.1.estimate = Penalty amount (estimate)

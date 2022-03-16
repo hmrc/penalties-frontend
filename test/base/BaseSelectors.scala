@@ -58,5 +58,9 @@ class BaseSelectors {
 
   val periodHiddenText = "#main-content > div > div > header > p > span"
 
+  val periodHeader = "#main-content > div > div > header > p"
+
+  val HeaderTextNotVisible = "#main-content > div > div > header > p > .govuk-visually-hidden"
+
   val button = "#main-content .govuk-button"
 }
