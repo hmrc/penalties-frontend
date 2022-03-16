@@ -37,10 +37,15 @@
 
 @layout(pageTitle = messages("calculation.title.lpp"), isPageFullWidth = false, isUserAgent = user.isAgent,
     extraBreadcrumbs = Some(Seq((messages("index.breadcrumb.index"), controllers.routes.IndexController.onPageLoad().url)))) {
-    <span class="govuk-caption-l">@messages("calculation.caption", startDate, endDate)</span>
-    <h1 class="govuk-heading-l">
-        @messages("calculation.heading.lpp")
-    </h1>
+    <header class="hmrc-page-heading govuk-!-margin-top-0">
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">
+            @messages("calculation.heading.lpp")
+        </h1>
+        <p class="govuk-caption-xl hmrc-caption-xl">
+            <span class="govuk-visually-hidden">@messages("calculation.heading.lpp.hiddenText")</span>
+            @messages("calculation.caption", startDate, endDate)
+        </p>
+    </header>
 
     <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
