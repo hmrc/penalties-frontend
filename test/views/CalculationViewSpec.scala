@@ -159,7 +159,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.breadcrumbWithLink(2) -> breadcrumb2,
         Selector.breadcrumbWithLink(3) -> breadcrumb3,
         Selector.title -> titleLPP,
-        Selector.periodSpan -> period,
+        Selector.periodHiddenText -> periodHiddenText,
+        Selector.periodWithText -> periodWithText,
         Selector.h1 -> headingLPP,
         Selector.summaryListRowKey(1) -> th1LPP,
         Selector.summaryListRowValue(1) -> "£400",
@@ -183,7 +184,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       "when there is 2 calculations - show both" must {
         val expectedContent = Seq(
           Selector.title -> titleLPP,
-          Selector.periodSpan -> period,
+          Selector.periodHiddenText -> periodHiddenText,
+          Selector.periodWithText -> periodWithText,
           Selector.h1 -> headingLPP,
           Selector.summaryListRowKey(1) -> th1LPP,
           Selector.summaryListRowValue(1) -> "£400",
@@ -223,7 +225,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
       val expectedContent = Seq(
         Selector.title -> titleLPP,
-        Selector.periodSpan -> period,
+        Selector.periodHiddenText -> periodHiddenText,
+        Selector.periodWithText -> periodWithText,
         Selector.h1 -> headingLPP,
         Selector.summaryListRowKey(1) -> th1LPPEstimate,
         Selector.summaryListRowValue(1) -> "£400",

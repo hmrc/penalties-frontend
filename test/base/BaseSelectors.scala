@@ -54,5 +54,9 @@ class BaseSelectors {
 
   val periodSpan = "#main-content > div > div > span"
 
+  val periodWithText = "#main-content > div > div > header > p"
+
+  val periodHiddenText = "#main-content > div > div > header > p > span"
+
   val button = "#main-content .govuk-button"
 }
