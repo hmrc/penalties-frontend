@@ -465,7 +465,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
       val parsedBody = Jsoup.parse(request.body)
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Additional penalty"
       parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
-      parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are1 January 2021 to 1 February 2021"
+      parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
       parsedBody.select("#main-content .govuk-body").get(0).text() shouldBe
         "The additional penalty is charged from 31 days after the payment due date, until the total is paid."
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount"
@@ -491,7 +491,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
       val parsedBody = Jsoup.parse(request.body)
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Additional penalty"
       parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
-      parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are1 January 2021 to 1 February 2021"
+      parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
       parsedBody.select("#main-content p").get(1).text() shouldBe
         "The additional penalty is charged from 31 days after the payment due date, until the total is paid."
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
