@@ -101,7 +101,7 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       }
 
       "show a timeline with returns to be submitted and a point expiry date " in {
-        docWithMissingReturns.select(Selectors.timelineEvent(1) + " > h2").text shouldBe "VAT Period 1 October 2021 to 31 December 2021"
+        docWithMissingReturns.select(Selectors.timelineEvent(1) + " > h3").text shouldBe "VAT Period 1 October 2021 to 31 December 2021"
         docWithMissingReturns.select(Selectors.timelineEvent(1) + " > span").text shouldBe "Submit VAT Return by February 2023"
         docWithMissingReturns.select(Selectors.timelineEvent(1) + " > div > p > strong").text shouldBe "Submitted on time"
         docWithMissingReturns.body().toString.contains("If you complete these actions we will remove your points in March 2023.") shouldBe true
@@ -135,7 +135,7 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       behave like pageWithExpectedMessages(expectedContent)
 
       "show a timeline with returns to be submitted and a point expiry date " in {
-        agentDocWithMissingReturns.select(Selectors.timelineEvent(1) + " > h2").text shouldBe "VAT Period 1 October 2021 to 31 December 2021"
+        agentDocWithMissingReturns.select(Selectors.timelineEvent(1) + " > h3").text shouldBe "VAT Period 1 October 2021 to 31 December 2021"
         agentDocWithMissingReturns.select(Selectors.timelineEvent(1) + " > span").text shouldBe "Submit VAT Return by February 2023"
         agentDocWithMissingReturns.select(Selectors.timelineEvent(1) + " > div > p > strong").text shouldBe "Submitted on time"
         agentDocWithMissingReturns.body().toString.contains("If these actions are completed we will remove your client’s points in March 2023.") shouldBe true
