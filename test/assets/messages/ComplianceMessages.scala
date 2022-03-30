@@ -38,8 +38,6 @@ object ComplianceMessages {
 
   val h2MissingReturns = "Submit these missing returns"
 
-  val missingReturnLi = "VAT period 1 October 2021 to 31 December 2021"
-
   val completeTheseActionsOnTime = "Complete these actions on time"
 
 }

@@ -154,17 +154,17 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter {
           val result = helper.getTimelineContent(complianceDataQuarterlyWith24MthsHistory, latestLSPCreationDateQuarterly)(implicitly, vatTraderUser)
           val parsedHtmlResult = Jsoup.parse(result.body)
           parsedHtmlResult.select("ol").attr("class") shouldBe "hmrc-timeline"
-          parsedHtmlResult.select("h2").get(0).text() shouldBe "VAT period 1 January 2022 to 31 March 2022"
+          parsedHtmlResult.select("h3").get(0).text() shouldBe "VAT period 1 January 2022 to 31 March 2022"
           parsedHtmlResult.select("span").get(0).text() shouldBe "Submit VAT Return by 7 May 2022"
           parsedHtmlResult.select("strong").text shouldBe "Submitted on time"
 
-          parsedHtmlResult.select("h2").get(1).text() shouldBe "VAT period 1 April 2022 to 30 June 2022"
+          parsedHtmlResult.select("h3").get(1).text() shouldBe "VAT period 1 April 2022 to 30 June 2022"
           parsedHtmlResult.select("span").get(1).text() shouldBe "Submit VAT Return by 7 August 2022"
 
-          parsedHtmlResult.select("h2").get(2).text() shouldBe "VAT period 1 July 2022 to 30 September 2022"
+          parsedHtmlResult.select("h3").get(2).text() shouldBe "VAT period 1 July 2022 to 30 September 2022"
           parsedHtmlResult.select("span").get(2).text() shouldBe "Submit VAT Return by 7 November 2022"
 
-          parsedHtmlResult.select("h2").get(3).text() shouldBe "VAT period 1 October 2022 to 31 December 2022"
+          parsedHtmlResult.select("h3").get(3).text() shouldBe "VAT period 1 October 2022 to 31 December 2022"
           parsedHtmlResult.select("span").get(3).text() shouldBe "Submit VAT Return by 7 February 2023"
 
           parsedHtmlResult.select("#point-expiry-date").text shouldBe "If you complete these actions we will remove your points in March 2023."
@@ -174,23 +174,23 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter {
           val result = helper.getTimelineContent(complianceDataMonthlyWithout24MthsHistory, latestLSPCreationDateMonthly)(implicitly, vatTraderUser)
           val parsedHtmlResult = Jsoup.parse(result.body)
           parsedHtmlResult.select("ol").attr("class") shouldBe "hmrc-timeline"
-          parsedHtmlResult.select("h2").get(0).text() shouldBe "VAT period 1 January 2022 to 31 January 2022"
+          parsedHtmlResult.select("h3").get(0).text() shouldBe "VAT period 1 January 2022 to 31 January 2022"
           parsedHtmlResult.select("span").get(0).text() shouldBe "Submit VAT Return by 7 March 2022"
           parsedHtmlResult.select("strong").get(0).text shouldBe "Submitted on time"
 
-          parsedHtmlResult.select("h2").get(1).text() shouldBe "VAT period 1 February 2022 to 28 February 2022"
+          parsedHtmlResult.select("h3").get(1).text() shouldBe "VAT period 1 February 2022 to 28 February 2022"
           parsedHtmlResult.select("span").get(1).text() shouldBe "Submit VAT Return by 7 April 2022"
 
-          parsedHtmlResult.select("h2").get(2).text() shouldBe "VAT period 1 March 2022 to 31 March 2022"
+          parsedHtmlResult.select("h3").get(2).text() shouldBe "VAT period 1 March 2022 to 31 March 2022"
           parsedHtmlResult.select("span").get(2).text() shouldBe "Submit VAT Return by 7 May 2022"
 
-          parsedHtmlResult.select("h2").get(3).text() shouldBe "VAT period 1 April 2022 to 30 April 2022"
+          parsedHtmlResult.select("h3").get(3).text() shouldBe "VAT period 1 April 2022 to 30 April 2022"
           parsedHtmlResult.select("span").get(3).text() shouldBe "Submit VAT Return by 7 June 2022"
 
-          parsedHtmlResult.select("h2").get(4).text() shouldBe "VAT period 1 May 2022 to 31 May 2022"
+          parsedHtmlResult.select("h3").get(4).text() shouldBe "VAT period 1 May 2022 to 31 May 2022"
           parsedHtmlResult.select("span").get(4).text() shouldBe "Submit VAT Return by 7 July 2022"
 
-          parsedHtmlResult.select("h2").get(5).text() shouldBe "VAT period 1 June 2022 to 30 June 2022"
+          parsedHtmlResult.select("h3").get(5).text() shouldBe "VAT period 1 June 2022 to 30 June 2022"
           parsedHtmlResult.select("span").get(5).text() shouldBe "Submit VAT Return by 7 August 2022"
 
           parsedHtmlResult.select("#point-expiry-date").text shouldBe "If you complete these actions we will remove your points in October 2022."
@@ -202,17 +202,17 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter {
           val result = helper.getTimelineContent(complianceDataQuarterlyWith24MthsHistory, latestLSPCreationDateQuarterly)(implicitly, agentUser)
           val parsedHtmlResult = Jsoup.parse(result.body)
           parsedHtmlResult.select("ol").attr("class") shouldBe "hmrc-timeline"
-          parsedHtmlResult.select("h2").get(0).text() shouldBe "VAT period 1 January 2022 to 31 March 2022"
+          parsedHtmlResult.select("h3").get(0).text() shouldBe "VAT period 1 January 2022 to 31 March 2022"
           parsedHtmlResult.select("span").get(0).text() shouldBe "Submit VAT Return by 7 May 2022"
           parsedHtmlResult.select("strong").text shouldBe "Submitted on time"
 
-          parsedHtmlResult.select("h2").get(1).text() shouldBe "VAT period 1 April 2022 to 30 June 2022"
+          parsedHtmlResult.select("h3").get(1).text() shouldBe "VAT period 1 April 2022 to 30 June 2022"
           parsedHtmlResult.select("span").get(1).text() shouldBe "Submit VAT Return by 7 August 2022"
 
-          parsedHtmlResult.select("h2").get(2).text() shouldBe "VAT period 1 July 2022 to 30 September 2022"
+          parsedHtmlResult.select("h3").get(2).text() shouldBe "VAT period 1 July 2022 to 30 September 2022"
           parsedHtmlResult.select("span").get(2).text() shouldBe "Submit VAT Return by 7 November 2022"
 
-          parsedHtmlResult.select("h2").get(3).text() shouldBe "VAT period 1 October 2022 to 31 December 2022"
+          parsedHtmlResult.select("h3").get(3).text() shouldBe "VAT period 1 October 2022 to 31 December 2022"
           parsedHtmlResult.select("span").get(3).text() shouldBe "Submit VAT Return by 7 February 2023"
 
           parsedHtmlResult.select("#point-expiry-date").text shouldBe "If these actions are completed we will remove your client’s points in March 2023."
@@ -222,23 +222,23 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter {
           val result = helper.getTimelineContent(complianceDataMonthlyWithout24MthsHistory, latestLSPCreationDateMonthly)(implicitly, agentUser)
           val parsedHtmlResult = Jsoup.parse(result.body)
           parsedHtmlResult.select("ol").attr("class") shouldBe "hmrc-timeline"
-          parsedHtmlResult.select("h2").get(0).text() shouldBe "VAT period 1 January 2022 to 31 January 2022"
+          parsedHtmlResult.select("h3").get(0).text() shouldBe "VAT period 1 January 2022 to 31 January 2022"
           parsedHtmlResult.select("span").get(0).text() shouldBe "Submit VAT Return by 7 March 2022"
           parsedHtmlResult.select("strong").get(0).text shouldBe "Submitted on time"
 
-          parsedHtmlResult.select("h2").get(1).text() shouldBe "VAT period 1 February 2022 to 28 February 2022"
+          parsedHtmlResult.select("h3").get(1).text() shouldBe "VAT period 1 February 2022 to 28 February 2022"
           parsedHtmlResult.select("span").get(1).text() shouldBe "Submit VAT Return by 7 April 2022"
 
-          parsedHtmlResult.select("h2").get(2).text() shouldBe "VAT period 1 March 2022 to 31 March 2022"
+          parsedHtmlResult.select("h3").get(2).text() shouldBe "VAT period 1 March 2022 to 31 March 2022"
           parsedHtmlResult.select("span").get(2).text() shouldBe "Submit VAT Return by 7 May 2022"
 
-          parsedHtmlResult.select("h2").get(3).text() shouldBe "VAT period 1 April 2022 to 30 April 2022"
+          parsedHtmlResult.select("h3").get(3).text() shouldBe "VAT period 1 April 2022 to 30 April 2022"
           parsedHtmlResult.select("span").get(3).text() shouldBe "Submit VAT Return by 7 June 2022"
 
-          parsedHtmlResult.select("h2").get(4).text() shouldBe "VAT period 1 May 2022 to 31 May 2022"
+          parsedHtmlResult.select("h3").get(4).text() shouldBe "VAT period 1 May 2022 to 31 May 2022"
           parsedHtmlResult.select("span").get(4).text() shouldBe "Submit VAT Return by 7 July 2022"
 
-          parsedHtmlResult.select("h2").get(5).text() shouldBe "VAT period 1 June 2022 to 30 June 2022"
+          parsedHtmlResult.select("h3").get(5).text() shouldBe "VAT period 1 June 2022 to 30 June 2022"
           parsedHtmlResult.select("span").get(5).text() shouldBe "Submit VAT Return by 7 August 2022"
 
           parsedHtmlResult.select("#point-expiry-date").text shouldBe "If these actions are completed we will remove your client’s points in October 2022."
