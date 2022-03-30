@@ -62,6 +62,8 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
     val timelineEvent: Int => String = (item: Int) => s"#main-content > div > div > ol > li:nth-child($item)"
 
     val pointExpiryContent = "#point-expiry-date"
+
+    val returnToVATLink = "#main-content > div > div > p > a"
   }
 
   "ComplianceView" should {
@@ -85,7 +87,9 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selectors.staticListItem(1) -> li1,
         Selectors.staticListItem(2) -> li2,
         Selectors.submitTheseMissingReturnsH2 -> h2MissingReturns,
-        Selectors.completeTheseActionsOnTimeH2 -> completeTheseActionsOnTime
+        Selectors.completeTheseActionsOnTimeH2 -> completeTheseActionsOnTime,
+        Selectors.returnToVATLink -> returnToVAT
+
       )
 
       behave like pageWithExpectedMessages(expectedContent)
@@ -110,6 +114,10 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       "not display 'submit these missing returns' when the user has no missing returns" in {
         implicit val docWithNoMissingReturns: Document = asDocument(applyView(isUnsubmittedReturns = false, html(), html()))
         docWithNoMissingReturns.select(Selectors.submitTheseMissingReturnsH2).hasText shouldBe false
+      }
+
+      "have the correct 'Return to VAT penalties and appeals' link" in {
+        docWithMissingReturns.select(Selectors.returnToVATLink).attr("href") shouldBe controllers.routes.IndexController.onPageLoad().url
       }
     }
 
