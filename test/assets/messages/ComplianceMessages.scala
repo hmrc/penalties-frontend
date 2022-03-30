@@ -42,4 +42,6 @@ object ComplianceMessages {
 
   val completeTheseActionsOnTime = "Complete these actions on time"
 
+  val returnToVAT = "Return to VAT penalties and appeals"
+
 }

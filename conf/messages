@@ -163,6 +163,8 @@ compliance.timeline.actionEvent.tag.submitted = Submitted on time
 compliance.point.expiry = If you complete these actions we will remove your points in {0}.
 agent.compliance.point.expiry = If these actions are completed we will remove your client’s points in {0}.
 
+compliance.link.returnToVAT = Return to VAT penalties and appeals
+
 # BETA Banner
 # ----------------------------------------------------------
 feedback.before = This is a new service - your

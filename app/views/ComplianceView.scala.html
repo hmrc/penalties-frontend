@@ -46,4 +46,8 @@
     <h2 class="govuk-heading-l" id="complete-these-actions-on-time">@{messages("compliance.heading.completeActions")}</h2>
 
     @timelineContent
+    <p>
+        <a class='govuk-link' href='@{controllers.routes.IndexController.onPageLoad.url}'>@messages("compliance.link.returnToVAT")</a>
+    </p>
+
 }
