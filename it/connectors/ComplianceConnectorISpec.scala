@@ -16,7 +16,6 @@
 
 package connectors
 
-import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.test.Helpers._
 import stubs.ComplianceStub
 import stubs.ComplianceStub._
@@ -32,7 +31,7 @@ class ComplianceConnectorISpec extends IntegrationSpecCommonBase {
   "getComplianceDataFromDES" should {
     "generate a CompliancePayload when valid JSON is returned from penalties" in {
       ComplianceStub.complianceDataStub()
-      val result = connector.getComplianceDataFromDES("123456789", startDate, endDate).futureValue
+      val result = await(connector.getComplianceDataFromDES("123456789", startDate, endDate))
       result shouldBe sampleCompliancePayload
     }
 

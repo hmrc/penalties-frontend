@@ -27,7 +27,7 @@
 
 @layout(pageTitle = messages("compliance.title"),
     isPageFullWidth = false, isUserAgent = user.isAgent,
-    extraBreadcrumbs = Some(Seq((messages("index.breadcrumb.index"), controllers.routes.IndexController.onPageLoad().url)))) {
+    extraBreadcrumbs = Some(Seq((messages("index.breadcrumb.index"), controllers.routes.IndexController.onPageLoad.url)))) {
 
     <h1 class="govuk-heading-xl">@{messages("compliance.heading")}</h1>
 

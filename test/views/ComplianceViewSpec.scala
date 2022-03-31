@@ -101,7 +101,7 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       "have the correct breadcrumb links" in {
         docWithMissingReturns.select(Selectors.breadcrumbWithLink(1)).attr("href") shouldBe appConfig.btaUrl
         docWithMissingReturns.select(Selectors.breadcrumbWithLink(2)).attr("href") shouldBe appConfig.vatOverviewUrl
-        docWithMissingReturns.select(Selectors.breadcrumbWithLink(3)).attr("href") shouldBe controllers.routes.IndexController.onPageLoad().url
+        docWithMissingReturns.select(Selectors.breadcrumbWithLink(3)).attr("href") shouldBe controllers.routes.IndexController.onPageLoad.url
       }
 
       "show a timeline with returns to be submitted and a point expiry date " in {

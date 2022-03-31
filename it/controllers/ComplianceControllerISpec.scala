@@ -24,6 +24,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.{AuthStub, ComplianceStub}
 import testUtils.IntegrationSpecCommonBase
+import uk.gov.hmrc.http.SessionKeys.authToken
 import utils.SessionKeys
 
 import java.time.LocalDate
@@ -34,12 +35,14 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
   val fakeAgentRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
     SessionKeys.agentSessionVrn -> "123456789",
     SessionKeys.latestLSPCreationDate -> "2022-03-01T12:00:00.000",
-    SessionKeys.pointsThreshold -> "5"
+    SessionKeys.pointsThreshold -> "5",
+    authToken -> "1234"
   )
   val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
     SessionKeys.agentSessionVrn -> "123456789",
     SessionKeys.latestLSPCreationDate -> "2022-03-01T12:00:00.000",
-    SessionKeys.pointsThreshold -> "5"
+    SessionKeys.pointsThreshold -> "5",
+    authToken -> "1234"
   )
 
   val compliancePayloadWithMissingReturns: CompliancePayload = CompliancePayload(

@@ -24,16 +24,22 @@ import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.reason.PaymentPenaltyReasonEnum
 import org.jsoup.Jsoup
 import play.api.http.Status
+import play.api.mvc.AnyContentAsEmpty
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.AuthStub
 import stubs.PenaltiesStub.returnLSPDataStub
 import testUtils.IntegrationSpecCommonBase
+import uk.gov.hmrc.http.SessionKeys.authToken
 
 import java.time.LocalDateTime
 
 class CalculationControllerISpec extends IntegrationSpecCommonBase {
   val controller: CalculationController = injector.instanceOf[CalculationController]
   val sampleDate1: LocalDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
+  val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
+    authToken -> "1234"
+  )
 
   val etmpPayload: ETMPPayload = ETMPPayload(
     pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0,
@@ -382,11 +388,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
   )
 
   "GET /calculation when it is not an additional penalty and  penalty is shown with estimate" should {
-    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in { //TODO: implement without placeholders
+    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in {
       returnLSPDataStub(etmpPayload)
-      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456789&isAdditional=false").get())
-      request.status shouldBe Status.OK
-      val parsedBody = Jsoup.parse(request.body)
+      val request = controller.onPageLoad("123456789", false)(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
       parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
       parsedBody.select("#main-content header p span").first.text() shouldBe "The period dates are"
@@ -398,71 +404,71 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£277.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dt").text() shouldBe "Amount left to pay"
       parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dd").text() shouldBe "£123.00"
-        parsedBody.select("#main-content div .govuk-warning-text").text() shouldBe "! This penalty will rise to £800.00 (a further 2% of the unpaid VAT) if you do not make a VAT payment by 7 April 2021."
-        parsedBody.select("#main-content .govuk-body").get(0).text() shouldBe "Paying part of your VAT bill will reduce further penalties."
-        parsedBody.select("#main-content .govuk-body").get(1).text() shouldBe "Penalties and interest will show as estimates if HMRC has not been given enough information to calculate the final amounts."
-        parsedBody.select("#main-content h2").text() shouldBe "Estimates"
-        parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
-        parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
-      }
+      parsedBody.select("#main-content div .govuk-warning-text").text() shouldBe "! This penalty will rise to £800.00 (a further 2% of the unpaid VAT) if you do not make a VAT payment by 7 April 2021."
+      parsedBody.select("#main-content .govuk-body").get(0).text() shouldBe "Paying part of your VAT bill will reduce further penalties."
+      parsedBody.select("#main-content .govuk-body").get(1).text() shouldBe "Penalties and interest will show as estimates if HMRC has not been given enough information to calculate the final amounts."
+      parsedBody.select("#main-content h2").text() shouldBe "Estimates"
+      parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
+      parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
+    }
 
-      "the user has specified a valid penalty ID (parses decimals correctly)" in {
-        returnLSPDataStub(etmpPayloadWithDecimals)
-        val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456789&isAdditional=false").get())
-        request.status shouldBe Status.OK
-        val parsedBody = Jsoup.parse(request.body)
-        parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
-        parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
-        parsedBody.select("#main-content header p span").first.text() shouldBe "The period dates are"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£4.93"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Calculation"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "2% of £123.20 (VAT amount unpaid on 23 March 2021) + 2% of £123.20 (VAT amount unpaid on 7 April 2021)"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Amount received"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£2.90"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dt").text() shouldBe "Amount left to pay"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dd").text() shouldBe "£2.03"
-        parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
-        parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
+    "the user has specified a valid penalty ID (parses decimals correctly)" in {
+      returnLSPDataStub(etmpPayloadWithDecimals)
+      val request = controller.onPageLoad("123456789", false)(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
+      parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
+      parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
+      parsedBody.select("#main-content header p span").first.text() shouldBe "The period dates are"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£4.93"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Calculation"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "2% of £123.20 (VAT amount unpaid on 23 March 2021) + 2% of £123.20 (VAT amount unpaid on 7 April 2021)"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Amount received"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£2.90"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dt").text() shouldBe "Amount left to pay"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dd").text() shouldBe "£2.03"
+      parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
+      parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
     }
 
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID (only one interest charge)" in {
       returnLSPDataStub(etmpPayloadWithOnlyDay15Charge)
-      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456789&isAdditional=false").get())
-      request.status shouldBe Status.OK
-      val parsedBody = Jsoup.parse(request.body)
+      val request = controller.onPageLoad("123456789", false)(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Calculation"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "2% of £123.00 (VAT amount unpaid on 23 March 2021)"
     }
 
     "return 200 (OK) and render the view correctly with Penalty Amount)" in {
       returnLSPDataStub(etmpPayloadWithDueDateMoreThan30days)
-      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456789&isAdditional=false").get())
-      request.status shouldBe Status.OK
-      val parsedBody = Jsoup.parse(request.body)
-      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe  "Penalty amount"
+      val request = controller.onPageLoad("123456789", false)(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£400.00"
     }
 
     "return 500 (ISE) when the user specifies a penalty not within their data" in {
       returnLSPDataStub(etmpPayload)
-      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456800&isAdditional=false").get())
-      request.status shouldBe Status.INTERNAL_SERVER_ERROR
+        val request = controller.onPageLoad("123456800", false)(fakeRequest)
+        status(request) shouldBe Status.INTERNAL_SERVER_ERROR
     }
 
     "return 303 (SEE_OTHER) when the user is not authorised" in {
       AuthStub.unauthorised()
-      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=12345&isAdditional=false").get())
-      request.status shouldBe Status.SEE_OTHER
+      val request = controller.onPageLoad("12345", false)(fakeRequest)
+      status(request) shouldBe Status.SEE_OTHER
     }
   }
 
   "GET /calculation when it is an additional penalty" should {
-    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in { //TODO: implement without placeholders
+    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in {
       returnLSPDataStub(etmpPayloadWithAdditionalPenalty)
-      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=987654321&isAdditional=true").get())
-      request.status shouldBe Status.OK
-      val parsedBody = Jsoup.parse(request.body)
+      val request = controller.onPageLoad("987654321", true)(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Additional penalty"
       parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
       parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
@@ -486,9 +492,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
 
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due" in {
       returnLSPDataStub(etmpPayloadWithAdditionalDuePenalty)
-      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=987654322&isAdditional=true").get())
-      request.status shouldBe Status.OK
-      val parsedBody = Jsoup.parse(request.body)
+      val request = controller.onPageLoad("987654322", true)(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Additional penalty"
       parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
       parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
@@ -513,14 +519,14 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase {
 
     "return 500 (ISE) when the user specifies a penalty not within their data" in {
       returnLSPDataStub(etmpPayload)
-      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=123456800&isAdditional=true").get())
-      request.status shouldBe Status.INTERNAL_SERVER_ERROR
+      val request = controller.onPageLoad("123456800", true)(fakeRequest)
+      status(request) shouldBe Status.INTERNAL_SERVER_ERROR
     }
 
     "return 303 (SEE_OTHER) when the user is not authorised" in {
       AuthStub.unauthorised()
-      val request = await(buildClientForRequestToApp(uri = "/calculation?penaltyId=12345&isAdditional=true").get())
-      request.status shouldBe Status.SEE_OTHER
+      val request = controller.onPageLoad("123456800", true)(fakeRequest)
+      status(request) shouldBe Status.SEE_OTHER
     }
   }
 }
