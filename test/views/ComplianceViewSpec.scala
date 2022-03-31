@@ -117,7 +117,7 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       }
 
       "have the correct 'Return to VAT penalties and appeals' link" in {
-        docWithMissingReturns.select(Selectors.returnToVATLink).attr("href") shouldBe controllers.routes.IndexController.onPageLoad().url
+        docWithMissingReturns.select(Selectors.returnToVATLink).attr("href") shouldBe controllers.routes.IndexController.onPageLoad.url
       }
     }
 
