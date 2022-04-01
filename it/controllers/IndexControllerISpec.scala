@@ -28,12 +28,13 @@ import stubs.AuthStub
 import stubs.PenaltiesStub.{returnAgentLSPDataStub, returnLSPDataStub}
 import testUtils.IntegrationSpecCommonBase
 import utils.SessionKeys
-import java.time.LocalDateTime
 
+import java.time.LocalDateTime
 import models.communication.{Communication, CommunicationTypeEnum}
 import models.financial.{AmountTypeEnum, Financial, OverviewElement}
 import models.reason.PaymentPenaltyReasonEnum
 import play.api.mvc.AnyContentAsEmpty
+import uk.gov.hmrc.http.SessionKeys.authToken
 
 class IndexControllerISpec extends IntegrationSpecCommonBase {
   val sampleDate1: LocalDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
@@ -41,8 +42,13 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
   val sampleDate3: LocalDateTime = LocalDateTime.of(2021, 3, 1, 1, 1, 1)
   val sampleDate4: LocalDateTime = LocalDateTime.of(2021, 4, 1, 1, 1, 1)
   val controller: IndexController = injector.instanceOf[IndexController]
-  val fakeAgentRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(SessionKeys.agentSessionVrn -> "123456789")
-  val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/")
+  val fakeAgentRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
+    SessionKeys.agentSessionVrn -> "123456789",
+    authToken -> "12345"
+  )
+  val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
+    authToken -> "12345"
+  )
   val etmpPayloadWithAddedPoints: ETMPPayload = ETMPPayload(
     pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, otherPenalties = Some(false), vatOverview = Some(Seq.empty), penaltyPoints = Seq(
       PenaltyPoint(
@@ -537,15 +543,15 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
 
   "GET /" should {
     "return 200 (OK) when the user is authorised" in {
-      val request = await(buildClientForRequestToApp(uri = "/").get())
-      request.status shouldBe Status.OK
+      val request = controller.onPageLoad()(fakeRequest)
+      status(request) shouldBe Status.OK
     }
 
     "return 200 (OK) and render the view when there are added points that are retrieved from the backend" in {
       returnLSPDataStub(etmpPayloadWithAddedPoints)
-      val request = await(buildClientForRequestToApp(uri = "/").get())
-      request.status shouldBe Status.OK
-      val parsedBody = Jsoup.parse(request.body)
+      val request = controller.onPageLoad()(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#late-submission-penalties p.govuk-body").get(0).text shouldBe "You have 2 penalty points. This is because:"
       parsedBody.select("#late-submission-penalties ul li").get(0).text shouldBe "you have submitted a VAT Return late"
       parsedBody.select("#late-submission-penalties ul li").get(1).text shouldBe "we added 1 point and sent you a letter explaining why"
@@ -564,9 +570,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
 
     "return 200 (OK) and render the view when there are removed points that are retrieved from the backend" in {
       returnLSPDataStub(etmpPayloadWithRemovedPoints)
-      val request = await(buildClientForRequestToApp(uri = "/").get())
-      request.status shouldBe Status.OK
-      val parsedBody = Jsoup.parse(request.body)
+      val request = controller.onPageLoad()(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#late-submission-penalties p.govuk-body").get(0).text shouldBe "You have 1 penalty point. This is because:"
       parsedBody.select("#late-submission-penalties ul li").get(0).text shouldBe "you have submitted 2 VAT Returns late"
       parsedBody.select("#late-submission-penalties ul li").get(1).text shouldBe "we removed 1 point and sent you a letter explaining why"
@@ -586,9 +592,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
 
     "return 200 (OK) and render the view when removed points are below active points (active points are reindexed)" in {
       returnLSPDataStub(etmpPayloadWith2PointsandOneRemovedPoint)
-      val request = await(buildClientForRequestToApp(uri = "/").get())
-      request.status shouldBe Status.OK
-      val parsedBody = Jsoup.parse(request.body)
+      val request = controller.onPageLoad()(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#late-submission-penalties p.govuk-body").get(0).text shouldBe "You have 2 penalty points. This is because:"
       parsedBody.select("#late-submission-penalties ul li").get(0).text shouldBe "you have submitted 3 VAT Returns late"
       parsedBody.select("#late-submission-penalties ul li").get(1).text shouldBe "we removed 1 point and sent you a letter explaining why"
@@ -601,9 +607,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
 
     "return 200 (OK) and render the view when there are LPPs paid that are retrieved from the backend" in {
       returnLSPDataStub(etmpPayloadWithPaidLPP)
-      val request = await(buildClientForRequestToApp(uri = "/").get())
-      request.status shouldBe Status.OK
-      val parsedBody = Jsoup.parse(request.body)
+      val request = controller.onPageLoad()(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#late-payment-penalties section header h3").text shouldBe "£400 penalty"
       parsedBody.select("#late-payment-penalties section header strong").text shouldBe "paid"
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
@@ -620,9 +626,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
 
     "return 200 (OK) and render the view when there is outstanding payments" in {
       returnLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue)
-      val request = await(buildClientForRequestToApp(uri = "/").get())
-      request.status shouldBe Status.OK
-      val parsedBody = Jsoup.parse(request.body)
+      val request = controller.onPageLoad()(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#what-is-owed > p").first.text shouldBe "You owe:"
       parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£121.40 in late VAT"
       parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "£93.10 in estimated VAT interest"
@@ -637,9 +643,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
 
     "return 200 (OK) and render the view when there is outstanding estimate payments" in {
       returnLSPDataStub(etmpPayloadWithEstimates)
-      val request = await(buildClientForRequestToApp(uri = "/").get())
-      request.status shouldBe Status.OK
-      val parsedBody = Jsoup.parse(request.body)
+      val request = controller.onPageLoad()(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£232.12 in estimated late payment penalties"
       parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "£53 in estimated interest on penalties"
       parsedBody.select("#main-content h2:nth-child(3)").text shouldBe "Penalty and appeal details"
@@ -649,9 +655,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
 
     "return 200 (OK) and render the view when there are LPPs and additional penalties paid that are retrieved from the backend" in {
       returnLSPDataStub(etmpPayloadWithLPPAndAdditionalPenalty)
-      val request = await(buildClientForRequestToApp(uri = "/").get())
-      request.status shouldBe Status.OK
-      val parsedBody = Jsoup.parse(request.body)
+      val request = controller.onPageLoad()(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#late-payment-penalties section header h3").text.contains("£123.45 additional penalty") shouldBe true
       parsedBody.select("#late-payment-penalties section header strong").text.contains("paid") shouldBe true
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body").first()
@@ -666,9 +672,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
 
     "return 200 (OK) and render the view when there are LPPs with VAT partially unpaid that are retrieved from the backend" in {
       returnLSPDataStub(etmpPayloadWithLPPVATUnpaid)
-      val request = await(buildClientForRequestToApp(uri = "/").get())
-      request.status shouldBe Status.OK
-      val parsedBody = Jsoup.parse(request.body)
+      val request = controller.onPageLoad()(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#late-payment-penalties section header h3").text shouldBe "£400 penalty"
       parsedBody.select("#late-payment-penalties section header strong").text shouldBe "£200 due"
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
@@ -685,18 +691,18 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
 
     "return 200 (OK) and render the view when there are LPPs with VAT unpaid that are retrieved from the backend" in {
       returnLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalties = unpaidLatePaymentPenalty))
-      val request = await(buildClientForRequestToApp(uri = "/").get())
-      request.status shouldBe Status.OK
-      val parsedBody = Jsoup.parse(request.body)
+      val request = controller.onPageLoad()(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#late-payment-penalties section header h3").text shouldBe "£400 penalty"
       parsedBody.select("#late-payment-penalties section header strong").text shouldBe "due"
     }
 
     "return 200 (OK) and render the view when there are appealed LPPs that are retrieved from the backend" in {
       returnLSPDataStub(etmpPayloadWithLPPAppeal)
-      val request = await(buildClientForRequestToApp(uri = "/").get())
-      request.status shouldBe Status.OK
-      val parsedBody = Jsoup.parse(request.body)
+      val request = controller.onPageLoad()(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#late-payment-penalties section header h3").text shouldBe "£400 penalty"
       parsedBody.select("#late-payment-penalties section header strong").text shouldBe "paid"
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
@@ -813,17 +819,11 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       }
     }
 
-    "return 303 (SEE_OTHER) when the user is not authorised" in {
-      AuthStub.unauthorised()
-      val request = await(buildClientForRequestToApp(uri = "/").get())
-      request.status shouldBe Status.SEE_OTHER
-    }
-
     "return 200 (OK) and render the view when there are LSPs with multiple penalty period" in {
       returnLSPDataStub(etmpPayloadWithMultiplePenaltyPeriodInLSP)
-      val request = await(buildClientForRequestToApp(uri = "/").get())
-      request.status shouldBe Status.OK
-      val parsedBody = Jsoup.parse(request.body)
+      val request = controller.onPageLoad()(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
       val summaryCardBody = parsedBody.select(" #late-submission-penalties .app-summary-card__body")
       summaryCardBody.select("dt").get(0).text shouldBe "VAT period"
       summaryCardBody.select("dd").get(0).text shouldBe "1 January 2021 to 15 January 2021"
@@ -834,50 +834,90 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("p.govuk-body").text() shouldBe "The VAT Return due on 24 May 2021 was also submitted late. HMRC only applies 1 penalty for late submission in each month."
     }
 
+    "return 303 (SEE_OTHER) when the user is not authorised" in {
+      AuthStub.unauthorised()
+      val request = controller.onPageLoad()(fakeRequest)
+      status(request) shouldBe Status.SEE_OTHER
+    }
   }
 
   "GET /appeal-penalty" should {
     "redirect the user to the appeals service when the penalty is not a LPP" in {
-      val request = buildClientForRequestToApp(uri = "/appeal-penalty?penaltyId=1234&isLPP=false&isObligation=false&isAdditional=false").get()
-      await(request).status shouldBe Status.SEE_OTHER
-      await(request).header(HeaderNames.LOCATION).get shouldBe
+      val request = controller.redirectToAppeals(
+        penaltyId = "1234",
+        isLPP = false,
+        isObligation = false,
+        isAdditional = false)(FakeRequest("GET", "/").withSession(
+        authToken -> "1234"
+      ))
+      status(request) shouldBe Status.SEE_OTHER
+      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe
         "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=false&isAdditional=false"
     }
 
     "redirect the user to the appeals service when the penalty is a LPP" in {
-      val request = buildClientForRequestToApp(uri = "/appeal-penalty?penaltyId=1234&isLPP=true&isObligation=false&isAdditional=false").get()
-      await(request).status shouldBe Status.SEE_OTHER
-      await(request).header(HeaderNames.LOCATION).get shouldBe
+      val request = controller.redirectToAppeals(
+        penaltyId = "1234",
+        isLPP = true,
+        isObligation = false,
+        isAdditional = false)(FakeRequest("GET", "/").withSession(
+        authToken -> "1234"
+      ))
+      status(request) shouldBe Status.SEE_OTHER
+      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe
         "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=true&isAdditional=false"
     }
 
     "redirect the user to the appeals service when the penalty is a LPP - Additional" in {
-      val request = buildClientForRequestToApp(uri = "/appeal-penalty?penaltyId=1234&isLPP=true&isObligation=false&isAdditional=true").get()
-      await(request).status shouldBe Status.SEE_OTHER
-      await(request).header(HeaderNames.LOCATION).get shouldBe
+      val request = controller.redirectToAppeals(
+        penaltyId = "1234",
+        isLPP = true,
+        isObligation = false,
+        isAdditional = true)(FakeRequest("GET", "/").withSession(
+        authToken -> "1234"
+      ))
+      status(request) shouldBe Status.SEE_OTHER
+      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe
         "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=true&isAdditional=true"
     }
 
     "redirect the user to the obligations appeals service when the penalty is not a LPP" in {
-      val request = buildClientForRequestToApp(uri = "/appeal-penalty?penaltyId=1234&isLPP=false&isObligation=true&isAdditional=false").get()
-      await(request).status shouldBe Status.SEE_OTHER
-      await(request).header(HeaderNames.LOCATION).get shouldBe
+      val request = controller.redirectToAppeals(
+        penaltyId = "1234",
+        isLPP = false,
+        isObligation = true,
+        isAdditional = false)(FakeRequest("GET", "/").withSession(
+        authToken -> "1234"
+      ))
+      status(request) shouldBe Status.SEE_OTHER
+      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe
         "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234&isLPP=false&isAdditional=false"
     }
 
     "redirect the user to the obligations appeals service when the penalty is a LPP" in {
-      val request = buildClientForRequestToApp(uri = "/appeal-penalty?penaltyId=1234&isLPP=true&isObligation=true&isAdditional=false").get()
-      await(request).status shouldBe Status.SEE_OTHER
-      await(request).header(HeaderNames.LOCATION).get shouldBe
+      val request = controller.redirectToAppeals(
+        penaltyId = "1234",
+        isLPP = true,
+        isObligation = true,
+        isAdditional = false)(FakeRequest("GET", "/").withSession(
+        authToken -> "1234"
+      ))
+      status(request) shouldBe Status.SEE_OTHER
+      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe
         "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234&isLPP=true&isAdditional=false"
     }
 
     "redirect the user to the obligations appeals service when the penalty is a LPP - Additional" in {
-      val request = buildClientForRequestToApp(uri = "/appeal-penalty?penaltyId=1234&isLPP=true&isObligation=true&isAdditional=true").get()
-      await(request).status shouldBe Status.SEE_OTHER
-      await(request).header(HeaderNames.LOCATION).get shouldBe
+      val request = controller.redirectToAppeals(
+        penaltyId = "1234",
+        isLPP = true,
+        isObligation = true,
+        isAdditional = true)(FakeRequest("GET", "/").withSession(
+        authToken -> "1234"
+      ))
+      status(request) shouldBe Status.SEE_OTHER
+      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe
         "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234&isLPP=true&isAdditional=true"
     }
-
   }
 }

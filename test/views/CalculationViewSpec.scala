@@ -92,7 +92,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       "have the correct breadcrumb links" in {
         doc.select(Selector.breadcrumbWithLink(1)).attr("href") shouldBe appConfig.btaUrl
         doc.select(Selector.breadcrumbWithLink(2)).attr("href") shouldBe appConfig.vatOverviewUrl
-        doc.select(Selector.breadcrumbWithLink(3)).attr("href") shouldBe controllers.routes.IndexController.onPageLoad().url
+        doc.select(Selector.breadcrumbWithLink(3)).attr("href") shouldBe controllers.routes.IndexController.onPageLoad.url
       }
     }
 
@@ -180,7 +180,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       "have the correct breadcrumb links" in {
         docWithOnlyOneCalculation.select(Selector.breadcrumbWithLink(1)).attr("href") shouldBe appConfig.btaUrl
         docWithOnlyOneCalculation.select(Selector.breadcrumbWithLink(2)).attr("href") shouldBe appConfig.vatOverviewUrl
-        docWithOnlyOneCalculation.select(Selector.breadcrumbWithLink(3)).attr("href") shouldBe controllers.routes.IndexController.onPageLoad().url
+        docWithOnlyOneCalculation.select(Selector.breadcrumbWithLink(3)).attr("href") shouldBe controllers.routes.IndexController.onPageLoad.url
       }
 
       "when there is 2 calculations - show both" must {

@@ -17,8 +17,6 @@
 package controllers
 
 import config.AppConfig
-import org.jsoup.Jsoup
-import org.mockito.Mockito.mock
 import play.api.http.Status
 import play.api.test.Helpers._
 import testUtils.IntegrationSpecCommonBase

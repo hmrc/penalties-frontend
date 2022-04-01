@@ -48,7 +48,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
             stringAsHtml(getMessage("lsp.onThreshold.p2.b1")),
             stringAsHtml(getMessage("lsp.onThreshold.p2.b2", fixedPenaltyAmount))
           )),
-          p(link(link = controllers.routes.ComplianceController.onPageLoad().url, messages("lsp.onThreshold.link")))
+          p(link(link = controllers.routes.ComplianceController.onPageLoad.url, messages("lsp.onThreshold.link")))
         )
       case (currentPoints, threshold, adjustedPoints) if adjustedPoints > 0 =>
         val base = Seq(

@@ -34,7 +34,7 @@
         )(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
 
 @layout(pageTitle = messages("calculation.title.additional"), isPageFullWidth = false, isUserAgent = user.isAgent,
-    extraBreadcrumbs = Some(Seq((messages("index.breadcrumb.index"), controllers.routes.IndexController.onPageLoad().url)))) {
+    extraBreadcrumbs = Some(Seq((messages("index.breadcrumb.index"), controllers.routes.IndexController.onPageLoad.url)))) {
      <header class="hmrc-page-heading govuk-!-margin-top-0">
          <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages("calculation.heading.additional")</h1>
          <p class="govuk-caption-xl hmrc-caption-xl">
@@ -82,6 +82,6 @@
     }
 
     <p class="govuk-body">
-        <a class="govuk-link" href="@controllers.routes.IndexController.onPageLoad().url">@messages("calculation.returnLink")</a>
+        <a class="govuk-link" href="@controllers.routes.IndexController.onPageLoad.url">@messages("calculation.returnLink")</a>
     </p>
 }
