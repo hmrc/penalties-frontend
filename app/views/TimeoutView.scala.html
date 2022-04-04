@@ -25,9 +25,9 @@
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = messages("timeout.title"), isPageFullWidth = false, isTimeout = true) {
+@layout(pageTitle = messages("timeout.headingAndTitle"), isPageFullWidth = false, isTimeout = true) {
 
-    <h1 class="govuk-heading-xl">@{messages("timeout.heading")}</h1>
+    <h1 class="govuk-heading-xl">@{messages("timeout.headingAndTitle")}</h1>
 
     @link(appConfig.signInUrl, "timeout.button", button = true, classes = "govuk-button")
 }

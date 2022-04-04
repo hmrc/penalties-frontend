@@ -35,14 +35,14 @@
         warningDate: String
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
 
-@layout(pageTitle = messages("calculation.title.lpp"), isPageFullWidth = false, isUserAgent = user.isAgent,
+@layout(pageTitle = messages("calculation.headingAndTitle.lpp"), isPageFullWidth = false, isUserAgent = user.isAgent,
     extraBreadcrumbs = Some(Seq((messages("index.breadcrumb.index"), controllers.routes.IndexController.onPageLoad.url)))) {
     <header class="hmrc-page-heading govuk-!-margin-top-0">
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">
-            @messages("calculation.heading.lpp")
+            @messages("calculation.headingAndTitle.lpp")
         </h1>
         <p class="govuk-caption-xl hmrc-caption-xl">
-            <span class="govuk-visually-hidden">@messages("calculation.heading.lpp.hiddenText")</span>
+            <span class="govuk-visually-hidden">@messages("calculation.heading.lppAndAdditional.hiddenText")</span>
             @messages("calculation.caption", startDate, endDate)
         </p>
     </header>

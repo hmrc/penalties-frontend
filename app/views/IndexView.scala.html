@@ -40,14 +40,14 @@
     <p class="govuk-body">@getMessage("whatIsOwed.details.body.1") @link("#", "whatIsOwed.details.link.1", isExternal = true)@getMessage("whatIsOwed.details.body.2")</p>
 }
 
-@layout(pageTitle = messages("index.title"),
+@layout(pageTitle = messages("index.headingAndTitle"),
     isUserAgent = user.isAgent,
     isPageFullWidth = false,
     isCustomLayout = true) {
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">@{
-                messages("index.heading")
+                messages("index.headingAndTitle")
             }</h1>
 
             @whatYouOweContent.map { breakdownContent =>
@@ -84,18 +84,18 @@
                 <ul class="govuk-tabs__list">
                     <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
                         <a class="govuk-tabs__tab" href="#late-submission-penalties">
-                        @messages("index.tab1")
+                        @messages("index.subheading.lsp")
                         </a>
                     </li>
                     <li class="govuk-tabs__list-item">
                         <a class="govuk-tabs__tab" href="#late-payment-penalties">
-                        @messages("index.tab2")
+                        @messages("index.subheading.lpp")
                         </a>
                     </li>
                 </ul>
                 <div class="govuk-tabs__panel" id="late-submission-penalties">
                     <h2 class="govuk-heading-m">@{
-                        messages("index.subheading")
+                        messages("index.subheading.lsp")
                     }</h2>
                     @contentToDisplayBeforeSummaryCards
 

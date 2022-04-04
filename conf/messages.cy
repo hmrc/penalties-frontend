@@ -5,12 +5,9 @@ common.pageTitle = {0} - {1} - GOV.UK
 
 # Index
 # -------------------------------------------
-index.title = VAT penalties and appeals
-index.heading = VAT penalties and appeals
-index.tab1 = Late submission penalties
-index.tab2 = Late payment penalties
+index.headingAndTitle = VAT penalties and appeals
 index.contents = Contents
-index.subheading = Late submission penalties
+index.subheading.lsp = Late submission penalties
 index.subheading.lpp = Late payment penalties
 index.breadcrumb.vat-account = Your VAT Account
 index.breadcrumb.bta = Business tax account
@@ -163,8 +160,6 @@ compliance.timeline.actionEvent.tag.submitted = Submitted on time
 compliance.point.expiry = If you complete these actions we will remove your points in {0}.
 agent.compliance.point.expiry = If these actions are completed we will remove your client’s points in {0}.
 
-compliance.link.returnToVAT = Return to VAT penalties and appeals
-
 # BETA Banner
 # ----------------------------------------------------------
 feedback.before = This is a new service - your
@@ -199,13 +194,10 @@ whatIsOwed.allPenalties.interest = £{0} in interest on penalties
 
 # Calculation messages
 # ----------------------------------------------------------
-calculation.title.lpp = Late payment penalty
+calculation.headingAndTitle.lpp = Late payment penalty
 calculation.caption = {0} to {1}
-calculation.heading.lpp = Late payment penalty
-calculation.heading.lpp.hiddenText = The period dates are
-calculation.title.additional = Additional penalty
-calculation.heading.additional = Additional penalty
-calculation.heading.additional.hiddenText = The period dates are
+calculation.heading.lppAndAdditional.hiddenText = The period dates are
+calculation.headingAndTitle.additional = Additional penalty
 calculation.p.1.additional = The additional penalty is charged from 31 days after the payment due date, until the total is paid.
 calculation.key.1 = Penalty amount
 calculation.key.1.estimate = Penalty amount (estimate)
@@ -230,6 +222,5 @@ calculation.estimate.footerNote.text = Penalties and interest will show as estim
 
 # Timeout messages
 # --------------------------
-timeout.title = For your security, we signed you out
-timeout.heading = For your security, we signed you out
+timeout.headingAndTitle = For your security, we signed you out
 timeout.button = Sign in
