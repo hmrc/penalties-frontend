@@ -138,7 +138,7 @@ base.signOut = Sign out
 app.common.back = Back
 
 # Compliance View
-
+# ----------------------------------------------------------
 compliance.title = Bring your VAT account up to date
 compliance.heading = Bring your VAT account up to date
 compliance.heading.completeActions = Complete these actions on time

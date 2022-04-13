@@ -17,6 +17,7 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.{Header, HmrcHeader}
 @import utils.SessionKeys
 @import config.AppConfig
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En}
 
 @this(hmrcHeader: HmrcHeader)
 
@@ -28,5 +29,6 @@
     serviceName = Some(if(request.session.get(SessionKeys.agentSessionVrn).isDefined) { messages("agent.service.name")} else { messages("service.name") }),
     containerClasses = "govuk-width-container",
     navigation = None,
-    signOutHref = if(showSignOut) Some(controllers.routes.SignOutController.signOut.url) else None
+    signOutHref = if(showSignOut) Some(controllers.routes.SignOutController.signOut.url) else None,
+    language = if(messages.lang.code.equalsIgnoreCase("en")) En else Cy
 ))
