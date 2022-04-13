@@ -1,110 +1,110 @@
-service.name = Manage your VAT account
-agent.service.name = Your client’s VAT details
+service.name = Rheoli’ch cyfrif TAW
+agent.service.name = Manylion TAW eich cleient
 service.homePageUrl = /penalties
 common.pageTitle = {0} - {1} - GOV.UK
 
 # Index
 # -------------------------------------------
-index.headingAndTitle = VAT penalties and appeals
+index.headingAndTitle = Cosbau ac apeliadau TAW
 index.contents = Contents
-index.subheading.lsp = Late submission penalties
-index.subheading.lpp = Late payment penalties
-index.breadcrumb.vat-account = Your VAT Account
-index.breadcrumb.bta = Business tax account
-index.breadcrumb.index = VAT penalties and appeals
-index.guidance.link = Read the guidance about late submission penalties
-unauthorised.title = You are not authorised to use this service
-unauthorised.signUp = You need to sign up to view your VAT penalties.
-unauthorised.alreadySignedUp = If you have already signed up, you need to sign in with the correct Government Gateway details.
+index.subheading.lsp = Cosbau am gyflwyno’n hwyr
+index.subheading.lpp = Cosbau am dalu’n hwyr
+index.breadcrumb.vat-account = Eich Cyfrif TAW
+index.breadcrumb.bta = Cyfrif treth busnes
+index.breadcrumb.index = Cosbau ac apeliadau TAW
+index.guidance.link = Darllenwch yr arweiniad ar gosbau am gyflwyno’n hwyr
+unauthorised.title = Nid ydych wedi’ch awdurdodi i ddefnyddio’r gwasanaeth hwn
+unauthorised.signUp = Mae angen i chi gofrestru er mwyn gweld eich cosbau TAW.
+unauthorised.alreadySignedUp = Os ydych eisoes wedi cofrestru, bydd angen i chi fewngofnodi gan ddefnyddio’r manylion cywir ar gyfer Porth y Llywodraeth.
 
 # LSP Content
 # -------------------------------------------
-lsp.pointSummary.noActivePoints = No active late submission penalty points.
-lsp.pointSummary.penaltyPoints.totalSummary = Penalty points total:
-lsp.pointSummary.penaltyPoints.overview.singular = You have {0} penalty point for submitting a VAT Return late.
-agent.lsp.pointSummary.penaltyPoints.overview.singular = Your client has {0} penalty point for submitting a VAT Return late.
-lsp.pointSummary.penaltyPoints.overview.plural = You have {0} penalty points for submitting {1} VAT Returns late.
-agent.lsp.pointSummary.penaltyPoints.overview.plural = Your client has {0} penalty points for submitting {1} VAT Returns late.
-lsp.pointSummary.penaltyPoints.adjusted.singular = You have {0} penalty point. This is because:
-agent.lsp.pointSummary.penaltyPoints.adjusted.singular = Your client has {0} penalty point. This is because:
-lsp.pointSummary.penaltyPoints.adjusted.plural = You have {0} penalty points. This is because:
-agent.lsp.pointSummary.penaltyPoints.adjusted.plural = Your client has {0} penalty points. This is because:
-lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular = you have submitted a VAT Return late
-agent.lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular = they have submitted a VAT Return late
-lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.plural = you have submitted {0} VAT Returns late
-agent.lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.plural = they have submitted {0} VAT Returns late
-lsp.pointSummary.penaltyPoints.adjusted.addedPoints.singular = we added {0} point and sent you a letter explaining why
-agent.lsp.pointSummary.penaltyPoints.adjusted.addedPoints.singular = we added {0} point and sent them a letter explaining why
-lsp.pointSummary.penaltyPoints.adjusted.addedPoints.plural = we added {0} points and sent you a letter explaining why
-agent.lsp.pointSummary.penaltyPoints.adjusted.addedPoints.plural = we added {0} points and sent them a letter explaining why
-lsp.pointSummary.penaltyPoints.adjusted.removedPoints.singular = we removed {0} point and sent you a letter explaining why
-agent.lsp.pointSummary.penaltyPoints.adjusted.removedPoints.singular = we removed {0} point and sent them a letter explaining why
-lsp.pointSummary.penaltyPoints.adjusted.removedPoints.plural = we removed {0} points and sent you a letter explaining why
-agent.lsp.pointSummary.penaltyPoints.adjusted.removedPoints.plural = we removed {0} points and sent them a letter explaining why
-lsp.pointSummary.penaltyPoints.overview.anotherPoint = You’ll get another point if you submit late again. Points usually expire after 24 months but it can be longer if you keep submitting late.
-agent.lsp.pointSummary.penaltyPoints.overview.anotherPoint = They’ll get another point if they submit late again. Points usually expire after 24 months but it can be longer if your client keeps submitting late.
-lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded = If you reach {0} points, you’ll have to pay a £{1} penalty.
-agent.lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded = If your client reaches {0} points, they’ll have to pay a £{1} penalty.
+lsp.pointSummary.noActivePoints = Dim pwyntiau cosb gweithredol am gyflwyno’n hwyr.
+lsp.pointSummary.penaltyPoints.totalSummary = Cyfanswm pwyntiau cosb:
+lsp.pointSummary.penaltyPoints.overview.singular = Mae gennych {0} o bwyntiau cosb am gyflwyno Ffurflen TAW yn hwyr.
+agent.lsp.pointSummary.penaltyPoints.overview.singular = Mae gan eich cleient {0} o bwyntiau cosb am gyflwyno Ffurflen TAW yn hwyr.
+lsp.pointSummary.penaltyPoints.overview.plural = Mae gennych {0} o bwyntiau cosb am gyflwyno {1} Ffurflen TAW yn hwyr.
+agent.lsp.pointSummary.penaltyPoints.overview.plural = Mae gan eich cleient {0} o bwyntiau cosb am gyflwyno {1} Ffurflen TAW yn hwyr.
+lsp.pointSummary.penaltyPoints.adjusted.singular = Mae gennych {0} o bwyntiau cosb. Y rheswm dros hyn yw:
+agent.lsp.pointSummary.penaltyPoints.adjusted.singular = Mae gan eich cleient {0} o bwyntiau cosb. Y rheswm dros hyn yw:
+lsp.pointSummary.penaltyPoints.adjusted.plural = Mae gennych {0} o bwyntiau cosb. Y rheswm dros hyn yw:
+agent.lsp.pointSummary.penaltyPoints.adjusted.plural = Mae gan eich cleient {0} o bwyntiau cosb. Y rheswm dros hyn yw:
+lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular = rydych wedi cyflwyno Ffurflen TAW yn hwyr
+agent.lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular = mae wedi cyflwyno Ffurflen TAW yn hwyr
+lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.plural = rydych wedi cyflwyno {0} Ffurflen TAW yn hwyr
+agent.lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.plural = mae wedi cyflwyno {0} Ffurflen TAW yn hwyr
+lsp.pointSummary.penaltyPoints.adjusted.addedPoints.singular = rydym wedi ychwanegu {0} o bwyntiau ac wedi anfon llythyr atoch yn egluro’r rheswm dros hynny
+agent.lsp.pointSummary.penaltyPoints.adjusted.addedPoints.singular = rydym wedi ychwanegu {0} o bwyntiau ac wedi anfon llythyr ato yn egluro’r rheswm dros hynny
+lsp.pointSummary.penaltyPoints.adjusted.addedPoints.plural = rydym wedi ychwanegu {0} o bwyntiau ac wedi anfon llythyr atoch yn egluro’r rheswm dros hynny
+agent.lsp.pointSummary.penaltyPoints.adjusted.addedPoints.plural = rydym wedi ychwanegu {0} o bwyntiau ac wedi anfon llythyr ato yn egluro’r rheswm dros hynny
+lsp.pointSummary.penaltyPoints.adjusted.removedPoints.singular = rydym wedi dileu {0} o bwyntiau ac wedi anfon llythyr atoch yn egluro’r rheswm dros hynny
+agent.lsp.pointSummary.penaltyPoints.adjusted.removedPoints.singular = rydym wedi dileu {0} o bwyntiau ac wedi anfon llythyr ato yn egluro’r rheswm dros hynny
+lsp.pointSummary.penaltyPoints.adjusted.removedPoints.plural = rydym wedi dileu {0} o bwyntiau ac wedi anfon llythyr atoch yn egluro’r rheswm dros hynny
+agent.lsp.pointSummary.penaltyPoints.adjusted.removedPoints.plural = rydym wedi dileu {0} o bwyntiau ac wedi anfon llythyr ato yn egluro’r rheswm dros hynny
+lsp.pointSummary.penaltyPoints.overview.anotherPoint = Byddwch yn cael pwynt ychwanegol os ydych yn cyflwyno’n hwyr eto. Mae pwyntiau fel arfer yn cael eu dileu ar ôl 24 mis ond gall fod yn hirach os ydych yn parhau i gyflwyno’n hwyr.
+agent.lsp.pointSummary.penaltyPoints.overview.anotherPoint = Bydd yn cael pwynt ychwanegol os yw’n cyflwyno’n hwyr eto. Mae pwyntiau fel arfer yn cael eu dileu ar ôl 24 mis ond gall fod yn hirach os yw eich cleient yn parhau i gyflwyno’n hwyr.
+lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded = Os ydych yn cyrraedd {0} o bwyntiau, bydd angen i chi dalu cosb o £{1}.
+agent.lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded = Os yw eich cleient yn cyrraedd {0} o bwyntiau, bydd angen iddo dalu cosb o £{1}.
 
-lsp.pointSummary.penaltyPoints.overview.warningText = You’ll get a £{0} penalty if you submit another VAT Return late.
-agent.lsp.pointSummary.penaltyPoints.overview.warningText = Your client will get a £{0} penalty if they submit another VAT Return late.
+lsp.pointSummary.penaltyPoints.overview.warningText = Byddwch yn cael cosb o £{0} os ydych yn cyflwyno Ffurflen TAW arall yn hwyr.
+agent.lsp.pointSummary.penaltyPoints.overview.warningText = Bydd eich cleient yn cael cosb o £{0} os bydd yn cyflwyno Ffurflen TAW arall yn hwyr.
 
-lsp.onThreshold.p1 = You have reached the financial penalty threshold.
-agent.lsp.onThreshold.p1 = Your client has reached the financial penalty threshold.
-lsp.onThreshold.p2 = Until you bring your account up to date:
-agent.lsp.onThreshold.p2 = Until they bring their account up to date:
-lsp.onThreshold.p2.b1 = your penalty points will not expire
-agent.lsp.onThreshold.p2.b1 = their penalty points will not expire
-lsp.onThreshold.p2.b2 = you’ll have to pay a £{0} penalty every time you submit a VAT Return late
-agent.lsp.onThreshold.p2.b2 = they’ll have to pay a £{0} penalty every time they submit a VAT Return late
+lsp.onThreshold.p1 = Rydych wedi cyrraedd y trothwy ar gyfer cosbau ariannol.
+agent.lsp.onThreshold.p1 = Mae eich cleient wedi cyrraedd y trothwy ar gyfer cosbau ariannol.
+lsp.onThreshold.p2 = Hyd nes eich bod yn diweddaru eich cyfrif:
+agent.lsp.onThreshold.p2 = Hyd nes ei fod yn diweddaru'i gyfrif:
+lsp.onThreshold.p2.b1 = ni fydd eich pwyntiau cosb yn cael eu dileu
+agent.lsp.onThreshold.p2.b1 = ni fydd ei bwyntiau cosb yn cael eu dileu
+lsp.onThreshold.p2.b2 = bydd angen i chi dalu cosb o £{0} bob tro rydych yn cyflwyno Ffurflen TAW yn hwyr
+agent.lsp.onThreshold.p2.b2 = bydd angen iddo dalu cosb o £{0} bob tro mae’n cyflwyno Ffurflen TAW yn hwyr
 lsp.onThreshold.link = Show me how to bring this account up to date
 
-lsp.multiple.penaltyPeriod = The VAT Return due on {0} was also submitted late. <br> HMRC only applies 1 penalty for late submission in each month.
+lsp.multiple.penaltyPeriod = Roedd y Ffurflen TAW a oedd yn ddyledus ar {0} hefyd wedi’i chyflwyno’n hwyr. <br> Dim ond 1 cosb am gyflwyno’n hwyr y mae CThEM yn ei roi bob mis.
 
 # LPP Content
 # -------------------------------------------
-lpp.penaltiesSummary.noPaymentPenalties = There are no late payment penalties.
-lpp.penaltiesSummary.unpaid = The earlier you pay your VAT, the lower your penalties and interest will be.
-agent.lpp.penaltiesSummary.unpaid = The earlier your client pays their VAT, the lower their penalties and interest will be.
-lpp.penaltiesSummary.howLppCalculated.link = Find out how late payment penalties are calculated {0}
+lpp.penaltiesSummary.noPaymentPenalties = Nid oes unrhyw gosbau am dalu’n hwyr.
+lpp.penaltiesSummary.unpaid = Gorau i gyd po gyntaf y byddwch yn talu eich TAW, oherwydd y bydd hyn yn lleihau swm eich cosbau a llog.
+agent.lpp.penaltiesSummary.unpaid = Gorau i gyd po gyntaf y mae’ch cleient yn talu’i TAW, oherwydd y bydd hyn yn lleihau swm ei gosbau a llog.
+lpp.penaltiesSummary.howLppCalculated.link = Dysgwch sut y caiff cosbau am dalu’n hwyr eu cyfrifo {0}
 
 
 # SummaryCard
 # -------------------------------------------
-summaryCard.header.addedPoint = Penalty point {0}: adjustment point
-summaryCard.header = Penalty point {0}
-summaryCard.header.adjustedPoint = Penalty point
-summaryCard.header.financial = Penalty point {0}: £{1} penalty
-summaryCard.header.financialNoNumber = £{0} penalty
-summaryCard.header.financialAdditionalPenalty = £{0} additional penalty
+summaryCard.header.addedPoint = Pwynt cosb{0}: pwynt addasu
+summaryCard.header = Pwynt cosb {0}
+summaryCard.header.adjustedPoint = Pwynt cosb
+summaryCard.header.financial = Pwynt cosb {0}: Cosb o £{1}
+summaryCard.header.financialNoNumber = Cosb o £{0}
+summaryCard.header.financialAdditionalPenalty = Cosb ychwanegol o £{0}
 
-summaryCard.key1 = VAT period
-summaryCard.value1 = {0} to {1}
-summaryCard.key2 = VAT Return due
-summaryCard.key3 = Return submitted
-summaryCard.key3.defaultValue = Return not yet received
-summaryCard.key4 = Point due to expire
-summaryCard.appeal.status = Appeal status
-summaryCard.appeal.Under_Review = Under review by HMRC
-summaryCard.appeal.Under_Tribunal_Review = Under review by the tax tribunal
-summaryCard.appeal.Accepted_By_Tribunal = Appeal accepted by tax tribunal
-summaryCard.appeal.Rejected = Appeal rejected
-summaryCard.appeal.Accepted = Appeal accepted
-summaryCard.appeal.readMessage = Read outcome message
-summaryCard.appeal.Reinstated = Appeal outcome changed
-summaryCard.appeal.readMessageReinstated = Read message
-summaryCard.appeal.Tribunal_Rejected = Appeal rejected by tax tribunal
-summaryCard.footerLinkText = Appeal penalty point {0}
-summaryCard.footerLinkTextNoPointNumber = Appeal this penalty
-summaryCard.adjustedPoint.cannotAppeal = You cannot appeal this point
-summaryCard.addedOnKey = Added on
-summaryCard.removedReason = Reason
-summaryCard.infoOnAdjustmentPointsLinkText = Find out more about adjustment points
-summaryCard.appealCheck = Check if you can appeal
+summaryCard.key1 = Cyfnod TAW
+summaryCard.value1 = {0} i {1}
+summaryCard.key2 = Ffurflen TAW yn ddyledus
+summaryCard.key3 = Cyflwynwyd Ffurflen TAW
+summaryCard.key3.defaultValue = Ffurflen TAW heb ddod i law hyd yn hyn
+summaryCard.key4 = Y pwynt ar fin cael ei ddileu
+summaryCard.appeal.status = Statws yr apêl
+summaryCard.appeal.Under_Review = Dan adolygiad gan CThEM
+summaryCard.appeal.Under_Tribunal_Review = Dan adolygiad gan y tribiwnlys treth
+summaryCard.appeal.Accepted_By_Tribunal = Mae’r apêl wedi’i dderbyn gan dribiwnlys treth
+summaryCard.appeal.Rejected = Mae’r apêl wedi’i wrthod
+summaryCard.appeal.Accepted = Mae’r apêl wedi’i dderbyn
+summaryCard.appeal.readMessage = Darllen neges ynghylch y canlyniad
+summaryCard.appeal.Reinstated = Mae canlyniad yr apêl wedi newid
+summaryCard.appeal.readMessageReinstated = Darllen neges
+summaryCard.appeal.Tribunal_Rejected = Mae’r apêl wedi’i gwrthod gan y tribiwnlys treth
+summaryCard.footerLinkText = Apelio yn erbyn pwynt cosb {0}
+summaryCard.footerLinkTextNoPointNumber = Apelio yn erbyn y gosb hon
+summaryCard.adjustedPoint.cannotAppeal = Ni allwch apelio yn erbyn y pwynt hwn
+summaryCard.addedOnKey = Ychwanegwyd ar
+summaryCard.removedReason = Rheswm
+summaryCard.infoOnAdjustmentPointsLinkText = Dod o hyd i ragor o wybodaeth am bwyntiau addasu
+summaryCard.appealCheck = Gwirio a allwch apelio
 summaryCard.lpp.key2 = Penalty reason
 summaryCard.lpp.key3 = VAT payment due
 summaryCard.lpp.key4 = VAT payment date
-summaryCard.lpp.key5 = Payment not yet received
+summaryCard.lpp.key5 = Nid yw’r taliad wedi dod i law hyd yn hyn
 summaryCard.lpp.15days = VAT not paid within 15 days
 summaryCard.lpp.30days = VAT not paid within 30 days
 summaryCard.lpp.15days.centralAssessment = Central Assessment not paid within 15 days
@@ -119,26 +119,26 @@ summaryCard.lpp.additional.30days.centralAssessment = Central Assessment more th
 summaryCard.lpp.additional.30days.ecn = Error Correction Notice more than 30 days late
 summaryCard.lpp.additional.30days.officersAssessment = Officer’s Assessment more than 30 days late
 
-summaryCard.viewCalculation = View calculation
+summaryCard.viewCalculation = Gweld y cyfrifiad
 
-status.active = active
-status.due = due
-status.partialPayment.due = £{0} due
-status.rejected = rejected
-status.removed = removed
-status.paid = paid
-status.cancelled = cancelled
-status.reinstated = reinstated
-status.estimated = estimated
+status.active = gweithredol
+status.due = i’w dalu
+status.partialPayment.due = £{0} yn ddyledus
+status.rejected = wedi’i wrthod
+status.removed = wedi’i ddileu
+status.paid = wedi’i dalu
+status.cancelled = wed’i ganslo
+status.reinstated = wedi’i ailosod
+status.estimated = wedi’i amcangyfrifo
 
-site.opensInNewTab = (opens in a new tab)
-site.warning = Warning:
-base.signOut = Sign out
+site.opensInNewTab = (yn agor tab newydd)
+site.warning = Rhybudd:
+base.signOut = Allgofnodi
 
-app.common.back = Back
+app.common.back = Yn ôl
 
 # Compliance View
-
+# ----------------------------------------------------------
 compliance.title = Bring your VAT account up to date
 compliance.heading = Bring your VAT account up to date
 compliance.heading.completeActions = Complete these actions on time
@@ -162,42 +162,42 @@ agent.compliance.point.expiry = If these actions are completed we will remove yo
 
 # BETA Banner
 # ----------------------------------------------------------
-feedback.before = This is a new service - your
-feedback.link = feedback
-feedback.after = will help us to improve it.
+feedback.before = Gwasanaeth newydd yw hwn – bydd eich
+feedback.link = adborth
+feedback.after = yn ein helpu i’w wella.
 
 
 # What is owed messages
 # ----------------------------------------------------------
-whatIsOwed.penaltyAndAppealsHeading = Penalty and appeal details
-whatIsOwed.p1 = You owe:
-agent.whatIsOwed.p1 = Your client owes:
-whatIsOwed.lateVAT = £{0} in late VAT
-whatIsOwed.otherPenalties = other penalties not related to late submission or late payment
-whatIsOwed.details.heading = If you cannot pay today
-agent.whatIsOwed.details.heading = Payment help
-whatIsOwed.details.body.1 = If you cannot pay a tax bill, you can ask HMRC about
-agent.whatIsOwed.details.body.1 = If your client cannot pay a tax bill, they can ask HMRC about
-whatIsOwed.details.link.1 = setting up a Time to Pay Arrangement
-whatIsOwed.details.body.2 = . This allows you to pay your bill in instalments.
-agent.whatIsOwed.details.body.2 = . This allows them to pay their bill in instalments.
-whatIsOwed.button.checkAndPay = Check amounts and pay
-whatIsOwed.button.checkAmounts = Check amounts
-whatIsOwed.lppAmount = £{0} in late payment penalties
-whatIsOwed.lppAmount.estimated = £{0} in estimated late payment penalties
-whatIsOwed.amountOfLSPs.plural = £{0} fixed penalties for late submission
-whatIsOwed.amountOfLSPs.singular = £{0} fixed penalty for late submission
-whatIsOwed.VATInterest.estimated = £{0} in estimated VAT interest
-whatIsOwed.VATInterest = £{0} in VAT interest
-whatIsOwed.allPenalties.interest.estimated = £{0} in estimated interest on penalties
-whatIsOwed.allPenalties.interest = £{0} in interest on penalties
+whatIsOwed.penaltyAndAppealsHeading = Manylion y gosb a’r apêl
+whatIsOwed.p1 = Mae arnoch:
+agent.whatIsOwed.p1 = Mae ar eich cleient:
+whatIsOwed.lateVAT = cosb o £{0} am TAW hwyr
+whatIsOwed.otherPenalties = cosbau eraill nad ydynt yn berthnasol i gyflwyno’n hwyr neu dalu’n hwyr
+whatIsOwed.details.heading = Os na allwch dalu heddiw
+agent.whatIsOwed.details.heading = Help gyda thaliad
+whatIsOwed.details.body.1 = Os na allwch dalu bil treth, gallwch ofyn i CThEM am
+agent.whatIsOwed.details.body.1 = Os na all eich cleient dalu bil treth, gall ofyn i CThEM am
+whatIsOwed.details.link.1 = sefydlu trefniant Amser i Dalu
+whatIsOwed.details.body.2 = . Mae hyn yn eich galluogi i dalu eich bil fesul rhandaliadau.
+agent.whatIsOwed.details.body.2 = . Mae hyn yn ei alluogi i dalu’i fil fesul rhandaliadau.
+whatIsOwed.button.checkAndPay = Gwirio’r symiau a thalu
+whatIsOwed.button.checkAmounts = Gwirio’r symiau
+whatIsOwed.lppAmount = cosbau o £{0} am dalu’n hwyr
+whatIsOwed.lppAmount.estimated = cosbau amcangyfrifedig o £{0} am dalu’n hwyr
+whatIsOwed.amountOfLSPs.plural = cosbau pendodol o £{0} am gyflwyno’n hwyr
+whatIsOwed.amountOfLSPs.singular = cosb benodol o £{0} am gyflwyno’n hwyr
+whatIsOwed.VATInterest.estimated = llog TAW amcangyfrifedig o £{0}
+whatIsOwed.VATInterest = llog TAW o £{0}
+whatIsOwed.allPenalties.interest.estimated = llog amcangyfrifedig o £{0} ar gosbau
+whatIsOwed.allPenalties.interest = llog o £{0} ar gosbau
 
 # Calculation messages
 # ----------------------------------------------------------
-calculation.headingAndTitle.lpp = Late payment penalty
+calculation.headingAndTitle.lpp = Cosb am dalu’n hwyr
 calculation.caption = {0} to {1}
 calculation.heading.lppAndAdditional.hiddenText = The period dates are
-calculation.headingAndTitle.additional = Additional penalty
+calculation.headingAndTitle.additional = Cosb ychwanegol
 calculation.p.1.additional = The additional penalty is charged from 31 days after the payment due date, until the total is paid.
 calculation.key.1 = Penalty amount
 calculation.key.1.estimate = Penalty amount (estimate)
@@ -221,5 +221,5 @@ calculation.estimate.footerNote.text = Penalties and interest will show as estim
 
 # Timeout messages
 # --------------------------
-timeout.headingAndTitle = For your security, we signed you out
-timeout.button = Sign in
+timeout.headingAndTitle = Er eich diogelwch, gwnaethom eich allgofnodi
+timeout.button = Mewngofnodi
