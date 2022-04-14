@@ -71,7 +71,7 @@ lpp.penaltiesSummary.howLppCalculated.link = Dysgwch sut y caiff cosbau am daluâ
 
 # SummaryCard
 # -------------------------------------------
-summaryCard.header.addedPoint = Pwynt cosb{0}: pwynt addasu
+summaryCard.header.addedPoint = Pwynt cosb {0}: pwynt addasu
 summaryCard.header = Pwynt cosb {0}
 summaryCard.header.adjustedPoint = Pwynt cosb
 summaryCard.header.financial = Pwynt cosb {0}: Cosb o Â£{1}
