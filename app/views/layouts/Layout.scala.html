@@ -82,6 +82,7 @@
 @if(!isTimeout) {
 @head(
     Some(hmrcTimeoutDialog(TimeoutDialog(
+        language = Some(messages.lang.code),
         timeout = Some(appConfig.timeoutPeriod),
         countdown = Some(appConfig.timeoutCountdown),
         signOutUrl = Some(routes.SignOutController.signOut.url),
