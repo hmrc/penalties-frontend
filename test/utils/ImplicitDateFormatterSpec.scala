@@ -40,5 +40,23 @@ class ImplicitDateFormatterSpec extends SpecBase with ImplicitDateFormatter {
         dateToMonthYearString(LocalDate.of(2021, 1, 1)) shouldBe "January 2021"
       }
     }
+
+    "return the formatted Welsh LocalDate" when {
+      "dateToString is called" in {
+        dateToString(LocalDate.of(2021, 1, 1))(cyMessages) shouldBe "1 Ionawr 2021"
+      }
+
+      "dateTimeToString is called" in {
+        dateTimeToString(LocalDateTime.of(2021, 1, 1, 1, 1, 1))(cyMessages) shouldBe "1 Ionawr 2021"
+      }
+
+      "dateTimeToMonthYearString is called" in {
+        dateTimeToMonthYearString(LocalDateTime.of(2021, 1, 1, 1, 1, 1))(cyMessages) shouldBe "Ionawr 2021"
+      }
+
+      "dateToMonthYearString is called" in {
+        dateToMonthYearString(LocalDate.of(2021, 1, 1))(cyMessages) shouldBe "Ionawr 2021"
+      }
+    }
   }
 }

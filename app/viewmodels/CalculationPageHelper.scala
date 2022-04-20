@@ -48,7 +48,7 @@ class CalculationPageHelper @Inject()() extends ViewUtils with ImplicitDateForma
     }
   }
 
-  def getDateAsDayMonthYear(dateTime: LocalDateTime): String = {
+  def getDateAsDayMonthYear(dateTime: LocalDateTime)(implicit messages: Messages): String = {
     dateTimeToString(dateTime)
   }
 }

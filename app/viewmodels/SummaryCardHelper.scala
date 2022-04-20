@@ -211,7 +211,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       summaryListRow(messages("summaryCard.lpp.additional.key"), Html(dueDatePlus31Days)))
   }
 
-  private def getVATPaymentDate(lpp: LatePaymentPenalty): String = {
+  private def getVATPaymentDate(lpp: LatePaymentPenalty)(implicit messages: Messages): String = {
     if(lpp.period.paymentReceivedDate.isDefined) {
       dateTimeToString(lpp.period.paymentReceivedDate.get)
     } else {
