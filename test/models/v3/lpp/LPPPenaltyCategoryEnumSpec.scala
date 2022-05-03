@@ -33,6 +33,7 @@ class LPPPenaltyCategoryEnumSpec extends SpecBase {
       result.isSuccess shouldBe true
       result.get shouldBe LPPPenaltyCategoryEnum.LPP2
     }
+
     "return JsError when the value is not recognised" in {
       val result = Json.fromJson(JsString("error"))(LPPPenaltyCategoryEnum.format)
       result.isError shouldBe true

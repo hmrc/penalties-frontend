@@ -37,19 +37,19 @@ class LSPPenaltyCategoryEnumSpec extends SpecBase {
       result shouldBe JsString("C")
     }
 
-    "be readable from JSOn for P - Point" in {
+    "be readable from JSON for P - Point" in {
       val result = Json.fromJson(JsString("P"))(LSPPenaltyCategoryEnum.format)
       result.isSuccess shouldBe true
       result.get shouldBe LSPPenaltyCategoryEnum.Point
     }
 
-    "be readable from JSOn for T - Threshold" in {
+    "be readable from JSON for T - Threshold" in {
       val result = Json.fromJson(JsString("T"))(LSPPenaltyCategoryEnum.format)
       result.isSuccess shouldBe true
       result.get shouldBe LSPPenaltyCategoryEnum.Threshold
     }
 
-    "be readable from JSOn for C - Charge" in {
+    "be readable from JSON for C - Charge" in {
       val result = Json.fromJson(JsString("C"))(LSPPenaltyCategoryEnum.format)
       result.isSuccess shouldBe true
       result.get shouldBe LSPPenaltyCategoryEnum.Charge

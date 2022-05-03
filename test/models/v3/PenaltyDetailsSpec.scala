@@ -188,7 +188,7 @@ class PenaltyDetailsSpec extends AnyWordSpec with Matchers {
       result shouldBe penaltyDetailsAsJson
     }
 
-    "be readable to JSON" in {
+    "be readable from JSON" in {
       val result = Json.fromJson(penaltyDetailsAsJson)(PenaltyDetails.format)
       result.isSuccess shouldBe true
       result.get shouldBe penaltyDetails
