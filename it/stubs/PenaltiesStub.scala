@@ -33,8 +33,8 @@ import java.time.{LocalDate, LocalDateTime}
 
 object PenaltiesStub {
   val vrn: String = "HMRC-MTD-VAT~VRN~123456789"
-  val getLspDataUrl: String = s"/penalties/etmp/penalties/$vrn"
-  val getLspDataUrlAgent: String = s"/penalties/etmp/penalties/$vrn\\?arn=123456789"
+  val getLspDataUrl: String = s"/penalties/etmp/penalties/$vrn\\?newApiModel=false"
+  val getLspDataUrlAgent: String = s"/penalties/etmp/penalties/$vrn\\?arn=123456789&newApiModel=false"
   val sampleDate1: LocalDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
 
   val getPenaltyDetailsUrl: String = s"/penalties/etmp/penalties/$vrn\\?newApiModel=true"
