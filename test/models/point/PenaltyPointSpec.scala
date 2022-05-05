@@ -41,7 +41,7 @@ class PenaltyPointSpec extends AnyWordSpec with Matchers {
       "number" -> "1",
       "dateCreated" -> "2019-01-31T23:59:59.998",
       "status" -> status,
-      "communications" -> Seq.empty[String],
+      "communications" -> Seq.empty[String]
     ).deepMerge(
       dateExpired.fold(Json.obj())(obj => Json.obj("dateExpired" -> obj))
     ).deepMerge(

@@ -39,7 +39,7 @@ class TimelineSpec extends SpecBase with ViewBehaviours with ImplicitDateFormatt
       s"VAT period ${dateTimeToString(sampleDate)} to ${dateTimeToString(sampleDate.plusDays(7))}",
       s"Submit VAT Return by ${dateTimeToString(sampleDate.plusMonths(1))}",
       None
-    ),
+    )
   )
 
   val timelineEventsWithStatus: Seq[TimelineEvent] = Seq(
@@ -52,7 +52,7 @@ class TimelineSpec extends SpecBase with ViewBehaviours with ImplicitDateFormatt
       s"VAT period ${dateTimeToString(sampleDate)} to ${dateTimeToString(sampleDate.plusDays(7))}",
       s"Submit VAT Return by ${dateTimeToString(sampleDate.plusMonths(1))}",
       None
-    ),
+    )
   )
 
   "timeline" when {
