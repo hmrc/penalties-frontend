@@ -17,6 +17,7 @@
 package connectors
 
 import config.AppConfig
+import models.v3.PenaltyDetails
 import models.{ETMPPayload, User}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.http.HttpReads.Implicits._
@@ -36,4 +37,9 @@ class PenaltiesConnector @Inject()(httpClient: HttpClient,
   def getPenaltiesData(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[ETMPPayload] = {
     httpClient.GET[ETMPPayload](s"$penaltiesBaseUrl${getPenaltiesDataUrl(enrolmentKey)}")
   }
+
+  def getPenaltyDetails(enrolmentKey: String, isUsingNewApi: Boolean = true)(implicit user: User[_], hc: HeaderCarrier): Future[PenaltyDetails] = {
+    httpClient.GET[PenaltyDetails](s"$penaltiesBaseUrl${getPenaltiesDataUrl(enrolmentKey)}?newApiModel=$isUsingNewApi")
+  }
+
 }

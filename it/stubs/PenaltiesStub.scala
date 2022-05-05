@@ -16,22 +16,28 @@
 
 package stubs
 
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, stubFor, urlMatching}
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, badRequest, get, stubFor, urlMatching}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import models.ETMPPayload
 import models.penalty.{LatePaymentPenalty, PenaltyPeriod}
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
+import models.v3.appealInfo.{AppealInformationType, AppealStatusEnum}
+import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty => v3LatePaymentPenalty}
+import models.v3.lsp._
+import models.v3.{PenaltyDetails, Totalisations}
 import play.api.http.Status
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 
-import java.time.LocalDateTime
+import java.time.{LocalDate, LocalDateTime}
 
 object PenaltiesStub {
   val vrn: String = "HMRC-MTD-VAT~VRN~123456789"
   val getLspDataUrl: String = s"/penalties/etmp/penalties/$vrn"
   val getLspDataUrlAgent: String = s"/penalties/etmp/penalties/$vrn\\?arn=123456789"
   val sampleDate1: LocalDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
+
+  val getPenaltyDetailsUrl: String = s"/penalties/etmp/penalties/$vrn\\?newApiModel=true"
 
   val sampleLspData: ETMPPayload = ETMPPayload(
     pointsTotal = 0,
@@ -89,12 +95,102 @@ object PenaltiesStub {
     latePaymentPenalties = Option(Seq.empty[LatePaymentPenalty])
   )
 
+  val samplePenaltyDetails: PenaltyDetails = PenaltyDetails(
+    totalisations = Some(Totalisations(
+      LSPTotalValue = 200,
+      penalisedPrincipalTotal = 2000,
+      LPPPostedTotal = 165.25,
+      LPPEstimatedTotal = 15.26,
+      LPIPostedTotal = 1968.2,
+      LPIEstimatedTotal = 7)),
+    lateSubmissionPenalty = Some(
+      LateSubmissionPenalty(
+        summary = LSPSummary(
+          activePenaltyPoints = 10,
+          inactivePenaltyPoints = 12,
+          regimeThreshold = 10,
+          penaltyChargeAmount = 684.25
+        ),
+        details = Seq(LSPDetails(
+          penaltyNumber = "12345678901234",
+          penaltyOrder = "01",
+          penaltyCategory = LSPPenaltyCategoryEnum.Point,
+          penaltyStatus = LSPPenaltyStatusEnum.Active,
+          FAPIndicator = "X",
+          penaltyCreationDate = LocalDate.parse("2069-10-30"),
+          penaltyExpiryDate = LocalDate.parse("2069-10-30"),
+          expiryReason = Some("FAP"),
+          communicationsDate = LocalDate.parse("2069-10-30"),
+          lateSubmissions = Some(Seq(
+            LateSubmission(
+              taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
+              taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
+              taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
+              returnReceiptDate = Some(LocalDate.parse("2069-10-30"))
+            )
+          )),
+          appealInformation = Some(Seq(
+            AppealInformationType(
+              appealStatus = Some(AppealStatusEnum.Unappealable),
+              appealLevel = Some("01")
+            )
+          )),
+          chargeAmount = Some(200),
+          chargeOutstandingAmount = Some(200),
+          chargeDueDate = Some(LocalDate.parse("2069-10-30"))
+        ))
+      )
+    ),
+    latePaymentPenalty = Some(v3LatePaymentPenalty(
+      details = Seq(LPPDetails(
+        principalChargeReference = "12345678901234",
+        penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
+        penaltyStatus = LPPPenaltyStatusEnum.Accruing,
+        penaltyAmountPaid = Some(1001.45),
+        penaltyAmountOutstanding = Some(99.99),
+        LPP1LRDays = Some("15"),
+        LPP1HRDays = Some("31"),
+        LPP2Days = Some("31"),
+        LPP1LRCalculationAmount = Some(99.99),
+        LPP1HRCalculationAmount = Some(99.99),
+        LPP2Percentage = Some(4.00),
+        LPP1LRPercentage = Some(2.00),
+        LPP1HRPercentage = Some(BigDecimal(2.00).setScale(2)),
+        penaltyChargeCreationDate = LocalDate.parse("2069-10-30"),
+        communicationsDate = LocalDate.parse("2069-10-30"),
+        penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
+        appealInformation = Some(Seq(AppealInformationType(
+          appealStatus = Some(AppealStatusEnum.Unappealable),
+          appealLevel = Some("01")
+        ))),
+        principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
+        principalChargeBillingTo = LocalDate.parse("2069-10-30"),
+        principalChargeDueDate = LocalDate.parse("2069-10-30")
+      ))
+    ))
+  )
+
+  val sampleInvalidPenaltyDetailsJson = Json.obj(
+    "totalisations" -> {
+      "LSPTotalValue" -> 200
+    }).toString()
+
   def lspDataStub(): StubMapping = stubFor(get(urlMatching(getLspDataUrl))
     .willReturn(
       aResponse()
         .withStatus(Status.OK)
         .withBody(
           Json.toJson(sampleLspData).toString()
+        )
+    )
+  )
+
+  def getPenaltyDetailsStub(): StubMapping = stubFor(get(urlMatching(getPenaltyDetailsUrl))
+    .willReturn(
+      aResponse()
+        .withStatus(Status.OK)
+        .withBody(
+          Json.toJson(samplePenaltyDetails).toString()
         )
     )
   )
@@ -141,6 +237,22 @@ object PenaltiesStub {
     .willReturn(
       aResponse()
         .withStatus(Status.INTERNAL_SERVER_ERROR).withBody("Upstream Error")
+    )
+  )
+
+
+  def penaltyDetailsUpstreamErrorStub(): StubMapping = stubFor(get(urlMatching(getPenaltyDetailsUrl))
+    .willReturn(
+      aResponse()
+        .withStatus(Status.INTERNAL_SERVER_ERROR).withBody("Upstream Error")
+    )
+  )
+
+  def invalidPenaltyDetailsStub(): StubMapping = stubFor(get(urlMatching(getPenaltyDetailsUrl))
+    .willReturn(
+      aResponse()
+        .withStatus(Status.OK)
+        .withBody(sampleInvalidPenaltyDetailsJson)
     )
   )
 }

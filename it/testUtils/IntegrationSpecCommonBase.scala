@@ -43,6 +43,7 @@ trait IntegrationSpecCommonBase extends AnyWordSpec with Matchers with GuiceOneS
     super.beforeEach()
     AuthStub.authorised()
     PenaltiesStub.lspDataStub()
+    PenaltiesStub.getPenaltyDetailsStub()
     SharedMetricRegistries.clear()
   }
 
