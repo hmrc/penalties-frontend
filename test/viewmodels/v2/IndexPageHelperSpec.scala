@@ -136,7 +136,8 @@ class IndexPageHelperSpec extends SpecBase {
                     taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
                     taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                     taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
-                    returnReceiptDate = Some(LocalDate.of(2022, 1, 1))
+                    returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
+                    taxReturnStatus = TaxReturnStatusEnum.Fulfilled
                   )
                 )
               ),
@@ -161,7 +162,8 @@ class IndexPageHelperSpec extends SpecBase {
                     taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
                     taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                     taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
-                    returnReceiptDate = Some(LocalDate.of(2022, 1, 1))
+                    returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
+                    taxReturnStatus = TaxReturnStatusEnum.Fulfilled
                   )
                 )
               ),
@@ -186,7 +188,8 @@ class IndexPageHelperSpec extends SpecBase {
                     taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
                     taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                     taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
-                    returnReceiptDate = Some(LocalDate.of(2022, 1, 1))
+                    returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
+                    taxReturnStatus = TaxReturnStatusEnum.Fulfilled
                   )
                 )
               ),
@@ -228,7 +231,8 @@ class IndexPageHelperSpec extends SpecBase {
                     taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
                     taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                     taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
-                    returnReceiptDate = Some(LocalDate.of(2022, 1, 1))
+                    returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
+                    taxReturnStatus = TaxReturnStatusEnum.Fulfilled
                   )
                 )
               ),
@@ -253,7 +257,8 @@ class IndexPageHelperSpec extends SpecBase {
                     taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
                     taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                     taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
-                    returnReceiptDate = Some(LocalDate.of(2022, 1, 1))
+                    returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
+                    taxReturnStatus = TaxReturnStatusEnum.Fulfilled
                   )
                 )
               ),
@@ -295,7 +300,8 @@ class IndexPageHelperSpec extends SpecBase {
                     taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
                     taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                     taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
-                    returnReceiptDate = Some(LocalDate.of(2022, 1, 1))
+                    returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
+                    taxReturnStatus = TaxReturnStatusEnum.Fulfilled
                   )
                 )
               ),
@@ -337,7 +343,8 @@ class IndexPageHelperSpec extends SpecBase {
                     taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
                     taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                     taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
-                    returnReceiptDate = Some(LocalDate.of(2022, 1, 1))
+                    returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
+                    taxReturnStatus = TaxReturnStatusEnum.Fulfilled
                   )
                 )
               ),
@@ -503,7 +510,8 @@ class IndexPageHelperSpec extends SpecBase {
                       taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
-                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1))
+                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
+                      taxReturnStatus = TaxReturnStatusEnum.Fulfilled
                     )
                   )
                 ),
@@ -528,7 +536,8 @@ class IndexPageHelperSpec extends SpecBase {
                       taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
-                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1))
+                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
+                      taxReturnStatus = TaxReturnStatusEnum.Fulfilled
                     )
                   )
                 ),
@@ -553,7 +562,8 @@ class IndexPageHelperSpec extends SpecBase {
                       taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
-                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1))
+                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
+                      taxReturnStatus = TaxReturnStatusEnum.Fulfilled
                     )
                   )
                 ),
@@ -578,7 +588,8 @@ class IndexPageHelperSpec extends SpecBase {
                       taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
-                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1))
+                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
+                      taxReturnStatus = TaxReturnStatusEnum.Fulfilled
                     )
                   )
                 ),
@@ -670,7 +681,8 @@ class IndexPageHelperSpec extends SpecBase {
                       taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
-                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1))
+                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
+                      taxReturnStatus = TaxReturnStatusEnum.Fulfilled
                     )
                   )
                 ),
@@ -728,7 +740,8 @@ class IndexPageHelperSpec extends SpecBase {
                       taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
-                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1))
+                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
+                      taxReturnStatus = TaxReturnStatusEnum.Fulfilled
                     )
                   )
                 ),
@@ -753,7 +766,8 @@ class IndexPageHelperSpec extends SpecBase {
                       taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
-                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1))
+                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
+                      taxReturnStatus = TaxReturnStatusEnum.Fulfilled
                     )
                   )
                 ),
@@ -847,7 +861,8 @@ class IndexPageHelperSpec extends SpecBase {
                       taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
-                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1))
+                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
+                      taxReturnStatus = TaxReturnStatusEnum.Fulfilled
                     )
                   )
                 ),
@@ -872,7 +887,8 @@ class IndexPageHelperSpec extends SpecBase {
                       taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
-                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1))
+                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
+                      taxReturnStatus = TaxReturnStatusEnum.Fulfilled
                     )
                   )
                 ),
@@ -914,7 +930,8 @@ class IndexPageHelperSpec extends SpecBase {
                       taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
-                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1))
+                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
+                      taxReturnStatus = TaxReturnStatusEnum.Fulfilled
                     )
                   )
                 ),
@@ -939,7 +956,8 @@ class IndexPageHelperSpec extends SpecBase {
                       taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
-                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1))
+                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
+                      taxReturnStatus = TaxReturnStatusEnum.Fulfilled
                     )
                   )
                 ),
@@ -964,7 +982,8 @@ class IndexPageHelperSpec extends SpecBase {
                       taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
-                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1))
+                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
+                      taxReturnStatus = TaxReturnStatusEnum.Fulfilled
                     )
                   )
                 ),
@@ -989,7 +1008,8 @@ class IndexPageHelperSpec extends SpecBase {
                       taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
-                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1))
+                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
+                      taxReturnStatus = TaxReturnStatusEnum.Fulfilled
                     )
                   )
                 ),
@@ -1096,7 +1116,7 @@ class IndexPageHelperSpec extends SpecBase {
         val parsedHtmlResult = Jsoup.parse(result.body)
         parsedHtmlResult.select("p.govuk-body").get(0).text shouldBe unpaidVATText
         parsedHtmlResult.select("a.govuk-link").text shouldBe howLppCalculatedLinkText
-        //TODO: change this when we have link to calculation page
+        //TODO: change this when we have link to calculation (external guidance) page
         parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe "#"
       }
 
@@ -1105,7 +1125,7 @@ class IndexPageHelperSpec extends SpecBase {
         val parsedHtmlResult = Jsoup.parse(result.body)
         parsedHtmlResult.select("p.govuk-body").get(0).text shouldBe agentClientUnpaidVATText
         parsedHtmlResult.select("a.govuk-link").text shouldBe howLppCalculatedLinkText
-        //TODO: change this when we have link to calculation page
+        //TODO: change this when we have link to calculation (external guidance) page
         parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe "#"
       }
     }

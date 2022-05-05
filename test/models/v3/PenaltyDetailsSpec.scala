@@ -18,7 +18,7 @@ package models.v3
 
 import models.v3.appealInfo.{AppealInformationType, AppealStatusEnum}
 import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty}
-import models.v3.lsp.{LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum, LSPSummary, LateSubmissionPenalty, LateSubmission}
+import models.v3.lsp.{LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum, LSPSummary, LateSubmission, LateSubmissionPenalty, TaxReturnStatusEnum}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.{JsValue, Json}
@@ -59,7 +59,8 @@ class PenaltyDetailsSpec extends AnyWordSpec with Matchers {
               taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
               taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
               taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
-              returnReceiptDate = Some(LocalDate.parse("2069-10-30"))
+              returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
+              taxReturnStatus = TaxReturnStatusEnum.Fulfilled
             )
           )),
           appealInformation = Some(Seq(
@@ -136,7 +137,8 @@ class PenaltyDetailsSpec extends AnyWordSpec with Matchers {
            "taxPeriodStartDate": "2069-10-30",
            "taxPeriodEndDate": "2069-10-30",
            "taxPeriodDueDate": "2069-10-30",
-           "returnReceiptDate": "2069-10-30"
+           "returnReceiptDate": "2069-10-30",
+           "taxReturnStatus": "Fulfilled"
          }
        ],
        "appealInformation": [

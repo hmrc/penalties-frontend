@@ -16,29 +16,20 @@
 
 package services.v2
 
-import connectors.PenaltiesConnector
-import models.ETMPPayload
 import models.v3.PenaltyDetails
 
 import javax.inject.Inject
 
-class PenaltiesService @Inject()(connector: PenaltiesConnector) {
+class PenaltiesService @Inject()() {
 
-  private def findEstimatedVatInterestFromPayload(payload: ETMPPayload): BigDecimal = {
-    payload.vatOverview.map {
-      estimatedVATInterest => {
-        estimatedVATInterest.map(_.estimatedInterest.getOrElse(BigDecimal(0))).sum
-      }
-    }
-  }.getOrElse(0)
-
-  private def findCrystalizedInterestFromPayload(payload: ETMPPayload): BigDecimal = {
-    payload.vatOverview.map {
-      crystalizedInterest => {
-        crystalizedInterest.map(_.crystalizedInterest.getOrElse(BigDecimal(0))).sum
-      }
-    }
-  }.getOrElse(0)
+  private def findEstimatedVatInterestFromPayload(payload: PenaltyDetails): BigDecimal = {
+    //TODO Add interest mapping once known
+    0
+  }
+  private def findCrystalizedInterestFromPayload(payload: PenaltyDetails): BigDecimal = {
+    //TODO Add interest mapping once known
+    0
+  }
 
   def findOverdueVATFromPayload(payload: PenaltyDetails): BigDecimal = {
     payload.totalisations.map(_.penalisedPrincipalTotal).getOrElse(0)
@@ -56,11 +47,15 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
     payload.totalisations.map(_.LSPTotalValue).getOrElse(0)
   }
 
-//  def findEstimatedVATInterest(payload: ETMPPayload): (BigDecimal, Boolean) = {
-//    val estimatedVAT = findEstimatedVatInterestFromPayload(payload)
-//    val crystallisedVAT = findCrystalizedInterestFromPayload(payload)
-//    (crystallisedVAT + estimatedVAT, estimatedVAT > 0)
-//  }
+  def findEstimatedVATInterest(payload: PenaltyDetails): (BigDecimal, Boolean) = {
+    //TODO add functionality that implements finding estimated VAT interest
+    (0, false)
+  }
+
+  def isOtherUnrelatedPenalties(payload: PenaltyDetails): Boolean = {
+    //TODO add functionality that finds unrelated penalties
+    false
+  }
 
   def findCrystalizedPenaltiesInterest(payload: PenaltyDetails): BigDecimal = {
     payload.totalisations.map(_.LPIPostedTotal).getOrElse(0)

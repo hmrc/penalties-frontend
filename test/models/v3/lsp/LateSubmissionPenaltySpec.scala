@@ -49,7 +49,8 @@ class LateSubmissionPenaltySpec extends SpecBase {
       |           "taxPeriodStartDate": "2069-10-30",
       |           "taxPeriodEndDate": "2069-10-30",
       |           "taxPeriodDueDate": "2069-10-30",
-      |           "returnReceiptDate": "2069-10-30"
+      |           "returnReceiptDate": "2069-10-30",
+      |           "taxReturnStatus": "Fulfilled"
       |         }
       |       ],
       |       "appealInformation": [
@@ -87,7 +88,8 @@ class LateSubmissionPenaltySpec extends SpecBase {
           taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
           taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
           taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
-          returnReceiptDate = Some(LocalDate.parse("2069-10-30"))
+          returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
+          taxReturnStatus = TaxReturnStatusEnum.Fulfilled
         )
       )),
       appealInformation = Some(Seq(
