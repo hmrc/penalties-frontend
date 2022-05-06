@@ -22,7 +22,7 @@ import models.ETMPPayload
 import models.v3.appealInfo.{AppealInformationType, AppealStatusEnum}
 import models.v3.{PenaltyDetails, Totalisations}
 import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty}
-import models.v3.lsp.{LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum, LSPSummary, LateSubmission, LateSubmissionPenalty}
+import models.v3.lsp.{LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum, LSPSummary, LateSubmission, LateSubmissionPenalty, TaxReturnStatusEnum}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import play.api.test.Helpers._
@@ -75,7 +75,8 @@ class PenaltiesConnectorSpec extends SpecBase {
               taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
               taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
               taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
-              returnReceiptDate = Some(LocalDate.parse("2069-10-30"))
+              returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
+              taxReturnStatus = TaxReturnStatusEnum.Fulfilled
             )
           )),
           appealInformation = Some(Seq(
