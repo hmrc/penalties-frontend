@@ -16,7 +16,7 @@
 
 package stubs
 
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, badRequest, get, stubFor, urlMatching}
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, stubFor, urlMatching}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import models.ETMPPayload
 import models.penalty.{LatePaymentPenalty, PenaltyPeriod}
@@ -27,7 +27,7 @@ import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, 
 import models.v3.lsp._
 import models.v3.{PenaltyDetails, Totalisations}
 import play.api.http.Status
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -126,7 +126,8 @@ object PenaltiesStub {
               taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
               taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
               taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
-              returnReceiptDate = Some(LocalDate.parse("2069-10-30"))
+              returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
+              taxReturnStatus = TaxReturnStatusEnum.Fulfilled
             )
           )),
           appealInformation = Some(Seq(
