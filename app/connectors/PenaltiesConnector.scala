@@ -17,6 +17,7 @@
 package connectors
 
 import config.AppConfig
+import models.v3.PenaltyDetails
 import models.{ETMPPayload, User}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.http.HttpReads.Implicits._
@@ -28,12 +29,16 @@ class PenaltiesConnector @Inject()(httpClient: HttpClient,
                                    appConfig: AppConfig)(implicit ec: ExecutionContext) {
 
   private val penaltiesBaseUrl: String = appConfig.penaltiesUrl
-  private def getPenaltiesDataUrl(enrolmentKey: String)(implicit user: User[_]): String = {
-    val arnParameter = user.arn.fold("")(arn => s"?arn=$arn")
-    s"/etmp/penalties/$enrolmentKey$arnParameter"
+  private def getPenaltiesDataUrl(enrolmentKey: String, isUsingNewApi: Boolean)(implicit user: User[_]): String = {
+    val urlQueryParams = user.arn.fold(s"?newApiModel=$isUsingNewApi")(arn => s"?arn=$arn&newApiModel=$isUsingNewApi")
+    s"/etmp/penalties/$enrolmentKey$urlQueryParams"
   }
 
-  def getPenaltiesData(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[ETMPPayload] = {
-    httpClient.GET[ETMPPayload](s"$penaltiesBaseUrl${getPenaltiesDataUrl(enrolmentKey)}")
+  def getPenaltiesData(enrolmentKey: String, isUsingNewApi: Boolean = false)(implicit user: User[_], hc: HeaderCarrier): Future[ETMPPayload] = {
+    httpClient.GET[ETMPPayload](s"$penaltiesBaseUrl${getPenaltiesDataUrl(enrolmentKey, isUsingNewApi)}")
+  }
+
+  def getPenaltyDetails(enrolmentKey: String, isUsingNewApi: Boolean = true)(implicit user: User[_], hc: HeaderCarrier): Future[PenaltyDetails] = {
+    httpClient.GET[PenaltyDetails](s"$penaltiesBaseUrl${getPenaltiesDataUrl(enrolmentKey, isUsingNewApi)}")
   }
 }
