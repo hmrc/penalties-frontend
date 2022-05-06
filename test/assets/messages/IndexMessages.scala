@@ -73,6 +73,10 @@ object IndexMessages {
 
   val quarterlyThresholdPlusOnePenaltyApplicationForAgent = "If your client reaches 4 points, they’ll have to pay a £200 penalty."
 
+  val annualThresholdPlusOnePenaltyApplication = "If you reach 2 points, you’ll have to pay a £200 penalty."
+
+  val annualThresholdPlusOnePenaltyApplicationForAgent = "If your client reaches 2 points, they’ll have to pay a £200 penalty."
+
   val warningText = "Warning: You’ll get a £200 penalty if you submit another VAT Return late."
 
   val warningTextAgent = "Warning: Your client will get a £200 penalty if they submit another VAT Return late."

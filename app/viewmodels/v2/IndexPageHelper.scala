@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package viewmodels
+package viewmodels.v2
 
-import models.penalty.{LatePaymentPenalty, PaymentStatusEnum}
-import models.{ETMPPayload, User}
+import models.User
+import models.penalty.LatePaymentPenalty
+import models.v3.PenaltyDetails
+import models.v3.appealInfo.AppealStatusEnum.Upheld
+import models.v3.lsp.{LSPPenaltyStatusEnum, TaxReturnStatusEnum}
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
-import services.PenaltiesService
+import services.v2.PenaltiesService
 import utils.MessageRenderer.getMessage
 import utils.{CurrencyFormatter, ViewUtils}
 
@@ -34,12 +37,17 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
                                 penaltiesService: PenaltiesService) extends ViewUtils with CurrencyFormatter {
 
   //scalastyle:off
-  def getContentBasedOnPointsFromModel(etmpData: ETMPPayload)(implicit messages: Messages, user: User[_]): Html = {
-    val fixedPenaltyAmount: String = parseBigDecimalNoPaddedZeroToFriendlyValue(etmpData.fixedPenaltyAmount)  
-    (etmpData.pointsTotal, etmpData.penaltyPointsThreshold, etmpData.adjustmentPointsTotal) match {
-      case (0, _, _) =>
+  def getContentBasedOnPointsFromModel(penaltyDetails: PenaltyDetails)(implicit messages: Messages, user: User[_]): Html = {
+    val fixedPenaltyAmount: String = parseBigDecimalNoPaddedZeroToFriendlyValue(penaltyDetails.lateSubmissionPenalty.map(_.summary.penaltyChargeAmount).getOrElse(0))
+    val activePoints: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0)
+    val regimeThreshold: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0)
+    val removedPoints: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.inactivePenaltyPoints).getOrElse(0)
+    val addedPoints: Int = penaltyDetails.lateSubmissionPenalty.map(_.details.count(point => point.FAPIndicator.equals("X") && !point.penaltyStatus.equals(LSPPenaltyStatusEnum.Inactive))).getOrElse(0)
+    val amountOfLateSubmissions: Int = penaltyDetails.lateSubmissionPenalty.map(_.details.count(_.lateSubmissions.flatMap(_.headOption.map(_.taxReturnStatus.equals(TaxReturnStatusEnum.Open))).isDefined)).getOrElse(0)
+    (activePoints, regimeThreshold, addedPoints, removedPoints) match {
+      case (0, _, _, _) =>
         p(content = stringAsHtml(messages("lsp.pointSummary.noActivePoints")))
-      case (currentPoints, threshold, _) if currentPoints >= threshold =>
+      case (currentPoints, threshold, _, _) if currentPoints >= threshold =>
         html(
           p(content = html(stringAsHtml(getMessage("lsp.onThreshold.p1"))),
             classes = "govuk-body govuk-!-font-size-24"),
@@ -50,13 +58,13 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           )),
           p(link(link = controllers.routes.ComplianceController.onPageLoad.url, messages("lsp.onThreshold.link")))
         )
-      case (currentPoints, threshold, adjustedPoints) if adjustedPoints > 0 =>
+      case (currentPoints, threshold, addedPoints, _) if addedPoints > 0 =>
         val base = Seq(
-          p(content = getPluralOrSingular(currentPoints, currentPoints)("lsp.pointSummary.penaltyPoints.adjusted.singular", "lsp.pointSummary.penaltyPoints.adjusted.plural")),
+          p(content = getPluralOrSingular(currentPoints)("lsp.pointSummary.penaltyPoints.adjusted.singular", "lsp.pointSummary.penaltyPoints.adjusted.plural")),
           bullets(Seq(
-            getPluralOrSingular(etmpData.lateSubmissions, etmpData.lateSubmissions)("lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular",
+            getPluralOrSingular(amountOfLateSubmissions)("lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular",
               "lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.plural"),
-            getPluralOrSingular(etmpData.adjustmentPointsTotal, etmpData.adjustmentPointsTotal)("lsp.pointSummary.penaltyPoints.adjusted.addedPoints.singular",
+            getPluralOrSingular(addedPoints)("lsp.pointSummary.penaltyPoints.adjusted.addedPoints.singular",
               "lsp.pointSummary.penaltyPoints.adjusted.addedPoints.plural")
           )),
           p(content = stringAsHtml(
@@ -70,13 +78,13 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           html(base: _*)
         }
 
-      case (currentPoints, threshold, adjustedPoints) if adjustedPoints < 0 =>
+      case (currentPoints, threshold, _, removedPoints) if removedPoints > 0 =>
         val base = Seq(
-          p(content = getPluralOrSingular(currentPoints, currentPoints)("lsp.pointSummary.penaltyPoints.adjusted.singular", "lsp.pointSummary.penaltyPoints.adjusted.plural")),
+          p(content = getPluralOrSingular(currentPoints)("lsp.pointSummary.penaltyPoints.adjusted.singular", "lsp.pointSummary.penaltyPoints.adjusted.plural")),
           bullets(Seq(
-            getPluralOrSingular(etmpData.lateSubmissions, etmpData.lateSubmissions)("lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular",
+            getPluralOrSingular(amountOfLateSubmissions)("lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular",
               "lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.plural"),
-            getPluralOrSingular(Math.abs(etmpData.adjustmentPointsTotal), Math.abs(etmpData.adjustmentPointsTotal))("lsp.pointSummary.penaltyPoints.adjusted.removedPoints.singular",
+            getPluralOrSingular(removedPoints)("lsp.pointSummary.penaltyPoints.adjusted.removedPoints.singular",
               "lsp.pointSummary.penaltyPoints.adjusted.removedPoints.plural")
           )),
           p(content = stringAsHtml(
@@ -90,10 +98,10 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           html(base: _*)
         }
 
-      case (currentPoints, threshold, _) if currentPoints < threshold - 1 =>
+      case (currentPoints, threshold, _, _) if currentPoints < threshold - 1 =>
         html(
           renderPointsTotal(currentPoints),
-          p(content = getPluralOrSingularContentForOverview(currentPoints, etmpData.lateSubmissions)),
+          p(content = getPluralOrSingularContentForOverview(currentPoints, amountOfLateSubmissions)),
           p(content = stringAsHtml(
             getMessage("lsp.pointSummary.penaltyPoints.overview.anotherPoint")
           )),
@@ -102,22 +110,27 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           )),
           getGuidanceLink
         )
-      case (currentPoints, threshold, _) if currentPoints == threshold - 1 =>
+      case (currentPoints, threshold, _, _) if currentPoints == threshold - 1 =>
         html(
           renderPointsTotal(currentPoints),
           warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText", fixedPenaltyAmount))),
-          p(getPluralOrSingularContentForOverview(currentPoints, etmpData.lateSubmissions)),
+          p(getPluralOrSingularContentForOverview(currentPoints, amountOfLateSubmissions)),
           getGuidanceLink
         )
       case _ => p(content = html(stringAsHtml("")))
     }
   }
 
-  def getContentBasedOnLatePaymentPenaltiesFromModel(etmpData: ETMPPayload)(implicit messages: Messages, user: User[_]): Html = {
-    if (etmpData.latePaymentPenalties.getOrElse(List.empty[LatePaymentPenalty]).isEmpty) {
+  def getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetails: PenaltyDetails)(implicit messages: Messages, user: User[_]): Html = {
+    if (penaltyDetails.latePaymentPenalty.map(_.details).getOrElse(List.empty[LatePaymentPenalty]).isEmpty) {
       p(content = stringAsHtml(messages("lpp.penaltiesSummary.noPaymentPenalties")))
     } else {
-      if (etmpData.latePaymentPenalties.isDefined && etmpData.latePaymentPenalties.get.exists(_.period.paymentStatus != PaymentStatusEnum.Paid)) {
+      val isAnyLPPNotPaid: Boolean = penaltyDetails.latePaymentPenalty.exists(_.details.exists(
+        penalty => {
+          penalty.appealInformation.map(_.exists(_.appealStatus.contains(Upheld))).isEmpty &&
+            penalty.penaltyAmountOutstanding.getOrElse(BigDecimal(0)) > BigDecimal(0)
+        }))
+      if (penaltyDetails.latePaymentPenalty.map(_.details).isDefined && isAnyLPPNotPaid) {
         html(
           p(content = html(stringAsHtml(getMessage("lpp.penaltiesSummary.unpaid")))),
           p(link(link = "#", messages("lpp.penaltiesSummary.howLppCalculated.link", messages("site.opensInNewTab"))))
@@ -136,11 +149,11 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     }
   }
 
-  def getPluralOrSingular(total: Int, arg: Int)(msgForSingular: String, msgForPlural: String)(implicit messages: Messages, user: User[_]): Html = {
+  def getPluralOrSingular(total: Int)(msgForSingular: String, msgForPlural: String)(implicit messages: Messages, user: User[_]): Html = {
     if (total == 1) {
-      stringAsHtml(getMessage(msgForSingular, arg))
+      stringAsHtml(getMessage(msgForSingular, total))
     } else {
-      stringAsHtml(getMessage(msgForPlural, arg))
+      stringAsHtml(getMessage(msgForPlural, total))
     }
   }
 
@@ -162,32 +175,34 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       isExternal = true),
     classes = "govuk-body")
 
-  def getWhatYouOweBreakdown(etmpData: ETMPPayload)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
-    val amountOfLateVAT = penaltiesService.findOverdueVATFromPayload(etmpData)
 
-    val crystallisedLPPAmount = penaltiesService.findCrystallisedLPPsFromPayload(etmpData)
-    val estimatedLPPAmount = penaltiesService.findEstimatedLPPsFromPayload(etmpData)
-
-    val otherUnrelatedPenalties = penaltiesService.isOtherUnrelatedPenalties(etmpData)
-    val totalAmountOfLSPs = penaltiesService.findTotalLSPFromPayload(etmpData)
-    val estimatedVATInterest = penaltiesService.findEstimatedVATInterest(etmpData)
-    val penaltiesCrystalizedInterest = penaltiesService.findCrystalizedPenaltiesInterest(etmpData)
-    val penaltiesEstimatedInterest = penaltiesService.findEstimatedPenaltiesInterest(etmpData)
-    val singularOrPluralAmountOfLSPs = if (totalAmountOfLSPs._2 > 1) {
-      returnEstimatedMessageIfInterestMoreThanZero(totalAmountOfLSPs._1, isEstimatedAmount = false, "whatIsOwed.amountOfLSPs.plural")
-    }else{
-      returnEstimatedMessageIfInterestMoreThanZero(totalAmountOfLSPs._1, isEstimatedAmount = false, "whatIsOwed.amountOfLSPs.singular")
+  def getWhatYouOweBreakdown(penaltyDetails: PenaltyDetails)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
+    val amountOfLateVAT = penaltiesService.findOverdueVATFromPayload(penaltyDetails)
+    val crystallisedLPPAmount = penaltiesService.findCrystallisedLPPsFromPayload(penaltyDetails)
+    val estimatedLPPAmount = penaltiesService.findEstimatedLPPsFromPayload(penaltyDetails)
+    val otherUnrelatedPenalties = penaltiesService.isOtherUnrelatedPenalties(penaltyDetails)
+    val totalAmountOfLSPs = penaltiesService.findTotalLSPFromPayload(penaltyDetails)
+    val totalNumberOfLSPs = penaltyDetails.lateSubmissionPenalty.map(_.details.filter(
+      penalty => penalty.penaltyStatus.equals(LSPPenaltyStatusEnum.Active) &&
+        penalty.chargeOutstandingAmount.exists(_ > BigDecimal(0))
+    )).map(_.size).getOrElse(0)
+    val estimatedVATInterest = penaltiesService.findEstimatedVATInterest(penaltyDetails)
+    val penaltiesCrystalizedInterest = penaltiesService.findCrystalizedPenaltiesInterest(penaltyDetails)
+    val penaltiesEstimatedInterest = penaltiesService.findEstimatedPenaltiesInterest(penaltyDetails)
+    val singularOrPluralAmountOfLSPs = if (totalNumberOfLSPs > 1) {
+      returnEstimatedMessageIfInterestMoreThanZero(totalAmountOfLSPs, isEstimatedAmount = false, "whatIsOwed.amountOfLSPs.plural")
+    } else {
+      returnEstimatedMessageIfInterestMoreThanZero(totalAmountOfLSPs, isEstimatedAmount = false, "whatIsOwed.amountOfLSPs.singular")
     }
     val stringToConvertToBulletPoints = Seq(
       returnEstimatedMessageIfInterestMoreThanZero(amountOfLateVAT, isEstimatedAmount = false, "whatIsOwed.lateVAT"),
-      returnEstimatedMessageIfInterestMoreThanZero(estimatedVATInterest._1, estimatedVATInterest._2, "whatIsOwed.VATInterest"),
-
+      //TODO implement functionality for VAT interest
+      returnEstimatedMessageIfInterestMoreThanZero(0, false, "whatIsOwed.VATInterest"),
       returnEstimatedMessageIfInterestMoreThanZero(crystallisedLPPAmount, isEstimatedAmount = false, "whatIsOwed.lppAmount"),
       returnEstimatedMessageIfInterestMoreThanZero(estimatedLPPAmount, isEstimatedAmount = true, "whatIsOwed.lppAmount"),
-
       returnEstimatedMessageIfInterestMoreThanZero(penaltiesCrystalizedInterest + penaltiesEstimatedInterest, penaltiesEstimatedInterest > BigDecimal(0), "whatIsOwed.allPenalties.interest"),
       singularOrPluralAmountOfLSPs,
-      returnMessageIfOtherUnrelatedPenalties(otherUnrelatedPenalties, "whatIsOwed.otherPenalties")
+      returnMessageIfOtherUnrelatedPenalties(false, "whatIsOwed.otherPenalties")
     ).collect { case Some(x) => x }
     if (stringToConvertToBulletPoints.isEmpty || (stringToConvertToBulletPoints.size == 1 && otherUnrelatedPenalties)) {
       None
@@ -202,9 +217,8 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
   }
 
   private def returnMessageIfOtherUnrelatedPenalties(isUnrelatedPenalties: Boolean, msgKey: String)(implicit messages: Messages): Option[String] = {
-    if (isUnrelatedPenalties) {
-      Some(messages(msgKey))
-    } else None
+    //TODO implement other unrelated penalties functionality
+    None
   }
 
   private def returnEstimatedMessageIfInterestMoreThanZero(interestAmount: BigDecimal, isEstimatedAmount: Boolean, msgKeyToApply: String)(implicit messages: Messages): Option[String] = {

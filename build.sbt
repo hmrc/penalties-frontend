@@ -16,7 +16,7 @@ lazy val microservice = Project(appName, file("."))
       "config.AppConfig",
       "uk.gov.hmrc.govukfrontend.views.html.components._",
       "views.html.layouts.Layout",
-      "utils.MessageRenderer.getMessage",
+      "utils.MessageRenderer.getMessage"
     ),
     // ***************
     // Use the silencer plugin to suppress warnings

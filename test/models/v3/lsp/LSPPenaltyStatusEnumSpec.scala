@@ -44,7 +44,7 @@ class LSPPenaltyStatusEnumSpec extends SpecBase {
       result.get shouldBe LSPPenaltyStatusEnum.Inactive
     }
 
-    "return a JsError when the enu, is not readable" in {
+    "return a JsError when the enum is not readable" in {
       val result = Json.fromJson(JsString("error"))(LSPPenaltyStatusEnum.format)
       result.isError shouldBe true
     }

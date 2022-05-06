@@ -349,7 +349,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
             Tag(content = Text("active")),
             "3",
             "123456789",
-            isReturnSubmitted = true,
+            isReturnSubmitted = true
           ),
             LateSubmissionPenaltySummaryCard(
               Seq(
@@ -364,7 +364,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               Tag(content = Text("active")),
               "2",
               "123456789",
-              isReturnSubmitted = true,
+              isReturnSubmitted = true
             ),
             LateSubmissionPenaltySummaryCard(
               Seq(
@@ -379,7 +379,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               Tag(content = Text("active")),
               "1",
               "123456789",
-              isReturnSubmitted = true,
+              isReturnSubmitted = true
             ),
             LateSubmissionPenaltySummaryCard(
               Seq(
