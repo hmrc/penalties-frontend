@@ -18,7 +18,7 @@ package viewmodels.v2
 
 import assets.messages.IndexMessages._
 import base.SpecBase
-import models.v3.{PenaltyDetails, Totalisations}
+import models.v3.{GetPenaltyDetails, Totalisations}
 import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty}
 import models.v3.lsp._
 import org.jsoup.Jsoup
@@ -109,7 +109,7 @@ class IndexPageHelperSpec extends SpecBase {
 
 
   "getContentBasedOnPointsFromModel" should {
-    val penaltyDetailsWith3ActivePoints: PenaltyDetails = PenaltyDetails(
+    val penaltyDetailsWith3ActivePoints: GetPenaltyDetails = GetPenaltyDetails(
       totalisations = None,
       lateSubmissionPenalty = Some(
         LateSubmissionPenalty(
@@ -204,7 +204,7 @@ class IndexPageHelperSpec extends SpecBase {
       latePaymentPenalty = None
     )
 
-    val penaltyDetailsWith2ActivePoints: PenaltyDetails = PenaltyDetails(
+    val penaltyDetailsWith2ActivePoints: GetPenaltyDetails = GetPenaltyDetails(
       totalisations = None,
       lateSubmissionPenalty = Some(
         LateSubmissionPenalty(
@@ -273,7 +273,7 @@ class IndexPageHelperSpec extends SpecBase {
       latePaymentPenalty = None
     )
 
-    val penaltyDetailsWith1ActivePoint: PenaltyDetails = PenaltyDetails(
+    val penaltyDetailsWith1ActivePoint: GetPenaltyDetails = GetPenaltyDetails(
       totalisations = None,
       lateSubmissionPenalty = Some(
         LateSubmissionPenalty(
@@ -316,7 +316,7 @@ class IndexPageHelperSpec extends SpecBase {
       latePaymentPenalty = None
     )
 
-    val penaltyDetailsWith1ActivePointAnnual: PenaltyDetails = PenaltyDetails(
+    val penaltyDetailsWith1ActivePointAnnual: GetPenaltyDetails = GetPenaltyDetails(
       totalisations = None,
       lateSubmissionPenalty = Some(
         LateSubmissionPenalty(
@@ -361,7 +361,7 @@ class IndexPageHelperSpec extends SpecBase {
 
     "no active penalty points" should {
       "display a message in a <p> tag" in {
-        val penaltyDetailsWithNoActivePoints: PenaltyDetails = PenaltyDetails(
+        val penaltyDetailsWithNoActivePoints: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = None,
           lateSubmissionPenalty = Some(
             LateSubmissionPenalty(
@@ -483,7 +483,7 @@ class IndexPageHelperSpec extends SpecBase {
     }
 
     "points are at or above the threshold" should {
-      val penaltyDetailsWith4ActivePoints: PenaltyDetails = PenaltyDetails(
+      val penaltyDetailsWith4ActivePoints: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = None,
         lateSubmissionPenalty = Some(
           LateSubmissionPenalty(
@@ -638,7 +638,7 @@ class IndexPageHelperSpec extends SpecBase {
     }
 
     "points have been added" should {
-      val penaltyDetailsWithAddedPoints: PenaltyDetails = PenaltyDetails(
+      val penaltyDetailsWithAddedPoints: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = None,
         lateSubmissionPenalty = Some(
           LateSubmissionPenalty(
@@ -697,7 +697,7 @@ class IndexPageHelperSpec extends SpecBase {
         latePaymentPenalty = None
       )
 
-      val penaltyDetailsWithAddedPointsAtPenultimate: PenaltyDetails = PenaltyDetails(
+      val penaltyDetailsWithAddedPointsAtPenultimate: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = None,
         lateSubmissionPenalty = Some(
           LateSubmissionPenalty(
@@ -818,7 +818,7 @@ class IndexPageHelperSpec extends SpecBase {
     }
 
     "points have been removed" should {
-      val penaltyDetailsWithRemovedPoints: PenaltyDetails = PenaltyDetails(
+      val penaltyDetailsWithRemovedPoints: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = None,
         lateSubmissionPenalty = Some(
           LateSubmissionPenalty(
@@ -903,7 +903,7 @@ class IndexPageHelperSpec extends SpecBase {
         latePaymentPenalty = None
       )
 
-      val penaltyDetailsWithRemovedPointsAtPenultimate: PenaltyDetails = PenaltyDetails(
+      val penaltyDetailsWithRemovedPointsAtPenultimate: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = None,
         lateSubmissionPenalty = Some(
           LateSubmissionPenalty(
@@ -1063,7 +1063,7 @@ class IndexPageHelperSpec extends SpecBase {
   "getContentBasedOnLatePaymentPenaltiesFromModel" should {
     "no active payment penalties" should {
       "display a message in a <p> tag" in {
-        val penaltyDetails: PenaltyDetails = PenaltyDetails(
+        val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = None,
           lateSubmissionPenalty = None,
           latePaymentPenalty = Some(
@@ -1079,7 +1079,7 @@ class IndexPageHelperSpec extends SpecBase {
     }
 
     "display unpaid VAT text and 'how lpp calculated' link" when {
-      val penaltyDetailsUnpaidVAT: PenaltyDetails = PenaltyDetails(
+      val penaltyDetailsUnpaidVAT: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = None,
         lateSubmissionPenalty = None,
         latePaymentPenalty = Some(
@@ -1134,7 +1134,7 @@ class IndexPageHelperSpec extends SpecBase {
   "getWhatYouOweBreakdown" should {
     "return None" when {
       "the user has no outstanding payments" in {
-        val penaltyDetailsWithNoOutstandingPayments: PenaltyDetails = PenaltyDetails(
+        val penaltyDetailsWithNoOutstandingPayments: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = None, lateSubmissionPenalty = None, latePaymentPenalty = None
         )
         val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWithNoOutstandingPayments)
@@ -1144,7 +1144,7 @@ class IndexPageHelperSpec extends SpecBase {
 
     "return Some" when {
       "the user has outstanding VAT to pay" in {
-        val penaltyDetailsWithOutstandingVAT: PenaltyDetails = PenaltyDetails(
+        val penaltyDetailsWithOutstandingVAT: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = Some(
             Totalisations(
               LSPTotalValue = 100,
@@ -1163,7 +1163,7 @@ class IndexPageHelperSpec extends SpecBase {
     }
 
     "the user has outstanding LPP's to pay - no estimates" in {
-      val penaltyDetails: PenaltyDetails = PenaltyDetails(
+      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
             LSPTotalValue = 100,
@@ -1183,7 +1183,7 @@ class IndexPageHelperSpec extends SpecBase {
     }
 
     "the user has outstanding LPP's to pay - with estimates" in {
-      val penaltyDetails: PenaltyDetails = PenaltyDetails(
+      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
             LSPTotalValue = 100,
@@ -1203,7 +1203,7 @@ class IndexPageHelperSpec extends SpecBase {
     }
 
     "the user has outstanding VAT and outstanding LPP's" in {
-      val penaltyDetails: PenaltyDetails = PenaltyDetails(
+      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
             LSPTotalValue = 100,
@@ -1224,7 +1224,7 @@ class IndexPageHelperSpec extends SpecBase {
     }
 
     "the user has outstanding VAT to pay and has other unrelated penalties" in {
-      val penaltyDetails: PenaltyDetails = PenaltyDetails(
+      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
             LSPTotalValue = 100,
@@ -1253,7 +1253,7 @@ class IndexPageHelperSpec extends SpecBase {
     //      }
 
     "the user has outstanding VAT to pay and outstanding LSP's" in {
-      val penaltyDetails: PenaltyDetails = PenaltyDetails(
+      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
             LSPTotalValue = 400,
@@ -1334,7 +1334,7 @@ class IndexPageHelperSpec extends SpecBase {
     }
 
     "the user has outstanding LSP's" in {
-      val penaltyDetails: PenaltyDetails = PenaltyDetails(
+      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
             LSPTotalValue = 400,
@@ -1413,7 +1413,7 @@ class IndexPageHelperSpec extends SpecBase {
     }
 
     "the user has a single outstanding LSP" in {
-      val penaltyDetails: PenaltyDetails = PenaltyDetails(
+      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
             LSPTotalValue = 200,
@@ -1500,7 +1500,7 @@ class IndexPageHelperSpec extends SpecBase {
     //      }
 
     "the user has crystalized and estimated interest on penalties" in {
-      val penaltyDetails: PenaltyDetails = PenaltyDetails(
+      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
             LSPTotalValue = 400,
@@ -1530,7 +1530,7 @@ class IndexPageHelperSpec extends SpecBase {
     }
 
     "the user has just crystalized interest on penalties" in {
-      val penaltyDetails: PenaltyDetails = PenaltyDetails(
+      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
             LSPTotalValue = 400,
@@ -1560,7 +1560,7 @@ class IndexPageHelperSpec extends SpecBase {
     }
 
     "the user has no estimated or crystalized interest on penalties" in {
-      val penaltyDetails: PenaltyDetails = PenaltyDetails(
+      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
             LSPTotalValue = 400,

@@ -26,9 +26,9 @@ import play.api.libs.json.{JsValue, Json}
 import java.time.LocalDate
 
 
-class PenaltyDetailsSpec extends AnyWordSpec with Matchers {
+class GetPenaltyDetailsSpec extends AnyWordSpec with Matchers {
 
-  val penaltyDetails: PenaltyDetails = PenaltyDetails(
+  val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = Some(Totalisations(
       LSPTotalValue = 200,
       penalisedPrincipalTotal = 2000,
@@ -186,12 +186,12 @@ class PenaltyDetailsSpec extends AnyWordSpec with Matchers {
   "PenaltyDetailsSpec" should {
 
     "be writeable to JSON" in {
-      val result: JsValue = Json.toJson(penaltyDetails)(PenaltyDetails.format)
+      val result: JsValue = Json.toJson(penaltyDetails)(GetPenaltyDetails.format)
       result shouldBe penaltyDetailsAsJson
     }
 
     "be readable from JSON" in {
-      val result = Json.fromJson(penaltyDetailsAsJson)(PenaltyDetails.format)
+      val result = Json.fromJson(penaltyDetailsAsJson)(GetPenaltyDetails.format)
       result.isSuccess shouldBe true
       result.get shouldBe penaltyDetails
     }

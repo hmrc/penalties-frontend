@@ -20,12 +20,12 @@ import models.v3.lpp.LatePaymentPenalty
 import models.v3.lsp.LateSubmissionPenalty
 import play.api.libs.json.{Json, OFormat}
 
-case class PenaltyDetails(
+case class GetPenaltyDetails(
                            totalisations: Option[Totalisations],
                            lateSubmissionPenalty: Option[LateSubmissionPenalty],
                            latePaymentPenalty: Option[LatePaymentPenalty]
                          )
 
-object PenaltyDetails {
-  implicit val format: OFormat[PenaltyDetails] = Json.format[PenaltyDetails]
+object GetPenaltyDetails {
+  implicit val format: OFormat[GetPenaltyDetails] = Json.format[GetPenaltyDetails]
 }

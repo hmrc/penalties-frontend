@@ -20,7 +20,7 @@ import base.SpecBase
 import config.AppConfig
 import models.ETMPPayload
 import models.v3.appealInfo.{AppealInformationType, AppealStatusEnum}
-import models.v3.{PenaltyDetails, Totalisations}
+import models.v3.{GetPenaltyDetails, Totalisations}
 import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty}
 import models.v3.lsp.{LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum, LSPSummary, LateSubmission, LateSubmissionPenalty, TaxReturnStatusEnum}
 import org.mockito.Matchers._
@@ -44,7 +44,7 @@ class PenaltiesConnectorSpec extends SpecBase {
     when(mockAppConfig.penaltiesUrl).thenReturn("/")
   }
 
-  val samplePenaltyDetailsModel: PenaltyDetails = PenaltyDetails(
+  val samplePenaltyDetailsModel: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = Some(Totalisations(
       LSPTotalValue = 200,
       penalisedPrincipalTotal = 2000,
@@ -149,7 +149,7 @@ class PenaltiesConnectorSpec extends SpecBase {
 
   "getPenaltyDetails" should {
     "return a successful response when the call succeeds and the body can be parsed" in new Setup{
-      when(mockHttpClient.GET[PenaltyDetails](any(),
+      when(mockHttpClient.GET[GetPenaltyDetails](any(),
         any(),
         any())
         (any(),
@@ -161,7 +161,7 @@ class PenaltiesConnectorSpec extends SpecBase {
     }
 
     "return an error when an error occurs upstream" in new Setup{
-      when(mockHttpClient.GET[PenaltyDetails](any(),
+      when(mockHttpClient.GET[GetPenaltyDetails](any(),
         any(),
         any())
         (any(),

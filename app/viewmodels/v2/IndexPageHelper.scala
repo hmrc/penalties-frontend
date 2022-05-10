@@ -18,7 +18,7 @@ package viewmodels.v2
 
 import models.User
 import models.penalty.LatePaymentPenalty
-import models.v3.PenaltyDetails
+import models.v3.GetPenaltyDetails
 import models.v3.appealInfo.AppealStatusEnum.Upheld
 import models.v3.lsp.{LSPPenaltyStatusEnum, TaxReturnStatusEnum}
 import play.api.i18n.Messages
@@ -37,7 +37,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
                                 penaltiesService: PenaltiesService) extends ViewUtils with CurrencyFormatter {
 
   //scalastyle:off
-  def getContentBasedOnPointsFromModel(penaltyDetails: PenaltyDetails)(implicit messages: Messages, user: User[_]): Html = {
+  def getContentBasedOnPointsFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_]): Html = {
     val fixedPenaltyAmount: String = parseBigDecimalNoPaddedZeroToFriendlyValue(penaltyDetails.lateSubmissionPenalty.map(_.summary.penaltyChargeAmount).getOrElse(0))
     val activePoints: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0)
     val regimeThreshold: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0)
@@ -121,7 +121,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     }
   }
 
-  def getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetails: PenaltyDetails)(implicit messages: Messages, user: User[_]): Html = {
+  def getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_]): Html = {
     if (penaltyDetails.latePaymentPenalty.map(_.details).getOrElse(List.empty[LatePaymentPenalty]).isEmpty) {
       p(content = stringAsHtml(messages("lpp.penaltiesSummary.noPaymentPenalties")))
     } else {
@@ -176,7 +176,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     classes = "govuk-body")
 
 
-  def getWhatYouOweBreakdown(penaltyDetails: PenaltyDetails)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
+  def getWhatYouOweBreakdown(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
     val amountOfLateVAT = penaltiesService.findOverdueVATFromPayload(penaltyDetails)
     val crystallisedLPPAmount = penaltiesService.findCrystallisedLPPsFromPayload(penaltyDetails)
     val estimatedLPPAmount = penaltiesService.findEstimatedLPPsFromPayload(penaltyDetails)

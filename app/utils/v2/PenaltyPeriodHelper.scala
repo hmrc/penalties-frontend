@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-package featureSwitches
+package utils.v2
 
-sealed trait FeatureSwitch {
-  val name: String
+import models.v3.lsp.LateSubmission
+
+object PenaltyPeriodHelper {
+
+  def sortByPenaltyStartDate(p1: LateSubmission, p2: LateSubmission):Int = {
+    if(p1.taxPeriodStartDate.isDefined && p2.taxPeriodStartDate.isDefined) {
+      p1.taxPeriodStartDate.get.compareTo(p2.taxPeriodStartDate.get)
+    }
+    else {
+      0
+    }
+  }
+
+  def sortedPenaltyPeriod(penaltyPeriod: Seq[LateSubmission]):Seq[LateSubmission]= {
+    if(penaltyPeriod.nonEmpty)
+      penaltyPeriod.sortWith(sortByPenaltyStartDate(_ , _) < 0)
+    else
+      Seq.empty
+  }
 }
-
-object FeatureSwitch {
-  val prefix: String = "feature.switch"
-  val listOfAllFeatureSwitches: List[FeatureSwitch] = List(CallAPI1812ETMP)
-}
-
-case object CallAPI1812ETMP extends FeatureSwitch{
-  override val name: String = s"${FeatureSwitch.prefix}.call-api-1812-etmp"
-}
-
-case object UseAPI1812Model extends FeatureSwitch {
-  override val name: String = s"${FeatureSwitch.prefix}.use-api-1812-model"
-}
-
-

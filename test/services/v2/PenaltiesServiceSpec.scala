@@ -17,11 +17,11 @@
 package services.v2
 
 import base.SpecBase
-import models.v3.{PenaltyDetails, Totalisations}
+import models.v3.{GetPenaltyDetails, Totalisations}
 
 class PenaltiesServiceSpec extends SpecBase {
 
-  val penaltyDetailsWithNoVATDue: PenaltyDetails = PenaltyDetails(
+  val penaltyDetailsWithNoVATDue: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = Some(Totalisations(
       LSPTotalValue = 0,
       penalisedPrincipalTotal = 0,
@@ -34,7 +34,7 @@ class PenaltiesServiceSpec extends SpecBase {
     latePaymentPenalty = None
   )
 
-  val penaltyDetailsWithVATOnly: PenaltyDetails = PenaltyDetails(
+  val penaltyDetailsWithVATOnly: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = Some(Totalisations(
       LSPTotalValue = 0,
       penalisedPrincipalTotal = 223.45,
@@ -47,7 +47,7 @@ class PenaltiesServiceSpec extends SpecBase {
     latePaymentPenalty = None
   )
 
-  val penaltyDetailsWithEstimatedLPPs: PenaltyDetails = PenaltyDetails(
+  val penaltyDetailsWithEstimatedLPPs: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = Some(Totalisations(
       LSPTotalValue = 0,
       penalisedPrincipalTotal = 0,
@@ -60,7 +60,7 @@ class PenaltiesServiceSpec extends SpecBase {
     latePaymentPenalty = None
   )
 
-  val penaltyDetailsWithCrystallisedLPPs: PenaltyDetails = PenaltyDetails(
+  val penaltyDetailsWithCrystallisedLPPs: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = Some(Totalisations(
       LSPTotalValue = 0,
       penalisedPrincipalTotal = 0,
@@ -113,7 +113,7 @@ class PenaltiesServiceSpec extends SpecBase {
   }
 
   "findTotalLSPFromPayload" should {
-    val penaltyDetailsWithLSPs: PenaltyDetails = PenaltyDetails(
+    val penaltyDetailsWithLSPs: GetPenaltyDetails = GetPenaltyDetails(
       totalisations = Some(
         Totalisations(
           LSPTotalValue = 400,
@@ -175,7 +175,7 @@ class PenaltiesServiceSpec extends SpecBase {
     }
 
     "return 0 when the payload contains financial penalties but does not contain crystalized interest penalties for LPP" in new Setup {
-      val penaltyDetails: PenaltyDetails = PenaltyDetails(
+      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
             LSPTotalValue = 400,
@@ -194,7 +194,7 @@ class PenaltiesServiceSpec extends SpecBase {
     }
 
     "return total amount when the payload contains crystalized interest penalties for LSP and LPP" in new Setup {
-      val penaltyDetails: PenaltyDetails = PenaltyDetails(
+      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
             LSPTotalValue = 400,
@@ -220,7 +220,7 @@ class PenaltiesServiceSpec extends SpecBase {
     }
 
     "return 0 when the payload contains financial penalties but does not contain estimated interest penalties for LSP and LPP" in new Setup {
-      val penaltyDetails: PenaltyDetails = PenaltyDetails(
+      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
             LSPTotalValue = 400,
@@ -239,7 +239,7 @@ class PenaltiesServiceSpec extends SpecBase {
     }
 
     "return total amount when the payload contains estimated interest penalties for LPP" in new Setup {
-      val penaltyDetails: PenaltyDetails = PenaltyDetails(
+      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
             LSPTotalValue = 400,

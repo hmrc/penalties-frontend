@@ -25,7 +25,7 @@ import models.submission.{Submission, SubmissionStatusEnum}
 import models.v3.appealInfo.{AppealInformationType, AppealStatusEnum}
 import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty => v3LatePaymentPenalty}
 import models.v3.lsp._
-import models.v3.{PenaltyDetails, Totalisations}
+import models.v3.{GetPenaltyDetails, Totalisations}
 import play.api.http.Status
 import play.api.libs.json.Json
 
@@ -95,7 +95,7 @@ object PenaltiesStub {
     latePaymentPenalties = Option(Seq.empty[LatePaymentPenalty])
   )
 
-  val samplePenaltyDetails: PenaltyDetails = PenaltyDetails(
+  val samplePenaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = Some(Totalisations(
       LSPTotalValue = 200,
       penalisedPrincipalTotal = 2000,
