@@ -17,26 +17,33 @@
 package controllers
 
 import base.SpecBase
+import featureSwitches.{CallAPI1812ETMP, FeatureSwitching}
 import models.ETMPPayload
 import models.financial.Financial
 import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum}
 import models.point.{PenaltyTypeEnum, PointStatusEnum}
 import models.reason.PaymentPenaltyReasonEnum
+import models.v3.appealInfo.{AppealInformationType, AppealStatusEnum}
+import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum}
+import models.v3.lsp._
+import models.v3.lpp.{LatePaymentPenalty => NewLatePaymentPenalty}
+import models.v3.{PenaltyDetails, Totalisations}
 import org.mockito.Matchers
 import org.mockito.Mockito.{mock, reset, when}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.PenaltiesService
 import testUtils.AuthTestModels
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
+import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import viewmodels.CalculationPageHelper
-import views.html.{CalculationLPPView, CalculationAdditionalView}
+import views.html.{CalculationAdditionalView, CalculationLPPView}
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CalculationControllerSpec extends SpecBase {
+class CalculationControllerSpec extends SpecBase with FeatureSwitching {
   val calculationView: CalculationLPPView = injector.instanceOf[CalculationLPPView]
   val calculationAdditionalView: CalculationAdditionalView = injector.instanceOf[CalculationAdditionalView]
   val mockPenaltiesService: PenaltiesService = mock(classOf[PenaltiesService])
@@ -114,13 +121,165 @@ class CalculationControllerSpec extends SpecBase {
     ))
   )
 
-  class Setup(authResult: Future[~[Option[AffinityGroup], Enrolments]]) {
+  val penaltyDetailsPayload: PenaltyDetails = PenaltyDetails(
+    totalisations = Some(Totalisations(
+      LSPTotalValue = 200,
+      penalisedPrincipalTotal = 2000,
+      LPPPostedTotal = 165.25,
+      LPPEstimatedTotal = 15.26,
+      LPIPostedTotal = 1968.2,
+      LPIEstimatedTotal = 7)),
+    lateSubmissionPenalty = Some(
+      LateSubmissionPenalty(
+        summary = LSPSummary(
+          activePenaltyPoints = 10,
+          inactivePenaltyPoints = 12,
+          regimeThreshold = 10,
+          penaltyChargeAmount = 684.25
+        ),
+        details = Seq(LSPDetails(
+          penaltyNumber = "12345678901234",
+          penaltyOrder = "01",
+          penaltyCategory = LSPPenaltyCategoryEnum.Point,
+          penaltyStatus = LSPPenaltyStatusEnum.Active,
+          FAPIndicator = "X",
+          penaltyCreationDate = LocalDate.parse("2069-10-30"),
+          penaltyExpiryDate = LocalDate.parse("2069-10-30"),
+          expiryReason = Some("FAP"),
+          communicationsDate = LocalDate.parse("2069-10-30"),
+          lateSubmissions = Some(Seq(
+            LateSubmission(
+              taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
+              taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
+              taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
+              returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
+              taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+            )
+          )),
+          appealInformation = Some(Seq(
+            AppealInformationType(
+              appealStatus = Some(AppealStatusEnum.Unappealable),
+              appealLevel = Some("01")
+            )
+          )),
+          chargeAmount = Some(200),
+          chargeOutstandingAmount = Some(200),
+          chargeDueDate = Some(LocalDate.parse("2069-10-30"))
+        ))
+      )
+    ),
+    latePaymentPenalty = Some(NewLatePaymentPenalty(
+      details = Seq(LPPDetails(
+        principalChargeReference = "12345678901234",
+        penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
+        penaltyStatus = LPPPenaltyStatusEnum.Accruing,
+        penaltyAmountPaid = Some(1001.45),
+        penaltyAmountOutstanding = Some(99.99),
+        LPP1LRDays = Some("15"),
+        LPP1HRDays = Some("31"),
+        LPP2Days = Some("31"),
+        LPP1LRCalculationAmount = Some(99.99),
+        LPP1HRCalculationAmount = Some(99.99),
+        LPP2Percentage = Some(4.00),
+        LPP1LRPercentage = Some(2.00),
+        LPP1HRPercentage = Some(BigDecimal(2.00).setScale(2)),
+        penaltyChargeCreationDate = LocalDate.parse("2069-10-30"),
+        communicationsDate = LocalDate.parse("2069-10-30"),
+        penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
+        appealInformation = Some(Seq(AppealInformationType(
+          appealStatus = Some(AppealStatusEnum.Unappealable),
+          appealLevel = Some("01")
+        ))),
+        principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
+        principalChargeBillingTo = LocalDate.parse("2069-10-30"),
+        principalChargeDueDate = LocalDate.parse("2069-10-30")
+      ))
+    ))
+  )
+
+  val penaltyDetailsPayloadNo15Or30DayAmount: PenaltyDetails = PenaltyDetails(
+    totalisations = Some(Totalisations(
+      LSPTotalValue = 200,
+      penalisedPrincipalTotal = 2000,
+      LPPPostedTotal = 165.25,
+      LPPEstimatedTotal = 15.26,
+      LPIPostedTotal = 1968.2,
+      LPIEstimatedTotal = 7)),
+    lateSubmissionPenalty = Some(
+      LateSubmissionPenalty(
+        summary = LSPSummary(
+          activePenaltyPoints = 10,
+          inactivePenaltyPoints = 12,
+          regimeThreshold = 10,
+          penaltyChargeAmount = 684.25
+        ),
+        details = Seq(LSPDetails(
+          penaltyNumber = "12345678901234",
+          penaltyOrder = "01",
+          penaltyCategory = LSPPenaltyCategoryEnum.Point,
+          penaltyStatus = LSPPenaltyStatusEnum.Active,
+          FAPIndicator = "X",
+          penaltyCreationDate = LocalDate.parse("2069-10-30"),
+          penaltyExpiryDate = LocalDate.parse("2069-10-30"),
+          expiryReason = Some("FAP"),
+          communicationsDate = LocalDate.parse("2069-10-30"),
+          lateSubmissions = Some(Seq(
+            LateSubmission(
+              taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
+              taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
+              taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
+              returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
+              taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+            )
+          )),
+          appealInformation = Some(Seq(
+            AppealInformationType(
+              appealStatus = Some(AppealStatusEnum.Unappealable),
+              appealLevel = Some("01")
+            )
+          )),
+          chargeAmount = Some(200),
+          chargeOutstandingAmount = Some(200),
+          chargeDueDate = Some(LocalDate.parse("2069-10-30"))
+        ))
+      )
+    ),
+    latePaymentPenalty = Some(NewLatePaymentPenalty(
+      details = Seq(LPPDetails(
+        principalChargeReference = "12345678901234",
+        penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
+        penaltyStatus = LPPPenaltyStatusEnum.Accruing,
+        penaltyAmountPaid = Some(1001.45),
+        penaltyAmountOutstanding = Some(99.99),
+        LPP1LRDays = Some("15"),
+        LPP1HRDays = Some("31"),
+        LPP2Days = Some("31"),
+        LPP1LRCalculationAmount = None,
+        LPP1HRCalculationAmount = None,
+        LPP2Percentage = Some(4.00),
+        LPP1LRPercentage = Some(2.00),
+        LPP1HRPercentage = Some(BigDecimal(2.00).setScale(2)),
+        penaltyChargeCreationDate = LocalDate.parse("2069-10-30"),
+        communicationsDate = LocalDate.parse("2069-10-30"),
+        penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
+        appealInformation = Some(Seq(AppealInformationType(
+          appealStatus = Some(AppealStatusEnum.Unappealable),
+          appealLevel = Some("01")
+        ))),
+        principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
+        principalChargeBillingTo = LocalDate.parse("2069-10-30"),
+        principalChargeDueDate = LocalDate.parse("2069-10-30")
+      ))
+    ))
+  )
+
+  class Setup(authResult: Future[~[Option[AffinityGroup], Enrolments]], isFSEnabled: Boolean = false) {
     reset(mockAuthConnector)
     when(mockAuthConnector.authorise[~[Option[AffinityGroup], Enrolments]](
       Matchers.any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
       Matchers.any(), Matchers.any())
     ).thenReturn(authResult)
-
+    if(isFSEnabled) enableFeatureSwitch(CallAPI1812ETMP) else disableFeatureSwitch(CallAPI1812ETMP)
     reset(mockPenaltiesService)
   }
 
@@ -131,9 +290,9 @@ class CalculationControllerSpec extends SpecBase {
     calculationPageHelper
   )(implicitly, implicitly, errorHandler, authPredicate, stubMessagesControllerComponents())
 
-  "onPageLoad" should {
+  "onPageLoad" when {
 
-    "the user is authorised" when {
+    "the user is authorised" should {
       "show the page when the penalty ID specified matches the payload" in new Setup(AuthTestModels.successfulAuthResult) {
         when(mockPenaltiesService.getETMPDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(etmpPayload))
@@ -158,6 +317,32 @@ class CalculationControllerSpec extends SpecBase {
         val result: Future[Result] = Controller.onPageLoad("1234", isAdditional = false)(fakeRequest)
         status(result) shouldBe INTERNAL_SERVER_ERROR
       }
+
+      "show the page when the penalty ID specified matches model API1812 payload" in new Setup(AuthTestModels.successfulAuthResult , isFSEnabled = true) {
+        when(mockPenaltiesService.getPenaltyDetailsFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
+          .thenReturn(Future.successful(penaltyDetailsPayload))
+
+        val result: Future[Result] = Controller.onPageLoad("12345678901234", isAdditional = false)(fakeRequest)
+        status(result) shouldBe OK
+      }
+
+      "show an ISE when the calculation row with model API1812 can not be rendered - because the payload is invalid (missing both 15/30 day payment amounts)" in
+        new Setup(AuthTestModels.successfulAuthResult, isFSEnabled = true) {
+          when(mockPenaltiesService.getPenaltyDetailsFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
+            .thenReturn(Future.successful(penaltyDetailsPayloadNo15Or30DayAmount))
+
+          val result: Future[Result] = Controller.onPageLoad("12345678901234", isAdditional = false)(fakeRequest)
+          status(result) shouldBe INTERNAL_SERVER_ERROR
+        }
+
+      "show an ISE when the user specifies a penalty ID not found with model API1812 enabled" in
+        new Setup(AuthTestModels.successfulAuthResult, isFSEnabled = true) {
+          when(mockPenaltiesService.getPenaltyDetailsFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
+            .thenReturn(Future.successful(penaltyDetailsPayload))
+
+          val result: Future[Result] = Controller.onPageLoad("1234", isAdditional = false)(fakeRequest)
+          status(result) shouldBe INTERNAL_SERVER_ERROR
+        }
     }
 
     "the user is unauthorised" when {

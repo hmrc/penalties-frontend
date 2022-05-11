@@ -17,7 +17,10 @@
 package services
 
 import connectors.PenaltiesConnector
+import featureSwitches.FeatureSwitching
 import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
+import models.v3.PenaltyDetails
+import featureSwitches.CallAPI1812ETMP
 import models.{ETMPPayload, User}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.PenaltyPeriodHelper
@@ -26,10 +29,13 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class PenaltiesService @Inject()(connector: PenaltiesConnector) {
+class PenaltiesService @Inject()(connector: PenaltiesConnector) extends FeatureSwitching {
 
   def getETMPDataFromEnrolmentKey(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[ETMPPayload] =
     connector.getPenaltiesData(enrolmentKey)
+
+  def getPenaltyDetailsFromEnrolmentKey(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[PenaltyDetails] =
+    connector.getPenaltyDetails(enrolmentKey)
 
   def isAnyLSPUnpaid(penaltyPoints: Seq[PenaltyPoint]): Boolean = {
     penaltyPoints.exists(penalty => penalty.`type` == PenaltyTypeEnum.Financial &&
