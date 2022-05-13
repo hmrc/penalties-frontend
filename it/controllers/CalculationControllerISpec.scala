@@ -452,8 +452,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         LPP1LRDays = Some("15"),
         LPP1HRDays = Some("31"),
         LPP2Days = Some("31"),
-        LPP1LRCalculationAmount = Some(123.00),
-        LPP1HRCalculationAmount = Some(123.00),
+        LPP1LRCalculationAmount = Some(10000.00),
+        LPP1HRCalculationAmount = Some(10000.00),
         LPP2Percentage = Some(4.00),
         LPP1LRPercentage = Some(2.00),
         LPP1HRPercentage = Some(2.00),
@@ -677,18 +677,15 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
         parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
         parsedBody.select("#main-content header p span").first.text() shouldBe "The period dates are"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
+        parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount"
         parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£400.00"
         parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Calculation"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "2% of £123.00 (VAT amount unpaid on 23 March 2021) + 2% of £123.00 (VAT amount unpaid on 7 April 2021)"
+        parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe
+          "4% of £10,000.00 (VAT amount unpaid on 23 March 2021) + 4% of £10,000.00 (VAT amount unpaid on 7 April 2021)"
         parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Amount received"
         parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£277.00"
         parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dt").text() shouldBe "Amount left to pay"
         parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dd").text() shouldBe "£123.00"
-        parsedBody.select("#main-content div .govuk-warning-text").text() shouldBe "! This penalty will rise to £246.00 (a further 2% of the unpaid VAT) if you do not make a VAT payment by 7 April 2021."
-        parsedBody.select("#main-content .govuk-body").get(0).text() shouldBe "Paying part of your VAT bill will reduce further penalties."
-        parsedBody.select("#main-content .govuk-body").get(1).text() shouldBe "Penalties and interest will show as estimates if HMRC has not been given enough information to calculate the final amounts."
-        parsedBody.select("#main-content h2").text() shouldBe "Estimates"
         parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
         parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
       }
@@ -704,14 +701,12 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount"
         parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£400.00"
         parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Calculation"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "2% of £123.00 (VAT amount unpaid on 23 March 2021) + 2% of £123.00 (VAT amount unpaid on 7 April 2021)"
+        parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe
+          "4% of £10,000.00 (VAT amount unpaid on 23 March 2021) + 4% of £10,000.00 (VAT amount unpaid on 7 April 2021)"
         parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Amount received"
         parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£277.00"
         parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dt").text() shouldBe "Amount left to pay"
         parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dd").text() shouldBe "£123.00"
-        parsedBody.select("#main-content div .govuk-warning-text").text() shouldBe "! This penalty will rise to £246.00 (a further 2% of the unpaid VAT) if you do not make a VAT payment by 7 April 2021."
-        parsedBody.select("#main-content .govuk-body").get(0).text() shouldBe "Paying part of your VAT bill will reduce further penalties."
-        parsedBody.select("#main-content .govuk-body").get(1).text() shouldBe "Penalties and interest will show as estimates if HMRC has not been given enough information to calculate the final amounts."
         parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
         parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
       }
