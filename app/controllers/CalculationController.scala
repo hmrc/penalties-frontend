@@ -105,7 +105,6 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
   }
 
   def getPenaltyDetailsFromNewAPI(penaltyId: String, isAdditional: Boolean)(implicit request: User[_]): Future[Result] = {
-    logger.debug(s"[CalculationController][getPenaltyDetailsFromNewAPI] - Bar Foo!")
     penaltiesService.getPenaltyDetailsFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn)).map {
       payload => {
         val penalty: Option[LPPDetails] = payload.latePaymentPenalty.flatMap(_.details.find(_.principalChargeReference == penaltyId))

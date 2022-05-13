@@ -52,14 +52,12 @@ class CalculationPageHelper @Inject()() extends ViewUtils with ImplicitDateForma
   def getCalculationRowForLPPForNewAPI(lpp: LPPDetails)(implicit messages: Messages): Option[Seq[String]] = {
     (lpp.LPP1LRCalculationAmount, lpp.LPP1HRCalculationAmount) match {
       case (Some(amountOnDay15), Some(amountOnDay31)) =>
-        val percentageOfOutstandingAmtCharged = lpp.LPP1LRPercentage.flatMap(
-          lpp1 =>
-            lpp.LPP1HRPercentage.map{ lpp1 + _.bigDecimal })
+        val percentageOfOutstandingAmtCharged = lpp.LPP1LRPercentage.get + lpp.LPP1HRPercentage.get
         val amountOnDay15ParsedAsString = CurrencyFormatter.parseBigDecimalToFriendlyValue(amountOnDay15)
         val amountOnDay31ParsedAsString = CurrencyFormatter.parseBigDecimalToFriendlyValue(amountOnDay31)
         val firstPaymentDetail = messages("calculation.key.2.paymentDetail", dateToString(lpp.penaltyChargeDueDate.plusDays(15)))
         val firstCalculation = messages("calculation.key.2.text",
-          s"${percentageOfOutstandingAmtCharged.get}", amountOnDay15ParsedAsString, firstPaymentDetail)
+          s"${percentageOfOutstandingAmtCharged}", amountOnDay15ParsedAsString, firstPaymentDetail)
         val secondPaymentDetail = messages("calculation.key.2.paymentDetail", dateToString(lpp.penaltyChargeDueDate.plusDays(30)))
         val secondCalculation = messages("calculation.key.2.text",
           s"${lpp.LPP2Percentage.get}", amountOnDay31ParsedAsString, secondPaymentDetail)

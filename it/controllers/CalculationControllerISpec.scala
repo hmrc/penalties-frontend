@@ -446,7 +446,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       details = Seq(LPPDetails(
         principalChargeReference = "12345678901234",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-        penaltyStatus = LPPPenaltyStatusEnum.Accruing,
+        penaltyStatus = LPPPenaltyStatusEnum.Posted,
         penaltyAmountPaid = Some(277.00),
         penaltyAmountOutstanding = Some(123.00),
         LPP1LRDays = Some("15"),
@@ -454,9 +454,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         LPP2Days = Some("31"),
         LPP1LRCalculationAmount = Some(123.00),
         LPP1HRCalculationAmount = Some(123.00),
-        LPP2Percentage = Some(2.00),
-        LPP1LRPercentage = Some(1.00),
-        LPP1HRPercentage = Some(1.00),
+        LPP2Percentage = Some(4.00),
+        LPP1LRPercentage = Some(2.00),
+        LPP1HRPercentage = Some(2.00),
         penaltyChargeCreationDate = LocalDate.parse("2069-10-30"),
         communicationsDate = LocalDate.parse("2069-10-30"),
         penaltyChargeDueDate = LocalDate.parse("2021-03-08"),
@@ -669,7 +669,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     }
 
     "for new API1812 model" should {
-      "return 200 (OK) and render the view correctly when the use has specified a valid penalty ID" in new Setup(true) {
+      "return 200 (OK) and render the view correctly when the use has specified a valid penalty ID" in new Setup(isFSEnabled = true) {
         returnPenaltyDetailsStub(samplePenaltyDetails)
         val request = controller.onPageLoad("12345678901234", false)(fakeRequest)
         status(request) shouldBe Status.OK
@@ -693,7 +693,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
       }
 
-      "the user has specified a valid penalty ID (parses decimals correctly)" in new Setup(true) {
+      "the user has specified a valid penalty ID (parses decimals correctly)" in new Setup(isFSEnabled = true) {
         returnPenaltyDetailsStub(samplePenaltyDetails)
         val request = controller.onPageLoad("12345678901234", false)(fakeRequest)
         status(request) shouldBe Status.OK
@@ -701,7 +701,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
         parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
         parsedBody.select("#main-content header p span").first.text() shouldBe "The period dates are"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
+        parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount"
         parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£400.00"
         parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Calculation"
         parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "2% of £123.00 (VAT amount unpaid on 23 March 2021) + 2% of £123.00 (VAT amount unpaid on 7 April 2021)"
@@ -712,12 +712,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         parsedBody.select("#main-content div .govuk-warning-text").text() shouldBe "! This penalty will rise to £246.00 (a further 2% of the unpaid VAT) if you do not make a VAT payment by 7 April 2021."
         parsedBody.select("#main-content .govuk-body").get(0).text() shouldBe "Paying part of your VAT bill will reduce further penalties."
         parsedBody.select("#main-content .govuk-body").get(1).text() shouldBe "Penalties and interest will show as estimates if HMRC has not been given enough information to calculate the final amounts."
-        parsedBody.select("#main-content h2").text() shouldBe "Estimates"
         parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
         parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
       }
 
-      "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID (only one interest charge)" in new Setup(true) {
+      "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID (only one interest charge)" in new Setup(isFSEnabled = true) {
         returnPenaltyDetailsStub(penaltyDetailsWithDay15Charge)
         val request = controller.onPageLoad("12345678901234", false)(fakeRequest)
         status(request) shouldBe Status.OK
@@ -726,7 +725,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "2% of £123.00 (VAT amount unpaid on 23 March 2021)"
       }
 
-      "return 200 (OK) and render the view correctly with Penalty Amount" in new Setup(true) {
+      "return 200 (OK) and render the view correctly with Penalty Amount" in new Setup(isFSEnabled = true) {
         returnPenaltyDetailsStub(penaltyDetailsWithDueDateMoreThan30days)
         val request = controller.onPageLoad("12345678901234", false)(fakeRequest)
         status(request) shouldBe Status.OK
@@ -735,14 +734,14 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£400.00"
       }
 
-      "return 500 (ISE) when the user specifies a penalty not within their data" in new Setup(true) {
+      "return 500 (ISE) when the user specifies a penalty not within their data" in new Setup(isFSEnabled = true) {
         returnPenaltyDetailsStub(samplePenaltyDetails)
 
         val request = controller.onPageLoad("1234567890", false)(fakeRequest)
         status(request) shouldBe Status.INTERNAL_SERVER_ERROR
       }
 
-      "return 300 (SEE_OTHER) when the user is not authorised" in new Setup(true) {
+      "return 303 (SEE_OTHER) when the user is not authorised" in new Setup(isFSEnabled = true) {
         AuthStub.unauthorised()
 
         val request = controller.onPageLoad("12345", false)(fakeRequest)
@@ -818,7 +817,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     }
 
     "for new API1812 model" should {
-      "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in new Setup(true) {
+      "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in new Setup(isFSEnabled = true) {
         returnPenaltyDetailsStub(penaltyDetailsWithAdditionalPenalty)
         val request = controller.onPageLoad("54312345678901", true)(fakeRequest)
         status(request) shouldBe Status.OK
@@ -842,7 +841,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         parsedBody.select("#main-content .govuk-summary-list__row").get(5).select("dd").text() shouldBe "£10.00"
       }
 
-      "return 200 (OK) and render the view correctly whe nthe user has specified a valid penalty ID and the VAT is due" in new Setup (true) {
+      "return 200 (OK) and render the view correctly whe nthe user has specified a valid penalty ID and the VAT is due" in new Setup(isFSEnabled = true) {
         returnPenaltyDetailsStub(penaltyDetailsWithAdditionalDuePenalty)
         val request = controller.onPageLoad("65431234567890", true)(fakeRequest)
         status(request) shouldBe Status.OK
@@ -869,14 +868,14 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
       }
 
-      "return 500 (ISE) when the user specifies a penalty not within their data" in new Setup (true) {
+      "return 500 (ISE) when the user specifies a penalty not within their data" in new Setup(isFSEnabled = true) {
         returnPenaltyDetailsStub(samplePenaltyDetails)
 
         val request = controller.onPageLoad("123456800", true)(fakeRequest)
         status(request) shouldBe Status.INTERNAL_SERVER_ERROR
       }
 
-      "return 300 (SEE_OTHER) when the user is not authorised" in new Setup (true) {
+      "return 303 (SEE_OTHER) when the user is not authorised" in new Setup(isFSEnabled = true) {
         AuthStub.unauthorised()
         val request = controller.onPageLoad("123456800", true)(fakeRequest)
         status(request) shouldBe Status.SEE_OTHER
