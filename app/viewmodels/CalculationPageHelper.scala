@@ -52,15 +52,14 @@ class CalculationPageHelper @Inject()() extends ViewUtils with ImplicitDateForma
   def getCalculationRowForLPPForNewAPI(lpp: LPPDetails)(implicit messages: Messages): Option[Seq[String]] = {
     (lpp.LPP1LRCalculationAmount, lpp.LPP1HRCalculationAmount) match {
       case (Some(amountOnDay15), Some(amountOnDay31)) =>
-        val percentageOfOutstandingAmtCharged = lpp.LPP1LRPercentage.get + lpp.LPP1HRPercentage.get
         val amountOnDay15ParsedAsString = CurrencyFormatter.parseBigDecimalToFriendlyValue(amountOnDay15)
         val amountOnDay31ParsedAsString = CurrencyFormatter.parseBigDecimalToFriendlyValue(amountOnDay31)
         val firstPaymentDetail = messages("calculation.key.2.paymentDetail", dateToString(lpp.penaltyChargeDueDate.plusDays(15)))
         val firstCalculation = messages("calculation.key.2.text",
-          s"${percentageOfOutstandingAmtCharged}", amountOnDay15ParsedAsString, firstPaymentDetail)
+          s"${lpp.LPP1LRPercentage.get}", amountOnDay15ParsedAsString, firstPaymentDetail)
         val secondPaymentDetail = messages("calculation.key.2.paymentDetail", dateToString(lpp.penaltyChargeDueDate.plusDays(30)))
         val secondCalculation = messages("calculation.key.2.text",
-          s"${lpp.LPP2Percentage.get}", amountOnDay31ParsedAsString, secondPaymentDetail)
+          s"${lpp.LPP1HRPercentage.get}", amountOnDay31ParsedAsString, secondPaymentDetail)
         Some(Seq(firstCalculation, secondCalculation))
       case (Some(amountOnDay15), None) =>
         val amountOnDay15ParsedAsString = CurrencyFormatter.parseBigDecimalToFriendlyValue(amountOnDay15)

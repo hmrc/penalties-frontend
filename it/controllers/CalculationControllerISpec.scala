@@ -681,7 +681,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£400.00"
         parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Calculation"
         parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe
-          "4% of £10,000.00 (VAT amount unpaid on 23 March 2021) + 4% of £10,000.00 (VAT amount unpaid on 7 April 2021)"
+          "2% of £10,000.00 (VAT amount unpaid on 23 March 2021) + 2% of £10,000.00 (VAT amount unpaid on 7 April 2021)"
         parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Amount received"
         parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£277.00"
         parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dt").text() shouldBe "Amount left to pay"
@@ -702,7 +702,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£400.00"
         parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Calculation"
         parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe
-          "4% of £10,000.00 (VAT amount unpaid on 23 March 2021) + 4% of £10,000.00 (VAT amount unpaid on 7 April 2021)"
+          "2% of £10,000.00 (VAT amount unpaid on 23 March 2021) + 2% of £10,000.00 (VAT amount unpaid on 7 April 2021)"
         parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Amount received"
         parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£277.00"
         parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dt").text() shouldBe "Amount left to pay"

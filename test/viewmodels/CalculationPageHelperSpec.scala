@@ -191,8 +191,8 @@ class CalculationPageHelperSpec extends SpecBase {
       val rows = calculationPageHelper.getCalculationRowForLPPForNewAPI(lppWith15and30DayAmount)
       rows.isDefined shouldBe true
       rows.get.size shouldBe 2
-      rows.get.head shouldBe "4% of £99.99 (VAT amount unpaid on 14 November 2069)"
-      rows.get(1) shouldBe "4% of £99.99 (VAT amount unpaid on 29 November 2069)"
+      rows.get.head shouldBe "2% of £99.99 (VAT amount unpaid on 14 November 2069)"
+      rows.get(1) shouldBe "2% of £99.99 (VAT amount unpaid on 29 November 2069)"
     }
 
     "return None when the user does not have either" in {
