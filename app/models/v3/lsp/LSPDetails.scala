@@ -26,7 +26,7 @@ case class LSPDetails(
                        penaltyOrder: String,
                        penaltyCategory: LSPPenaltyCategoryEnum.Value,
                        penaltyStatus: LSPPenaltyStatusEnum.Value,
-                       FAPIndicator: String,
+                       FAPIndicator: Option[String],
                        penaltyCreationDate: LocalDate,
                        penaltyExpiryDate: LocalDate,
                        expiryReason: Option[String],

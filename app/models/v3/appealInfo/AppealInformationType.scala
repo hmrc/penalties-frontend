@@ -20,7 +20,7 @@ import play.api.libs.json.{Json, OFormat}
 
 case class AppealInformationType(
                                   appealStatus: Option[AppealStatusEnum.Value],
-                                  appealLevel: Option[String]
+                                  appealLevel: Option[AppealLevelEnum.Value]
                                 )
 
 object AppealInformationType {

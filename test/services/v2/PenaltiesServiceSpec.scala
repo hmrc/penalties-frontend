@@ -17,7 +17,9 @@
 package services.v2
 
 import base.SpecBase
+import connectors.PenaltiesConnector
 import models.v3.{GetPenaltyDetails, Totalisations}
+import org.mockito.Mockito.{mock, reset}
 
 class PenaltiesServiceSpec extends SpecBase {
 
@@ -74,7 +76,9 @@ class PenaltiesServiceSpec extends SpecBase {
   )
 
   class Setup {
-    val service: PenaltiesService = new PenaltiesService()
+    val mockPenaltiesConnector: PenaltiesConnector = mock(classOf[PenaltiesConnector])
+    val service: PenaltiesService = new PenaltiesService(mockPenaltiesConnector)
+    reset(mockPenaltiesConnector)
   }
 
   "findOverdueVATFromPayload" should {

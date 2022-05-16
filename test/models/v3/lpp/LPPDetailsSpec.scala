@@ -17,7 +17,7 @@
 package models.v3.lpp
 
 import base.SpecBase
-import models.v3.appealInfo.{AppealInformationType, AppealStatusEnum}
+import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import play.api.libs.json.Json
 
 import java.time.LocalDate
@@ -73,7 +73,7 @@ class LPPDetailsSpec extends SpecBase {
     penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
     appealInformation = Some(Seq(AppealInformationType(
       appealStatus = Some(AppealStatusEnum.Unappealable),
-      appealLevel = Some("01")
+      appealLevel = Some(AppealLevelEnum.HMRC)
     ))),
     principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
     principalChargeBillingTo = LocalDate.parse("2069-10-30"),

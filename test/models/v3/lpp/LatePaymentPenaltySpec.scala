@@ -17,7 +17,7 @@
 package models.v3.lpp
 
 import base.SpecBase
-import models.v3.appealInfo.{AppealInformationType, AppealStatusEnum}
+import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import play.api.libs.json.Json
 
 import java.time.LocalDate
@@ -91,7 +91,7 @@ class LatePaymentPenaltySpec extends SpecBase {
         principalChargeReference = "12345678901234",
         penaltyChargeCreationDate = LocalDate.parse("2069-10-30"),
         penaltyStatus = LPPPenaltyStatusEnum.Accruing,
-        appealInformation = Some(Seq(AppealInformationType(appealStatus = Some(AppealStatusEnum.Unappealable), appealLevel = Some("01")))),
+        appealInformation = Some(Seq(AppealInformationType(appealStatus = Some(AppealStatusEnum.Unappealable), appealLevel = Some(AppealLevelEnum.HMRC)))),
         principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
         principalChargeBillingTo = LocalDate.parse("2069-10-30"),
         principalChargeDueDate = LocalDate.parse("2069-10-30"),
@@ -113,7 +113,7 @@ class LatePaymentPenaltySpec extends SpecBase {
         principalChargeReference = "12345678901235",
         penaltyChargeCreationDate = LocalDate.parse("2069-10-30"),
         penaltyStatus = LPPPenaltyStatusEnum.Accruing,
-        appealInformation = Some(Seq(AppealInformationType(appealStatus = Some(AppealStatusEnum.Unappealable), appealLevel = Some("01")))),
+        appealInformation = Some(Seq(AppealInformationType(appealStatus = Some(AppealStatusEnum.Unappealable), appealLevel = Some(AppealLevelEnum.HMRC)))),
         principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
         principalChargeBillingTo = LocalDate.parse("2069-10-30"),
         principalChargeDueDate = LocalDate.parse("2069-10-30"),

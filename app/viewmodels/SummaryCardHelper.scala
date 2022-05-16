@@ -38,6 +38,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   def populateLateSubmissionPenaltyCard(penalties: Seq[PenaltyPoint],
                                         threshold: Int, activePoints: Int)
                                        (implicit messages: Messages, user: User[_]): Seq[LateSubmissionPenaltySummaryCard] = {
+
     val thresholdMet: Boolean = pointsThresholdMet(threshold, activePoints)
     val filteredActivePenalties: Seq[PenaltyPoint] = penalties.filter(_.status != PointStatusEnum.Removed).reverse
     val indexedActivePoints = filteredActivePenalties.zipWithIndex
