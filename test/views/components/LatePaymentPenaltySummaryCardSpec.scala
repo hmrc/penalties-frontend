@@ -39,10 +39,21 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
   val summaryCardModel: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
     Some(Seq(sampleLatePaymentPenaltyPaid.copy(
       period = PaymentPeriod(
-        LocalDateTime.of(2020,1,1,1,1,1),
-        LocalDateTime.of(2020,2,1,1,1,1),
-        LocalDateTime.of(2020,2,1,1,1,1),
-        PaymentStatusEnum.Paid
+        startDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+        endDate = LocalDateTime.of(2020, 1, 31, 1, 1, 1),
+        dueDate = LocalDateTime.of(2020, 3, 7, 1, 1, 1),
+        paymentStatus = PaymentStatusEnum.Paid,
+        paymentReceivedDate = Some(LocalDateTime.of(2020, 3, 8, 1, 1, 1))
+      ))))
+  ).get.head
+
+  val summaryCardModelWithVATUnpaid: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
+    Some(Seq(sampleLatePaymentPenaltyPaid.copy(
+      period = PaymentPeriod(
+        startDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+        endDate = LocalDateTime.of(2020, 1, 31, 1, 1, 1),
+        dueDate = LocalDateTime.of(2020, 3, 7, 1, 1, 1),
+        paymentStatus = PaymentStatusEnum.Due
       ))))
   ).get.head
 
@@ -52,23 +63,23 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
       period = PaymentPeriod(
         startDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1),
-        endDate = LocalDateTime.of(2020, 2, 1, 1, 1, 1),
+        endDate = LocalDateTime.of(2020, 1, 31, 1, 1, 1),
         dueDate = LocalDateTime.of(2020, 3, 7, 1, 1, 1),
         paymentStatus = PaymentStatusEnum.Paid
       ),
       financial = Financial(
-        amountDue = 123.4, outstandingAmountDue = 0.00, dueDate = LocalDateTime.of(2020,2,1,1,1,1)
+        amountDue = 123.4, outstandingAmountDue = 0.00, dueDate = LocalDateTime.of(2020, 2, 1, 1, 1, 1)
       ))))
   ).get.head
 
   val summaryCardModelVATPaymentDate: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
     Some(Seq(sampleLatePaymentPenaltyPaid.copy(
       period = PaymentPeriod(
-        LocalDateTime.of(2020,1,1,1,1,1),
-        LocalDateTime.of(2020,2,1,1,1,1),
-        LocalDateTime.of(2020,2,1,1,1,1),
-        PaymentStatusEnum.Paid,
-        Some(LocalDateTime.of(2020,2,1,1,1,1).plusMonths(1))
+        startDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+        endDate = LocalDateTime.of(2020, 1, 31, 1, 1, 1),
+        dueDate = LocalDateTime.of(2020, 3, 7, 1, 1, 1),
+        paymentStatus = PaymentStatusEnum.Paid,
+        paymentReceivedDate = Some(LocalDateTime.of(2020, 3, 8, 1, 1, 1))
       ))))
   ).get.head
 
@@ -78,12 +89,13 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
       period = PaymentPeriod(
         startDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1),
-        endDate = LocalDateTime.of(2020, 2, 1, 1, 1, 1),
+        endDate = LocalDateTime.of(2020, 1, 31, 1, 1, 1),
         dueDate = LocalDateTime.of(2020, 3, 7, 1, 1, 1),
+        paymentReceivedDate = Some(LocalDateTime.of(2020, 3, 8, 1, 1, 1)),
         paymentStatus = PaymentStatusEnum.Paid
       ),
       financial = Financial(
-        amountDue = 123.45, outstandingAmountDue = 0.00, dueDate = LocalDateTime.of(2020,2,1,1,1,1)
+        amountDue = 123.45, outstandingAmountDue = 0.00, dueDate = LocalDateTime.of(2020, 2, 1, 1, 1, 1)
       ))))
   ).get.head
 
@@ -93,12 +105,12 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
       period = PaymentPeriod(
         startDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1),
-        endDate = LocalDateTime.of(2020, 2, 1, 1, 1, 1),
+        endDate = LocalDateTime.of(2020, 1, 31, 1, 1, 1),
         dueDate = LocalDateTime.of(2020, 3, 7, 1, 1, 1),
         paymentStatus = PaymentStatusEnum.Paid
       ),
       financial = Financial(
-        amountDue = 123.4, outstandingAmountDue = 0.00, dueDate = LocalDateTime.of(2020,2,1,1,1,1)
+        amountDue = 123.4, outstandingAmountDue = 0.00, dueDate = LocalDateTime.of(2020, 2, 1, 1, 1, 1)
       ))))
   ).get.head
 
@@ -107,13 +119,13 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       `type` = PenaltyTypeEnum.Additional,
       reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
       period = PaymentPeriod(
-        LocalDateTime.of(2020,1,1,1,1,1),
-        LocalDateTime.of(2020,2,1,1,1,1),
-        LocalDateTime.of(2020,2,1,1,1,1),
-        PaymentStatusEnum.Paid
+        startDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+        endDate = LocalDateTime.of(2020, 1, 31, 1, 1, 1),
+        dueDate = LocalDateTime.of(2020, 3, 7, 1, 1, 1),
+        paymentStatus = PaymentStatusEnum.Due
       ),
       financial = Financial(
-        amountDue = 123.45, outstandingAmountDue = 123.45, dueDate = LocalDateTime.of(2020,2,1,1,1,1)
+        amountDue = 123.45, outstandingAmountDue = 123.45, dueDate = LocalDateTime.of(2020, 2, 1, 1, 1, 1)
       ))))
   ).get.head
 
@@ -122,13 +134,13 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       `type` = PenaltyTypeEnum.Additional,
       reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
       period = PaymentPeriod(
-        LocalDateTime.of(2020,1,1,1,1,1),
-        LocalDateTime.of(2020,2,1,1,1,1),
-        LocalDateTime.of(2020,2,1,1,1,1),
-        PaymentStatusEnum.Paid
+        startDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1),
+        endDate = LocalDateTime.of(2020, 1, 31, 1, 1, 1),
+        dueDate = LocalDateTime.of(2020, 3, 7, 1, 1, 1),
+        paymentStatus = PaymentStatusEnum.Paid
       ),
       financial = Financial(
-        amountDue = 123.45, outstandingAmountDue = 60.22, dueDate = LocalDateTime.of(2020,2,1,1,1,1)
+        amountDue = 123.45, outstandingAmountDue = 60.22, dueDate = LocalDateTime.of(2020, 2, 1, 1, 1, 1)
       ))))
   ).get.head
 
@@ -224,30 +236,30 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         doc.select("strong").text() shouldBe "£200 due"
       }
 
-      "display the VAT period" in {
-        doc.select("dt").get(0).text() shouldBe "VAT period"
-        doc.select("dd").get(0).text() shouldBe "1 January 2020 to 1 February 2020"
+      "display the penalty type" in {
+        doc.select("dt").get(0).text() shouldBe "Penalty type"
+        doc.select("dd").get(0).text() shouldBe "First penalty for late payment"
       }
 
-      "display the 'VAT payment due' row" in {
-        doc.select("dt").get(1).text() shouldBe "VAT payment due"
-        doc.select("dd").get(1).text() shouldBe "1 February 2020"
+      "display the overdue charge" in {
+        doc.select("dt").get(1).text() shouldBe "Overdue charge"
+        doc.select("dd").get(1).text() shouldBe "VAT for period 1 January 2020 to 31 January 2020"
       }
 
-      "display 'Payment not yet received' in VAT Payment date" in {
-        doc.select("dt").get(2).text() shouldBe "VAT payment date"
-        doc.select("dd").get(2).text() shouldBe "Payment not yet received"
+      "display the charge due" in {
+        doc.select("dt").get(2).text() shouldBe "Charge due"
+        doc.select("dd").get(2).text() shouldBe "7 March 2020"
       }
 
-      "display the date in VAT Payment date" in {
-        val docVATPaymentDate: Document = asDocument(summaryCardHtml.apply(summaryCardModelVATPaymentDate))
-        docVATPaymentDate.select("dt").get(2).text() shouldBe "VAT payment date"
-        docVATPaymentDate.select("dd").get(2).text() shouldBe "1 March 2020"
+      "display the date paid - VAT not paid" in {
+        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithVATUnpaid))
+        doc.select("dt").get(3).text() shouldBe "Date paid"
+        doc.select("dd").get(3).text() shouldBe "Payment not yet received"
       }
 
-      "display the penalty reason" in {
-        doc.select("dt").get(3).text() shouldBe "Penalty reason"
-        doc.select("dd").get(3).text() shouldBe "VAT not paid within 15 days"
+      "display the date paid" in {
+        doc.select("dt").get(3).text() shouldBe "Date paid"
+        doc.select("dd").get(3).text() shouldBe "8 March 2020"
       }
 
       "display the appeal link" in {
@@ -286,19 +298,31 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         doc.select("strong").text() shouldBe "£60.22 due"
       }
 
-      "display the VAT period" in {
-        docWithAdditionalPenalty.select("dt").get(0).text() shouldBe "VAT period"
-        docWithAdditionalPenalty.select("dd").get(0).text() shouldBe "1 January 2020 to 1 February 2020"
+      "display the penalty type" in {
+        docWithAdditionalPenalty.select("dt").get(0).text() shouldBe "Penalty type"
+        docWithAdditionalPenalty.select("dd").get(0).text() shouldBe "Second penalty for late payment"
       }
 
-      "display the penalty reason" in {
-        docWithAdditionalPenalty.select("dt").get(1).text() shouldBe "Penalty reason"
-        docWithAdditionalPenalty.select("dd").get(1).text() shouldBe "VAT more than 30 days late"
+      "display the overdue charge" in {
+        docWithAdditionalPenalty.select("dt").get(1).text() shouldBe "Overdue charge"
+        docWithAdditionalPenalty.select("dd").get(1).text() shouldBe "VAT for period 1 January 2020 to 31 January 2020"
       }
 
-      "display the charged daily from - 31 days after the due date" in {
-        docWithAdditionalPenalty.select("dt").get(2).text() shouldBe "Charged daily from"
-        docWithAdditionalPenalty.select("dd").get(2).text() shouldBe "7 April 2020"
+      "display the charge due" in {
+        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelForAdditionalPenaltyDue))
+        doc.select("dt").get(2).text() shouldBe "Charge due"
+        doc.select("dd").get(2).text() shouldBe "7 March 2020"
+      }
+
+      "display the date paid" in {
+        docWithAdditionalPenalty.select("dt").get(3).text() shouldBe "Date paid"
+        docWithAdditionalPenalty.select("dd").get(3).text() shouldBe "8 March 2020"
+      }
+
+      "display the date paid - VAT not paid" in {
+        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelForAdditionalPenaltyDue))
+        doc.select("dt").get(3).text() shouldBe "Date paid"
+        doc.select("dd").get(3).text() shouldBe "Payment not yet received"
       }
 
       "display the appeal link" in {

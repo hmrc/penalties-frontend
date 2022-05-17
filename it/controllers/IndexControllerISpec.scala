@@ -86,9 +86,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         reason = Some("This is a great reason."),
         period = Some(Seq(PenaltyPeriod(
           startDate = sampleDate1, endDate = sampleDate2, submission = Submission(
-            sampleDate3,
-            Some(sampleDate4),
-            SubmissionStatusEnum.Submitted
+            dueDate = sampleDate3,
+            submittedDate = Some(sampleDate4),
+            status = SubmissionStatusEnum.Submitted
           )
         ))),
         communications = Seq.empty,
@@ -111,9 +111,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         None,
         period = Some(Seq(PenaltyPeriod(
           startDate = sampleDate1, endDate = sampleDate2, submission = Submission(
-            sampleDate3,
-            Some(sampleDate4),
-            SubmissionStatusEnum.Submitted
+            dueDate = sampleDate3,
+            submittedDate = Some(sampleDate4),
+            status = SubmissionStatusEnum.Submitted
           )
         ))),
         communications = Seq.empty,
@@ -130,9 +130,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         None,
         period = Some(Seq(PenaltyPeriod(
           startDate = sampleDate1, endDate = sampleDate2, submission = Submission(
-            sampleDate3,
-            Some(sampleDate4),
-            SubmissionStatusEnum.Submitted
+            dueDate = sampleDate3,
+            submittedDate = Some(sampleDate4),
+            status = SubmissionStatusEnum.Submitted
           )
         ))),
         communications = Seq.empty,
@@ -149,9 +149,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         None,
         period = Some(Seq(PenaltyPeriod(
           startDate = sampleDate1, endDate = sampleDate2, submission = Submission(
-            sampleDate3,
-            Some(sampleDate4),
-            SubmissionStatusEnum.Submitted
+            dueDate = sampleDate3,
+            submittedDate = Some(sampleDate4),
+            status = SubmissionStatusEnum.Submitted
           )
         ))),
         communications = Seq.empty,
@@ -167,9 +167,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         reason = Some("This is a great reason."),
         period = Some(Seq(PenaltyPeriod(
           startDate = sampleDate1, endDate = sampleDate2, submission = Submission(
-            sampleDate3,
-            Some(sampleDate4),
-            SubmissionStatusEnum.Submitted
+            dueDate = sampleDate3,
+            submittedDate = Some(sampleDate4),
+            status = SubmissionStatusEnum.Submitted
           )
         ))),
         communications = Seq.empty,
@@ -188,11 +188,11 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       status = PointStatusEnum.Paid,
       appealStatus = None,
       period = PaymentPeriod(
-        sampleDate1,
-        sampleDate1.plusMonths(1),
-        sampleDate1.plusMonths(2).plusDays(7),
-        PaymentStatusEnum.Paid,
-        Some(sampleDate1.plusMonths(2).plusDays(7))
+        startDate = sampleDate1,
+        endDate = sampleDate1.plusMonths(1),
+        dueDate = sampleDate1.plusMonths(2).plusDays(6),
+        paymentStatus = PaymentStatusEnum.Paid,
+        paymentReceivedDate = Some(sampleDate1.plusMonths(2).plusDays(7))
       ),
       communications = Seq(
         Communication(
@@ -217,10 +217,11 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       status = PointStatusEnum.Paid,
       appealStatus = None,
       period = PaymentPeriod(
-        sampleDate1,
-        sampleDate1.plusMonths(1),
-        sampleDate1.plusMonths(2).plusDays(7),
-        PaymentStatusEnum.Paid
+        startDate = sampleDate1,
+        endDate = sampleDate1.plusMonths(1),
+        dueDate = sampleDate1.plusMonths(2).plusDays(6),
+        paymentReceivedDate = Some(sampleDate1.plusMonths(2).plusDays(7)),
+        paymentStatus = PaymentStatusEnum.Paid
       ),
       communications = Seq(
         Communication(
@@ -271,10 +272,10 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     status = PointStatusEnum.Due,
     appealStatus = None,
     period = PaymentPeriod(
-      sampleDate1,
-      sampleDate1.plusMonths(1),
-      sampleDate1.plusMonths(1).plusDays(7),
-      PaymentStatusEnum.Due
+      startDate = sampleDate1,
+      endDate = sampleDate1.plusMonths(1),
+      dueDate = sampleDate1.plusMonths(2).plusDays(6),
+      paymentStatus = PaymentStatusEnum.Due
     ),
     communications = Seq(
       Communication(
@@ -613,14 +614,14 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#late-payment-penalties section header h3").text shouldBe "£400 penalty"
       parsedBody.select("#late-payment-penalties section header strong").text shouldBe "paid"
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
-      summaryCardBody.select("dt").get(0).text shouldBe "VAT period"
-      summaryCardBody.select("dd").get(0).text shouldBe "1 January 2021 to 1 February 2021"
-      summaryCardBody.select("dt").get(1).text shouldBe "VAT payment due"
-      summaryCardBody.select("dd").get(1).text shouldBe "8 March 2021"
-      summaryCardBody.select("dt").get(2).text shouldBe "VAT payment date"
-      summaryCardBody.select("dd").get(2).text shouldBe "8 March 2021"
-      summaryCardBody.select("dt").get(3).text shouldBe "Penalty reason"
-      summaryCardBody.select("dd").get(3).text shouldBe "VAT not paid within 30 days"
+      summaryCardBody.select("dt").get(0).text shouldBe "Penalty type"
+      summaryCardBody.select("dd").get(0).text shouldBe "First penalty for late payment"
+      summaryCardBody.select("dt").get(1).text shouldBe "Overdue charge"
+      summaryCardBody.select("dd").get(1).text shouldBe "VAT for period 1 January 2021 to 1 February 2021"
+      summaryCardBody.select("dt").get(2).text shouldBe "Charge due"
+      summaryCardBody.select("dd").get(2).text shouldBe "7 March 2021"
+      summaryCardBody.select("dt").get(3).text shouldBe "Date paid"
+      summaryCardBody.select("dd").get(3).text shouldBe "8 March 2021"
       parsedBody.select("#late-payment-penalties footer li").get(1).text() shouldBe "Appeal this penalty"
     }
 
@@ -661,12 +662,14 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#late-payment-penalties section header h3").text.contains("£123.45 additional penalty") shouldBe true
       parsedBody.select("#late-payment-penalties section header strong").text.contains("paid") shouldBe true
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body").first()
-      summaryCardBody.select("dt").get(0).text shouldBe "VAT period"
-      summaryCardBody.select("dd").get(0).text shouldBe "1 January 2021 to 1 February 2021"
-      summaryCardBody.select("dt").get(1).text shouldBe "Penalty reason"
-      summaryCardBody.select("dd").get(1).text shouldBe "VAT more than 30 days late"
-      summaryCardBody.select("dt").get(2).text shouldBe "Charged daily from"
-      summaryCardBody.select("dd").get(2).text shouldBe "8 April 2021"
+      summaryCardBody.select("dt").get(0).text shouldBe "Penalty type"
+      summaryCardBody.select("dd").get(0).text shouldBe "Second penalty for late payment"
+      summaryCardBody.select("dt").get(1).text shouldBe "Overdue charge"
+      summaryCardBody.select("dd").get(1).text shouldBe "VAT for period 1 January 2021 to 1 February 2021"
+      summaryCardBody.select("dt").get(2).text shouldBe "Charge due"
+      summaryCardBody.select("dd").get(2).text shouldBe "7 March 2021"
+      summaryCardBody.select("dt").get(3).text shouldBe "Date paid"
+      summaryCardBody.select("dd").get(3).text shouldBe "8 March 2021"
       parsedBody.select("#late-payment-penalties footer li").text().contains("Appeal this penalty") shouldBe true
     }
 
@@ -678,14 +681,14 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#late-payment-penalties section header h3").text shouldBe "£400 penalty"
       parsedBody.select("#late-payment-penalties section header strong").text shouldBe "£200 due"
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
-      summaryCardBody.select("dt").get(0).text shouldBe "VAT period"
-      summaryCardBody.select("dd").get(0).text shouldBe "1 January 2021 to 1 February 2021"
-      summaryCardBody.select("dt").get(1).text shouldBe "VAT payment due"
-      summaryCardBody.select("dd").get(1).text shouldBe "8 February 2021"
-      summaryCardBody.select("dt").get(2).text shouldBe "VAT payment date"
-      summaryCardBody.select("dd").get(2).text shouldBe "Payment not yet received"
-      summaryCardBody.select("dt").get(3).text shouldBe "Penalty reason"
-      summaryCardBody.select("dd").get(3).text shouldBe "VAT not paid within 15 days"
+      summaryCardBody.select("dt").get(0).text shouldBe "Penalty type"
+      summaryCardBody.select("dd").get(0).text shouldBe "First penalty for late payment"
+      summaryCardBody.select("dt").get(1).text shouldBe "Overdue charge"
+      summaryCardBody.select("dd").get(1).text shouldBe "VAT for period 1 January 2021 to 1 February 2021"
+      summaryCardBody.select("dt").get(2).text shouldBe "Charge due"
+      summaryCardBody.select("dd").get(2).text shouldBe "7 March 2021"
+      summaryCardBody.select("dt").get(3).text shouldBe "Date paid"
+      summaryCardBody.select("dd").get(3).text shouldBe "Payment not yet received"
       parsedBody.select("#late-payment-penalties footer li").get(1).text() shouldBe "Check if you can appeal"
     }
 
@@ -706,14 +709,14 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#late-payment-penalties section header h3").text shouldBe "£400 penalty"
       parsedBody.select("#late-payment-penalties section header strong").text shouldBe "paid"
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
-      summaryCardBody.select("dt").get(0).text shouldBe "VAT period"
-      summaryCardBody.select("dd").get(0).text shouldBe "1 January 2021 to 1 February 2021"
-      summaryCardBody.select("dt").get(1).text shouldBe "VAT payment due"
-      summaryCardBody.select("dd").get(1).text shouldBe "8 March 2021"
-      summaryCardBody.select("dt").get(2).text shouldBe "VAT payment date"
-      summaryCardBody.select("dd").get(2).text shouldBe "8 March 2021"
-      summaryCardBody.select("dt").get(3).text shouldBe "Penalty reason"
-      summaryCardBody.select("dd").get(3).text shouldBe "VAT not paid within 30 days"
+      summaryCardBody.select("dt").get(0).text shouldBe "Penalty type"
+      summaryCardBody.select("dd").get(0).text shouldBe "First penalty for late payment"
+      summaryCardBody.select("dt").get(1).text shouldBe "Overdue charge"
+      summaryCardBody.select("dd").get(1).text shouldBe "VAT for period 1 January 2021 to 1 February 2021"
+      summaryCardBody.select("dt").get(2).text shouldBe "Charge due"
+      summaryCardBody.select("dd").get(2).text shouldBe "7 March 2021"
+      summaryCardBody.select("dt").get(3).text shouldBe "Date paid"
+      summaryCardBody.select("dd").get(3).text shouldBe "8 March 2021"
       summaryCardBody.select("dt").get(4).text shouldBe "Appeal status"
       summaryCardBody.select("dd").get(4).text shouldBe "Under review by HMRC"
     }

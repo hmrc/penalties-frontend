@@ -150,12 +150,12 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     status = PointStatusEnum.Active,
     reason = None,
     period = Some(Seq(PenaltyPeriod(
-      LocalDateTime.now,
-      LocalDateTime.now,
-      Submission(
-        LocalDateTime.now,
-        Some(LocalDateTime.now),
-        SubmissionStatusEnum.Submitted
+      startDate = LocalDateTime.now,
+      endDate = LocalDateTime.now,
+      submission = Submission(
+        dueDate = LocalDateTime.now,
+        submittedDate = Some(LocalDateTime.now),
+        status = SubmissionStatusEnum.Submitted
       )
     ))),
     communications = Seq.empty
@@ -196,12 +196,12 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     status = PointStatusEnum.Active,
     reason = None,
     period = Some(Seq(PenaltyPeriod(
-      LocalDateTime.now,
-      LocalDateTime.now,
-      Submission(
-        LocalDateTime.now,
-        None,
-        SubmissionStatusEnum.Overdue
+      startDate = LocalDateTime.now,
+      endDate = LocalDateTime.now,
+      submission = Submission(
+        dueDate = LocalDateTime.now,
+        submittedDate = None,
+        status = SubmissionStatusEnum.Overdue
       )
     ))),
     communications = Seq.empty,
@@ -391,9 +391,9 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     status = PointStatusEnum.Active,
     reason = None,
     period = Some(Seq(PenaltyPeriod(
-      LocalDateTime.now,
-      LocalDateTime.now,
-      Submission(
+      startDate = LocalDateTime.now,
+      endDate = LocalDateTime.now,
+      submission = Submission(
         LocalDateTime.now,
         None,
         SubmissionStatusEnum.Overdue
@@ -442,9 +442,9 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     status = PointStatusEnum.Active,
     reason = None,
     period = Some(Seq(PenaltyPeriod(
-      LocalDateTime.now,
-      LocalDateTime.now,
-      Submission(
+      startDate = LocalDateTime.now,
+      endDate = LocalDateTime.now,
+      submission = Submission(
         LocalDateTime.now,
         None,
         SubmissionStatusEnum.Submitted
@@ -491,10 +491,10 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     status = PointStatusEnum.Due,
     appealStatus = None,
     period = PaymentPeriod(
-      LocalDateTime.now,
-      LocalDateTime.now,
-      LocalDateTime.now,
-      PaymentStatusEnum.Paid
+      startDate = LocalDateTime.now,
+      endDate = LocalDateTime.now,
+      dueDate = LocalDateTime.now,
+      paymentStatus = PaymentStatusEnum.Due
     ),
     communications = Seq.empty,
     financial = Financial(
@@ -538,16 +538,16 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     status = PointStatusEnum.Due,
     appealStatus = None,
     period = PaymentPeriod(
-      LocalDateTime.now,
-      LocalDateTime.now,
-      LocalDateTime.now,
-      PaymentStatusEnum.Paid,
-      Some(LocalDateTime.now)
+      startDate = LocalDateTime.now,
+      endDate = LocalDateTime.now,
+      dueDate = LocalDateTime.now,
+      paymentStatus = PaymentStatusEnum.Paid,
+      paymentReceivedDate = Some(LocalDateTime.now)
     ),
     communications = Seq.empty,
     financial = Financial(
-      amountDue = 00.00,
-      outstandingAmountDue = 00.00,
+      amountDue = 400.00,
+      outstandingAmountDue = 200.00,
       dueDate = LocalDateTime.now
     )
   )
@@ -586,15 +586,16 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     status = PointStatusEnum.Paid,
     appealStatus = None,
     period = PaymentPeriod(
-      LocalDateTime.now,
-      LocalDateTime.now,
-      LocalDateTime.now,
-      PaymentStatusEnum.Paid
+      startDate = LocalDateTime.now,
+      endDate = LocalDateTime.now,
+      dueDate = LocalDateTime.now,
+      paymentStatus = PaymentStatusEnum.Paid,
+      paymentReceivedDate = Some(LocalDateTime.now)
     ),
     communications = Seq.empty,
     financial = Financial(
       amountDue = 123.45,
-      outstandingAmountDue = 12.34,
+      outstandingAmountDue = 0,
       dueDate = LocalDateTime.now
     )
   )
@@ -636,17 +637,18 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
       LocalDateTime.now,
       LocalDateTime.now,
       LocalDateTime.now,
-      PaymentStatusEnum.Paid
+      PaymentStatusEnum.Paid,
+      paymentReceivedDate = Some(LocalDateTime.now)
     ),
     communications = Seq.empty,
     financial = Financial(
       amountDue = 123.45,
-      outstandingAmountDue = 12.34,
+      outstandingAmountDue = 0,
       dueDate = LocalDateTime.now
     )
   )
-
-  val sampleLatePaymentPenaltyReasonVATNotPaidWithin30Daysv2: LPPDetails =LPPDetails(
+  
+  val sampleLatePaymentPenaltyReasonVATNotPaidWithin30Daysv2: LPPDetails = LPPDetails(
     principalChargeReference = "12345678901234",
     penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
     penaltyStatus = LPPPenaltyStatusEnum.Accruing,
@@ -671,7 +673,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     principalChargeBillingTo = LocalDate.parse("2069-10-30"),
     principalChargeDueDate = LocalDate.parse("2069-10-30")
   )
-
+  
   val sampleLatePaymentPenaltyPaid: LatePaymentPenalty = LatePaymentPenalty(
     `type` = PenaltyTypeEnum.Financial,
     id = "123456789",
@@ -680,15 +682,16 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     status = PointStatusEnum.Paid,
     appealStatus = None,
     period = PaymentPeriod(
-      LocalDateTime.now,
-      LocalDateTime.now,
-      LocalDateTime.now,
-      PaymentStatusEnum.Paid
+      startDate = LocalDateTime.now,
+      endDate = LocalDateTime.now,
+      dueDate = LocalDateTime.now,
+      paymentStatus = PaymentStatusEnum.Paid,
+      paymentReceivedDate = Some(LocalDateTime.now)
     ),
     communications = Seq.empty,
     financial = Financial(
       amountDue = 400.00,
-      outstandingAmountDue = 200.00,
+      outstandingAmountDue = 0,
       dueDate = LocalDateTime.now
     )
   )
@@ -780,10 +783,10 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     status = PointStatusEnum.Due,
     appealStatus = None,
     period = PaymentPeriod(
-      LocalDateTime.now,
-      LocalDateTime.now,
-      LocalDateTime.now,
-      PaymentStatusEnum.Due
+      startDate = LocalDateTime.now,
+      endDate = LocalDateTime.now,
+      dueDate = LocalDateTime.now,
+      paymentStatus = PaymentStatusEnum.Due
     ),
     communications = Seq.empty,
     financial = Financial(
@@ -825,11 +828,11 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     status = PointStatusEnum.Due,
     appealStatus = None,
     period = PaymentPeriod(
-      LocalDateTime.now,
-      LocalDateTime.now,
-      LocalDateTime.now,
-      PaymentStatusEnum.Due,
-      Some(LocalDateTime.now)
+      startDate = LocalDateTime.now,
+      endDate = LocalDateTime.now,
+      dueDate = LocalDateTime.now,
+      paymentStatus = PaymentStatusEnum.Due,
+      paymentReceivedDate = Some(LocalDateTime.now)
     ),
     communications = Seq.empty,
     financial = Financial(
@@ -993,24 +996,24 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     sampleLatePaymentPenaltyAdditional.copy(reason = PaymentPenaltyReasonEnum.OFFICERS_ASSESSMENT_NOT_PAID_AFTER_30_DAYS)
 
   val sampleRemovedPenaltyPoint: PenaltyPoint = PenaltyPoint(
-    PenaltyTypeEnum.Point,
-    "123456789",
-    "1",
-    None,
-    LocalDateTime.now,
-    Some(LocalDateTime.now),
-    PointStatusEnum.Removed,
-    Some("reason"),
-    Some(Seq(PenaltyPeriod(
-      LocalDateTime.now,
-      LocalDateTime.now,
-      Submission(
-        LocalDateTime.now,
-        Some(LocalDateTime.now),
-        SubmissionStatusEnum.Submitted
+    `type` = PenaltyTypeEnum.Point,
+    id = "123456789",
+    number = "1",
+    appealStatus = None,
+    dateCreated = LocalDateTime.now,
+    dateExpired = Some(LocalDateTime.now),
+    status = PointStatusEnum.Removed,
+    reason = Some("reason"),
+    period = Some(Seq(PenaltyPeriod(
+      startDate = LocalDateTime.now,
+      endDate = LocalDateTime.now,
+      submission = Submission(
+        dueDate = LocalDateTime.now,
+        submittedDate = Some(LocalDateTime.now),
+        status = SubmissionStatusEnum.Submitted
       )
     ))),
-    Seq.empty
+    communications = Seq.empty
   )
 
   val sampleRemovedPenaltyPointv2: LSPDetails = LSPDetails(
@@ -1039,12 +1042,12 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   )
 
   val sampleReturnNotSubmittedPenaltyPeriod: PenaltyPeriod = PenaltyPeriod(
-    LocalDateTime.now,
-    LocalDateTime.now,
-    Submission(
-      LocalDateTime.now,
-      None,
-      SubmissionStatusEnum.Overdue
+    startDate = LocalDateTime.now,
+    endDate = LocalDateTime.now,
+    submission = Submission(
+      dueDate = LocalDateTime.now,
+      submittedDate = None,
+      status = SubmissionStatusEnum.Overdue
     )
   )
 
@@ -1255,31 +1258,31 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   val sampleReturnNotSubmittedPenaltyPointData: Seq[PenaltyPoint] = Seq(
     PenaltyPoint(
-      PenaltyTypeEnum.Point,
-      "123456789",
-      "1",
-      None,
-      LocalDateTime.now,
-      Some(LocalDateTime.now),
-      PointStatusEnum.Active,
-      None,
-      Some(Seq(PenaltyPeriod(
-        LocalDateTime.now,
-        LocalDateTime.now,
-        Submission(
-          LocalDateTime.now,
-          None,
-          SubmissionStatusEnum.Overdue
+      `type` = PenaltyTypeEnum.Point,
+      id = "123456789",
+      number = "1",
+      appealStatus = None,
+      dateCreated = LocalDateTime.now,
+      dateExpired = Some(LocalDateTime.now),
+      status = PointStatusEnum.Active,
+      reason = None,
+      period = Some(Seq(PenaltyPeriod(
+        startDate = LocalDateTime.now,
+        endDate = LocalDateTime.now,
+        submission = Submission(
+          dueDate = LocalDateTime.now,
+          submittedDate = None,
+          status = SubmissionStatusEnum.Overdue
         )
       ))),
-      Seq.empty
+      communications = Seq.empty
     )
   )
 
   val sampleSummaryCard: LateSubmissionPenaltySummaryCard = LateSubmissionPenaltySummaryCard(
-    Seq.empty,
-    Tag.defaultObject,
-    "1",
+    cardRows = Seq.empty,
+    status = Tag.defaultObject,
+    penaltyPoint = "1",
     penaltyId = "123456789",
     isReturnSubmitted = true
   )
