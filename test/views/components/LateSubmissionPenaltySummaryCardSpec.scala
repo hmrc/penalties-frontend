@@ -635,7 +635,6 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       }
 
       "have the appeal status for UNDER_REVIEW" in {
-        println("docWithAppealedPoint.."+docWithAppealedPoint)
         docWithAppealedPoint.select("dt").get(4).text() shouldBe "Appeal status"
         docWithAppealedPoint.select("dd").get(4).text() shouldBe "Under review by HMRC"
       }

@@ -17,17 +17,16 @@
 package viewmodels.v2
 
 import models.User
-import models.v3.appealInfo.{AppealLevelEnum, AppealStatusEnum}
+import models.v3.appealInfo.AppealStatusEnum
 import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum}
-import models.v3.lsp.TaxReturnStatusEnum.Fulfilled
-import models.v3.lsp.{LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum, LateSubmission, TaxReturnStatusEnum}
+import models.v3.lsp._
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
-import utils.{CurrencyFormatter, ImplicitDateFormatter, ViewUtils}
 import utils.v2.PenaltyPeriodHelper
+import utils.{CurrencyFormatter, ImplicitDateFormatter, ViewUtils}
 
 import java.time.LocalDate
 import javax.inject.Inject
@@ -43,11 +42,14 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     val indexedActivePoints = filteredActivePenalties.zipWithIndex
     penalties.map { penalty =>
       val newPenalty = findAndReindexPointIfIsActive(indexedActivePoints, penalty)
-      (newPenalty.penaltyCategory, newPenalty.penaltyStatus, newPenalty.appealInformation, newPenalty.FAPIndicator) match {
-        case (LSPPenaltyCategoryEnum.Point, _, _, newPenalty.FAPIndicator) => addedPointCard(newPenalty, thresholdMet)
-        case (LSPPenaltyCategoryEnum.Charge | LSPPenaltyCategoryEnum.Threshold, _, _, _) => financialSummaryCard(newPenalty, threshold)
-        case (LSPPenaltyCategoryEnum.Point, LSPPenaltyStatusEnum.Inactive, None, _) => removedPointCard(newPenalty)
-        case (LSPPenaltyCategoryEnum.Point, _, _, _) => pointSummaryCard(newPenalty, thresholdMet)
+      (newPenalty.penaltyCategory, newPenalty.appealInformation.map(_.head.appealStatus)) match {
+        case (LSPPenaltyCategoryEnum.Point, _) if newPenalty.FAPIndicator.contains("X") & newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Active => addedPointCard(newPenalty, thresholdMet)//Added FAP
+        case (LSPPenaltyCategoryEnum.Point, _) if newPenalty.FAPIndicator.contains("X") & newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive => removedPointCard(newPenalty)//Added FAP
+        case (LSPPenaltyCategoryEnum.Point, _) if newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive & newPenalty.expiryReason.isDefined => removedPointCard(newPenalty)//Removed FAP
+        case (LSPPenaltyCategoryEnum.Point, Some(AppealStatusEnum.Upheld)) if newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive => removedPointCard(newPenalty)//Removed FAP
+        case (LSPPenaltyCategoryEnum.Point, _) => pointSummaryCard(newPenalty, thresholdMet)// normal points
+        case (LSPPenaltyCategoryEnum.Threshold, _) => financialSummaryCard(newPenalty, threshold)//normal threshold
+        case (LSPPenaltyCategoryEnum.Charge, _) => financialSummaryCard(newPenalty, threshold)
         case _ => throw new Exception("[SummaryCardHelper][populateLateSubmissionPenaltyCard] Incorrect values provided")
       }
     }
@@ -80,15 +82,17 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head)
       .fold(false)(_.taxReturnStatus.equals(TaxReturnStatusEnum.Open))
     val appealStatus = penalty.appealInformation.flatMap(_.headOption.flatMap(_.appealStatus))
+    val appealLevel = penalty.appealInformation.flatMap(_.headOption.flatMap(_.appealLevel))
     LateSubmissionPenaltySummaryCard(
       rows,
       tagStatus(Some(penalty), None),
-      if (!isAnAdjustedPoint || isAnAddedPoint) penalty.penaltyOrder else "",
+      if (!isAnAdjustedPoint || isAnAddedPoint) penalty.penaltyOrder.toInt.toString else "",
       penalty.penaltyNumber,
       isReturnSubmitted,
       isAddedPoint = isAnAddedPoint,
-      isAppealedPoint = appealStatus.isDefined,
+      isAppealedPoint = appealStatus.getOrElse(AppealStatusEnum.Unappealable) != AppealStatusEnum.Unappealable,
       appealStatus = appealStatus,
+      appealLevel = appealLevel,
       isAdjustedPoint = isAnAdjustedPoint,
       multiplePenaltyPeriod = getMultiplePenaltyPeriodMessage(penalty)
     )
@@ -96,7 +100,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
 
   private def getMultiplePenaltyPeriodMessage(penalty : LSPDetails)(implicit messages: Messages): Option[Html]={
     if(penalty.lateSubmissions.getOrElse(Seq.empty).size > 1)
-      Some(Html(messages("lsp.multiple.penaltyPeriod", dateToString(PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.lateSubmissions.get).last.returnReceiptDate.get))))
+      Some(Html(messages("lsp.multiple.penaltyPeriod", dateToString(PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.lateSubmissions.get).last.taxPeriodDueDate.get))))
     else None
   }
 
@@ -108,7 +112,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
           messages(
             "summaryCard.value1",
             dateToString(PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.lateSubmissions.get).head.taxPeriodStartDate.get),
-            dateToString(PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.lateSubmissions.get).head.taxPeriodStartDate.get)
+            dateToString(PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.lateSubmissions.get).head.taxPeriodEndDate.get)
           )
         )
       ),
@@ -148,7 +152,8 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       getPenaltyNumberBasedOnThreshold(penalty.penaltyOrder, threshold),
       penalty.penaltyNumber,
       penalty.lateSubmissions.map(penaltyPeriod => PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head).fold(false)(_.returnReceiptDate.isDefined),
-      isFinancialPoint = (penalty.penaltyCategory == LSPPenaltyCategoryEnum.Charge) | (penalty.penaltyCategory == LSPPenaltyCategoryEnum.Threshold),
+      isFinancialLSP = penalty.penaltyCategory == LSPPenaltyCategoryEnum.Charge,
+      isThresholdPoint = penalty.penaltyCategory == LSPPenaltyCategoryEnum.Threshold,
       isAppealedPoint = appealStatus.isDefined,
       appealStatus = appealStatus,
       appealLevel = appealLevel,
@@ -262,7 +267,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   def lppSummaryCard(lpp: LPPDetails)(implicit messages: Messages, user: User[_]): LatePaymentPenaltySummaryCard = {
     val cardBody = if (lpp.penaltyCategory == LPPPenaltyCategoryEnum.LPP2) lppAdditionalCardBody(lpp) else lppCardBody(lpp)
     val isPaid = lpp.penaltyAmountOutstanding.contains(0)
-    val isVatPaid = false //lpp.period.paymentStatus == PaymentStatusEnum.Paid
+    val isVatPaid = lpp.penaltyStatus == LPPPenaltyStatusEnum.Posted
     if (lpp.appealInformation.isDefined) {
       buildLPPSummaryCard(cardBody :+ summaryListRow(
         messages("summaryCard.appeal.status"),
@@ -278,6 +283,9 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     val appealStatus = seqAppealInformation.get.headOption.flatMap(_.appealStatus).get
     val appealLevel = seqAppealInformation.get.headOption.flatMap(_.appealLevel).get
     (appealStatus, appealLevel) match {
+      case (AppealStatusEnum.Unappealable, _) => html(
+        Html(messages(s"summaryCard.appealCheck"))
+      )
       case (AppealStatusEnum.Upheld | AppealStatusEnum.Rejected, _) =>
         html(
           Html(messages(s"summaryCard.appeal.${appealStatus.toString}.${appealLevel.toString}")),
@@ -313,6 +321,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
                                  (implicit messages: Messages): LatePaymentPenaltySummaryCard = {
     val amountDue = lpp.penaltyAmountOutstanding.getOrElse(BigDecimal(0)) + lpp.penaltyAmountPaid.getOrElse(BigDecimal(0))
     val appealStatus = lpp.appealInformation.flatMap(_.headOption.flatMap(_.appealStatus))
+    val appealLevel = lpp.appealInformation.flatMap(_.headOption.flatMap(_.appealLevel))
     LatePaymentPenaltySummaryCard(
       cardRows = rows,
       status = tagStatus(None, Some(lpp)),
@@ -320,6 +329,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       isPenaltyPaid = isPaid,
       amountDue,
       appealStatus,
+      appealLevel,
       isVatPaid = isVatPaid,
       isAdditionalPenalty = lpp.penaltyCategory == LPPPenaltyCategoryEnum.LPP2
     )
@@ -350,8 +360,8 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
         Html(
           messages(
             "summaryCard.value1",
-            dateToString(lpp.principalChargeBillingTo),
-            dateToString(lpp.principalChargeBillingFrom)
+            dateToString(lpp.principalChargeBillingFrom),
+            dateToString(lpp.principalChargeBillingTo)
           )
         )
       ),
@@ -379,19 +389,15 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       val periodSubmissionStatus = penalty.get.lateSubmissions.map(penaltyPeriod => PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head.taxReturnStatus)
       val penaltyPointStatus = penalty.get.penaltyStatus
       val appealStatus = penalty.get.appealInformation.flatMap(_.headOption.flatMap(_.appealStatus))
-      val isPenaltyPaid = penalty.get.chargeOutstandingAmount.exists(_ > BigDecimal(0))
+      val isVATSubmitted = periodSubmissionStatus.contains(TaxReturnStatusEnum.Fulfilled)
       val penaltyAmountPaid = penalty.get.chargeAmount.getOrElse(BigDecimal(0)) - penalty.get.chargeOutstandingAmount.getOrElse(BigDecimal(0))
-      (appealStatus, periodSubmissionStatus, penaltyPointStatus) match {
-        case (Some(AppealStatusEnum.Upheld), _, _) => renderTag(messages("status.cancelled"))
-        case (_, Some(Fulfilled), _) if !isPenaltyPaid => showDueOrPartiallyPaidDueTag(penalty.get.chargeOutstandingAmount, penaltyAmountPaid)
-        case (_, Some(_), _) if isPenaltyPaid => renderTag(messages("status.paid"))
-        case (_, Some(TaxReturnStatusEnum.Open), _) => showDueOrPartiallyPaidDueTag(penalty.get.chargeOutstandingAmount, penaltyAmountPaid)
-        //case (Some(AppealStatusEnum.Reinstated), _, _) => renderTag(messages("status.reinstated")) TODO: implementation for AppealStatus Reinstated
-        case (_, None, _) => renderTag(messages("status.active"))
-        case (_, Some(_), LSPPenaltyStatusEnum.Inactive) => renderTag(messages("status.removed"))
-        case (_, Some(Fulfilled), LSPPenaltyStatusEnum.Active) => renderTag(messages("status.active"))
-        case (_, Some(Fulfilled), _) => renderTag(messages("status.rejected"))
-        case (_, _, _) => renderTag(messages("status.active")) // Temp solution
+      val penaltyAmount = penalty.get.chargeAmount.getOrElse(BigDecimal(0))
+      penaltyPointStatus match {
+        case LSPPenaltyStatusEnum.Inactive if appealStatus.contains(AppealStatusEnum.Upheld) => renderTag(messages("status.cancelled"))
+        case LSPPenaltyStatusEnum.Inactive => renderTag(messages("status.removed"))
+        case LSPPenaltyStatusEnum.Active if penaltyAmount > BigDecimal(0) =>  showDueOrPartiallyPaidDueTag(penalty.get.chargeOutstandingAmount, penaltyAmountPaid)
+        case LSPPenaltyStatusEnum.Active if appealStatus.contains(AppealStatusEnum.Rejected) & isVATSubmitted =>  renderTag(messages("status.rejected"))
+        case _ => renderTag(messages("status.active"))
       }
     } else {
       val latePaymentPenaltyStatus = lpp.get.penaltyStatus
@@ -399,7 +405,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       (latePaymentPenaltyAppealStatus, latePaymentPenaltyStatus) match {
         case (Some(AppealStatusEnum.Upheld), _) => renderTag(messages("status.cancelled"))
         case (_, LPPPenaltyStatusEnum.Accruing) => renderTag(messages("status.estimated"))
-        case (_, LPPPenaltyStatusEnum.Posted) => renderTag(messages("status.paid"))
+        case (_, LPPPenaltyStatusEnum.Posted) if lpp.get.penaltyAmountOutstanding.contains(BigDecimal(0))=> renderTag(messages("status.paid"))
         case (_, _) => showDueOrPartiallyPaidDueTag(lpp.get.penaltyAmountOutstanding, lpp.get.penaltyAmountPaid.getOrElse(BigDecimal(0)))
       }
     }

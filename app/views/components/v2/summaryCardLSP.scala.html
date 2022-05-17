@@ -16,7 +16,7 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import viewmodels.v2.LateSubmissionPenaltySummaryCard
-@import models.point.AppealStatusEnum
+@import models.v3.appealInfo.AppealStatusEnum
 @import utils.CurrencyFormatter
 
 @this(
@@ -33,13 +33,13 @@
     <header class="app-summary-card__header">
         <h3 class="app-summary-card__title">
             @{
-                if(summaryCard.isFinancialPoint && summaryCard.penaltyPoint.nonEmpty) {
+                if(summaryCard.isThresholdPoint) {
                     messages("summaryCard.header.financial", summaryCard.penaltyPoint, CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(summaryCard.amountDue))
-                } else if(summaryCard.isFinancialPoint && summaryCard.penaltyPoint.isEmpty) {
+                } else if(summaryCard.isFinancialLSP) {
                     messages("summaryCard.header.financialNoNumber", CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(summaryCard.amountDue))
                 } else if(summaryCard.isAddedPoint) {
                     messages("summaryCard.header.addedPoint", summaryCard.penaltyPoint)
-                } else if(summaryCard.isAdjustedPoint || summaryCard.appealStatus.contains(AppealStatusEnum.Accepted) || summaryCard.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal)) {
+                } else if(summaryCard.isAdjustedPoint || summaryCard.appealStatus.contains(AppealStatusEnum.Upheld)) {
                     messages("summaryCard.header.adjustedPoint")
                 } else {
                     messages("summaryCard.header", summaryCard.penaltyPoint)
@@ -71,7 +71,7 @@
                 if(!summaryCard.isAppealedPoint) {
                     if(summaryCard.isAddedPoint) {
                             {messages("summaryCard.adjustedPoint.cannotAppeal")}
-                    } else if(summaryCard.penaltyPoint.isEmpty && !summaryCard.isAdjustedPoint) {
+                    } else if(summaryCard.isFinancialLSP && !summaryCard.isAdjustedPoint) {
                             {if(!summaryCard.isReturnSubmitted) {
                                     <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}>
                                     {messages("summaryCard.appealCheck")}

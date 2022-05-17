@@ -163,32 +163,27 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   val samplePenaltyPointv2: LSPDetails = LSPDetails(
     penaltyNumber = "12345678901234",
-    penaltyOrder = "02",
+    penaltyOrder = "01",
     penaltyCategory = LSPPenaltyCategoryEnum.Point,
     penaltyStatus = LSPPenaltyStatusEnum.Active,
     FAPIndicator = Some("X"),
-    penaltyCreationDate = LocalDate.parse("2069-10-30"),
-    penaltyExpiryDate = LocalDate.parse("2069-10-30"),
-    expiryReason = Some("FAP"),
-    communicationsDate = LocalDate.parse("2069-10-30"),
+    penaltyCreationDate = LocalDate.now,
+    penaltyExpiryDate = LocalDate.now,
+    expiryReason = None,
+    communicationsDate = LocalDate.now,
     lateSubmissions = Some(Seq(
       LateSubmission(
-        taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
-        taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
-        taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
-        returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
+        taxPeriodStartDate = Some(LocalDate.now),
+        taxPeriodEndDate = Some(LocalDate.now),
+        taxPeriodDueDate = Some(LocalDate.now),
+        returnReceiptDate = Some(LocalDate.now),
         taxReturnStatus = TaxReturnStatusEnum.Fulfilled
       )
     )),
-    appealInformation = Some(Seq(
-      AppealInformationType(
-        appealStatus = Some(AppealStatusEnumv2.Unappealable),
-        appealLevel = Some(AppealLevelEnum.HMRC)
-      )
-    )),
+    appealInformation = None,
     chargeAmount = Some(200),
-    chargeOutstandingAmount = Some(200),
-    chargeDueDate = Some(LocalDate.parse("2069-10-30"))
+    chargeOutstandingAmount = Some(0.00),
+    chargeDueDate = Some(LocalDate.now)
   )
 
   val sampleFinancialPenaltyPoint: PenaltyPoint = PenaltyPoint(
@@ -218,30 +213,25 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   )
 
   val sampleFinancialPenaltyPointv2: LSPDetails = LSPDetails(
-    penaltyNumber = "12345678901234",
+    penaltyNumber = "123456789",
     penaltyOrder = "01",
-    penaltyCategory = LSPPenaltyCategoryEnum.Point,
+    penaltyCategory = LSPPenaltyCategoryEnum.Charge,
     penaltyStatus = LSPPenaltyStatusEnum.Active,
     FAPIndicator = Some("X"),
-    penaltyCreationDate = LocalDate.parse("2069-10-30"),
-    penaltyExpiryDate = LocalDate.parse("2069-10-30"),
+    penaltyCreationDate = LocalDate.now,
+    penaltyExpiryDate = LocalDate.now,
     expiryReason = Some("FAP"),
     communicationsDate = LocalDate.parse("2069-10-30"),
     lateSubmissions = Some(Seq(
       LateSubmission(
-        taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
-        taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
-        taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
-        returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
-        taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+        taxPeriodStartDate = Some(LocalDate.now),
+        taxPeriodEndDate = Some(LocalDate.now),
+        taxPeriodDueDate = Some(LocalDate.now),
+        returnReceiptDate = None,
+        taxReturnStatus = TaxReturnStatusEnum.Open
       )
     )),
-    appealInformation = Some(Seq(
-      AppealInformationType(
-        appealStatus = Some(AppealStatusEnumv2.Unappealable),
-        appealLevel = Some(AppealLevelEnum.HMRC)
-      )
-    )),
+    appealInformation = None,
     chargeAmount = Some(200),
     chargeOutstandingAmount = Some(200),
     chargeDueDate = Some(LocalDate.parse("2069-10-30"))
@@ -362,7 +352,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   val sampleFinancialPenaltyPointWithMultiplePenaltyPeriodv2: LSPDetails = LSPDetails(
     penaltyNumber = "12345678901234",
     penaltyOrder = "01",
-    penaltyCategory = LSPPenaltyCategoryEnum.Point,
+    penaltyCategory = LSPPenaltyCategoryEnum.Charge,
     penaltyStatus = LSPPenaltyStatusEnum.Active,
     FAPIndicator = Some("X"),
     penaltyCreationDate = LocalDate.parse("2069-10-30"),
@@ -371,19 +361,21 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     communicationsDate = LocalDate.parse("2069-10-30"),
     lateSubmissions = Some(Seq(
       LateSubmission(
-        taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
-        taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
-        taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
-        returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
+        taxPeriodStartDate = Some(sampleOldestDatev2),
+        taxPeriodEndDate = Some(sampleOldestDatev2.plusDays(15)),
+        taxPeriodDueDate = Some(sampleOldestDatev2.plusMonths(4).plusDays(7)),
+        returnReceiptDate = Some(sampleOldestDatev2.plusMonths(4).plusDays(12)),
+        taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+      ),
+      LateSubmission(
+        taxPeriodStartDate = Some(sampleOldestDatev2.plusDays(16)),
+        taxPeriodEndDate = Some(sampleOldestDatev2.plusDays(31)),
+        taxPeriodDueDate = Some(sampleOldestDatev2.plusMonths(4).plusDays(23)),
+        returnReceiptDate = Some(sampleOldestDatev2.plusMonths(4).plusDays(25)),
         taxReturnStatus = TaxReturnStatusEnum.Fulfilled
       )
     )),
-    appealInformation = Some(Seq(
-      AppealInformationType(
-        appealStatus = Some(AppealStatusEnumv2.Unappealable),
-        appealLevel = Some(AppealLevelEnum.HMRC)
-      )
-    )),
+    appealInformation = None,
     chargeAmount = Some(200),
     chargeOutstandingAmount = Some(200),
     chargeDueDate = Some(LocalDate.parse("2069-10-30"))
@@ -482,12 +474,12 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     )),
     appealInformation = Some(Seq(
       AppealInformationType(
-        appealStatus = Some(AppealStatusEnumv2.Unappealable),
+        appealStatus = Some(AppealStatusEnumv2.Under_Appeal),
         appealLevel = Some(AppealLevelEnum.HMRC)
       )
     )),
-    chargeAmount = Some(200),
-    chargeOutstandingAmount = Some(200),
+    chargeAmount = Some(0.00),
+    chargeOutstandingAmount = Some(0.00),
     chargeDueDate = Some(LocalDate.parse("2069-10-30"))
   )
 
@@ -563,9 +555,9 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   val sampleLPPDetailsVATPaymentDue: LPPDetails = LPPDetails(
     principalChargeReference = "12345678901234",
     penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-    penaltyStatus = LPPPenaltyStatusEnum.Accruing,
+    penaltyStatus = LPPPenaltyStatusEnum.Posted,
     penaltyAmountPaid = Some(1001.45),
-    penaltyAmountOutstanding = Some(99.99),
+    penaltyAmountOutstanding = Some(200.00),
     LPP1LRDays = Some("15"),
     LPP1HRDays = Some("31"),
     LPP2Days = Some("31"),
@@ -581,9 +573,9 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
       appealStatus = Some(AppealStatusEnumv2.Rejected),
       appealLevel = Some(AppealLevelEnum.HMRC)
     ))),
-    principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
-    principalChargeBillingTo = LocalDate.parse("2069-10-30"),
-    principalChargeDueDate = LocalDate.parse("2069-10-30")
+    principalChargeBillingFrom = LocalDate.now,
+    principalChargeBillingTo = LocalDate.now,
+    principalChargeDueDate = LocalDate.now
   )
 
   val sampleLatePaymentPenaltyAdditional: LatePaymentPenalty = LatePaymentPenalty(
@@ -609,7 +601,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   val sampleLatePaymentPenaltyAdditionalv2: LPPDetails = LPPDetails(
     principalChargeReference = "12345678901234",
-    penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
+    penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
     penaltyStatus = LPPPenaltyStatusEnum.Accruing,
     penaltyAmountPaid = Some(1001.45),
     penaltyAmountOutstanding = Some(99.99),
@@ -706,7 +698,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
     penaltyStatus = LPPPenaltyStatusEnum.Accruing,
     penaltyAmountPaid = Some(1001.45),
-    penaltyAmountOutstanding = Some(99.99),
+    penaltyAmountOutstanding = Some(0.00),
     LPP1LRDays = Some("15"),
     LPP1HRDays = Some("31"),
     LPP2Days = Some("31"),
@@ -730,9 +722,9 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   val sampleLPPDetailsVATPaid: LPPDetails = LPPDetails(
     principalChargeReference = "12345678901234",
     penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-    penaltyStatus = LPPPenaltyStatusEnum.Accruing,
-    penaltyAmountPaid = Some(1001.45),
-    penaltyAmountOutstanding = Some(99.99),
+    penaltyStatus = LPPPenaltyStatusEnum.Posted,
+    penaltyAmountPaid = Some(400.00),
+    penaltyAmountOutstanding = Some(0.00),
     LPP1LRDays = Some("15"),
     LPP1HRDays = Some("31"),
     LPP2Days = Some("31"),
@@ -743,17 +735,14 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     LPP1HRPercentage = Some(BigDecimal(2.00).setScale(2)),
     penaltyChargeCreationDate = LocalDate.parse("2069-10-30"),
     communicationsDate = LocalDate.parse("2069-10-30"),
-    penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
-    appealInformation = Some(Seq(AppealInformationType(
-      appealStatus = Some(AppealStatusEnumv2.Unappealable),
-      appealLevel = Some(AppealLevelEnum.HMRC)
-    ))),
-    principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
-    principalChargeBillingTo = LocalDate.parse("2069-10-30"),
-    principalChargeDueDate = LocalDate.parse("2069-10-30")
+    penaltyChargeDueDate = LocalDate.parse("2020-03-30"),
+    appealInformation = None,
+    principalChargeBillingFrom = LocalDate.of(2020, 1, 1),
+    principalChargeBillingTo = LocalDate.of(2020, 2, 1),
+    principalChargeDueDate = LocalDate.of(2020, 3, 7),
   )
 
-  val LSPDetailsAsModel = LSPDetails(
+  val LSPDetailsAsModelNoFAP = LSPDetails(
     penaltyNumber = "12345678901234",
     penaltyOrder = "01",
     penaltyCategory = LSPPenaltyCategoryEnum.Point,
@@ -761,7 +750,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     FAPIndicator = None,
     penaltyCreationDate = LocalDate.parse("2069-10-30"),
     penaltyExpiryDate = LocalDate.parse("2069-10-30"),
-    expiryReason = Some("FAP"),
+    expiryReason = None,
     communicationsDate = LocalDate.parse("2069-10-30"),
     lateSubmissions = Some(Seq(
       LateSubmission(
@@ -774,13 +763,13 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     )),
     appealInformation = Some(Seq(
       AppealInformationType(
-        appealStatus = Some(AppealStatusEnumv2.Unappealable),
+        appealStatus = Some(AppealStatusEnumv2.Under_Appeal),
         appealLevel = Some(AppealLevelEnum.HMRC)
       )
     )),
-    chargeAmount = Some(200),
-    chargeOutstandingAmount = Some(200),
-    chargeDueDate = Some(LocalDate.parse("2069-10-30"))
+    chargeAmount = None,
+    chargeOutstandingAmount = None,
+    chargeDueDate = None
   )
 
   val sampleLatePaymentPenaltyUnpaidVAT: LatePaymentPenalty = LatePaymentPenalty(
@@ -854,31 +843,68 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Accepted), status = PointStatusEnum.Removed)
 
   val samplePenaltyPointAppealedAcceptedv2: LSPDetails =
-    samplePenaltyPointAppealedUnderReviewv2.copy(appealInformation = Some(Seq(AppealInformationType(
-      appealStatus = Some(AppealStatusEnumv2.Rejected),
+    samplePenaltyPointAppealedUnderReviewv2.copy(chargeAmount = Some(0.00),
+      chargeOutstandingAmount = Some(0.00),
+      penaltyStatus = LSPPenaltyStatusEnum.Inactive,
+      appealInformation = Some(Seq(AppealInformationType(
+      appealStatus = Some(AppealStatusEnumv2.Upheld),
       appealLevel = Some(AppealLevelEnum.HMRC)
     ))))
 
   val samplePenaltyPointAppealedAcceptedByTribunal: PenaltyPoint =
     samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Accepted_By_Tribunal), status = PointStatusEnum.Removed)
   val samplePenaltyPointAppealedAcceptedByTribunalv2: LSPDetails =
-    samplePenaltyPointAppealedUnderReviewv2.copy(appealInformation = Some(Seq(AppealInformationType(
+    samplePenaltyPointAppealedUnderReviewv2.copy(chargeAmount = Some(0.00),
+      chargeOutstandingAmount = Some(0.00),
+      penaltyStatus = LSPPenaltyStatusEnum.Inactive,
+      appealInformation = Some(Seq(AppealInformationType(
       appealStatus = Some(AppealStatusEnumv2.Upheld),
       appealLevel = Some(AppealLevelEnum.Tribunal)
-    ))))
+    ))),
+      lateSubmissions = Some(Seq(
+        LateSubmission(
+          taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
+          taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
+          taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
+          returnReceiptDate = None,
+          taxReturnStatus = TaxReturnStatusEnum.Open
+        )
+      )))
 
   val samplePenaltyPointAppealedRejected: PenaltyPoint = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Rejected))
-  val samplePenaltyPointAppealedRejectedv2: LSPDetails = samplePenaltyPointAppealedUnderReviewv2.copy(appealInformation = Some(Seq(AppealInformationType(
+  val samplePenaltyPointAppealedRejectedv2: LSPDetails = samplePenaltyPointAppealedUnderReviewv2.copy(chargeAmount = Some(0.00),
+    chargeOutstandingAmount = Some(0.00),
+    appealInformation = Some(Seq(AppealInformationType(
     appealStatus = Some(AppealStatusEnumv2.Rejected),
     appealLevel = Some(AppealLevelEnum.HMRC)
-  ))))
+  ))),
+    lateSubmissions = Some(Seq(
+      LateSubmission(
+        taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
+        taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
+        taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
+        returnReceiptDate = None,
+        taxReturnStatus = TaxReturnStatusEnum.Open
+      )
+    )))
   val samplePenaltyPointAppealedReinstated: PenaltyPoint = samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Reinstated))
   val samplePenaltyPointAppealedTribunalRejected: PenaltyPoint =
     samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Tribunal_Rejected))
-  val samplePenaltyPointAppealedTribunalRejectedv2: LSPDetails = samplePenaltyPointAppealedUnderReviewv2.copy(appealInformation = Some(Seq(AppealInformationType(
+  val samplePenaltyPointAppealedTribunalRejectedv2: LSPDetails = samplePenaltyPointAppealedUnderReviewv2.copy(chargeAmount = None, chargeOutstandingAmount = None,
+    appealInformation = Some(Seq(AppealInformationType(
     appealStatus = Some(AppealStatusEnumv2.Rejected),
     appealLevel = Some(AppealLevelEnum.Tribunal)
-  ))))
+  ))),
+    lateSubmissions = Some(Seq(
+      LateSubmission(
+        taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
+        taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
+        taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
+        returnReceiptDate = None,
+        taxReturnStatus = TaxReturnStatusEnum.Open
+      )
+    ))
+  )
 
   val samplePenaltyPointAppealedUnderTribunalReview: PenaltyPoint =
     samplePenaltyPointAppealedUnderReview.copy(appealStatus = Some(AppealStatusEnum.Under_Tribunal_Review))
@@ -912,7 +938,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     sampleLatePaymentPenaltyDue.copy(appealStatus = Some(AppealStatusEnum.Accepted_By_Tribunal))
   val sampleLatePaymentPenaltyAppealedAcceptedTribunalv2: LPPDetails = sampleLPPDetailsVATPaymentDue.copy(appealInformation = Some(Seq(AppealInformationType(
     appealStatus = Some(AppealStatusEnumv2.Upheld),
-    appealLevel = Some(AppealLevelEnum.HMRC)
+    appealLevel = Some(AppealLevelEnum.Tribunal)
   ))))
 
   val sampleLatePaymentPenaltyAppealedRejected: LatePaymentPenalty = sampleLatePaymentPenaltyDue.copy(appealStatus = Some(AppealStatusEnum.Rejected))
@@ -925,7 +951,8 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   val sampleLatePaymentPenaltyAppealedRejectedLPPPaidv2: LPPDetails = sampleLatePaymentPenaltyPaidv2.copy(appealInformation = Some(Seq(AppealInformationType(
     appealStatus = Some(AppealStatusEnumv2.Rejected),
     appealLevel = Some(AppealLevelEnum.HMRC)
-  ))))
+  ))),
+    penaltyStatus = LPPPenaltyStatusEnum.Posted)
 
   val sampleLatePaymentPenaltyAppealedRejectedTribunal: LatePaymentPenalty =
     sampleLatePaymentPenaltyDue.copy(appealStatus = Some(AppealStatusEnum.Tribunal_Rejected))
@@ -938,12 +965,13 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   val sampleLatePaymentPenaltyAppealedReinstated: LatePaymentPenalty = sampleLatePaymentPenaltyDue.copy(appealStatus = Some(AppealStatusEnum.Reinstated))
   //TODO: Update for Reinstated
-  //val sampleLatePaymentPenaltyAppealedReinstatedv2: LPPDetails = sampleLatePaymentPenaltyDue.copy(appealStatus = Some(AppealStatusEnum.Reinstated))
+  val sampleLatePaymentPenaltyAppealedReinstatedv2: LPPDetails = sampleLatePaymentPenaltyDuev2
   val sampleLatePaymentPenaltyEstimated: LatePaymentPenalty = sampleLatePaymentPenaltyDue.copy(status = PointStatusEnum.Estimated)
 
   val sampleLatePaymentPenaltyEstimatedv2: LPPDetails = sampleLatePaymentPenaltyDuev2.copy(penaltyStatus = LPPPenaltyStatusEnum.Accruing)
 
   val sampleLatePaymentPenaltyReasonCentralAssessmentNotPaidWithin15Days: LatePaymentPenalty =
+    sampleLatePaymentPenaltyPaid.copy(reason = PaymentPenaltyReasonEnum.CENTRAL_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS)
     sampleLatePaymentPenaltyPaid.copy(reason = PaymentPenaltyReasonEnum.CENTRAL_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS)
   val sampleLatePaymentPenaltyReasonCentralAssessmentNotPaidWithin30Days: LatePaymentPenalty =
     sampleLatePaymentPenaltyPaid.copy(reason = PaymentPenaltyReasonEnum.CENTRAL_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS)
@@ -989,30 +1017,25 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     penaltyNumber = "12345678901234",
     penaltyOrder = "02",
     penaltyCategory = LSPPenaltyCategoryEnum.Point,
-    penaltyStatus = LSPPenaltyStatusEnum.Active,
+    penaltyStatus = LSPPenaltyStatusEnum.Inactive,
     FAPIndicator = Some("X"),
-    penaltyCreationDate = LocalDate.parse("2069-10-30"),
-    penaltyExpiryDate = LocalDate.parse("2069-10-30"),
+    penaltyCreationDate = LocalDate.now,
+    penaltyExpiryDate = LocalDate.now,
     expiryReason = Some("FAP"),
-    communicationsDate = LocalDate.parse("2069-10-30"),
+    communicationsDate = LocalDate.now,
     lateSubmissions = Some(Seq(
       LateSubmission(
-        taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
-        taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
-        taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
-        returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
+        taxPeriodStartDate = Some(LocalDate.now),
+        taxPeriodEndDate = Some(LocalDate.now),
+        taxPeriodDueDate = Some(LocalDate.now),
+        returnReceiptDate = Some(LocalDate.now),
         taxReturnStatus = TaxReturnStatusEnum.Fulfilled
       )
     )),
-    appealInformation = Some(Seq(
-      AppealInformationType(
-        appealStatus = Some(AppealStatusEnumv2.Unappealable),
-        appealLevel = Some(AppealLevelEnum.HMRC)
-      )
-    )),
-    chargeAmount = Some(200),
-    chargeOutstandingAmount = Some(200),
-    chargeDueDate = Some(LocalDate.parse("2069-10-30"))
+    appealInformation = None,
+    chargeAmount = None,
+    chargeOutstandingAmount = None,
+    chargeDueDate = None
   )
 
   val sampleReturnNotSubmittedPenaltyPeriod: PenaltyPeriod = PenaltyPeriod(
@@ -1031,16 +1054,16 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     penaltyCategory = LSPPenaltyCategoryEnum.Point,
     penaltyStatus = LSPPenaltyStatusEnum.Active,
     FAPIndicator = Some("X"),
-    penaltyCreationDate = LocalDate.parse("2069-10-30"),
-    penaltyExpiryDate = LocalDate.parse("2069-10-30"),
+    penaltyCreationDate = LocalDate.now,
+    penaltyExpiryDate = LocalDate.now,
     expiryReason = Some("FAP"),
     communicationsDate = LocalDate.parse("2069-10-30"),
     lateSubmissions = Some(Seq(
       LateSubmission(
-        taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
-        taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
-        taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
-        returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
+        taxPeriodStartDate = Some(LocalDate.now),
+        taxPeriodEndDate = Some(LocalDate.now),
+        taxPeriodDueDate = Some(LocalDate.now),
+        returnReceiptDate = Some(LocalDate.now),
         taxReturnStatus = TaxReturnStatusEnum.Fulfilled
       )
     )),
@@ -1171,7 +1194,18 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   )
 
   val sampleReturnSubmittedPenaltyPointDatav2: Seq[LSPDetails] = Seq(
-    samplePenaltyPointv2
+    samplePenaltyPointv2.copy(chargeAmount = None,
+      chargeOutstandingAmount = None,
+      FAPIndicator = None,
+      lateSubmissions = Some(Seq(
+        LateSubmission(
+          taxPeriodStartDate = Some(LocalDate.now),
+          taxPeriodEndDate = Some(LocalDate.now),
+          taxPeriodDueDate = Some(LocalDate.now),
+          returnReceiptDate = Some(LocalDate.now),
+          taxReturnStatus = TaxReturnStatusEnum.Open
+        )
+      )))
   )
 
   val sampleLatePaymentPenaltyData: Seq[LatePaymentPenalty] = Seq(
@@ -1213,9 +1247,9 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   )
 
   val sample3ReturnsSubmittedPenaltyPointDataAndOneRemovedPointv2: Seq[LSPDetails] = Seq(
-    samplePenaltyPointv2.copy(penaltyNumber = "4"),
-    samplePenaltyPointv2.copy(penaltyNumber = "3"),
-    samplePenaltyPointv2.copy(penaltyNumber = "2"),
+    samplePenaltyPointv2.copy(penaltyOrder = "4"),
+    samplePenaltyPointv2.copy(penaltyOrder = "3"),
+    samplePenaltyPointv2.copy(penaltyOrder = "2"),
     sampleRemovedPenaltyPointv2
   )
 
