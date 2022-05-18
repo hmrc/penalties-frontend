@@ -77,7 +77,8 @@ class LPPDetailsSpec extends SpecBase {
     ))),
     principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
     principalChargeBillingTo = LocalDate.parse("2069-10-30"),
-    principalChargeDueDate = LocalDate.parse("2069-10-30")
+    principalChargeDueDate = LocalDate.parse("2069-10-30"),
+    principalChargeLatestClearing = None
   )
 
   "LPPDetails" should {

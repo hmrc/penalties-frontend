@@ -35,7 +35,7 @@
             @{
                 if(summaryCard.isThresholdPoint) {
                     messages("summaryCard.header.financial", summaryCard.penaltyPoint, CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(summaryCard.amountDue))
-                } else if(summaryCard.isFinancialLSP) {
+                } else if(summaryCard.isFinancialPoint) {
                     messages("summaryCard.header.financialNoNumber", CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(summaryCard.amountDue))
                 } else if(summaryCard.isAddedPoint) {
                     messages("summaryCard.header.addedPoint", summaryCard.penaltyPoint)
@@ -71,7 +71,7 @@
                 if(!summaryCard.isAppealedPoint) {
                     if(summaryCard.isAddedPoint) {
                             {messages("summaryCard.adjustedPoint.cannotAppeal")}
-                    } else if(summaryCard.isFinancialLSP && !summaryCard.isAdjustedPoint) {
+                    } else if(summaryCard.isFinancialPoint && !summaryCard.isAdjustedPoint) {
                             {if(!summaryCard.isReturnSubmitted) {
                                     <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}>
                                     {messages("summaryCard.appealCheck")}

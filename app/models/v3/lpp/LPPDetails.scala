@@ -41,7 +41,8 @@ case class LPPDetails(
                        appealInformation: Option[Seq[AppealInformationType]],
                        principalChargeBillingFrom: LocalDate,
                        principalChargeBillingTo: LocalDate,
-                       principalChargeDueDate: LocalDate
+                       principalChargeDueDate: LocalDate,
+                       principalChargeLatestClearing: Option[LocalDate]
                      )
 
 object LPPDetails {

@@ -27,7 +27,7 @@ case class LateSubmissionPenaltySummaryCard(
                         penaltyPoint: String,
                         penaltyId: String,
                         isReturnSubmitted: Boolean,
-                        isFinancialLSP: Boolean = false,
+                        isFinancialPoint: Boolean = false,
                         isThresholdPoint: Boolean = false,
                         amountDue: BigDecimal = 0,
                         isAddedPoint: Boolean = false,

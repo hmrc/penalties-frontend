@@ -160,19 +160,20 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         doc.select("strong").text() shouldBe "£200 due"
       }
 
-      "display the VAT period" in {
-        doc.select("dt").get(0).text() shouldBe "VAT period"
-        doc.select("dd").get(0).text() shouldBe "1 January 2020 to 1 February 2020"
+      "display the Penalty type" in {
+        doc.select("dt").get(0).text() shouldBe "Penalty type"
+        doc.select("dd").get(0).text() shouldBe "First penalty for late payment"
       }
 
-      "display the 'VAT payment due' row" in {
-        doc.select("dt").get(1).text() shouldBe "VAT payment due"
-        doc.select("dd").get(1).text() shouldBe "1 February 2020"
+      "display the 'Overdue charge' row" in {
+        doc.select("dt").get(1).text() shouldBe "Overdue charge"
+        //TODO: Get the Reasons
+        doc.select("dd").get(1).text() shouldBe "LPPPenaltyReasonKey"
       }
 
-      "display 'Payment not yet received' in VAT Payment date" in {
-        doc.select("dt").get(2).text() shouldBe "VAT payment date"
-        doc.select("dd").get(2).text() shouldBe "Payment not yet received"
+      "display Date(principalChargeDueDate) in Charge due" in {
+        doc.select("dt").get(2).text() shouldBe "Charge due"
+        doc.select("dd").get(2).text() shouldBe "1 February 2020"
       }
 //      TODO: implement Reason
       "display the date in VAT Payment date" ignore {
@@ -222,19 +223,14 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         doc.select("strong").text() shouldBe "£60.22 due"
       }
 
-      "display the VAT period" in {
-        docWithAdditionalPenalty.select("dt").get(0).text() shouldBe "VAT period"
-        docWithAdditionalPenalty.select("dd").get(0).text() shouldBe "1 January 2020 to 1 February 2020"
+      "display the Penalty type" in {
+        docWithAdditionalPenalty.select("dt").get(0).text() shouldBe "Penalty type"
+        docWithAdditionalPenalty.select("dd").get(0).text() shouldBe "Second penalty for late payment"
       }
 // TODO: implement reason
       "display the penalty reason" ignore {
         docWithAdditionalPenalty.select("dt").get(1).text() shouldBe "Penalty reason"
         docWithAdditionalPenalty.select("dd").get(1).text() shouldBe "VAT more than 30 days late"
-      }
-
-      "display the charged daily from - 31 days after the due date" in {
-        docWithAdditionalPenalty.select("dt").get(2).text() shouldBe "Charged daily from"
-        docWithAdditionalPenalty.select("dd").get(2).text() shouldBe "7 April 2020"
       }
 
       "display the appeal link" in {

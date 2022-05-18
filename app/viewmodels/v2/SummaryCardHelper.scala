@@ -152,7 +152,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       getPenaltyNumberBasedOnThreshold(penalty.penaltyOrder, threshold),
       penalty.penaltyNumber,
       penalty.lateSubmissions.map(penaltyPeriod => PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head).fold(false)(_.returnReceiptDate.isDefined),
-      isFinancialLSP = penalty.penaltyCategory == LSPPenaltyCategoryEnum.Charge,
+      isFinancialPoint = penalty.penaltyCategory == LSPPenaltyCategoryEnum.Charge,
       isThresholdPoint = penalty.penaltyCategory == LSPPenaltyCategoryEnum.Threshold,
       isAppealedPoint = appealStatus.isDefined,
       appealStatus = appealStatus,
@@ -336,47 +336,38 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   }
 
   private def lppCardBody(lpp: LPPDetails)(implicit messages: Messages): Seq[SummaryListRow] = {
-    Seq(summaryListRow(
-      messages("summaryCard.key1"),
-      Html(
-        messages(
-          "summaryCard.value1",
-          dateToString(lpp.principalChargeBillingFrom),
-          dateToString(lpp.principalChargeBillingTo)
-        )
-      )
-    ),
-      summaryListRow(messages("summaryCard.lpp.key3"), Html(dateToString(lpp.principalChargeDueDate))),
-      summaryListRow(messages("summaryCard.lpp.key4"), Html(messages(getVATPaymentDate(lpp)))),
-      summaryListRow(messages("summaryCard.lpp.key2"), Html(messages(getLPPPenaltyReasonKey("lpp.reason"))))
+     Seq(
+      summaryListRow(messages("summaryCard.lpp.key2"), Html(messages("summaryCard.lpp.key2.value.lpp1"))),
+       //TODO: get the reason from New API Call
+       summaryListRow(messages("summaryCard.lpp.key3"), Html(messages(getLPPPenaltyReasonKey("reason TODO"),
+        dateToString(lpp.principalChargeBillingFrom),
+        dateToString(lpp.principalChargeBillingTo)))
+      ),
+      summaryListRow(messages("summaryCard.lpp.key4"), Html(dateToString(lpp.principalChargeDueDate))),
+      summaryListRow(messages("summaryCard.lpp.key5"), Html(messages(getVATPaymentDate(lpp))))
     )
   }
 
   private def lppAdditionalCardBody(lpp: LPPDetails)(implicit messages: Messages): Seq[SummaryListRow] ={
-    val dueDatePlus31Days: String = dateToString(lpp.principalChargeDueDate.plusDays(31))
-    Seq(
-      summaryListRow(
-        messages("summaryCard.key1"),
-        Html(
-          messages(
-            "summaryCard.value1",
-            dateToString(lpp.principalChargeBillingFrom),
-            dateToString(lpp.principalChargeBillingTo)
-          )
-        )
-      ),
+      Seq(
+      summaryListRow(messages("summaryCard.lpp.key2"), Html(messages("summaryCard.lpp.key2.value.lpp2"))),
       //TODO: get the reason from New API Call
-      summaryListRow(messages("summaryCard.lpp.key2"), Html(messages(getLPPAdditionalPenaltyReasonKey("reason TODO")))),
-      summaryListRow(messages("summaryCard.lpp.additional.key"), Html(dueDatePlus31Days)))
+      summaryListRow(messages("summaryCard.lpp.key3"), Html(messages(getLPPPenaltyReasonKey("reason TODO"),
+        dateToString(lpp.principalChargeBillingFrom),
+        dateToString(lpp.principalChargeBillingTo)))
+      ),
+      summaryListRow(messages("summaryCard.lpp.key4"), Html(dateToString(lpp.principalChargeDueDate))),
+
+        summaryListRow(messages("summaryCard.lpp.key5"), Html(messages(getVATPaymentDate(lpp))))
+    )
   }
 
   private def getVATPaymentDate(lpp: LPPDetails)(implicit messages: Messages): String = {
-    //  TODO: more info on paymentReceivedDate
-    //    if(lpp.period.paymentReceivedDate.isDefined) {
-    //      dateTimeToString(lpp.period.paymentReceivedDate.get)
-    //    } else {
-      "summaryCard.lpp.key5"
-    //}
+        if(lpp.penaltyStatus.equals(LPPPenaltyStatusEnum.Posted) & lpp.principalChargeLatestClearing.isDefined) {
+          dateToString(lpp.principalChargeLatestClearing.get)
+        } else {
+      "summaryCard.lpp.paymentNotReceived"
+    }
   }
 
   private def getLPPAdditionalPenaltyReasonKey(reason: String): String = {"LPPAdditionalPenaltyReasonKey"} // TODO: New API call for its implementation
