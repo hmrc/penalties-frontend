@@ -66,7 +66,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       helper.summaryListRow(datePaid, Html(dateTimeToString(LocalDateTime.now)))
     ),
     Tag(content = Text("paid")),
-    "123456789",
+    Some("PEN1234567"),
     amountDue = 400.0,
     isPenaltyPaid = true,
     isVatPaid = true
@@ -86,7 +86,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       helper.summaryListRow(datePaid, Html(dateTimeToString(LocalDateTime.now)))
     ),
     Tag(content = Text("paid")),
-    "123456789",
+    Some("123456789"),
     isPenaltyPaid = true,
     amountDue = 123.45,
     isVatPaid = true,
@@ -395,7 +395,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
             helper.summaryListRow(datePaid, Html(dateTimeToString(LocalDateTime.now)))
           ),
           Tag(content = Text("£200 due"), classes = "penalty-due-tag"),
-          "123456789",
+          Some("PEN1234567"),
           amountDue = 400.0,
           isPenaltyPaid = false,
           isVatPaid = true

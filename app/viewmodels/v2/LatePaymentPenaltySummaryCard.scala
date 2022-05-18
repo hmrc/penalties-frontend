@@ -23,7 +23,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 case class LatePaymentPenaltySummaryCard(
                                           cardRows: Seq[SummaryListRow],
                                           status: Tag,
-                                          penaltyId: String,
+                                          penaltyChargeReference: Option[String],
                                           isPenaltyPaid: Boolean,
                                           amountDue: BigDecimal = 0,
                                           appealStatus: Option[AppealStatusEnum.Value] = None,

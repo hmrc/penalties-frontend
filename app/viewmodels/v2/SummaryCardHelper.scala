@@ -325,7 +325,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     LatePaymentPenaltySummaryCard(
       cardRows = rows,
       status = tagStatus(None, Some(lpp)),
-      penaltyId = lpp.principalChargeReference, // TODO: Change to penaltyChargeReference
+      penaltyChargeReference = lpp.penaltyChargeReference,
       isPenaltyPaid = isPaid,
       amountDue,
       appealStatus,

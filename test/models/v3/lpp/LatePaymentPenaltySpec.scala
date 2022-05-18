@@ -51,7 +51,8 @@ class LatePaymentPenaltySpec extends SpecBase {
       |       }],
       |       "principalChargeBillingFrom": "2069-10-30",
       |       "principalChargeBillingTo": "2069-10-30",
-      |       "principalChargeDueDate": "2069-10-30"
+      |       "principalChargeDueDate": "2069-10-30",
+      |       "penaltyChargeReference": "PEN1234567"
       |   },
       |   {
       |       "penaltyCategory": "LPP1",
@@ -77,7 +78,8 @@ class LatePaymentPenaltySpec extends SpecBase {
       |       }],
       |       "principalChargeBillingFrom": "2069-10-30",
       |       "principalChargeBillingTo": "2069-10-30",
-      |       "principalChargeDueDate": "2069-10-30"
+      |       "principalChargeDueDate": "2069-10-30",
+      |       "penaltyChargeReference": "PEN1234567"
       |   }
       |   ]
       |}
@@ -107,6 +109,7 @@ class LatePaymentPenaltySpec extends SpecBase {
         LPP1LRPercentage = Some(BigDecimal(2.00).setScale(2)),
         LPP1HRPercentage = Some(BigDecimal(2.00).setScale(2)),
         penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
+        penaltyChargeReference = Some("PEN1234567"),
         principalChargeLatestClearing = None
       ),
       LPPDetails(
@@ -130,6 +133,7 @@ class LatePaymentPenaltySpec extends SpecBase {
         LPP1LRPercentage = Some(BigDecimal(2.00).setScale(2)),
         LPP1HRPercentage = Some(BigDecimal(2.00).setScale(2)),
         penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
+        penaltyChargeReference = Some("PEN1234567"),
         principalChargeLatestClearing = None
       )
     )

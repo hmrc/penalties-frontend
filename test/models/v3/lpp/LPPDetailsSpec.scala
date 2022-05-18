@@ -50,7 +50,8 @@ class LPPDetailsSpec extends SpecBase {
       |       }],
       |       "principalChargeBillingFrom": "2069-10-30",
       |       "principalChargeBillingTo": "2069-10-30",
-      |       "principalChargeDueDate": "2069-10-30"
+      |       "principalChargeDueDate": "2069-10-30",
+      |       "penaltyChargeReference": "PEN1234567"
       |   }
       |""".stripMargin)
 
@@ -78,6 +79,7 @@ class LPPDetailsSpec extends SpecBase {
     principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
     principalChargeBillingTo = LocalDate.parse("2069-10-30"),
     principalChargeDueDate = LocalDate.parse("2069-10-30"),
+    penaltyChargeReference = Some("PEN1234567"),
     principalChargeLatestClearing = None
   )
 
