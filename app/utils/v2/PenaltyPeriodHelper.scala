@@ -14,15 +14,25 @@
  * limitations under the License.
  */
 
-package models.v3.appealInfo
+package utils.v2
 
-import play.api.libs.json.{Json, OFormat}
+import models.v3.lsp.LateSubmission
 
-case class AppealInformationType(
-                                  appealStatus: Option[AppealStatusEnum.Value],
-                                  appealLevel: Option[AppealLevelEnum.Value]
-                                )
+object PenaltyPeriodHelper {
 
-object AppealInformationType {
-  implicit val format: OFormat[AppealInformationType] = Json.format[AppealInformationType]
+  def sortByPenaltyStartDate(p1: LateSubmission, p2: LateSubmission):Int = {
+    if(p1.taxPeriodStartDate.isDefined && p2.taxPeriodStartDate.isDefined) {
+      p1.taxPeriodStartDate.get.compareTo(p2.taxPeriodStartDate.get)
+    }
+    else {
+      0
+    }
+  }
+
+  def sortedPenaltyPeriod(penaltyPeriod: Seq[LateSubmission]):Seq[LateSubmission]= {
+    if(penaltyPeriod.nonEmpty)
+      penaltyPeriod.sortWith(sortByPenaltyStartDate(_ , _) < 0)
+    else
+      Seq.empty
+  }
 }

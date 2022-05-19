@@ -16,7 +16,7 @@
 
 package models.v3
 
-import models.v3.appealInfo.{AppealInformationType, AppealStatusEnum}
+import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty}
 import models.v3.lsp.{LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum, LSPSummary, LateSubmission, LateSubmissionPenalty, TaxReturnStatusEnum}
 import org.scalatest.matchers.should.Matchers
@@ -26,9 +26,9 @@ import play.api.libs.json.{JsValue, Json}
 import java.time.LocalDate
 
 
-class PenaltyDetailsSpec extends AnyWordSpec with Matchers {
+class GetPenaltyDetailsSpec extends AnyWordSpec with Matchers {
 
-  val penaltyDetails: PenaltyDetails = PenaltyDetails(
+  val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = Some(Totalisations(
       LSPTotalValue = 200,
       penalisedPrincipalTotal = 2000,
@@ -49,7 +49,7 @@ class PenaltyDetailsSpec extends AnyWordSpec with Matchers {
           penaltyOrder = "01",
           penaltyCategory = LSPPenaltyCategoryEnum.Point,
           penaltyStatus = LSPPenaltyStatusEnum.Active,
-          FAPIndicator = "X",
+          FAPIndicator = Some("X"),
           penaltyCreationDate = LocalDate.parse("2069-10-30"),
           penaltyExpiryDate = LocalDate.parse("2069-10-30"),
           expiryReason = Some("FAP"),
@@ -66,7 +66,7 @@ class PenaltyDetailsSpec extends AnyWordSpec with Matchers {
           appealInformation = Some(Seq(
             AppealInformationType(
               appealStatus = Some(AppealStatusEnum.Unappealable),
-              appealLevel = Some("01")
+              appealLevel = Some(AppealLevelEnum.HMRC)
             )
           )),
           chargeAmount = Some(200),
@@ -95,11 +95,12 @@ class PenaltyDetailsSpec extends AnyWordSpec with Matchers {
         penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel = Some("01")
+          appealLevel = Some(AppealLevelEnum.HMRC)
         ))),
         principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
         principalChargeBillingTo = LocalDate.parse("2069-10-30"),
-        principalChargeDueDate = LocalDate.parse("2069-10-30")
+        principalChargeDueDate = LocalDate.parse("2069-10-30"),
+        principalChargeLatestClearing = None
       ))
     ))
   )
@@ -186,12 +187,12 @@ class PenaltyDetailsSpec extends AnyWordSpec with Matchers {
   "PenaltyDetailsSpec" should {
 
     "be writeable to JSON" in {
-      val result: JsValue = Json.toJson(penaltyDetails)(PenaltyDetails.format)
+      val result: JsValue = Json.toJson(penaltyDetails)(GetPenaltyDetails.format)
       result shouldBe penaltyDetailsAsJson
     }
 
     "be readable from JSON" in {
-      val result = Json.fromJson(penaltyDetailsAsJson)(PenaltyDetails.format)
+      val result = Json.fromJson(penaltyDetailsAsJson)(GetPenaltyDetails.format)
       result.isSuccess shouldBe true
       result.get shouldBe penaltyDetails
     }
