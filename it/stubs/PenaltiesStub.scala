@@ -167,7 +167,8 @@ object PenaltiesStub {
         principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
         principalChargeBillingTo = LocalDate.parse("2069-10-30"),
         principalChargeDueDate = LocalDate.parse("2069-10-30"),
-        principalChargeLatestClearing = None
+        principalChargeLatestClearing = None,
+        penaltyChargeReference = Some("PEN1234567")
       ))
     ))
   )

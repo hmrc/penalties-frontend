@@ -42,6 +42,7 @@ case class LPPDetails(
                        principalChargeBillingFrom: LocalDate,
                        principalChargeBillingTo: LocalDate,
                        principalChargeDueDate: LocalDate,
+                       penaltyChargeReference: Option[String],
                        principalChargeLatestClearing: Option[LocalDate]
                      )
 

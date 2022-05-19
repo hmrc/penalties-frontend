@@ -143,7 +143,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
 
       "display the View calculation link" in {
         doc.select("footer > div a").get(0).text() shouldBe "View calculation"
-        doc.select("a").get(0).attr("href") shouldBe "/penalties/calculation?penaltyId=12345678901234&isAdditional=false"
+        doc.select("a").get(0).attr("href") shouldBe "/penalties/calculation?penaltyId=PEN1234567&isAdditional=false"
       }
 
       "display the 'PAID' status" in {
@@ -206,7 +206,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
 
       "display the View calculation link" in {
         docWithAdditionalPenalty.select("footer > div a").get(0).text() shouldBe "View calculation"
-        docWithAdditionalPenalty.select("a").get(0).attr("href") shouldBe "/penalties/calculation?penaltyId=12345678901234&isAdditional=true"
+        docWithAdditionalPenalty.select("a").get(0).attr("href") shouldBe "/penalties/calculation?penaltyId=PEN1234567&isAdditional=true"
       }
 
       "display the 'PAID' status" in {

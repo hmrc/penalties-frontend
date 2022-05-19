@@ -309,6 +309,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
         principalChargeBillingTo = LocalDate.parse("2069-10-30"),
         principalChargeDueDate = LocalDate.parse("2069-10-30"),
+        penaltyChargeReference = Some("PEN1234567"),
         principalChargeLatestClearing = None
       ))
     ))
@@ -529,6 +530,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
     principalChargeBillingTo = LocalDate.parse("2069-10-30"),
     principalChargeDueDate = LocalDate.parse("2069-10-30"),
+    penaltyChargeReference = Some("PEN1234567"),
     principalChargeLatestClearing = None
   )
 
@@ -578,6 +580,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     principalChargeBillingFrom = LocalDate.now,
     principalChargeBillingTo = LocalDate.now,
     principalChargeDueDate = LocalDate.now,
+    penaltyChargeReference = Some("PEN1234567"),
     principalChargeLatestClearing = None
   )
 
@@ -627,6 +630,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
     principalChargeBillingTo = LocalDate.parse("2069-10-30"),
     principalChargeDueDate = LocalDate.parse("2069-10-30"),
+    penaltyChargeReference = Some("PEN1234567"),
     principalChargeLatestClearing = None
   )
 
@@ -676,6 +680,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
     principalChargeBillingTo = LocalDate.parse("2069-10-30"),
     principalChargeDueDate = LocalDate.parse("2069-10-30"),
+    penaltyChargeReference = Some("PEN1234567"),
     principalChargeLatestClearing = None
   )
   
@@ -725,6 +730,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
     principalChargeBillingTo = LocalDate.parse("2069-10-30"),
     principalChargeDueDate = LocalDate.parse("2069-10-30"),
+    penaltyChargeReference = Some("PEN1234567"),
     principalChargeLatestClearing = None
   )
 
@@ -749,6 +755,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     principalChargeBillingFrom = LocalDate.of(2020, 1, 1),
     principalChargeBillingTo = LocalDate.of(2020, 2, 1),
     principalChargeDueDate = LocalDate.of(2020, 3, 7),
+    penaltyChargeReference = Some("PEN1234567"),
     principalChargeLatestClearing = None
   )
 
@@ -823,6 +830,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     principalChargeBillingFrom = LocalDate.now,
     principalChargeBillingTo = LocalDate.now,
     principalChargeDueDate = LocalDate.now,
+    penaltyChargeReference = Some("PEN1234567"),
     principalChargeLatestClearing = None
   )
   val sampleLatePaymentPenaltyVATPaymentDate: LatePaymentPenalty = LatePaymentPenalty(

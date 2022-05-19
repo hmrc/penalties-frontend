@@ -1106,7 +1106,8 @@ class IndexPageHelperSpec extends SpecBase {
                 principalChargeBillingFrom = LocalDate.of(2022, 1, 1),
                 principalChargeBillingTo = LocalDate.of(2022, 1, 1),
                 principalChargeDueDate = LocalDate.of(2022, 1, 1),
-                principalChargeLatestClearing = Some(LocalDate.of(2022, 1, 1))
+                principalChargeLatestClearing = Some(LocalDate.of(2022, 1, 1)),
+                penaltyChargeReference = Some("PEN1234567")
               )
             )
           )
