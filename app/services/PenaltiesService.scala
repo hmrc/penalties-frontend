@@ -19,7 +19,7 @@ package services
 import connectors.PenaltiesConnector
 import featureSwitches.FeatureSwitching
 import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
-import models.v3.PenaltyDetails
+import models.v3.GetPenaltyDetails
 import featureSwitches.CallAPI1812ETMP
 import models.{ETMPPayload, User}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -34,7 +34,7 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) extends FeatureS
   def getETMPDataFromEnrolmentKey(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[ETMPPayload] =
     connector.getPenaltiesData(enrolmentKey)
 
-  def getPenaltyDetailsFromEnrolmentKey(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[PenaltyDetails] =
+  def getPenaltyDetailsFromEnrolmentKey(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[GetPenaltyDetails] =
     connector.getPenaltyDetails(enrolmentKey)
 
   def isAnyLSPUnpaid(penaltyPoints: Seq[PenaltyPoint]): Boolean = {

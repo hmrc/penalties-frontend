@@ -24,10 +24,10 @@ import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum, Pen
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.reason.PaymentPenaltyReasonEnum
 import models.submission.{Submission, SubmissionStatusEnum}
-import models.v3.appealInfo.{AppealInformationType, AppealStatusEnum}
+import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum}
 import models.v3.lpp.{LatePaymentPenalty => NewLatePaymentPenalty}
-import models.v3.{PenaltyDetails, Totalisations}
+import models.v3.{GetPenaltyDetails, Totalisations}
 import models.v3.lsp.{LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum, LSPSummary, LateSubmission, LateSubmissionPenalty, TaxReturnStatusEnum}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
@@ -277,7 +277,7 @@ class PenaltiesServiceSpec extends SpecBase {
     )))
   )
 
-  val samplePenaltyDetails: PenaltyDetails = PenaltyDetails(
+  val samplePenaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = Some(Totalisations(
       LSPTotalValue = 200,
       penalisedPrincipalTotal = 2000,
@@ -298,7 +298,7 @@ class PenaltiesServiceSpec extends SpecBase {
           penaltyOrder = "01",
           penaltyCategory = LSPPenaltyCategoryEnum.Point,
           penaltyStatus = LSPPenaltyStatusEnum.Active,
-          FAPIndicator = "X",
+          FAPIndicator = Some("X"),
           penaltyCreationDate = LocalDate.parse("2069-10-30"),
           penaltyExpiryDate = LocalDate.parse("2069-10-30"),
           expiryReason = Some("FAP"),
@@ -315,7 +315,7 @@ class PenaltiesServiceSpec extends SpecBase {
           appealInformation = Some(Seq(
             AppealInformationType(
               appealStatus = Some(AppealStatusEnum.Unappealable),
-              appealLevel = Some("01")
+              appealLevel =  Some(AppealLevelEnum.HMRC)
             )
           )),
           chargeAmount = Some(200),
@@ -344,11 +344,13 @@ class PenaltiesServiceSpec extends SpecBase {
         penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel = Some("01")
+          appealLevel =  Some(AppealLevelEnum.HMRC)
         ))),
         principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
         principalChargeBillingTo = LocalDate.parse("2069-10-30"),
-        principalChargeDueDate = LocalDate.parse("2069-10-30")
+        principalChargeDueDate = LocalDate.parse("2069-10-30"),
+        penaltyChargeReference = Some("1234567890"),
+        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30"))
       ))
     ))
   )
@@ -384,7 +386,7 @@ class PenaltiesServiceSpec extends SpecBase {
     "return a successful response and pass the result back to the controller" in new Setup{
       when(mockPenaltiesConnector.getPenaltyDetails(any(), any())(any(), any())).thenReturn(Future.successful(samplePenaltyDetails))
 
-      val result: PenaltyDetails = await(service.getPenaltyDetailsFromEnrolmentKey(vrn)(vatTraderUser, HeaderCarrier()))
+      val result: GetPenaltyDetails = await(service.getPenaltyDetailsFromEnrolmentKey(vrn)(vatTraderUser, HeaderCarrier()))
       result shouldBe samplePenaltyDetails
     }
 

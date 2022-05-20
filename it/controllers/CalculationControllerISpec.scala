@@ -23,11 +23,11 @@ import models.financial.Financial
 import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum}
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.reason.PaymentPenaltyReasonEnum
-import models.v3.appealInfo.{AppealInformationType, AppealStatusEnum}
+import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum}
 import models.v3.lpp.{LatePaymentPenalty => v3LatePaymentPenalty}
 import models.v3.lsp._
-import models.v3.{PenaltyDetails, Totalisations}
+import models.v3.{GetPenaltyDetails, Totalisations}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.http.Status
@@ -395,7 +395,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     )
   )
 
-  val samplePenaltyDetails: PenaltyDetails = PenaltyDetails(
+  val samplePenaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = Some(Totalisations(
       LSPTotalValue = 200,
       penalisedPrincipalTotal = 2000,
@@ -416,7 +416,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
           penaltyOrder = "01",
           penaltyCategory = LSPPenaltyCategoryEnum.Point,
           penaltyStatus = LSPPenaltyStatusEnum.Active,
-          FAPIndicator = "X",
+          FAPIndicator = Some("X"),
           penaltyCreationDate = LocalDate.parse("2069-10-30"),
           penaltyExpiryDate = LocalDate.parse("2069-10-30"),
           expiryReason = Some("FAP"),
@@ -433,7 +433,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
           appealInformation = Some(Seq(
             AppealInformationType(
               appealStatus = Some(AppealStatusEnum.Unappealable),
-              appealLevel = Some("01")
+              appealLevel = Some(AppealLevelEnum.HMRC)
             )
           )),
           chargeAmount = Some(200),
@@ -462,16 +462,18 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         penaltyChargeDueDate = LocalDate.parse("2021-03-08"),
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel = Some("01")
+          appealLevel =  Some(AppealLevelEnum.HMRC)
         ))),
         principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
         principalChargeBillingTo = LocalDate.parse("2021-02-01"),
-        principalChargeDueDate = LocalDate.parse("2021-03-08")
+        principalChargeDueDate = LocalDate.parse("2021-03-08"),
+        penaltyChargeReference = Some("1234567890"),
+        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30"))
       ))
     ))
   )
 
-  val penaltyDetailsWithDay15Charge: PenaltyDetails = samplePenaltyDetails.copy(
+  val penaltyDetailsWithDay15Charge: GetPenaltyDetails = samplePenaltyDetails.copy(
     latePaymentPenalty = Some(v3LatePaymentPenalty(
       details = Seq(LPPDetails(
         principalChargeReference = "12345678901234",
@@ -492,15 +494,17 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         penaltyChargeDueDate = LocalDate.parse("2021-03-08"),
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel = Some("01")
+          appealLevel = Some(AppealLevelEnum.HMRC)
         ))),
         principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
         principalChargeBillingTo = LocalDate.parse("2021-02-01"),
-        principalChargeDueDate = LocalDate.parse("2021-03-08")
+        principalChargeDueDate = LocalDate.parse("2021-03-08"),
+        penaltyChargeReference = Some("1234567890"),
+        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30"))
       ))
     )))
 
-  val penaltyDetailsWithDueDateMoreThan30days: PenaltyDetails = samplePenaltyDetails.copy(
+  val penaltyDetailsWithDueDateMoreThan30days: GetPenaltyDetails = samplePenaltyDetails.copy(
     latePaymentPenalty = Some(v3LatePaymentPenalty(
       details = Seq(LPPDetails(
         principalChargeReference = "12345678901234",
@@ -521,15 +525,17 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         penaltyChargeDueDate = LocalDate.parse("2021-03-08"),
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel = Some("01")
+          appealLevel = Some(AppealLevelEnum.HMRC)
         ))),
         principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
         principalChargeBillingTo = LocalDate.parse("2021-02-01"),
-        principalChargeDueDate = LocalDate.parse("2021-03-08")
+        principalChargeDueDate = LocalDate.parse("2021-03-08"),
+        penaltyChargeReference = Some("1234567890"),
+        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30"))
       ))
     )))
 
-  val penaltyDetailsWithAdditionalPenalty: PenaltyDetails = samplePenaltyDetails.copy(
+  val penaltyDetailsWithAdditionalPenalty: GetPenaltyDetails = samplePenaltyDetails.copy(
     latePaymentPenalty = Some(v3LatePaymentPenalty(
       details = Seq(LPPDetails(
         principalChargeReference = "54312345678901",
@@ -550,16 +556,18 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         penaltyChargeDueDate = LocalDate.parse("2021-03-08"),
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel = Some("01")
+          appealLevel = Some(AppealLevelEnum.HMRC)
         ))),
         principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
         principalChargeBillingTo = LocalDate.parse("2021-02-01"),
-        principalChargeDueDate = LocalDate.now().minusDays(40)
+        principalChargeDueDate = LocalDate.now().minusDays(40),
+        penaltyChargeReference = Some("1234567890"),
+        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30"))
       ))
     ))
   )
 
-  val penaltyDetailsWithAdditionalDuePenalty: PenaltyDetails = samplePenaltyDetails.copy(
+  val penaltyDetailsWithAdditionalDuePenalty: GetPenaltyDetails = samplePenaltyDetails.copy(
     latePaymentPenalty = Some(v3LatePaymentPenalty(
       details = Seq(LPPDetails(
         principalChargeReference = "65431234567890",
@@ -580,11 +588,13 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         penaltyChargeDueDate = LocalDate.parse("2021-03-08"),
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel = Some("01")
+          appealLevel = Some(AppealLevelEnum.HMRC)
         ))),
         principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
         principalChargeBillingTo = LocalDate.parse("2021-02-01"),
-        principalChargeDueDate = LocalDate.now().minusDays(40)
+        principalChargeDueDate = LocalDate.now().minusDays(40),
+        penaltyChargeReference = Some("1234567890"),
+        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30"))
       ))
     ))
   )

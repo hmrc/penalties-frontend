@@ -21,7 +21,7 @@ import models.financial.Financial
 import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum}
 import models.point.{PenaltyTypeEnum, PointStatusEnum}
 import models.reason.PaymentPenaltyReasonEnum
-import models.v3.appealInfo.{AppealInformationType, AppealStatusEnum}
+import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum}
 
 import java.time.{LocalDate, LocalDateTime}
@@ -121,11 +121,13 @@ class CalculationPageHelperSpec extends SpecBase {
       penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
       appealInformation = Some(Seq(AppealInformationType(
         appealStatus = Some(AppealStatusEnum.Unappealable),
-        appealLevel = Some("01")
+        appealLevel =  Some(AppealLevelEnum.HMRC)
       ))),
       principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
       principalChargeBillingTo = LocalDate.parse("2069-10-30"),
-      principalChargeDueDate = LocalDate.parse("2069-10-30")
+      principalChargeDueDate = LocalDate.parse("2069-10-30"),
+      penaltyChargeReference = Some("1234567890"),
+      principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30"))
     )
 
     val lppWith15and30DayAmount = LPPDetails(
@@ -147,11 +149,13 @@ class CalculationPageHelperSpec extends SpecBase {
       penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
       appealInformation = Some(Seq(AppealInformationType(
         appealStatus = Some(AppealStatusEnum.Unappealable),
-        appealLevel = Some("01")
+        appealLevel =  Some(AppealLevelEnum.HMRC)
       ))),
       principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
       principalChargeBillingTo = LocalDate.parse("2069-10-30"),
-      principalChargeDueDate = LocalDate.parse("2069-10-30")
+      principalChargeDueDate = LocalDate.parse("2069-10-30"),
+      penaltyChargeReference = Some("1234567890"),
+      principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30"))
     )
 
     val lppWith15DayAmount = LPPDetails(
@@ -173,11 +177,13 @@ class CalculationPageHelperSpec extends SpecBase {
       penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
       appealInformation = Some(Seq(AppealInformationType(
         appealStatus = Some(AppealStatusEnum.Unappealable),
-        appealLevel = Some("01")
+        appealLevel =  Some(AppealLevelEnum.HMRC)
       ))),
       principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
       principalChargeBillingTo = LocalDate.parse("2069-10-30"),
-      principalChargeDueDate = LocalDate.parse("2069-10-30")
+      principalChargeDueDate = LocalDate.parse("2069-10-30"),
+      penaltyChargeReference = Some("1234567890"),
+      principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30"))
     )
 
     "return a single row when the user has an amount after 15 days" in {

@@ -198,7 +198,7 @@ object PenaltiesStub {
     )
   )
 
-  def returnPenaltyDetailsStub(penaltyDetailsToReturn: PenaltyDetails): StubMapping = stubFor(get(urlMatching(getPenaltyDetailsUrl))
+  def returnPenaltyDetailsStub(penaltyDetailsToReturn: GetPenaltyDetails): StubMapping = stubFor(get(urlMatching(getPenaltyDetailsUrl))
     .willReturn(
       aResponse()
         .withStatus(Status.OK)

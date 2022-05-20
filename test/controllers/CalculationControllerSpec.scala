@@ -23,11 +23,11 @@ import models.financial.Financial
 import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum}
 import models.point.{PenaltyTypeEnum, PointStatusEnum}
 import models.reason.PaymentPenaltyReasonEnum
-import models.v3.appealInfo.{AppealInformationType, AppealStatusEnum}
+import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum}
 import models.v3.lsp._
 import models.v3.lpp.{LatePaymentPenalty => NewLatePaymentPenalty}
-import models.v3.{PenaltyDetails, Totalisations}
+import models.v3.{GetPenaltyDetails, Totalisations}
 import org.mockito.Matchers
 import org.mockito.Mockito.{mock, reset, when}
 import play.api.mvc.Result
@@ -121,7 +121,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
     ))
   )
 
-  val penaltyDetailsPayload: PenaltyDetails = PenaltyDetails(
+  val penaltyDetailsPayload: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = Some(Totalisations(
       LSPTotalValue = 200,
       penalisedPrincipalTotal = 2000,
@@ -142,7 +142,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
           penaltyOrder = "01",
           penaltyCategory = LSPPenaltyCategoryEnum.Point,
           penaltyStatus = LSPPenaltyStatusEnum.Active,
-          FAPIndicator = "X",
+          FAPIndicator = Some("X"),
           penaltyCreationDate = LocalDate.parse("2069-10-30"),
           penaltyExpiryDate = LocalDate.parse("2069-10-30"),
           expiryReason = Some("FAP"),
@@ -159,7 +159,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
           appealInformation = Some(Seq(
             AppealInformationType(
               appealStatus = Some(AppealStatusEnum.Unappealable),
-              appealLevel = Some("01")
+              appealLevel =  Some(AppealLevelEnum.HMRC)
             )
           )),
           chargeAmount = Some(200),
@@ -188,16 +188,18 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
         penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel = Some("01")
+          appealLevel =  Some(AppealLevelEnum.HMRC)
         ))),
         principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
         principalChargeBillingTo = LocalDate.parse("2069-10-30"),
-        principalChargeDueDate = LocalDate.parse("2069-10-30")
+        principalChargeDueDate = LocalDate.parse("2069-10-30"),
+        penaltyChargeReference = Some("1234567890"),
+        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30"))
       ))
     ))
   )
 
-  val penaltyDetailsPayloadNo15Or30DayAmount: PenaltyDetails = PenaltyDetails(
+  val penaltyDetailsPayloadNo15Or30DayAmount: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = Some(Totalisations(
       LSPTotalValue = 200,
       penalisedPrincipalTotal = 2000,
@@ -218,7 +220,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
           penaltyOrder = "01",
           penaltyCategory = LSPPenaltyCategoryEnum.Point,
           penaltyStatus = LSPPenaltyStatusEnum.Active,
-          FAPIndicator = "X",
+          FAPIndicator = Some("X"),
           penaltyCreationDate = LocalDate.parse("2069-10-30"),
           penaltyExpiryDate = LocalDate.parse("2069-10-30"),
           expiryReason = Some("FAP"),
@@ -235,7 +237,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
           appealInformation = Some(Seq(
             AppealInformationType(
               appealStatus = Some(AppealStatusEnum.Unappealable),
-              appealLevel = Some("01")
+              appealLevel =  Some(AppealLevelEnum.HMRC)
             )
           )),
           chargeAmount = Some(200),
@@ -264,11 +266,13 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
         penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel = Some("01")
+          appealLevel =  Some(AppealLevelEnum.HMRC)
         ))),
         principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
         principalChargeBillingTo = LocalDate.parse("2069-10-30"),
-        principalChargeDueDate = LocalDate.parse("2069-10-30")
+        principalChargeDueDate = LocalDate.parse("2069-10-30"),
+        penaltyChargeReference = Some("1234567890"),
+        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30"))
       ))
     ))
   )
