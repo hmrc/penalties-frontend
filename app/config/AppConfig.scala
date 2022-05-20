@@ -66,5 +66,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
       servicesConfig.getConfString(vatAgentClientLookupFrontendStartUrl, "") +
       s"?redirectUrl=${agentClientLookupRedirectUrl(uri)}"
 
+  def isFeatureSwitchEnabled(path: String): Boolean = config.get[Boolean](path)
 
 }

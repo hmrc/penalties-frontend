@@ -43,42 +43,42 @@ class IndexController @Inject()(view: IndexView,
                                 cardHelper2: SummaryCardHelperv2,
                                 pageHelper: IndexPageHelper,
                                 pageHelperv2: IndexPageHelperv2)(implicit ec: ExecutionContext,
-                                                             appConfig: AppConfig,
-                                                             authorise: AuthPredicate,
-                                                             controllerComponents: MessagesControllerComponents)
-  extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter with FeatureSwitching {
+                                                                 val appConfig: AppConfig,
+                                                                 authorise: AuthPredicate,
+                                                                 controllerComponents: MessagesControllerComponents)
+  extends FrontendController(controllerComponents) with FeatureSwitching with I18nSupport with CurrencyFormatter {
 
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
-    if(!isEnabled(UseAPI1812Model))
-    for {
-      etmpData <- penaltiesService.getETMPDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))
-      contentToDisplayAboveCards = pageHelper.getContentBasedOnPointsFromModel(etmpData)
-      contentLPPToDisplayAboveCards = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(etmpData)
-      whatYouOweBreakdown = pageHelper.getWhatYouOweBreakdown(etmpData)
-      lspSummaryCards = cardHelper.populateLateSubmissionPenaltyCard(etmpData.penaltyPoints, etmpData.penaltyPointsThreshold, etmpData.pointsTotal)
-      lppSummaryCards = cardHelper.populateLatePaymentPenaltyCard(etmpData.latePaymentPenalties)
-      isAnyUnpaidLSPAndNotSubmittedReturn = penaltiesService.isAnyLSPUnpaidAndSubmissionIsDue(etmpData.penaltyPoints)
-      isAnyUnpaidLSP = penaltiesService.isAnyLSPUnpaid(etmpData.penaltyPoints)
-      latestLSPCreation = penaltiesService.getLatestLSPCreationDate(etmpData)
-    } yield {
-      lazy val result = Ok(view(contentToDisplayAboveCards,
-        contentLPPToDisplayAboveCards,
-        lspSummaryCards,
-        lppSummaryCards,
-        currencyFormatAsNonHTMLString(etmpData.penaltyAmountsTotal),
-        isAnyUnpaidLSP,
-        isAnyUnpaidLSPAndNotSubmittedReturn,
-        whatYouOweBreakdown))
-      if(latestLSPCreation.isDefined) {
-        result
-          .removingFromSession(allKeysExcludingAgentVRN: _*)
-          .addingToSession(latestLSPCreationDate -> latestLSPCreation.get.toString,
-                           pointsThreshold -> etmpData.penaltyPointsThreshold.toString)
+    if (!isEnabled(UseAPI1812Model))
+      for {
+        etmpData <- penaltiesService.getETMPDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))
+        contentToDisplayAboveCards = pageHelper.getContentBasedOnPointsFromModel(etmpData)
+        contentLPPToDisplayAboveCards = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(etmpData)
+        whatYouOweBreakdown = pageHelper.getWhatYouOweBreakdown(etmpData)
+        lspSummaryCards = cardHelper.populateLateSubmissionPenaltyCard(etmpData.penaltyPoints, etmpData.penaltyPointsThreshold, etmpData.pointsTotal)
+        lppSummaryCards = cardHelper.populateLatePaymentPenaltyCard(etmpData.latePaymentPenalties)
+        isAnyUnpaidLSPAndNotSubmittedReturn = penaltiesService.isAnyLSPUnpaidAndSubmissionIsDue(etmpData.penaltyPoints)
+        isAnyUnpaidLSP = penaltiesService.isAnyLSPUnpaid(etmpData.penaltyPoints)
+        latestLSPCreation = penaltiesService.getLatestLSPCreationDate(etmpData)
+      } yield {
+        lazy val result = Ok(view(contentToDisplayAboveCards,
+          contentLPPToDisplayAboveCards,
+          lspSummaryCards,
+          lppSummaryCards,
+          currencyFormatAsNonHTMLString(etmpData.penaltyAmountsTotal),
+          isAnyUnpaidLSP,
+          isAnyUnpaidLSPAndNotSubmittedReturn,
+          whatYouOweBreakdown))
+        if (latestLSPCreation.isDefined) {
+          result
+            .removingFromSession(allKeysExcludingAgentVRN: _*)
+            .addingToSession(latestLSPCreationDate -> latestLSPCreation.get.toString,
+              pointsThreshold -> etmpData.penaltyPointsThreshold.toString)
+        } else {
+          result
+            .removingFromSession(allKeysExcludingAgentVRN: _*)
+        }
       } else {
-        result
-          .removingFromSession(allKeysExcludingAgentVRN: _*)
-      }
-    } else {
       for {
         penaltyData <- penaltiesServicev2.getPenaltyDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))
         contentToDisplayAboveCards = pageHelperv2.getContentBasedOnPointsFromModel(penaltyData)
@@ -100,7 +100,7 @@ class IndexController @Inject()(view: IndexView,
           isAnyUnpaidLSP,
           isAnyUnpaidLSPAndNotSubmittedReturn,
           whatYouOweBreakdown))
-        if(latestLSPCreation.isDefined) {
+        if (latestLSPCreation.isDefined) {
           result
             .removingFromSession(allKeysExcludingAgentVRN: _*)
             .addingToSession(latestLSPCreationDate -> latestLSPCreation.get.toString,

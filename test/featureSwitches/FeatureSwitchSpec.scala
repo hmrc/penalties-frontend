@@ -17,36 +17,48 @@
 package featureSwitches
 
 import base.SpecBase
+import config.AppConfig
+import org.mockito.Matchers.{any, eq => equalTo}
+import org.mockito.Mockito.{mock, reset, when}
 
 class FeatureSwitchSpec extends SpecBase {
 
+  val mockAppConfig: AppConfig = mock(classOf[AppConfig])
+
   class Setup {
-    val featureSwitching: FeatureSwitching = new FeatureSwitching {}
-    sys.props -= CallAPI1812ETMP.name
+    reset(mockAppConfig)
+    val featureSwitching: FeatureSwitching = new FeatureSwitching {
+      override implicit val appConfig: AppConfig = mockAppConfig
+    }
   }
 
   "FeatureSwitch listOfAllFeatureSwitches" should {
     "be all the featureswitches in the app" in {
-      FeatureSwitch.listOfAllFeatureSwitches shouldBe List(CallAPI1812ETMP)
-    }
-  }
-  "FeatureSwitching constants" should {
-    "be true and false" in new Setup {
-      featureSwitching.FEATURE_SWITCH_ON shouldBe "true"
-      featureSwitching.FEATURE_SWITCH_OFF shouldBe "false"
+      FeatureSwitch.listOfAllFeatureSwitches shouldBe List(CallAPI1812ETMP, UseAPI1812Model)
     }
   }
 
-  "return true if CallAPI1812ETMP feature switch is enabled" in new Setup{
-    featureSwitching.enableFeatureSwitch(CallAPI1812ETMP)
+  "return true if CallAPI1812ETMP feature switch is enabled" in new Setup {
+    when(mockAppConfig.isFeatureSwitchEnabled(equalTo(CallAPI1812ETMP.name)))
+      .thenReturn(true)
     featureSwitching.isEnabled(CallAPI1812ETMP) shouldBe true
   }
-  "return false if CallAPI1812ETMP feature switch is disabled" in new Setup{
-    featureSwitching.disableFeatureSwitch(CallAPI1812ETMP)
-    featureSwitching.isEnabled(CallAPI1812ETMP) shouldBe false
-  }
-  "return false if CallAPI1812ETMP feature switch does not exist" in new Setup{
+
+  "return false if CallAPI1812ETMP feature switch is disabled" in new Setup {
+    when(mockAppConfig.isFeatureSwitchEnabled(equalTo(CallAPI1812ETMP.name)))
+      .thenReturn(false)
     featureSwitching.isEnabled(CallAPI1812ETMP) shouldBe false
   }
 
+  "return true if UseAPI1812Model feature switch is enabled" in new Setup {
+    when(mockAppConfig.isFeatureSwitchEnabled(equalTo(UseAPI1812Model.name)))
+      .thenReturn(true)
+    featureSwitching.isEnabled(UseAPI1812Model) shouldBe true
+  }
+
+  "return false if UseAPI1812Model feature switch is disabled" in new Setup {
+    when(mockAppConfig.isFeatureSwitchEnabled(equalTo(UseAPI1812Model.name)))
+      .thenReturn(false)
+    featureSwitching.isEnabled(UseAPI1812Model) shouldBe false
+  }
 }
