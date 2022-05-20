@@ -18,29 +18,38 @@ package controllers
 
 import config.AppConfig
 import controllers.predicates.AuthPredicate
+import featureSwitches.{FeatureSwitching, UseAPI1812Model}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.PenaltiesService
+import services.v2.{PenaltiesService => PenaltiesServicev2}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger.logger
 import utils.SessionKeys._
 import utils.{CurrencyFormatter, EnrolmentKeys}
 import viewmodels.{IndexPageHelper, SummaryCardHelper}
+import viewmodels.v2.{IndexPageHelper => IndexPageHelperv2, SummaryCardHelper => SummaryCardHelperv2}
 import views.html.IndexView
+import views.html.v2.{IndexView => IndexViewv2}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject()(view: IndexView,
+                                view2: IndexViewv2,
                                 penaltiesService: PenaltiesService,
+                                penaltiesServicev2: PenaltiesServicev2,
                                 cardHelper: SummaryCardHelper,
-                                pageHelper: IndexPageHelper)(implicit ec: ExecutionContext,
+                                cardHelper2: SummaryCardHelperv2,
+                                pageHelper: IndexPageHelper,
+                                pageHelperv2: IndexPageHelperv2)(implicit ec: ExecutionContext,
                                                              appConfig: AppConfig,
                                                              authorise: AuthPredicate,
                                                              controllerComponents: MessagesControllerComponents)
-  extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter {
+  extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter with FeatureSwitching {
 
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
+    if(!isEnabled(UseAPI1812Model))
     for {
       etmpData <- penaltiesService.getETMPDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))
       contentToDisplayAboveCards = pageHelper.getContentBasedOnPointsFromModel(etmpData)
@@ -68,6 +77,38 @@ class IndexController @Inject()(view: IndexView,
       } else {
         result
           .removingFromSession(allKeysExcludingAgentVRN: _*)
+      }
+    } else {
+      for {
+        penaltyData <- penaltiesServicev2.getPenaltyDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))
+        contentToDisplayAboveCards = pageHelperv2.getContentBasedOnPointsFromModel(penaltyData)
+        contentLPPToDisplayAboveCards = pageHelperv2.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyData)
+        whatYouOweBreakdown = pageHelperv2.getWhatYouOweBreakdown(penaltyData)
+        lspSummaryCards = cardHelper2.populateLateSubmissionPenaltyCard(penaltyData.lateSubmissionPenalty.get.details,
+          penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0),
+          penaltyData.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0))
+        lppSummaryCards = cardHelper2.populateLatePaymentPenaltyCard(penaltyData.latePaymentPenalty.map(_.details))
+        isAnyUnpaidLSPAndNotSubmittedReturn = penaltiesServicev2.isAnyLSPUnpaidAndSubmissionIsDue(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
+        isAnyUnpaidLSP = penaltiesServicev2.isAnyLSPUnpaid(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
+        latestLSPCreation = penaltiesServicev2.getLatestLSPCreationDate(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
+      } yield {
+        lazy val result = Ok(view2(contentToDisplayAboveCards,
+          contentLPPToDisplayAboveCards,
+          lspSummaryCards,
+          lppSummaryCards,
+          currencyFormatAsNonHTMLString(penaltyData.totalisations.map(_.LSPTotalValue).getOrElse(0)),
+          isAnyUnpaidLSP,
+          isAnyUnpaidLSPAndNotSubmittedReturn,
+          whatYouOweBreakdown))
+        if(latestLSPCreation.isDefined) {
+          result
+            .removingFromSession(allKeysExcludingAgentVRN: _*)
+            .addingToSession(latestLSPCreationDate -> latestLSPCreation.get.toString,
+              pointsThreshold -> penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0).toString)
+        } else {
+          result
+            .removingFromSession(allKeysExcludingAgentVRN: _*)
+        }
       }
     }
   }

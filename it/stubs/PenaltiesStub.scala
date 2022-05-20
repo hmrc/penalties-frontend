@@ -22,10 +22,10 @@ import models.ETMPPayload
 import models.penalty.{LatePaymentPenalty, PenaltyPeriod}
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
-import models.v3.appealInfo.{AppealInformationType, AppealStatusEnum}
+import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty => v3LatePaymentPenalty}
 import models.v3.lsp._
-import models.v3.{PenaltyDetails, Totalisations}
+import models.v3.{GetPenaltyDetails, Totalisations}
 import play.api.http.Status
 import play.api.libs.json.Json
 
@@ -95,7 +95,7 @@ object PenaltiesStub {
     latePaymentPenalties = Option(Seq.empty[LatePaymentPenalty])
   )
 
-  val samplePenaltyDetails: PenaltyDetails = PenaltyDetails(
+  val samplePenaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = Some(Totalisations(
       LSPTotalValue = 200,
       penalisedPrincipalTotal = 2000,
@@ -116,7 +116,7 @@ object PenaltiesStub {
           penaltyOrder = "01",
           penaltyCategory = LSPPenaltyCategoryEnum.Point,
           penaltyStatus = LSPPenaltyStatusEnum.Active,
-          FAPIndicator = "X",
+          FAPIndicator = Some("X"),
           penaltyCreationDate = LocalDate.parse("2069-10-30"),
           penaltyExpiryDate = LocalDate.parse("2069-10-30"),
           expiryReason = Some("FAP"),
@@ -133,7 +133,7 @@ object PenaltiesStub {
           appealInformation = Some(Seq(
             AppealInformationType(
               appealStatus = Some(AppealStatusEnum.Unappealable),
-              appealLevel = Some("01")
+              appealLevel = Some(AppealLevelEnum.HMRC)
             )
           )),
           chargeAmount = Some(200),
@@ -162,11 +162,13 @@ object PenaltiesStub {
         penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel = Some("01")
+          appealLevel = Some(AppealLevelEnum.HMRC)
         ))),
         principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
         principalChargeBillingTo = LocalDate.parse("2069-10-30"),
-        principalChargeDueDate = LocalDate.parse("2069-10-30")
+        principalChargeDueDate = LocalDate.parse("2069-10-30"),
+        principalChargeLatestClearing = None,
+        penaltyChargeReference = Some("PEN1234567")
       ))
     ))
   )

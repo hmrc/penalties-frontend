@@ -29,4 +29,8 @@ case object CallAPI1812ETMP extends FeatureSwitch{
   override val name: String = s"${FeatureSwitch.prefix}.call-api-1812-etmp"
 }
 
+case object UseAPI1812Model extends FeatureSwitch {
+  override val name: String = s"${FeatureSwitch.prefix}.use-api-1812-model"
+}
+
 

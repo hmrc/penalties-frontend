@@ -85,15 +85,25 @@ summaryCard.key3 = Return submitted
 summaryCard.key3.defaultValue = Return not yet received
 summaryCard.key4 = Point due to expire
 summaryCard.appeal.status = Appeal status
+summaryCard.appeal.readMessage = Read outcome message
+summaryCard.appeal.Reinstated = Appeal outcome changed
+summaryCard.appeal.readMessageReinstated = Read message
+
+# to be deleted in cleanup
+# -------------------------------------------
 summaryCard.appeal.Under_Review = Under review by HMRC
 summaryCard.appeal.Under_Tribunal_Review = Under review by the tax tribunal
 summaryCard.appeal.Accepted_By_Tribunal = Appeal accepted by tax tribunal
 summaryCard.appeal.Rejected = Appeal rejected
 summaryCard.appeal.Accepted = Appeal accepted
-summaryCard.appeal.readMessage = Read outcome message
-summaryCard.appeal.Reinstated = Appeal outcome changed
-summaryCard.appeal.readMessageReinstated = Read message
 summaryCard.appeal.Tribunal_Rejected = Appeal rejected by tax tribunal
+# -------------------------------------------
+summaryCard.appeal.A.01 = Under review by HMRC
+summaryCard.appeal.A.02 = Under review by the tax tribunal
+summaryCard.appeal.B.02 = Appeal accepted by tax tribunal
+summaryCard.appeal.B.01 = Appeal accepted
+summaryCard.appeal.C.01 = Appeal rejected
+summaryCard.appeal.C.02 = Appeal rejected by tax tribunal
 summaryCard.footerLinkText = Appeal penalty point {0}
 summaryCard.footerLinkTextNoPointNumber = Appeal this penalty
 summaryCard.adjustedPoint.cannotAppeal = You cannot appeal this point
@@ -101,24 +111,17 @@ summaryCard.addedOnKey = Added on
 summaryCard.removedReason = Reason
 summaryCard.infoOnAdjustmentPointsLinkText = Find out more about adjustment points
 summaryCard.appealCheck = Check if you can appeal
-summaryCard.lpp.key2 = Penalty reason
-summaryCard.lpp.key3 = VAT payment due
-summaryCard.lpp.key4 = VAT payment date
-summaryCard.lpp.key5 = Payment not yet received
-summaryCard.lpp.15days = VAT not paid within 15 days
-summaryCard.lpp.30days = VAT not paid within 30 days
-summaryCard.lpp.15days.centralAssessment = Central Assessment not paid within 15 days
-summaryCard.lpp.30days.centralAssessment = Central Assessment not paid within 30 days
-summaryCard.lpp.15days.ecn = Error Correction Notice not paid within 15 days
-summaryCard.lpp.30days.ecn = Error Correction Notice not paid within 30 days
-summaryCard.lpp.15days.officersAssessment = Officer’s Assessment not paid within 15 days
-summaryCard.lpp.30days.officersAssessment = Officer’s Assessment not paid within 30 days
-summaryCard.lpp.additional.key = Charged daily from
-summaryCard.lpp.additional.30days = VAT more than 30 days late
-summaryCard.lpp.additional.30days.centralAssessment = Central Assessment more than 30 days late
-summaryCard.lpp.additional.30days.ecn = Error Correction Notice more than 30 days late
-summaryCard.lpp.additional.30days.officersAssessment = Officer’s Assessment more than 30 days late
-
+summaryCard.lpp.key2 = Penalty type
+summaryCard.lpp.key2.value.lpp1 = First penalty for late payment
+summaryCard.lpp.key2.value.lpp2 = Second penalty for late payment
+summaryCard.lpp.key3 = Overdue charge
+summaryCard.lpp.key3.value.vat = VAT for period {0} to {1}
+summaryCard.lpp.key3.value.ecn = Error Correction Notice of VAT for period {0} to {1}
+summaryCard.lpp.key3.value.centralAssessment = Central Assessment of VAT for period {0} to {1}
+summaryCard.lpp.key3.value.officersAssessment = Officer’s Assessment of VAT for period {0} to {1}
+summaryCard.lpp.key4 = Charge due
+summaryCard.lpp.key5 = Date paid
+summaryCard.lpp.paymentNotReceived = Payment not yet received
 summaryCard.viewCalculation = View calculation
 
 status.active = active

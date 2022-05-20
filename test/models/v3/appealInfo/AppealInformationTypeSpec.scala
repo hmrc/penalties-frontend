@@ -31,7 +31,7 @@ class AppealInformationTypeSpec extends SpecBase {
 
   val appealInfoAsModel = AppealInformationType(
     appealStatus = Some(AppealStatusEnum.Unappealable),
-    appealLevel = Some("01")
+    appealLevel = Some(AppealLevelEnum.HMRC)
   )
 
   "AppealInformationType" should {
