@@ -16,6 +16,7 @@
 
 package config
 
+import config.featureSwitches.FeatureSwitch
 import play.api.Configuration
 import play.api.i18n.Lang
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
@@ -66,5 +67,5 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
       servicesConfig.getConfString(vatAgentClientLookupFrontendStartUrl, "") +
       s"?redirectUrl=${agentClientLookupRedirectUrl(uri)}"
 
-
+  def isFeatureSwitchEnabled(featureSwitch: FeatureSwitch): Boolean = config.get[Boolean](featureSwitch.name)
 }
