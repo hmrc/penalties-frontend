@@ -19,14 +19,13 @@ package services.v2
 import connectors.PenaltiesConnector
 import models.User
 import models.v3.GetPenaltyDetails
+import models.v3.appealInfo.AppealStatusEnum
 import models.v3.lsp.{LSPDetails, TaxReturnStatusEnum}
 import uk.gov.hmrc.http.HeaderCarrier
+
 import java.time.LocalDate
-
 import javax.inject.Inject
-import models.v3.appealInfo.AppealStatusEnum
-
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class PenaltiesService @Inject()(connector: PenaltiesConnector) {
 
@@ -75,7 +74,7 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
   def findEstimatedPenaltiesInterest(payload: GetPenaltyDetails): BigDecimal = {
     payload.totalisations.flatMap(_.LPIEstimatedTotal).getOrElse(0)
   }
-  //due point for lsp , has penalty period, not submitted, not appealed
+
   def isAnyLSPUnpaidAndSubmissionIsDue(penaltyPoints: Seq[LSPDetails]): Boolean = {
     filterOutAppealedPenalties(penaltyPoints).exists(details => {
       details.chargeOutstandingAmount.exists(_ > BigDecimal(0)) && details.lateSubmissions.exists(_.exists(_.taxReturnStatus == TaxReturnStatusEnum.Open))
@@ -83,7 +82,7 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
   }
 
   def isAnyLSPUnpaid(penaltyPoints: Seq[LSPDetails]): Boolean = {
-    filterOutAppealedPenalties(penaltyPoints).exists(_.lateSubmissions.exists(_.exists(_.taxReturnStatus == TaxReturnStatusEnum.Open)))
+    filterOutAppealedPenalties(penaltyPoints).exists(_.chargeOutstandingAmount.exists(_ > BigDecimal(0)))
   }
 
   def getLatestLSPCreationDate(payload: Seq[LSPDetails]): Option[LocalDate] = {
