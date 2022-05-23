@@ -145,36 +145,36 @@ class PenaltiesServiceSpec extends SpecBase {
     }
   }
 
-  //  "estimatedVATInterest" should {
-  //    "return 0 when the payload does not have any VAT overview field" in new Setup {
-  //      val result: (BigDecimal, Boolean) = service.findEstimatedVATInterest(sampleEmptyLspData)
-  //      result._1 shouldBe 0.00
-  //      result._2 shouldBe false
-  //    }
-  //
-  //    "return 0 when the payload contains VAT overview but has no crystalized and estimated interest" in new Setup {
-  //      val result: (BigDecimal, Boolean) = service.findEstimatedVATInterest(sampleLspDataWithVATOverviewNoElements)
-  //      result._1 shouldBe 0.00
-  //      result._2 shouldBe false
-  //    }
-  //
-  //    "return total estimated VAT interest when  crystalized and estimated interest is present" in new Setup {
-  //      val result: (BigDecimal, Boolean) = service.findEstimatedVATInterest(sampleLspDataWithVATOverview)
-  //      result._1 shouldBe 40.00
-  //      result._2 shouldBe true
-  //    }
-  //
-  //    "return total VAT interest when the VAT overview is present without estimated interest" in new Setup {
-  //      val result: (BigDecimal, Boolean) = service.findEstimatedVATInterest(samplePayloadWithVATOverviewWithoutEstimatedInterest)
-  //      result._1 shouldBe 20.00
-  //      result._2 shouldBe false
-  //    }
-  //    "return total VAT interest when the VAT overview is present without crystalized interest" in new Setup {
-  //      val result: (BigDecimal, Boolean) = service.findEstimatedVATInterest(samplePayloadWithVATOverviewWithoutCrystalizedInterest)
-  //      result._1 shouldBe 43.00
-  //      result._2 shouldBe true
-  //    }
-  //  }
+  "estimatedVATInterest" should {
+    "return 0 when the payload does not have any VAT overview field" ignore new Setup {
+      val result: (BigDecimal, Boolean) = service.findEstimatedVATInterest(penaltyDetailsWithNoVATDue)
+      result._1 shouldBe 0.00
+      result._2 shouldBe false
+    }
+
+    "return 0 when the payload contains VAT overview but has no crystalized and estimated interest" ignore new Setup {
+      val result: (BigDecimal, Boolean) = service.findEstimatedVATInterest(penaltyDetailsWithVATOnly)
+      result._1 shouldBe 0.00
+      result._2 shouldBe false
+    }
+
+    "return total estimated VAT interest when crystalized and estimated interest is present" ignore new Setup {
+      val result: (BigDecimal, Boolean) = service.findEstimatedVATInterest(penaltyDetailsWithVATOnly)
+      result._1 shouldBe 40.00
+      result._2 shouldBe true
+    }
+
+    "return total VAT interest when the VAT overview is present without estimated interest" ignore new Setup {
+      val result: (BigDecimal, Boolean) = service.findEstimatedVATInterest(penaltyDetailsWithVATOnly)
+      result._1 shouldBe 20.00
+      result._2 shouldBe false
+    }
+    "return total VAT interest when the VAT overview is present without crystalized interest" ignore new Setup {
+      val result: (BigDecimal, Boolean) = service.findEstimatedVATInterest(penaltyDetailsWithVATOnly)
+      result._1 shouldBe 43.00
+      result._2 shouldBe true
+    }
+  }
 
   "findCrystalizedPenaltiesInterest" should {
     "return 0 when the payload does not have any financial penalties for LSP or LPP" in new Setup {
