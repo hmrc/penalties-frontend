@@ -22,7 +22,7 @@ import controllers.predicates.AuthPredicate
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.PenaltiesService
-import services.v2.{PenaltiesService => PenaltiesServicev2}
+import services.v2.{PenaltiesService => PenaltiesServiceV2}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger.logger
 import utils.SessionKeys._
@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class IndexController @Inject()(view: IndexView,
                                 view2: IndexViewv2,
                                 penaltiesService: PenaltiesService,
-                                penaltiesServicev2: PenaltiesServicev2,
+                                penaltiesServiceV2: PenaltiesServiceV2,
                                 cardHelper: SummaryCardHelper,
                                 cardHelper2: SummaryCardHelperv2,
                                 pageHelper: IndexPageHelper,
@@ -81,7 +81,7 @@ class IndexController @Inject()(view: IndexView,
         }
       } else {
       for {
-        penaltyData <- penaltiesServicev2.getPenaltyDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))
+        penaltyData <- penaltiesServiceV2.getPenaltyDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))
         contentToDisplayAboveCards = pageHelperv2.getContentBasedOnPointsFromModel(penaltyData)
         contentLPPToDisplayAboveCards = pageHelperv2.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyData)
         whatYouOweBreakdown = pageHelperv2.getWhatYouOweBreakdown(penaltyData)
@@ -89,9 +89,9 @@ class IndexController @Inject()(view: IndexView,
           penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0),
           penaltyData.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0))
         lppSummaryCards = cardHelper2.populateLatePaymentPenaltyCard(penaltyData.latePaymentPenalty.map(_.details))
-        isAnyUnpaidLSPAndNotSubmittedReturn = penaltiesServicev2.isAnyLSPUnpaidAndSubmissionIsDue(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
-        isAnyUnpaidLSP = penaltiesServicev2.isAnyLSPUnpaid(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
-        latestLSPCreation = penaltiesServicev2.getLatestLSPCreationDate(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
+        isAnyUnpaidLSPAndNotSubmittedReturn = penaltiesServiceV2.isAnyLSPUnpaidAndSubmissionIsDue(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
+        isAnyUnpaidLSP = penaltiesServiceV2.isAnyLSPUnpaid(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
+        latestLSPCreation = penaltiesServiceV2.getLatestLSPCreationDate(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
       } yield {
         lazy val result = Ok(view2(contentToDisplayAboveCards,
           contentLPPToDisplayAboveCards,

@@ -24,12 +24,17 @@ import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum, Pen
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.reason.PaymentPenaltyReasonEnum
 import models.submission.{Submission, SubmissionStatusEnum}
+import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
+import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum}
+import models.v3.lpp.{LatePaymentPenalty => NewLatePaymentPenalty}
+import models.v3.{GetPenaltyDetails, Totalisations}
+import models.v3.lsp.{LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum, LSPSummary, LateSubmission, LateSubmissionPenalty, TaxReturnStatusEnum}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 
-import java.time.LocalDateTime
+import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.Future
 
 class PenaltiesServiceSpec extends SpecBase {
@@ -272,31 +277,88 @@ class PenaltiesServiceSpec extends SpecBase {
     )))
   )
 
+  val samplePenaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
+    totalisations = Some(Totalisations(
+      LSPTotalValue = 200,
+      penalisedPrincipalTotal = 2000,
+      LPPPostedTotal = 165.25,
+      LPPEstimatedTotal = 15.26,
+      LPIPostedTotal = 1968.2,
+      LPIEstimatedTotal = 7)),
+    lateSubmissionPenalty = Some(
+      LateSubmissionPenalty(
+        summary = LSPSummary(
+          activePenaltyPoints = 10,
+          inactivePenaltyPoints = 12,
+          regimeThreshold = 10,
+          penaltyChargeAmount = 684.25
+        ),
+        details = Seq(LSPDetails(
+          penaltyNumber = "12345678901234",
+          penaltyOrder = "01",
+          penaltyCategory = LSPPenaltyCategoryEnum.Point,
+          penaltyStatus = LSPPenaltyStatusEnum.Active,
+          FAPIndicator = Some("X"),
+          penaltyCreationDate = LocalDate.parse("2069-10-30"),
+          penaltyExpiryDate = LocalDate.parse("2069-10-30"),
+          expiryReason = Some("FAP"),
+          communicationsDate = LocalDate.parse("2069-10-30"),
+          lateSubmissions = Some(Seq(
+            LateSubmission(
+              taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
+              taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
+              taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
+              returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
+              taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+            )
+          )),
+          appealInformation = Some(Seq(
+            AppealInformationType(
+              appealStatus = Some(AppealStatusEnum.Unappealable),
+              appealLevel =  Some(AppealLevelEnum.HMRC)
+            )
+          )),
+          chargeAmount = Some(200),
+          chargeOutstandingAmount = Some(200),
+          chargeDueDate = Some(LocalDate.parse("2069-10-30"))
+        ))
+      )
+    ),
+    latePaymentPenalty = Some(NewLatePaymentPenalty(
+      details = Seq(LPPDetails(
+        principalChargeReference = "12345678901234",
+        penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
+        penaltyStatus = LPPPenaltyStatusEnum.Accruing,
+        penaltyAmountPaid = Some(1001.45),
+        penaltyAmountOutstanding = Some(99.99),
+        LPP1LRDays = Some("15"),
+        LPP1HRDays = Some("31"),
+        LPP2Days = Some("31"),
+        LPP1LRCalculationAmount = Some(99.99),
+        LPP1HRCalculationAmount = Some(99.99),
+        LPP2Percentage = Some(4.00),
+        LPP1LRPercentage = Some(2.00),
+        LPP1HRPercentage = Some(BigDecimal(2.00).setScale(2)),
+        penaltyChargeCreationDate = LocalDate.parse("2069-10-30"),
+        communicationsDate = LocalDate.parse("2069-10-30"),
+        penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
+        appealInformation = Some(Seq(AppealInformationType(
+          appealStatus = Some(AppealStatusEnum.Unappealable),
+          appealLevel =  Some(AppealLevelEnum.HMRC)
+        ))),
+        principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
+        principalChargeBillingTo = LocalDate.parse("2069-10-30"),
+        principalChargeDueDate = LocalDate.parse("2069-10-30"),
+        penaltyChargeReference = Some("1234567890"),
+        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30"))
+      ))
+    ))
+  )
+
   class Setup {
-    val service: PenaltiesService = new PenaltiesService(mockPenaltiesConnector)
+    val service: PenaltiesService = new PenaltiesService(mockPenaltiesConnector, appConfig)
 
     reset(mockPenaltiesConnector)
-  }
-
-  "getLspDataWithVrn" should {
-    s"return a successful response and pass the result back to the controller" in new Setup {
-
-      when(mockPenaltiesConnector.getPenaltiesData(any(), any())(any(), any())).thenReturn(Future.successful(sampleEmptyLspData))
-
-      val result: ETMPPayload = await(service.getETMPDataFromEnrolmentKey(vrn)(vatTraderUser, HeaderCarrier()))
-
-      result shouldBe sampleEmptyLspData
-    }
-
-    s"return an exception and pass the result back to the controller" in new Setup {
-
-      when(mockPenaltiesConnector.getPenaltiesData(any(), any())(any(), any()))
-        .thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", INTERNAL_SERVER_ERROR)))
-
-      val result: Exception = intercept[Exception](await(service.getETMPDataFromEnrolmentKey(vrn)(vatTraderUser, HeaderCarrier())))
-
-      result.getMessage shouldBe "Upstream error"
-    }
   }
 
   "isAnyLSPUnpaid" should {

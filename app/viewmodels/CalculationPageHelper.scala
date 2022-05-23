@@ -17,10 +17,11 @@
 package viewmodels
 
 import models.penalty.LatePaymentPenalty
+import models.v3.lpp.LPPDetails
 import play.api.i18n.Messages
 import utils.{CurrencyFormatter, ImplicitDateFormatter, ViewUtils}
 
-import java.time.LocalDateTime
+import java.time.{LocalDate, LocalDateTime}
 import javax.inject.Inject
 
 class CalculationPageHelper @Inject()() extends ViewUtils with ImplicitDateFormatter {
@@ -48,7 +49,34 @@ class CalculationPageHelper @Inject()() extends ViewUtils with ImplicitDateForma
     }
   }
 
-  def getDateAsDayMonthYear(dateTime: LocalDateTime)(implicit messages: Messages): String = {
+  def getCalculationRowForLPPForNewAPI(lpp: LPPDetails)(implicit messages: Messages): Option[Seq[String]] = {
+    (lpp.LPP1LRCalculationAmount, lpp.LPP1HRCalculationAmount) match {
+      case (Some(amountOnDay15), Some(amountOnDay31)) =>
+        val amountOnDay15ParsedAsString = CurrencyFormatter.parseBigDecimalToFriendlyValue(amountOnDay15)
+        val amountOnDay31ParsedAsString = CurrencyFormatter.parseBigDecimalToFriendlyValue(amountOnDay31)
+        val firstPaymentDetail = messages("calculation.key.2.paymentDetail", dateToString(lpp.penaltyChargeDueDate.plusDays(15)))
+        val firstCalculation = messages("calculation.key.2.text",
+          s"${lpp.LPP1LRPercentage.get}", amountOnDay15ParsedAsString, firstPaymentDetail)
+        val secondPaymentDetail = messages("calculation.key.2.paymentDetail", dateToString(lpp.penaltyChargeDueDate.plusDays(30)))
+        val secondCalculation = messages("calculation.key.2.text",
+          s"${lpp.LPP1HRPercentage.get}", amountOnDay31ParsedAsString, secondPaymentDetail)
+        Some(Seq(firstCalculation, secondCalculation))
+      case (Some(amountOnDay15), None) =>
+        val amountOnDay15ParsedAsString = CurrencyFormatter.parseBigDecimalToFriendlyValue(amountOnDay15)
+        val paymentDetail = messages("calculation.key.2.paymentDetail", dateToString(lpp.penaltyChargeDueDate.plusDays(15)))
+        val calculation = messages("calculation.key.2.text",
+          s"${lpp.LPP1LRPercentage.get}", amountOnDay15ParsedAsString, paymentDetail)
+        Some(Seq(calculation))
+      case _ =>
+        None
+    }
+  }
+
+  def getDateTimeAsDayMonthYear(dateTime: LocalDateTime)(implicit messages: Messages): String = {
     dateTimeToString(dateTime)
+  }
+
+  def getDateAsDayMonthYear(date: LocalDate)(implicit messages: Messages): String = {
+    dateToString(date)
   }
 }

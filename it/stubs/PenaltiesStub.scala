@@ -199,6 +199,15 @@ object PenaltiesStub {
     )
   )
 
+  def returnPenaltyDetailsStub(penaltyDetailsToReturn: GetPenaltyDetails): StubMapping = stubFor(get(urlMatching(getPenaltyDetailsUrl))
+    .willReturn(
+      aResponse()
+        .withStatus(Status.OK)
+        .withBody(
+          Json.toJson(penaltyDetailsToReturn).toString
+        )
+    ))
+
   def lspWithMultiplePenaltyPeriodDataStub(): StubMapping = stubFor(get(urlMatching(getLspDataUrl))
     .willReturn(
       aResponse()
