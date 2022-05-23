@@ -14,19 +14,23 @@
  * limitations under the License.
  */
 
-package featureSwitches
+package config.featureSwitches
 
-trait FeatureSwitching {
-  val FEATURE_SWITCH_ON = "true"
-  val FEATURE_SWITCH_OFF = "false"
-
-  def isEnabled(featureSwitch: FeatureSwitch): Boolean =
-    sys.props get featureSwitch.name contains FEATURE_SWITCH_ON
-
-  def enableFeatureSwitch(featureSwitch: FeatureSwitch): Unit =
-    sys.props += featureSwitch.name -> FEATURE_SWITCH_ON
-
-  def disableFeatureSwitch(featureSwitch: FeatureSwitch): Unit =
-    sys.props += featureSwitch.name -> FEATURE_SWITCH_OFF
+sealed trait FeatureSwitch {
+  val name: String
 }
+
+object FeatureSwitch {
+  val prefix: String = "feature.switch"
+  val listOfAllFeatureSwitches: List[FeatureSwitch] = List(CallAPI1812ETMP, UseAPI1812Model)
+}
+
+case object CallAPI1812ETMP extends FeatureSwitch{
+  override val name: String = s"${FeatureSwitch.prefix}.call-api-1812-etmp"
+}
+
+case object UseAPI1812Model extends FeatureSwitch {
+  override val name: String = s"${FeatureSwitch.prefix}.use-api-1812-model"
+}
+
 
