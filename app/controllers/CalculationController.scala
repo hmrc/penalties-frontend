@@ -28,6 +28,7 @@ import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.PenaltiesService
+import services.v2.{PenaltiesService => PenaltiesServiceV2}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
 import utils.{CurrencyFormatter, EnrolmentKeys}
@@ -41,6 +42,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CalculationController @Inject()(viewLPP: CalculationLPPView,
                                       viewAdd: CalculationAdditionalView,
                                       penaltiesService: PenaltiesService,
+                                      penaltiesServiceV2: PenaltiesServiceV2,
                                       calculationPageHelper: CalculationPageHelper)(implicit ec: ExecutionContext,
                                                                                     appConfig: AppConfig,
                                                                                     errorHandler: ErrorHandler,
@@ -59,7 +61,6 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
   }
 
   def getOldPenaltyData(penaltyId: String, isAdditional: Boolean)(implicit request: User[_]): Future[Result] = {
-    logger.debug(s"[CalculationController][getOldPenaltyData] - Foo Bar!")
     penaltiesService.getETMPDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn)).map {
       payload => {
         val penalty: Option[LatePaymentPenalty] = payload.latePaymentPenalties.flatMap(_.find(_.id == penaltyId))
@@ -105,7 +106,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
   }
 
   def getPenaltyDetailsFromNewAPI(penaltyId: String, isAdditional: Boolean)(implicit request: User[_]): Future[Result] = {
-    penaltiesService.getPenaltyDetailsFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn)).map {
+    penaltiesServiceV2.getPenaltyDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn)).map {
       payload => {
         val penalty: Option[LPPDetails] = payload.latePaymentPenalty.flatMap(_.details.find(_.principalChargeReference == penaltyId))
         if (penalty.isEmpty) {

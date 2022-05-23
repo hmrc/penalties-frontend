@@ -33,6 +33,7 @@ import org.mockito.Mockito.{mock, reset, when}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.PenaltiesService
+import services.v2.{PenaltiesService => PenaltiesServiceV2}
 import testUtils.AuthTestModels
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
@@ -47,6 +48,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
   val calculationView: CalculationLPPView = injector.instanceOf[CalculationLPPView]
   val calculationAdditionalView: CalculationAdditionalView = injector.instanceOf[CalculationAdditionalView]
   val mockPenaltiesService: PenaltiesService = mock(classOf[PenaltiesService])
+  val mockPenaltiesServiceV2: PenaltiesServiceV2 = mock(classOf[PenaltiesServiceV2])
   val calculationPageHelper: CalculationPageHelper = injector.instanceOf[CalculationPageHelper]
 
   val etmpPayload: ETMPPayload = ETMPPayload(
@@ -291,6 +293,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
     calculationView,
     calculationAdditionalView,
     mockPenaltiesService,
+    mockPenaltiesServiceV2,
     calculationPageHelper
   )(implicitly, implicitly, errorHandler, authPredicate, stubMessagesControllerComponents())
 
@@ -323,7 +326,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
       }
 
       "show the page when the penalty ID specified matches model API1812 payload" in new Setup(AuthTestModels.successfulAuthResult , isFSEnabled = true) {
-        when(mockPenaltiesService.getPenaltyDetailsFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
+        when(mockPenaltiesServiceV2.getPenaltyDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(penaltyDetailsPayload))
 
         val result: Future[Result] = Controller.onPageLoad("12345678901234", isAdditional = false)(fakeRequest)
@@ -332,7 +335,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
 
       "show an ISE when the calculation row with model API1812 can not be rendered - because the payload is invalid (missing both 15/30 day payment amounts)" in
         new Setup(AuthTestModels.successfulAuthResult, isFSEnabled = true) {
-          when(mockPenaltiesService.getPenaltyDetailsFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
+          when(mockPenaltiesServiceV2.getPenaltyDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
             .thenReturn(Future.successful(penaltyDetailsPayloadNo15Or30DayAmount))
 
           val result: Future[Result] = Controller.onPageLoad("12345678901234", isAdditional = false)(fakeRequest)
@@ -341,7 +344,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
 
       "show an ISE when the user specifies a penalty ID not found with model API1812 enabled" in
         new Setup(AuthTestModels.successfulAuthResult, isFSEnabled = true) {
-          when(mockPenaltiesService.getPenaltyDetailsFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
+          when(mockPenaltiesServiceV2.getPenaltyDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
             .thenReturn(Future.successful(penaltyDetailsPayload))
 
           val result: Future[Result] = Controller.onPageLoad("1234", isAdditional = false)(fakeRequest)

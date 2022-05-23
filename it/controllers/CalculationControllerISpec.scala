@@ -846,7 +846,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         parsedBody.select("#main-content .govuk-summary-list__row").get(5).select("dd").text() shouldBe "£10.00"
       }
 
-      "return 200 (OK) and render the view correctly whe nthe user has specified a valid penalty ID and the VAT is due" in new Setup(isFSEnabled = true) {
+      "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due" in new Setup(isFSEnabled = true) {
         returnPenaltyDetailsStub(penaltyDetailsWithAdditionalDuePenalty)
         val request = controller.onPageLoad("65431234567890", true)(fakeRequest)
         status(request) shouldBe Status.OK

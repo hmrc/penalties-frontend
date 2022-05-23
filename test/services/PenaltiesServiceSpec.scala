@@ -361,45 +361,6 @@ class PenaltiesServiceSpec extends SpecBase {
     reset(mockPenaltiesConnector)
   }
 
-  "getETMPDataFromEnrolmentKey" should {
-    s"return a successful response and pass the result back to the controller" in new Setup {
-
-      when(mockPenaltiesConnector.getPenaltiesData(any(), any())(any(), any())).thenReturn(Future.successful(sampleEmptyLspData))
-
-      val result: ETMPPayload = await(service.getETMPDataFromEnrolmentKey(vrn)(vatTraderUser, HeaderCarrier()))
-
-      result shouldBe sampleEmptyLspData
-    }
-
-    s"return an exception and pass the result back to the controller" in new Setup {
-
-      when(mockPenaltiesConnector.getPenaltiesData(any(), any())(any(), any()))
-        .thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", INTERNAL_SERVER_ERROR)))
-
-      val result: Exception = intercept[Exception](await(service.getETMPDataFromEnrolmentKey(vrn)(vatTraderUser, HeaderCarrier())))
-
-      result.getMessage shouldBe "Upstream error"
-    }
-  }
-
-  "getPenaltyDetailsFromEnrolmentKey" should {
-    "return a successful response and pass the result back to the controller" in new Setup{
-      when(mockPenaltiesConnector.getPenaltyDetails(any(), any())(any(), any())).thenReturn(Future.successful(samplePenaltyDetails))
-
-      val result: GetPenaltyDetails = await(service.getPenaltyDetailsFromEnrolmentKey(vrn)(vatTraderUser, HeaderCarrier()))
-      result shouldBe samplePenaltyDetails
-    }
-
-    "return an exception and pass the result back to the controller" in new Setup {
-      when(mockPenaltiesConnector.getPenaltyDetails(any(), any())(any(), any()))
-        .thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", INTERNAL_SERVER_ERROR)))
-
-      val result: Exception = intercept[Exception](await(service.getPenaltyDetailsFromEnrolmentKey(vrn)(vatTraderUser, HeaderCarrier())))
-      result.getMessage shouldBe "Upstream error"
-    }
-  }
-
-
   "isAnyLSPUnpaid" should {
     val sampleFinancialPenaltyPointUnpaid: Seq[PenaltyPoint] = Seq(
       PenaltyPoint(

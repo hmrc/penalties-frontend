@@ -34,9 +34,6 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) extends FeatureS
   def getETMPDataFromEnrolmentKey(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[ETMPPayload] =
     connector.getPenaltiesData(enrolmentKey)
 
-  def getPenaltyDetailsFromEnrolmentKey(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[GetPenaltyDetails] =
-    connector.getPenaltyDetails(enrolmentKey)
-
   def isAnyLSPUnpaid(penaltyPoints: Seq[PenaltyPoint]): Boolean = {
     penaltyPoints.exists(penalty => penalty.`type` == PenaltyTypeEnum.Financial &&
       penalty.status != PointStatusEnum.Paid &&
