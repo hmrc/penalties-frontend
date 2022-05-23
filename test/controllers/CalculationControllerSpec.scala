@@ -125,12 +125,12 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
 
   val penaltyDetailsPayload: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = Some(Totalisations(
-      LSPTotalValue = 200,
-      penalisedPrincipalTotal = 2000,
-      LPPPostedTotal = 165.25,
-      LPPEstimatedTotal = 15.26,
-      LPIPostedTotal = 1968.2,
-      LPIEstimatedTotal = 7)),
+      LSPTotalValue = BigDecimal(200),
+      penalisedPrincipalTotal = BigDecimal(2000),
+      LPPPostedTotal = BigDecimal(165.25),
+      LPPEstimatedTotal = BigDecimal(15.26),
+      LPIPostedTotal = BigDecimal(1968.2),
+      LPIEstimatedTotal = BigDecimal(7))),
     lateSubmissionPenalty = Some(
       LateSubmissionPenalty(
         summary = LSPSummary(
@@ -203,12 +203,12 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
 
   val penaltyDetailsPayloadNo15Or30DayAmount: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = Some(Totalisations(
-      LSPTotalValue = 200,
-      penalisedPrincipalTotal = 2000,
-      LPPPostedTotal = 165.25,
-      LPPEstimatedTotal = 15.26,
-      LPIPostedTotal = 1968.2,
-      LPIEstimatedTotal = 7)),
+      LSPTotalValue = BigDecimal(200),
+      penalisedPrincipalTotal = BigDecimal(2000),
+      LPPPostedTotal = BigDecimal(165.25),
+      LPPEstimatedTotal = BigDecimal(15.26),
+      LPIPostedTotal = BigDecimal(1968.2),
+      LPIEstimatedTotal = BigDecimal(7))),
     lateSubmissionPenalty = Some(
       LateSubmissionPenalty(
         summary = LSPSummary(
