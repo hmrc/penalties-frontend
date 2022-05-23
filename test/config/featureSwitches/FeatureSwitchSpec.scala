@@ -14,20 +14,26 @@
  * limitations under the License.
  */
 
-package featureSwitches
+package config.featureSwitches
 
 import base.SpecBase
+import config.AppConfig
+import org.mockito.Matchers
+import org.mockito.Mockito.{mock, when}
 
 class FeatureSwitchSpec extends SpecBase {
+  val mockAppConfig: AppConfig = mock(classOf[AppConfig])
 
   class Setup {
-    val featureSwitching: FeatureSwitching = new FeatureSwitching {}
+    val featureSwitching: FeatureSwitching = new FeatureSwitching {
+      override implicit val appConfig: AppConfig = mockAppConfig
+    }
     sys.props -= CallAPI1812ETMP.name
   }
 
   "FeatureSwitch listOfAllFeatureSwitches" should {
     "be all the featureswitches in the app" in {
-      FeatureSwitch.listOfAllFeatureSwitches shouldBe List(CallAPI1812ETMP)
+      FeatureSwitch.listOfAllFeatureSwitches shouldBe List(CallAPI1812ETMP, UseAPI1812Model)
     }
   }
   "FeatureSwitching constants" should {
@@ -37,16 +43,19 @@ class FeatureSwitchSpec extends SpecBase {
     }
   }
 
-  "return true if CallAPI1812ETMP feature switch is enabled" in new Setup{
+  "return true if CallAPI1812ETMP feature switch is enabled" in new Setup {
     featureSwitching.enableFeatureSwitch(CallAPI1812ETMP)
     featureSwitching.isEnabled(CallAPI1812ETMP) shouldBe true
   }
-  "return false if CallAPI1812ETMP feature switch is disabled" in new Setup{
+
+  "return false if CallAPI1812ETMP feature switch is disabled" in new Setup {
     featureSwitching.disableFeatureSwitch(CallAPI1812ETMP)
     featureSwitching.isEnabled(CallAPI1812ETMP) shouldBe false
   }
-  "return false if CallAPI1812ETMP feature switch does not exist" in new Setup{
-    featureSwitching.isEnabled(CallAPI1812ETMP) shouldBe false
-  }
 
+  "return true if CallAPI1812ETMP feature switch does not exist in cache but does in config" in new Setup {
+    when(mockAppConfig.isFeatureSwitchEnabled(Matchers.eq(CallAPI1812ETMP)))
+      .thenReturn(true)
+    featureSwitching.isEnabled(CallAPI1812ETMP) shouldBe true
+  }
 }
