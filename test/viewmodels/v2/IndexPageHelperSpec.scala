@@ -1149,12 +1149,12 @@ class IndexPageHelperSpec extends SpecBase {
         val penaltyDetailsWithOutstandingVAT: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = Some(
             Totalisations(
-              LSPTotalValue = 100,
-              penalisedPrincipalTotal = 223.45,
-              LPPPostedTotal = 0,
-              LPPEstimatedTotal = 0,
-              LPIPostedTotal = 0,
-              LPIEstimatedTotal = 0
+              LSPTotalValue = Some(100),
+              penalisedPrincipalTotal = Some(223.45),
+              LPPPostedTotal = Some(0),
+              LPPEstimatedTotal = Some(0),
+              LPIPostedTotal = Some(0),
+              LPIEstimatedTotal = Some(0)
             )
           ), lateSubmissionPenalty = None, latePaymentPenalty = None
         )
@@ -1168,12 +1168,12 @@ class IndexPageHelperSpec extends SpecBase {
       val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
-            LSPTotalValue = 100,
-            penalisedPrincipalTotal = 223.45,
-            LPPPostedTotal = 144.21,
-            LPPEstimatedTotal = 0,
-            LPIPostedTotal = 0,
-            LPIEstimatedTotal = 0
+            LSPTotalValue = Some(100),
+            penalisedPrincipalTotal = Some(223.45),
+            LPPPostedTotal = Some(144.21),
+            LPPEstimatedTotal = Some(0),
+            LPIPostedTotal = Some(0),
+            LPIEstimatedTotal = Some(0)
           )
         ),
         latePaymentPenalty = None,
@@ -1188,12 +1188,12 @@ class IndexPageHelperSpec extends SpecBase {
       val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
-            LSPTotalValue = 100,
-            penalisedPrincipalTotal = 223.45,
-            LPPPostedTotal = 144.21,
-            LPPEstimatedTotal = 60.24,
-            LPIPostedTotal = 0,
-            LPIEstimatedTotal = 0
+            LSPTotalValue = Some(100),
+            penalisedPrincipalTotal = Some(223.45),
+            LPPPostedTotal = Some(144.21),
+            LPPEstimatedTotal = Some(60.24),
+            LPIPostedTotal = Some(0),
+            LPIEstimatedTotal = Some(0)
           )
         ),
         latePaymentPenalty = None,
@@ -1208,12 +1208,12 @@ class IndexPageHelperSpec extends SpecBase {
       val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
-            LSPTotalValue = 100,
-            penalisedPrincipalTotal = 223.45,
-            LPPPostedTotal = 144.21,
-            LPPEstimatedTotal = 71.57,
-            LPIPostedTotal = 0,
-            LPIEstimatedTotal = 0
+            LSPTotalValue = Some(100),
+            penalisedPrincipalTotal = Some(223.45),
+            LPPPostedTotal = Some(144.21),
+            LPPEstimatedTotal = Some(71.57),
+            LPIPostedTotal = Some(0),
+            LPIEstimatedTotal = Some(0)
           )
         ),
         latePaymentPenalty = None,
@@ -1229,12 +1229,12 @@ class IndexPageHelperSpec extends SpecBase {
       val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
-            LSPTotalValue = 100,
-            penalisedPrincipalTotal = 223.45,
-            LPPPostedTotal = 144.21,
-            LPPEstimatedTotal = 71.57,
-            LPIPostedTotal = 0,
-            LPIEstimatedTotal = 0
+            LSPTotalValue = Some(100),
+            penalisedPrincipalTotal = Some(223.45),
+            LPPPostedTotal = Some(144.21),
+            LPPEstimatedTotal = Some(71.57),
+            LPIPostedTotal = Some(0),
+            LPIEstimatedTotal = Some(0)
           )
         ),
         latePaymentPenalty = None,
@@ -1258,12 +1258,12 @@ class IndexPageHelperSpec extends SpecBase {
       val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
-            LSPTotalValue = 400,
-            penalisedPrincipalTotal = 223.45,
-            LPPPostedTotal = 144.21,
-            LPPEstimatedTotal = 71.57,
-            LPIPostedTotal = 0,
-            LPIEstimatedTotal = 0
+            LSPTotalValue = Some(400),
+            penalisedPrincipalTotal = Some(223.45),
+            LPPPostedTotal = Some(144.21),
+            LPPEstimatedTotal = Some(71.57),
+            LPIPostedTotal = Some(0),
+            LPIEstimatedTotal = Some(0)
           )
         ),
         latePaymentPenalty = None,
@@ -1339,12 +1339,12 @@ class IndexPageHelperSpec extends SpecBase {
       val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
-            LSPTotalValue = 400,
-            penalisedPrincipalTotal = 0,
-            LPPPostedTotal = 0,
-            LPPEstimatedTotal = 0,
-            LPIPostedTotal = 0,
-            LPIEstimatedTotal = 0
+            LSPTotalValue = Some(400),
+            penalisedPrincipalTotal = Some(0),
+            LPPPostedTotal = Some(0),
+            LPPEstimatedTotal = Some(0),
+            LPIPostedTotal = Some(0),
+            LPIEstimatedTotal = Some(0)
           )
         ),
         latePaymentPenalty = None,
@@ -1418,12 +1418,12 @@ class IndexPageHelperSpec extends SpecBase {
       val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
-            LSPTotalValue = 200,
-            penalisedPrincipalTotal = 0,
-            LPPPostedTotal = 0,
-            LPPEstimatedTotal = 0,
-            LPIPostedTotal = 0,
-            LPIEstimatedTotal = 0
+            LSPTotalValue = Some(200),
+            penalisedPrincipalTotal = Some(0),
+            LPPPostedTotal = Some(0),
+            LPPEstimatedTotal = Some(0),
+            LPIPostedTotal = Some(0),
+            LPIEstimatedTotal = Some(0)
           )
         ),
         latePaymentPenalty = None,
@@ -1505,12 +1505,12 @@ class IndexPageHelperSpec extends SpecBase {
       val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
-            LSPTotalValue = 400,
-            penalisedPrincipalTotal = 0,
-            LPPPostedTotal = 0,
-            LPPEstimatedTotal = 0,
-            LPIPostedTotal = 100,
-            LPIEstimatedTotal = 20.23
+            LSPTotalValue = Some(400),
+            penalisedPrincipalTotal = Some(0),
+            LPPPostedTotal = Some(0),
+            LPPEstimatedTotal = Some(0),
+            LPIPostedTotal = Some(100),
+            LPIEstimatedTotal = Some(20.23)
           )
         ),
         latePaymentPenalty = None,
@@ -1535,12 +1535,12 @@ class IndexPageHelperSpec extends SpecBase {
       val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
-            LSPTotalValue = 400,
-            penalisedPrincipalTotal = 0,
-            LPPPostedTotal = 0,
-            LPPEstimatedTotal = 0,
-            LPIPostedTotal = 45.10,
-            LPIEstimatedTotal = 0
+            LSPTotalValue = Some(400),
+            penalisedPrincipalTotal = Some(0),
+            LPPPostedTotal = Some(0),
+            LPPEstimatedTotal = Some(0),
+            LPIPostedTotal = Some(45.10),
+            LPIEstimatedTotal = Some(0)
           )
         ),
         latePaymentPenalty = None,
@@ -1565,12 +1565,12 @@ class IndexPageHelperSpec extends SpecBase {
       val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
         totalisations = Some(
           Totalisations(
-            LSPTotalValue = 400,
-            penalisedPrincipalTotal = 223.45,
-            LPPPostedTotal = 0,
-            LPPEstimatedTotal = 0,
-            LPIPostedTotal = 0,
-            LPIEstimatedTotal = 0
+            LSPTotalValue = Some(400),
+            penalisedPrincipalTotal = Some(223.45),
+            LPPPostedTotal = Some(0),
+            LPPEstimatedTotal = Some(0),
+            LPIPostedTotal = Some(0),
+            LPIEstimatedTotal = Some(0)
           )
         ),
         latePaymentPenalty = None,
