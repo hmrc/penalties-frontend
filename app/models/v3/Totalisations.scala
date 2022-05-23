@@ -19,12 +19,12 @@ package models.v3
 import play.api.libs.json.{Json, Format}
 
 case class Totalisations(
-                          LSPTotalValue: BigDecimal,
-                          penalisedPrincipalTotal: BigDecimal,
-                          LPPPostedTotal: BigDecimal,
-                          LPPEstimatedTotal: BigDecimal,
-                          LPIPostedTotal: BigDecimal,
-                          LPIEstimatedTotal: BigDecimal
+                          LSPTotalValue: Option[BigDecimal],
+                          penalisedPrincipalTotal: Option[BigDecimal],
+                          LPPPostedTotal: Option[BigDecimal],
+                          LPPEstimatedTotal: Option[BigDecimal],
+                          LPIPostedTotal: Option[BigDecimal],
+                          LPIEstimatedTotal: Option[BigDecimal]
                         )
 
 object Totalisations {

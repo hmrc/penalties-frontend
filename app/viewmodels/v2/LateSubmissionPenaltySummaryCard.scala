@@ -22,18 +22,18 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 
 case class LateSubmissionPenaltySummaryCard(
-                        cardRows: Seq[SummaryListRow],
-                        status: Tag,
-                        penaltyPoint: String,
-                        penaltyId: String,
-                        isReturnSubmitted: Boolean,
-                        isFinancialPoint: Boolean = false,
-                        isThresholdPoint: Boolean = false,
-                        amountDue: BigDecimal = 0,
-                        isAddedPoint: Boolean = false,
-                        isAppealedPoint: Boolean = false,
-                        appealStatus: Option[AppealStatusEnum.Value] = None,
-                        appealLevel: Option[AppealLevelEnum.Value] = None,
-                        isAdjustedPoint: Boolean = false,
-                        multiplePenaltyPeriod: Option[Html] = None
+                                             cardRows: Seq[SummaryListRow],
+                                             status: Tag,
+                                             penaltyPoint: String,
+                                             penaltyId: String,
+                                             isReturnSubmitted: Boolean,
+                                             isFinancialPoint: Boolean = false,
+                                             isThresholdPoint: Boolean = false,
+                                             totalPenaltyAmount: BigDecimal = 0,
+                                             isAddedPoint: Boolean = false,
+                                             isAppealedPoint: Boolean = false,
+                                             appealStatus: Option[AppealStatusEnum.Value] = None,
+                                             appealLevel: Option[AppealLevelEnum.Value] = None,
+                                             isAdjustedPoint: Boolean = false,
+                                             multiplePenaltyPeriod: Option[Html] = None
                       )

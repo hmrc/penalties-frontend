@@ -157,7 +157,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       isAppealedPoint = appealStatus.isDefined,
       appealStatus = appealStatus,
       appealLevel = appealLevel,
-      amountDue = penalty.chargeOutstandingAmount.getOrElse(BigDecimal(0)),
+      totalPenaltyAmount = penalty.chargeAmount.getOrElse(BigDecimal(0)),
       multiplePenaltyPeriod = getMultiplePenaltyPeriodMessage(penalty)
     )
   }
@@ -266,7 +266,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
 
   def lppSummaryCard(lpp: LPPDetails)(implicit messages: Messages, user: User[_]): LatePaymentPenaltySummaryCard = {
     val cardBody = if (lpp.penaltyCategory == LPPPenaltyCategoryEnum.LPP2) lppAdditionalCardBody(lpp) else lppCardBody(lpp)
-    val isPaid = lpp.penaltyAmountOutstanding.contains(0)
+    val isPaid = lpp.penaltyAmountOutstanding.contains(BigDecimal(0))
     val isVatPaid = lpp.penaltyStatus == LPPPenaltyStatusEnum.Posted
     if (lpp.appealInformation.isDefined) {
       buildLPPSummaryCard(cardBody :+ summaryListRow(
@@ -352,7 +352,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       Seq(
       summaryListRow(messages("summaryCard.lpp.key2"), Html(messages("summaryCard.lpp.key2.value.lpp2"))),
       //TODO: get the reason from New API Call
-      summaryListRow(messages("summaryCard.lpp.key3"), Html(messages(getLPPPenaltyReasonKey("reason TODO"),
+      summaryListRow(messages("summaryCard.lpp.key3"), Html(messages(getLPPAdditionalPenaltyReasonKey("reason TODO"),
         dateToString(lpp.principalChargeBillingFrom),
         dateToString(lpp.principalChargeBillingTo)))
       ),
@@ -370,9 +370,9 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     }
   }
 
-  private def getLPPAdditionalPenaltyReasonKey(reason: String): String = {"LPPAdditionalPenaltyReasonKey"} // TODO: New API call for its implementation
+  private def getLPPAdditionalPenaltyReasonKey(reason: String): String = "LPPAdditionalPenaltyReasonKey" // TODO: New API call for its implementation
 
-  private def getLPPPenaltyReasonKey(reason: String): String = {"LPPPenaltyReasonKey"} // TODO: New API call for its implementation
+  private def getLPPPenaltyReasonKey(reason: String): String = "LPPPenaltyReasonKey" // TODO: New API call for its implementation
 
   def tagStatus(penalty: Option[LSPDetails], lpp: Option[LPPDetails])(implicit messages: Messages): Tag = {
 
