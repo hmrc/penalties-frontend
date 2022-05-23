@@ -356,7 +356,7 @@ class PenaltiesServiceSpec extends SpecBase {
   )
 
   class Setup {
-    val service: PenaltiesService = new PenaltiesService(mockPenaltiesConnector)
+    val service: PenaltiesService = new PenaltiesService(mockPenaltiesConnector, appConfig)
 
     reset(mockPenaltiesConnector)
   }

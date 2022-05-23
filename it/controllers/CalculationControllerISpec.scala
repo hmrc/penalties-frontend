@@ -16,7 +16,8 @@
 
 package controllers
 
-import featureSwitches.{CallAPI1812ETMP, FeatureSwitching}
+import config.AppConfig
+import config.featureSwitches.{CallAPI1812ETMP, FeatureSwitching}
 import models.ETMPPayload
 import models.communication.{Communication, CommunicationTypeEnum}
 import models.financial.Financial
@@ -43,6 +44,8 @@ import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.Future
 
 class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureSwitching {
+
+  val appConfig: AppConfig = injector.instanceOf[AppConfig]
   val controller: CalculationController = injector.instanceOf[CalculationController]
   val sampleDate1: LocalDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
   val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(

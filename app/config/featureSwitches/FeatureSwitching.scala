@@ -32,4 +32,3 @@ trait FeatureSwitching {
   def disableFeatureSwitch(featureSwitch: FeatureSwitch): Unit =
     sys.props += featureSwitch.name -> FEATURE_SWITCH_OFF
 }
-

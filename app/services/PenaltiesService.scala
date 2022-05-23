@@ -16,11 +16,10 @@
 
 package services
 
+import config.AppConfig
+import config.featureSwitches.FeatureSwitching
 import connectors.PenaltiesConnector
-import featureSwitches.FeatureSwitching
 import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
-import models.v3.GetPenaltyDetails
-import featureSwitches.CallAPI1812ETMP
 import models.{ETMPPayload, User}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.PenaltyPeriodHelper
@@ -29,7 +28,7 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class PenaltiesService @Inject()(connector: PenaltiesConnector) extends FeatureSwitching {
+class PenaltiesService @Inject()(connector: PenaltiesConnector, val appConfig: AppConfig) extends FeatureSwitching {
 
   def getETMPDataFromEnrolmentKey(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[ETMPPayload] =
     connector.getPenaltiesData(enrolmentKey)

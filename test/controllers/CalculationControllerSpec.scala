@@ -17,7 +17,7 @@
 package controllers
 
 import base.SpecBase
-import featureSwitches.{CallAPI1812ETMP, FeatureSwitching}
+import config.featureSwitches.{CallAPI1812ETMP, FeatureSwitching}
 import models.ETMPPayload
 import models.financial.Financial
 import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum}

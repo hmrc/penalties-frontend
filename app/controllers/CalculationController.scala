@@ -34,7 +34,7 @@ import utils.Logger.logger
 import utils.{CurrencyFormatter, EnrolmentKeys}
 import viewmodels.CalculationPageHelper
 import models.point.PointStatusEnum
-import featureSwitches.{CallAPI1812ETMP, FeatureSwitching}
+import config.featureSwitches.{CallAPI1812ETMP, FeatureSwitching}
 import models.User
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,7 +44,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
                                       penaltiesService: PenaltiesService,
                                       penaltiesServiceV2: PenaltiesServiceV2,
                                       calculationPageHelper: CalculationPageHelper)(implicit ec: ExecutionContext,
-                                                                                    appConfig: AppConfig,
+                                                                                    val appConfig: AppConfig,
                                                                                     errorHandler: ErrorHandler,
                                                                                     authorise: AuthPredicate,
                                                                                     controllerComponents: MessagesControllerComponents)
