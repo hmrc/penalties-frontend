@@ -157,7 +157,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       isAppealedPoint = appealStatus.isDefined,
       appealStatus = appealStatus,
       appealLevel = appealLevel,
-      amountDue = penalty.chargeOutstandingAmount.getOrElse(BigDecimal(0)),
+      totalPenaltyAmount = penalty.chargeAmount.getOrElse(BigDecimal(0)),
       multiplePenaltyPeriod = getMultiplePenaltyPeriodMessage(penalty)
     )
   }

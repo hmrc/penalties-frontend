@@ -19,12 +19,14 @@ package services.v2
 import connectors.PenaltiesConnector
 import models.User
 import models.v3.GetPenaltyDetails
-import models.v3.lsp.LSPDetails
+import models.v3.lsp.{LSPDetails, TaxReturnStatusEnum}
 import uk.gov.hmrc.http.HeaderCarrier
-
 import java.time.LocalDate
+
 import javax.inject.Inject
-import scala.concurrent.Future
+import models.v3.appealInfo.AppealStatusEnum
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class PenaltiesService @Inject()(connector: PenaltiesConnector) {
 
@@ -41,19 +43,19 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
   }
 
   def findOverdueVATFromPayload(payload: GetPenaltyDetails): BigDecimal = {
-    payload.totalisations.map(_.penalisedPrincipalTotal).getOrElse(0)
+    payload.totalisations.flatMap(_.penalisedPrincipalTotal).getOrElse(0)
   }
 
   def findCrystallisedLPPsFromPayload(payload: GetPenaltyDetails): BigDecimal = {
-    payload.totalisations.map(_.LPPPostedTotal).getOrElse(0)
+    payload.totalisations.flatMap(_.LPPPostedTotal).getOrElse(0)
   }
 
   def findEstimatedLPPsFromPayload(payload: GetPenaltyDetails): BigDecimal = {
-    payload.totalisations.map(_.LPPEstimatedTotal).getOrElse(0)
+    payload.totalisations.flatMap(_.LPPEstimatedTotal).getOrElse(0)
   }
 
   def findTotalLSPFromPayload(payload: GetPenaltyDetails): BigDecimal = {
-    payload.totalisations.map(_.LSPTotalValue).getOrElse(0)
+    payload.totalisations.flatMap(_.LSPTotalValue).getOrElse(0)
   }
 
   def findEstimatedVATInterest(payload: GetPenaltyDetails): (BigDecimal, Boolean) = {
@@ -67,16 +69,32 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
   }
 
   def findCrystalizedPenaltiesInterest(payload: GetPenaltyDetails): BigDecimal = {
-    payload.totalisations.map(_.LPIPostedTotal).getOrElse(0)
+    payload.totalisations.flatMap(_.LPIPostedTotal).getOrElse(0)
   }
 
   def findEstimatedPenaltiesInterest(payload: GetPenaltyDetails): BigDecimal = {
-    payload.totalisations.map(_.LPIEstimatedTotal).getOrElse(0)
+    payload.totalisations.flatMap(_.LPIEstimatedTotal).getOrElse(0)
   }
   //due point for lsp , has penalty period, not submitted, not appealed
-  def isAnyLSPUnpaidAndSubmissionIsDue(penaltyPoints: Seq[LSPDetails]): Boolean = ???
+  def isAnyLSPUnpaidAndSubmissionIsDue(penaltyPoints: Seq[LSPDetails]): Boolean = {
+    filterOutAppealedPenalties(penaltyPoints).exists(details => {
+      details.chargeOutstandingAmount.exists(_ > BigDecimal(0)) && details.lateSubmissions.exists(_.exists(_.taxReturnStatus == TaxReturnStatusEnum.Open))
+    })
+  }
 
-  def isAnyLSPUnpaid(penaltyPoints: Seq[LSPDetails]): Boolean = ???
+  def isAnyLSPUnpaid(penaltyPoints: Seq[LSPDetails]): Boolean = {
+    filterOutAppealedPenalties(penaltyPoints).exists(_.lateSubmissions.exists(_.exists(_.taxReturnStatus == TaxReturnStatusEnum.Open)))
+  }
 
-  def getLatestLSPCreationDate(payload: Seq[LSPDetails]): Option[LocalDate] = ???
+  def getLatestLSPCreationDate(payload: Seq[LSPDetails]): Option[LocalDate] = {
+    filterOutAppealedPenalties(payload).filter(_.chargeAmount.isDefined)
+      .sortWith((firstLSP, secondLSP) => firstLSP.penaltyCreationDate.isAfter(secondLSP.penaltyCreationDate))
+      .map(_.penaltyCreationDate)
+      .headOption
+  }
+
+  private def filterOutAppealedPenalties(penaltyPoints: Seq[LSPDetails]): Seq[LSPDetails] = {
+    penaltyPoints
+      .filterNot(details => details.appealInformation.exists(_.exists(_.appealStatus.contains(AppealStatusEnum.Upheld))))
+  }
 }

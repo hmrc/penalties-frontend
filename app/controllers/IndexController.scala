@@ -48,6 +48,7 @@ class IndexController @Inject()(view: IndexView,
                                                                  controllerComponents: MessagesControllerComponents)
   extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter with FeatureSwitching {
 
+  //scalastyle:off
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
     if (!isEnabled(UseAPI1812Model))
       for {
@@ -84,7 +85,7 @@ class IndexController @Inject()(view: IndexView,
         contentToDisplayAboveCards = pageHelperv2.getContentBasedOnPointsFromModel(penaltyData)
         contentLPPToDisplayAboveCards = pageHelperv2.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyData)
         whatYouOweBreakdown = pageHelperv2.getWhatYouOweBreakdown(penaltyData)
-        lspSummaryCards = cardHelper2.populateLateSubmissionPenaltyCard(penaltyData.lateSubmissionPenalty.get.details,
+        lspSummaryCards = cardHelper2.populateLateSubmissionPenaltyCard(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty),
           penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0),
           penaltyData.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0))
         lppSummaryCards = cardHelper2.populateLatePaymentPenaltyCard(penaltyData.latePaymentPenalty.map(_.details))
@@ -96,7 +97,7 @@ class IndexController @Inject()(view: IndexView,
           contentLPPToDisplayAboveCards,
           lspSummaryCards,
           lppSummaryCards,
-          currencyFormatAsNonHTMLString(penaltyData.totalisations.map(_.LSPTotalValue).getOrElse(0)),
+          currencyFormatAsNonHTMLString(penaltyData.totalisations.flatMap(_.LSPTotalValue).getOrElse(0)),
           isAnyUnpaidLSP,
           isAnyUnpaidLSPAndNotSubmittedReturn,
           whatYouOweBreakdown))

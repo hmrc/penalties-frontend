@@ -157,7 +157,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           "123456789",
           isReturnSubmitted = false,
           isFinancialPoint = true,
-          amountDue = 200.0,
+          totalPenaltyAmount = 200.0,
           multiplePenaltyPeriod = None
         )
 
@@ -182,7 +182,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           "123456789",
           isReturnSubmitted = false,
           isThresholdPoint = true,
-          amountDue = 200.0
+          totalPenaltyAmount = 200.0
         )
 
         val pointToPassIn: LSPDetails = sampleFinancialPenaltyPointv2.copy(penaltyOrder = "1", penaltyCategory = LSPPenaltyCategoryEnum.Threshold)
@@ -292,7 +292,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           "12345678901234",
           isReturnSubmitted = true,
           isFinancialPoint = true,
-          amountDue = 200,
+          totalPenaltyAmount = 200,
           multiplePenaltyPeriod = Some(Html(lspMultiplePenaltyPeriodMessage(dateTimeToString(sampleOldestDate.plusMonths(4).plusDays(23)))))
         )
 
