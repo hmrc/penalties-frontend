@@ -125,12 +125,13 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
 
   val penaltyDetailsPayload: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = Some(Totalisations(
-      LSPTotalValue = 200,
-      penalisedPrincipalTotal = 2000,
-      LPPPostedTotal = 165.25,
-      LPPEstimatedTotal = 15.26,
-      LPIPostedTotal = 1968.2,
-      LPIEstimatedTotal = 7)),
+      LSPTotalValue = Some(BigDecimal(200)),
+      penalisedPrincipalTotal = Some(BigDecimal(2000)),
+      LPPPostedTotal = Some(BigDecimal(165.25)),
+      LPPEstimatedTotal = Some(BigDecimal(15.26)),
+      LPIPostedTotal = Some(BigDecimal(1968.2)),
+      LPIEstimatedTotal = Some(BigDecimal(7))
+    )),
     lateSubmissionPenalty = Some(
       LateSubmissionPenalty(
         summary = LSPSummary(
@@ -161,7 +162,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
           appealInformation = Some(Seq(
             AppealInformationType(
               appealStatus = Some(AppealStatusEnum.Unappealable),
-              appealLevel =  Some(AppealLevelEnum.HMRC)
+              appealLevel = Some(AppealLevelEnum.HMRC)
             )
           )),
           chargeAmount = Some(200),
@@ -190,7 +191,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
         penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel =  Some(AppealLevelEnum.HMRC)
+          appealLevel = Some(AppealLevelEnum.HMRC)
         ))),
         principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
         principalChargeBillingTo = LocalDate.parse("2069-10-30"),
@@ -203,12 +204,13 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
 
   val penaltyDetailsPayloadNo15Or30DayAmount: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = Some(Totalisations(
-      LSPTotalValue = 200,
-      penalisedPrincipalTotal = 2000,
-      LPPPostedTotal = 165.25,
-      LPPEstimatedTotal = 15.26,
-      LPIPostedTotal = 1968.2,
-      LPIEstimatedTotal = 7)),
+      LSPTotalValue = Some(BigDecimal(200)),
+      penalisedPrincipalTotal = Some(BigDecimal(2000)),
+      LPPPostedTotal = Some(BigDecimal(165.25)),
+      LPPEstimatedTotal = Some(BigDecimal(15.26)),
+      LPIPostedTotal = Some(BigDecimal(1968.2)),
+      LPIEstimatedTotal = Some(BigDecimal(7))
+    )),
     lateSubmissionPenalty = Some(
       LateSubmissionPenalty(
         summary = LSPSummary(
@@ -239,7 +241,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
           appealInformation = Some(Seq(
             AppealInformationType(
               appealStatus = Some(AppealStatusEnum.Unappealable),
-              appealLevel =  Some(AppealLevelEnum.HMRC)
+              appealLevel = Some(AppealLevelEnum.HMRC)
             )
           )),
           chargeAmount = Some(200),
@@ -268,7 +270,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
         penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel =  Some(AppealLevelEnum.HMRC)
+          appealLevel = Some(AppealLevelEnum.HMRC)
         ))),
         principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
         principalChargeBillingTo = LocalDate.parse("2069-10-30"),
@@ -285,7 +287,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
       Matchers.any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
       Matchers.any(), Matchers.any())
     ).thenReturn(authResult)
-    if(isFSEnabled) enableFeatureSwitch(CallAPI1812ETMP) else disableFeatureSwitch(CallAPI1812ETMP)
+    if (isFSEnabled) enableFeatureSwitch(CallAPI1812ETMP) else disableFeatureSwitch(CallAPI1812ETMP)
     reset(mockPenaltiesService)
   }
 
@@ -310,12 +312,12 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
 
       "show an ISE when the calculation row can not be rendered - because the payload is invalid (missing both 15/30 day payment amounts)" in
         new Setup(AuthTestModels.successfulAuthResult) {
-        when(mockPenaltiesService.getETMPDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(etmpPayloadNo15Or30DayAmount))
+          when(mockPenaltiesService.getETMPDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
+            .thenReturn(Future.successful(etmpPayloadNo15Or30DayAmount))
 
-        val result: Future[Result] = Controller.onPageLoad("123456789", isAdditional = false)(fakeRequest)
-        status(result) shouldBe INTERNAL_SERVER_ERROR
-      }
+          val result: Future[Result] = Controller.onPageLoad("123456789", isAdditional = false)(fakeRequest)
+          status(result) shouldBe INTERNAL_SERVER_ERROR
+        }
 
       "show an ISE when the user specifies a penalty ID not in their data" in new Setup(AuthTestModels.successfulAuthResult) {
         when(mockPenaltiesService.getETMPDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
@@ -325,7 +327,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
         status(result) shouldBe INTERNAL_SERVER_ERROR
       }
 
-      "show the page when the penalty ID specified matches model API1812 payload" in new Setup(AuthTestModels.successfulAuthResult , isFSEnabled = true) {
+      "show the page when the penalty ID specified matches model API1812 payload" in new Setup(AuthTestModels.successfulAuthResult, isFSEnabled = true) {
         when(mockPenaltiesServiceV2.getPenaltyDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(penaltyDetailsPayload))
 

@@ -279,12 +279,13 @@ class PenaltiesServiceSpec extends SpecBase {
 
   val samplePenaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = Some(Totalisations(
-      LSPTotalValue = 200,
-      penalisedPrincipalTotal = 2000,
-      LPPPostedTotal = 165.25,
-      LPPEstimatedTotal = 15.26,
-      LPIPostedTotal = 1968.2,
-      LPIEstimatedTotal = 7)),
+      LSPTotalValue = Some(BigDecimal(200)),
+      penalisedPrincipalTotal = Some(BigDecimal(2000)),
+      LPPPostedTotal = Some(BigDecimal(165.25)),
+      LPPEstimatedTotal = Some(BigDecimal(15.26)),
+      LPIPostedTotal = Some(BigDecimal(1968.2)),
+      LPIEstimatedTotal = Some(BigDecimal(7))
+    )),
     lateSubmissionPenalty = Some(
       LateSubmissionPenalty(
         summary = LSPSummary(
