@@ -16,6 +16,8 @@
 
 package services
 
+import config.AppConfig
+import config.featureSwitches.FeatureSwitching
 import connectors.ComplianceConnector
 import models.FilingFrequencyEnum._
 import models.compliance.{ComplianceData, ComplianceStatusEnum}
@@ -27,16 +29,19 @@ import utils.SessionKeys
 import java.time.{LocalDate, LocalDateTime}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
-class ComplianceService @Inject()(connector: ComplianceConnector) {
+class ComplianceService @Inject()(connector: ComplianceConnector)(implicit val appConfig: AppConfig) extends FeatureSwitching {
 
   def getDESComplianceData(vrn: String)(implicit hc: HeaderCarrier, user: User[_],
                                         ec: ExecutionContext): Future[Option[ComplianceData]] = {
     (user.session.get(SessionKeys.latestLSPCreationDate), user.session.get(SessionKeys.pointsThreshold)) match {
       case (Some(lspCreationDateAsString), Some(pointsThresholdAsString)) => {
-        val lspCreationDate: LocalDateTime = LocalDateTime.parse(lspCreationDateAsString)
-        val fromDateTime = lspCreationDate.minusYears(2)
-        val fromDate: LocalDate = fromDateTime.toLocalDate
+        val lspCreationDate: LocalDate = {
+          Try(LocalDate.parse(lspCreationDateAsString))
+            .getOrElse(LocalDateTime.parse(lspCreationDateAsString).toLocalDate)
+        }
+        val fromDate = lspCreationDate.minusYears(2)
         val filingFrequency: FilingFrequencyEnum.Value = getFilingFrequency(pointsThresholdAsString)
         val toDate: LocalDate = getToDateFromFilingFrequency(lspCreationDate, filingFrequency)
         connector.getComplianceDataFromDES(vrn, fromDate, toDate).map {
@@ -67,12 +72,12 @@ class ComplianceService @Inject()(connector: ComplianceConnector) {
     }
   }
 
-  private def getToDateFromFilingFrequency(lspCreationDate: LocalDateTime, filingFrequency: FilingFrequencyEnum.Value): LocalDate = {
+  private def getToDateFromFilingFrequency(lspCreationDate: LocalDate, filingFrequency: FilingFrequencyEnum.Value): LocalDate = {
     (filingFrequency match {
       case FilingFrequencyEnum.annually => lspCreationDate.plusYears(2)
       case FilingFrequencyEnum.quarterly => lspCreationDate.plusYears(1)
       case FilingFrequencyEnum.monthly => lspCreationDate.plusMonths(6)
-    }).toLocalDate
+    })
   }
 
   private def getFilingFrequency(pointsThreshold: String): FilingFrequencyEnum.Value = {

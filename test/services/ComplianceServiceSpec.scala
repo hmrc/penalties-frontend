@@ -55,6 +55,21 @@ class ComplianceServiceSpec extends SpecBase {
       result.get shouldBe expectedResult
     }
 
+    s"return a successful response and pass the result back to the controller (when given a local date for latest LSP creation date)" in new Setup {
+      when(mockComplianceConnector.getComplianceDataFromDES(any(), any(), any())(any())).thenReturn(Future.successful(sampleCompliancePayload))
+      val result: Option[ComplianceData] = await(service.getDESComplianceData(vrn)(HeaderCarrier(), User("123456789")(fakeRequest.withSession(
+        SessionKeys.latestLSPCreationDate -> "2020-01-01",
+        SessionKeys.pointsThreshold -> "5"
+      )), implicitly))
+      val expectedResult = ComplianceData(
+        sampleCompliancePayload,
+        amountOfSubmissionsRequiredFor24MthsHistory = Some(17),
+        filingFrequency = FilingFrequencyEnum.monthly
+      )
+      result.isDefined shouldBe true
+      result.get shouldBe expectedResult
+    }
+
     "return None when the session keys are not present" in new Setup {
       val result: Option[ComplianceData] = await(service.getDESComplianceData(vrn)(HeaderCarrier(), User("123456789")(fakeRequest), implicitly))
       result shouldBe None

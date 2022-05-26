@@ -25,17 +25,12 @@ import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.reason.PaymentPenaltyReasonEnum
 import models.submission.{Submission, SubmissionStatusEnum}
 import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
-import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum}
-import models.v3.lpp.{LatePaymentPenalty => NewLatePaymentPenalty}
+import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty => NewLatePaymentPenalty}
+import models.v3.lsp._
 import models.v3.{GetPenaltyDetails, Totalisations}
-import models.v3.lsp.{LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum, LSPSummary, LateSubmission, LateSubmissionPenalty, TaxReturnStatusEnum}
-import org.mockito.Matchers._
 import org.mockito.Mockito._
-import play.api.test.Helpers._
-import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 
 import java.time.{LocalDate, LocalDateTime}
-import scala.concurrent.Future
 
 class PenaltiesServiceSpec extends SpecBase {
 

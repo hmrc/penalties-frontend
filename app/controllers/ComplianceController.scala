@@ -27,9 +27,10 @@ import utils.{CurrencyFormatter, SessionKeys}
 import viewmodels.{CompliancePageHelper, TimelineHelper}
 import views.html.ComplianceView
 
-import java.time.LocalDateTime
+import java.time.{LocalDate, LocalDateTime}
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
+import scala.util.Try
 
 class ComplianceController @Inject()(view: ComplianceView,
                                      complianceService: ComplianceService,
@@ -48,7 +49,10 @@ class ComplianceController @Inject()(view: ComplianceView,
         errorHandler.showInternalServerError
       })(
         complianceData => {
-          val latestLSPCreationDate = LocalDateTime.parse(request.session.get(SessionKeys.latestLSPCreationDate).get).toLocalDate
+          val latestLSPCreationDate: LocalDate = {
+            Try(LocalDate.parse(request.session.get(SessionKeys.latestLSPCreationDate).get))
+              .getOrElse(LocalDateTime.parse(request.session.get(SessionKeys.latestLSPCreationDate).get).toLocalDate)
+          }
           val missingReturns = pageHelper.findMissingReturns(complianceData.compliancePayload, latestLSPCreationDate)
           val missingReturnsBulletContent = pageHelper.getUnsubmittedReturnContentFromSequence(missingReturns)
           val timelineContent = timelineHelper.getTimelineContent(complianceData, latestLSPCreationDate)
