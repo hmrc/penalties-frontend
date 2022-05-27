@@ -52,7 +52,7 @@ agent.lsp.pointSummary.penaltyPoints.overview.warningText = Bydd eich cleient yn
 lsp.onThreshold.p1 = Rydych wedi cyrraedd y trothwy ar gyfer cosbau ariannol.
 agent.lsp.onThreshold.p1 = Mae eich cleient wedi cyrraedd y trothwy ar gyfer cosbau ariannol.
 lsp.onThreshold.p2 = Hyd nes eich bod yn diweddaru eich cyfrif:
-agent.lsp.onThreshold.p2 = Hyd nes ei fod yn diweddaru'i gyfrif:
+agent.lsp.onThreshold.p2 = Hyd nes ei fod yn diweddaru’i gyfrif:
 lsp.onThreshold.p2.b1 = ni fydd eich pwyntiau cosb yn cael eu dileu
 agent.lsp.onThreshold.p2.b1 = ni fydd ei bwyntiau cosb yn cael eu dileu
 lsp.onThreshold.p2.b2 = bydd angen i chi dalu cosb o £{0} bob tro rydych yn cyflwyno Ffurflen TAW yn hwyr
@@ -85,15 +85,25 @@ summaryCard.key3 = Cyflwynwyd Ffurflen TAW
 summaryCard.key3.defaultValue = Ffurflen TAW heb ddod i law hyd yn hyn
 summaryCard.key4 = Y pwynt ar fin cael ei ddileu
 summaryCard.appeal.status = Statws yr apêl
+summaryCard.appeal.readMessage = Darllen neges ynghylch y canlyniad
+summaryCard.appeal.readMessageReinstated = Darllen neges
+
+# to be deleted in cleanup
+# -------------------------------------------
 summaryCard.appeal.Under_Review = Dan adolygiad gan CThEM
 summaryCard.appeal.Under_Tribunal_Review = Dan adolygiad gan y tribiwnlys treth
 summaryCard.appeal.Accepted_By_Tribunal = Mae’r apêl wedi’i dderbyn gan dribiwnlys treth
 summaryCard.appeal.Rejected = Mae’r apêl wedi’i wrthod
 summaryCard.appeal.Accepted = Mae’r apêl wedi’i dderbyn
-summaryCard.appeal.readMessage = Darllen neges ynghylch y canlyniad
 summaryCard.appeal.Reinstated = Mae canlyniad yr apêl wedi newid
-summaryCard.appeal.readMessageReinstated = Darllen neges
 summaryCard.appeal.Tribunal_Rejected = Mae’r apêl wedi’i gwrthod gan y tribiwnlys treth
+# -------------------------------------------
+summaryCard.appeal.A.01 = Dan adolygiad gan CThEM
+summaryCard.appeal.A.02 = Dan adolygiad gan y tribiwnlys treth
+summaryCard.appeal.B.02 = Mae’r apêl wedi’i dderbyn gan dribiwnlys treth
+summaryCard.appeal.B.01 = Mae’r apêl wedi’i dderbyn
+summaryCard.appeal.C.01 = Mae canlyniad yr apêl wedi newid
+summaryCard.appeal.C.02 = Mae’r apêl wedi’i gwrthod gan y tribiwnlys treth
 summaryCard.footerLinkText = Apelio yn erbyn pwynt cosb {0}
 summaryCard.footerLinkTextNoPointNumber = Apelio yn erbyn y gosb hon
 summaryCard.adjustedPoint.cannotAppeal = Ni allwch apelio yn erbyn y pwynt hwn

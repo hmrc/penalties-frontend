@@ -276,8 +276,8 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     }
   }
 
-  private def returnAppealStatusMessageBasedOnPenalty(penaltyPoint: Option[LSPDetails], lpp: Option[LPPDetails])(implicit messages: Messages,
-                                                                                                                 user: User[_]): Html = {
+  private def returnAppealStatusMessageBasedOnPenalty(penaltyPoint: Option[LSPDetails], lpp: Option[LPPDetails])
+                                                     (implicit messages: Messages, user: User[_]): Html = {
     val seqAppealInformation = if (penaltyPoint.isDefined) penaltyPoint.get.appealInformation else lpp.get.appealInformation
     val appealStatus = seqAppealInformation.get.headOption.flatMap(_.appealStatus).get
     val appealLevel = seqAppealInformation.get.headOption.flatMap(_.appealLevel).get

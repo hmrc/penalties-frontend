@@ -86,7 +86,6 @@ summaryCard.key3.defaultValue = Return not yet received
 summaryCard.key4 = Point due to expire
 summaryCard.appeal.status = Appeal status
 summaryCard.appeal.readMessage = Read outcome message
-summaryCard.appeal.Reinstated = Appeal outcome changed
 summaryCard.appeal.readMessageReinstated = Read message
 
 # to be deleted in cleanup
@@ -96,6 +95,7 @@ summaryCard.appeal.Under_Tribunal_Review = Under review by the tax tribunal
 summaryCard.appeal.Accepted_By_Tribunal = Appeal accepted by tax tribunal
 summaryCard.appeal.Rejected = Appeal rejected
 summaryCard.appeal.Accepted = Appeal accepted
+summaryCard.appeal.Reinstated = Appeal outcome changed
 summaryCard.appeal.Tribunal_Rejected = Appeal rejected by tax tribunal
 # -------------------------------------------
 summaryCard.appeal.A.01 = Under review by HMRC
