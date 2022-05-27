@@ -36,17 +36,16 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   def populateLateSubmissionPenaltyCard(penalties: Seq[LSPDetails],
                                         threshold: Int, activePoints: Int)
                                        (implicit messages: Messages, user: User[_]): Seq[LateSubmissionPenaltySummaryCard] = {
-
     val thresholdMet: Boolean = pointsThresholdMet(threshold, activePoints)
     val filteredActivePenalties: Seq[LSPDetails] = penalties.filter(_.penaltyStatus != LSPPenaltyStatusEnum.Inactive).reverse
     val indexedActivePoints = filteredActivePenalties.zipWithIndex
     penalties.map { penalty =>
       val newPenalty = findAndReindexPointIfIsActive(indexedActivePoints, penalty)
       (newPenalty.penaltyCategory, newPenalty.appealInformation.map(_.head.appealStatus)) match {
-        case (LSPPenaltyCategoryEnum.Point, _) if newPenalty.FAPIndicator.contains("X") & newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Active => addedPointCard(newPenalty, thresholdMet)//Added FAP
-        case (LSPPenaltyCategoryEnum.Point, _) if newPenalty.FAPIndicator.contains("X") & newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive => removedPointCard(newPenalty)//Added FAP
-        case (LSPPenaltyCategoryEnum.Point, _) if newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive & newPenalty.expiryReason.isDefined => removedPointCard(newPenalty)//Removed FAP
-        case (LSPPenaltyCategoryEnum.Point, Some(AppealStatusEnum.Upheld)) if newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive => removedPointCard(newPenalty)//Removed FAP
+        case (LSPPenaltyCategoryEnum.Point, _) if newPenalty.FAPIndicator.contains("X") && newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Active => addedPointCard(newPenalty, thresholdMet)//Added FAP
+        case (LSPPenaltyCategoryEnum.Point, _) if newPenalty.FAPIndicator.contains("X") && newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive => removedPointCard(newPenalty)//Removed FAP
+        case (LSPPenaltyCategoryEnum.Point, _) if newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive && newPenalty.expiryReason.isDefined => removedPointCard(newPenalty)//Removed point
+        case (LSPPenaltyCategoryEnum.Point, Some(AppealStatusEnum.Upheld)) if newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive => removedPointCard(newPenalty)//Appealed point
         case (LSPPenaltyCategoryEnum.Point, _) => pointSummaryCard(newPenalty, thresholdMet)// normal points
         case (LSPPenaltyCategoryEnum.Threshold, _) => financialSummaryCard(newPenalty, threshold)//normal threshold
         case (LSPPenaltyCategoryEnum.Charge, _) => financialSummaryCard(newPenalty, threshold)
@@ -80,7 +79,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
                                   isAnAdjustedPoint: Boolean = false)(implicit messages: Messages): LateSubmissionPenaltySummaryCard = {
     val isReturnSubmitted = penalty.lateSubmissions.map(penaltyPeriod =>
       PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head)
-      .fold(false)(_.taxReturnStatus.equals(TaxReturnStatusEnum.Open))
+      .fold(false)(_.taxReturnStatus.equals(TaxReturnStatusEnum.Fulfilled))
     val appealStatus = penalty.appealInformation.flatMap(_.headOption.flatMap(_.appealStatus))
     val appealLevel = penalty.appealInformation.flatMap(_.headOption.flatMap(_.appealLevel))
     LateSubmissionPenaltySummaryCard(
@@ -140,7 +139,6 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     )
     val appealStatus = penalty.appealInformation.flatMap(_.headOption.flatMap(_.appealStatus))
     val appealLevel = penalty.appealInformation.flatMap(_.headOption.flatMap(_.appealLevel))
-
     LateSubmissionPenaltySummaryCard(
       if (appealStatus.isDefined) {
         base :+ summaryListRow(
@@ -278,7 +276,8 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     }
   }
 
-  private def returnAppealStatusMessageBasedOnPenalty(penaltyPoint: Option[LSPDetails], lpp: Option[LPPDetails])(implicit messages: Messages, user: User[_]): Html = {
+  private def returnAppealStatusMessageBasedOnPenalty(penaltyPoint: Option[LSPDetails], lpp: Option[LPPDetails])(implicit messages: Messages,
+                                                                                                                 user: User[_]): Html = {
     val seqAppealInformation = if (penaltyPoint.isDefined) penaltyPoint.get.appealInformation else lpp.get.appealInformation
     val appealStatus = seqAppealInformation.get.headOption.flatMap(_.appealStatus).get
     val appealLevel = seqAppealInformation.get.headOption.flatMap(_.appealLevel).get
@@ -375,7 +374,6 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   private def getLPPPenaltyReasonKey(reason: String): String = "LPPPenaltyReasonKey" // TODO: New API call for its implementation
 
   def tagStatus(penalty: Option[LSPDetails], lpp: Option[LPPDetails])(implicit messages: Messages): Tag = {
-
     if (penalty.isDefined) {
       val periodSubmissionStatus = penalty.get.lateSubmissions.map(penaltyPeriod => PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head.taxReturnStatus)
       val penaltyPointStatus = penalty.get.penaltyStatus
