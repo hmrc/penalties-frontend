@@ -1220,7 +1220,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
           taxPeriodEndDate = Some(LocalDate.now),
           taxPeriodDueDate = Some(LocalDate.now),
           returnReceiptDate = Some(LocalDate.now),
-          taxReturnStatus = TaxReturnStatusEnum.Open
+          taxReturnStatus = TaxReturnStatusEnum.Fulfilled
         )
       )))
   )

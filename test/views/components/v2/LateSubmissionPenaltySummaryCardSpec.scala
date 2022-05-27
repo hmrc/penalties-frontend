@@ -46,7 +46,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
 
   val summaryCardModelWithAppealedPointAccepted: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.populateLateSubmissionPenaltyCard(
     Seq(LSPDetailsAsModelNoFAP.copy(
-      penaltyStatus = LSPPenaltyStatusEnum.Inactive,appealInformation = Some(Seq(
+      penaltyStatus = LSPPenaltyStatusEnum.Inactive,
+      appealInformation = Some(Seq(
       AppealInformationType(
         appealStatus = Some(AppealStatusEnum.Upheld),
         appealLevel = Some(AppealLevelEnum.HMRC)
