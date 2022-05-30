@@ -72,7 +72,7 @@
                     if(summaryCard.isAddedPoint) {
                             {messages("summaryCard.adjustedPoint.cannotAppeal")}
                     } else if(summaryCard.isFinancialPoint && !summaryCard.isAdjustedPoint) {
-                            {if(!summaryCard.isReturnSubmitted) {
+                            {if(!summaryCard.isReturnSubmitted || summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
                                     <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}>
                                     {messages("summaryCard.appealCheck")}
                                     </a>
@@ -82,7 +82,7 @@
                                     </a>
                             }}
                     } else if(!summaryCard.isAdjustedPoint) {
-                        if(!summaryCard.isReturnSubmitted) {
+                        if(!summaryCard.isReturnSubmitted || summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
                                 <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}>
                                 {messages("summaryCard.appealCheck")}
                                 </a>

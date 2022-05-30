@@ -18,6 +18,7 @@ package views.components.v2
 
 import base.{BaseSelectors, SpecBase}
 import models.User
+import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import models.v3.lpp.{LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum}
 import org.jsoup.nodes.Document
 import viewmodels.v2.LatePaymentPenaltySummaryCard
@@ -37,6 +38,19 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
     Some(Seq(sampleLPPDetailsVATPaid.copy(principalChargeBillingFrom = LocalDate.of(2020, 1, 1),
       principalChargeBillingTo = LocalDate.of(2020, 2, 1),
       principalChargeDueDate = LocalDate.of(2020, 2, 1))))
+  ).get.head
+
+  val summaryCardModelWithUnappealableStatus: LatePaymentPenaltySummaryCard = summaryCardHelperv2.populateLatePaymentPenaltyCard(
+    Some(Seq(sampleLPPDetailsVATPaid.copy(
+      principalChargeBillingFrom = LocalDate.of(2020, 1, 1),
+      principalChargeBillingTo = LocalDate.of(2020, 2, 1),
+      principalChargeDueDate = LocalDate.of(2020, 2, 1),
+      appealInformation = Some(Seq(
+        AppealInformationType(
+          appealStatus = Some(AppealStatusEnum.Unappealable),
+          appealLevel = Some(AppealLevelEnum.HMRC)
+        )
+      )))))
   ).get.head
 
   val summaryCardModelWithTenths: LatePaymentPenaltySummaryCard = summaryCardHelperv2.populateLatePaymentPenaltyCard(
@@ -67,6 +81,23 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       principalChargeDueDate = LocalDate.of(2020, 3, 7))
     ))
   ).get.head
+
+  val summaryCardModelForAdditionalPenaltyUnappealable: LatePaymentPenaltySummaryCard = summaryCardHelperv2.populateLatePaymentPenaltyCard(
+    Some(Seq(sampleLPPDetailsVATPaid.copy(penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
+      penaltyAmountPaid = Some(123.45),
+      penaltyAmountOutstanding = Some(0.00),
+      penaltyStatus = LPPPenaltyStatusEnum.Posted,
+      penaltyChargeDueDate = LocalDate.of(2020, 2, 1),
+      principalChargeBillingFrom = LocalDate.of(2020, 1, 1),
+      principalChargeBillingTo = LocalDate.of(2020, 2, 1),
+      principalChargeDueDate = LocalDate.of(2020, 3, 7),
+      appealInformation = Some(Seq(AppealInformationType(
+        appealStatus = Some(AppealStatusEnum.Unappealable),
+        appealLevel = Some(AppealLevelEnum.HMRC)
+      )))
+    )))
+  ).get.head
+
 
   val summaryCardModelForAdditionalPenaltyPaidWithTenths: LatePaymentPenaltySummaryCard = summaryCardHelperv2.populateLatePaymentPenaltyCard(
     Some(Seq(sampleLPPDetailsVATPaid.copy(penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
@@ -190,6 +221,12 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       "display the appeal link" in {
         doc.select(".app-summary-card__footer a").get(1).text shouldBe "Appeal this penalty"
       }
+
+      "display the check if you can appeal link if the penalty is unappealable" in {
+        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithUnappealableStatus))
+        doc.select(".app-summary-card__footer a").get(1).text shouldBe "Check if you can appeal"
+        doc.select("dt").eq(4).isEmpty shouldBe true
+      }
     }
 
     "given an additional penalty" should {
@@ -235,6 +272,12 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
 
       "display the appeal link" in {
         docWithAdditionalPenalty.select(".app-summary-card__footer a").get(1).text shouldBe "Appeal this penalty"
+      }
+
+      "display the check if you can appeal link if the penalty is unappealable" in {
+        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelForAdditionalPenaltyUnappealable))
+        doc.select(".app-summary-card__footer a").get(1).text shouldBe "Check if you can appeal"
+        doc.select("dt").eq(4).isEmpty shouldBe true
       }
     }
 

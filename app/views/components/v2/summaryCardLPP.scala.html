@@ -17,6 +17,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import viewmodels.v2.LatePaymentPenaltySummaryCard
 @import utils.CurrencyFormatter
+@import models.v3.appealInfo.AppealStatusEnum
 
 @this(
     govukSummaryList : GovukSummaryList,
@@ -40,20 +41,26 @@
 }
 
 @appealContent = {
-        @if(!summaryCard.isVatPaid) {
-        <a class="govuk-link" href=@{controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyChargeReference.get, true, true, summaryCard.isAdditionalPenalty).url}>
-            @messages("summaryCard.appealCheck")
-        </a>
-        } else {
-        <a class="govuk-link" href=@{controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyChargeReference.get, true, false, summaryCard.isAdditionalPenalty).url}>
-            @messages("summaryCard.footerLinkTextNoPointNumber")
-        </a>
-        }
+  @if(summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
+    <a class="govuk-link" href=@{controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyChargeReference.get, true, true, summaryCard.isAdditionalPenalty).url}>
+    @messages("summaryCard.appealCheck")
+    </a>
+  } else {
+    @if(!summaryCard.isVatPaid) {
+      <a class="govuk-link" href=@{controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyChargeReference.get, true, true, summaryCard.isAdditionalPenalty).url}>
+      @messages("summaryCard.appealCheck")
+      </a>
+    } else {
+      <a class="govuk-link" href=@{controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyChargeReference.get, true, false, summaryCard.isAdditionalPenalty).url}>
+      @messages("summaryCard.footerLinkTextNoPointNumber")
+      </a>
+    }
+  }
 }
 
 
 @footerDisplayLogic = {
-    @if(summaryCard.appealStatus.isEmpty) {
+    @if(summaryCard.appealStatus.isEmpty || summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
         <div class="app-summary-card__actions">
             <ul class="app-summary-card__actions-list">
                 <li class="app-summary-card__actions-list-item">
