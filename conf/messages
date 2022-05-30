@@ -109,6 +109,7 @@ summaryCard.footerLinkTextNoPointNumber = Appeal this penalty
 summaryCard.adjustedPoint.cannotAppeal = You cannot appeal this point
 summaryCard.addedOnKey = Added on
 summaryCard.removedReason = Reason
+summaryCard.removalReason.FAP = Change to VAT return deadlines
 summaryCard.infoOnAdjustmentPointsLinkText = Find out more about adjustment points
 summaryCard.appealCheck = Check if you can appeal
 summaryCard.lpp.key2 = Penalty type

@@ -192,6 +192,37 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     )
     ), quarterlyThreshold, 1).head
 
+  val summaryCardModelWithRemovedPointFilingFrequencyChange: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.populateLateSubmissionPenaltyCard(
+    Seq(LSPDetails(
+      penaltyNumber = "12345678901234",
+      penaltyOrder = "01",
+      penaltyCategory = LSPPenaltyCategoryEnum.Point,
+      penaltyStatus = LSPPenaltyStatusEnum.Inactive,
+      FAPIndicator = Some("X"),
+      penaltyCreationDate = LocalDate.parse("2069-10-30"),
+      penaltyExpiryDate = LocalDate.parse("2069-10-30"),
+      expiryReason = Some("FAP"),
+      communicationsDate = LocalDate.parse("2069-10-30"),
+      lateSubmissions = Some(Seq(
+        LateSubmission(
+          taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
+          taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
+          taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
+          returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
+          taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+        )
+      )),
+      appealInformation = Some(Seq(
+        AppealInformationType(
+          appealStatus = Some(AppealStatusEnum.Unappealable),
+          appealLevel = Some(AppealLevelEnum.HMRC)
+        )
+      )),
+      chargeAmount = None,
+      chargeOutstandingAmount = None,
+      chargeDueDate = None
+    )), quarterlyThreshold, 1).head
+
   val summaryCardModelWithThresholdPenalty: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.financialSummaryCard(
     LSPDetails(
       penaltyNumber = "12345678901238",
@@ -622,6 +653,14 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
 
       "not display any footer text" in {
         doc.select("footer li").hasText shouldBe false
+      }
+    }
+
+    "given a removed point (FAP)" should {
+      "display the reason why the point was removed (if reason was FAP)" in {
+        implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithRemovedPointFilingFrequencyChange))
+        doc.select("dt").get(1).text() shouldBe "Reason"
+        doc.select("dd").get(1).text() shouldBe "Change to VAT return deadlines"
       }
     }
 
