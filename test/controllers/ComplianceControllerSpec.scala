@@ -70,6 +70,15 @@ class ComplianceControllerSpec extends SpecBase {
         status(result) shouldBe OK
       }
 
+      "return OK - calling the service to retrieve compliance data to the view (when given a local date for latest LSP creation date)" in
+        new Setup(AuthTestModels.successfulAuthResult) {
+        val result: Future[Result] = Controller.onPageLoad()(fakeRequest.withSession(
+          SessionKeys.latestLSPCreationDate -> "2020-01-01T13:00:00.000",
+          SessionKeys.pointsThreshold -> "4"
+        ))
+        status(result) shouldBe OK
+      }
+
       "return ISE - if the service returns None" in new Setup(AuthTestModels.successfulAuthResult) {
         when(mockComplianceService.getDESComplianceData(any())(any(), any(), any())).thenReturn(Future.successful(None))
         val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
