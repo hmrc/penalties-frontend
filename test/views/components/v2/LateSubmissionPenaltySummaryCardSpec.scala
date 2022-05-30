@@ -44,15 +44,24 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     )))),
     quarterlyThreshold, 1).head
 
+  val summaryCardModelUnappealable: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.populateLateSubmissionPenaltyCard(
+    Seq(LSPDetailsAsModelNoFAP.copy(appealInformation = Some(Seq(
+      AppealInformationType(
+        appealStatus = Some(AppealStatusEnum.Unappealable),
+        appealLevel = Some(AppealLevelEnum.HMRC)
+      )
+    )))),
+    quarterlyThreshold, 1).head
+
   val summaryCardModelWithAppealedPointAccepted: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.populateLateSubmissionPenaltyCard(
     Seq(LSPDetailsAsModelNoFAP.copy(
       penaltyStatus = LSPPenaltyStatusEnum.Inactive,
       appealInformation = Some(Seq(
-      AppealInformationType(
-        appealStatus = Some(AppealStatusEnum.Upheld),
-        appealLevel = Some(AppealLevelEnum.HMRC)
-      )
-    )))),
+        AppealInformationType(
+          appealStatus = Some(AppealStatusEnum.Upheld),
+          appealLevel = Some(AppealLevelEnum.HMRC)
+        )
+      )))),
     quarterlyThreshold, 1).head
 
   val summaryCardModelWithAppealedPointRejected: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.populateLateSubmissionPenaltyCard(
@@ -185,14 +194,14 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
 
   val summaryCardModelWithThresholdPenalty: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.financialSummaryCard(
     LSPDetails(
-      penaltyNumber = "12345678901234",
+      penaltyNumber = "12345678901238",
       penaltyOrder = "01",
       penaltyCategory = LSPPenaltyCategoryEnum.Threshold,
       penaltyStatus = LSPPenaltyStatusEnum.Active,
-      FAPIndicator = Some("X"),
+      FAPIndicator = None,
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
-      expiryReason = Some("FAP"),
+      expiryReason = None,
       communicationsDate = LocalDate.parse("2069-10-30"),
       lateSubmissions = Some(Seq(
         LateSubmission(
@@ -212,8 +221,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       chargeAmount = Some(200),
       chargeOutstandingAmount = Some(200),
       chargeDueDate = Some(LocalDate.parse("2069-10-30"))
-    )
-    , quarterlyThreshold)
+    ), quarterlyThreshold)
 
   val summaryCardModelWithFinancialPointBelowThresholdAndAppealInProgress: LateSubmissionPenaltySummaryCard =
     summaryCardHelperv2.financialSummaryCard(LSPDetails(
@@ -656,7 +664,6 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         docWithFinancialLSP.select(".app-summary-card__footer a").get(0).text shouldBe "Appeal this penalty"
       }
 
-
       "shows the appeal information when the point is being appealed - i.e. under review" in {
         docWithFinancialPointAppealUnderReview.select("dt").get(3).text() shouldBe "Appeal status"
         docWithFinancialPointAppealUnderReview.select("dd").get(3).text() shouldBe "Under review by HMRC"
@@ -717,6 +724,11 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         docWithFinancialPointAppealTribunalAcceptedAgent.select("dt").get(3).text() shouldBe "Appeal status"
         docWithFinancialPointAppealTribunalAcceptedAgent.select("dd").get(3).text() shouldBe "Appeal accepted by tax tribunal"
       }
+
+      "display check if you can appeal link if the penalty is unappealable" in {
+        docWithThresholdPenalty.select(".app-summary-card__footer a").text() shouldBe "Check if you can appeal"
+        docWithThresholdPenalty.select("dt").eq(3).isEmpty shouldBe true
+      }
     }
 
     "given an appealed point" should {
@@ -768,9 +780,9 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       }
     }
 
-    "given multiple penalty period in LSP" should{
+    "given multiple penalty period in LSP" should {
       implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithMultiplePenaltyPeriodLSP))
-      "show message VAT return submitted earlier in multiple penalty period" in{
+      "show message VAT return submitted earlier in multiple penalty period" in {
         doc.select("p.govuk-body").text() shouldBe "The VAT Return due on 24 May 2021 was also submitted late. HMRC only applies 1 penalty for late submission in each month."
       }
     }
@@ -786,6 +798,14 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialLSP))
       "no message relating to multiple penalties in the same period should appear" in {
         doc.select("p.govuk-body").text().isEmpty shouldBe true
+      }
+    }
+
+    "given a non-appealed point and it is unappealable" should {
+      implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelUnappealable))
+      "not show the appeal status row and have the check if you can appeal link" in {
+        doc.select(".app-summary-card__footer a").text() shouldBe "Check if you can appeal"
+        doc.select("dt").eq(4).isEmpty shouldBe true
       }
     }
   }

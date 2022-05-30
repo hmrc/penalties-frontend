@@ -35,6 +35,7 @@ import views.html.v2.{IndexView => IndexViewv2}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+
 class IndexControllerSpec extends SpecBase {
 
   val page: IndexView = injector.instanceOf[IndexView]
@@ -57,10 +58,10 @@ class IndexControllerSpec extends SpecBase {
   }
 
   object Controller extends IndexController(
-    page,page2,
-    mockPenaltiesService,mockPenaltiesService2,
-    cardHelper,cardHelper2,
-    indexPageHelper,indexPageHelper2
+    page, page2,
+    mockPenaltiesService, mockPenaltiesService2,
+    cardHelper, cardHelper2,
+    indexPageHelper, indexPageHelper2
   )(implicitly, implicitly, authPredicate, stubMessagesControllerComponents())
 
   "IndexController" should {
@@ -79,15 +80,15 @@ class IndexControllerSpec extends SpecBase {
 
         "return OK and correct view - adding the latest LSP creation date and threshold into the session in case of compliance view" in
           new Setup(AuthTestModels.successfulAuthResult) {
-          when(mockPenaltiesService.getLatestLSPCreationDate(any()))
-            .thenReturn(Some(sampleDate))
-          val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
-          status(result) shouldBe OK
-          await(result).session.get(SessionKeys.latestLSPCreationDate).isDefined shouldBe true
-          await(result).session.get(SessionKeys.latestLSPCreationDate).get shouldBe sampleDate.toString
-          await(result).session.get(SessionKeys.pointsThreshold).isDefined shouldBe true
-          await(result).session.get(SessionKeys.pointsThreshold).get shouldBe "4"
-        }
+            when(mockPenaltiesService.getLatestLSPCreationDate(any()))
+              .thenReturn(Some(sampleDate))
+            val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
+            status(result) shouldBe OK
+            await(result).session.get(SessionKeys.latestLSPCreationDate).isDefined shouldBe true
+            await(result).session.get(SessionKeys.latestLSPCreationDate).get shouldBe sampleDate.toString
+            await(result).session.get(SessionKeys.pointsThreshold).isDefined shouldBe true
+            await(result).session.get(SessionKeys.pointsThreshold).get shouldBe "4"
+          }
       }
 
       "the user is unauthorised" when {
