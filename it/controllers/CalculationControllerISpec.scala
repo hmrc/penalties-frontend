@@ -17,7 +17,7 @@
 package controllers
 
 import config.AppConfig
-import config.featureSwitches.{CallAPI1812ETMP, FeatureSwitching}
+import config.featureSwitches.{CallAPI1812ETMP, FeatureSwitching, UseAPI1812Model}
 import models.ETMPPayload
 import models.communication.{Communication, CommunicationTypeEnum}
 import models.financial.Financial
@@ -39,8 +39,8 @@ import stubs.AuthStub
 import stubs.PenaltiesStub.{returnLSPDataStub, returnPenaltyDetailsStub}
 import testUtils.IntegrationSpecCommonBase
 import uk.gov.hmrc.http.SessionKeys.authToken
-
 import java.time.{LocalDate, LocalDateTime}
+
 import scala.concurrent.Future
 
 class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureSwitching {
@@ -604,7 +604,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
   )
 
   class Setup(isFSEnabled: Boolean = false) {
-    if (isFSEnabled) enableFeatureSwitch(CallAPI1812ETMP) else disableFeatureSwitch(CallAPI1812ETMP)
+    if (isFSEnabled) enableFeatureSwitch(UseAPI1812Model) else disableFeatureSwitch(UseAPI1812Model)
   }
 
   "GET /calculation when it is not an additional penalty and  penalty is shown with estimate" should {
