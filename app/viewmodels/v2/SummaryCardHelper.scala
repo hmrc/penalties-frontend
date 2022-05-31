@@ -240,7 +240,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
         )
       )),
       penalty.expiryReason.fold[Option[SummaryListRow]](None)(expiryReason => {
-        Some(summaryListRow(messages("summaryCard.removedReason"), if(expiryReason == "FAP") Html(messages(s"summaryCard.removalReason.FAP")) else Html(expiryReason)))
+        Some(summaryListRow(messages("summaryCard.removedReason"), if(expiryReason.equalsIgnoreCase("FAP")) Html(messages(s"summaryCard.removalReason.FAP")) else Html(expiryReason)))
       })
     ).collect {
       case Some(x) => x
