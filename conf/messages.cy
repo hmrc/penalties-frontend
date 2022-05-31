@@ -109,6 +109,7 @@ summaryCard.footerLinkTextNoPointNumber = Apelio yn erbyn y gosb hon
 summaryCard.adjustedPoint.cannotAppeal = Ni allwch apelio yn erbyn y pwynt hwn
 summaryCard.addedOnKey = Ychwanegwyd ar
 summaryCard.removedReason = Rheswm
+summaryCard.removalReason.FAP = Change to VAT return deadlines
 summaryCard.infoOnAdjustmentPointsLinkText = Dod o hyd i ragor o wybodaeth am bwyntiau addasu
 summaryCard.appealCheck = Gwirio a allwch apelio
 summaryCard.lpp.key2 = Penalty type
