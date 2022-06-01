@@ -34,7 +34,7 @@ import utils.Logger.logger
 import utils.{CurrencyFormatter, EnrolmentKeys}
 import viewmodels.CalculationPageHelper
 import models.point.PointStatusEnum
-import config.featureSwitches.{CallAPI1812ETMP, FeatureSwitching, UseAPI1812Model}
+import config.featureSwitches.{FeatureSwitching, UseAPI1812Model}
 import models.User
 
 import scala.concurrent.{ExecutionContext, Future}
