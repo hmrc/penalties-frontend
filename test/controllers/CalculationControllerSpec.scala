@@ -17,7 +17,7 @@
 package controllers
 
 import base.SpecBase
-import config.featureSwitches.{CallAPI1812ETMP, FeatureSwitching}
+import config.featureSwitches.{FeatureSwitching, UseAPI1812Model}
 import models.ETMPPayload
 import models.financial.Financial
 import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum}
@@ -39,8 +39,8 @@ import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import viewmodels.CalculationPageHelper
 import views.html.{CalculationAdditionalView, CalculationLPPView}
-
 import java.time.LocalDate
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -287,7 +287,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
       Matchers.any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
       Matchers.any(), Matchers.any())
     ).thenReturn(authResult)
-    if (isFSEnabled) enableFeatureSwitch(CallAPI1812ETMP) else disableFeatureSwitch(CallAPI1812ETMP)
+    if (isFSEnabled) enableFeatureSwitch(UseAPI1812Model) else disableFeatureSwitch(UseAPI1812Model)
     reset(mockPenaltiesService)
   }
 

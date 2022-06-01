@@ -18,12 +18,12 @@ package controllers
 
 import java.time.{LocalDate, LocalDateTime}
 import java.time.temporal.ChronoUnit
+
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
 import models.penalty.LatePaymentPenalty
 import models.v3.lpp.{LPPDetails, LPPPenaltyStatusEnum}
 import views.html.{CalculationAdditionalView, CalculationLPPView}
-
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -34,7 +34,7 @@ import utils.Logger.logger
 import utils.{CurrencyFormatter, EnrolmentKeys}
 import viewmodels.CalculationPageHelper
 import models.point.PointStatusEnum
-import config.featureSwitches.{CallAPI1812ETMP, FeatureSwitching}
+import config.featureSwitches.{FeatureSwitching, UseAPI1812Model}
 import models.User
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -51,7 +51,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
   extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter with FeatureSwitching {
 
   def onPageLoad(penaltyId: String, isAdditional: Boolean): Action[AnyContent] = authorise.async { implicit request =>
-    if (isEnabled(CallAPI1812ETMP)) {
+    if (isEnabled(UseAPI1812Model)) {
       logger.debug(s"[CalculationController][onPageLoad] - Making call to API1812 endpoint")
       getPenaltyDetailsFromNewAPI(penaltyId, isAdditional)
     } else {
