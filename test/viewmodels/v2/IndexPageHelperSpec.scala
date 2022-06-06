@@ -1089,7 +1089,7 @@ class IndexPageHelperSpec extends SpecBase {
                 principalChargeReference = "12345678",
                 penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
                 penaltyChargeCreationDate = LocalDate.of(2022, 1, 1),
-                penaltyStatus = LPPPenaltyStatusEnum.Posted,
+                penaltyStatus = LPPPenaltyStatusEnum.Accruing,
                 penaltyAmountPaid = Some(0),
                 penaltyAmountOutstanding = Some(144.21),
                 LPP1LRDays = None,

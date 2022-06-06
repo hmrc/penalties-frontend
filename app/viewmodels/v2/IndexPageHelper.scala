@@ -20,6 +20,7 @@ import models.User
 import models.penalty.LatePaymentPenalty
 import models.v3.GetPenaltyDetails
 import models.v3.appealInfo.AppealStatusEnum.Upheld
+import models.v3.lpp.LPPPenaltyStatusEnum
 import models.v3.lsp.{LSPPenaltyStatusEnum, TaxReturnStatusEnum}
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
@@ -128,9 +129,9 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       val isAnyLPPNotPaid: Boolean = penaltyDetails.latePaymentPenalty.exists(_.details.exists(
         penalty => {
           penalty.appealInformation.map(_.exists(_.appealStatus.contains(Upheld))).isEmpty &&
-            penalty.penaltyAmountOutstanding.getOrElse(BigDecimal(0)) > BigDecimal(0)
+            penalty.penaltyStatus == LPPPenaltyStatusEnum.Accruing
         }))
-      if (penaltyDetails.latePaymentPenalty.map(_.details).isDefined && isAnyLPPNotPaid) {
+      if (isAnyLPPNotPaid) {
         html(
           p(content = html(stringAsHtml(getMessage("lpp.penaltiesSummary.unpaid")))),
           p(link(link = "#", messages("lpp.penaltiesSummary.howLppCalculated.link", messages("site.opensInNewTab"))))
