@@ -55,6 +55,7 @@ class IndexControllerSpec extends SpecBase {
       Matchers.any(), Matchers.any())
     ).thenReturn(authResult)
     when(mockPenaltiesService.getETMPDataFromEnrolmentKey(any())(any(), any())).thenReturn(Future.successful(sampleEmptyLspData))
+    when(mockPenaltiesService2.getPenaltyDataFromEnrolmentKey(any())(any(), any())).thenReturn(Future.successful(samplePenaltyDetailsModel))
   }
 
   object Controller extends IndexController(
@@ -73,6 +74,8 @@ class IndexControllerSpec extends SpecBase {
         "return OK and correct view" in new Setup(AuthTestModels.successfulAuthResult) {
           when(mockPenaltiesService.getLatestLSPCreationDate(any()))
             .thenReturn(None)
+          when(mockPenaltiesService2.getLatestLSPCreationDate(any()))
+            .thenReturn(None)
           val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
           status(result) shouldBe OK
           await(result).session.get(SessionKeys.latestLSPCreationDate).isEmpty shouldBe true
@@ -82,6 +85,8 @@ class IndexControllerSpec extends SpecBase {
           new Setup(AuthTestModels.successfulAuthResult) {
             when(mockPenaltiesService.getLatestLSPCreationDate(any()))
               .thenReturn(Some(sampleDate))
+            when(mockPenaltiesService2.getLatestLSPCreationDate(any()))
+              .thenReturn(Some(sampleDateV2))
             val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
             status(result) shouldBe OK
             await(result).session.get(SessionKeys.latestLSPCreationDate).isDefined shouldBe true

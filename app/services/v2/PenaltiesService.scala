@@ -86,7 +86,7 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
   }
 
   def getLatestLSPCreationDate(payload: Seq[LSPDetails]): Option[LocalDate] = {
-    filterOutAppealedPenalties(payload).filter(_.chargeAmount.isDefined)
+    filterOutAppealedPenalties(payload)
       .sortWith((firstLSP, secondLSP) => firstLSP.penaltyCreationDate.isAfter(secondLSP.penaltyCreationDate))
       .map(_.penaltyCreationDate)
       .headOption
