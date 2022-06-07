@@ -72,8 +72,6 @@ class IndexControllerSpec extends SpecBase {
       "the user is authorised" must {
 
         "return OK and correct view" in new Setup(AuthTestModels.successfulAuthResult) {
-          when(mockPenaltiesService.getLatestLSPCreationDate(any()))
-            .thenReturn(None)
           when(mockPenaltiesService2.getLatestLSPCreationDate(any()))
             .thenReturn(None)
           val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
@@ -83,14 +81,12 @@ class IndexControllerSpec extends SpecBase {
 
         "return OK and correct view - adding the latest LSP creation date and threshold into the session in case of compliance view" in
           new Setup(AuthTestModels.successfulAuthResult) {
-            when(mockPenaltiesService.getLatestLSPCreationDate(any()))
-              .thenReturn(Some(sampleDate))
             when(mockPenaltiesService2.getLatestLSPCreationDate(any()))
               .thenReturn(Some(sampleDateV2))
             val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
             status(result) shouldBe OK
             await(result).session.get(SessionKeys.latestLSPCreationDate).isDefined shouldBe true
-            await(result).session.get(SessionKeys.latestLSPCreationDate).get shouldBe sampleDate.toString
+            await(result).session.get(SessionKeys.latestLSPCreationDate).get shouldBe sampleDateV2.toString
             await(result).session.get(SessionKeys.pointsThreshold).isDefined shouldBe true
             await(result).session.get(SessionKeys.pointsThreshold).get shouldBe "4"
           }

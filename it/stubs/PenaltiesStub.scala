@@ -38,6 +38,7 @@ object PenaltiesStub {
   val sampleDate1: LocalDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
 
   val getPenaltyDetailsUrl: String = s"/penalties/etmp/penalties/$vrn\\?newApiModel=true"
+  val getPenaltyDetailsUrlAgent: String = s"/penalties/etmp/penalties/$vrn\\?arn=123456789&newApiModel=true"
 
   val sampleLspData: ETMPPayload = ETMPPayload(
     pointsTotal = 0,
@@ -200,6 +201,15 @@ object PenaltiesStub {
   )
 
   def returnPenaltyDetailsStub(penaltyDetailsToReturn: GetPenaltyDetails): StubMapping = stubFor(get(urlMatching(getPenaltyDetailsUrl))
+    .willReturn(
+      aResponse()
+        .withStatus(Status.OK)
+        .withBody(
+          Json.toJson(penaltyDetailsToReturn).toString
+        )
+    ))
+
+  def returnPenaltyDetailsStubAgent(penaltyDetailsToReturn: GetPenaltyDetails): StubMapping = stubFor(get(urlMatching(getPenaltyDetailsUrlAgent))
     .willReturn(
       aResponse()
         .withStatus(Status.OK)
