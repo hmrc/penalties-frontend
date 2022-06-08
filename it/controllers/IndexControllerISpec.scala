@@ -147,9 +147,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     totalisations = None,
     lateSubmissionPenalty = Some(LateSubmissionPenalty(
       summary = LSPSummary(
-        activePenaltyPoints = 0,
+        activePenaltyPoints = 1,
         regimeThreshold = 4,
-        inactivePenaltyPoints = 2,
+        inactivePenaltyPoints = 1,
         penaltyChargeAmount = 0
       ),
       details = Seq(
@@ -1047,9 +1047,11 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#late-submission-penalties p.govuk-body").get(0).text shouldBe "No active late submission penalty points."
-      parsedBody.select("header h3").get(1).text shouldBe "Penalty point"
-      parsedBody.select("main strong").get(1).text shouldBe "removed"
+      parsedBody.select("#late-submission-penalties p.govuk-body").get(0).text shouldBe "You have 1 penalty point. This is because:"
+      parsedBody.select("#late-submission-penalties ul li").get(0).text shouldBe "you have submitted 2 VAT Returns late"
+      parsedBody.select("#late-submission-penalties ul li").get(1).text shouldBe "we removed 1 point and sent you a letter explaining why"
+      parsedBody.select("header h3").get(0).text shouldBe "Penalty point"
+      parsedBody.select("main strong").get(0).text shouldBe "removed"
       val summaryCardBody = parsedBody.select(".app-summary-card__body")
       summaryCardBody.select("dt").get(0).text shouldBe "VAT period"
       summaryCardBody.select("dd").get(0).text() shouldBe "1 January 2021 to 1 February 2021"
@@ -1232,9 +1234,11 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         val request = controller.onPageLoad()(fakeAgentRequest)
         await(request).header.status shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
-        parsedBody.select("#late-submission-penalties p.govuk-body").get(0).text shouldBe "No active late submission penalty points."
-        parsedBody.select("header h3").get(1).text shouldBe "Penalty point"
-        parsedBody.select("main strong").get(1).text shouldBe "removed"
+        parsedBody.select("#late-submission-penalties p.govuk-body").get(0).text shouldBe "Your client has 1 penalty point. This is because:"
+        parsedBody.select("#late-submission-penalties ul li").get(0).text shouldBe "they have submitted 2 VAT Returns late"
+        parsedBody.select("#late-submission-penalties ul li").get(1).text shouldBe "we removed 1 point and sent them a letter explaining why"
+        parsedBody.select("header h3").get(0).text shouldBe "Penalty point"
+        parsedBody.select("main strong").get(0).text shouldBe "removed"
         val summaryCardBody = parsedBody.select(".app-summary-card__body")
         summaryCardBody.select("dt").get(0).text shouldBe "VAT period"
         summaryCardBody.select("dd").get(0).text() shouldBe "1 January 2021 to 1 February 2021"
