@@ -250,8 +250,8 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     lateSubmissionPenalty = Some(
       LateSubmissionPenalty(
         summary = LSPSummary(
-          activePenaltyPoints = 10,
-          inactivePenaltyPoints = 12,
+          activePenaltyPoints = 1,
+          inactivePenaltyPoints = 0,
           regimeThreshold = 4,
           penaltyChargeAmount = 684.25
         ),

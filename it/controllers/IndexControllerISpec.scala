@@ -827,7 +827,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           penaltyOrder = "01",
           penaltyCategory = LSPPenaltyCategoryEnum.Point,
           penaltyStatus = LSPPenaltyStatusEnum.Active,
-          FAPIndicator = Some("X"),
+          FAPIndicator = None,
           penaltyCreationDate = sampleDate1V2,
           penaltyExpiryDate = sampleDate1V2.plusMonths(1).plusYears(2),
           expiryReason = None,
@@ -848,7 +848,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           penaltyOrder = "01",
           penaltyCategory = LSPPenaltyCategoryEnum.Point,
           penaltyStatus = LSPPenaltyStatusEnum.Active,
-          FAPIndicator = Some("X"),
+          FAPIndicator = None,
           penaltyCreationDate = sampleDate1V2,
           penaltyExpiryDate = sampleDate1V2.plusMonths(1).plusYears(2),
           expiryReason = None,
@@ -968,14 +968,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
   )
 
   val getPenaltiesDetailsPayloadWithMultiplePenaltyPeriodInLSP: GetPenaltyDetails = GetPenaltyDetails(
-    totalisations = Some(Totalisations(
-      LSPTotalValue = Some(200),
-      penalisedPrincipalTotal = Some(2000),
-      LPPPostedTotal = Some(165.25),
-      LPPEstimatedTotal = Some(15.26),
-      LPIPostedTotal = Some(1968.2),
-      LPIEstimatedTotal = Some(7)
-    )),
+    totalisations = None,
     lateSubmissionPenalty = Some(
       LateSubmissionPenalty(
         summary = LSPSummary(
@@ -1151,7 +1144,6 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("dd").get(2).text shouldBe "7 March 2021"
       summaryCardBody.select("dt").get(3).text shouldBe "Date paid"
       summaryCardBody.select("dd").get(3).text shouldBe "8 March 2021"
-      println(parsedBody.select("#late-payment-penalties footer li"))
       parsedBody.select("#late-payment-penalties footer li").text().contains("Appeal this penalty") shouldBe true
     }
 
@@ -1281,7 +1273,6 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         val request = controller.onPageLoad()(fakeAgentRequest)
         await(request).header.status shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
-        println("what-is-owed.."+parsedBody.select("#what-is-owed > ul > li"))
         parsedBody.select("#what-is-owed > p").first.text shouldBe "Your client owes:"
         parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£121.40 in late VAT"
         //parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "£93.10 in estimated VAT interest"
