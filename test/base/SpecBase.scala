@@ -85,6 +85,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   val sampleDate: LocalDateTime = LocalDateTime.of(2021, 4, 23, 18, 25, 43)
     .plus(511, ChronoUnit.MILLIS)
+  val sampleDateV2: LocalDate = LocalDate.of(2021, 4, 23)
   val sampleOldestDate: LocalDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
   val sampleOldestDatev2: LocalDate = LocalDate.of(2021, 1, 1)
 
@@ -249,9 +250,9 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     lateSubmissionPenalty = Some(
       LateSubmissionPenalty(
         summary = LSPSummary(
-          activePenaltyPoints = 10,
-          inactivePenaltyPoints = 12,
-          regimeThreshold = 10,
+          activePenaltyPoints = 1,
+          inactivePenaltyPoints = 0,
+          regimeThreshold = 4,
           penaltyChargeAmount = 684.25
         ),
         details = Seq(LSPDetails(
