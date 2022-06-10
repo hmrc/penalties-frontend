@@ -18,12 +18,17 @@ package services.v2
 
 import base.SpecBase
 import connectors.PenaltiesConnector
+import connectors.httpParsers.{BadRequest, InvalidJson, UnexpectedFailure}
 import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
-import models.v3.lsp.{LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum, LateSubmission, TaxReturnStatusEnum}
+import models.v3.lsp._
 import models.v3.{GetPenaltyDetails, Totalisations}
-import org.mockito.Mockito.{mock, reset}
+import org.mockito.Matchers.any
+import org.mockito.Mockito.{mock, reset, when}
+import play.api.http.Status._
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 
 import java.time.LocalDate
+import scala.concurrent.Future
 
 class PenaltiesServiceSpec extends SpecBase {
 
@@ -83,6 +88,69 @@ class PenaltiesServiceSpec extends SpecBase {
     val mockPenaltiesConnector: PenaltiesConnector = mock(classOf[PenaltiesConnector])
     val service: PenaltiesService = new PenaltiesService(mockPenaltiesConnector)
     reset(mockPenaltiesConnector)
+  }
+
+  "getPenaltyDataFromEnrolmentKey" when  {
+    s"$OK (Ok) is returned from the parser " should {
+      "return a Right with the correct model" in new Setup {
+        when(mockPenaltiesConnector.getPenaltyDetails(any(), any())(any(), any()))
+          .thenReturn(Future.successful(Right(penaltyDetailsWithNoVATDue)))
+
+        val result = await(service.getPenaltyDataFromEnrolmentKey("1234567890")(vatTraderUser, hc))
+        result.isRight shouldBe true
+        result shouldBe Right(penaltyDetailsWithNoVATDue)
+      }
+    }
+
+    s"$NO_CONTENT (No content) is returned from the parser" should {
+      "return an empty Right GetPenaltyDetails model" in new Setup {
+        when(mockPenaltiesConnector.getPenaltyDetails(any(), any())(any(), any()))
+          .thenReturn(Future.successful(Right(GetPenaltyDetails(None, None, None))))
+
+        val result = await(service.getPenaltyDataFromEnrolmentKey("1234567890")(vatTraderUser, hc))
+        result.isRight shouldBe true
+        result shouldBe Right(GetPenaltyDetails(None, None, None))
+      }
+
+      s"$BAD_REQUEST (Bad request) is returned from the parser because of invalid json" should {
+        "return a Left with status 400" in new Setup {
+          when(mockPenaltiesConnector.getPenaltyDetails(any(), any())(any(), any()))
+            .thenReturn(Future.successful(Left(InvalidJson)))
+
+          val result = await(service.getPenaltyDataFromEnrolmentKey("1234567890")(vatTraderUser, hc))
+          result.isLeft shouldBe true
+          result shouldBe Left(InvalidJson)
+          result.left.get.status shouldBe 400
+          result.left.get.body shouldBe "Invalid JSON received"
+        }
+      }
+
+      s"$BAD_REQUEST (Bad request) is returned from the parser" should {
+        "return a Left with status 400" in new Setup {
+          when(mockPenaltiesConnector.getPenaltyDetails(any(), any())(any(), any()))
+            .thenReturn(Future.successful(Left(BadRequest)))
+
+          val result = await(service.getPenaltyDataFromEnrolmentKey("1234567890")(vatTraderUser, hc))
+          result.isLeft shouldBe true
+          result shouldBe Left(BadRequest)
+          result.left.get.status shouldBe 400
+          result.left.get.body shouldBe "Incorrect JSON body sent"
+        }
+      }
+
+      s"an unexpected error is returned from the parser" should {
+        "return a Left with the status and message" in new Setup {
+          when(mockPenaltiesConnector.getPenaltyDetails(any(), any())(any(), any()))
+            .thenReturn(Future.successful(Left(UnexpectedFailure(INTERNAL_SERVER_ERROR, s"Unexpected response, status $INTERNAL_SERVER_ERROR returned"))))
+
+          val result = await(service.getPenaltyDataFromEnrolmentKey("1234567890")(vatTraderUser, hc))
+          result.isLeft shouldBe true
+          result shouldBe Left(UnexpectedFailure(INTERNAL_SERVER_ERROR, s"Unexpected response, status $INTERNAL_SERVER_ERROR returned"))
+          result.left.get.status shouldBe 500
+          result.left.get.body shouldBe "Unexpected response, status 500 returned"
+        }
+      }
+    }
   }
 
   "findOverdueVATFromPayload" should {

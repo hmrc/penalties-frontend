@@ -17,6 +17,7 @@
 package services.v2
 
 import connectors.PenaltiesConnector
+import connectors.httpParsers.PenaltiesConnectorParser.GetPenaltyDetailsResponse
 import models.User
 import models.v3.GetPenaltyDetails
 import models.v3.appealInfo.AppealStatusEnum
@@ -29,7 +30,7 @@ import scala.concurrent.Future
 
 class PenaltiesService @Inject()(connector: PenaltiesConnector) {
 
-  def getPenaltyDataFromEnrolmentKey(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[GetPenaltyDetails] =
+  def getPenaltyDataFromEnrolmentKey(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[GetPenaltyDetailsResponse] =
     connector.getPenaltyDetails(enrolmentKey)
 
   private def findEstimatedVatInterestFromPayload(payload: GetPenaltyDetails): BigDecimal = {

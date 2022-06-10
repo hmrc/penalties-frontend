@@ -17,6 +17,7 @@
 package connectors
 
 
+import connectors.httpParsers.{InvalidJson, UnexpectedFailure}
 import models.User
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.test.FakeRequest
@@ -62,19 +63,21 @@ class PenaltiesConnectorISpec extends IntegrationSpecCommonBase {
   "getPenaltyDetails" should {
     "generate a valid PenaltyDetails model when valid JSON is returned" in {
       val result = connector.getPenaltyDetails(vrn)(vatTraderUser, implicitly).futureValue
-      result shouldBe samplePenaltyDetails
+      result shouldBe Right(samplePenaltyDetails)
     }
 
-    "throw an exception when invalid JSON is returned" in {
+    s"return $BAD_REQUEST (Bad Request) when invalid JSON is returned" in {
       wireMockServer.editStubMapping(invalidPenaltyDetailsStub())
-      val result = intercept[Exception](await(connector.getPenaltyDetails(vrn)(vatTraderUser, implicitly)))
-      result.getMessage should include("invalid json")
+      val result = connector.getPenaltyDetails(vrn)(vatTraderUser, implicitly).futureValue
+      result.isLeft shouldBe true
+      result shouldBe Left(InvalidJson)
     }
 
     "throw an exception when an upstream error is returned from penalties" in {
       wireMockServer.editStubMapping(penaltyDetailsUpstreamErrorStub())
-      val result = intercept[Exception](await(connector.getPenaltyDetails(vrn)(vatTraderUser, implicitly)))
-      result.getMessage should include("Upstream Error")
+      val result = connector.getPenaltyDetails(vrn)(vatTraderUser, implicitly).futureValue
+      result.isLeft shouldBe true
+      result shouldBe Left(UnexpectedFailure(INTERNAL_SERVER_ERROR, s"Unexpected response, status $INTERNAL_SERVER_ERROR returned"))
     }
   }
 }

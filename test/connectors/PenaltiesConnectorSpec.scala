@@ -18,10 +18,13 @@ package connectors
 
 import base.SpecBase
 import config.AppConfig
+import connectors.httpParsers.PenaltiesConnectorParser.GetPenaltyDetailsResponse
+import connectors.httpParsers.{ErrorResponse, UnexpectedFailure}
 import models.ETMPPayload
 import models.v3.GetPenaltyDetails
 import org.mockito.Matchers._
 import org.mockito.Mockito._
+import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 
@@ -68,20 +71,17 @@ class PenaltiesConnectorSpec extends SpecBase {
   }
 
   "getPenaltyDetails" should {
-    "return a successful response when the call succeeds and the body can be parsed" in new Setup{
-      when(mockHttpClient.GET[GetPenaltyDetails](any(),
-        any(),
-        any())
-        (any(),
-          any(),
-          any())).thenReturn(Future.successful(samplePenaltyDetailsModel))
+    "return a successful response when the call succeeds and the body can be parsed" in new Setup {
+      when(mockHttpClient.GET[GetPenaltyDetailsResponse](any(), any(), any())
+        (any(), any(), any())).thenReturn(Future.successful(Right(samplePenaltyDetailsModel)))
 
       val result = await(connector.getPenaltyDetails(vrn)(vatTraderUser, HeaderCarrier()))
-      result shouldBe samplePenaltyDetailsModel
+      result.isRight shouldBe true
+      result shouldBe Right(samplePenaltyDetailsModel)
     }
 
     "return an error when an error occurs upstream" in new Setup{
-      when(mockHttpClient.GET[GetPenaltyDetails](any(),
+      when(mockHttpClient.GET[GetPenaltyDetailsResponse](any(),
         any(),
         any())
         (any(),

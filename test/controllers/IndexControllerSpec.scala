@@ -62,7 +62,7 @@ class IndexControllerSpec extends SpecBase {
     mockPenaltiesService, mockPenaltiesService2,
     cardHelper, cardHelper2,
     indexPageHelper, indexPageHelper2
-  )(implicitly, implicitly, authPredicate, stubMessagesControllerComponents())
+  )(implicitly, implicitly, authPredicate, errorHandler, stubMessagesControllerComponents())
 
   "IndexController" should {
 
