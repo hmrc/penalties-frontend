@@ -334,7 +334,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       appealStatus,
       appealLevel,
       isVatPaid = isVatPaid,
-      isAdditionalPenalty = lpp.penaltyCategory == LPPPenaltyCategoryEnum.LPP2
+      penaltyCategory = lpp.penaltyCategory
     )
   }
 
