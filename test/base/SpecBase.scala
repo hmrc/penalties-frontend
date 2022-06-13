@@ -43,6 +43,7 @@ import play.twirl.api.Html
 import services.AuthService
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.govukfrontend.views.Aliases.Tag
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.SessionKeys
 import viewmodels.{LateSubmissionPenaltySummaryCard, SummaryCardHelper, TimelineHelper}
 import viewmodels.v2.{SummaryCardHelper => SummaryCardHelperv2}
@@ -54,6 +55,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   lazy val injector: Injector = app.injector
 

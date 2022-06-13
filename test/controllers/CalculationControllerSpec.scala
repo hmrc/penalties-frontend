@@ -123,6 +123,8 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
     ))
   )
 
+  val emptyPenaltyDetailsPayload: GetPenaltyDetails = GetPenaltyDetails(None, None, None)
+
   val penaltyDetailsPayload: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = Some(Totalisations(
       LSPTotalValue = Some(BigDecimal(200)),
@@ -329,16 +331,23 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
 
       "show the page when the penalty ID specified matches model API1812 payload" in new Setup(AuthTestModels.successfulAuthResult, isFSEnabled = true) {
         when(mockPenaltiesServiceV2.getPenaltyDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(penaltyDetailsPayload))
+          .thenReturn(Future.successful(Right(penaltyDetailsPayload)))
 
         val result: Future[Result] = Controller.onPageLoad("12345678901234", isAdditional = false)(fakeRequest)
         status(result) shouldBe OK
+      }
+      "show an ISE when the penalty ID specified returns an empty payload" in new Setup(AuthTestModels.successfulAuthResult, isFSEnabled = true) {
+        when(mockPenaltiesServiceV2.getPenaltyDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
+          .thenReturn(Future.successful(Right(emptyPenaltyDetailsPayload)))
+
+        val result: Future[Result] = Controller.onPageLoad("12345678901234", isAdditional = false)(fakeRequest)
+        status(result) shouldBe INTERNAL_SERVER_ERROR
       }
 
       "show an ISE when the calculation row with model API1812 can not be rendered - because the payload is invalid (missing both 15/30 day payment amounts)" in
         new Setup(AuthTestModels.successfulAuthResult, isFSEnabled = true) {
           when(mockPenaltiesServiceV2.getPenaltyDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
-            .thenReturn(Future.successful(penaltyDetailsPayloadNo15Or30DayAmount))
+            .thenReturn(Future.successful(Right(penaltyDetailsPayloadNo15Or30DayAmount)))
 
           val result: Future[Result] = Controller.onPageLoad("12345678901234", isAdditional = false)(fakeRequest)
           status(result) shouldBe INTERNAL_SERVER_ERROR
@@ -347,7 +356,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
       "show an ISE when the user specifies a penalty ID not found with model API1812 enabled" in
         new Setup(AuthTestModels.successfulAuthResult, isFSEnabled = true) {
           when(mockPenaltiesServiceV2.getPenaltyDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
-            .thenReturn(Future.successful(penaltyDetailsPayload))
+            .thenReturn(Future.successful(Right(penaltyDetailsPayload)))
 
           val result: Future[Result] = Controller.onPageLoad("1234", isAdditional = false)(fakeRequest)
           status(result) shouldBe INTERNAL_SERVER_ERROR

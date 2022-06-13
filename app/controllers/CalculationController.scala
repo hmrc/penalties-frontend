@@ -18,12 +18,12 @@ package controllers
 
 import java.time.{LocalDate, LocalDateTime}
 import java.time.temporal.ChronoUnit
-
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
 import models.penalty.LatePaymentPenalty
 import models.v3.lpp.{LPPDetails, LPPPenaltyStatusEnum}
 import views.html.{CalculationAdditionalView, CalculationLPPView}
+
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -36,6 +36,7 @@ import viewmodels.CalculationPageHelper
 import models.point.PointStatusEnum
 import config.featureSwitches.{FeatureSwitching, UseAPI1812Model}
 import models.User
+
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -107,47 +108,54 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
 
   def getPenaltyDetailsFromNewAPI(penaltyId: String, isAdditional: Boolean)(implicit request: User[_]): Future[Result] = {
     penaltiesServiceV2.getPenaltyDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn)).map {
-      payload => {
-        val penalty: Option[LPPDetails] = payload.latePaymentPenalty.flatMap(_.details.find(_.principalChargeReference == penaltyId))
-        if (penalty.isEmpty) {
-          logger.error("[CalculationController][onPageLoad] - Tried to render calculation page with new model but could not find penalty specified.")
+      _.fold(
+        errors => {
+          logger.error(s"[OtherReasonController][getPenaltyDetailsFromNewAPI] - Received status ${errors.status} and body ${errors.body}, rendering ISE.")
           errorHandler.showInternalServerError
-        } else {
-          val startDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeBillingFrom)
-          val endDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeBillingTo)
-          val amountReceived = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.penaltyAmountPaid.get)
-          val isPenaltyEstimate = penalty.get.penaltyStatus.equals(LPPPenaltyStatusEnum.Accruing)
-          val amountLeftToPay = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.penaltyAmountOutstanding.get)
-          val penaltyAmount = penalty.get.penaltyAmountOutstanding.get + penalty.get.penaltyAmountPaid.get
-          val parsedPenaltyAmount = CurrencyFormatter.parseBigDecimalToFriendlyValue(penaltyAmount)
-          logger.debug(s"[CalculationController][onPageLoad] - found penalty: ${penalty.get}")
-          if (!isAdditional) {
-            val penaltyEstimateDate = penalty.get.principalChargeDueDate.plusDays(30)
-            val calculationRow = calculationPageHelper.getCalculationRowForLPPForNewAPI(penalty.get)
-            calculationRow.fold({
-              //TODO: log a PD
-              logger.error("[CalculationController][onPageLoad] - " +
-                "Calculation row returned None - this could be because the user did not have a defined amount after 15 and/or 30 days of due date")
-              errorHandler.showInternalServerError
-            })(
-              rowSeq => {
-                val isTwoCalculations: Boolean = rowSeq.size == 2
-                val warningPenaltyAmount = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.penaltyAmountOutstanding.get * 2)
-                val warningDate = calculationPageHelper.getDateAsDayMonthYear(penaltyEstimateDate)
-                Ok(viewLPP(amountReceived, parsedPenaltyAmount,
-                  amountLeftToPay, rowSeq,
-                  isTwoCalculations, isPenaltyEstimate,
-                  startDateOfPeriod, endDateOfPeriod,
-                  warningPenaltyAmount, warningDate))
-              })
+        },
+        payload => {
+          val penalty: Option[LPPDetails] = payload.latePaymentPenalty.flatMap(_.details.find(_.principalChargeReference == penaltyId))
+          if (penalty.isEmpty) {
+            logger.error("[CalculationController][onPageLoad] - Tried to render calculation page with new model but could not find penalty specified.")
+            errorHandler.showInternalServerError
           } else {
-            val additionalPenaltyRate = "4"
-            val daysSince31 = ChronoUnit.DAYS.between(penalty.get.principalChargeDueDate.plusDays(31), LocalDate.now())
-            val isEstimate = penalty.get.penaltyStatus.equals(LPPPenaltyStatusEnum.Accruing)
-            Ok(viewAdd(daysSince31, isEstimate, additionalPenaltyRate, startDateOfPeriod, endDateOfPeriod, parsedPenaltyAmount, amountReceived, amountLeftToPay))
+            val startDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeBillingFrom)
+            val endDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeBillingTo)
+            val amountReceived = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.penaltyAmountPaid.get)
+            val isPenaltyEstimate = penalty.get.penaltyStatus.equals(LPPPenaltyStatusEnum.Accruing)
+            val amountLeftToPay = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.penaltyAmountOutstanding.get)
+            val penaltyAmount = penalty.get.penaltyAmountOutstanding.get + penalty.get.penaltyAmountPaid.get
+            val parsedPenaltyAmount = CurrencyFormatter.parseBigDecimalToFriendlyValue(penaltyAmount)
+            logger.debug(s"[CalculationController][onPageLoad] - found penalty: ${penalty.get}")
+            if (!isAdditional) {
+              val penaltyEstimateDate = penalty.get.principalChargeDueDate.plusDays(30)
+              val calculationRow = calculationPageHelper.getCalculationRowForLPPForNewAPI(penalty.get)
+              calculationRow.fold({
+                //TODO: log a PD
+                logger.error("[CalculationController][onPageLoad] - " +
+                  "Calculation row returned None - this could be because the user did not have a defined amount after 15 and/or 30 days of due date")
+                errorHandler.showInternalServerError
+              })(
+                rowSeq => {
+                  val isTwoCalculations: Boolean = rowSeq.size == 2
+                  val warningPenaltyAmount = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.penaltyAmountOutstanding.get * 2)
+                  val warningDate = calculationPageHelper.getDateAsDayMonthYear(penaltyEstimateDate)
+                  Ok(viewLPP(amountReceived, parsedPenaltyAmount,
+                    amountLeftToPay, rowSeq,
+                    isTwoCalculations, isPenaltyEstimate,
+                    startDateOfPeriod, endDateOfPeriod,
+                    warningPenaltyAmount, warningDate))
+                })
+            } else {
+              val additionalPenaltyRate = "4"
+              val daysSince31 = ChronoUnit.DAYS.between(penalty.get.principalChargeDueDate.plusDays(31), LocalDate.now())
+              val isEstimate = penalty.get.penaltyStatus.equals(LPPPenaltyStatusEnum.Accruing)
+              Ok(viewAdd(daysSince31, isEstimate, additionalPenaltyRate, startDateOfPeriod, endDateOfPeriod, parsedPenaltyAmount, amountReceived, amountLeftToPay))
+            }
           }
         }
-      }
+      )
+
     }
   }
 }

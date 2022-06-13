@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.AppConfig
+import config.{AppConfig, ErrorHandler}
 import config.featureSwitches.{FeatureSwitching, UseAPI1812Model}
 import controllers.predicates.AuthPredicate
 import play.api.i18n.I18nSupport
@@ -24,7 +24,7 @@ import play.api.mvc._
 import services.PenaltiesService
 import services.v2.{PenaltiesService => PenaltiesServiceV2}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.Logger.logger.logger
+import utils.Logger.logger
 import utils.SessionKeys._
 import utils.{CurrencyFormatter, EnrolmentKeys}
 import viewmodels.{IndexPageHelper, SummaryCardHelper}
@@ -45,6 +45,7 @@ class IndexController @Inject()(view: IndexView,
                                 pageHelperv2: IndexPageHelperv2)(implicit ec: ExecutionContext,
                                                                  val appConfig: AppConfig,
                                                                  authorise: AuthPredicate,
+                                                                 errorHandler: ErrorHandler,
                                                                  controllerComponents: MessagesControllerComponents)
   extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter with FeatureSwitching {
 
@@ -80,36 +81,41 @@ class IndexController @Inject()(view: IndexView,
             .removingFromSession(allKeysExcludingAgentVRN: _*)
         }
       } else {
-      for {
-        penaltyData <- penaltiesServiceV2.getPenaltyDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))
-        contentToDisplayAboveCards = pageHelperv2.getContentBasedOnPointsFromModel(penaltyData)
-        contentLPPToDisplayAboveCards = pageHelperv2.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyData)
-        whatYouOweBreakdown = pageHelperv2.getWhatYouOweBreakdown(penaltyData)
-        lspSummaryCards = cardHelper2.populateLateSubmissionPenaltyCard(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty),
-          penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0),
-          penaltyData.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0))
-        lppSummaryCards = cardHelper2.populateLatePaymentPenaltyCard(penaltyData.latePaymentPenalty.map(_.details))
-        isAnyUnpaidLSPAndNotSubmittedReturn = penaltiesServiceV2.isAnyLSPUnpaidAndSubmissionIsDue(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
-        isAnyUnpaidLSP = penaltiesServiceV2.isAnyLSPUnpaid(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
-        latestLSPCreation = penaltiesServiceV2.getLatestLSPCreationDate(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
-      } yield {
-        lazy val result = Ok(view2(contentToDisplayAboveCards,
-          contentLPPToDisplayAboveCards,
-          lspSummaryCards,
-          lppSummaryCards,
-          currencyFormatAsNonHTMLString(penaltyData.totalisations.flatMap(_.LSPTotalValue).getOrElse(0)),
-          isAnyUnpaidLSP,
-          isAnyUnpaidLSPAndNotSubmittedReturn,
-          whatYouOweBreakdown))
-        if (latestLSPCreation.isDefined) {
-          result
-            .removingFromSession(allKeysExcludingAgentVRN: _*)
-            .addingToSession(latestLSPCreationDate -> latestLSPCreation.get.toString,
-              pointsThreshold -> penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0).toString)
-        } else {
-          result
-            .removingFromSession(allKeysExcludingAgentVRN: _*)
-        }
+      penaltiesServiceV2.getPenaltyDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn)).map {
+        _.fold(
+          errors => {
+            logger.error(s"[OtherReasonController][getPenaltyDetailsFromNewAPI] - Received error with status ${errors.status} and body ${errors.body} rendering ISE.")
+            errorHandler.showInternalServerError
+          }, penaltyData => {
+            val contentToDisplayAboveCards = pageHelperv2.getContentBasedOnPointsFromModel(penaltyData)
+            val contentLPPToDisplayAboveCards = pageHelperv2.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyData)
+            val whatYouOweBreakdown = pageHelperv2.getWhatYouOweBreakdown(penaltyData)
+            val lspSummaryCards = cardHelper2.populateLateSubmissionPenaltyCard(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty),
+              penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0),
+              penaltyData.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0))
+            val lppSummaryCards = cardHelper2.populateLatePaymentPenaltyCard(penaltyData.latePaymentPenalty.map(_.details))
+            val isAnyUnpaidLSPAndNotSubmittedReturn = penaltiesServiceV2.isAnyLSPUnpaidAndSubmissionIsDue(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
+            val isAnyUnpaidLSP = penaltiesServiceV2.isAnyLSPUnpaid(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
+            val latestLSPCreation = penaltiesServiceV2.getLatestLSPCreationDate(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
+            lazy val result = Ok(view2(contentToDisplayAboveCards,
+              contentLPPToDisplayAboveCards,
+              lspSummaryCards,
+              lppSummaryCards,
+              currencyFormatAsNonHTMLString(penaltyData.totalisations.flatMap(_.LSPTotalValue).getOrElse(0)),
+              isAnyUnpaidLSP,
+              isAnyUnpaidLSPAndNotSubmittedReturn,
+              whatYouOweBreakdown))
+            if (latestLSPCreation.isDefined) {
+              result
+                .removingFromSession(allKeysExcludingAgentVRN: _*)
+                .addingToSession(latestLSPCreationDate -> latestLSPCreation.get.toString,
+                  pointsThreshold -> penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0).toString)
+            } else {
+              result
+                .removingFromSession(allKeysExcludingAgentVRN: _*)
+            }
+          }
+        )
       }
     }
   }
