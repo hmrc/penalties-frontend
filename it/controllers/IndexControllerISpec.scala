@@ -1133,7 +1133,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#late-payment-penalties section header h3").get(0).text shouldBe "£123.45 additional penalty"
+      parsedBody.select("#late-payment-penalties section header h3").get(0).text shouldBe "£123.45 penalty"
       parsedBody.select("#late-payment-penalties section header strong").get(0).text shouldBe "paid"
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body").first()
       summaryCardBody.select("dt").get(0).text shouldBe "Penalty type"
