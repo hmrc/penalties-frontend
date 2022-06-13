@@ -329,12 +329,13 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       cardRows = rows,
       status = tagStatus(None, Some(lpp)),
       penaltyChargeReference = lpp.penaltyChargeReference,
+      principalChargeReference = lpp.principalChargeReference,
       isPenaltyPaid = isPaid,
       amountDue,
       appealStatus,
       appealLevel,
       isVatPaid = isVatPaid,
-      isAdditionalPenalty = lpp.penaltyCategory == LPPPenaltyCategoryEnum.LPP2
+      penaltyCategory = lpp.penaltyCategory
     )
   }
 

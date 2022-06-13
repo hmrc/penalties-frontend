@@ -328,12 +328,29 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
         val result: Future[Result] = Controller.onPageLoad("1234", isAdditional = false)(fakeRequest)
         status(result) shouldBe INTERNAL_SERVER_ERROR
       }
+    }
 
+    "the user is unauthorised" should {
+
+      "return 403 (FORBIDDEN) when user has no enrolments" in new Setup(AuthTestModels.failedAuthResultNoEnrolments) {
+        val result: Future[Result] = Controller.onPageLoad("1234", isAdditional = false)(fakeRequest)
+        status(result) shouldBe FORBIDDEN
+      }
+
+      "return 303 (SEE_OTHER) when user can not be authorised" in new Setup(AuthTestModels.failedAuthResultUnauthorised) {
+        val result: Future[Result] = Controller.onPageLoad("1234", isAdditional = false)(fakeRequest)
+        status(result) shouldBe SEE_OTHER
+      }
+    }
+  }
+
+  "onPageLoadForNewAPI" when {
+    "the user is authorised" should {
       "show the page when the penalty ID specified matches model API1812 payload" in new Setup(AuthTestModels.successfulAuthResult, isFSEnabled = true) {
         when(mockPenaltiesServiceV2.getPenaltyDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(Right(penaltyDetailsPayload)))
 
-        val result: Future[Result] = Controller.onPageLoad("12345678901234", isAdditional = false)(fakeRequest)
+        val result: Future[Result] = Controller.onPageLoadForNewAPI("12345678901234", "LPP1")(fakeRequest)
         status(result) shouldBe OK
       }
       "show an ISE when the penalty ID specified returns an empty payload" in new Setup(AuthTestModels.successfulAuthResult, isFSEnabled = true) {
@@ -349,7 +366,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
           when(mockPenaltiesServiceV2.getPenaltyDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
             .thenReturn(Future.successful(Right(penaltyDetailsPayloadNo15Or30DayAmount)))
 
-          val result: Future[Result] = Controller.onPageLoad("12345678901234", isAdditional = false)(fakeRequest)
+          val result: Future[Result] = Controller.onPageLoadForNewAPI("12345678901234", "LPP1")(fakeRequest)
           status(result) shouldBe INTERNAL_SERVER_ERROR
         }
 
@@ -358,20 +375,20 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
           when(mockPenaltiesServiceV2.getPenaltyDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
             .thenReturn(Future.successful(Right(penaltyDetailsPayload)))
 
-          val result: Future[Result] = Controller.onPageLoad("1234", isAdditional = false)(fakeRequest)
+          val result: Future[Result] = Controller.onPageLoadForNewAPI("1234", "LPP1")(fakeRequest)
           status(result) shouldBe INTERNAL_SERVER_ERROR
         }
     }
 
-    "the user is unauthorised" when {
+    "the user is unauthorised" should {
 
       "return 403 (FORBIDDEN) when user has no enrolments" in new Setup(AuthTestModels.failedAuthResultNoEnrolments) {
-        val result: Future[Result] = Controller.onPageLoad("1234", isAdditional = false)(fakeRequest)
+        val result: Future[Result] = Controller.onPageLoadForNewAPI("1234", "LPP1")(fakeRequest)
         status(result) shouldBe FORBIDDEN
       }
 
       "return 303 (SEE_OTHER) when user can not be authorised" in new Setup(AuthTestModels.failedAuthResultUnauthorised) {
-        val result: Future[Result] = Controller.onPageLoad("1234", isAdditional = false)(fakeRequest)
+        val result: Future[Result] = Controller.onPageLoadForNewAPI("1234", "LPP1")(fakeRequest)
         status(result) shouldBe SEE_OTHER
       }
     }

@@ -20,6 +20,7 @@ import assets.messages.IndexMessages._
 import base.SpecBase
 import models.User
 import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
+import models.v3.lpp.LPPPenaltyCategoryEnum.{LPP1, LPP2}
 import models.v3.lsp.{LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum}
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
@@ -66,10 +67,12 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       helper.summaryListRow(datePaid, Html(dateTimeToString(LocalDateTime.now)))
     ),
     Tag(content = Text("paid")),
-    Some("PEN1234567"),
+    penaltyChargeReference = Some("PEN1234567"),
+    principalChargeReference = "12345678",
     amountDue = 400.0,
     isPenaltyPaid = true,
-    isVatPaid = true
+    isVatPaid = true,
+    penaltyCategory = LPP1
   )
 
   def sampleLPPAdditionalSummaryCardPenaltyPaid(chargeType: String): LatePaymentPenaltySummaryCard = LatePaymentPenaltySummaryCard(
@@ -86,11 +89,12 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       helper.summaryListRow(datePaid, Html(dateTimeToString(LocalDateTime.now)))
     ),
     Tag(content = Text("paid")),
-    Some("123456789"),
+    penaltyChargeReference = Some("123456789"),
+    principalChargeReference = "12345678",
     isPenaltyPaid = true,
     amountDue = 123.45,
     isVatPaid = true,
-    isAdditionalPenalty = true
+    penaltyCategory = LPP2
   )
 
   val sampleLPPSummaryCardPenaltyUnpaidVAT: LatePaymentPenaltySummaryCard = sampleLPPSummaryCardPenaltyPaid("VAT").copy(isPenaltyPaid = false, isVatPaid = false,
@@ -395,10 +399,12 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
             helper.summaryListRow(datePaid, Html(dateTimeToString(LocalDateTime.now)))
           ),
           Tag(content = Text("£200 due"), classes = "penalty-due-tag"),
-          Some("PEN1234567"),
+          penaltyChargeReference = Some("PEN1234567"),
+          principalChargeReference = "123456789",
           amountDue = 400.0,
           isPenaltyPaid = false,
-          isVatPaid = true
+          isVatPaid = true,
+          penaltyCategory = LPP1
         )
         "return SummaryCards when given Late Payment penalty with penalty Reason VAT_NOT_PAID_WITHIN_15_DAYS" when {
           "populateLatePaymentPenaltyCard is called" ignore {
@@ -844,13 +850,13 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       result.appealStatus shouldBe Some(AppealStatusEnum.Rejected)
       result.appealLevel shouldBe Some(AppealLevelEnum.HMRC)
     }
-//TODO: implement Reinstated
+
+    //TODO: implement Reinstated
     "when given an appealed point (reinstated) - set the relevant fields" ignore {
       val result = helper.lppSummaryCard(sampleLatePaymentPenaltyUnpaidVATv2)
       result.appealStatus.isDefined shouldBe true
       result.appealStatus.get shouldBe "Reinstated"
     }
-
 
     "when given an appealed point (tribunal rejected) - set the relevant fields" in {
       val result = helper.lppSummaryCard(sampleLatePaymentPenaltyAppealedRejectedTribunalv2)
@@ -861,7 +867,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
     "when given an additional penalty - set the relevant fields" in {
       val result = helper.lppSummaryCard(sampleLatePaymentPenaltyAdditionalv2)
-      result.isAdditionalPenalty shouldBe true
+      result.penaltyCategory.equals(LPP2) shouldBe true
       result.cardRows.exists(_.key.content == Text("Charge due")) shouldBe true
     }
   }

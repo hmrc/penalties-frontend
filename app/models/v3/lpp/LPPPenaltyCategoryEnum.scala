@@ -23,6 +23,10 @@ object LPPPenaltyCategoryEnum extends Enumeration {
   val LPP1: LPPPenaltyCategoryEnum.Value = Value("LPP1")
   val LPP2: LPPPenaltyCategoryEnum.Value = Value("LPP2")
 
+  private val categories: Seq[LPPPenaltyCategoryEnum.Value] = Seq(LPP1, LPP2)
+
+  def find(name: String): Option[LPPPenaltyCategoryEnum.Value] = categories.find(_.toString == name)
+
   implicit val format: Format[LPPPenaltyCategoryEnum.Value] = new Format[LPPPenaltyCategoryEnum.Value] {
     override def writes(o: LPPPenaltyCategoryEnum.Value): JsValue = JsString(o.toString.toUpperCase)
 
