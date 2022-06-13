@@ -234,11 +234,11 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       implicit val docWithAdditionalPenaltyTenthsOfPence: Document = asDocument(summaryCardHtml.apply(summaryCardModelForAdditionalPenaltyPaidWithTenths))
 
       "display the penalty amount" in {
-        docWithAdditionalPenalty.select("h3").text() shouldBe "£123.45 additional penalty"
+        docWithAdditionalPenalty.select("h3").text() shouldBe "£123.45 penalty"
       }
 
       "display the penalty amount (with padded zero for whole tenths)" in {
-        docWithAdditionalPenaltyTenthsOfPence.select("h3").text() shouldBe "£123.40 additional penalty"
+        docWithAdditionalPenaltyTenthsOfPence.select("h3").text() shouldBe "£123.40 penalty"
       }
 
       "display the View calculation link" in {
