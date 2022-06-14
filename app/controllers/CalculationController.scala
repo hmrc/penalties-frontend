@@ -18,13 +18,15 @@ package controllers
 
 import java.time.{LocalDate, LocalDateTime}
 import java.time.temporal.ChronoUnit
-
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
 import models.User
 import models.penalty.LatePaymentPenalty
-import models.v3.lpp.{LPPDetails, LPPPenaltyStatusEnum}
+import models.point.PointStatusEnum
+import models.v3.lpp.LPPPenaltyCategoryEnum.LPP2
+import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum}
 import views.html.{CalculationAdditionalView, CalculationLPPView}
+
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -47,17 +49,17 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
                                                                                     errorHandler: ErrorHandler,
                                                                                     authorise: AuthPredicate,
                                                                                     controllerComponents: MessagesControllerComponents)
-  extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter with FeatureSwitching {
+  extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter {
 
   def onPageLoad(penaltyId: String, isAdditional: Boolean): Action[AnyContent] = authorise.async { implicit request =>
     logger.debug(s"[CalculationController][onPageLoad] - Making call to old endpoint")
     getOldPenaltyData(penaltyId, isAdditional)
   }
 
-  def onPageLoadForNewAPI(penaltyId: String, penaltyCategory: String): Action[AnyContent] = authorise.async { implicit request =>
+  def onPageLoadForNewAPI(principalChargeReference: String, penaltyCategory: String): Action[AnyContent] = authorise.async { implicit request =>
     logger.debug(s"[CalculationController][onPageLoadForNewAPI] - Making call to new endpoint")
     val penaltyCategoryEnum = LPPPenaltyCategoryEnum.find(penaltyCategory).get
-    getPenaltyDetailsFromNewAPI(penaltyId, penaltyCategoryEnum)
+    getPenaltyDetailsFromNewAPI(principalChargeReference, penaltyCategoryEnum)
   }
 
   def getOldPenaltyData(penaltyId: String, isAdditional: Boolean)(implicit request: User[_]): Future[Result] = {

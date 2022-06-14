@@ -357,7 +357,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
         when(mockPenaltiesServiceV2.getPenaltyDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(Right(emptyPenaltyDetailsPayload)))
 
-        val result: Future[Result] = Controller.onPageLoad("12345678901234", isAdditional = false)(fakeRequest)
+        val result: Future[Result] = Controller.onPageLoadForNewAPI("12345678901234", "LPP1")(fakeRequest)
         status(result) shouldBe INTERNAL_SERVER_ERROR
       }
 
