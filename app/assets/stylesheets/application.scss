@@ -4,3 +4,7 @@ $hmrc-assets-path: "/penalties/assets/lib/hmrc-frontend/hmrc/";
 @import "lib/govuk-frontend/govuk/all";
 @import "lib/hmrc-frontend/hmrc/all";
 @import "summary-card";
+
+.penalty-information-caption {
+  display: table-header-group;
+}

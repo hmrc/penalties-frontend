@@ -17,6 +17,7 @@
 package viewmodels.v2
 
 import models.v3.appealInfo.{AppealLevelEnum, AppealStatusEnum}
+import models.v3.lpp.LPPPenaltyCategoryEnum
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 
@@ -24,10 +25,11 @@ case class LatePaymentPenaltySummaryCard(
                                           cardRows: Seq[SummaryListRow],
                                           status: Tag,
                                           penaltyChargeReference: Option[String],
+                                          principalChargeReference: String,
                                           isPenaltyPaid: Boolean,
                                           amountDue: BigDecimal = 0,
                                           appealStatus: Option[AppealStatusEnum.Value] = None,
                                           appealLevel: Option[AppealLevelEnum.Value] = None,
                                           isVatPaid: Boolean = false,
-                                          isAdditionalPenalty: Boolean = false
+                                          penaltyCategory: LPPPenaltyCategoryEnum.Value
                                          )

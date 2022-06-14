@@ -17,6 +17,7 @@
 package models.v3.lpp
 
 import base.SpecBase
+import models.v3.lpp.LPPPenaltyCategoryEnum.{LPP1, LPP2}
 import play.api.libs.json.{JsString, Json}
 
 class LPPPenaltyCategoryEnumSpec extends SpecBase {
@@ -47,6 +48,25 @@ class LPPPenaltyCategoryEnumSpec extends SpecBase {
     "be writable to JSON for LPP2" in {
       val result = Json.toJson(LPPPenaltyCategoryEnum.LPP2)(LPPPenaltyCategoryEnum.format)
       result shouldBe JsString("LPP2")
+    }
+  }
+
+  "find" should {
+    s"return $Some when the name of the enum can be found for LPP1" in {
+      val result = LPPPenaltyCategoryEnum.find("LPP1")
+      result.isDefined shouldBe true
+      result.get shouldBe LPP1
+    }
+
+    s"return $Some when the name of the enum can be found for LPP2" in {
+      val result = LPPPenaltyCategoryEnum.find("LPP2")
+      result.isDefined shouldBe true
+      result.get shouldBe LPP2
+    }
+
+    s"return $None when the name specified does not match an enum" in {
+      val result = LPPPenaltyCategoryEnum.find("hmmmmm")
+      result.isEmpty shouldBe true
     }
   }
 }

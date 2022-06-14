@@ -20,8 +20,11 @@ import java.time.{LocalDate, LocalDateTime}
 import java.time.temporal.ChronoUnit
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
+import models.User
 import models.penalty.LatePaymentPenalty
-import models.v3.lpp.{LPPDetails, LPPPenaltyStatusEnum}
+import models.point.PointStatusEnum
+import models.v3.lpp.LPPPenaltyCategoryEnum.LPP2
+import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum}
 import views.html.{CalculationAdditionalView, CalculationLPPView}
 
 import javax.inject.Inject
@@ -33,10 +36,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
 import utils.{CurrencyFormatter, EnrolmentKeys}
 import viewmodels.CalculationPageHelper
-import models.point.PointStatusEnum
-import config.featureSwitches.{FeatureSwitching, UseAPI1812Model}
-import models.User
-
+import views.html.{CalculationAdditionalView, CalculationLPPView}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -49,16 +49,17 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
                                                                                     errorHandler: ErrorHandler,
                                                                                     authorise: AuthPredicate,
                                                                                     controllerComponents: MessagesControllerComponents)
-  extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter with FeatureSwitching {
+  extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter {
 
   def onPageLoad(penaltyId: String, isAdditional: Boolean): Action[AnyContent] = authorise.async { implicit request =>
-    if (isEnabled(UseAPI1812Model)) {
-      logger.debug(s"[CalculationController][onPageLoad] - Making call to API1812 endpoint")
-      getPenaltyDetailsFromNewAPI(penaltyId, isAdditional)
-    } else {
-      logger.debug(s"[CalculationController][onPageLoad] - Making call to old endpoint")
-      getOldPenaltyData(penaltyId, isAdditional)
-    }
+    logger.debug(s"[CalculationController][onPageLoad] - Making call to old endpoint")
+    getOldPenaltyData(penaltyId, isAdditional)
+  }
+
+  def onPageLoadForNewAPI(principalChargeReference: String, penaltyCategory: String): Action[AnyContent] = authorise.async { implicit request =>
+    logger.debug(s"[CalculationController][onPageLoadForNewAPI] - Making call to new endpoint")
+    val penaltyCategoryEnum = LPPPenaltyCategoryEnum.find(penaltyCategory).get
+    getPenaltyDetailsFromNewAPI(principalChargeReference, penaltyCategoryEnum)
   }
 
   def getOldPenaltyData(penaltyId: String, isAdditional: Boolean)(implicit request: User[_]): Future[Result] = {
@@ -106,7 +107,8 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
     }
   }
 
-  def getPenaltyDetailsFromNewAPI(penaltyId: String, isAdditional: Boolean)(implicit request: User[_]): Future[Result] = {
+  def getPenaltyDetailsFromNewAPI(principalChargeReference: String, penaltyCategory: LPPPenaltyCategoryEnum.Value)
+                                 (implicit request: User[_]): Future[Result] = {
     penaltiesServiceV2.getPenaltyDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn)).map {
       _.fold(
         errors => {
@@ -114,9 +116,11 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
           errorHandler.showInternalServerError
         },
         payload => {
-          val penalty: Option[LPPDetails] = payload.latePaymentPenalty.flatMap(_.details.find(_.principalChargeReference == penaltyId))
+          val penalty: Option[LPPDetails] = payload.latePaymentPenalty.flatMap(_.details.find(penalty => {
+            penalty.principalChargeReference == principalChargeReference && penalty.penaltyCategory == penaltyCategory
+          }))
           if (penalty.isEmpty) {
-            logger.error("[CalculationController][onPageLoad] - Tried to render calculation page with new model but could not find penalty specified.")
+            logger.error("[CalculationController][getPenaltyDetailsFromNewAPI] - Tried to render calculation page with new model but could not find penalty specified.")
             errorHandler.showInternalServerError
           } else {
             val startDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeBillingFrom)
@@ -126,13 +130,13 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
             val amountLeftToPay = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.penaltyAmountOutstanding.get)
             val penaltyAmount = penalty.get.penaltyAmountOutstanding.get + penalty.get.penaltyAmountPaid.get
             val parsedPenaltyAmount = CurrencyFormatter.parseBigDecimalToFriendlyValue(penaltyAmount)
-            logger.debug(s"[CalculationController][onPageLoad] - found penalty: ${penalty.get}")
-            if (!isAdditional) {
+            logger.debug(s"[CalculationController][getPenaltyDetailsFromNewAPI] - found penalty: ${penalty.get}")
+            if (!penaltyCategory.equals(LPP2)) {
               val penaltyEstimateDate = penalty.get.principalChargeDueDate.plusDays(30)
               val calculationRow = calculationPageHelper.getCalculationRowForLPPForNewAPI(penalty.get)
               calculationRow.fold({
                 //TODO: log a PD
-                logger.error("[CalculationController][onPageLoad] - " +
+                logger.error("[CalculationController][getPenaltyDetailsFromNewAPI] - " +
                   "Calculation row returned None - this could be because the user did not have a defined amount after 15 and/or 30 days of due date")
                 errorHandler.showInternalServerError
               })(

@@ -10,5 +10,6 @@ GET        /appeal-penalty              controllers.IndexController.redirectToAp
 GET        /compliance                  controllers.ComplianceController.onPageLoad
 
 GET        /calculation                 controllers.CalculationController.onPageLoad(penaltyId: String, isAdditional: Boolean)
+GET        /v2/calculation              controllers.CalculationController.onPageLoadForNewAPI(principalChargeReference: String, penaltyCategory: String)
 
 GET        /timeout                     controllers.TimeoutController.onPageLoad
