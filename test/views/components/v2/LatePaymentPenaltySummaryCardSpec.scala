@@ -198,8 +198,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
 
       "display the 'Overdue charge' row" in {
         doc.select("dt").get(1).text() shouldBe "Overdue charge"
-        //TODO: Get the Reasons
-        doc.select("dd").get(1).text() shouldBe "LPPPenaltyReasonKey"
+        doc.select("dd").get(1).text() shouldBe "VAT for period 1 January 2020 to 1 February 2020"
       }
 
       "display Date(principalChargeDueDate) in Charge due" in {
@@ -211,11 +210,6 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         val docVATPaymentDate: Document = asDocument(summaryCardHtml.apply(summaryCardModelVATPaymentDate))
         docVATPaymentDate.select("dt").get(2).text() shouldBe "VAT payment date"
         docVATPaymentDate.select("dd").get(2).text() shouldBe "1 March 2020"
-      }
-
-      "display the penalty reason" ignore {
-        doc.select("dt").get(3).text() shouldBe "Penalty reason"
-        doc.select("dd").get(3).text() shouldBe "VAT not paid within 15 days"
       }
 
       "display the appeal link" in {
@@ -263,11 +257,6 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       "display the Penalty type" in {
         docWithAdditionalPenalty.select("dt").get(0).text() shouldBe "Penalty type"
         docWithAdditionalPenalty.select("dd").get(0).text() shouldBe "Second penalty for late payment"
-      }
-// TODO: implement reason
-      "display the penalty reason" ignore {
-        docWithAdditionalPenalty.select("dt").get(1).text() shouldBe "Penalty reason"
-        docWithAdditionalPenalty.select("dd").get(1).text() shouldBe "VAT more than 30 days late"
       }
 
       "display the appeal link" in {

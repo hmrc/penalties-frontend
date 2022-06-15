@@ -16,7 +16,7 @@
 
 package connectors.httpParsers
 
-import play.api.http.Status.{BAD_REQUEST, NO_CONTENT}
+import play.api.http.Status.BAD_REQUEST
 
 sealed trait ErrorResponse {
   val status: Int
