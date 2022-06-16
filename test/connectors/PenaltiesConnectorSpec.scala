@@ -19,9 +19,7 @@ package connectors
 import base.SpecBase
 import config.AppConfig
 import connectors.httpParsers.PenaltiesConnectorParser.GetPenaltyDetailsResponse
-import connectors.httpParsers.{ErrorResponse, UnexpectedFailure}
 import models.ETMPPayload
-import models.v3.GetPenaltyDetails
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import play.api.http.Status.INTERNAL_SERVER_ERROR
