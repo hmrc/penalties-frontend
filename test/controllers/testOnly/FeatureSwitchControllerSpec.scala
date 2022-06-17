@@ -38,7 +38,7 @@ class FeatureSwitchControllerSpec extends SpecBase with FeatureSwitching {
     reset(mockConfig)
     reset(mockServicesConfig)
     val controller = new FeatureSwitchController(mcc)(config)
-    FeatureSwitch.listOfAllFeatureSwitches.foreach(sys.props -= _.name)
+    sys.props -= TIME_MACHINE_NOW
   }
 
   "enableOrDisableFeature" should {

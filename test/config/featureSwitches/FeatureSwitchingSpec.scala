@@ -26,7 +26,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import java.time.LocalDate
 
-class FeatureSwitchingSpec extends SpecBase with BeforeAndAfterAll {
+class FeatureSwitchingSpec extends SpecBase with BeforeAndAfterAll with FeatureSwitching {
   val mockConfig = mock(classOf[Configuration])
   val mockServicesConfig = mock(classOf[ServicesConfig])
   val config: AppConfig = new AppConfig(mockConfig, mockServicesConfig)
@@ -46,6 +46,7 @@ class FeatureSwitchingSpec extends SpecBase with BeforeAndAfterAll {
     super.afterAll()
     sys.props -= CallAPI1812ETMP.name
     sys.props -= UseAPI1812Model.name
+    sys.props -= TIME_MACHINE_NOW
   }
 
   "constants" should {
