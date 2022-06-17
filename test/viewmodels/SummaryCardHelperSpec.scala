@@ -92,7 +92,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
     isAdditionalPenalty = true
   )
 
-  "SummaryCard helper" should {
+  "SummaryCardHelper" should {
     "findAndReindexPointIfIsActive" should {
       "reindex the point with the associated index + 1 when the point is in the indexed list of active points" in {
         val pointToPassIn: PenaltyPoint = samplePenaltyPoint.copy(number = "2")

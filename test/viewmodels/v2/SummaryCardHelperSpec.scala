@@ -100,7 +100,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
   val sampleLPPSummaryCardPenaltyUnpaidVAT: LatePaymentPenaltySummaryCard = sampleLPPSummaryCardPenaltyPaid("VAT").copy(isPenaltyPaid = false, isVatPaid = false,
     status = Tag(content = Text("£200 due"), classes = "penalty-due-tag"))
 
-  "SummaryCard helper" should {
+  "SummaryCardHelper" should {
     "findAndReindexPointIfIsActive" should {
       "reindex the point with the associated index + 1 when the point is in the indexed list of active points" in {
         val pointToPassIn: LSPDetails = samplePenaltyPointv2.copy(penaltyOrder = "2")
@@ -512,9 +512,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
                 ),
                 helper.summaryListRow(
                   overdueCharge,
-                  //TODO: get reason
-                  //Html(periodValueLPP("VAT", dateTimeToString(LocalDateTime.now), dateTimeToString(LocalDateTime.now)))
-                  Html(("LPPPenaltyReasonKey"))
+                  Html(periodValueLPP("VAT", dateTimeToString(LocalDateTime.now), dateTimeToString(LocalDateTime.now)))
                 ),
                 helper.summaryListRow(chargeDue , Html(dateTimeToString(LocalDateTime.now))),
                 helper.summaryListRow(datePaid, Html("Payment not yet received"))

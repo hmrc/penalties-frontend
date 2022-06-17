@@ -373,9 +373,9 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     }
   }
 
-  private def getLPPAdditionalPenaltyReasonKey(reason: String): String = "LPPAdditionalPenaltyReasonKey" // TODO: New API call for its implementation
+  private def getLPPAdditionalPenaltyReasonKey(reason: String): String = "summaryCard.lpp.key3.value.vat" // TODO: New API call for its implementation
 
-  private def getLPPPenaltyReasonKey(reason: String): String = "LPPPenaltyReasonKey" // TODO: New API call for its implementation
+  private def getLPPPenaltyReasonKey(reason: String): String = "summaryCard.lpp.key3.value.vat" // TODO: New API call for its implementation
 
   def tagStatus(lsp: Option[LSPDetails], lpp: Option[LPPDetails])(implicit messages: Messages): Tag = {
     if (lsp.isDefined) {
