@@ -17,14 +17,32 @@
 package controllers.testOnly
 
 import base.SpecBase
-import config.featureSwitches.{CallAPI1812ETMP, FeatureSwitching}
+import config.AppConfig
+import config.featureSwitches.{CallAPI1812ETMP, FeatureSwitch, FeatureSwitching}
+import org.mockito.Mockito.{mock, reset, when}
+import org.mockito.Matchers.any
+import play.api.Configuration
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
+import java.time.LocalDate
 
 class FeatureSwitchControllerSpec extends SpecBase with FeatureSwitching {
   val controller: FeatureSwitchController = injector.instanceOf[FeatureSwitchController]
+  val mockConfig = mock(classOf[Configuration])
+  val mockServicesConfig = mock(classOf[ServicesConfig])
+  val config: AppConfig = new AppConfig(mockConfig, mockServicesConfig)
 
-  "FeatureSwitchController" should {
+  class Setup {
+    reset(mockConfig)
+    reset(mockServicesConfig)
+    val controller = new FeatureSwitchController(mcc)(config)
+    FeatureSwitch.listOfAllFeatureSwitches.foreach(sys.props -= _.name)
+    sys.props -= TIME_MACHINE_NOW
+  }
+
+  "enableOrDisableFeature" should {
     "return NOT FOUND when the feature switch is not defined" in {
       val result = controller.enableOrDisableFeature("fake", true)(FakeRequest())
       status(result) shouldBe NOT_FOUND
@@ -40,6 +58,31 @@ class FeatureSwitchControllerSpec extends SpecBase with FeatureSwitching {
       val result = controller.enableOrDisableFeature("feature.switch.call-api-1812-etmp", false)(FakeRequest())
       status(result) shouldBe OK
       isEnabled(CallAPI1812ETMP) shouldBe false
+    }
+  }
+
+  "setTimeMachineDate" should {
+
+    s"return $NOT_FOUND (NOT_FOUND) when the date provided is invalid" in new Setup {
+      val result = controller.setTimeMachineDate(Some("invalid date"))(FakeRequest())
+      status(result) shouldBe BAD_REQUEST
+      contentAsString(result) shouldBe "The date provided is in an invalid format"
+    }
+
+    s"return $OK (OK) when the date provided is valid" in new Setup {
+      val result = controller.setTimeMachineDate(Some("2022-01-01"))(FakeRequest())
+      status(result) shouldBe OK
+      contentAsString(result) shouldBe s"Time machine set to: ${LocalDate.of(2022,1,1).toString}"
+      (sys.props get "TIME_MACHINE_NOW" get) shouldBe LocalDate.of(2022,1,1).toString
+    }
+
+    s"return $OK (OK) and the systems current date when no date is provided" in new Setup {
+      when(mockConfig.getOptional[String](any())(any()))
+        .thenReturn(None)
+      val result = controller.setTimeMachineDate(None)(FakeRequest())
+      status(result) shouldBe OK
+      contentAsString(result) shouldBe s"Time machine set to: ${LocalDate.now().toString}"
+      controller.getFeatureDate shouldBe LocalDate.now()
     }
   }
 }
