@@ -18,38 +18,38 @@ package models.v3.lpp
 
 import play.api.libs.json._
 
-object MainTypeEnum extends Enumeration {
-  val VATReturnCharge: MainTypeEnum.Value = Value("4700")
-  val VATReturnFirstLPP: MainTypeEnum.Value = Value("4703")
-  val VATReturnSecondLPP: MainTypeEnum.Value = Value("4704")
-  val CentralAssessment: MainTypeEnum.Value = Value("4720")
-  val CentralAssessmentFirstLPP: MainTypeEnum.Value = Value("4723")
-  val CentralAssessmentSecondLPP: MainTypeEnum.Value = Value("4724")
-  val OfficersAssessment: MainTypeEnum.Value = Value("4730")
-  val OfficersAssessmentFirstLPP: MainTypeEnum.Value = Value("4741")
-  val OfficersAssessmentSecondLPP: MainTypeEnum.Value = Value("4742")
-  val ErrorCorrection: MainTypeEnum.Value = Value("4731")
-  val ErrorCorrectionFirstLPP: MainTypeEnum.Value = Value("4743")
-  val ErrorCorrectionSecondLPP: MainTypeEnum.Value = Value("4744")
-  val AdditionalAssessment: MainTypeEnum.Value = Value("4732")
-  val AdditionalAssessmentFirstLPP: MainTypeEnum.Value = Value("4758")
-  val AdditionalAssessmentSecondLPP: MainTypeEnum.Value = Value("4759")
-  val ProtectiveAssessment: MainTypeEnum.Value = Value("4733")
-  val ProtectiveAssessmentFirstLPP: MainTypeEnum.Value = Value("4761")
-  val ProtectiveAssessmentSecondLPP: MainTypeEnum.Value = Value("4762")
-  val POAReturnCharge: MainTypeEnum.Value = Value("4701")
-  val POAReturnChargeFirstLPP: MainTypeEnum.Value = Value("4716")
-  val POAReturnChargeSecondLPP: MainTypeEnum.Value = Value("4717")
-  val AAReturnCharge: MainTypeEnum.Value = Value("4702")
-  val AAReturnChargeFirstLPP: MainTypeEnum.Value = Value("4718")
-  val AAReturnChargeSecondLPP: MainTypeEnum.Value = Value("4719")
+object MainTransactionEnum extends Enumeration {
+  val VATReturnCharge: MainTransactionEnum.Value = Value("4700")
+  val VATReturnFirstLPP: MainTransactionEnum.Value = Value("4703")
+  val VATReturnSecondLPP: MainTransactionEnum.Value = Value("4704")
+  val CentralAssessment: MainTransactionEnum.Value = Value("4720")
+  val CentralAssessmentFirstLPP: MainTransactionEnum.Value = Value("4723")
+  val CentralAssessmentSecondLPP: MainTransactionEnum.Value = Value("4724")
+  val OfficersAssessment: MainTransactionEnum.Value = Value("4730")
+  val OfficersAssessmentFirstLPP: MainTransactionEnum.Value = Value("4741")
+  val OfficersAssessmentSecondLPP: MainTransactionEnum.Value = Value("4742")
+  val ErrorCorrection: MainTransactionEnum.Value = Value("4731")
+  val ErrorCorrectionFirstLPP: MainTransactionEnum.Value = Value("4743")
+  val ErrorCorrectionSecondLPP: MainTransactionEnum.Value = Value("4744")
+  val AdditionalAssessment: MainTransactionEnum.Value = Value("4732")
+  val AdditionalAssessmentFirstLPP: MainTransactionEnum.Value = Value("4758")
+  val AdditionalAssessmentSecondLPP: MainTransactionEnum.Value = Value("4759")
+  val ProtectiveAssessment: MainTransactionEnum.Value = Value("4733")
+  val ProtectiveAssessmentFirstLPP: MainTransactionEnum.Value = Value("4761")
+  val ProtectiveAssessmentSecondLPP: MainTransactionEnum.Value = Value("4762")
+  val POAReturnCharge: MainTransactionEnum.Value = Value("4701")
+  val POAReturnChargeFirstLPP: MainTransactionEnum.Value = Value("4716")
+  val POAReturnChargeSecondLPP: MainTransactionEnum.Value = Value("4717")
+  val AAReturnCharge: MainTransactionEnum.Value = Value("4702")
+  val AAReturnChargeFirstLPP: MainTransactionEnum.Value = Value("4718")
+  val AAReturnChargeSecondLPP: MainTransactionEnum.Value = Value("4719")
 
-  implicit val format: Format[MainTypeEnum.Value] = new Format[MainTypeEnum.Value] {
-    override def writes(o: MainTypeEnum.Value): JsValue = {
+  implicit val format: Format[MainTransactionEnum.Value] = new Format[MainTransactionEnum.Value] {
+    override def writes(o: MainTransactionEnum.Value): JsValue = {
       JsString(o.toString)
     }
 
-    override def reads(json: JsValue): JsResult[MainTypeEnum.Value] = {
+    override def reads(json: JsValue): JsResult[MainTransactionEnum.Value] = {
       json.as[String] match {
         case "4700" => JsSuccess(VATReturnCharge)
         case "4703" => JsSuccess(VATReturnFirstLPP)
