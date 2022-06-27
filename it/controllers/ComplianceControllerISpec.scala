@@ -26,10 +26,13 @@ import stubs.{AuthStub, ComplianceStub}
 import testUtils.IntegrationSpecCommonBase
 import uk.gov.hmrc.http.SessionKeys.authToken
 import utils.SessionKeys
-
 import java.time.LocalDate
 
+import config.AppConfig
+
 class ComplianceControllerISpec extends IntegrationSpecCommonBase {
+
+  val appConfig: AppConfig = injector.instanceOf[AppConfig]
 
   val controller: ComplianceController = injector.instanceOf[ComplianceController]
   val fakeAgentRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(

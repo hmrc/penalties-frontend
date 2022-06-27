@@ -16,6 +16,7 @@
 
 package connectors
 
+import config.AppConfig
 import play.api.test.Helpers._
 import stubs.ComplianceStub
 import stubs.ComplianceStub._
@@ -23,6 +24,8 @@ import testUtils.IntegrationSpecCommonBase
 import uk.gov.hmrc.http.HeaderCarrier
 
 class ComplianceConnectorISpec extends IntegrationSpecCommonBase {
+
+  val appConfig: AppConfig = injector.instanceOf[AppConfig]
 
   implicit private lazy val hc: HeaderCarrier = HeaderCarrier()
 

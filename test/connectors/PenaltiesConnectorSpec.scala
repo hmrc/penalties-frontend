@@ -18,6 +18,7 @@ package connectors
 
 import base.SpecBase
 import config.AppConfig
+import config.featureSwitches.{FeatureSwitching, UseAPI1811Model}
 import connectors.httpParsers.PenaltiesConnectorParser.GetPenaltyDetailsResponse
 import models.ETMPPayload
 import org.mockito.Matchers._
@@ -28,17 +29,18 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PenaltiesConnectorSpec extends SpecBase {
+class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching {
   implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
   val mockHttpClient: HttpClient = mock(classOf[HttpClient])
   val mockAppConfig: AppConfig = mock(classOf[AppConfig])
 
-  class Setup {
+  class Setup(isFSEnabled: Boolean = false) {
     reset(mockHttpClient)
     reset(mockAppConfig)
 
     val connector: PenaltiesConnector = new PenaltiesConnector(mockHttpClient, mockAppConfig)
     when(mockAppConfig.penaltiesUrl).thenReturn("/")
+    if (isFSEnabled) enableFeatureSwitch(UseAPI1811Model) else disableFeatureSwitch(UseAPI1811Model)
   }
 
   "getPenaltiesData" should {
@@ -69,13 +71,23 @@ class PenaltiesConnectorSpec extends SpecBase {
   }
 
   "getPenaltyDetails" should {
-    "return a successful response when the call succeeds and the body can be parsed" in new Setup {
-      when(mockHttpClient.GET[GetPenaltyDetailsResponse](any(), any(), any())
-        (any(), any(), any())).thenReturn(Future.successful(Right(samplePenaltyDetailsModel)))
+    "return a successful response when the call succeeds and the body can be parsed" when {
+      "UseAPI1811Model is enabled" in new Setup(true) {
+        when(mockHttpClient.GET[GetPenaltyDetailsResponse](any(), any(), any())
+          (any(), any(), any())).thenReturn(Future.successful(Right(samplePenaltyDetailsModel)))
 
-      val result = await(connector.getPenaltyDetails(vrn)(vatTraderUser, HeaderCarrier()))
-      result.isRight shouldBe true
-      result shouldBe Right(samplePenaltyDetailsModel)
+        val result = await(connector.getPenaltyDetails(vrn)(vatTraderUser, HeaderCarrier()))
+        result.isRight shouldBe true
+        result shouldBe Right(samplePenaltyDetailsModel)
+      }
+      "UseAPI1811Model is disabled" in new Setup() {
+        when(mockHttpClient.GET[GetPenaltyDetailsResponse](any(), any(), any())
+          (any(), any(), any())).thenReturn(Future.successful(Right(samplePenaltyDetailsModelWithoutMetadata)))
+
+        val result = await(connector.getPenaltyDetails(vrn)(vatTraderUser, HeaderCarrier()))
+        result.isRight shouldBe true
+        result shouldBe Right(samplePenaltyDetailsModelWithoutMetadata)
+      }
     }
 
     "return an error when an error occurs upstream" in new Setup{
