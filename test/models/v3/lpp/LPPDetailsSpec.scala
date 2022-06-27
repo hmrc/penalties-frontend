@@ -51,7 +51,10 @@ class LPPDetailsSpec extends SpecBase {
       |       "principalChargeBillingFrom": "2069-10-30",
       |       "principalChargeBillingTo": "2069-10-30",
       |       "principalChargeDueDate": "2069-10-30",
-      |       "penaltyChargeReference": "PEN1234567"
+      |       "penaltyChargeReference": "PEN1234567",
+      |       "principalChargeLatestClearing": "2069-10-30",
+      |       "mainTransaction": "4700",
+      |       "outstandingAmount": 99
       |   }
       |""".stripMargin)
 
@@ -80,7 +83,11 @@ class LPPDetailsSpec extends SpecBase {
     principalChargeBillingTo = LocalDate.parse("2069-10-30"),
     principalChargeDueDate = LocalDate.parse("2069-10-30"),
     penaltyChargeReference = Some("PEN1234567"),
-    principalChargeLatestClearing = None
+    principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+    LPPDetailsExtended = LPPDetailsExtended(
+      mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+      outstandingAmount = Some(99)
+    )
   )
 
   "LPPDetails" should {

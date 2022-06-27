@@ -26,7 +26,8 @@ import models.reason.PaymentPenaltyReasonEnum
 import models.submission.{Submission, SubmissionStatusEnum}
 import models.v3.{GetPenaltyDetails, Totalisations}
 import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum => AppealStatusEnumv2}
-import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty => LatePaymentPenaltyv2}
+import models.v3.lpp.{LPPDetails, LPPDetailsExtended, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum,
+  LatePaymentPenalty => LatePaymentPenaltyv2}
 import models.v3.lsp.{LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum, LSPSummary, LateSubmission, LateSubmissionPenalty, TaxReturnStatusEnum}
 import models.{ETMPPayload, FilingFrequencyEnum, User}
 import org.jsoup.Jsoup
@@ -48,9 +49,9 @@ import utils.SessionKeys
 import viewmodels.{LateSubmissionPenaltySummaryCard, SummaryCardHelper, TimelineHelper}
 import viewmodels.v2.{SummaryCardHelper => SummaryCardHelperv2}
 import views.html.errors.Unauthorised
-
 import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalDateTime}
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
@@ -315,7 +316,11 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         principalChargeBillingTo = LocalDate.parse("2069-10-30"),
         principalChargeDueDate = LocalDate.parse("2069-10-30"),
         penaltyChargeReference = Some("PEN1234567"),
-        principalChargeLatestClearing = None
+        principalChargeLatestClearing = None,
+        LPPDetailsExtended = LPPDetailsExtended(
+          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+          outstandingAmount = Some(99)
+        )
       ))
     ))
   )
@@ -536,7 +541,11 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     principalChargeBillingTo = LocalDate.parse("2069-10-30"),
     principalChargeDueDate = LocalDate.parse("2069-10-30"),
     penaltyChargeReference = Some("PEN1234567"),
-    principalChargeLatestClearing = None
+    principalChargeLatestClearing = None,
+    LPPDetailsExtended = LPPDetailsExtended(
+      mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+      outstandingAmount = Some(99)
+    )
   )
 
   val sampleLatePaymentPenaltyVATPaymentDueDate: LatePaymentPenalty = LatePaymentPenalty(
@@ -586,7 +595,11 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     principalChargeBillingTo = LocalDate.now,
     principalChargeDueDate = LocalDate.now,
     penaltyChargeReference = Some("PEN1234567"),
-    principalChargeLatestClearing = None
+    principalChargeLatestClearing = None,
+    LPPDetailsExtended = LPPDetailsExtended(
+      mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+      outstandingAmount = Some(99)
+    )
   )
 
   val sampleLatePaymentPenaltyAdditional: LatePaymentPenalty = LatePaymentPenalty(
@@ -636,7 +649,11 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     principalChargeBillingTo = LocalDate.parse("2069-10-30"),
     principalChargeDueDate = LocalDate.parse("2069-10-30"),
     penaltyChargeReference = Some("PEN1234567"),
-    principalChargeLatestClearing = None
+    principalChargeLatestClearing = None,
+    LPPDetailsExtended = LPPDetailsExtended(
+      mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+      outstandingAmount = Some(99)
+    )
   )
 
   val sampleLatePaymentPenaltyReasonVATNotPaidWithin30Days: LatePaymentPenalty =LatePaymentPenalty(
@@ -686,7 +703,11 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     principalChargeBillingTo = LocalDate.parse("2069-10-30"),
     principalChargeDueDate = LocalDate.parse("2069-10-30"),
     penaltyChargeReference = Some("PEN1234567"),
-    principalChargeLatestClearing = None
+    principalChargeLatestClearing = None,
+    LPPDetailsExtended = LPPDetailsExtended(
+      mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+      outstandingAmount = Some(99)
+    )
   )
   
   val sampleLatePaymentPenaltyPaid: LatePaymentPenalty = LatePaymentPenalty(
@@ -736,7 +757,11 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     principalChargeBillingTo = LocalDate.parse("2069-10-30"),
     principalChargeDueDate = LocalDate.parse("2069-10-30"),
     penaltyChargeReference = Some("PEN1234567"),
-    principalChargeLatestClearing = None
+    principalChargeLatestClearing = None,
+    LPPDetailsExtended = LPPDetailsExtended(
+      mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+      outstandingAmount = Some(99)
+    )
   )
 
   val sampleLPPDetailsVATPaid: LPPDetails = LPPDetails(
@@ -761,7 +786,11 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     principalChargeBillingTo = LocalDate.of(2020, 2, 1),
     principalChargeDueDate = LocalDate.of(2020, 3, 7),
     penaltyChargeReference = Some("PEN1234567"),
-    principalChargeLatestClearing = None
+    principalChargeLatestClearing = None,
+    LPPDetailsExtended = LPPDetailsExtended(
+      mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+      outstandingAmount = Some(99)
+    )
   )
 
   val LSPDetailsAsModelNoFAP = LSPDetails(
@@ -836,7 +865,11 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     principalChargeBillingTo = LocalDate.now,
     principalChargeDueDate = LocalDate.now,
     penaltyChargeReference = Some("PEN1234567"),
-    principalChargeLatestClearing = None
+    principalChargeLatestClearing = None,
+    LPPDetailsExtended = LPPDetailsExtended(
+      mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+      outstandingAmount = Some(99)
+    )
   )
   val sampleLatePaymentPenaltyVATPaymentDate: LatePaymentPenalty = LatePaymentPenalty(
     `type` = PenaltyTypeEnum.Financial,

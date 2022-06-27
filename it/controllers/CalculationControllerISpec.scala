@@ -25,7 +25,7 @@ import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum}
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.reason.PaymentPenaltyReasonEnum
 import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
-import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty => v3LatePaymentPenalty}
+import models.v3.lpp.{LPPDetails, LPPDetailsExtended, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum, LatePaymentPenalty => v3LatePaymentPenalty}
 import models.v3.lsp._
 import models.v3.{GetPenaltyDetails, Totalisations}
 import org.jsoup.Jsoup
@@ -38,8 +38,8 @@ import stubs.AuthStub
 import stubs.PenaltiesStub.{returnLSPDataStub, returnPenaltyDetailsStub}
 import testUtils.IntegrationSpecCommonBase
 import uk.gov.hmrc.http.SessionKeys.authToken
-
 import java.time.{LocalDate, LocalDateTime}
+
 import scala.concurrent.Future
 
 class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureSwitching {
@@ -471,7 +471,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         principalChargeBillingTo = LocalDate.parse("2021-02-01"),
         principalChargeDueDate = LocalDate.parse("2021-03-08"),
         penaltyChargeReference = Some("1234567890"),
-        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30"))
+        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+        LPPDetailsExtended = LPPDetailsExtended(
+          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+          outstandingAmount = Some(99)
+        )
       ))
     ))
   )
@@ -503,7 +507,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         principalChargeBillingTo = LocalDate.parse("2021-02-01"),
         principalChargeDueDate = LocalDate.parse("2021-03-08"),
         penaltyChargeReference = Some("1234567890"),
-        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30"))
+        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+        LPPDetailsExtended = LPPDetailsExtended(
+          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+          outstandingAmount = Some(99)
+        )
       ))
     )))
 
@@ -534,7 +542,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         principalChargeBillingTo = LocalDate.parse("2021-02-01"),
         principalChargeDueDate = LocalDate.parse("2021-03-08"),
         penaltyChargeReference = Some("1234567890"),
-        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30"))
+        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+        LPPDetailsExtended = LPPDetailsExtended(
+          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+          outstandingAmount = Some(99)
+        )
       ))
     )))
 
@@ -565,7 +577,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         principalChargeBillingTo = LocalDate.parse("2021-02-01"),
         principalChargeDueDate = LocalDate.now().minusDays(40),
         penaltyChargeReference = Some("1234567890"),
-        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30"))
+        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+        LPPDetailsExtended = LPPDetailsExtended(
+          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+          outstandingAmount = Some(99)
+        )
       ))
     ))
   )
@@ -597,7 +613,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         principalChargeBillingTo = LocalDate.parse("2021-02-01"),
         principalChargeDueDate = LocalDate.now().minusDays(40),
         penaltyChargeReference = Some("1234567890"),
-        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30"))
+        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+        LPPDetailsExtended = LPPDetailsExtended(
+          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+          outstandingAmount = Some(99)
+        )
       ))
     ))
   )
