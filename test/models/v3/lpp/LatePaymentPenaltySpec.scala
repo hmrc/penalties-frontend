@@ -117,7 +117,7 @@ class LatePaymentPenaltySpec extends SpecBase {
         penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
         penaltyChargeReference = Some("PEN1234567"),
         principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
-        LPPDetailsExtended = LPPDetailsExtended(
+        LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
           outstandingAmount = Some(99)
         )
@@ -145,7 +145,7 @@ class LatePaymentPenaltySpec extends SpecBase {
         penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
         penaltyChargeReference = Some("PEN1234567"),
         principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
-        LPPDetailsExtended = LPPDetailsExtended(
+        LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
           outstandingAmount = Some(99)
         )

@@ -23,7 +23,7 @@ import models.penalty.{LatePaymentPenalty, PenaltyPeriod}
 import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.submission.{Submission, SubmissionStatusEnum}
 import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
-import models.v3.lpp.{LPPDetails, LPPDetailsExtended, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum, LatePaymentPenalty => v3LatePaymentPenalty}
+import models.v3.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum, LatePaymentPenalty => v3LatePaymentPenalty}
 import models.v3.lsp._
 import models.v3.{GetPenaltyDetails, Totalisations}
 import play.api.http.Status
@@ -170,7 +170,7 @@ object PenaltiesStub {
         principalChargeDueDate = LocalDate.parse("2069-10-30"),
         principalChargeLatestClearing = None,
         penaltyChargeReference = Some("PEN1234567"),
-        LPPDetailsExtended = LPPDetailsExtended(
+        LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
           outstandingAmount = Some(99)
         )

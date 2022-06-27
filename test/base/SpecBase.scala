@@ -26,7 +26,7 @@ import models.reason.PaymentPenaltyReasonEnum
 import models.submission.{Submission, SubmissionStatusEnum}
 import models.v3.{GetPenaltyDetails, Totalisations}
 import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum => AppealStatusEnumv2}
-import models.v3.lpp.{LPPDetails, LPPDetailsExtended, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum,
+import models.v3.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum,
   LatePaymentPenalty => LatePaymentPenaltyv2}
 import models.v3.lsp.{LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum, LSPSummary, LateSubmission, LateSubmissionPenalty, TaxReturnStatusEnum}
 import models.{ETMPPayload, FilingFrequencyEnum, User}
@@ -317,7 +317,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
         principalChargeDueDate = LocalDate.parse("2069-10-30"),
         penaltyChargeReference = Some("PEN1234567"),
         principalChargeLatestClearing = None,
-        LPPDetailsExtended = LPPDetailsExtended(
+        LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
           outstandingAmount = Some(99)
         )
@@ -542,7 +542,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     principalChargeDueDate = LocalDate.parse("2069-10-30"),
     penaltyChargeReference = Some("PEN1234567"),
     principalChargeLatestClearing = None,
-    LPPDetailsExtended = LPPDetailsExtended(
+    LPPDetailsMetadata = LPPDetailsMetadata(
       mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
       outstandingAmount = Some(99)
     )
@@ -596,7 +596,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     principalChargeDueDate = LocalDate.now,
     penaltyChargeReference = Some("PEN1234567"),
     principalChargeLatestClearing = None,
-    LPPDetailsExtended = LPPDetailsExtended(
+    LPPDetailsMetadata = LPPDetailsMetadata(
       mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
       outstandingAmount = Some(99)
     )
@@ -650,7 +650,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     principalChargeDueDate = LocalDate.parse("2069-10-30"),
     penaltyChargeReference = Some("PEN1234567"),
     principalChargeLatestClearing = None,
-    LPPDetailsExtended = LPPDetailsExtended(
+    LPPDetailsMetadata = LPPDetailsMetadata(
       mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
       outstandingAmount = Some(99)
     )
@@ -704,7 +704,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     principalChargeDueDate = LocalDate.parse("2069-10-30"),
     penaltyChargeReference = Some("PEN1234567"),
     principalChargeLatestClearing = None,
-    LPPDetailsExtended = LPPDetailsExtended(
+    LPPDetailsMetadata = LPPDetailsMetadata(
       mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
       outstandingAmount = Some(99)
     )
@@ -758,7 +758,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     principalChargeDueDate = LocalDate.parse("2069-10-30"),
     penaltyChargeReference = Some("PEN1234567"),
     principalChargeLatestClearing = None,
-    LPPDetailsExtended = LPPDetailsExtended(
+    LPPDetailsMetadata = LPPDetailsMetadata(
       mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
       outstandingAmount = Some(99)
     )
@@ -787,7 +787,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     principalChargeDueDate = LocalDate.of(2020, 3, 7),
     penaltyChargeReference = Some("PEN1234567"),
     principalChargeLatestClearing = None,
-    LPPDetailsExtended = LPPDetailsExtended(
+    LPPDetailsMetadata = LPPDetailsMetadata(
       mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
       outstandingAmount = Some(99)
     )
@@ -866,7 +866,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     principalChargeDueDate = LocalDate.now,
     penaltyChargeReference = Some("PEN1234567"),
     principalChargeLatestClearing = None,
-    LPPDetailsExtended = LPPDetailsExtended(
+    LPPDetailsMetadata = LPPDetailsMetadata(
       mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
       outstandingAmount = Some(99)
     )

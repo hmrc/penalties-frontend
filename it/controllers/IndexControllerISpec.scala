@@ -24,7 +24,7 @@ import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.reason.PaymentPenaltyReasonEnum
 import models.submission.{Submission, SubmissionStatusEnum}
 import models.v3.appealInfo._
-import models.v3.lpp.{LPPDetails, LPPDetailsExtended, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum}
+import models.v3.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum}
 import models.v3.lsp._
 import models.v3.{GetPenaltyDetails, Totalisations}
 import org.jsoup.Jsoup
@@ -411,7 +411,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       principalChargeDueDate = sampleDate1V2.plusMonths(2).plusDays(6),
       penaltyChargeReference = Some("123456789"),
       principalChargeLatestClearing = Some(sampleDate1V2.plusMonths(2).plusDays(7)),
-      LPPDetailsExtended = LPPDetailsExtended(
+      LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
         outstandingAmount = Some(99)
         )
@@ -498,7 +498,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         principalChargeDueDate = sampleDate1V2.plusMonths(2).plusDays(6),
         penaltyChargeReference = Some("123456789"),
         principalChargeLatestClearing = Some(sampleDate1V2.plusMonths(2).plusDays(7)),
-        LPPDetailsExtended = LPPDetailsExtended(
+        LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
           outstandingAmount = Some(99)
         )
@@ -529,7 +529,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         principalChargeDueDate = sampleDate1V2.plusMonths(2).plusDays(6),
         penaltyChargeReference = Some("123456789"),
         principalChargeLatestClearing = None,
-        LPPDetailsExtended = LPPDetailsExtended(
+        LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
           outstandingAmount = Some(99)
         )
@@ -593,7 +593,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       principalChargeDueDate = sampleDate1V2.plusMonths(2).plusDays(6),
       penaltyChargeReference = Some("123456789"),
       principalChargeLatestClearing = None,
-        LPPDetailsExtended = LPPDetailsExtended(
+        LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
           outstandingAmount = Some(99)
         )))
@@ -686,7 +686,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       principalChargeDueDate = sampleDate1V2.plusMonths(2).plusDays(6),
       penaltyChargeReference = Some("123456789"),
       principalChargeLatestClearing = Some(sampleDate1V2.plusMonths(2).plusDays(7)),
-      LPPDetailsExtended = LPPDetailsExtended(
+      LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
         outstandingAmount = Some(99)
       ))))
@@ -943,7 +943,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       principalChargeDueDate = sampleDate1V2.plusMonths(2).plusDays(6),
       penaltyChargeReference = Some("123456789"),
       principalChargeLatestClearing = None,
-      LPPDetailsExtended = LPPDetailsExtended(
+      LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
         outstandingAmount = Some(99)
       )))

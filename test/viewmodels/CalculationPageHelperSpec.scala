@@ -22,7 +22,7 @@ import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum}
 import models.point.{PenaltyTypeEnum, PointStatusEnum}
 import models.reason.PaymentPenaltyReasonEnum
 import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
-import models.v3.lpp.{LPPDetails, LPPDetailsExtended, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum}
+import models.v3.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum}
 import java.time.{LocalDate, LocalDateTime}
 
 class CalculationPageHelperSpec extends SpecBase {
@@ -127,7 +127,7 @@ class CalculationPageHelperSpec extends SpecBase {
       principalChargeDueDate = LocalDate.parse("2069-10-30"),
       penaltyChargeReference = Some("1234567890"),
       principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
-      LPPDetailsExtended = LPPDetailsExtended(
+      LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
         outstandingAmount = Some(99)
       )
@@ -159,7 +159,7 @@ class CalculationPageHelperSpec extends SpecBase {
       principalChargeDueDate = LocalDate.parse("2069-10-30"),
       penaltyChargeReference = Some("1234567890"),
       principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
-      LPPDetailsExtended = LPPDetailsExtended(
+      LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
         outstandingAmount = Some(99)
       )
@@ -191,7 +191,7 @@ class CalculationPageHelperSpec extends SpecBase {
       principalChargeDueDate = LocalDate.parse("2069-10-30"),
       penaltyChargeReference = Some("1234567890"),
       principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
-      LPPDetailsExtended = LPPDetailsExtended(
+      LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
         outstandingAmount = Some(99)
       )

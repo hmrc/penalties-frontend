@@ -17,7 +17,7 @@
 package models.v3
 
 import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
-import models.v3.lpp.{LPPDetails, LPPDetailsExtended, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty, MainTransactionEnum}
+import models.v3.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty, MainTransactionEnum}
 import models.v3.lsp.{LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum, LSPSummary, LateSubmission, LateSubmissionPenalty, TaxReturnStatusEnum}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -102,7 +102,7 @@ class GetPenaltyDetailsSpec extends AnyWordSpec with Matchers {
         principalChargeDueDate = LocalDate.parse("2069-10-30"),
         penaltyChargeReference = Some("PEN1234567"),
         principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
-        LPPDetailsExtended = LPPDetailsExtended(
+        LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
           outstandingAmount = Some(99)
         )
