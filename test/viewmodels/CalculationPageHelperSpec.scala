@@ -22,8 +22,7 @@ import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum}
 import models.point.{PenaltyTypeEnum, PointStatusEnum}
 import models.reason.PaymentPenaltyReasonEnum
 import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
-import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum}
-
+import models.v3.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum}
 import java.time.{LocalDate, LocalDateTime}
 
 class CalculationPageHelperSpec extends SpecBase {
@@ -127,7 +126,11 @@ class CalculationPageHelperSpec extends SpecBase {
       principalChargeBillingTo = LocalDate.parse("2069-10-30"),
       principalChargeDueDate = LocalDate.parse("2069-10-30"),
       penaltyChargeReference = Some("1234567890"),
-      principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30"))
+      principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+      LPPDetailsMetadata = LPPDetailsMetadata(
+        mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+        outstandingAmount = Some(99)
+      )
     )
 
     val lppWith15and30DayAmount = LPPDetails(
@@ -155,7 +158,11 @@ class CalculationPageHelperSpec extends SpecBase {
       principalChargeBillingTo = LocalDate.parse("2069-10-30"),
       principalChargeDueDate = LocalDate.parse("2069-10-30"),
       penaltyChargeReference = Some("1234567890"),
-      principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30"))
+      principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+      LPPDetailsMetadata = LPPDetailsMetadata(
+        mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+        outstandingAmount = Some(99)
+      )
     )
 
     val lppWith15DayAmount = LPPDetails(
@@ -183,7 +190,11 @@ class CalculationPageHelperSpec extends SpecBase {
       principalChargeBillingTo = LocalDate.parse("2069-10-30"),
       principalChargeDueDate = LocalDate.parse("2069-10-30"),
       penaltyChargeReference = Some("1234567890"),
-      principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30"))
+      principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+      LPPDetailsMetadata = LPPDetailsMetadata(
+        mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+        outstandingAmount = Some(99)
+      )
     )
 
     "return a single row when the user has an amount after 15 days" in {

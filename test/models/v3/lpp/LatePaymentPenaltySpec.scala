@@ -52,7 +52,10 @@ class LatePaymentPenaltySpec extends SpecBase {
       |       "principalChargeBillingFrom": "2069-10-30",
       |       "principalChargeBillingTo": "2069-10-30",
       |       "principalChargeDueDate": "2069-10-30",
-      |       "penaltyChargeReference": "PEN1234567"
+      |       "penaltyChargeReference": "PEN1234567",
+      |       "principalChargeLatestClearing": "2069-10-30",
+      |       "mainTransaction": "4700",
+      |       "outstandingAmount": 99
       |   },
       |   {
       |       "penaltyCategory": "LPP1",
@@ -79,7 +82,10 @@ class LatePaymentPenaltySpec extends SpecBase {
       |       "principalChargeBillingFrom": "2069-10-30",
       |       "principalChargeBillingTo": "2069-10-30",
       |       "principalChargeDueDate": "2069-10-30",
-      |       "penaltyChargeReference": "PEN1234567"
+      |       "penaltyChargeReference": "PEN1234567",
+      |       "principalChargeLatestClearing": "2069-10-30",
+      |       "mainTransaction": "4700",
+      |       "outstandingAmount": 99
       |   }
       |   ]
       |}
@@ -110,7 +116,11 @@ class LatePaymentPenaltySpec extends SpecBase {
         LPP1HRPercentage = Some(BigDecimal(2.00).setScale(2)),
         penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
         penaltyChargeReference = Some("PEN1234567"),
-        principalChargeLatestClearing = None
+        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+        LPPDetailsMetadata = LPPDetailsMetadata(
+          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+          outstandingAmount = Some(99)
+        )
       ),
       LPPDetails(
         penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
@@ -134,7 +144,11 @@ class LatePaymentPenaltySpec extends SpecBase {
         LPP1HRPercentage = Some(BigDecimal(2.00).setScale(2)),
         penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
         penaltyChargeReference = Some("PEN1234567"),
-        principalChargeLatestClearing = None
+        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+        LPPDetailsMetadata = LPPDetailsMetadata(
+          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+          outstandingAmount = Some(99)
+        )
       )
     )
   )

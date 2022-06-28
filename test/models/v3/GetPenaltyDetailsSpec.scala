@@ -17,12 +17,11 @@
 package models.v3
 
 import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
-import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty}
+import models.v3.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty, MainTransactionEnum}
 import models.v3.lsp.{LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum, LSPSummary, LateSubmission, LateSubmissionPenalty, TaxReturnStatusEnum}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.{JsValue, Json}
-
 import java.time.LocalDate
 
 
@@ -102,7 +101,11 @@ class GetPenaltyDetailsSpec extends AnyWordSpec with Matchers {
         principalChargeBillingTo = LocalDate.parse("2069-10-30"),
         principalChargeDueDate = LocalDate.parse("2069-10-30"),
         penaltyChargeReference = Some("PEN1234567"),
-        principalChargeLatestClearing = None
+        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+        LPPDetailsMetadata = LPPDetailsMetadata(
+          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+          outstandingAmount = Some(99)
+        )
       ))
     ))
   )
@@ -181,7 +184,10 @@ class GetPenaltyDetailsSpec extends AnyWordSpec with Matchers {
        "principalChargeBillingFrom": "2069-10-30",
        "principalChargeBillingTo": "2069-10-30",
        "principalChargeDueDate": "2069-10-30",
-       "penaltyChargeReference": "PEN1234567"
+       "penaltyChargeReference": "PEN1234567",
+       "principalChargeLatestClearing": "2069-10-30",
+       "mainTransaction": "4700",
+       "outstandingAmount": 99
    }]
  }
 }

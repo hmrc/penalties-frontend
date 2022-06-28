@@ -19,10 +19,9 @@ package viewmodels.v2
 import assets.messages.IndexMessages._
 import base.SpecBase
 import models.v3.{GetPenaltyDetails, Totalisations}
-import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty}
+import models.v3.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty, MainTransactionEnum}
 import models.v3.lsp._
 import org.jsoup.Jsoup
-
 import java.time.LocalDate
 
 class IndexPageHelperSpec extends SpecBase {
@@ -1107,7 +1106,11 @@ class IndexPageHelperSpec extends SpecBase {
                 principalChargeBillingTo = LocalDate.of(2022, 1, 1),
                 principalChargeDueDate = LocalDate.of(2022, 1, 1),
                 principalChargeLatestClearing = Some(LocalDate.of(2022, 1, 1)),
-                penaltyChargeReference = Some("PEN1234567")
+                penaltyChargeReference = Some("PEN1234567"),
+                LPPDetailsMetadata = LPPDetailsMetadata(
+                  mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+                  outstandingAmount = Some(99)
+                )
               )
             )
           )

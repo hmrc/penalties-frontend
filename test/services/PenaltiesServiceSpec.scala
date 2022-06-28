@@ -25,11 +25,10 @@ import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.reason.PaymentPenaltyReasonEnum
 import models.submission.{Submission, SubmissionStatusEnum}
 import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
-import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty => NewLatePaymentPenalty}
+import models.v3.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum, LatePaymentPenalty => NewLatePaymentPenalty}
 import models.v3.lsp._
 import models.v3.{GetPenaltyDetails, Totalisations}
 import org.mockito.Mockito._
-
 import java.time.{LocalDate, LocalDateTime}
 
 class PenaltiesServiceSpec extends SpecBase {
@@ -346,7 +345,11 @@ class PenaltiesServiceSpec extends SpecBase {
         principalChargeBillingTo = LocalDate.parse("2069-10-30"),
         principalChargeDueDate = LocalDate.parse("2069-10-30"),
         penaltyChargeReference = Some("1234567890"),
-        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30"))
+        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+        LPPDetailsMetadata = LPPDetailsMetadata(
+          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+          outstandingAmount = Some(99)
+        )
       ))
     ))
   )

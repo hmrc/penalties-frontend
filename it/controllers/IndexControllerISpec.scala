@@ -24,7 +24,7 @@ import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
 import models.reason.PaymentPenaltyReasonEnum
 import models.submission.{Submission, SubmissionStatusEnum}
 import models.v3.appealInfo._
-import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum}
+import models.v3.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum}
 import models.v3.lsp._
 import models.v3.{GetPenaltyDetails, Totalisations}
 import org.jsoup.Jsoup
@@ -37,7 +37,6 @@ import stubs.PenaltiesStub.{returnLSPDataStub, returnPenaltyDetailsStub, returnP
 import testUtils.IntegrationSpecCommonBase
 import uk.gov.hmrc.http.SessionKeys.authToken
 import utils.SessionKeys
-
 import java.time.{LocalDate, LocalDateTime}
 
 class IndexControllerISpec extends IntegrationSpecCommonBase {
@@ -411,7 +410,12 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       principalChargeBillingTo = sampleDate1V2.plusMonths(1),
       principalChargeDueDate = sampleDate1V2.plusMonths(2).plusDays(6),
       penaltyChargeReference = Some("123456789"),
-      principalChargeLatestClearing = Some(sampleDate1V2.plusMonths(2).plusDays(7)))))
+      principalChargeLatestClearing = Some(sampleDate1V2.plusMonths(2).plusDays(7)),
+      LPPDetailsMetadata = LPPDetailsMetadata(
+        mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+        outstandingAmount = Some(99)
+        )
+      )))
 
   val latePaymentPenaltyWithAdditionalPenalty: Option[Seq[LatePaymentPenalty]] = Some(Seq(
     LatePaymentPenalty(
@@ -493,7 +497,11 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         principalChargeBillingTo = sampleDate1V2.plusMonths(1),
         principalChargeDueDate = sampleDate1V2.plusMonths(2).plusDays(6),
         penaltyChargeReference = Some("123456789"),
-        principalChargeLatestClearing = Some(sampleDate1V2.plusMonths(2).plusDays(7))
+        principalChargeLatestClearing = Some(sampleDate1V2.plusMonths(2).plusDays(7)),
+        LPPDetailsMetadata = LPPDetailsMetadata(
+          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+          outstandingAmount = Some(99)
+        )
       ),
       LPPDetails(
         principalChargeReference = "123456789",
@@ -520,7 +528,11 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         principalChargeBillingTo = sampleDate1V2.plusMonths(1),
         principalChargeDueDate = sampleDate1V2.plusMonths(2).plusDays(6),
         penaltyChargeReference = Some("123456789"),
-        principalChargeLatestClearing = None
+        principalChargeLatestClearing = None,
+        LPPDetailsMetadata = LPPDetailsMetadata(
+          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+          outstandingAmount = Some(99)
+        )
       )
     )
   )
@@ -580,7 +592,11 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       principalChargeBillingTo = sampleDate1V2.plusMonths(1),
       principalChargeDueDate = sampleDate1V2.plusMonths(2).plusDays(6),
       penaltyChargeReference = Some("123456789"),
-      principalChargeLatestClearing = None))
+      principalChargeLatestClearing = None,
+        LPPDetailsMetadata = LPPDetailsMetadata(
+          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+          outstandingAmount = Some(99)
+        )))
   )
 
   val latePaymentPenaltiesWithEstimate: Option[Seq[LatePaymentPenalty]] = Some(Seq(
@@ -669,7 +685,11 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       principalChargeBillingTo = sampleDate1V2.plusMonths(1),
       principalChargeDueDate = sampleDate1V2.plusMonths(2).plusDays(6),
       penaltyChargeReference = Some("123456789"),
-      principalChargeLatestClearing = Some(sampleDate1V2.plusMonths(2).plusDays(7)))))
+      principalChargeLatestClearing = Some(sampleDate1V2.plusMonths(2).plusDays(7)),
+      LPPDetailsMetadata = LPPDetailsMetadata(
+        mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+        outstandingAmount = Some(99)
+      ))))
   )
 
   val etmpPayloadWithPaidLPP: ETMPPayload = etmpPayloadWithAddedPoints.copy(
@@ -922,7 +942,11 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       principalChargeBillingTo = sampleDate1V2.plusMonths(1),
       principalChargeDueDate = sampleDate1V2.plusMonths(2).plusDays(6),
       penaltyChargeReference = Some("123456789"),
-      principalChargeLatestClearing = None))
+      principalChargeLatestClearing = None,
+      LPPDetailsMetadata = LPPDetailsMetadata(
+        mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+        outstandingAmount = Some(99)
+      )))
   )
 
   val etmpPayloadWithMultiplePenaltyPeriodInLSP: ETMPPayload = ETMPPayload(
