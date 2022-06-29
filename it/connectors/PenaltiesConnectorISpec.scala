@@ -30,7 +30,7 @@ import stubs.PenaltiesStub._
 import testUtils.IntegrationSpecCommonBase
 import uk.gov.hmrc.http.HeaderCarrier
 
-class PenaltiesConnectorISpec extends IntegrationSpecCommonBase with FeatureSwitching {
+class PenaltiesConnectorISpec extends IntegrationSpecCommonBase {
 
   val appConfig: AppConfig = injector.instanceOf[AppConfig]
   implicit private lazy val hc: HeaderCarrier = HeaderCarrier()
