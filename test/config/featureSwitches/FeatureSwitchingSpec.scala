@@ -39,6 +39,7 @@ class FeatureSwitchingSpec extends SpecBase with BeforeAndAfterAll with FeatureS
     }
     sys.props -= CallAPI1812ETMP.name
     sys.props -= UseAPI1812Model.name
+    sys.props -= UseAPI1811Model.name
     sys.props -= featureSwitching.TIME_MACHINE_NOW
   }
 
@@ -46,6 +47,7 @@ class FeatureSwitchingSpec extends SpecBase with BeforeAndAfterAll with FeatureS
     super.afterAll()
     sys.props -= CallAPI1812ETMP.name
     sys.props -= UseAPI1812Model.name
+    sys.props -= UseAPI1811Model.name
     sys.props -= TIME_MACHINE_NOW
   }
 
@@ -84,6 +86,11 @@ class FeatureSwitchingSpec extends SpecBase with BeforeAndAfterAll with FeatureS
       featureSwitching.enableFeatureSwitch(UseAPI1812Model)
       (sys.props get UseAPI1812Model.name get) shouldBe "true"
     }
+
+    s"set ${UseAPI1811Model.name} property to true" in new Setup {
+      featureSwitching.enableFeatureSwitch(UseAPI1811Model)
+      (sys.props get UseAPI1811Model.name get) shouldBe "true"
+    }
   }
 
   "disableFeatureSwitch" should {
@@ -95,6 +102,11 @@ class FeatureSwitchingSpec extends SpecBase with BeforeAndAfterAll with FeatureS
     s"set ${UseAPI1812Model.name} property to false" in new Setup {
       featureSwitching.disableFeatureSwitch(UseAPI1812Model)
       (sys.props get UseAPI1812Model.name get) shouldBe "false"
+    }
+
+    s"set ${UseAPI1811Model.name} property to false" in new Setup {
+      featureSwitching.disableFeatureSwitch(UseAPI1811Model)
+      (sys.props get UseAPI1811Model.name get) shouldBe "false"
     }
   }
 

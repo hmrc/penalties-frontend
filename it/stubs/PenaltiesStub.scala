@@ -32,12 +32,14 @@ import java.time.{LocalDate, LocalDateTime}
 
 object PenaltiesStub {
   val vrn: String = "HMRC-MTD-VAT~VRN~123456789"
-  val getLspDataUrl: String = s"/penalties/etmp/penalties/$vrn\\?newApiModel=false"
-  val getLspDataUrlAgent: String = s"/penalties/etmp/penalties/$vrn\\?arn=123456789&newApiModel=false"
+  val getLspDataUrl: String = s"/penalties/etmp/penalties/$vrn\\?newApiModel=false&newFinancialApiModel=false"
+  val getLspDataUrlAgent: String = s"/penalties/etmp/penalties/$vrn\\?arn=123456789&newApiModel=false&newFinancialApiModel=false"
   val sampleDate1: LocalDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
 
-  val getPenaltyDetailsUrl: String = s"/penalties/etmp/penalties/$vrn\\?newApiModel=true"
-  val getPenaltyDetailsUrlAgent: String = s"/penalties/etmp/penalties/$vrn\\?arn=123456789&newApiModel=true"
+  val getPenaltyDetailsUrl1811ModelEnabled: String = s"/penalties/etmp/penalties/$vrn\\?newApiModel=true&newFinancialApiModel=true"
+  val getPenaltyDetailsUrlAgent1811ModelEnabled: String = s"/penalties/etmp/penalties/$vrn\\?arn=123456789&newApiModel=true&newFinancialApiModel=true"
+  val getPenaltyDetailsUrl1811ModelDisabled: String = s"/penalties/etmp/penalties/$vrn\\?newApiModel=true&newFinancialApiModel=false"
+  val getPenaltyDetailsUrlAgent1811ModelDisabled: String = s"/penalties/etmp/penalties/$vrn\\?arn=123456789&newApiModel=true&newFinancialApiModel=false"
 
   val sampleLspData: ETMPPayload = ETMPPayload(
     pointsTotal = 0,
@@ -178,6 +180,89 @@ object PenaltiesStub {
     ))
   )
 
+  val samplePenaltyDetailsNoMetaData: GetPenaltyDetails = GetPenaltyDetails(
+    totalisations = Some(Totalisations(
+      LSPTotalValue = Some(200),
+      penalisedPrincipalTotal = Some(2000),
+      LPPPostedTotal = Some(165.25),
+      LPPEstimatedTotal = Some(15.26),
+      LPIPostedTotal = Some(1968.2),
+      LPIEstimatedTotal = Some(7)
+    )),
+    lateSubmissionPenalty = Some(
+      LateSubmissionPenalty(
+        summary = LSPSummary(
+          activePenaltyPoints = 10,
+          inactivePenaltyPoints = 12,
+          regimeThreshold = 10,
+          penaltyChargeAmount = 684.25
+        ),
+        details = Seq(LSPDetails(
+          penaltyNumber = "12345678901234",
+          penaltyOrder = "01",
+          penaltyCategory = LSPPenaltyCategoryEnum.Point,
+          penaltyStatus = LSPPenaltyStatusEnum.Active,
+          FAPIndicator = Some("X"),
+          penaltyCreationDate = LocalDate.parse("2069-10-30"),
+          penaltyExpiryDate = LocalDate.parse("2069-10-30"),
+          expiryReason = Some("FAP"),
+          communicationsDate = LocalDate.parse("2069-10-30"),
+          lateSubmissions = Some(Seq(
+            LateSubmission(
+              taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
+              taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
+              taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
+              returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
+              taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+            )
+          )),
+          appealInformation = Some(Seq(
+            AppealInformationType(
+              appealStatus = Some(AppealStatusEnum.Unappealable),
+              appealLevel = Some(AppealLevelEnum.HMRC)
+            )
+          )),
+          chargeAmount = Some(200),
+          chargeOutstandingAmount = Some(200),
+          chargeDueDate = Some(LocalDate.parse("2069-10-30"))
+        ))
+      )
+    ),
+    latePaymentPenalty = Some(v3LatePaymentPenalty(
+      details = Seq(LPPDetails(
+        principalChargeReference = "12345678901234",
+        penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
+        penaltyStatus = LPPPenaltyStatusEnum.Accruing,
+        penaltyAmountPaid = Some(1001.45),
+        penaltyAmountOutstanding = Some(99.99),
+        LPP1LRDays = Some("15"),
+        LPP1HRDays = Some("31"),
+        LPP2Days = Some("31"),
+        LPP1LRCalculationAmount = Some(99.99),
+        LPP1HRCalculationAmount = Some(99.99),
+        LPP2Percentage = Some(4.00),
+        LPP1LRPercentage = Some(2.00),
+        LPP1HRPercentage = Some(BigDecimal(2.00).setScale(2)),
+        penaltyChargeCreationDate = LocalDate.parse("2069-10-30"),
+        communicationsDate = LocalDate.parse("2069-10-30"),
+        penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
+        appealInformation = Some(Seq(AppealInformationType(
+          appealStatus = Some(AppealStatusEnum.Unappealable),
+          appealLevel = Some(AppealLevelEnum.HMRC)
+        ))),
+        principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
+        principalChargeBillingTo = LocalDate.parse("2069-10-30"),
+        principalChargeDueDate = LocalDate.parse("2069-10-30"),
+        principalChargeLatestClearing = None,
+        penaltyChargeReference = Some("PEN1234567"),
+        LPPDetailsMetadata = LPPDetailsMetadata(
+          mainTransaction = None,
+          outstandingAmount = None
+        )
+      ))
+    ))
+  )
+
   val sampleInvalidPenaltyDetailsJson = Json.obj(
     "totalisations" -> {
       "LSPTotalValue" -> 200
@@ -193,33 +278,38 @@ object PenaltiesStub {
     )
   )
 
-  def getPenaltyDetailsStub(): StubMapping = stubFor(get(urlMatching(getPenaltyDetailsUrl))
+  def getPenaltyDetailsStub(useNewFinancialModel: Boolean = false): StubMapping =
+    stubFor(get(urlMatching(if (useNewFinancialModel) getPenaltyDetailsUrl1811ModelEnabled else getPenaltyDetailsUrl1811ModelDisabled))
     .willReturn(
       aResponse()
         .withStatus(Status.OK)
         .withBody(
-          Json.toJson(samplePenaltyDetails).toString()
+          Json.toJson(if (useNewFinancialModel) samplePenaltyDetails else samplePenaltyDetailsNoMetaData).toString()
         )
     )
   )
 
-  def returnPenaltyDetailsStub(penaltyDetailsToReturn: GetPenaltyDetails): StubMapping = stubFor(get(urlMatching(getPenaltyDetailsUrl))
+  def returnPenaltyDetailsStub(penaltyDetailsToReturn: GetPenaltyDetails, useNewFinancialModel: Boolean = false): StubMapping =
+    stubFor(get(urlMatching(if (useNewFinancialModel) getPenaltyDetailsUrl1811ModelEnabled else getPenaltyDetailsUrl1811ModelDisabled))
     .willReturn(
       aResponse()
         .withStatus(Status.OK)
         .withBody(
           Json.toJson(penaltyDetailsToReturn).toString
         )
-    ))
+    )
+  )
 
-  def returnPenaltyDetailsStubAgent(penaltyDetailsToReturn: GetPenaltyDetails): StubMapping = stubFor(get(urlMatching(getPenaltyDetailsUrlAgent))
+  def returnPenaltyDetailsStubAgent(penaltyDetailsToReturn: GetPenaltyDetails, useNewFinancialModel: Boolean = false): StubMapping =
+    stubFor(get(urlMatching(if (useNewFinancialModel) getPenaltyDetailsUrlAgent1811ModelEnabled else getPenaltyDetailsUrlAgent1811ModelDisabled))
     .willReturn(
       aResponse()
         .withStatus(Status.OK)
         .withBody(
           Json.toJson(penaltyDetailsToReturn).toString
         )
-    ))
+    )
+  )
 
   def lspWithMultiplePenaltyPeriodDataStub(): StubMapping = stubFor(get(urlMatching(getLspDataUrl))
     .willReturn(
@@ -267,14 +357,16 @@ object PenaltiesStub {
   )
 
 
-  def penaltyDetailsUpstreamErrorStub(): StubMapping = stubFor(get(urlMatching(getPenaltyDetailsUrl))
-    .willReturn(
-      aResponse()
-        .withStatus(Status.INTERNAL_SERVER_ERROR).withBody("Upstream Error")
-    )
+  def penaltyDetailsUpstreamErrorStub(useNewFinancialModel: Boolean = false): StubMapping =
+    stubFor(get(urlMatching(if(useNewFinancialModel) getPenaltyDetailsUrl1811ModelEnabled else getPenaltyDetailsUrl1811ModelDisabled))
+      .willReturn(
+        aResponse()
+          .withStatus(Status.INTERNAL_SERVER_ERROR).withBody("Upstream Error")
+      )
   )
 
-  def invalidPenaltyDetailsStub(): StubMapping = stubFor(get(urlMatching(getPenaltyDetailsUrl))
+  def invalidPenaltyDetailsStub(useNewFinancialModel: Boolean = false): StubMapping =
+    stubFor(get(urlMatching(if(useNewFinancialModel) getPenaltyDetailsUrl1811ModelEnabled else getPenaltyDetailsUrl1811ModelDisabled))
     .willReturn(
       aResponse()
         .withStatus(Status.OK)

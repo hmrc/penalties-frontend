@@ -116,7 +116,7 @@ object LPPDetails extends JsonUtils {
 
 case class LPPDetailsMetadata(
                                mainTransaction: Option[MainTransactionEnum.Value],
-                               outstandingAmount: Option[Int]
+                               outstandingAmount: Option[BigDecimal]
                              )
 
 object LPPDetailsMetadata {

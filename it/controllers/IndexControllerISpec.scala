@@ -33,13 +33,18 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.AuthStub
-import stubs.PenaltiesStub.{returnLSPDataStub, returnPenaltyDetailsStub, returnPenaltyDetailsStubAgent}
+import stubs.PenaltiesStub._
 import testUtils.IntegrationSpecCommonBase
 import uk.gov.hmrc.http.SessionKeys.authToken
 import utils.SessionKeys
 import java.time.{LocalDate, LocalDateTime}
 
+import config.AppConfig
+
 class IndexControllerISpec extends IntegrationSpecCommonBase {
+
+  val appConfig: AppConfig = injector.instanceOf[AppConfig]
+
   val sampleDate1: LocalDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
   val sampleDate1V2: LocalDate = sampleDate1.toLocalDate
   val sampleDate2: LocalDateTime = LocalDateTime.of(2021, 2, 1, 1, 1, 1)
