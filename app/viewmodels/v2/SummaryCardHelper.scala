@@ -18,7 +18,8 @@ package viewmodels.v2
 
 import models.User
 import models.v3.appealInfo.AppealStatusEnum
-import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum}
+import models.v3.lpp.MainTransactionEnum._
+import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum}
 import models.v3.lsp._
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
@@ -342,8 +343,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   private def lppCardBody(lpp: LPPDetails)(implicit messages: Messages): Seq[SummaryListRow] = {
     Seq(
       summaryListRow(messages("summaryCard.lpp.key2"), Html(messages("summaryCard.lpp.key2.value.lpp1"))),
-      //TODO: get the reason from New API Call
-      summaryListRow(messages("summaryCard.lpp.key3"), Html(messages(getLPPPenaltyReasonKey("reason TODO"),
+      summaryListRow(messages("summaryCard.lpp.key3"), Html(messages(getLPPPenaltyReasonKey(lpp.LPPDetailsMetadata.mainTransaction.get),
         dateToString(lpp.principalChargeBillingFrom),
         dateToString(lpp.principalChargeBillingTo)))
       ),
@@ -355,8 +355,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   private def lppAdditionalCardBody(lpp: LPPDetails)(implicit messages: Messages): Seq[SummaryListRow] = {
     Seq(
       summaryListRow(messages("summaryCard.lpp.key2"), Html(messages("summaryCard.lpp.key2.value.lpp2"))),
-      //TODO: get the reason from New API Call
-      summaryListRow(messages("summaryCard.lpp.key3"), Html(messages(getLPPAdditionalPenaltyReasonKey("reason TODO"),
+      summaryListRow(messages("summaryCard.lpp.key3"), Html(messages(getLPPPenaltyReasonKey(lpp.LPPDetailsMetadata.mainTransaction.get),
         dateToString(lpp.principalChargeBillingFrom),
         dateToString(lpp.principalChargeBillingTo)))
       ),
@@ -373,9 +372,19 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     }
   }
 
-  private def getLPPAdditionalPenaltyReasonKey(reason: String): String = "summaryCard.lpp.key3.value.vat" // TODO: New API call for its implementation
-
-  private def getLPPPenaltyReasonKey(reason: String): String = "summaryCard.lpp.key3.value.vat" // TODO: New API call for its implementation
+  private def getLPPPenaltyReasonKey(mainTransactionEnum: MainTransactionEnum.Value): String = {
+    mainTransactionEnum match {
+      case VATReturnFirstLPP | VATReturnSecondLPP => "summaryCard.lpp.key3.value.vat"
+      case CentralAssessmentFirstLPP | CentralAssessmentSecondLPP => "summaryCard.lpp.key3.value.centralAssessment"
+      case OfficersAssessmentFirstLPP | OfficersAssessmentSecondLPP => "summaryCard.lpp.key3.value.officersAssessment"
+      case ErrorCorrectionFirstLPP | ErrorCorrectionSecondLPP => "summaryCard.lpp.key3.value.ecn"
+      case AdditionalAssessmentFirstLPP | AdditionalAssessmentSecondLPP => "summaryCard.lpp.key3.value.vat" //TODO: content to be added later
+      case ProtectiveAssessmentFirstLPP | ProtectiveAssessmentSecondLPP => "summaryCard.lpp.key3.value.vat" //TODO: content to be added later
+      case POAReturnChargeFirstLPP | POAReturnChargeSecondLPP => "summaryCard.lpp.key3.value.vat" //TODO: content to be added later
+      case AAReturnChargeFirstLPP | AAReturnChargeSecondLPP => "summaryCard.lpp.key3.value.vat" //TODO: content to be added later
+      case _ => "summaryCard.lpp.key3.value.vat" //Should be unreachable
+    }
+  }
 
   def tagStatus(lsp: Option[LSPDetails], lpp: Option[LPPDetails])(implicit messages: Messages): Tag = {
     if (lsp.isDefined) {
