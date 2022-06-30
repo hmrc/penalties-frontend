@@ -18,10 +18,9 @@ package connectors
 
 
 import config.AppConfig
-import config.featureSwitches.{FeatureSwitching, UseAPI1811Model, UseAPI1812Model}
-import connectors.httpParsers.PenaltiesConnectorParser.GetPenaltyDetailsResponse
+import config.featureSwitches.UseAPI1811Model
 import connectors.httpParsers.{InvalidJson, UnexpectedFailure}
-import models.{ETMPPayload, User}
+import models.User
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

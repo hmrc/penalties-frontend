@@ -18,7 +18,6 @@ package controllers.testOnly
 
 import config.AppConfig
 import config.featureSwitches.{FeatureSwitch, FeatureSwitching}
-import play.api.Configuration
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger

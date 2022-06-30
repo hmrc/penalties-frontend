@@ -289,7 +289,7 @@ object PenaltiesStub {
     )
   )
 
-  def returnPenaltyDetailsStub(penaltyDetailsToReturn: GetPenaltyDetails, useNewFinancialModel: Boolean = false): StubMapping =
+  def returnPenaltyDetailsStub(penaltyDetailsToReturn: GetPenaltyDetails, useNewFinancialModel: Boolean = true): StubMapping =
     stubFor(get(urlMatching(if (useNewFinancialModel) getPenaltyDetailsUrl1811ModelEnabled else getPenaltyDetailsUrl1811ModelDisabled))
     .willReturn(
       aResponse()
@@ -300,7 +300,7 @@ object PenaltiesStub {
     )
   )
 
-  def returnPenaltyDetailsStubAgent(penaltyDetailsToReturn: GetPenaltyDetails, useNewFinancialModel: Boolean = false): StubMapping =
+  def returnPenaltyDetailsStubAgent(penaltyDetailsToReturn: GetPenaltyDetails, useNewFinancialModel: Boolean = true): StubMapping =
     stubFor(get(urlMatching(if (useNewFinancialModel) getPenaltyDetailsUrlAgent1811ModelEnabled else getPenaltyDetailsUrlAgent1811ModelDisabled))
     .willReturn(
       aResponse()
