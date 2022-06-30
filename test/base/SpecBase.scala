@@ -710,9 +710,9 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   val sampleLatePaymentPenaltyAdditionalv2: LPPDetails = LPPDetails(
     principalChargeReference = "12345678901234",
     penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
-    penaltyStatus = LPPPenaltyStatusEnum.Accruing,
+    penaltyStatus = LPPPenaltyStatusEnum.Posted,
     penaltyAmountPaid = Some(1001.45),
-    penaltyAmountOutstanding = Some(99.99),
+    penaltyAmountOutstanding = Some(0),
     LPP1LRDays = Some("15"),
     LPP1HRDays = Some("31"),
     LPP2Days = Some("31"),
@@ -721,18 +721,15 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     LPP2Percentage = Some(4.00),
     LPP1LRPercentage = Some(2.00),
     LPP1HRPercentage = Some(BigDecimal(2.00).setScale(2)),
-    penaltyChargeCreationDate = LocalDate.parse("2069-10-30"),
-    communicationsDate = LocalDate.parse("2069-10-30"),
-    penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
-    appealInformation = Some(Seq(AppealInformationType(
-      appealStatus = Some(AppealStatusEnumv2.Rejected),
-      appealLevel = Some(AppealLevelEnum.HMRC)
-    ))),
-    principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
-    principalChargeBillingTo = LocalDate.parse("2069-10-30"),
-    principalChargeDueDate = LocalDate.parse("2069-10-30"),
+    penaltyChargeCreationDate = LocalDate.now(),
+    communicationsDate = LocalDate.now(),
+    penaltyChargeDueDate = LocalDate.now(),
+    appealInformation = None,
+    principalChargeBillingFrom = LocalDate.now(),
+    principalChargeBillingTo = LocalDate.now(),
+    principalChargeDueDate = LocalDate.now(),
     penaltyChargeReference = Some("PEN1234567"),
-    principalChargeLatestClearing = None,
+    principalChargeLatestClearing = Some(LocalDate.now()),
     LPPDetailsMetadata = LPPDetailsMetadata(
       mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
       outstandingAmount = Some(99)
@@ -818,7 +815,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
   val sampleLatePaymentPenaltyPaidv2: LPPDetails = LPPDetails(
     principalChargeReference = "12345678901234",
     penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-    penaltyStatus = LPPPenaltyStatusEnum.Accruing,
+    penaltyStatus = LPPPenaltyStatusEnum.Posted,
     penaltyAmountPaid = Some(1001.45),
     penaltyAmountOutstanding = Some(0.00),
     LPP1LRDays = Some("15"),
@@ -829,18 +826,15 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     LPP2Percentage = Some(4.00),
     LPP1LRPercentage = Some(2.00),
     LPP1HRPercentage = Some(BigDecimal(2.00).setScale(2)),
-    penaltyChargeCreationDate = LocalDate.parse("2069-10-30"),
-    communicationsDate = LocalDate.parse("2069-10-30"),
-    penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
-    appealInformation = Some(Seq(AppealInformationType(
-      appealStatus = Some(AppealStatusEnumv2.Unappealable),
-      appealLevel = Some(AppealLevelEnum.HMRC)
-    ))),
-    principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
-    principalChargeBillingTo = LocalDate.parse("2069-10-30"),
-    principalChargeDueDate = LocalDate.parse("2069-10-30"),
+    penaltyChargeCreationDate = LocalDate.now(),
+    communicationsDate = LocalDate.now(),
+    penaltyChargeDueDate = LocalDate.now(),
+    appealInformation =   None,
+    principalChargeBillingFrom = LocalDate.now(),
+    principalChargeBillingTo = LocalDate.now(),
+    principalChargeDueDate = LocalDate.now(),
     penaltyChargeReference = Some("PEN1234567"),
-    principalChargeLatestClearing = None,
+    principalChargeLatestClearing = Some(LocalDate.now()),
     LPPDetailsMetadata = LPPDetailsMetadata(
       mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
       outstandingAmount = Some(99)
@@ -1349,19 +1343,11 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
     sampleLatePaymentPenaltyPaid
   )
 
-  val sampleLatePaymentPenaltyDatav2: Seq[LPPDetails] = Seq(
-    sampleLatePaymentPenaltyPaidv2
-  )
-
   val sampleLatePaymentPenaltyReason: Seq[LatePaymentPenalty] = Seq(
     sampleLatePaymentPenaltyPaid
   )
     val sampleLatePaymentPenaltyAdditionalReason: Seq[LatePaymentPenalty] = Seq(
     sampleLatePaymentPenaltyAdditional
-  )
-
-    val sampleLatePaymentPenaltyAdditionalReasonv2: Seq[LPPDetails] = Seq(
-    sampleLatePaymentPenaltyAdditionalv2
   )
 
   val sampleLatePaymentPenaltyDataUnpaidVAT: Seq[LatePaymentPenalty] = Seq(

@@ -20,7 +20,9 @@ import assets.messages.IndexMessages._
 import base.SpecBase
 import models.User
 import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
+import models.v3.lpp.LPPDetailsMetadata
 import models.v3.lpp.LPPPenaltyCategoryEnum.{LPP1, LPP2}
+import models.v3.lpp.MainTransactionEnum.{CentralAssessmentFirstLPP, CentralAssessmentSecondLPP, ErrorCorrectionFirstLPP, ErrorCorrectionSecondLPP, OfficersAssessmentFirstLPP, OfficersAssessmentSecondLPP, VATReturnFirstLPP, VATReturnSecondLPP}
 import models.v3.lsp.{LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum}
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
@@ -68,10 +70,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
     ),
     Tag(content = Text("paid")),
     penaltyChargeReference = Some("PEN1234567"),
-    principalChargeReference = "12345678",
-    amountDue = 400.0,
-    isPenaltyPaid = true,
+    principalChargeReference = "12345678901234",
     isVatPaid = true,
+    amountDue = 1001.45,
+    isPenaltyPaid = true,
     penaltyCategory = LPP1
   )
 
@@ -89,10 +91,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       helper.summaryListRow(datePaid, Html(dateTimeToString(LocalDateTime.now)))
     ),
     Tag(content = Text("paid")),
-    penaltyChargeReference = Some("123456789"),
-    principalChargeReference = "12345678",
+    penaltyChargeReference = Some("PEN1234567"),
+    principalChargeReference = "12345678901234",
     isPenaltyPaid = true,
-    amountDue = 123.45,
+    amountDue = 1001.45,
     isVatPaid = true,
     penaltyCategory = LPP2
   )
@@ -406,98 +408,109 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           isVatPaid = true,
           penaltyCategory = LPP1
         )
-        "return SummaryCards when given Late Payment penalty with penalty Reason VAT_NOT_PAID_WITHIN_15_DAYS" when {
-          "populateLatePaymentPenaltyCard is called" ignore {
-            val result = helper.populateLatePaymentPenaltyCard(Some(sampleLatePaymentPenaltyDatav2))
+
+        "return SummaryCards when given First Late Payment penalty and chargeType is VAT Return 1st LPP (4703)" when {
+          "populateLatePaymentPenaltyCard is called" in {
+            val firstLatePaymentPenaltyForVAT = Seq(sampleLatePaymentPenaltyPaidv2.copy(
+              LPPDetailsMetadata = LPPDetailsMetadata(
+                mainTransaction = Some(VATReturnFirstLPP), outstandingAmount = Some(1)
+              )
+            ))
+            val result = helper.populateLatePaymentPenaltyCard(Some(firstLatePaymentPenaltyForVAT))
             result shouldBe Some(Seq(sampleLPPSummaryCardPenaltyPaid("VAT")))
           }
+        }
 
-          "return SummaryCards when given Late Payment penalty reason VAT_NOT_PAID_WITHIN_30_DAYS" when {
-            "populateLatePaymentPenaltyCard is called" ignore {
-              val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyReasonVATNotPaidWithin30Daysv2)))
-              result.get.map(_.cardRows.exists(_.value.content == HtmlContent("VAT not paid within 30 days"))) shouldBe List(true)
-            }
+        "return SummaryCards when given Second Late Payment penalty and chargeType is VAT Return 2nd LPP (4704)" when {
+          "populateLatePaymentPenaltyCard is called" in {
+            val secondLatePaymentPenaltyForVAT = Seq(sampleLatePaymentPenaltyAdditionalv2.copy(
+              LPPDetailsMetadata = LPPDetailsMetadata(
+                mainTransaction = Some(VATReturnSecondLPP), outstandingAmount = Some(1)
+              )
+            ))
+            val result = helper.populateLatePaymentPenaltyCard(Some(secondLatePaymentPenaltyForVAT))
+            result shouldBe Some(Seq(sampleLPPAdditionalSummaryCardPenaltyPaid("VAT")))
           }
+        }
 
-          "return SummaryCards when given Late Payment penalty 'Additional' show reason VAT_NOT_PAID_AFTER_30_DAYS" when {
-            "populateLatePaymentPenaltyAdditionalCard is called" ignore {
-              val result = helper.populateLatePaymentPenaltyCard(Some(sampleLatePaymentPenaltyAdditionalReasonv2))
-              result shouldBe Some(Seq(sampleLPPAdditionalSummaryCardPenaltyPaid("VAT")))
-            }
+        "return SummaryCards when given First Late Payment penalty and chargeType is VAT Central Assessment 1st LPP (4723)" when {
+          "populateLatePaymentPenaltyCard is called" in {
+            val firstLatePaymentPenaltyForCentralAssessment = Seq(sampleLatePaymentPenaltyPaidv2.copy(
+              LPPDetailsMetadata = LPPDetailsMetadata(
+                mainTransaction = Some(CentralAssessmentFirstLPP), outstandingAmount = Some(1)
+              )
+            ))
+            val result = helper.populateLatePaymentPenaltyCard(Some(firstLatePaymentPenaltyForCentralAssessment))
+            result shouldBe Some(Seq(sampleLPPSummaryCardPenaltyPaid("Central Assessment of VAT")))
           }
+        }
 
-          "return SummaryCards when given Late Payment penalty show reason CENTRAL_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS" when {
-            "populateLatePaymentPenaltyAdditionalCard is called" ignore {
-              val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyReasonVATNotPaidWithin30Daysv2)))
-              result.get.map(_.cardRows.exists(_.value.content == HtmlContent("Central Assessment not paid within 15 days"))) shouldBe List(true)
-            }
+        "return SummaryCards when given SecondLate Payment penalty and chargeType is VAT Central Assessment 2nd LPP (4724)" when {
+          "populateLatePaymentPenaltyCard is called" in {
+            val secondLatePaymentPenaltyForCentralAssessment = Seq(sampleLatePaymentPenaltyAdditionalv2.copy(
+              LPPDetailsMetadata = LPPDetailsMetadata(
+                mainTransaction = Some(CentralAssessmentSecondLPP), outstandingAmount = Some(1)
+              )
+            ))
+            val result = helper.populateLatePaymentPenaltyCard(Some(secondLatePaymentPenaltyForCentralAssessment))
+            result shouldBe Some(Seq(sampleLPPAdditionalSummaryCardPenaltyPaid("Central Assessment of VAT")))
           }
+        }
 
-          "return SummaryCards when given Late Payment penalty show reason CENTRAL_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS" when {
-            "populateLatePaymentPenaltyAdditionalCard is called" ignore {
-              val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyReasonVATNotPaidWithin30Daysv2)))
-              result.get.map(_.cardRows.exists(_.value.content == HtmlContent("Central Assessment not paid within 30 days"))) shouldBe List(true)
-            }
+        "return SummaryCards when given First Late Payment penalty and chargeType is VAT Error Correction Notice 1st LPP (4743)" when {
+          "populateLatePaymentPenaltyCard is called" in {
+            val firstLatePaymentPenaltyForErrorCorrectionNotice = Seq(sampleLatePaymentPenaltyPaidv2.copy(
+              LPPDetailsMetadata = LPPDetailsMetadata(
+                mainTransaction = Some(ErrorCorrectionFirstLPP), outstandingAmount = Some(1)
+              )
+            ))
+            val result = helper.populateLatePaymentPenaltyCard(Some(firstLatePaymentPenaltyForErrorCorrectionNotice))
+            result shouldBe Some(Seq(sampleLPPSummaryCardPenaltyPaid("Error Correction Notice of VAT")))
           }
+        }
 
-          "return SummaryCards when given Late Payment penalty 'Additional' show reason CENTRAL_ASSESSMENT_NOT_PAID_AFTER_30_DAYS" when {
-            "populateLatePaymentPenaltyAdditionalCard is called" ignore {
-              val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyReasonVATNotPaidWithin30Daysv2)))
-              result shouldBe Some(Seq(sampleLPPAdditionalSummaryCardPenaltyPaid("CENTRAL_ASSESSMENT")))
-            }
+        "return SummaryCards when given SecondLate Payment penalty and chargeType is VAT Error Correction Notice 2nd LPP (4744)" when {
+          "populateLatePaymentPenaltyCard is called" in {
+            val secondLatePaymentPenaltyForErrorCorrectionNotice = Seq(sampleLatePaymentPenaltyAdditionalv2.copy(
+              LPPDetailsMetadata = LPPDetailsMetadata(
+                mainTransaction = Some(ErrorCorrectionSecondLPP), outstandingAmount = Some(1)
+              )
+            ))
+            val result = helper.populateLatePaymentPenaltyCard(Some(secondLatePaymentPenaltyForErrorCorrectionNotice))
+            result shouldBe Some(Seq(sampleLPPAdditionalSummaryCardPenaltyPaid("Error Correction Notice of VAT")))
           }
+        }
 
-          "return SummaryCards when given Late Payment penalty show reason ERROR_CORRECTION_NOTICE_NOT_PAID_WITHIN_15_DAYS" when {
-            "populateLatePaymentPenaltyAdditionalCard is called" ignore {
-              val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyReasonVATNotPaidWithin30Daysv2)))
-              result.get.map(_.cardRows.exists(_.value.content == HtmlContent("Error Correction Notice not paid within 15 days"))) shouldBe List(true)
-            }
+        "return SummaryCards when given First Late Payment penalty and chargeType is VAT Officer's Assessment 1st LPP (4741)" when {
+          "populateLatePaymentPenaltyCard is called" in {
+            val firstLatePaymentPenaltyForOfficersAssessment = Seq(sampleLatePaymentPenaltyPaidv2.copy(
+              LPPDetailsMetadata = LPPDetailsMetadata(
+                mainTransaction = Some(OfficersAssessmentFirstLPP), outstandingAmount = Some(1)
+              )
+            ))
+            val result = helper.populateLatePaymentPenaltyCard(Some(firstLatePaymentPenaltyForOfficersAssessment))
+            result shouldBe Some(Seq(sampleLPPSummaryCardPenaltyPaid("Officer’s Assessment of VAT")))
           }
+        }
 
-          "return SummaryCards when given Late Payment penalty show reason ERROR_CORRECTION_NOTICE_NOT_PAID_WITHIN_30_DAYS" when {
-            "populateLatePaymentPenaltyAdditionalCard is called" ignore {
-              val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyReasonVATNotPaidWithin30Daysv2)))
-              result.get.map(_.cardRows.exists(_.value.content == HtmlContent("Error Correction Notice not paid within 30 days"))) shouldBe List(true)
-            }
+        "return SummaryCards when given SecondLate Payment penalty and chargeType is VAT Officer's Assessment 2nd LPP (4742)" when {
+          "populateLatePaymentPenaltyCard is called" in {
+            val secondLatePaymentPenaltyForOfficersAssessment = Seq(sampleLatePaymentPenaltyAdditionalv2.copy(
+              LPPDetailsMetadata = LPPDetailsMetadata(
+                mainTransaction = Some(OfficersAssessmentSecondLPP), outstandingAmount = Some(1)
+              )
+            ))
+            val result = helper.populateLatePaymentPenaltyCard(Some(secondLatePaymentPenaltyForOfficersAssessment))
+            result shouldBe Some(Seq(sampleLPPAdditionalSummaryCardPenaltyPaid("Officer’s Assessment of VAT")))
           }
+        }
 
-          "return SummaryCards when given Late Payment penalty 'Additional' show reason ERROR_CORRECTION_NOTICE_NOT_PAID_AFTER_30_DAYS" when {
-            "populateLatePaymentPenaltyAdditionalCard is called" ignore {
-              val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyReasonVATNotPaidWithin30Daysv2)))
-              result shouldBe Some(Seq(sampleLPPAdditionalSummaryCardPenaltyPaid("ERROR_CORRECTION_NOTICE")))
-            }
-          }
-
-          "return SummaryCards when given Late Payment penalty show reason OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_15_DAYS" when {
-            " OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS" when {
-              "populateLatePaymentPenaltyAdditionalCard is called" ignore {
-                val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyReasonVATNotPaidWithin30Daysv2)))
-                result.get.map(_.cardRows.exists(_.value.content == HtmlContent("Officer’s Assessment not paid within 15 days"))) shouldBe List(true)
-              }
-            }
-          }
-
-          "return SummaryCards when given Late Payment penalty show reason OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS" when {
-            "populateLatePaymentPenaltyAdditionalCard is called" ignore {
-              val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyReasonVATNotPaidWithin30Daysv2)))
-              result.get.map(_.cardRows.exists(_.value.content == HtmlContent("Officer’s Assessment not paid within 30 days"))) shouldBe List(true)
-            }
-          }
-
-          "return SummaryCards when given Late Payment penalty 'Additional' show reason OFFICERS_ASSESSMENT_NOT_PAID_AFTER_30_DAYS" when {
-            "populateLatePaymentPenaltyAdditionalCard is called" ignore {
-              val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyReasonVATNotPaidWithin30Daysv2)))
-              result shouldBe Some(Seq(sampleLPPAdditionalSummaryCardPenaltyPaid("OFFICERS_ASSESSMENT")))
-            }
-          }
-
-          "return SummaryCards with VAT payment date in LPP " when {
-            "populateLatePaymentPenalty for is called" ignore {
-              //TODO: more info on paymentReceivedDate
-              val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLPPDetailsVATPaymentDue.copy(
-                penaltyAmountPaid = None,
-                penaltyAmountOutstanding = None,
-                appealInformation = None
+        "return SummaryCards with VAT payment date in LPP " when {
+            "populateLatePaymentPenalty for is called" in {
+              val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyPaidv2.copy(
+                LPPDetailsMetadata = LPPDetailsMetadata(
+                  mainTransaction = Some(VATReturnFirstLPP), outstandingAmount = Some(1)
+                )
               ))))
               result shouldBe Some(Seq(sampleLPPSummaryCardPenaltyPaid("VAT")))
             }
@@ -527,7 +540,6 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         }
       }
     }
-  }
 
   "return Seq[SummaryListRow] when give a PenaltyPoint" when {
     "returnSubmittedCardBody is called" when {

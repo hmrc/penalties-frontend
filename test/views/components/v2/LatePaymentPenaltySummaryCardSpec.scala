@@ -205,11 +205,11 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         doc.select("dt").get(2).text() shouldBe "Charge due"
         doc.select("dd").get(2).text() shouldBe "1 February 2020"
       }
-//      TODO: implement Reason
-      "display the date in VAT Payment date" ignore {
+
+      "display the date in Charge due" in {
         val docVATPaymentDate: Document = asDocument(summaryCardHtml.apply(summaryCardModelVATPaymentDate))
-        docVATPaymentDate.select("dt").get(2).text() shouldBe "VAT payment date"
-        docVATPaymentDate.select("dd").get(2).text() shouldBe "1 March 2020"
+        docVATPaymentDate.select("dt").get(2).text() shouldBe "Charge due"
+        docVATPaymentDate.select("dd").get(2).text() shouldBe "7 March 2020"
       }
 
       "display the appeal link" in {
@@ -271,7 +271,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
     }
 
     "given an appealed penalty" should {
-       val docWithAppealedPenaltyAccepted: Document =
+      val docWithAppealedPenaltyAccepted: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyAccepted))
       val docWithAppealedPenaltyAcceptedAgent: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyAcceptedAgent))
