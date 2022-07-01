@@ -708,16 +708,16 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       val request = controller.onPageLoad("987654321", true)(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#main-content h1").first().ownText() shouldBe "Additional penalty"
+      parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
       parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
       parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
       parsedBody.select("#main-content .govuk-body").get(0).text() shouldBe
-        "The additional penalty is charged from 31 days after the payment due date, until the total is paid."
+        "The penalty is charged from 31 days after the payment due date, until the total is paid."
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£123.45"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Number of days since day 31"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "9 days"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Additional penalty rate"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Penalty rate"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "4%"
       parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dt").text() shouldBe "Calculation"
       parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dd").text() shouldBe "VAT amount unpaid × 4% × number of days since day 31 ÷ 365"
@@ -734,16 +734,16 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       val request = controller.onPageLoad("987654322", true)(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#main-content h1").first().ownText() shouldBe "Additional penalty"
+      parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
       parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
       parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
       parsedBody.select("#main-content p").get(1).text() shouldBe
-        "The additional penalty is charged from 31 days after the payment due date, until the total is paid."
+        "The penalty is charged from 31 days after the payment due date, until the total is paid."
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£123.45"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Number of days since day 31"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "9 days"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Additional penalty rate"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Penalty rate"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "4%"
       parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dt").text() shouldBe "Calculation"
       parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dd").text() shouldBe "VAT amount unpaid × 4% × number of days since day 31 ÷ 365"
@@ -851,16 +851,16 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       val request = controller.onPageLoadForNewAPI("54312345678901", "LPP2")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#main-content h1").first().ownText() shouldBe "Additional penalty"
+      parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
       parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
       parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
       parsedBody.select("#main-content .govuk-body").get(0).text() shouldBe
-        "The additional penalty is charged from 31 days after the payment due date, until the total is paid."
+        "The penalty is charged from 31 days after the payment due date, until the total is paid."
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£123.45"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Number of days since day 31"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "9 days"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Additional penalty rate"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Penalty rate"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "4%"
       parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dt").text() shouldBe "Calculation"
       parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dd").text() shouldBe "VAT amount unpaid × 4% × number of days since day 31 ÷ 365"
@@ -875,16 +875,16 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       val request = controller.onPageLoadForNewAPI("65431234567890", "LPP2")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#main-content h1").first().ownText() shouldBe "Additional penalty"
+      parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
       parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
       parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
       parsedBody.select("#main-content p").get(1).text() shouldBe
-        "The additional penalty is charged from 31 days after the payment due date, until the total is paid."
+        "The penalty is charged from 31 days after the payment due date, until the total is paid."
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£123.45"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Number of days since day 31"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "9 days"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Additional penalty rate"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Penalty rate"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "4%"
       parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dt").text() shouldBe "Calculation"
       parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dd").text() shouldBe "VAT amount unpaid × 4% × number of days since day 31 ÷ 365"

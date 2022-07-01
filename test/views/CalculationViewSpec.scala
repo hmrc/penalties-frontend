@@ -66,10 +66,10 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.breadcrumbWithLink(1) -> breadcrumb1,
         Selector.breadcrumbWithLink(2) -> breadcrumb2,
         Selector.breadcrumbWithLink(3) -> breadcrumb3,
-        Selector.title -> titleAdditional,
+        Selector.title -> titleLPP,
         Selector.periodWithText -> periodWithText,
         Selector.HeaderTextNotVisible -> periodHiddenText,
-        Selector.h1 -> headingAdditional,
+        Selector.h1 -> headingLPP,
         Selector.govukBody(1) -> p1Additional,
         Selector.summaryListRowKey(1) -> th1Additional,
         Selector.summaryListRowValue(1) -> "£50.50",
@@ -112,10 +112,10 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       implicit val doc: Document = asDocument(applyView())
 
       val expectedContent = Seq(
-        Selector.title -> titleAdditional,
+        Selector.title -> titleLPP,
         Selector.periodWithText -> periodWithText,
         Selector.HeaderTextNotVisible -> periodHiddenText,
-        Selector.h1 -> headingAdditional,
+        Selector.h1 -> headingLPP,
         Selector.govukBody(1) -> p1Additional,
         Selector.summaryListRowKey(1) -> th1LPP,
         Selector.summaryListRowValue(1) -> "£50.50",
