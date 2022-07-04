@@ -17,7 +17,6 @@
 package controllers
 
 import base.SpecBase
-import models.v3.GetPenaltyDetails
 import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{mock, reset, when}
