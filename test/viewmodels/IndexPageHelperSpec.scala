@@ -458,20 +458,20 @@ class IndexPageHelperSpec extends SpecBase {
               `type` = PenaltyTypeEnum.Financial,
               id = "1234567891",
               reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
-              dateCreated = sampleDate,
+              dateCreated = sampleDateTime,
               status = PointStatusEnum.Due,
               appealStatus = None,
               period = PaymentPeriod(
-                startDate = sampleDate,
-                endDate = sampleDate,
-                dueDate = sampleDate,
+                startDate = sampleDateTime,
+                endDate = sampleDateTime,
+                dueDate = sampleDateTime,
                 paymentStatus = PaymentStatusEnum.Due
               ),
               communications = Seq.empty,
               financial = Financial(
                 amountDue = 400.00,
                 outstandingAmountDue = 11.00,
-                dueDate = sampleDate
+                dueDate = sampleDateTime
               )
             )
           )
@@ -492,20 +492,20 @@ class IndexPageHelperSpec extends SpecBase {
               `type` = PenaltyTypeEnum.Financial,
               id = "1234567891",
               reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
-              dateCreated = sampleDate,
+              dateCreated = sampleDateTime,
               status = PointStatusEnum.Due,
               appealStatus = None,
               period = PaymentPeriod(
-                startDate = sampleDate,
-                endDate = sampleDate,
-                dueDate = sampleDate,
+                startDate = sampleDateTime,
+                endDate = sampleDateTime,
+                dueDate = sampleDateTime,
                 paymentStatus = PaymentStatusEnum.Due
               ),
               communications = Seq.empty,
               financial = Financial(
                 amountDue = 400.00,
                 outstandingAmountDue = 11.00,
-                dueDate = sampleDate
+                dueDate = sampleDateTime
               )
             )
           )
@@ -528,20 +528,20 @@ class IndexPageHelperSpec extends SpecBase {
               `type` = PenaltyTypeEnum.Financial,
               id = "1234567891",
               reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
-              dateCreated = sampleDate,
+              dateCreated = sampleDateTime,
               status = PointStatusEnum.Active,
               appealStatus = None,
               period = PaymentPeriod(
-                startDate = sampleDate,
-                endDate = sampleDate,
-                dueDate = sampleDate,
+                startDate = sampleDateTime,
+                endDate = sampleDateTime,
+                dueDate = sampleDateTime,
                 paymentStatus = PaymentStatusEnum.Paid
               ),
               communications = Seq.empty,
               financial = Financial(
                 amountDue = 400.00,
                 outstandingAmountDue = 0.00,
-                dueDate = sampleDate
+                dueDate = sampleDateTime
               )
             )
           )
@@ -600,20 +600,20 @@ class IndexPageHelperSpec extends SpecBase {
                 `type` = PenaltyTypeEnum.Financial,
                 id = "1234",
                 reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
-                dateCreated = sampleDate,
+                dateCreated = sampleDateTime,
                 status = PointStatusEnum.Due,
                 appealStatus = None,
                 period = PaymentPeriod(
-                  startDate = sampleDate,
-                  endDate = sampleDate,
-                  dueDate = sampleDate,
+                  startDate = sampleDateTime,
+                  endDate = sampleDateTime,
+                  dueDate = sampleDateTime,
                   paymentStatus = PaymentStatusEnum.Paid
                 ),
                 communications = Seq.empty,
                 financial = Financial(
                   amountDue = 100.34,
                   outstandingAmountDue = 50.12,
-                  dueDate = sampleDate,
+                  dueDate = sampleDateTime,
                   estimatedInterest = None,
                   crystalizedInterest = None
                 )
@@ -636,20 +636,20 @@ class IndexPageHelperSpec extends SpecBase {
                 `type` = PenaltyTypeEnum.Additional,
                 id = "1234",
                 reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
-                dateCreated = sampleDate,
+                dateCreated = sampleDateTime,
                 status = PointStatusEnum.Estimated,
                 appealStatus = None,
                 period = PaymentPeriod(
-                  startDate = sampleDate,
-                  endDate = sampleDate,
-                  dueDate = sampleDate,
+                  startDate = sampleDateTime,
+                  endDate = sampleDateTime,
+                  dueDate = sampleDateTime,
                   paymentStatus = PaymentStatusEnum.Paid
                 ),
                 communications = Seq.empty,
                 financial = Financial(
                   amountDue = 31.34,
                   outstandingAmountDue = 10.12,
-                  dueDate = sampleDate,
+                  dueDate = sampleDateTime,
                   estimatedInterest = None,
                   crystalizedInterest = None
                 )
@@ -658,20 +658,20 @@ class IndexPageHelperSpec extends SpecBase {
                 `type` = PenaltyTypeEnum.Financial,
                 id = "1234",
                 reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
-                dateCreated = sampleDate,
+                dateCreated = sampleDateTime,
                 status = PointStatusEnum.Estimated,
                 appealStatus = None,
                 period = PaymentPeriod(
-                  startDate = sampleDate,
-                  endDate = sampleDate,
-                  dueDate = sampleDate,
+                  startDate = sampleDateTime,
+                  endDate = sampleDateTime,
+                  dueDate = sampleDateTime,
                   paymentStatus = PaymentStatusEnum.Paid
                 ),
                 communications = Seq.empty,
                 financial = Financial(
                   amountDue = 100.34,
                   outstandingAmountDue = 50.12,
-                  dueDate = sampleDate,
+                  dueDate = sampleDateTime,
                   estimatedInterest = None,
                   crystalizedInterest = None
                 )
@@ -694,20 +694,20 @@ class IndexPageHelperSpec extends SpecBase {
                 `type` = PenaltyTypeEnum.Additional,
                 id = "1234",
                 reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
-                dateCreated = sampleDate,
+                dateCreated = sampleDateTime,
                 status = PointStatusEnum.Estimated,
                 appealStatus = None,
                 period = PaymentPeriod(
-                  startDate = sampleDate,
-                  endDate = sampleDate,
-                  dueDate = sampleDate,
+                  startDate = sampleDateTime,
+                  endDate = sampleDateTime,
+                  dueDate = sampleDateTime,
                   paymentStatus = PaymentStatusEnum.Paid
                 ),
                 communications = Seq.empty,
                 financial = Financial(
                   amountDue = 31.34,
                   outstandingAmountDue = 21.34,
-                  dueDate = sampleDate,
+                  dueDate = sampleDateTime,
                   estimatedInterest = None,
                   crystalizedInterest = None
                 )
@@ -716,20 +716,20 @@ class IndexPageHelperSpec extends SpecBase {
                 `type` = PenaltyTypeEnum.Financial,
                 id = "1234",
                 reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
-                dateCreated = sampleDate,
+                dateCreated = sampleDateTime,
                 status = PointStatusEnum.Estimated,
                 appealStatus = None,
                 period = PaymentPeriod(
-                  startDate = sampleDate,
-                  endDate = sampleDate,
-                  dueDate = sampleDate,
+                  startDate = sampleDateTime,
+                  endDate = sampleDateTime,
+                  dueDate = sampleDateTime,
                   paymentStatus = PaymentStatusEnum.Paid
                 ),
                 communications = Seq.empty,
                 financial = Financial(
                   amountDue = 100.34,
                   outstandingAmountDue = 50.23,
-                  dueDate = sampleDate,
+                  dueDate = sampleDateTime,
                   estimatedInterest = None,
                   crystalizedInterest = None
                 )
@@ -802,17 +802,17 @@ class IndexPageHelperSpec extends SpecBase {
               id = "1236",
               number = "3",
               appealStatus = None,
-              dateCreated = sampleDate,
-              dateExpired = Some(sampleDate),
+              dateCreated = sampleDateTime,
+              dateExpired = Some(sampleDateTime),
               status = PointStatusEnum.Due,
               reason = None,
               period = Some(
                 Seq(PenaltyPeriod(
-                  startDate = sampleDate,
-                  endDate = sampleDate,
+                  startDate = sampleDateTime,
+                  endDate = sampleDateTime,
                   submission = Submission(
-                    dueDate = sampleDate,
-                    submittedDate = Some(sampleDate),
+                    dueDate = sampleDateTime,
+                    submittedDate = Some(sampleDateTime),
                     status = SubmissionStatusEnum.Submitted
                   )
                 )
@@ -822,7 +822,7 @@ class IndexPageHelperSpec extends SpecBase {
                 Financial(
                   amountDue = 200.00,
                   outstandingAmountDue = 200.00,
-                  dueDate = sampleDate,
+                  dueDate = sampleDateTime,
                   estimatedInterest = None,
                   crystalizedInterest = None
                 )
@@ -833,17 +833,17 @@ class IndexPageHelperSpec extends SpecBase {
               id = "1235",
               number = "2",
               appealStatus = None,
-              dateCreated = sampleDate,
-              dateExpired = Some(sampleDate),
+              dateCreated = sampleDateTime,
+              dateExpired = Some(sampleDateTime),
               status = PointStatusEnum.Due,
               reason = None,
               period = Some(
                 Seq(PenaltyPeriod(
-                  startDate = sampleDate,
-                  endDate = sampleDate,
+                  startDate = sampleDateTime,
+                  endDate = sampleDateTime,
                   submission = Submission(
-                    dueDate = sampleDate,
-                    submittedDate = Some(sampleDate),
+                    dueDate = sampleDateTime,
+                    submittedDate = Some(sampleDateTime),
                     status = SubmissionStatusEnum.Submitted
                   )
                 )
@@ -853,7 +853,7 @@ class IndexPageHelperSpec extends SpecBase {
                 Financial(
                   amountDue = 200.00,
                   outstandingAmountDue = 200.00,
-                  dueDate = sampleDate,
+                  dueDate = sampleDateTime,
                   estimatedInterest = None,
                   crystalizedInterest = None
                 )
@@ -864,17 +864,17 @@ class IndexPageHelperSpec extends SpecBase {
               id = "1234",
               number = "1",
               appealStatus = None,
-              dateCreated = sampleDate,
-              dateExpired = Some(sampleDate),
+              dateCreated = sampleDateTime,
+              dateExpired = Some(sampleDateTime),
               status = PointStatusEnum.Active,
               reason = None,
               period = Some(
                 Seq(PenaltyPeriod(
-                  startDate = sampleDate,
-                  endDate = sampleDate,
+                  startDate = sampleDateTime,
+                  endDate = sampleDateTime,
                   submission = Submission(
-                    dueDate = sampleDate,
-                    submittedDate = Some(sampleDate),
+                    dueDate = sampleDateTime,
+                    submittedDate = Some(sampleDateTime),
                     status = SubmissionStatusEnum.Submitted
                   )
                 )

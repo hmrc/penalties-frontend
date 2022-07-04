@@ -65,17 +65,17 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
         `type` = PenaltyTypeEnum.Financial,
         id = "123456789",
         reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
-        dateCreated = sampleDate,
+        dateCreated = sampleDateTime,
         status = PointStatusEnum.Due,
         appealStatus = None,
         period = PaymentPeriod(
-          startDate = sampleDate, endDate = sampleDate, dueDate = sampleDate, paymentStatus = PaymentStatusEnum.Paid
+          startDate = sampleDateTime, endDate = sampleDateTime, dueDate = sampleDateTime, paymentStatus = PaymentStatusEnum.Paid
         ),
         communications = Seq.empty,
         financial = Financial(
           amountDue = 300,
           outstandingAmountDue = 10.21,
-          dueDate = sampleDate,
+          dueDate = sampleDateTime,
           outstandingAmountDay15 = Some(10),
           outstandingAmountDay31 = None,
           percentageOfOutstandingAmtCharged = Some(2),
@@ -101,17 +101,17 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
         `type` = PenaltyTypeEnum.Financial,
         id = "123456789",
         reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
-        dateCreated = sampleDate,
+        dateCreated = sampleDateTime,
         status = PointStatusEnum.Due,
         appealStatus = None,
         period = PaymentPeriod(
-          startDate = sampleDate, endDate = sampleDate, dueDate = sampleDate, paymentStatus = PaymentStatusEnum.Paid
+          startDate = sampleDateTime, endDate = sampleDateTime, dueDate = sampleDateTime, paymentStatus = PaymentStatusEnum.Paid
         ),
         communications = Seq.empty,
         financial = Financial(
           amountDue = 300,
           outstandingAmountDue = 10.21,
-          dueDate = sampleDate,
+          dueDate = sampleDateTime,
           outstandingAmountDay15 = None,
           outstandingAmountDay31 = None,
           percentageOfOutstandingAmtCharged = Some(2),

@@ -395,17 +395,14 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   }
 
   private def getTagStatus(penalty: LSPDetails)(implicit messages: Messages): Tag = {
-    val periodSubmissionStatus = penalty.lateSubmissions.map(penaltyPeriod => PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head.taxReturnStatus)
     val penaltyPointStatus = penalty.penaltyStatus
     val appealStatus = penalty.appealInformation.flatMap(_.headOption.flatMap(_.appealStatus))
-    val isVATSubmitted = periodSubmissionStatus.contains(TaxReturnStatusEnum.Fulfilled)
     val penaltyAmountPaid = penalty.chargeAmount.getOrElse(BigDecimal(0)) - penalty.chargeOutstandingAmount.getOrElse(BigDecimal(0))
     val penaltyAmount = penalty.chargeAmount.getOrElse(BigDecimal(0))
     penaltyPointStatus match {
       case LSPPenaltyStatusEnum.Inactive if appealStatus.contains(AppealStatusEnum.Upheld) => renderTag(messages("status.cancelled"))
       case LSPPenaltyStatusEnum.Inactive => renderTag(messages("status.removed"))
       case LSPPenaltyStatusEnum.Active if penaltyAmount > BigDecimal(0) => showDueOrPartiallyPaidDueTag(penalty.chargeOutstandingAmount, penaltyAmountPaid)
-      case LSPPenaltyStatusEnum.Active if appealStatus.contains(AppealStatusEnum.Rejected) && isVATSubmitted => renderTag(messages("status.rejected"))
       case _ => renderTag(messages("status.active"))
     }
   }
