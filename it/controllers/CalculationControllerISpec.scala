@@ -708,7 +708,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       val request = controller.onPageLoad("987654321", true)(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#main-content h1").first().ownText() shouldBe "Additional penalty"
+      parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
       parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
       parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
       parsedBody.select("#main-content .govuk-body").get(0).text() shouldBe
@@ -734,7 +734,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       val request = controller.onPageLoad("987654322", true)(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#main-content h1").first().ownText() shouldBe "Additional penalty"
+      parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
       parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
       parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
       parsedBody.select("#main-content p").get(1).text() shouldBe
@@ -851,7 +851,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       val request = controller.onPageLoadForNewAPI("54312345678901", "LPP2")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#main-content h1").first().ownText() shouldBe "Additional penalty"
+      parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
       parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
       parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
       parsedBody.select("#main-content .govuk-body").get(0).text() shouldBe
@@ -875,7 +875,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       val request = controller.onPageLoadForNewAPI("65431234567890", "LPP2")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#main-content h1").first().ownText() shouldBe "Additional penalty"
+      parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
       parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
       parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
       parsedBody.select("#main-content p").get(1).text() shouldBe

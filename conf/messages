@@ -201,7 +201,6 @@ whatIsOwed.allPenalties.interest = £{0} in interest on penalties
 calculation.headingAndTitle.lpp = Late payment penalty
 calculation.caption = {0} to {1}
 calculation.heading.lppAndAdditional.hiddenText = The period dates are
-calculation.headingAndTitle.additional = Additional penalty
 calculation.p.1.additional = The additional penalty is charged from 31 days after the payment due date, until the total is paid.
 calculation.key.1 = Penalty amount
 calculation.key.1.estimate = Penalty amount (estimate)
