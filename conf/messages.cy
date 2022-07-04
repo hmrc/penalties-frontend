@@ -201,7 +201,6 @@ whatIsOwed.allPenalties.interest = llog o £{0} ar gosbau
 calculation.headingAndTitle.lpp = Cosb am dalu’n hwyr
 calculation.caption = {0} to {1}
 calculation.heading.lppAndAdditional.hiddenText = The period dates are
-calculation.headingAndTitle.additional = Cosb ychwanegol
 calculation.p.1.additional = The additional penalty is charged from 31 days after the payment due date, until the total is paid.
 calculation.key.1 = Penalty amount
 calculation.key.1.estimate = Penalty amount (estimate)
