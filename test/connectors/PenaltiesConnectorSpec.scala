@@ -80,6 +80,7 @@ class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching {
         result.isRight shouldBe true
         result shouldBe Right(samplePenaltyDetailsModel)
       }
+
       "UseAPI1811Model is disabled" in new Setup() {
         when(mockHttpClient.GET[GetPenaltyDetailsResponse](any(), any(), any())
           (any(), any(), any())).thenReturn(Future.successful(Right(samplePenaltyDetailsModelWithoutMetadata)))

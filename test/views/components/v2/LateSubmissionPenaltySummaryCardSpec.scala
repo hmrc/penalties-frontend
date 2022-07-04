@@ -36,7 +36,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
   val summaryCardHtml: summaryCardLSPv2 = injector.instanceOf[summaryCardLSPv2]
 
   val summaryCardModelWithAppealedPoint: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.populateLateSubmissionPenaltyCard(
-    Seq(LSPDetailsAsModelNoFAP.copy(appealInformation = Some(Seq(
+    Seq(lSPDetailsAsModelNoFAP.copy(appealInformation = Some(Seq(
       AppealInformationType(
         appealStatus = Some(AppealStatusEnum.Under_Appeal),
         appealLevel = Some(AppealLevelEnum.HMRC)
@@ -45,7 +45,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     quarterlyThreshold, 1).head
 
   val summaryCardModelUnappealable: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.populateLateSubmissionPenaltyCard(
-    Seq(LSPDetailsAsModelNoFAP.copy(appealInformation = Some(Seq(
+    Seq(lSPDetailsAsModelNoFAP.copy(appealInformation = Some(Seq(
       AppealInformationType(
         appealStatus = Some(AppealStatusEnum.Unappealable),
         appealLevel = Some(AppealLevelEnum.HMRC)
@@ -54,7 +54,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     quarterlyThreshold, 1).head
 
   val summaryCardModelWithAppealedPointAccepted: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.populateLateSubmissionPenaltyCard(
-    Seq(LSPDetailsAsModelNoFAP.copy(
+    Seq(lSPDetailsAsModelNoFAP.copy(
       penaltyStatus = LSPPenaltyStatusEnum.Inactive,
       appealInformation = Some(Seq(
         AppealInformationType(
@@ -65,7 +65,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     quarterlyThreshold, 1).head
 
   val summaryCardModelWithAppealedPointRejected: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.populateLateSubmissionPenaltyCard(
-    Seq(LSPDetailsAsModelNoFAP.copy(appealInformation = Some(Seq(
+    Seq(lSPDetailsAsModelNoFAP.copy(appealInformation = Some(Seq(
       AppealInformationType(
         appealStatus = Some(AppealStatusEnum.Rejected),
         appealLevel = Some(AppealLevelEnum.HMRC)
@@ -106,7 +106,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     ), quarterlyThreshold, 1).head
 
   val summaryCardModelWithAppealedPointUnderTribunalReview: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.populateLateSubmissionPenaltyCard(
-    Seq(LSPDetailsAsModelNoFAP.copy(
+    Seq(lSPDetailsAsModelNoFAP.copy(
       appealInformation = Some(Seq(
         AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Under_Appeal),
@@ -117,7 +117,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     quarterlyThreshold, 1).head
 
   val summaryCardModelWithAppealedPointAcceptedByTribunal: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.populateLateSubmissionPenaltyCard(
-    Seq(LSPDetailsAsModelNoFAP.copy(
+    Seq(lSPDetailsAsModelNoFAP.copy(
       appealInformation = Some(Seq(
         AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Upheld),
@@ -128,7 +128,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     quarterlyThreshold, 1).head
 
   val summaryCardModelWithAppealedPointTribunalRejected: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.populateLateSubmissionPenaltyCard(
-    Seq(LSPDetailsAsModelNoFAP.copy(
+    Seq(lSPDetailsAsModelNoFAP.copy(
       appealInformation = Some(Seq(
         AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Rejected),

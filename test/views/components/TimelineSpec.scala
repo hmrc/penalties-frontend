@@ -31,26 +31,26 @@ class TimelineSpec extends SpecBase with ViewBehaviours with ImplicitDateFormatt
 
   val timelineEventsNoStatus: Seq[TimelineEvent] = Seq(
     TimelineEvent(
-      s"VAT period ${dateTimeToString(sampleDate)} to ${dateTimeToString(sampleDate.plusDays(7))}",
-      s"Submit VAT Return by ${dateTimeToString(sampleDate.plusMonths(1))}",
+      s"VAT period ${dateTimeToString(sampleDateTime)} to ${dateTimeToString(sampleDateTime.plusDays(7))}",
+      s"Submit VAT Return by ${dateTimeToString(sampleDateTime.plusMonths(1))}",
       None
     ),
     TimelineEvent(
-      s"VAT period ${dateTimeToString(sampleDate)} to ${dateTimeToString(sampleDate.plusDays(7))}",
-      s"Submit VAT Return by ${dateTimeToString(sampleDate.plusMonths(1))}",
+      s"VAT period ${dateTimeToString(sampleDateTime)} to ${dateTimeToString(sampleDateTime.plusDays(7))}",
+      s"Submit VAT Return by ${dateTimeToString(sampleDateTime.plusMonths(1))}",
       None
     )
   )
 
   val timelineEventsWithStatus: Seq[TimelineEvent] = Seq(
     TimelineEvent(
-      s"VAT period ${dateTimeToString(sampleDate)} to ${dateTimeToString(sampleDate.plusDays(7))}",
-      s"Submit VAT Return by ${dateTimeToString(sampleDate.plusMonths(1))}",
+      s"VAT period ${dateTimeToString(sampleDateTime)} to ${dateTimeToString(sampleDateTime.plusDays(7))}",
+      s"Submit VAT Return by ${dateTimeToString(sampleDateTime.plusMonths(1))}",
       Some("Submitted on time")
     ),
     TimelineEvent(
-      s"VAT period ${dateTimeToString(sampleDate)} to ${dateTimeToString(sampleDate.plusDays(7))}",
-      s"Submit VAT Return by ${dateTimeToString(sampleDate.plusMonths(1))}",
+      s"VAT period ${dateTimeToString(sampleDateTime)} to ${dateTimeToString(sampleDateTime.plusDays(7))}",
+      s"Submit VAT Return by ${dateTimeToString(sampleDateTime.plusMonths(1))}",
       None
     )
   )

@@ -137,20 +137,20 @@ class PenaltiesServiceSpec extends SpecBase {
         `type` = PenaltyTypeEnum.Financial,
         id = "1234",
         reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
-        dateCreated = sampleDate,
+        dateCreated = sampleDateTime,
         status = PointStatusEnum.Due,
         appealStatus = None,
         period = PaymentPeriod(
-          startDate = sampleDate,
-          endDate = sampleDate,
-          dueDate = sampleDate,
+          startDate = sampleDateTime,
+          endDate = sampleDateTime,
+          dueDate = sampleDateTime,
           paymentStatus = PaymentStatusEnum.Paid
         ),
         communications = Seq.empty,
         financial = Financial(
           amountDue = 123.45,
           outstandingAmountDue = 50.00,
-          dueDate = sampleDate,
+          dueDate = sampleDateTime,
           estimatedInterest = Some(10.12),
           crystalizedInterest = Some(10.12)
         )
@@ -172,20 +172,20 @@ class PenaltiesServiceSpec extends SpecBase {
         `type` = PenaltyTypeEnum.Additional,
         id = "1234",
         reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
-        dateCreated = sampleDate,
+        dateCreated = sampleDateTime,
         status = PointStatusEnum.Estimated,
         appealStatus = None,
         period = PaymentPeriod(
-          startDate = sampleDate,
-          endDate = sampleDate,
-          dueDate = sampleDate,
+          startDate = sampleDateTime,
+          endDate = sampleDateTime,
+          dueDate = sampleDateTime,
           paymentStatus = PaymentStatusEnum.Paid
         ),
         communications = Seq.empty,
         financial = Financial(
           amountDue = 100.00,
           outstandingAmountDue = 50.00,
-          dueDate = sampleDate,
+          dueDate = sampleDateTime,
           estimatedInterest = None,
           crystalizedInterest = None
         )
@@ -194,20 +194,20 @@ class PenaltiesServiceSpec extends SpecBase {
         `type` = PenaltyTypeEnum.Financial,
         id = "1234",
         reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
-        dateCreated = sampleDate,
+        dateCreated = sampleDateTime,
         status = PointStatusEnum.Due,
         appealStatus = None,
         period = PaymentPeriod(
-          startDate = sampleDate,
-          endDate = sampleDate,
-          dueDate = sampleDate,
+          startDate = sampleDateTime,
+          endDate = sampleDateTime,
+          dueDate = sampleDateTime,
           paymentStatus = PaymentStatusEnum.Paid
         ),
         communications = Seq.empty,
         financial = Financial(
           amountDue = 123.45,
           outstandingAmountDue = 50.00,
-          dueDate = sampleDate,
+          dueDate = sampleDateTime,
           estimatedInterest = Some(10.12),
           crystalizedInterest = Some(10.12)
         )
@@ -599,17 +599,17 @@ class PenaltiesServiceSpec extends SpecBase {
               id = "1236",
               number = "3",
               appealStatus = None,
-              dateCreated = sampleDate.plusMonths(3),
-              dateExpired = Some(sampleDate),
+              dateCreated = sampleDateTime.plusMonths(3),
+              dateExpired = Some(sampleDateTime),
               status = PointStatusEnum.Due,
               reason = None,
               period = Some(
                 Seq(PenaltyPeriod(
-                  startDate = sampleDate,
-                  endDate = sampleDate,
+                  startDate = sampleDateTime,
+                  endDate = sampleDateTime,
                   submission = Submission(
-                    dueDate = sampleDate,
-                    submittedDate = Some(sampleDate),
+                    dueDate = sampleDateTime,
+                    submittedDate = Some(sampleDateTime),
                     status = SubmissionStatusEnum.Submitted
                   )
                 )
@@ -619,7 +619,7 @@ class PenaltiesServiceSpec extends SpecBase {
                 Financial(
                   amountDue = 200.00,
                   outstandingAmountDue = 200.00,
-                  dueDate = sampleDate,
+                  dueDate = sampleDateTime,
                   estimatedInterest = None,
                   crystalizedInterest = None
                 )
@@ -630,17 +630,17 @@ class PenaltiesServiceSpec extends SpecBase {
               id = "1235",
               number = "2",
               appealStatus = None,
-              dateCreated = sampleDate,
-              dateExpired = Some(sampleDate),
+              dateCreated = sampleDateTime,
+              dateExpired = Some(sampleDateTime),
               status = PointStatusEnum.Due,
               reason = None,
               period = Some(
                 Seq(PenaltyPeriod(
-                  startDate = sampleDate,
-                  endDate = sampleDate,
+                  startDate = sampleDateTime,
+                  endDate = sampleDateTime,
                   submission = Submission(
-                    dueDate = sampleDate,
-                    submittedDate = Some(sampleDate),
+                    dueDate = sampleDateTime,
+                    submittedDate = Some(sampleDateTime),
                     status = SubmissionStatusEnum.Submitted
                   )
                 )
@@ -650,7 +650,7 @@ class PenaltiesServiceSpec extends SpecBase {
                 Financial(
                   amountDue = 200.00,
                   outstandingAmountDue = 200.00,
-                  dueDate = sampleDate,
+                  dueDate = sampleDateTime,
                   estimatedInterest = None,
                   crystalizedInterest = None
                 )
@@ -661,17 +661,17 @@ class PenaltiesServiceSpec extends SpecBase {
               id = "1234",
               number = "1",
               appealStatus = None,
-              dateCreated = sampleDate,
-              dateExpired = Some(sampleDate),
+              dateCreated = sampleDateTime,
+              dateExpired = Some(sampleDateTime),
               status = PointStatusEnum.Active,
               reason = None,
               period = Some(
                 Seq(PenaltyPeriod(
-                  startDate = sampleDate,
-                  endDate = sampleDate,
+                  startDate = sampleDateTime,
+                  endDate = sampleDateTime,
                   submission = Submission(
-                    dueDate = sampleDate,
-                    submittedDate = Some(sampleDate),
+                    dueDate = sampleDateTime,
+                    submittedDate = Some(sampleDateTime),
                     status = SubmissionStatusEnum.Submitted
                   )
                 )
@@ -684,12 +684,12 @@ class PenaltiesServiceSpec extends SpecBase {
         )
         val result: Option[LocalDateTime] = service.getLatestLSPCreationDate(sampleLspDataWithDueFinancialPenalties)
         result.isDefined shouldBe true
-        result.get shouldBe sampleDate.plusMonths(3)
+        result.get shouldBe sampleDateTime.plusMonths(3)
       }
 
       "the user has appealed points - return the next valid point" in new Setup {
-        val acceptedPoint: PenaltyPoint = samplePenaltyPointAppealedAccepted.copy(dateCreated = sampleDate, `type` = PenaltyTypeEnum.Financial)
-        val appealUnderReviewPoint: PenaltyPoint = samplePenaltyPointAppealedUnderReview.copy(dateCreated = sampleDate.minusMonths(3),
+        val acceptedPoint: PenaltyPoint = samplePenaltyPointAppealedAccepted.copy(dateCreated = sampleDateTime, `type` = PenaltyTypeEnum.Financial)
+        val appealUnderReviewPoint: PenaltyPoint = samplePenaltyPointAppealedUnderReview.copy(dateCreated = sampleDateTime.minusMonths(3),
           `type` = PenaltyTypeEnum.Financial)
         val dataWithAppealedPoint: ETMPPayload = ETMPPayload(
           pointsTotal = 1,

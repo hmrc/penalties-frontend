@@ -21,7 +21,6 @@ import config.AppConfig
 import config.featureSwitches.UseAPI1811Model
 import connectors.httpParsers.{InvalidJson, UnexpectedFailure}
 import models.User
-import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.PenaltiesStub
@@ -72,12 +71,12 @@ class PenaltiesConnectorISpec extends IntegrationSpecCommonBase {
   "getPenaltyDetails" should {
     "generate a valid PenaltyDetails model when valid JSON is returned" when {
       "UseAPI1811Model feature switch is enabled" in new Setup(isFSEnabled = true) {
-        val result = connector.getPenaltyDetails(vrn)(vatTraderUser, implicitly).futureValue
+        val result = await(connector.getPenaltyDetails(vrn)(vatTraderUser, implicitly))
         result shouldBe Right(samplePenaltyDetails)
       }
 
       "UseAPI1811Model feature switch is disabled" in new Setup(isFSEnabled = false) {
-        val result = connector.getPenaltyDetails(vrn)(vatTraderUser, implicitly).futureValue
+        val result = await(connector.getPenaltyDetails(vrn)(vatTraderUser, implicitly))
         result shouldBe Right(samplePenaltyDetailsNoMetaData)
       }
     }
@@ -85,13 +84,13 @@ class PenaltiesConnectorISpec extends IntegrationSpecCommonBase {
     s"return $BAD_REQUEST (Bad Request) when invalid JSON is returned" when {
       "UseAPI1811Model feature switch is enabled" in new Setup(isFSEnabled = true) {
         wireMockServer.editStubMapping(invalidPenaltyDetailsStub(true))
-        val result = connector.getPenaltyDetails(vrn)(vatTraderUser, implicitly).futureValue
+        val result = await(connector.getPenaltyDetails(vrn)(vatTraderUser, implicitly))
         result.isLeft shouldBe true
         result shouldBe Left(InvalidJson)
       }
       "UseAPI1811Model feature switch is disabled" in new Setup(isFSEnabled = false) {
         wireMockServer.editStubMapping(invalidPenaltyDetailsStub())
-        val result = connector.getPenaltyDetails(vrn)(vatTraderUser, implicitly).futureValue
+        val result = await(connector.getPenaltyDetails(vrn)(vatTraderUser, implicitly))
         result.isLeft shouldBe true
         result shouldBe Left(InvalidJson)
       }
@@ -100,13 +99,13 @@ class PenaltiesConnectorISpec extends IntegrationSpecCommonBase {
     "throw an exception when an upstream error is returned from penalties" when {
       "UseAPI1811Model feature switch is enabled" in new Setup(isFSEnabled = true) {
         wireMockServer.editStubMapping(penaltyDetailsUpstreamErrorStub(true))
-        val result = connector.getPenaltyDetails(vrn)(vatTraderUser, implicitly).futureValue
+        val result = await(connector.getPenaltyDetails(vrn)(vatTraderUser, implicitly))
         result.isLeft shouldBe true
         result shouldBe Left(UnexpectedFailure(INTERNAL_SERVER_ERROR, s"Unexpected response, status $INTERNAL_SERVER_ERROR returned"))
       }
       "UseAPI1811Model feature switch is disabled" in new Setup(isFSEnabled = false) {
         wireMockServer.editStubMapping(penaltyDetailsUpstreamErrorStub())
-        val result = connector.getPenaltyDetails(vrn)(vatTraderUser, implicitly).futureValue
+        val result = await(connector.getPenaltyDetails(vrn)(vatTraderUser, implicitly))
         result.isLeft shouldBe true
         result shouldBe Left(UnexpectedFailure(INTERNAL_SERVER_ERROR, s"Unexpected response, status $INTERNAL_SERVER_ERROR returned"))
       }
