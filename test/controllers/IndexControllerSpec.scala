@@ -22,15 +22,12 @@ import org.mockito.Matchers.any
 import org.mockito.Mockito.{mock, reset, when}
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import services.PenaltiesService
 import services.v2.{PenaltiesService => PenaltiesServicev2}
 import testUtils.AuthTestModels
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import utils.SessionKeys
-import viewmodels.{IndexPageHelper, SummaryCardHelper}
 import viewmodels.v2.{IndexPageHelper => IndexPageHelperv2, SummaryCardHelper => SummaryCardHelperv2}
-import views.html.IndexView
 import views.html.v2.{IndexView => IndexViewv2}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -38,31 +35,25 @@ import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase {
 
-  val page: IndexView = injector.instanceOf[IndexView]
-  val indexPageHelper: IndexPageHelper = injector.instanceOf[IndexPageHelper]
-  val cardHelper: SummaryCardHelper = injector.instanceOf[SummaryCardHelper]
-  val mockPenaltiesService: PenaltiesService = mock(classOf[PenaltiesService])
   val page2: IndexViewv2 = injector.instanceOf[IndexViewv2]
   val indexPageHelper2: IndexPageHelperv2 = injector.instanceOf[IndexPageHelperv2]
   val cardHelper2: SummaryCardHelperv2 = injector.instanceOf[SummaryCardHelperv2]
   val mockPenaltiesService2: PenaltiesServicev2 = mock(classOf[PenaltiesServicev2])
 
   class Setup(authResult: Future[~[Option[AffinityGroup], Enrolments]]) {
-
-    reset(mockAuthConnector, mockPenaltiesService)
+    reset(mockAuthConnector, mockPenaltiesService2)
     when(mockAuthConnector.authorise[~[Option[AffinityGroup], Enrolments]](
       Matchers.any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
       Matchers.any(), Matchers.any())
     ).thenReturn(authResult)
-    when(mockPenaltiesService.getETMPDataFromEnrolmentKey(any())(any(), any())).thenReturn(Future.successful(sampleEmptyLspData))
     when(mockPenaltiesService2.getPenaltyDataFromEnrolmentKey(any())(any(), any())).thenReturn(Future.successful(Right(samplePenaltyDetailsModel)))
   }
 
   object Controller extends IndexController(
-    page, page2,
-    mockPenaltiesService, mockPenaltiesService2,
-    cardHelper, cardHelper2,
-    indexPageHelper, indexPageHelper2
+    page2,
+    mockPenaltiesService2,
+    cardHelper2,
+    indexPageHelper2
   )(implicitly, implicitly, authPredicate, errorHandler, stubMessagesControllerComponents())
 
   "IndexController" should {
@@ -144,6 +135,5 @@ class IndexControllerSpec extends SpecBase {
           s"/initialise-appeal-against-the-obligation?penaltyId=$penaltyId&isLPP=true&isAdditional=false")
       }
     }
-
   }
 }

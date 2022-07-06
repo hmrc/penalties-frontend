@@ -16,21 +16,13 @@
 
 package controllers
 
-import java.time.{LocalDate, LocalDateTime}
-import java.time.temporal.ChronoUnit
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
 import models.User
-import models.penalty.LatePaymentPenalty
-import models.point.PointStatusEnum
 import models.v3.lpp.LPPPenaltyCategoryEnum.LPP2
 import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum}
-import views.html.{CalculationAdditionalView, CalculationLPPView}
-
-import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.PenaltiesService
 import services.v2.{PenaltiesService => PenaltiesServiceV2}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
@@ -38,11 +30,13 @@ import utils.{CurrencyFormatter, EnrolmentKeys}
 import viewmodels.CalculationPageHelper
 import views.html.{CalculationAdditionalView, CalculationLPPView}
 
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CalculationController @Inject()(viewLPP: CalculationLPPView,
                                       viewAdd: CalculationAdditionalView,
-                                      penaltiesService: PenaltiesService,
                                       penaltiesServiceV2: PenaltiesServiceV2,
                                       calculationPageHelper: CalculationPageHelper)(implicit ec: ExecutionContext,
                                                                                     val appConfig: AppConfig,
@@ -51,60 +45,10 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
                                                                                     controllerComponents: MessagesControllerComponents)
   extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter {
 
-  def onPageLoad(penaltyId: String, isAdditional: Boolean): Action[AnyContent] = authorise.async { implicit request =>
-    logger.debug(s"[CalculationController][onPageLoad] - Making call to old endpoint")
-    getOldPenaltyData(penaltyId, isAdditional)
-  }
-
   def onPageLoadForNewAPI(principalChargeReference: String, penaltyCategory: String): Action[AnyContent] = authorise.async { implicit request =>
     logger.debug(s"[CalculationController][onPageLoadForNewAPI] - Making call to new endpoint")
     val penaltyCategoryEnum = LPPPenaltyCategoryEnum.find(penaltyCategory).get
     getPenaltyDetailsFromNewAPI(principalChargeReference, penaltyCategoryEnum)
-  }
-
-  def getOldPenaltyData(penaltyId: String, isAdditional: Boolean)(implicit request: User[_]): Future[Result] = {
-    penaltiesService.getETMPDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn)).map {
-      payload => {
-        val penalty: Option[LatePaymentPenalty] = payload.latePaymentPenalties.flatMap(_.find(_.id == penaltyId))
-        if (penalty.isEmpty) {
-          logger.error("[CalculationController][onPageLoad] - Tried to render calculation page but could not find penalty specified.")
-          errorHandler.showInternalServerError
-        } else {
-          val startDateOfPeriod: String = calculationPageHelper.getDateTimeAsDayMonthYear(penalty.get.period.startDate)
-          val endDateOfPeriod: String = calculationPageHelper.getDateTimeAsDayMonthYear(penalty.get.period.endDate)
-          val amountReceived = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue - penalty.get.financial.outstandingAmountDue)
-          val isPenaltyEstimate = penalty.get.status.equals(PointStatusEnum.Estimated)
-          val amountLeftToPay = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.financial.outstandingAmountDue)
-          val penaltyAmount = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue)
-          logger.debug(s"[CalculationController][onPageLoad] - found penalty: ${penalty.get}")
-          if (!isAdditional) {
-            val penaltyEstimatedDate = penalty.get.period.dueDate.plusDays(30)
-            val calculationRow = calculationPageHelper.getCalculationRowForLPP(penalty.get)
-            calculationRow.fold({
-              //TODO: log a PD
-              logger.error("[CalculationController][onPageLoad] - " +
-                "Calculation row returned None - this could be because the user did not have a defined amount after 15 and/or 30 days of due date")
-              errorHandler.showInternalServerError
-            })(
-              rowSeq => {
-                val isTwoCalculations: Boolean = rowSeq.size == 2
-                val warningPenaltyAmount = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.financial.amountDue * 2)
-                val warningDate = calculationPageHelper.getDateTimeAsDayMonthYear(penaltyEstimatedDate)
-                Ok(viewLPP(amountReceived, penaltyAmount,
-                  amountLeftToPay, rowSeq,
-                  isTwoCalculations, isPenaltyEstimate,
-                  startDateOfPeriod, endDateOfPeriod,
-                  warningPenaltyAmount, warningDate))
-              })
-          } else {
-            val additionalPenaltyRate = "4"
-            val daysSince31 = ChronoUnit.DAYS.between(penalty.get.period.dueDate.plusDays(31), LocalDateTime.now())
-            val isEstimate = penalty.get.status.equals(PointStatusEnum.Estimated)
-            Ok(viewAdd(daysSince31, isEstimate, additionalPenaltyRate, startDateOfPeriod, endDateOfPeriod, penaltyAmount, amountReceived, amountLeftToPay))
-          }
-        }
-      }
-    }
   }
 
   def getPenaltyDetailsFromNewAPI(principalChargeReference: String, penaltyCategory: LPPPenaltyCategoryEnum.Value)
@@ -159,7 +103,6 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
           }
         }
       )
-
     }
   }
 }

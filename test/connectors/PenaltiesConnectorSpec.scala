@@ -18,9 +18,8 @@ package connectors
 
 import base.SpecBase
 import config.AppConfig
-import config.featureSwitches.{FeatureSwitching, UseAPI1811Model}
+import config.featureSwitches.FeatureSwitching
 import connectors.httpParsers.PenaltiesConnectorParser.GetPenaltyDetailsResponse
-import models.ETMPPayload
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import play.api.http.Status.INTERNAL_SERVER_ERROR
@@ -40,34 +39,6 @@ class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching {
 
     val connector: PenaltiesConnector = new PenaltiesConnector(mockHttpClient, mockAppConfig)
     when(mockAppConfig.penaltiesUrl).thenReturn("/")
-    if (isFSEnabled) enableFeatureSwitch(UseAPI1811Model) else disableFeatureSwitch(UseAPI1811Model)
-  }
-
-  "getPenaltiesData" should {
-    s"return a successful response when the call succeeds and the body can be parsed" in new Setup {
-      when(mockHttpClient.GET[ETMPPayload](any(),
-        any(),
-        any())
-        (any(),
-          any(),
-          any())).thenReturn(Future.successful(sampleEmptyLspData))
-
-      val result: ETMPPayload = await(connector.getPenaltiesData(vrn)(vatTraderUser, HeaderCarrier()))
-      result shouldBe sampleEmptyLspData
-    }
-
-    "return an error when an error occurs upstream" in new Setup {
-    when(mockHttpClient.GET[ETMPPayload](any(),
-      any(),
-      any())
-      (any(),
-        any(),
-        any()))
-      .thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", INTERNAL_SERVER_ERROR)))
-
-    val result: Exception = intercept[Exception](await(connector.getPenaltiesData("123456789")(vatTraderUser, HeaderCarrier())))
-    result.getMessage shouldBe "Upstream error"
-  }
   }
 
   "getPenaltyDetails" should {
@@ -103,5 +74,4 @@ class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching {
       result.getMessage shouldBe "Upstream error"
     }
   }
-
 }

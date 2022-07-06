@@ -33,7 +33,7 @@ class FeatureSwitchSpec extends SpecBase {
 
   "FeatureSwitch listOfAllFeatureSwitches" should {
     "be all the featureswitches in the app" in {
-      FeatureSwitch.listOfAllFeatureSwitches shouldBe List(CallAPI1812ETMP, UseAPI1812Model, UseAPI1811Model)
+      FeatureSwitch.listOfAllFeatureSwitches shouldBe List(CallAPI1812ETMP)
     }
   }
   "FeatureSwitching constants" should {
@@ -51,16 +51,6 @@ class FeatureSwitchSpec extends SpecBase {
   "return false if CallAPI1812ETMP feature switch is disabled" in new Setup {
     featureSwitching.disableFeatureSwitch(CallAPI1812ETMP)
     featureSwitching.isEnabled(CallAPI1812ETMP) shouldBe false
-  }
-
-  "return true if UseAPI1811Model feature switch is enabled" in new Setup {
-    featureSwitching.enableFeatureSwitch(UseAPI1811Model)
-    featureSwitching.isEnabled(UseAPI1811Model) shouldBe true
-  }
-
-  "return true if UseAPI1811Model feature switch is disabled" in new Setup {
-    featureSwitching.disableFeatureSwitch(UseAPI1811Model)
-    featureSwitching.isEnabled(UseAPI1811Model) shouldBe false
   }
 
   "return true if CallAPI1812ETMP feature switch does not exist in cache but does in config" in new Setup {

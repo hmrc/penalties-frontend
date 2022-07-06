@@ -18,10 +18,6 @@ package stubs
 
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, stubFor, urlMatching}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import models.ETMPPayload
-import models.penalty.{LatePaymentPenalty, PenaltyPeriod}
-import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
-import models.submission.{Submission, SubmissionStatusEnum}
 import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import models.v3.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum, LatePaymentPenalty => v3LatePaymentPenalty}
 import models.v3.lsp._
@@ -32,70 +28,10 @@ import java.time.{LocalDate, LocalDateTime}
 
 object PenaltiesStub {
   val vrn: String = "HMRC-MTD-VAT~VRN~123456789"
-  val getLspDataUrl: String = s"/penalties/etmp/penalties/$vrn\\?newApiModel=false&newFinancialApiModel=false"
-  val getLspDataUrlAgent: String = s"/penalties/etmp/penalties/$vrn\\?arn=123456789&newApiModel=false&newFinancialApiModel=false"
   val sampleDate1: LocalDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
 
-  val getPenaltyDetailsUrl1811ModelEnabled: String = s"/penalties/etmp/penalties/$vrn\\?newApiModel=true&newFinancialApiModel=true"
-  val getPenaltyDetailsUrlAgent1811ModelEnabled: String = s"/penalties/etmp/penalties/$vrn\\?arn=123456789&newApiModel=true&newFinancialApiModel=true"
-  val getPenaltyDetailsUrl1811ModelDisabled: String = s"/penalties/etmp/penalties/$vrn\\?newApiModel=true&newFinancialApiModel=false"
-  val getPenaltyDetailsUrlAgent1811ModelDisabled: String = s"/penalties/etmp/penalties/$vrn\\?arn=123456789&newApiModel=true&newFinancialApiModel=false"
-
-  val sampleLspData: ETMPPayload = ETMPPayload(
-    pointsTotal = 0,
-    lateSubmissions = 0,
-    adjustmentPointsTotal = 0,
-    fixedPenaltyAmount = 0.0,
-    penaltyAmountsTotal = 0.0,
-    penaltyPointsThreshold = 4,
-    penaltyPoints = Seq.empty[PenaltyPoint],
-    latePaymentPenalties = Option(Seq.empty[LatePaymentPenalty])
-  )
-
-  val sampleLspDataWithMultiplePenaltyPeriod: ETMPPayload = ETMPPayload(
-    pointsTotal = 0,
-    lateSubmissions = 0,
-    adjustmentPointsTotal = 0,
-    fixedPenaltyAmount = 0.0,
-    penaltyAmountsTotal = 0.0,
-    penaltyPointsThreshold = 4,
-    penaltyPoints = Seq(
-      PenaltyPoint(
-        `type` = PenaltyTypeEnum.Point,
-        id = "1234",
-        number = "1",
-        appealStatus = None,
-        dateCreated = sampleDate1,
-        dateExpired = Some(sampleDate1),
-        status = PointStatusEnum.Active,
-        reason = None,
-        period = Some(
-          Seq(PenaltyPeriod(
-            startDate = sampleDate1,
-            endDate = sampleDate1.plusDays(15),
-            submission = Submission(
-              dueDate = sampleDate1.plusMonths(4).plusDays(7),
-              submittedDate = Some(sampleDate1.plusMonths(4).plusDays(12)),
-              status = SubmissionStatusEnum.Submitted
-            )
-          ),
-            PenaltyPeriod(
-              startDate = sampleDate1.plusDays(16),
-              endDate = sampleDate1.plusDays(31),
-              submission = Submission(
-                dueDate = sampleDate1.plusMonths(4).plusDays(23),
-                submittedDate = Some(sampleDate1.plusMonths(4).plusDays(25)),
-                status = SubmissionStatusEnum.Submitted
-              )
-            )
-          )
-        ),
-        communications = Seq.empty,
-        financial = None
-      )
-    ),
-    latePaymentPenalties = Option(Seq.empty[LatePaymentPenalty])
-  )
+  val getPenaltyDetailsUrlVatTrader: String = s"/penalties/etmp/penalties/$vrn"
+  val getPenaltyDetailsUrlAgent: String = s"/penalties/etmp/penalties/$vrn\\?arn=123456789"
 
   val samplePenaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = Some(Totalisations(
@@ -268,29 +204,19 @@ object PenaltiesStub {
       "LSPTotalValue" -> 200
     }).toString()
 
-  def lspDataStub(): StubMapping = stubFor(get(urlMatching(getLspDataUrl))
+  def getPenaltyDetailsStub: StubMapping =
+    stubFor(get(urlMatching(getPenaltyDetailsUrlVatTrader))
     .willReturn(
       aResponse()
         .withStatus(Status.OK)
         .withBody(
-          Json.toJson(sampleLspData).toString()
+          Json.toJson(samplePenaltyDetails).toString()
         )
     )
   )
 
-  def getPenaltyDetailsStub(useNewFinancialModel: Boolean = false): StubMapping =
-    stubFor(get(urlMatching(if (useNewFinancialModel) getPenaltyDetailsUrl1811ModelEnabled else getPenaltyDetailsUrl1811ModelDisabled))
-    .willReturn(
-      aResponse()
-        .withStatus(Status.OK)
-        .withBody(
-          Json.toJson(if (useNewFinancialModel) samplePenaltyDetails else samplePenaltyDetailsNoMetaData).toString()
-        )
-    )
-  )
-
-  def returnPenaltyDetailsStub(penaltyDetailsToReturn: GetPenaltyDetails, useNewFinancialModel: Boolean = true): StubMapping =
-    stubFor(get(urlMatching(if (useNewFinancialModel) getPenaltyDetailsUrl1811ModelEnabled else getPenaltyDetailsUrl1811ModelDisabled))
+  def returnPenaltyDetailsStub(penaltyDetailsToReturn: GetPenaltyDetails): StubMapping =
+    stubFor(get(urlMatching(getPenaltyDetailsUrlVatTrader))
     .willReturn(
       aResponse()
         .withStatus(Status.OK)
@@ -300,8 +226,8 @@ object PenaltiesStub {
     )
   )
 
-  def returnPenaltyDetailsStubAgent(penaltyDetailsToReturn: GetPenaltyDetails, useNewFinancialModel: Boolean = true): StubMapping =
-    stubFor(get(urlMatching(if (useNewFinancialModel) getPenaltyDetailsUrlAgent1811ModelEnabled else getPenaltyDetailsUrlAgent1811ModelDisabled))
+  def returnPenaltyDetailsStubAgent(penaltyDetailsToReturn: GetPenaltyDetails): StubMapping =
+    stubFor(get(urlMatching(getPenaltyDetailsUrlAgent))
     .willReturn(
       aResponse()
         .withStatus(Status.OK)
@@ -311,62 +237,16 @@ object PenaltiesStub {
     )
   )
 
-  def lspWithMultiplePenaltyPeriodDataStub(): StubMapping = stubFor(get(urlMatching(getLspDataUrl))
-    .willReturn(
-      aResponse()
-        .withStatus(Status.OK)
-        .withBody(
-          Json.toJson(sampleLspDataWithMultiplePenaltyPeriod).toString()
-        )
-    )
-  )
-
-  def returnLSPDataStub(lspDataToReturn: ETMPPayload): StubMapping = stubFor(get(urlMatching(getLspDataUrl))
-    .willReturn(
-      aResponse()
-        .withStatus(Status.OK)
-        .withBody(
-          Json.toJson(lspDataToReturn).toString()
-        )
-    )
-  )
-
-  def returnAgentLSPDataStub(lspDataToReturn: ETMPPayload): StubMapping = stubFor(get(urlMatching(getLspDataUrlAgent))
-    .willReturn(
-      aResponse()
-        .withStatus(Status.OK)
-        .withBody(
-          Json.toJson(lspDataToReturn).toString()
-        )
-    )
-  )
-
-  def invalidLspDataStub(): StubMapping = stubFor(get(urlMatching(getLspDataUrl))
-    .willReturn(
-      aResponse()
-        .withStatus(Status.OK)
-        .withBody("{}")
-    )
-  )
-
-  def upstreamErrorStub(): StubMapping = stubFor(get(urlMatching(getLspDataUrl))
-    .willReturn(
-      aResponse()
-        .withStatus(Status.INTERNAL_SERVER_ERROR).withBody("Upstream Error")
-    )
-  )
-
-
-  def penaltyDetailsUpstreamErrorStub(useNewFinancialModel: Boolean = false): StubMapping =
-    stubFor(get(urlMatching(if(useNewFinancialModel) getPenaltyDetailsUrl1811ModelEnabled else getPenaltyDetailsUrl1811ModelDisabled))
+  def penaltyDetailsUpstreamErrorStub: StubMapping =
+    stubFor(get(urlMatching(getPenaltyDetailsUrlVatTrader))
       .willReturn(
         aResponse()
           .withStatus(Status.INTERNAL_SERVER_ERROR).withBody("Upstream Error")
       )
   )
 
-  def invalidPenaltyDetailsStub(useNewFinancialModel: Boolean = false): StubMapping =
-    stubFor(get(urlMatching(if(useNewFinancialModel) getPenaltyDetailsUrl1811ModelEnabled else getPenaltyDetailsUrl1811ModelDisabled))
+  def invalidPenaltyDetailsStub: StubMapping =
+    stubFor(get(urlMatching(getPenaltyDetailsUrlVatTrader))
     .willReturn(
       aResponse()
         .withStatus(Status.OK)

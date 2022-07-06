@@ -17,13 +17,12 @@
 package connectors
 
 import config.AppConfig
-import config.featureSwitches.{FeatureSwitching, UseAPI1811Model}
+import config.featureSwitches.FeatureSwitching
 import connectors.httpParsers.PenaltiesConnectorParser.{GetPenaltyDetailsResponse, GetPenaltyDetailsResponseReads}
-import models.{ETMPPayload, User}
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import models.User
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import javax.inject.Inject
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class PenaltiesConnector @Inject()(httpClient: HttpClient,
@@ -31,24 +30,17 @@ class PenaltiesConnector @Inject()(httpClient: HttpClient,
 
 
   private val penaltiesBaseUrl: String = appConfig.penaltiesUrl
-  private def getPenaltiesDataUrl(enrolmentKey: String, isUsingNewApi: Boolean, isUsingNewFinancialApiModel: Boolean)(implicit user: User[_]): String = {
+  private def getPenaltiesDataUrl(enrolmentKey: String)(implicit user: User[_]): String = {
+    //TODO Remove Query Params
     val urlQueryParams = user.arn.fold(
-      s"?newApiModel=$isUsingNewApi&newFinancialApiModel=$isUsingNewFinancialApiModel"
+      ""
     )(
-      arn => s"?arn=$arn&newApiModel=$isUsingNewApi&newFinancialApiModel=$isUsingNewFinancialApiModel"
+      arn => s"?arn=$arn"
     )
     s"/etmp/penalties/$enrolmentKey$urlQueryParams"
   }
 
-  def getPenaltiesData(enrolmentKey: String, isUsingNewApi: Boolean = false,
-                       isUsingNewFinancialApiModel: Boolean = false)(implicit user: User[_], hc: HeaderCarrier): Future[ETMPPayload] = {
-    httpClient.GET[ETMPPayload](s"$penaltiesBaseUrl${getPenaltiesDataUrl(enrolmentKey, isUsingNewApi, isUsingNewFinancialApiModel)}")
-  }
-
-  def getPenaltyDetails(enrolmentKey: String, isUsingNewApi: Boolean = true,
-                        isUsingNewFinancialApiModel: Boolean = isEnabled(UseAPI1811Model)
-                       )(implicit user: User[_], hc: HeaderCarrier): Future[GetPenaltyDetailsResponse] = {
-    httpClient.GET[GetPenaltyDetailsResponse](s"$penaltiesBaseUrl${getPenaltiesDataUrl(enrolmentKey,
-      isUsingNewApi, isUsingNewFinancialApiModel)}")(GetPenaltyDetailsResponseReads, hc, ec)
+  def getPenaltyDetails(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[GetPenaltyDetailsResponse] = {
+    httpClient.GET[GetPenaltyDetailsResponse](s"$penaltiesBaseUrl${getPenaltiesDataUrl(enrolmentKey)}")(GetPenaltyDetailsResponseReads, hc, ec)
   }
 }

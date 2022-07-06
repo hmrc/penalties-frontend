@@ -38,16 +38,12 @@ class FeatureSwitchingSpec extends SpecBase with BeforeAndAfterAll with FeatureS
       override implicit val appConfig: AppConfig = config
     }
     sys.props -= CallAPI1812ETMP.name
-    sys.props -= UseAPI1812Model.name
-    sys.props -= UseAPI1811Model.name
     sys.props -= featureSwitching.TIME_MACHINE_NOW
   }
 
   override protected def afterAll(): Unit = {
     super.afterAll()
     sys.props -= CallAPI1812ETMP.name
-    sys.props -= UseAPI1812Model.name
-    sys.props -= UseAPI1811Model.name
     sys.props -= TIME_MACHINE_NOW
   }
 
@@ -81,32 +77,12 @@ class FeatureSwitchingSpec extends SpecBase with BeforeAndAfterAll with FeatureS
       featureSwitching.enableFeatureSwitch(CallAPI1812ETMP)
       (sys.props get CallAPI1812ETMP.name get) shouldBe "true"
     }
-
-    s"set ${UseAPI1812Model.name} property to true" in new Setup {
-      featureSwitching.enableFeatureSwitch(UseAPI1812Model)
-      (sys.props get UseAPI1812Model.name get) shouldBe "true"
-    }
-
-    s"set ${UseAPI1811Model.name} property to true" in new Setup {
-      featureSwitching.enableFeatureSwitch(UseAPI1811Model)
-      (sys.props get UseAPI1811Model.name get) shouldBe "true"
-    }
   }
 
   "disableFeatureSwitch" should {
     s"set ${CallAPI1812ETMP.name} property to false" in new Setup {
       featureSwitching.disableFeatureSwitch(CallAPI1812ETMP)
       (sys.props get CallAPI1812ETMP.name get) shouldBe "false"
-    }
-
-    s"set ${UseAPI1812Model.name} property to false" in new Setup {
-      featureSwitching.disableFeatureSwitch(UseAPI1812Model)
-      (sys.props get UseAPI1812Model.name get) shouldBe "false"
-    }
-
-    s"set ${UseAPI1811Model.name} property to false" in new Setup {
-      featureSwitching.disableFeatureSwitch(UseAPI1811Model)
-      (sys.props get UseAPI1811Model.name get) shouldBe "false"
     }
   }
 

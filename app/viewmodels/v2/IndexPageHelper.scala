@@ -17,10 +17,9 @@
 package viewmodels.v2
 
 import models.User
-import models.penalty.LatePaymentPenalty
 import models.v3.GetPenaltyDetails
 import models.v3.appealInfo.AppealStatusEnum.Upheld
-import models.v3.lpp.LPPPenaltyStatusEnum
+import models.v3.lpp.{LPPDetails, LPPPenaltyStatusEnum}
 import models.v3.lsp.{LSPPenaltyStatusEnum, TaxReturnStatusEnum}
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
@@ -123,7 +122,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
   }
 
   def getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_]): Html = {
-    if (penaltyDetails.latePaymentPenalty.map(_.details).getOrElse(List.empty[LatePaymentPenalty]).isEmpty) {
+    if (penaltyDetails.latePaymentPenalty.map(_.details).getOrElse(List.empty[LPPDetails]).isEmpty) {
       p(content = stringAsHtml(messages("lpp.penaltiesSummary.noPaymentPenalties")))
     } else {
       val isAnyLPPNotPaid: Boolean = penaltyDetails.latePaymentPenalty.exists(_.details.exists(
