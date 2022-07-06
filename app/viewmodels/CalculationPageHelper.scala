@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 class CalculationPageHelper @Inject()() extends ViewUtils with ImplicitDateFormatter {
 
-  def getCalculationRowForLPPForNewAPI(lpp: LPPDetails)(implicit messages: Messages): Option[Seq[String]] = {
+  def getCalculationRowForLPP(lpp: LPPDetails)(implicit messages: Messages): Option[Seq[String]] = {
     (lpp.LPP1LRCalculationAmount, lpp.LPP1HRCalculationAmount) match {
       case (Some(amountOnDay15), Some(amountOnDay31)) =>
         val amountOnDay15ParsedAsString = CurrencyFormatter.parseBigDecimalToFriendlyValue(amountOnDay15)

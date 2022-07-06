@@ -47,7 +47,7 @@ class IndexController @Inject()(view2: IndexView,
     penaltiesServiceV2.getPenaltyDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn)).map {
       _.fold(
         errors => {
-          logger.error(s"[OtherReasonController][getPenaltyDetailsFromNewAPI] - Received error with status ${errors.status} and body ${errors.body} rendering ISE.")
+          logger.error(s"[OtherReasonController][getPenaltyDetails] - Received error with status ${errors.status} and body ${errors.body} rendering ISE.")
           errorHandler.showInternalServerError
         }, penaltyData => {
           val contentToDisplayAboveCards = pageHelperv2.getContentBasedOnPointsFromModel(penaltyData)

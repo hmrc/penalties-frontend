@@ -25,7 +25,7 @@ import java.time.LocalDate
 class CalculationPageHelperSpec extends SpecBase {
   val calculationPageHelper: CalculationPageHelper = injector.instanceOf[CalculationPageHelper]
 
-  "getCalculationRowForLPPForNewAPI" should {
+  "getCalculationRowForLPP" should {
 
     val lppWithNoAmounts = LPPDetails(
       principalChargeReference = "12345678901234",
@@ -124,14 +124,14 @@ class CalculationPageHelperSpec extends SpecBase {
     )
 
     "return a single row when the user has an amount after 15 days" in {
-      val rows = calculationPageHelper.getCalculationRowForLPPForNewAPI(lppWith15DayAmount)
+      val rows = calculationPageHelper.getCalculationRowForLPP(lppWith15DayAmount)
       rows.isDefined shouldBe true
       rows.get.size shouldBe 1
       rows.get.head shouldBe "2% of £99.99 (VAT amount unpaid on 14 November 2069)"
     }
 
     "return 2 rows when the user has an amount after 15 and 30 days" in {
-      val rows = calculationPageHelper.getCalculationRowForLPPForNewAPI(lppWith15and30DayAmount)
+      val rows = calculationPageHelper.getCalculationRowForLPP(lppWith15and30DayAmount)
       rows.isDefined shouldBe true
       rows.get.size shouldBe 2
       rows.get.head shouldBe "2% of £99.99 (VAT amount unpaid on 14 November 2069)"
@@ -139,7 +139,7 @@ class CalculationPageHelperSpec extends SpecBase {
     }
 
     "return None when the user does not have either" in {
-      val rows = calculationPageHelper.getCalculationRowForLPPForNewAPI(lppWithNoAmounts)
+      val rows = calculationPageHelper.getCalculationRowForLPP(lppWithNoAmounts)
       rows.isDefined shouldBe false
     }
   }

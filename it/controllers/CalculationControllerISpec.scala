@@ -268,10 +268,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     ))
   )
   
-  "GET /v2/calculation when it is not an additional penalty and  penalty is shown with estimate" should {
+  "GET /calculation when it is not an additional penalty and  penalty is shown with estimate" should {
       "return 200 (OK) and render the view correctly when the use has specified a valid penalty ID" in {
         returnPenaltyDetailsStub(samplePenaltyDetails)
-        val request = controller.onPageLoadForNewAPI("12345678901234", "LPP1")(fakeRequest)
+        val request = controller.onPageLoad(
+          "12345678901234", "LPP1")(fakeRequest)
         status(request) shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
         parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
@@ -292,7 +293,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
 
       "the user has specified a valid penalty ID (parses decimals correctly)" in {
         returnPenaltyDetailsStub(samplePenaltyDetails)
-        val request = controller.onPageLoadForNewAPI("12345678901234", "LPP1")(fakeRequest)
+        val request = controller.onPageLoad("12345678901234", "LPP1")(fakeRequest)
         status(request) shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
         parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
@@ -313,7 +314,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
 
       "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID (only one interest charge)" in {
         returnPenaltyDetailsStub(penaltyDetailsWithDay15Charge)
-        val request = controller.onPageLoadForNewAPI("12345678901234", "LPP1")(fakeRequest)
+        val request = controller.onPageLoad("12345678901234", "LPP1")(fakeRequest)
         status(request) shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
         parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Calculation"
@@ -322,7 +323,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
 
       "return 200 (OK) and render the view correctly with Penalty Amount" in {
         returnPenaltyDetailsStub(penaltyDetailsWithDueDateMoreThan30days)
-        val request = controller.onPageLoadForNewAPI("12345678901234", "LPP1")(fakeRequest)
+        val request = controller.onPageLoad("12345678901234", "LPP1")(fakeRequest)
         status(request) shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
         parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount"
@@ -332,22 +333,22 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       "return 500 (ISE) when the user specifies a penalty not within their data" in {
         returnPenaltyDetailsStub(samplePenaltyDetails)
 
-        val request = controller.onPageLoadForNewAPI("1234567890", "LPP1")(fakeRequest)
+        val request = controller.onPageLoad("1234567890", "LPP1")(fakeRequest)
         status(request) shouldBe Status.INTERNAL_SERVER_ERROR
       }
 
       "return 303 (SEE_OTHER) when the user is not authorised" in {
         AuthStub.unauthorised()
 
-        val request = controller.onPageLoadForNewAPI("12345", "LPP1")(fakeRequest)
+        val request = controller.onPageLoad("12345", "LPP1")(fakeRequest)
         status(request) shouldBe Status.SEE_OTHER
       }
   }
 
-  "GET /v2/calculation when it is an additional penalty" should {
+  "GET /calculation when it is an additional penalty" should {
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in {
       returnPenaltyDetailsStub(penaltyDetailsWithAdditionalPenalty)
-      val request = controller.onPageLoadForNewAPI("54312345678901", "LPP2")(fakeRequest)
+      val request = controller.onPageLoad("54312345678901", "LPP2")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
@@ -371,7 +372,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
 
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due" in {
       returnPenaltyDetailsStub(penaltyDetailsWithAdditionalDuePenalty)
-      val request = controller.onPageLoadForNewAPI("65431234567890", "LPP2")(fakeRequest)
+      val request = controller.onPageLoad("65431234567890", "LPP2")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
@@ -399,13 +400,13 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     "return 500 (ISE) when the user specifies a penalty not within their data" in {
       returnPenaltyDetailsStub(samplePenaltyDetails)
 
-      val request = controller.onPageLoadForNewAPI("123456800", "LPP2")(fakeRequest)
+      val request = controller.onPageLoad("123456800", "LPP2")(fakeRequest)
       status(request) shouldBe Status.INTERNAL_SERVER_ERROR
     }
 
     "return 303 (SEE_OTHER) when the user is not authorised" in {
       AuthStub.unauthorised()
-      val request = controller.onPageLoadForNewAPI("123456800", "LPP2")(fakeRequest)
+      val request = controller.onPageLoad("123456800", "LPP2")(fakeRequest)
       status(request) shouldBe Status.SEE_OTHER
     }
   }

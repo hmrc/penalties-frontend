@@ -450,7 +450,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
         "return SummaryCards when given First Late Payment penalty and chargeType is VAT Return 1st LPP (4703)" when {
           "populateLatePaymentPenaltyCard is called" in {
-            val firstLatePaymentPenaltyForVAT = Seq(sampleLatePaymentPenaltyPaidV2.copy(
+            val firstLatePaymentPenaltyForVAT = Seq(sampleLatePaymentPenaltyPaid.copy(
               LPPDetailsMetadata = LPPDetailsMetadata(
                 mainTransaction = Some(VATReturnFirstLPP), outstandingAmount = Some(0)
               )
@@ -479,7 +479,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
         "return SummaryCards when given First Late Payment penalty and chargeType is VAT Central Assessment 1st LPP (4723)" when {
           "populateLatePaymentPenaltyCard is called" in {
-            val firstLatePaymentPenaltyForCentralAssessment = Seq(sampleLatePaymentPenaltyPaidV2.copy(
+            val firstLatePaymentPenaltyForCentralAssessment = Seq(sampleLatePaymentPenaltyPaid.copy(
               LPPDetailsMetadata = LPPDetailsMetadata(
                 mainTransaction = Some(CentralAssessmentFirstLPP), outstandingAmount = Some(1)
               ),
@@ -513,7 +513,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
         "return SummaryCards when given First Late Payment penalty and chargeType is VAT Error Correction Notice 1st LPP (4743)" when {
           "populateLatePaymentPenaltyCard is called" in {
-            val firstLatePaymentPenaltyForErrorCorrectionNotice = Seq(sampleLatePaymentPenaltyPaidV2.copy(
+            val firstLatePaymentPenaltyForErrorCorrectionNotice = Seq(sampleLatePaymentPenaltyPaid.copy(
               LPPDetailsMetadata = LPPDetailsMetadata(
                 mainTransaction = Some(ErrorCorrectionFirstLPP), outstandingAmount = Some(1)
               ),
@@ -547,7 +547,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
         "return SummaryCards when given First Late Payment penalty and chargeType is VAT Officer's Assessment 1st LPP (4741)" when {
           "populateLatePaymentPenaltyCard is called" in {
-            val firstLatePaymentPenaltyForOfficersAssessment = Seq(sampleLatePaymentPenaltyPaidV2.copy(
+            val firstLatePaymentPenaltyForOfficersAssessment = Seq(sampleLatePaymentPenaltyPaid.copy(
               LPPDetailsMetadata = LPPDetailsMetadata(
                 mainTransaction = Some(OfficersAssessmentFirstLPP), outstandingAmount = Some(1)
               )
@@ -576,7 +576,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
         "return SummaryCards with VAT payment date in LPP " when {
           "populateLatePaymentPenalty for is called" in {
-            val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyPaidV2.copy(
+            val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyPaid.copy(
               LPPDetailsMetadata = LPPDetailsMetadata(
                 mainTransaction = Some(VATReturnFirstLPP), outstandingAmount = Some(1)
               )

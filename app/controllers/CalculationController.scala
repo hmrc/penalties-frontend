@@ -45,18 +45,18 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
                                                                                     controllerComponents: MessagesControllerComponents)
   extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter {
 
-  def onPageLoadForNewAPI(principalChargeReference: String, penaltyCategory: String): Action[AnyContent] = authorise.async { implicit request =>
-    logger.debug(s"[CalculationController][onPageLoadForNewAPI] - Making call to new endpoint")
+  def onPageLoad(principalChargeReference: String, penaltyCategory: String): Action[AnyContent] = authorise.async { implicit request =>
+    logger.debug(s"[CalculationController][onPageLoad] - Making call to new endpoint")
     val penaltyCategoryEnum = LPPPenaltyCategoryEnum.find(penaltyCategory).get
-    getPenaltyDetailsFromNewAPI(principalChargeReference, penaltyCategoryEnum)
+    getPenaltyDetails(principalChargeReference, penaltyCategoryEnum)
   }
 
-  def getPenaltyDetailsFromNewAPI(principalChargeReference: String, penaltyCategory: LPPPenaltyCategoryEnum.Value)
-                                 (implicit request: User[_]): Future[Result] = {
+  def getPenaltyDetails(principalChargeReference: String, penaltyCategory: LPPPenaltyCategoryEnum.Value)
+                       (implicit request: User[_]): Future[Result] = {
     penaltiesServiceV2.getPenaltyDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn)).map {
       _.fold(
         errors => {
-          logger.error(s"[OtherReasonController][getPenaltyDetailsFromNewAPI] - Received status ${errors.status} and body ${errors.body}, rendering ISE.")
+          logger.error(s"[OtherReasonController][getPenaltyDetails] - Received status ${errors.status} and body ${errors.body}, rendering ISE.")
           errorHandler.showInternalServerError
         },
         payload => {
@@ -64,7 +64,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
             penalty.principalChargeReference == principalChargeReference && penalty.penaltyCategory == penaltyCategory
           }))
           if (penalty.isEmpty) {
-            logger.error("[CalculationController][getPenaltyDetailsFromNewAPI] - Tried to render calculation page with new model but could not find penalty specified.")
+            logger.error("[CalculationController][getPenaltyDetails] - Tried to render calculation page with new model but could not find penalty specified.")
             errorHandler.showInternalServerError
           } else {
             val startDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeBillingFrom)
@@ -74,13 +74,13 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
             val amountLeftToPay = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.penaltyAmountOutstanding.get)
             val penaltyAmount = penalty.get.penaltyAmountOutstanding.get + penalty.get.penaltyAmountPaid.get
             val parsedPenaltyAmount = CurrencyFormatter.parseBigDecimalToFriendlyValue(penaltyAmount)
-            logger.debug(s"[CalculationController][getPenaltyDetailsFromNewAPI] - found penalty: ${penalty.get}")
+            logger.debug(s"[CalculationController][getPenaltyDetails] - found penalty: ${penalty.get}")
             if (!penaltyCategory.equals(LPP2)) {
               val penaltyEstimateDate = penalty.get.principalChargeDueDate.plusDays(30)
-              val calculationRow = calculationPageHelper.getCalculationRowForLPPForNewAPI(penalty.get)
+              val calculationRow = calculationPageHelper.getCalculationRowForLPP(penalty.get)
               calculationRow.fold({
                 //TODO: log a PD
-                logger.error("[CalculationController][getPenaltyDetailsFromNewAPI] - " +
+                logger.error("[CalculationController][getPenaltyDetails] - " +
                   "Calculation row returned None - this could be because the user did not have a defined amount after 15 and/or 30 days of due date")
                 errorHandler.showInternalServerError
               })(

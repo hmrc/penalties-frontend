@@ -133,7 +133,7 @@ trait TestData {
     )
   )
 
-  val sampleLatePaymentPenaltyPaidV2: LPPDetails = sampleLatePaymentPenalty.copy(
+  val sampleLatePaymentPenaltyPaid: LPPDetails = sampleLatePaymentPenalty.copy(
     principalChargeLatestClearing = Some(sampleDate),
     penaltyAmountOutstanding = Some(0),
     penaltyStatus = LPPPenaltyStatusEnum.Posted,

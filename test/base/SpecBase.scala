@@ -67,7 +67,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with T
 
   val mockAuthService: AuthService = new AuthService(mockAuthConnector)
 
-  val summaryCardHelperv2: SummaryCardHelper = injector.instanceOf[SummaryCardHelper]
+  val summaryCardHelper: SummaryCardHelper = injector.instanceOf[SummaryCardHelper]
 
   val timelineHelper: TimelineHelper = injector.instanceOf[TimelineHelper]
 

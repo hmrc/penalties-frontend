@@ -35,7 +35,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
 
   val summaryCardHtml: summaryCardLSP = injector.instanceOf[summaryCardLSP]
 
-  val summaryCardModelWithAppealedPoint: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.populateLateSubmissionPenaltyCard(
+  val summaryCardModelWithAppealedPoint: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(lSPDetailsAsModelNoFAP.copy(appealInformation = Some(Seq(
       AppealInformationType(
         appealStatus = Some(AppealStatusEnum.Under_Appeal),
@@ -44,7 +44,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     )))),
     quarterlyThreshold, 1).head
 
-  val summaryCardModelUnappealable: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.populateLateSubmissionPenaltyCard(
+  val summaryCardModelUnappealable: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(lSPDetailsAsModelNoFAP.copy(appealInformation = Some(Seq(
       AppealInformationType(
         appealStatus = Some(AppealStatusEnum.Unappealable),
@@ -53,7 +53,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     )))),
     quarterlyThreshold, 1).head
 
-  val summaryCardModelWithAppealedPointAccepted: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.populateLateSubmissionPenaltyCard(
+  val summaryCardModelWithAppealedPointAccepted: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(lSPDetailsAsModelNoFAP.copy(
       penaltyStatus = LSPPenaltyStatusEnum.Inactive,
       appealInformation = Some(Seq(
@@ -64,7 +64,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       )))),
     quarterlyThreshold, 1).head
 
-  val summaryCardModelWithAppealedPointRejected: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.populateLateSubmissionPenaltyCard(
+  val summaryCardModelWithAppealedPointRejected: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(lSPDetailsAsModelNoFAP.copy(appealInformation = Some(Seq(
       AppealInformationType(
         appealStatus = Some(AppealStatusEnum.Rejected),
@@ -73,7 +73,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     )))),
     quarterlyThreshold, 1).head
 
-  val summaryCardModelWithAddedPoint: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.populateLateSubmissionPenaltyCard(
+  val summaryCardModelWithAddedPoint: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(LSPDetails(
       penaltyNumber = "12345678901234",
       penaltyOrder = "01",
@@ -105,7 +105,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     )
     ), quarterlyThreshold, 1).head
 
-  val summaryCardModelWithAppealedPointUnderTribunalReview: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.populateLateSubmissionPenaltyCard(
+  val summaryCardModelWithAppealedPointUnderTribunalReview: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(lSPDetailsAsModelNoFAP.copy(
       appealInformation = Some(Seq(
         AppealInformationType(
@@ -116,7 +116,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     )),
     quarterlyThreshold, 1).head
 
-  val summaryCardModelWithAppealedPointAcceptedByTribunal: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.populateLateSubmissionPenaltyCard(
+  val summaryCardModelWithAppealedPointAcceptedByTribunal: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(lSPDetailsAsModelNoFAP.copy(
       appealInformation = Some(Seq(
         AppealInformationType(
@@ -127,7 +127,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     )),
     quarterlyThreshold, 1).head
 
-  val summaryCardModelWithAppealedPointTribunalRejected: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.populateLateSubmissionPenaltyCard(
+  val summaryCardModelWithAppealedPointTribunalRejected: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(lSPDetailsAsModelNoFAP.copy(
       appealInformation = Some(Seq(
         AppealInformationType(
@@ -138,7 +138,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     )),
     quarterlyThreshold, 1).head
 
-  val summaryCardModelWithAddedPointAtThreshold: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.populateLateSubmissionPenaltyCard(
+  val summaryCardModelWithAddedPointAtThreshold: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(LSPDetails(
       penaltyNumber = "12345678901234",
       penaltyOrder = "01",
@@ -165,7 +165,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     )
     ), quarterlyThreshold, 4).head
 
-  val summaryCardModelWithRemovedPoint: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.populateLateSubmissionPenaltyCard(
+  val summaryCardModelWithRemovedPoint: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(LSPDetails(
       penaltyNumber = "12345678901234",
       penaltyOrder = "01",
@@ -192,7 +192,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     )
     ), quarterlyThreshold, 1).head
 
-  val summaryCardModelWithRemovedPointFilingFrequencyChange: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.populateLateSubmissionPenaltyCard(
+  val summaryCardModelWithRemovedPointFilingFrequencyChange: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(LSPDetails(
       penaltyNumber = "12345678901234",
       penaltyOrder = "01",
@@ -223,7 +223,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       chargeDueDate = None
     )), quarterlyThreshold, 1).head
 
-  val summaryCardModelWithThresholdPenalty: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.financialSummaryCard(
+  val summaryCardModelWithThresholdPenalty: LateSubmissionPenaltySummaryCard = summaryCardHelper.financialSummaryCard(
     LSPDetails(
       penaltyNumber = "12345678901238",
       penaltyOrder = "01",
@@ -255,7 +255,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     ), quarterlyThreshold)
 
   val summaryCardModelWithFinancialPointBelowThresholdAndAppealInProgress: LateSubmissionPenaltySummaryCard =
-    summaryCardHelperv2.financialSummaryCard(LSPDetails(
+    summaryCardHelper.financialSummaryCard(LSPDetails(
       penaltyNumber = "12345678901234",
       penaltyOrder = "01",
       penaltyCategory = LSPPenaltyCategoryEnum.Point,
@@ -286,7 +286,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     ), quarterlyThreshold)
 
   val summaryCardModelWithFinancialPointBelowThresholdAndAppealAccepted: User[_] => LateSubmissionPenaltySummaryCard =
-    (user: User[_]) => summaryCardHelperv2.financialSummaryCard(LSPDetails(
+    (user: User[_]) => summaryCardHelper.financialSummaryCard(LSPDetails(
       penaltyNumber = "12345678901234",
       penaltyOrder = "01",
       penaltyCategory = LSPPenaltyCategoryEnum.Point,
@@ -317,7 +317,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     ), quarterlyThreshold)(implicitly, user)
 
   val summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected: User[_] => LateSubmissionPenaltySummaryCard =
-    (user: User[_]) => summaryCardHelperv2.financialSummaryCard(LSPDetails(
+    (user: User[_]) => summaryCardHelper.financialSummaryCard(LSPDetails(
       penaltyNumber = "12345678901234",
       penaltyOrder = "01",
       penaltyCategory = LSPPenaltyCategoryEnum.Point,
@@ -348,7 +348,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     ), quarterlyThreshold)(implicitly, user)
 
   val summaryCardModelWithFinancialPointBelowThresholdAndAppealReinstated: User[_] => LateSubmissionPenaltySummaryCard =
-    (user: User[_]) => summaryCardHelperv2.financialSummaryCard(LSPDetails(
+    (user: User[_]) => summaryCardHelper.financialSummaryCard(LSPDetails(
       penaltyNumber = "12345678901234",
       penaltyOrder = "01",
       penaltyCategory = LSPPenaltyCategoryEnum.Point,
@@ -379,7 +379,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     ), quarterlyThreshold)(implicitly, user)
 
   val summaryCardModelWithFinancialPointBelowThresholdAndAppealUnderTribunalReview: LateSubmissionPenaltySummaryCard =
-    summaryCardHelperv2.financialSummaryCard(LSPDetails(
+    summaryCardHelper.financialSummaryCard(LSPDetails(
       penaltyNumber = "12345678901234",
       penaltyOrder = "01",
       penaltyCategory = LSPPenaltyCategoryEnum.Point,
@@ -410,7 +410,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     ), quarterlyThreshold)
 
   val summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected: User[_] => LateSubmissionPenaltySummaryCard =
-    (user: User[_]) => summaryCardHelperv2.financialSummaryCard(LSPDetails(
+    (user: User[_]) => summaryCardHelper.financialSummaryCard(LSPDetails(
       penaltyNumber = "12345678901234",
       penaltyOrder = "01",
       penaltyCategory = LSPPenaltyCategoryEnum.Point,
@@ -441,7 +441,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     ), quarterlyThreshold)(implicitly, user)
 
   val summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalAccepted: User[_] => LateSubmissionPenaltySummaryCard =
-    (user: User[_]) => summaryCardHelperv2.financialSummaryCard(LSPDetails(
+    (user: User[_]) => summaryCardHelper.financialSummaryCard(LSPDetails(
       penaltyNumber = "12345678901234",
       penaltyOrder = "01",
       penaltyCategory = LSPPenaltyCategoryEnum.Charge,
@@ -471,7 +471,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       chargeDueDate = Some(LocalDate.parse("2069-10-30"))
     ), quarterlyThreshold)(implicitly, user)
 
-  val summaryCardModelWithFinancialLSP: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.financialSummaryCard(LSPDetails(
+  val summaryCardModelWithFinancialLSP: LateSubmissionPenaltySummaryCard = summaryCardHelper.financialSummaryCard(LSPDetails(
     penaltyNumber = "12345678901234",
     penaltyOrder = "01",
     penaltyCategory = LSPPenaltyCategoryEnum.Charge,
@@ -496,7 +496,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     chargeDueDate = Some(LocalDate.parse("2069-10-30"))
   ), annualThreshold)(implicitly, user)
 
-  val summaryCardModelWithMultiplePenaltyPeriodLSP: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.financialSummaryCard(LSPDetails(
+  val summaryCardModelWithMultiplePenaltyPeriodLSP: LateSubmissionPenaltySummaryCard = summaryCardHelper.financialSummaryCard(LSPDetails(
     penaltyNumber = "12345678901234",
     penaltyOrder = "01",
     penaltyCategory = LSPPenaltyCategoryEnum.Point,
@@ -533,7 +533,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     chargeDueDate = Some(LocalDate.parse("2069-10-30"))
   ), annualThreshold)(implicitly, user)
 
-  val summaryCardModelWithMultiplePenaltyPeriodLSPP: LateSubmissionPenaltySummaryCard = summaryCardHelperv2.pointSummaryCard(
+  val summaryCardModelWithMultiplePenaltyPeriodLSPP: LateSubmissionPenaltySummaryCard = summaryCardHelper.pointSummaryCard(
     LSPDetails(
       penaltyNumber = "12345678901234",
       penaltyOrder = "01",
