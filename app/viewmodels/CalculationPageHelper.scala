@@ -16,7 +16,7 @@
 
 package viewmodels
 
-import models.v3.lpp.LPPDetails
+import models.lpp.LPPDetails
 import play.api.i18n.Messages
 import utils.{CurrencyFormatter, ImplicitDateFormatter, ViewUtils}
 

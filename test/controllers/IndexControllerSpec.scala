@@ -22,23 +22,23 @@ import org.mockito.Matchers.any
 import org.mockito.Mockito.{mock, reset, when}
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import services.v2.{PenaltiesService => PenaltiesServicev2}
+import services.PenaltiesService
 import testUtils.AuthTestModels
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import utils.SessionKeys
-import viewmodels.v2.{IndexPageHelper => IndexPageHelperv2, SummaryCardHelper => SummaryCardHelperv2}
-import views.html.v2.{IndexView => IndexViewv2}
+import viewmodels.{IndexPageHelper, SummaryCardHelper}
+import views.html.IndexView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase {
 
-  val page2: IndexViewv2 = injector.instanceOf[IndexViewv2]
-  val indexPageHelper2: IndexPageHelperv2 = injector.instanceOf[IndexPageHelperv2]
-  val cardHelper2: SummaryCardHelperv2 = injector.instanceOf[SummaryCardHelperv2]
-  val mockPenaltiesService2: PenaltiesServicev2 = mock(classOf[PenaltiesServicev2])
+  val page2: IndexView = injector.instanceOf[IndexView]
+  val indexPageHelper2: IndexPageHelper = injector.instanceOf[IndexPageHelper]
+  val cardHelper2: SummaryCardHelper = injector.instanceOf[SummaryCardHelper]
+  val mockPenaltiesService2: PenaltiesService = mock(classOf[PenaltiesService])
 
   class Setup(authResult: Future[~[Option[AffinityGroup], Enrolments]]) {
     reset(mockAuthConnector, mockPenaltiesService2)

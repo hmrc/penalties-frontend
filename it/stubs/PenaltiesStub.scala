@@ -18,12 +18,13 @@ package stubs
 
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, stubFor, urlMatching}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
-import models.v3.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum, LatePaymentPenalty => v3LatePaymentPenalty}
-import models.v3.lsp._
-import models.v3.{GetPenaltyDetails, Totalisations}
+import models.{GetPenaltyDetails, Totalisations}
+import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
+import models.lpp._
+import models.lsp._
 import play.api.http.Status
 import play.api.libs.json.Json
+
 import java.time.{LocalDate, LocalDateTime}
 
 object PenaltiesStub {
@@ -81,7 +82,7 @@ object PenaltiesStub {
         ))
       )
     ),
-    latePaymentPenalty = Some(v3LatePaymentPenalty(
+    latePaymentPenalty = Some(LatePaymentPenalty(
       details = Seq(LPPDetails(
         principalChargeReference = "12345678901234",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
@@ -164,7 +165,7 @@ object PenaltiesStub {
         ))
       )
     ),
-    latePaymentPenalty = Some(v3LatePaymentPenalty(
+    latePaymentPenalty = Some(LatePaymentPenalty(
       details = Seq(LPPDetails(
         principalChargeReference = "12345678901234",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP1,

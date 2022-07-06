@@ -18,29 +18,29 @@ package controllers
 
 import base.SpecBase
 import config.featureSwitches.FeatureSwitching
-import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
-import models.v3.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum, LatePaymentPenalty => NewLatePaymentPenalty}
-import models.v3.lsp._
-import models.v3.{GetPenaltyDetails, Totalisations}
+import models.{GetPenaltyDetails, Totalisations}
+import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
+import models.lpp._
+import models.lsp._
 import org.mockito.Matchers
 import org.mockito.Mockito.{mock, reset, when}
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import services.v2.{PenaltiesService => PenaltiesServiceV2}
+import services.PenaltiesService
 import testUtils.AuthTestModels
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import viewmodels.CalculationPageHelper
 import views.html.{CalculationAdditionalView, CalculationLPPView}
-import java.time.LocalDate
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CalculationControllerSpec extends SpecBase with FeatureSwitching {
   val calculationView: CalculationLPPView = injector.instanceOf[CalculationLPPView]
   val calculationAdditionalView: CalculationAdditionalView = injector.instanceOf[CalculationAdditionalView]
-  val mockPenaltiesServiceV2: PenaltiesServiceV2 = mock(classOf[PenaltiesServiceV2])
+  val mockPenaltiesServiceV2: PenaltiesService = mock(classOf[PenaltiesService])
   val calculationPageHelper: CalculationPageHelper = injector.instanceOf[CalculationPageHelper]
 
   val emptyPenaltyDetailsPayload: GetPenaltyDetails = GetPenaltyDetails(None, None, None)
@@ -93,7 +93,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
         ))
       )
     ),
-    latePaymentPenalty = Some(NewLatePaymentPenalty(
+    latePaymentPenalty = Some(LatePaymentPenalty(
       details = Seq(LPPDetails(
         principalChargeReference = "12345678901234",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
@@ -176,7 +176,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
         ))
       )
     ),
-    latePaymentPenalty = Some(NewLatePaymentPenalty(
+    latePaymentPenalty = Some(LatePaymentPenalty(
       details = Seq(LPPDetails(
         principalChargeReference = "12345678901234",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP1,

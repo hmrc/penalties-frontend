@@ -16,10 +16,10 @@
 
 package base
 
-import models.v3.{GetPenaltyDetails, Totalisations}
-import models.v3.lsp._
-import models.v3.lpp._
-import models.v3.appealInfo._
+import models.{GetPenaltyDetails, Totalisations}
+import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
+import models.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty, MainTransactionEnum}
+import models.lsp.{LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum, LSPSummary, LateSubmission, LateSubmissionPenalty, TaxReturnStatusEnum}
 
 import java.time.LocalDate
 

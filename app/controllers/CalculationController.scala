@@ -19,11 +19,11 @@ package controllers
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
 import models.User
-import models.v3.lpp.LPPPenaltyCategoryEnum.LPP2
-import models.v3.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum}
+import models.lpp.LPPPenaltyCategoryEnum.LPP2
+import models.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.v2.{PenaltiesService => PenaltiesServiceV2}
+import services.PenaltiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
 import utils.{CurrencyFormatter, EnrolmentKeys}
@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CalculationController @Inject()(viewLPP: CalculationLPPView,
                                       viewAdd: CalculationAdditionalView,
-                                      penaltiesServiceV2: PenaltiesServiceV2,
+                                      penaltiesServiceV2: PenaltiesService,
                                       calculationPageHelper: CalculationPageHelper)(implicit ec: ExecutionContext,
                                                                                     val appConfig: AppConfig,
                                                                                     errorHandler: ErrorHandler,

@@ -35,8 +35,7 @@ import services.AuthService
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.SessionKeys
-import viewmodels.TimelineHelper
-import viewmodels.v2.{SummaryCardHelper => SummaryCardHelperv2}
+import viewmodels.{SummaryCardHelper, TimelineHelper}
 import views.html.errors.Unauthorised
 
 import java.time.temporal.ChronoUnit
@@ -68,7 +67,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with T
 
   val mockAuthService: AuthService = new AuthService(mockAuthConnector)
 
-  val summaryCardHelperv2: SummaryCardHelperv2 = injector.instanceOf[SummaryCardHelperv2]
+  val summaryCardHelperv2: SummaryCardHelper = injector.instanceOf[SummaryCardHelper]
 
   val timelineHelper: TimelineHelper = injector.instanceOf[TimelineHelper]
 

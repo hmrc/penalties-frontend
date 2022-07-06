@@ -17,10 +17,10 @@
 package controllers
 
 import config.AppConfig
-import models.v3.appealInfo._
-import models.v3.lpp._
-import models.v3.lsp._
-import models.v3.{GetPenaltyDetails, Totalisations}
+import models.{GetPenaltyDetails, Totalisations, appealInfo, lpp}
+import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
+import models.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty, MainTransactionEnum}
+import models.lsp.{LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum, LSPSummary, LateSubmission, LateSubmissionPenalty, TaxReturnStatusEnum}
 import org.jsoup.Jsoup
 import play.api.http.{HeaderNames, Status}
 import play.api.mvc.AnyContentAsEmpty
@@ -81,7 +81,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
             taxPeriodDueDate = Some(sampleDate1V2),
             returnReceiptDate = Some(sampleDate1V2),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(models.v3.appealInfo.AppealStatusEnum.Unappealable), None))),
+          appealInformation = Some(Seq(AppealInformationType(Some(AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
           chargeOutstandingAmount = None,
           chargeDueDate = None
@@ -118,7 +118,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
             taxPeriodDueDate = Some(sampleDate1V2),
             returnReceiptDate = Some(sampleDate1V2),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(models.v3.appealInfo.AppealStatusEnum.Unappealable), None))),
+          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
           chargeOutstandingAmount = None,
           chargeDueDate = None
@@ -139,7 +139,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
             taxPeriodDueDate = Some(sampleDate1V2),
             returnReceiptDate = Some(sampleDate1V2),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(models.v3.appealInfo.AppealStatusEnum.Unappealable), None))),
+          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
           chargeOutstandingAmount = None,
           chargeDueDate = None
@@ -175,7 +175,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
             taxPeriodDueDate = Some(sampleDate1V2),
             returnReceiptDate = Some(sampleDate1V2),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(models.v3.appealInfo.AppealStatusEnum.Unappealable), None))),
+          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
           chargeOutstandingAmount = None,
           chargeDueDate = None
@@ -196,7 +196,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
             taxPeriodDueDate = Some(sampleDate1V2),
             returnReceiptDate = Some(sampleDate1V2),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(models.v3.appealInfo.AppealStatusEnum.Unappealable), None))),
+          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
           chargeOutstandingAmount = None,
           chargeDueDate = None
@@ -217,7 +217,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
             taxPeriodDueDate = Some(sampleDate1V2),
             returnReceiptDate = Some(sampleDate1V2),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(models.v3.appealInfo.AppealStatusEnum.Unappealable), None))),
+          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
           chargeOutstandingAmount = None,
           chargeDueDate = None
@@ -227,7 +227,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     latePaymentPenalty = None
   )
 
-  val paidLatePaymentPenaltyV2: models.v3.lpp.LatePaymentPenalty = models.v3.lpp.LatePaymentPenalty(
+  val paidLatePaymentPenaltyV2: LatePaymentPenalty = lpp.LatePaymentPenalty(
     details = Seq(
       LPPDetails(principalChargeReference = "123456789",
       penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
@@ -257,7 +257,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         )
       )))
 
-  val latePaymentPenaltyWithAdditionalPenaltyV2: models.v3.lpp.LatePaymentPenalty = models.v3.lpp.LatePaymentPenalty(
+  val latePaymentPenaltyWithAdditionalPenaltyV2: LatePaymentPenalty = lpp.LatePaymentPenalty(
     details = Seq(
       LPPDetails(
         principalChargeReference = "123456789",
@@ -305,7 +305,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         communicationsDate = sampleDate1V2,
         penaltyChargeDueDate = sampleDate1V2,
         appealInformation = Some(Seq(AppealInformationType(
-          appealStatus = Some(models.v3.appealInfo.AppealStatusEnum.Unappealable),
+          appealStatus = Some(appealInfo.AppealStatusEnum.Unappealable),
           appealLevel = None
         ))),
         principalChargeBillingFrom = sampleDate1V2,
@@ -321,7 +321,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     )
   )
 
-  val latePaymentPenaltyVATUnpaidV2: models.v3.lpp.LatePaymentPenalty = models.v3.lpp.LatePaymentPenalty(
+  val latePaymentPenaltyVATUnpaidV2: LatePaymentPenalty = lpp.LatePaymentPenalty(
     details = Seq(
       LPPDetails(principalChargeReference = "123456789",
       penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
@@ -340,7 +340,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       communicationsDate = sampleDate1V2,
       penaltyChargeDueDate = sampleDate1V2,
       appealInformation = Some(Seq(AppealInformationType(
-        appealStatus = Some(models.v3.appealInfo.AppealStatusEnum.Unappealable),
+        appealStatus = Some(appealInfo.AppealStatusEnum.Unappealable),
         appealLevel = None
       ))),
       principalChargeBillingFrom = sampleDate1V2,
@@ -355,7 +355,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
   )
 
   val latePaymentPenaltyWithAppealV2 = Some(
-    models.v3.lpp.LatePaymentPenalty(
+    lpp.LatePaymentPenalty(
     details = Seq(LPPDetails(principalChargeReference = "123456789",
       penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
       penaltyChargeCreationDate = sampleDate1V2,
@@ -373,7 +373,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       communicationsDate = sampleDate1V2,
       penaltyChargeDueDate = sampleDate1V2,
       appealInformation = Some(Seq(AppealInformationType(
-        appealStatus = Some(models.v3.appealInfo.AppealStatusEnum.Under_Appeal),
+        appealStatus = Some(appealInfo.AppealStatusEnum.Under_Appeal),
         appealLevel = Some(AppealLevelEnum.HMRC)))),
       principalChargeBillingFrom = sampleDate1V2,
       principalChargeBillingTo = sampleDate1V2.plusMonths(1),
@@ -432,7 +432,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
             taxPeriodDueDate = Some(sampleDate1V2),
             returnReceiptDate = Some(sampleDate1V2),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(models.v3.appealInfo.AppealStatusEnum.Unappealable), None))),
+          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
           chargeOutstandingAmount = Some(BigDecimal(100)),
           chargeDueDate = None
@@ -453,7 +453,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
             taxPeriodDueDate = Some(sampleDate1V2),
             returnReceiptDate = Some(sampleDate1V2),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(models.v3.appealInfo.AppealStatusEnum.Unappealable), None))),
+          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
           chargeOutstandingAmount = Some(BigDecimal(100)),
           chargeDueDate = None
@@ -468,7 +468,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     latePaymentPenalty = latePaymentPenaltyWithAppealV2
   )
 
-  val unpaidLatePaymentPenaltyV2: models.v3.lpp.LatePaymentPenalty = models.v3.lpp.LatePaymentPenalty(
+  val unpaidLatePaymentPenaltyV2: LatePaymentPenalty = lpp.LatePaymentPenalty(
     details = Seq(LPPDetails(principalChargeReference = "123456789",
       penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
       penaltyChargeCreationDate = sampleDate1V2,

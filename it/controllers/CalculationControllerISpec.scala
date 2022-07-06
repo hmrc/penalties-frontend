@@ -18,10 +18,10 @@ package controllers
 
 import config.AppConfig
 import config.featureSwitches.FeatureSwitching
-import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
-import models.v3.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum, LatePaymentPenalty => v3LatePaymentPenalty}
-import models.v3.lsp._
-import models.v3.{GetPenaltyDetails, Totalisations}
+import models.{GetPenaltyDetails, Totalisations}
+import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
+import models.lpp._
+import models.lsp._
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.AnyContentAsEmpty
@@ -91,7 +91,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         ))
       )
     ),
-    latePaymentPenalty = Some(v3LatePaymentPenalty(
+    latePaymentPenalty = Some(LatePaymentPenalty(
       details = Seq(LPPDetails(
         principalChargeReference = "12345678901234",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
@@ -127,7 +127,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
   )
 
   val penaltyDetailsWithDay15Charge: GetPenaltyDetails = samplePenaltyDetails.copy(
-    latePaymentPenalty = Some(v3LatePaymentPenalty(
+    latePaymentPenalty = Some(LatePaymentPenalty(
       details = Seq(LPPDetails(
         principalChargeReference = "12345678901234",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
@@ -162,7 +162,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     )))
 
   val penaltyDetailsWithDueDateMoreThan30days: GetPenaltyDetails = samplePenaltyDetails.copy(
-    latePaymentPenalty = Some(v3LatePaymentPenalty(
+    latePaymentPenalty = Some(LatePaymentPenalty(
       details = Seq(LPPDetails(
         principalChargeReference = "12345678901234",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
@@ -197,7 +197,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     )))
 
   val penaltyDetailsWithAdditionalPenalty: GetPenaltyDetails = samplePenaltyDetails.copy(
-    latePaymentPenalty = Some(v3LatePaymentPenalty(
+    latePaymentPenalty = Some(LatePaymentPenalty(
       details = Seq(LPPDetails(
         principalChargeReference = "54312345678901",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
@@ -233,7 +233,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
   )
 
   val penaltyDetailsWithAdditionalDuePenalty: GetPenaltyDetails = samplePenaltyDetails.copy(
-    latePaymentPenalty = Some(v3LatePaymentPenalty(
+    latePaymentPenalty = Some(LatePaymentPenalty(
       details = Seq(LPPDetails(
         principalChargeReference = "65431234567890",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP2,

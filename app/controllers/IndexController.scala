@@ -21,25 +21,25 @@ import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.v2.{PenaltiesService => PenaltiesServiceV2}
+import services.PenaltiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
 import utils.SessionKeys._
 import utils.{CurrencyFormatter, EnrolmentKeys}
-import viewmodels.v2.{IndexPageHelper => IndexPageHelperv2, SummaryCardHelper => SummaryCardHelperv2}
-import views.html.v2.{IndexView => IndexViewv2}
+import viewmodels.{IndexPageHelper, SummaryCardHelper}
+import views.html.IndexView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndexController @Inject()(view2: IndexViewv2,
-                                penaltiesServiceV2: PenaltiesServiceV2,
-                                cardHelper2: SummaryCardHelperv2,
-                                pageHelperv2: IndexPageHelperv2)(implicit ec: ExecutionContext,
-                                                                 val appConfig: AppConfig,
-                                                                 authorise: AuthPredicate,
-                                                                 errorHandler: ErrorHandler,
-                                                                 controllerComponents: MessagesControllerComponents)
+class IndexController @Inject()(view2: IndexView,
+                                penaltiesServiceV2: PenaltiesService,
+                                cardHelper2: SummaryCardHelper,
+                                pageHelperv2: IndexPageHelper)(implicit ec: ExecutionContext,
+                                                               val appConfig: AppConfig,
+                                                               authorise: AuthPredicate,
+                                                               errorHandler: ErrorHandler,
+                                                               controllerComponents: MessagesControllerComponents)
   extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter with FeatureSwitching {
 
   //scalastyle:off
