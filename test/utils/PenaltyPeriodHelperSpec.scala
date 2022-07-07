@@ -23,12 +23,13 @@ import java.time.LocalDate
 
 class PenaltyPeriodHelperSpec extends SpecBase {
 
-  val penaltyPeriods = Seq(LateSubmission(
-    taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
-    taxPeriodEndDate = Some(LocalDate.parse("2069-10-15")),
-    taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
-    returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
-    taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+  val penaltyPeriods = Seq(
+    LateSubmission(
+      taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
+      taxPeriodEndDate = Some(LocalDate.parse("2069-10-15")),
+      taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
+      returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
+      taxReturnStatus = TaxReturnStatusEnum.Fulfilled
     ),
     LateSubmission(
       taxPeriodStartDate = Some(LocalDate.parse("2069-12-15")),

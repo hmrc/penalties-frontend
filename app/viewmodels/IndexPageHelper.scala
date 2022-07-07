@@ -201,6 +201,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       returnEstimatedMessageIfInterestMoreThanZero(estimatedLPPAmount, isEstimatedAmount = true, "whatIsOwed.lppAmount"),
       returnEstimatedMessageIfInterestMoreThanZero(penaltiesCrystalizedInterest + penaltiesEstimatedInterest, penaltiesEstimatedInterest > BigDecimal(0), "whatIsOwed.allPenalties.interest"),
       singularOrPluralAmountOfLSPs,
+      //TODO implement Other penalties mapping
       returnMessageIfOtherUnrelatedPenalties(false, "whatIsOwed.otherPenalties")
     ).collect { case Some(x) => x }
     if (stringToConvertToBulletPoints.isEmpty || (stringToConvertToBulletPoints.size == 1 && otherUnrelatedPenalties)) {

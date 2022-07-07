@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CalculationController @Inject()(viewLPP: CalculationLPPView,
                                       viewAdd: CalculationAdditionalView,
-                                      penaltiesServiceV2: PenaltiesService,
+                                      penaltiesService: PenaltiesService,
                                       calculationPageHelper: CalculationPageHelper)(implicit ec: ExecutionContext,
                                                                                     val appConfig: AppConfig,
                                                                                     errorHandler: ErrorHandler,
@@ -46,14 +46,13 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
   extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter {
 
   def onPageLoad(principalChargeReference: String, penaltyCategory: String): Action[AnyContent] = authorise.async { implicit request =>
-    logger.debug(s"[CalculationController][onPageLoad] - Making call to new endpoint")
     val penaltyCategoryEnum = LPPPenaltyCategoryEnum.find(penaltyCategory).get
     getPenaltyDetails(principalChargeReference, penaltyCategoryEnum)
   }
 
   def getPenaltyDetails(principalChargeReference: String, penaltyCategory: LPPPenaltyCategoryEnum.Value)
                        (implicit request: User[_]): Future[Result] = {
-    penaltiesServiceV2.getPenaltyDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn)).map {
+    penaltiesService.getPenaltyDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn)).map {
       _.fold(
         errors => {
           logger.error(s"[OtherReasonController][getPenaltyDetails] - Received status ${errors.status} and body ${errors.body}, rendering ISE.")

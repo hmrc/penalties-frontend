@@ -31,7 +31,7 @@ object PenaltiesStub {
   val vrn: String = "HMRC-MTD-VAT~VRN~123456789"
   val sampleDate1: LocalDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
 
-  val getPenaltyDetailsUrlVatTrader: String = s"/penalties/etmp/penalties/$vrn"
+  val getPenaltyDetailsUrlVATTrader: String = s"/penalties/etmp/penalties/$vrn"
   val getPenaltyDetailsUrlAgent: String = s"/penalties/etmp/penalties/$vrn\\?arn=123456789"
 
   val samplePenaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
@@ -206,7 +206,7 @@ object PenaltiesStub {
     }).toString()
 
   def getPenaltyDetailsStub: StubMapping =
-    stubFor(get(urlMatching(getPenaltyDetailsUrlVatTrader))
+    stubFor(get(urlMatching(getPenaltyDetailsUrlVATTrader))
     .willReturn(
       aResponse()
         .withStatus(Status.OK)
@@ -217,7 +217,7 @@ object PenaltiesStub {
   )
 
   def returnPenaltyDetailsStub(penaltyDetailsToReturn: GetPenaltyDetails): StubMapping =
-    stubFor(get(urlMatching(getPenaltyDetailsUrlVatTrader))
+    stubFor(get(urlMatching(getPenaltyDetailsUrlVATTrader))
     .willReturn(
       aResponse()
         .withStatus(Status.OK)
@@ -239,7 +239,7 @@ object PenaltiesStub {
   )
 
   def penaltyDetailsUpstreamErrorStub: StubMapping =
-    stubFor(get(urlMatching(getPenaltyDetailsUrlVatTrader))
+    stubFor(get(urlMatching(getPenaltyDetailsUrlVATTrader))
       .willReturn(
         aResponse()
           .withStatus(Status.INTERNAL_SERVER_ERROR).withBody("Upstream Error")
@@ -247,7 +247,7 @@ object PenaltiesStub {
   )
 
   def invalidPenaltyDetailsStub: StubMapping =
-    stubFor(get(urlMatching(getPenaltyDetailsUrlVatTrader))
+    stubFor(get(urlMatching(getPenaltyDetailsUrlVATTrader))
     .willReturn(
       aResponse()
         .withStatus(Status.OK)

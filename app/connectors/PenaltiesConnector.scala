@@ -28,15 +28,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class PenaltiesConnector @Inject()(httpClient: HttpClient,
                                    val appConfig: AppConfig)(implicit ec: ExecutionContext) extends FeatureSwitching {
 
-
   private val penaltiesBaseUrl: String = appConfig.penaltiesUrl
   private def getPenaltiesDataUrl(enrolmentKey: String)(implicit user: User[_]): String = {
-    //TODO Remove Query Params
-    val urlQueryParams = user.arn.fold(
-      ""
-    )(
-      arn => s"?arn=$arn"
-    )
+    val urlQueryParams = user.arn.fold("")(arn => s"?arn=$arn")
+
     s"/etmp/penalties/$enrolmentKey$urlQueryParams"
   }
 

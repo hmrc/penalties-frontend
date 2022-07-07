@@ -32,7 +32,7 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
   def getPenaltyDataFromEnrolmentKey(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[GetPenaltyDetailsResponse] =
     connector.getPenaltyDetails(enrolmentKey)
 
-  private def findEstimatedVatInterestFromPayload(payload: GetPenaltyDetails): BigDecimal = {
+  private def findEstimatedVATInterestFromPayload(payload: GetPenaltyDetails): BigDecimal = {
     //TODO Add interest mapping once known
     0
   }

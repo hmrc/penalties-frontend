@@ -35,25 +35,25 @@ import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase {
 
-  val page2: IndexView = injector.instanceOf[IndexView]
-  val indexPageHelper2: IndexPageHelper = injector.instanceOf[IndexPageHelper]
-  val cardHelper2: SummaryCardHelper = injector.instanceOf[SummaryCardHelper]
-  val mockPenaltiesService2: PenaltiesService = mock(classOf[PenaltiesService])
+  val page: IndexView = injector.instanceOf[IndexView]
+  val indexPageHelper: IndexPageHelper = injector.instanceOf[IndexPageHelper]
+  val cardHelper: SummaryCardHelper = injector.instanceOf[SummaryCardHelper]
+  val mockPenaltiesService: PenaltiesService = mock(classOf[PenaltiesService])
 
   class Setup(authResult: Future[~[Option[AffinityGroup], Enrolments]]) {
-    reset(mockAuthConnector, mockPenaltiesService2)
+    reset(mockAuthConnector, mockPenaltiesService)
     when(mockAuthConnector.authorise[~[Option[AffinityGroup], Enrolments]](
       Matchers.any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
       Matchers.any(), Matchers.any())
     ).thenReturn(authResult)
-    when(mockPenaltiesService2.getPenaltyDataFromEnrolmentKey(any())(any(), any())).thenReturn(Future.successful(Right(samplePenaltyDetailsModel)))
+    when(mockPenaltiesService.getPenaltyDataFromEnrolmentKey(any())(any(), any())).thenReturn(Future.successful(Right(samplePenaltyDetailsModel)))
   }
 
   object Controller extends IndexController(
-    page2,
-    mockPenaltiesService2,
-    cardHelper2,
-    indexPageHelper2
+    page,
+    mockPenaltiesService,
+    cardHelper,
+    indexPageHelper
   )(implicitly, implicitly, authPredicate, errorHandler, stubMessagesControllerComponents())
 
   "IndexController" should {
@@ -63,7 +63,7 @@ class IndexControllerSpec extends SpecBase {
       "the user is authorised" must {
 
         "return OK and correct view" in new Setup(AuthTestModels.successfulAuthResult) {
-          when(mockPenaltiesService2.getLatestLSPCreationDate(any()))
+          when(mockPenaltiesService.getLatestLSPCreationDate(any()))
             .thenReturn(None)
           val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
           status(result) shouldBe OK
@@ -72,7 +72,7 @@ class IndexControllerSpec extends SpecBase {
 
         "return OK and correct view - adding the latest LSP creation date and threshold into the session in case of compliance view" in
           new Setup(AuthTestModels.successfulAuthResult) {
-            when(mockPenaltiesService2.getLatestLSPCreationDate(any()))
+            when(mockPenaltiesService.getLatestLSPCreationDate(any()))
               .thenReturn(Some(sampleDateV2))
             val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
             status(result) shouldBe OK
