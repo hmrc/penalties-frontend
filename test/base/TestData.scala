@@ -16,10 +16,10 @@
 
 package base
 
-import models.v3.{GetPenaltyDetails, Totalisations}
-import models.v3.lsp._
-import models.v3.lpp._
-import models.v3.appealInfo._
+import models.{GetPenaltyDetails, Totalisations}
+import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
+import models.lpp._
+import models.lsp._
 
 import java.time.LocalDate
 
@@ -133,7 +133,7 @@ trait TestData {
     )
   )
 
-  val sampleLatePaymentPenaltyPaidV2: LPPDetails = sampleLatePaymentPenalty.copy(
+  val sampleLatePaymentPenaltyPaid: LPPDetails = sampleLatePaymentPenalty.copy(
     principalChargeLatestClearing = Some(sampleDate),
     penaltyAmountOutstanding = Some(0),
     penaltyStatus = LPPPenaltyStatusEnum.Posted,

@@ -17,80 +17,86 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import viewmodels.LatePaymentPenaltySummaryCard
 @import utils.CurrencyFormatter
+@import models.appealInfo.AppealStatusEnum
+@import models.lpp.LPPPenaltyCategoryEnum.LPP2
 
 @this(
-    govukSummaryList : GovukSummaryList,
-    govukTag: GovukTag,
-    link: components.link
+        govukSummaryList: GovukSummaryList,
+        govukTag: GovukTag,
+        link: components.link
 )
 @(
-    summaryCard: LatePaymentPenaltySummaryCard
+        summaryCard: LatePaymentPenaltySummaryCard
 )(implicit messages: Messages)
 
 @calculationContent = {
-    @if(summaryCard.isAdditionalPenalty) {
-    <a class="govuk-link" href="@{controllers.routes.CalculationController.onPageLoad(summaryCard.penaltyId, true).url}">
-        @messages("summaryCard.viewCalculation")
+    <a class="govuk-link" href="@{
+        controllers.routes.CalculationController.onPageLoad(summaryCard.principalChargeReference, summaryCard.penaltyCategory.toString).url
+    }">
+    @messages("summaryCard.viewCalculation")
     </a>
-    } else {
-    <a class="govuk-link" href="@{controllers.routes.CalculationController.onPageLoad(summaryCard.penaltyId, false).url}">
-        @messages("summaryCard.viewCalculation")
-    </a>
-    }
 }
 
 @appealContent = {
-        @if(!summaryCard.isVatPaid) {
-        <a class="govuk-link" href=@{controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, true, true, summaryCard.isAdditionalPenalty).url}>
-            @messages("summaryCard.appealCheck")
+@if(summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
+    <a class="govuk-link" href=@{
+        controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyChargeReference.get, true, true, summaryCard.penaltyCategory.equals(LPP2)).url
+    }>
+    @messages("summaryCard.appealCheck")
+    </a>
+} else {
+    @if(!summaryCard.isVatPaid) {
+        <a class="govuk-link" href=@{
+            controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyChargeReference.get, true, true, summaryCard.penaltyCategory.equals(LPP2)).url
+        }>
+        @messages("summaryCard.appealCheck")
         </a>
-        } else {
-        <a class="govuk-link" href=@{controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, true, false, summaryCard.isAdditionalPenalty).url}>
-            @messages("summaryCard.footerLinkTextNoPointNumber")
+    } else {
+        <a class="govuk-link" href=@{
+            controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyChargeReference.get, true, false, summaryCard.penaltyCategory.equals(LPP2)).url
+        }>
+        @messages("summaryCard.footerLinkTextNoPointNumber")
         </a>
-        }
+    }
+}
 }
 
 
 @footerDisplayLogic = {
-    @if(summaryCard.appealStatus.isEmpty){
-        <div class="app-summary-card__actions">
-            <ul class="app-summary-card__actions-list">
-                <li class="app-summary-card__actions-list-item">
-                    @calculationContent
-                </li>
-                <li class="app-summary-card__actions-list-item">
-                    @appealContent
-                </li>
-            </ul>
-        </div>
-    }else {
-        <div class="app-summary-card__link">
+@if(summaryCard.appealStatus.isEmpty || summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
+    <div class="app-summary-card__actions">
+        <ul class="app-summary-card__actions-list">
+            <li class="app-summary-card__actions-list-item">
             @calculationContent
-        </div>
-    }
+            </li>
+            <li class="app-summary-card__actions-list-item">
+            @appealContent
+            </li>
+        </ul>
+    </div>
+} else {
+    <div class="app-summary-card__link">
+    @calculationContent
+    </div>
+}
 }
 
 
 <section class="app-summary-card govuk-!-margin-bottom-3">
     <header class="app-summary-card__header">
         <h3 class="app-summary-card__title">
-            @{
-                if(summaryCard.isAdditionalPenalty) {
-                    messages("summaryCard.header.financialAdditionalPenalty", CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(summaryCard.amountDue))
-                } else {
-                    messages("summaryCard.header.financialNoNumber", CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(summaryCard.amountDue))
-                }
-            }
+        @{
+            messages("summaryCard.header.financialNoNumber", CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(summaryCard.amountDue))
+        }
         </h3>
         <div class="app-summary-card__tag">
-            @govukTag(summaryCard.status)
+        @govukTag(summaryCard.status)
         </div>
     </header>
     <div class="app-summary-card__body">
-        @govukSummaryList(SummaryList(summaryCard.cardRows))
+    @govukSummaryList(SummaryList(summaryCard.cardRows))
     </div>
     <footer class="app-summary-card__footer">
-        @footerDisplayLogic
+    @footerDisplayLogic
     </footer>
 </section>

@@ -16,126 +16,84 @@
 
 package services
 
-import config.AppConfig
-import config.featureSwitches.FeatureSwitching
 import connectors.PenaltiesConnector
-import models.point.{AppealStatusEnum, PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
-import models.{ETMPPayload, User}
+import connectors.httpParsers.PenaltiesConnectorParser.GetPenaltyDetailsResponse
+import models.appealInfo.AppealStatusEnum
+import models.lsp.{LSPDetails, TaxReturnStatusEnum}
+import models.{GetPenaltyDetails, User}
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.PenaltyPeriodHelper
 
-import java.time.LocalDateTime
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class PenaltiesService @Inject()(connector: PenaltiesConnector, val appConfig: AppConfig) extends FeatureSwitching {
+class PenaltiesService @Inject()(connector: PenaltiesConnector) {
 
-  def getETMPDataFromEnrolmentKey(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[ETMPPayload] =
-    connector.getPenaltiesData(enrolmentKey)
+  def getPenaltyDataFromEnrolmentKey(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[GetPenaltyDetailsResponse] =
+    connector.getPenaltyDetails(enrolmentKey)
 
-  def isAnyLSPUnpaid(penaltyPoints: Seq[PenaltyPoint]): Boolean = {
-    penaltyPoints.exists(penalty => penalty.`type` == PenaltyTypeEnum.Financial &&
-      penalty.status != PointStatusEnum.Paid &&
-      !penalty.appealStatus.contains(AppealStatusEnum.Accepted) && !penalty.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal))
+  private def findEstimatedVATInterestFromPayload(payload: GetPenaltyDetails): BigDecimal = {
+    //TODO Add interest mapping once known
+    0
+  }
+  private def findCrystalizedInterestFromPayload(payload: GetPenaltyDetails): BigDecimal = {
+    //TODO Add interest mapping once known
+    0
   }
 
-  def isAnyLSPUnpaidAndSubmissionIsDue(penaltyPoints: Seq[PenaltyPoint]): Boolean = {
-    penaltyPoints.exists(penalty => penalty.status == PointStatusEnum.Due
-      && penalty.`type` == PenaltyTypeEnum.Financial && penalty.period.isDefined
-      && penalty.period.map(penaltyPeriod => PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head.submission.submittedDate.isEmpty).fold(false)(identity)
-      && !penalty.appealStatus.contains(AppealStatusEnum.Accepted)
-      && !penalty.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal))
+  def findOverdueVATFromPayload(payload: GetPenaltyDetails): BigDecimal = {
+    payload.totalisations.flatMap(_.penalisedPrincipalTotal).getOrElse(0)
   }
 
-  private def findEstimatedVatInterestFromPayload(payload: ETMPPayload): BigDecimal = {
-    payload.vatOverview.map {
-      estimatedVATInterest => {
-        estimatedVATInterest.map(_.estimatedInterest.getOrElse(BigDecimal(0))).sum
-      }
-    }
-  }.getOrElse(0)
-
-  private def findCrystalizedInterestFromPayload(payload: ETMPPayload): BigDecimal = {
-    payload.vatOverview.map {
-      crystalizedInterest => {
-        crystalizedInterest.map(_.crystalizedInterest.getOrElse(BigDecimal(0))).sum
-      }
-    }
-  }.getOrElse(0)
-
-  def findOverdueVATFromPayload(payload: ETMPPayload): BigDecimal = {
-    payload.vatOverview.map {
-      allCharges => {
-        allCharges.map(_.amount).sum
-      }
-    }
-  }.getOrElse(0)
-
-  def isOtherUnrelatedPenalties(payload: ETMPPayload): Boolean = {
-    payload.otherPenalties.contains(true)
+  def findCrystallisedLPPsFromPayload(payload: GetPenaltyDetails): BigDecimal = {
+    payload.totalisations.flatMap(_.LPPPostedTotal).getOrElse(0)
   }
 
-  def findCrystallisedLPPsFromPayload(payload: ETMPPayload): BigDecimal = {
-    payload.latePaymentPenalties.map {
-      allLPPs => {
-        val allCrystallisedDueLPPs = allLPPs.filter(_.status == PointStatusEnum.Due)
-        allCrystallisedDueLPPs.map(_.financial.outstandingAmountDue).sum
-      }
-    }
-  }.getOrElse(0)
-
-  def findEstimatedLPPsFromPayload(payload: ETMPPayload): BigDecimal = {
-    payload.latePaymentPenalties.map {
-      allLPPs => {
-        val allEstimatedLPPs = allLPPs.filter(_.status == PointStatusEnum.Estimated)
-        allEstimatedLPPs.map(_.financial.outstandingAmountDue).sum
-      }
-    }
-  }.getOrElse(0)
-
-  def findTotalLSPFromPayload(payload: ETMPPayload): (BigDecimal, Int) = {
-    val lspAmountList = payload.penaltyPoints.map(_.financial.map(_.outstandingAmountDue)).collect { case Some(x) => x }
-    (lspAmountList.sum, lspAmountList.size)
+  def findEstimatedLPPsFromPayload(payload: GetPenaltyDetails): BigDecimal = {
+    payload.totalisations.flatMap(_.LPPEstimatedTotal).getOrElse(0)
   }
 
-  def findEstimatedVATInterest(payload: ETMPPayload): (BigDecimal, Boolean) = {
-    val estimatedVAT = findEstimatedVatInterestFromPayload(payload)
-    val crystallisedVAT = findCrystalizedInterestFromPayload(payload)
-    (crystallisedVAT + estimatedVAT, estimatedVAT > 0)
+  def findTotalLSPFromPayload(payload: GetPenaltyDetails): BigDecimal = {
+    payload.totalisations.flatMap(_.LSPTotalValue).getOrElse(0)
   }
 
-  def findCrystalizedPenaltiesInterest(payload: ETMPPayload): BigDecimal = {
-    val lspInterest: BigDecimal = payload.penaltyPoints.flatMap(
-      penalty => {
-        penalty.financial.map(_.crystalizedInterest.getOrElse(BigDecimal(0)))
-      }
-    ).sum
-
-    val lppInterest: BigDecimal = payload.latePaymentPenalties.map {
-      _.map { lpp =>
-        lpp.financial.crystalizedInterest.getOrElse(BigDecimal(0))
-      }.sum
-    }.getOrElse(BigDecimal(0))
-    lspInterest + lppInterest
+  def findEstimatedVATInterest(payload: GetPenaltyDetails): (BigDecimal, Boolean) = {
+    //TODO add functionality that implements finding estimated VAT interest
+    (0, false)
   }
 
-  def findEstimatedPenaltiesInterest(payload: ETMPPayload): BigDecimal = {
-    val estimatedLspInterest: BigDecimal = payload.penaltyPoints.flatMap(
-      _.financial.map(_.estimatedInterest.getOrElse(BigDecimal(0)))
-    ).sum
-
-    val estimatedLppInterest: BigDecimal = payload.latePaymentPenalties.map {
-      _.map { lpp =>
-        lpp.financial.estimatedInterest.getOrElse(BigDecimal(0))
-      }.sum
-    }.getOrElse(BigDecimal(0))
-    estimatedLspInterest + estimatedLppInterest
+  def isOtherUnrelatedPenalties(payload: GetPenaltyDetails): Boolean = {
+    //TODO add functionality that finds unrelated penalties
+    false
   }
 
-  def getLatestLSPCreationDate(payload: ETMPPayload): Option[LocalDateTime] = {
-    payload.penaltyPoints.find(
-      point => point.`type` == PenaltyTypeEnum.Financial &&
-        !point.appealStatus.contains(AppealStatusEnum.Accepted) && !point.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal)
-    ).map(_.dateCreated)
+  def findCrystalizedPenaltiesInterest(payload: GetPenaltyDetails): BigDecimal = {
+    payload.totalisations.flatMap(_.LPIPostedTotal).getOrElse(0)
+  }
+
+  def findEstimatedPenaltiesInterest(payload: GetPenaltyDetails): BigDecimal = {
+    payload.totalisations.flatMap(_.LPIEstimatedTotal).getOrElse(0)
+  }
+
+  def isAnyLSPUnpaidAndSubmissionIsDue(penaltyPoints: Seq[LSPDetails]): Boolean = {
+    filterOutAppealedPenalties(penaltyPoints).exists(details => {
+      details.chargeOutstandingAmount.exists(_ > BigDecimal(0)) && details.lateSubmissions.exists(_.exists(_.taxReturnStatus == TaxReturnStatusEnum.Open))
+    })
+  }
+
+  def isAnyLSPUnpaid(penaltyPoints: Seq[LSPDetails]): Boolean = {
+    filterOutAppealedPenalties(penaltyPoints).exists(_.chargeOutstandingAmount.exists(_ > BigDecimal(0)))
+  }
+
+  def getLatestLSPCreationDate(payload: Seq[LSPDetails]): Option[LocalDate] = {
+    filterOutAppealedPenalties(payload)
+      .sortWith((firstLSP, secondLSP) => firstLSP.penaltyCreationDate.isAfter(secondLSP.penaltyCreationDate))
+      .map(_.penaltyCreationDate)
+      .headOption
+  }
+
+  private def filterOutAppealedPenalties(penaltyPoints: Seq[LSPDetails]): Seq[LSPDetails] = {
+    penaltyPoints
+      .filterNot(details => details.appealInformation.exists(_.exists(_.appealStatus.contains(AppealStatusEnum.Upheld))))
   }
 }

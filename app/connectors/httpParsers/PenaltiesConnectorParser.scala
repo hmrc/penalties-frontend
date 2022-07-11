@@ -16,7 +16,7 @@
 
 package connectors.httpParsers
 
-import models.v3.GetPenaltyDetails
+import models.GetPenaltyDetails
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 import play.api.http.Status._
 import play.api.libs.json.JsSuccess

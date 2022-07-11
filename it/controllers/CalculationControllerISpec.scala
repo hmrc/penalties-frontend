@@ -17,30 +17,22 @@
 package controllers
 
 import config.AppConfig
-import config.featureSwitches.{FeatureSwitching, UseAPI1812Model}
-import models.ETMPPayload
-import models.communication.{Communication, CommunicationTypeEnum}
-import models.financial.Financial
-import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum}
-import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
-import models.reason.PaymentPenaltyReasonEnum
-import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
-import models.v3.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum, LatePaymentPenalty => v3LatePaymentPenalty}
-import models.v3.lsp._
-import models.v3.{GetPenaltyDetails, Totalisations}
+import config.featureSwitches.FeatureSwitching
+import models.{GetPenaltyDetails, Totalisations}
+import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
+import models.lpp._
+import models.lsp._
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 import play.api.http.Status
-import play.api.mvc.{AnyContentAsEmpty, Result}
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.AuthStub
-import stubs.PenaltiesStub.{returnLSPDataStub, returnPenaltyDetailsStub}
+import stubs.PenaltiesStub.returnPenaltyDetailsStub
 import testUtils.IntegrationSpecCommonBase
 import uk.gov.hmrc.http.SessionKeys.authToken
-import java.time.{LocalDate, LocalDateTime}
 
-import scala.concurrent.Future
+import java.time.{LocalDate, LocalDateTime}
 
 class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureSwitching {
 
@@ -50,353 +42,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
   val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
     authToken -> "1234"
   )
-
-  val etmpPayload: ETMPPayload = ETMPPayload(
-    pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0,
-    penaltyPointsThreshold = 4, otherPenalties = Some(false), vatOverview = Some(Seq.empty), penaltyPoints = Seq(
-      PenaltyPoint(
-        `type` = PenaltyTypeEnum.Point,
-        id = "1234567890",
-        number = "1",
-        dateCreated = sampleDate1,
-        dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
-        status = PointStatusEnum.Added,
-        reason = None,
-        period = None,
-        communications = Seq.empty,
-        financial = Some(Financial(
-          amountDue = 0,
-          outstandingAmountDue = 0,
-          dueDate = sampleDate1,
-          estimatedInterest = Some(21.00),
-          crystalizedInterest = Some(32.00)
-        ))
-      )
-    ),
-    latePaymentPenalties = Some(
-      Seq(
-        LatePaymentPenalty(
-          `type` = PenaltyTypeEnum.Additional,
-          id = "123456790",
-          PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
-          dateCreated = sampleDate1,
-          status = PointStatusEnum.Paid,
-          appealStatus = None,
-          period = PaymentPeriod(
-            sampleDate1,
-            sampleDate1.plusMonths(1),
-            sampleDate1.plusMonths(2).plusDays(7),
-            PaymentStatusEnum.Paid
-          ),
-          communications = Seq(
-            Communication(
-              `type` = CommunicationTypeEnum.letter,
-              dateSent = sampleDate1,
-              documentId = "123456789"
-            )
-          ),
-          financial = Financial(
-            amountDue = 123.45,
-            outstandingAmountDue = 0.00,
-            dueDate = sampleDate1
-          )
-        ),
-        LatePaymentPenalty(
-          `type` = PenaltyTypeEnum.Financial,
-          id = "123456789",
-          reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
-          dateCreated = sampleDate1,
-          status = PointStatusEnum.Estimated,
-          appealStatus = None,
-          period = PaymentPeriod(
-            sampleDate1,
-            sampleDate1.plusMonths(1),
-            sampleDate1.plusMonths(2).plusDays(7),
-            PaymentStatusEnum.Paid
-          ),
-          communications = Seq(
-            Communication(
-              `type` = CommunicationTypeEnum.letter,
-              dateSent = sampleDate1,
-              documentId = "123456789"
-            )
-          ),
-          financial = Financial(
-            amountDue = 400.00,
-            outstandingAmountDue = 123.00,
-            outstandingAmountDay15 = Some(123),
-            outstandingAmountDay31 = Some(123),
-            percentageOfOutstandingAmtCharged = Some(2),
-            dueDate = sampleDate1
-          )
-        )
-      )
-    )
-  )
-
-  val etmpPayloadWithAdditionalPenalty: ETMPPayload = etmpPayload.copy(latePaymentPenalties = Some(
-    Seq(
-      LatePaymentPenalty(
-        `type` = PenaltyTypeEnum.Additional,
-        id = "987654321",
-        PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
-        dateCreated = sampleDate1,
-        status = PointStatusEnum.Paid,
-        appealStatus = None,
-        period = PaymentPeriod(
-          sampleDate1,
-          sampleDate1.plusMonths(1),
-          LocalDateTime.now().minusDays(40),
-          PaymentStatusEnum.Paid
-        ),
-        communications = Seq(
-          Communication(
-            `type` = CommunicationTypeEnum.letter,
-            dateSent = sampleDate1,
-            documentId = "123456789"
-          )
-        ),
-        financial = Financial(
-          amountDue = 123.45,
-          outstandingAmountDue = 10.00,
-          dueDate = LocalDateTime.now().minusDays(40)
-        )
-      )
-    )
-  ))
-
-  val etmpPayloadWithAdditionalDuePenalty: ETMPPayload = etmpPayloadWithAdditionalPenalty.copy(latePaymentPenalties = Some(
-    Seq(
-      LatePaymentPenalty(
-        `type` = PenaltyTypeEnum.Additional,
-        id = "987654322",
-        PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
-        dateCreated = sampleDate1,
-        status = PointStatusEnum.Estimated,
-        appealStatus = None,
-        period = PaymentPeriod(
-          sampleDate1,
-          sampleDate1.plusMonths(1),
-          LocalDateTime.now().minusDays(40),
-          PaymentStatusEnum.Due
-        ),
-        communications = Seq(
-          Communication(
-            `type` = CommunicationTypeEnum.letter,
-            dateSent = sampleDate1,
-            documentId = "123456789"
-          )
-        ),
-        financial = Financial(
-          amountDue = 123.45,
-          outstandingAmountDue = 10.00,
-          dueDate = LocalDateTime.now().minusDays(40)
-        )
-      )
-    )
-  ))
-
-  val etmpPayloadWithDecimals: ETMPPayload = ETMPPayload(
-    pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0,
-    penaltyPointsThreshold = 4, otherPenalties = Some(false), vatOverview = Some(Seq.empty), penaltyPoints = Seq(
-      PenaltyPoint(
-        `type` = PenaltyTypeEnum.Point,
-        id = "1234567890",
-        number = "1",
-        dateCreated = sampleDate1,
-        dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
-        status = PointStatusEnum.Added,
-        reason = None,
-        period = None,
-        communications = Seq.empty,
-        financial = Some(Financial(
-          amountDue = 0,
-          outstandingAmountDue = 0,
-          dueDate = sampleDate1,
-          estimatedInterest = Some(21.00),
-          crystalizedInterest = Some(32.00)
-        ))
-      )
-    ),
-    latePaymentPenalties = Some(
-      Seq(
-        LatePaymentPenalty(
-          `type` = PenaltyTypeEnum.Additional,
-          id = "123456790",
-          PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
-          dateCreated = sampleDate1,
-          status = PointStatusEnum.Paid,
-          appealStatus = None,
-          period = PaymentPeriod(
-            sampleDate1,
-            sampleDate1.plusMonths(1),
-            sampleDate1.plusMonths(2).plusDays(7),
-            PaymentStatusEnum.Paid
-          ),
-          communications = Seq(
-            Communication(
-              `type` = CommunicationTypeEnum.letter,
-              dateSent = sampleDate1,
-              documentId = "123456789"
-            )
-          ),
-          financial = Financial(
-            amountDue = 123.45,
-            outstandingAmountDue = 0.00,
-            dueDate = sampleDate1
-          )
-        ),
-        LatePaymentPenalty(
-          `type` = PenaltyTypeEnum.Financial,
-          id = "123456789",
-          reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
-          dateCreated = sampleDate1,
-          status = PointStatusEnum.Due,
-          appealStatus = None,
-          period = PaymentPeriod(
-            sampleDate1,
-            sampleDate1.plusMonths(1),
-            sampleDate1.plusMonths(2).plusDays(7),
-            PaymentStatusEnum.Paid
-          ),
-          communications = Seq(
-            Communication(
-              `type` = CommunicationTypeEnum.letter,
-              dateSent = sampleDate1,
-              documentId = "123456789"
-            )
-          ),
-          financial = Financial(
-            amountDue = 4.93,
-            outstandingAmountDue = 2.03,
-            outstandingAmountDay15 = Some(123.2),
-            outstandingAmountDay31 = Some(123.2),
-            percentageOfOutstandingAmtCharged = Some(2),
-            dueDate = LocalDateTime.now().minusDays(29)
-          )
-        )
-      )
-    )
-  )
-
-  val etmpPayloadWithOnlyDay15Charge: ETMPPayload = etmpPayload.copy(
-    latePaymentPenalties = Some(
-      Seq(
-        LatePaymentPenalty(
-          `type` = PenaltyTypeEnum.Additional,
-          id = "123456790",
-          PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
-          dateCreated = sampleDate1,
-          status = PointStatusEnum.Paid,
-          appealStatus = None,
-          period = PaymentPeriod(
-            sampleDate1,
-            sampleDate1.plusMonths(1),
-            sampleDate1.plusMonths(2).plusDays(7),
-            PaymentStatusEnum.Paid
-          ),
-          communications = Seq(
-            Communication(
-              `type` = CommunicationTypeEnum.letter,
-              dateSent = sampleDate1,
-              documentId = "123456789"
-            )
-          ),
-          financial = Financial(
-            amountDue = 123.45,
-            outstandingAmountDue = 0.00,
-            dueDate = sampleDate1
-          )
-        ),
-        LatePaymentPenalty(
-          `type` = PenaltyTypeEnum.Financial,
-          id = "123456789",
-          reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
-          dateCreated = sampleDate1,
-          status = PointStatusEnum.Due,
-          appealStatus = None,
-          period = PaymentPeriod(
-            sampleDate1,
-            sampleDate1.plusMonths(1),
-            sampleDate1.plusMonths(2).plusDays(7),
-            PaymentStatusEnum.Paid
-          ),
-          communications = Seq(
-            Communication(
-              `type` = CommunicationTypeEnum.letter,
-              dateSent = sampleDate1,
-              documentId = "123456789"
-            )
-          ),
-          financial = Financial(
-            amountDue = 400.00,
-            outstandingAmountDue = 123.00,
-            outstandingAmountDay15 = Some(123),
-            outstandingAmountDay31 = None,
-            percentageOfOutstandingAmtCharged = Some(2),
-            dueDate = sampleDate1
-          )
-        )
-      )
-    )
-  )
-
-  val etmpPayloadWithDueDateMoreThan30days: ETMPPayload = ETMPPayload(
-    pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0,
-    penaltyPointsThreshold = 4, otherPenalties = Some(false), vatOverview = Some(Seq.empty), penaltyPoints = Seq(
-      PenaltyPoint(
-        `type` = PenaltyTypeEnum.Point,
-        id = "1234567890",
-        number = "1",
-        dateCreated = sampleDate1,
-        dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
-        status = PointStatusEnum.Added,
-        reason = None,
-        period = None,
-        communications = Seq.empty,
-        financial = Some(Financial(
-          amountDue = 0,
-          outstandingAmountDue = 0,
-          dueDate = sampleDate1,
-          estimatedInterest = Some(21.00),
-          crystalizedInterest = Some(32.00)
-        ))
-      )
-    ),
-    latePaymentPenalties = Some(
-      Seq(LatePaymentPenalty(
-        `type` = PenaltyTypeEnum.Financial,
-        id = "123456789",
-        reason = PaymentPenaltyReasonEnum.OFFICERS_ASSESSMENT_NOT_PAID_WITHIN_30_DAYS,
-        dateCreated = sampleDate1,
-        status = PointStatusEnum.Due,
-        appealStatus = None,
-        period = PaymentPeriod(
-          sampleDate1,
-          sampleDate1.plusMonths(1),
-          sampleDate1.plusMonths(2).plusDays(7),
-          PaymentStatusEnum.Paid
-        ),
-        communications = Seq(
-          Communication(
-            `type` = CommunicationTypeEnum.letter,
-            dateSent = sampleDate1,
-            documentId = "123456789"
-          )
-        ),
-        financial = Financial(
-          amountDue = 400.00,
-          outstandingAmountDue = 123.00,
-          outstandingAmountDay15 = Some(123),
-          outstandingAmountDay31 = None,
-          percentageOfOutstandingAmtCharged = Some(2),
-          dueDate = LocalDateTime.now().minusDays(29)
-        )
-      )
-      )
-    )
-  )
-
+  
   val samplePenaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = Some(Totalisations(
       LSPTotalValue = Some(BigDecimal(200)),
@@ -445,7 +91,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         ))
       )
     ),
-    latePaymentPenalty = Some(v3LatePaymentPenalty(
+    latePaymentPenalty = Some(LatePaymentPenalty(
       details = Seq(LPPDetails(
         principalChargeReference = "12345678901234",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
@@ -481,7 +127,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
   )
 
   val penaltyDetailsWithDay15Charge: GetPenaltyDetails = samplePenaltyDetails.copy(
-    latePaymentPenalty = Some(v3LatePaymentPenalty(
+    latePaymentPenalty = Some(LatePaymentPenalty(
       details = Seq(LPPDetails(
         principalChargeReference = "12345678901234",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
@@ -516,7 +162,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     )))
 
   val penaltyDetailsWithDueDateMoreThan30days: GetPenaltyDetails = samplePenaltyDetails.copy(
-    latePaymentPenalty = Some(v3LatePaymentPenalty(
+    latePaymentPenalty = Some(LatePaymentPenalty(
       details = Seq(LPPDetails(
         principalChargeReference = "12345678901234",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
@@ -551,7 +197,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     )))
 
   val penaltyDetailsWithAdditionalPenalty: GetPenaltyDetails = samplePenaltyDetails.copy(
-    latePaymentPenalty = Some(v3LatePaymentPenalty(
+    latePaymentPenalty = Some(LatePaymentPenalty(
       details = Seq(LPPDetails(
         principalChargeReference = "54312345678901",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
@@ -587,7 +233,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
   )
 
   val penaltyDetailsWithAdditionalDuePenalty: GetPenaltyDetails = samplePenaltyDetails.copy(
-    latePaymentPenalty = Some(v3LatePaymentPenalty(
+    latePaymentPenalty = Some(LatePaymentPenalty(
       details = Seq(LPPDetails(
         principalChargeReference = "65431234567890",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
@@ -621,158 +267,12 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       ))
     ))
   )
-
-  class Setup(isFSEnabled: Boolean = false) {
-    if (isFSEnabled) enableFeatureSwitch(UseAPI1812Model) else disableFeatureSwitch(UseAPI1812Model)
-  }
-
+  
   "GET /calculation when it is not an additional penalty and  penalty is shown with estimate" should {
-    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in new Setup {
-      returnLSPDataStub(etmpPayload)
-      val request: Future[Result] = controller.onPageLoad("123456789", isAdditional = false)(fakeRequest)
-      status(request) shouldBe Status.OK
-      val parsedBody: Document = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
-      parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
-      parsedBody.select("#main-content header p span").first.text() shouldBe "The period dates are"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£400.00"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Calculation"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "2% of £123.00 (VAT amount unpaid on 23 March 2021) + 2% of £123.00 (VAT amount unpaid on 7 April 2021)"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Amount received"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£277.00"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dt").text() shouldBe "Amount left to pay"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dd").text() shouldBe "£123.00"
-      parsedBody.select("#main-content div .govuk-warning-text").text() shouldBe "! This penalty will rise to £800.00 (a further 2% of the unpaid VAT) if you do not make a VAT payment by 7 April 2021."
-      parsedBody.select("#main-content .govuk-body").get(0).text() shouldBe "Paying part of your VAT bill will reduce further penalties."
-      parsedBody.select("#main-content .govuk-body").get(1).text() shouldBe "Penalties and interest will show as estimates if HMRC has not been given enough information to calculate the final amounts."
-      parsedBody.select("#main-content h2").text() shouldBe "Estimates"
-      parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
-      parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
-    }
-
-    "the user has specified a valid penalty ID (parses decimals correctly)" in new Setup {
-      returnLSPDataStub(etmpPayloadWithDecimals)
-      val request = controller.onPageLoad("123456789", false)(fakeRequest)
-      status(request) shouldBe Status.OK
-      val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
-      parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
-      parsedBody.select("#main-content header p span").first.text() shouldBe "The period dates are"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£4.93"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Calculation"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "2% of £123.20 (VAT amount unpaid on 23 March 2021) + 2% of £123.20 (VAT amount unpaid on 7 April 2021)"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Amount received"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£2.90"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dt").text() shouldBe "Amount left to pay"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dd").text() shouldBe "£2.03"
-      parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
-      parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
-    }
-
-    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID (only one interest charge)" in new Setup {
-      returnLSPDataStub(etmpPayloadWithOnlyDay15Charge)
-      val request = controller.onPageLoad("123456789", false)(fakeRequest)
-      status(request) shouldBe Status.OK
-      val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Calculation"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "2% of £123.00 (VAT amount unpaid on 23 March 2021)"
-    }
-
-    "return 200 (OK) and render the view correctly with Penalty Amount)" in new Setup {
-      returnLSPDataStub(etmpPayloadWithDueDateMoreThan30days)
-      val request = controller.onPageLoad("123456789", false)(fakeRequest)
-      status(request) shouldBe Status.OK
-      val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£400.00"
-    }
-
-    "return 500 (ISE) when the user specifies a penalty not within their data" in new Setup {
-      returnLSPDataStub(etmpPayload)
-      val request = controller.onPageLoad("123456800", false)(fakeRequest)
-      status(request) shouldBe Status.INTERNAL_SERVER_ERROR
-    }
-
-    "return 303 (SEE_OTHER) when the user is not authorised" in new Setup {
-      AuthStub.unauthorised()
-      val request = controller.onPageLoad("12345", false)(fakeRequest)
-      status(request) shouldBe Status.SEE_OTHER
-    }
-  }
-
-  "GET /calculation when it is an additional penalty" should {
-    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in new Setup {
-      returnLSPDataStub(etmpPayloadWithAdditionalPenalty)
-      val request = controller.onPageLoad("987654321", true)(fakeRequest)
-      status(request) shouldBe Status.OK
-      val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
-      parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
-      parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
-      parsedBody.select("#main-content .govuk-body").get(0).text() shouldBe
-        "The additional penalty is charged from 31 days after the payment due date, until the total is paid."
-      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£123.45"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Number of days since day 31"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "9 days"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Additional penalty rate"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "4%"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dt").text() shouldBe "Calculation"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dd").text() shouldBe "VAT amount unpaid × 4% × number of days since day 31 ÷ 365"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(4).select("dt").text() shouldBe "Amount received"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(4).select("dd").text() shouldBe "£113.45"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(5).select("dt").text() shouldBe "Amount left to pay"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(5).select("dd").text() shouldBe "£10.00"
-
-      parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
-    }
-
-    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due" in new Setup {
-      returnLSPDataStub(etmpPayloadWithAdditionalDuePenalty)
-      val request = controller.onPageLoad("987654322", true)(fakeRequest)
-      status(request) shouldBe Status.OK
-      val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
-      parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
-      parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
-      parsedBody.select("#main-content p").get(1).text() shouldBe
-        "The additional penalty is charged from 31 days after the payment due date, until the total is paid."
-      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£123.45"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Number of days since day 31"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "9 days"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Additional penalty rate"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "4%"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dt").text() shouldBe "Calculation"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dd").text() shouldBe "VAT amount unpaid × 4% × number of days since day 31 ÷ 365"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(4).select("dt").text() shouldBe "Amount received"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(4).select("dd").text() shouldBe "£113.45"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(5).select("dt").text() shouldBe "Amount left to pay"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(5).select("dd").text() shouldBe "£10.00"
-      parsedBody.select("#main-content p").get(2).text() shouldBe
-        "Penalties and interest will show as estimates if HMRC does not have enough information to calculate the final amounts."
-      parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
-    }
-
-    "return 500 (ISE) when the user specifies a penalty not within their data" in new Setup {
-      returnLSPDataStub(etmpPayload)
-      val request = controller.onPageLoad("123456800", true)(fakeRequest)
-      status(request) shouldBe Status.INTERNAL_SERVER_ERROR
-    }
-
-    "return 303 (SEE_OTHER) when the user is not authorised" in new Setup {
-      AuthStub.unauthorised()
-      val request = controller.onPageLoad("123456800", true)(fakeRequest)
-      status(request) shouldBe Status.SEE_OTHER
-    }
-  }
-
-  "GET /v2/calculation when it is not an additional penalty and  penalty is shown with estimate" should {
-      "return 200 (OK) and render the view correctly when the use has specified a valid penalty ID" in new Setup(isFSEnabled = true) {
+      "return 200 (OK) and render the view correctly when the use has specified a valid penalty ID" in {
         returnPenaltyDetailsStub(samplePenaltyDetails)
-        val request = controller.onPageLoadForNewAPI("12345678901234", "LPP1")(fakeRequest)
+        val request = controller.onPageLoad(
+          "12345678901234", "LPP1")(fakeRequest)
         status(request) shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
         parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
@@ -791,9 +291,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
       }
 
-      "the user has specified a valid penalty ID (parses decimals correctly)" in new Setup(isFSEnabled = true) {
+      "the user has specified a valid penalty ID (parses decimals correctly)" in {
         returnPenaltyDetailsStub(samplePenaltyDetails)
-        val request = controller.onPageLoadForNewAPI("12345678901234", "LPP1")(fakeRequest)
+        val request = controller.onPageLoad("12345678901234", "LPP1")(fakeRequest)
         status(request) shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
         parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
@@ -812,43 +312,43 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
       }
 
-      "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID (only one interest charge)" in new Setup(isFSEnabled = true) {
+      "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID (only one interest charge)" in {
         returnPenaltyDetailsStub(penaltyDetailsWithDay15Charge)
-        val request = controller.onPageLoadForNewAPI("12345678901234", "LPP1")(fakeRequest)
+        val request = controller.onPageLoad("12345678901234", "LPP1")(fakeRequest)
         status(request) shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
         parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Calculation"
         parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "2% of £123.00 (VAT amount unpaid on 23 March 2021)"
       }
 
-      "return 200 (OK) and render the view correctly with Penalty Amount" in new Setup(isFSEnabled = true) {
+      "return 200 (OK) and render the view correctly with Penalty Amount" in {
         returnPenaltyDetailsStub(penaltyDetailsWithDueDateMoreThan30days)
-        val request = controller.onPageLoadForNewAPI("12345678901234", "LPP1")(fakeRequest)
+        val request = controller.onPageLoad("12345678901234", "LPP1")(fakeRequest)
         status(request) shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
         parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount"
         parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£400.00"
       }
 
-      "return 500 (ISE) when the user specifies a penalty not within their data" in new Setup(isFSEnabled = true) {
+      "return 500 (ISE) when the user specifies a penalty not within their data" in {
         returnPenaltyDetailsStub(samplePenaltyDetails)
 
-        val request = controller.onPageLoadForNewAPI("1234567890", "LPP1")(fakeRequest)
+        val request = controller.onPageLoad("1234567890", "LPP1")(fakeRequest)
         status(request) shouldBe Status.INTERNAL_SERVER_ERROR
       }
 
-      "return 303 (SEE_OTHER) when the user is not authorised" in new Setup(isFSEnabled = true) {
+      "return 303 (SEE_OTHER) when the user is not authorised" in {
         AuthStub.unauthorised()
 
-        val request = controller.onPageLoadForNewAPI("12345", "LPP1")(fakeRequest)
+        val request = controller.onPageLoad("12345", "LPP1")(fakeRequest)
         status(request) shouldBe Status.SEE_OTHER
       }
   }
 
-  "GET /v2/calculation when it is an additional penalty" should {
-    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in new Setup(isFSEnabled = true) {
+  "GET /calculation when it is an additional penalty" should {
+    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in {
       returnPenaltyDetailsStub(penaltyDetailsWithAdditionalPenalty)
-      val request = controller.onPageLoadForNewAPI("54312345678901", "LPP2")(fakeRequest)
+      val request = controller.onPageLoad("54312345678901", "LPP2")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
@@ -870,9 +370,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content .govuk-summary-list__row").get(5).select("dd").text() shouldBe "£10.00"
     }
 
-    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due" in new Setup(isFSEnabled = true) {
+    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due" in {
       returnPenaltyDetailsStub(penaltyDetailsWithAdditionalDuePenalty)
-      val request = controller.onPageLoadForNewAPI("65431234567890", "LPP2")(fakeRequest)
+      val request = controller.onPageLoad("65431234567890", "LPP2")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
@@ -897,16 +397,16 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
     }
 
-    "return 500 (ISE) when the user specifies a penalty not within their data" in new Setup(isFSEnabled = true) {
+    "return 500 (ISE) when the user specifies a penalty not within their data" in {
       returnPenaltyDetailsStub(samplePenaltyDetails)
 
-      val request = controller.onPageLoadForNewAPI("123456800", "LPP2")(fakeRequest)
+      val request = controller.onPageLoad("123456800", "LPP2")(fakeRequest)
       status(request) shouldBe Status.INTERNAL_SERVER_ERROR
     }
 
-    "return 303 (SEE_OTHER) when the user is not authorised" in new Setup(isFSEnabled = true) {
+    "return 303 (SEE_OTHER) when the user is not authorised" in {
       AuthStub.unauthorised()
-      val request = controller.onPageLoadForNewAPI("123456800", "LPP2")(fakeRequest)
+      val request = controller.onPageLoad("123456800", "LPP2")(fakeRequest)
       status(request) shouldBe Status.SEE_OTHER
     }
   }

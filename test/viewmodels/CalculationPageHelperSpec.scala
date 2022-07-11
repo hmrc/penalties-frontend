@@ -17,89 +17,15 @@
 package viewmodels
 
 import base.SpecBase
-import models.financial.Financial
-import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum}
-import models.point.{PenaltyTypeEnum, PointStatusEnum}
-import models.reason.PaymentPenaltyReasonEnum
-import models.v3.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
-import models.v3.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum}
-import java.time.{LocalDate, LocalDateTime}
+import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
+import models.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum}
+
+import java.time.LocalDate
 
 class CalculationPageHelperSpec extends SpecBase {
   val calculationPageHelper: CalculationPageHelper = injector.instanceOf[CalculationPageHelper]
 
-  "getCalculationRow" should {
-    val sampleDate: LocalDateTime = LocalDateTime.of(2021, 2, 7, 18, 25, 43)
-    val lppWith15DayAmount = LatePaymentPenalty(
-      `type` = PenaltyTypeEnum.Financial,
-      id = "1234",
-      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
-      dateCreated = sampleDate,
-      status = PointStatusEnum.Due,
-      appealStatus = None,
-      period = PaymentPeriod(
-        startDate = sampleDate, endDate = sampleDate, dueDate = sampleDate, paymentStatus = PaymentStatusEnum.Due
-      ),
-      communications = Seq.empty,
-      financial = Financial(
-        amountDue = 100.12, outstandingAmountDue = 14, dueDate = sampleDate, outstandingAmountDay15 = Some(14), outstandingAmountDay31 = None, percentageOfOutstandingAmtCharged = Some(2), estimatedInterest = None, crystalizedInterest = None
-      )
-    )
-
-    val lppWith30DayAmount = LatePaymentPenalty(
-      `type` = PenaltyTypeEnum.Financial,
-      id = "1234",
-      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
-      dateCreated = sampleDate,
-      status = PointStatusEnum.Due,
-      appealStatus = None,
-      period = PaymentPeriod(
-        startDate = sampleDate, endDate = sampleDate, dueDate = sampleDate, paymentStatus = PaymentStatusEnum.Due
-      ),
-      communications = Seq.empty,
-      financial = Financial(
-        amountDue = 100.12, outstandingAmountDue = 12, dueDate = sampleDate, outstandingAmountDay15 = Some(14), outstandingAmountDay31 = Some(12), percentageOfOutstandingAmtCharged = Some(2), estimatedInterest = None, crystalizedInterest = None
-      )
-    )
-
-    val lppWithNoAmounts = LatePaymentPenalty(
-      `type` = PenaltyTypeEnum.Financial,
-      id = "1234",
-      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
-      dateCreated = sampleDate,
-      status = PointStatusEnum.Due,
-      appealStatus = None,
-      period = PaymentPeriod(
-        startDate = sampleDate, endDate = sampleDate, dueDate = sampleDate, paymentStatus = PaymentStatusEnum.Due
-      ),
-      communications = Seq.empty,
-      financial = Financial(
-        amountDue = 100.12, outstandingAmountDue = 12, dueDate = sampleDate, outstandingAmountDay15 = None, outstandingAmountDay31 = None, percentageOfOutstandingAmtCharged = Some(2), estimatedInterest = None, crystalizedInterest = None
-      )
-    )
-
-    "return only one 'row' when the user has amount after 15 days" in {
-      val rows = calculationPageHelper.getCalculationRowForLPP(lppWith15DayAmount)
-      rows.isDefined shouldBe true
-      rows.get.size shouldBe 1
-      rows.get.head shouldBe "2% of £14.00 (VAT amount unpaid on 22 February 2021)"
-    }
-
-    "return 2 rows when the user has amount after 15 and 30 days" in {
-      val rows = calculationPageHelper.getCalculationRowForLPP(lppWith30DayAmount)
-      rows.isDefined shouldBe true
-      rows.get.size shouldBe 2
-      rows.get.head shouldBe "2% of £14.00 (VAT amount unpaid on 22 February 2021)"
-      rows.get(1) shouldBe "2% of £12.00 (VAT amount unpaid on 9 March 2021)"
-    }
-
-    "return None when the user does not have either" in {
-      val rows = calculationPageHelper.getCalculationRowForLPP(lppWithNoAmounts)
-      rows.isDefined shouldBe false
-    }
-  }
-
-  "getCalculationRowForLPPForNewAPI" should {
+  "getCalculationRowForLPP" should {
 
     val lppWithNoAmounts = LPPDetails(
       principalChargeReference = "12345678901234",
@@ -198,14 +124,14 @@ class CalculationPageHelperSpec extends SpecBase {
     )
 
     "return a single row when the user has an amount after 15 days" in {
-      val rows = calculationPageHelper.getCalculationRowForLPPForNewAPI(lppWith15DayAmount)
+      val rows = calculationPageHelper.getCalculationRowForLPP(lppWith15DayAmount)
       rows.isDefined shouldBe true
       rows.get.size shouldBe 1
       rows.get.head shouldBe "2% of £99.99 (VAT amount unpaid on 14 November 2069)"
     }
 
     "return 2 rows when the user has an amount after 15 and 30 days" in {
-      val rows = calculationPageHelper.getCalculationRowForLPPForNewAPI(lppWith15and30DayAmount)
+      val rows = calculationPageHelper.getCalculationRowForLPP(lppWith15and30DayAmount)
       rows.isDefined shouldBe true
       rows.get.size shouldBe 2
       rows.get.head shouldBe "2% of £99.99 (VAT amount unpaid on 14 November 2069)"
@@ -213,7 +139,7 @@ class CalculationPageHelperSpec extends SpecBase {
     }
 
     "return None when the user does not have either" in {
-      val rows = calculationPageHelper.getCalculationRowForLPPForNewAPI(lppWithNoAmounts)
+      val rows = calculationPageHelper.getCalculationRowForLPP(lppWithNoAmounts)
       rows.isDefined shouldBe false
     }
   }

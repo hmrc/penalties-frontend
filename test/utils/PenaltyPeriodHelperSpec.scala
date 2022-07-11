@@ -17,37 +17,35 @@
 package utils
 
 import base.SpecBase
-import models.penalty.PenaltyPeriod
-import models.submission.{Submission, SubmissionStatusEnum}
+import models.lsp.{LateSubmission, TaxReturnStatusEnum}
 
-import java.time.{LocalDate, LocalDateTime}
+import java.time.LocalDate
 
 class PenaltyPeriodHelperSpec extends SpecBase {
 
-  val penaltyPeriods = Seq(PenaltyPeriod(
-    startDate = LocalDateTime.of(2023, 1, 16, 0, 0, 0),
-    endDate = LocalDateTime.of(2023, 1, 31, 0, 0, 0),
-    submission = Submission(
-      dueDate = LocalDateTime.of(2023, 5, 23, 0, 0, 0),
-      submittedDate = Some(LocalDateTime.of(2023, 5, 25, 0, 0, 0)),
-      status = SubmissionStatusEnum.Submitted
-    )),
-    PenaltyPeriod(
-      startDate = LocalDateTime.of(2023, 1, 1, 0, 0, 0),
-      endDate = LocalDateTime.of(2023, 1, 15, 0, 0, 0),
-      submission = Submission(
-        dueDate = LocalDateTime.of(2023, 5, 7, 0, 0, 0),
-        submittedDate = Some(LocalDateTime.of(2023, 5, 12, 0, 0, 0)),
-        status = SubmissionStatusEnum.Under_Review
-      ))
+  val penaltyPeriods = Seq(
+    LateSubmission(
+      taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
+      taxPeriodEndDate = Some(LocalDate.parse("2069-10-15")),
+      taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
+      returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
+      taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+    ),
+    LateSubmission(
+      taxPeriodStartDate = Some(LocalDate.parse("2069-12-15")),
+      taxPeriodEndDate = Some(LocalDate.parse("2069-12-15")),
+      taxPeriodDueDate = Some(LocalDate.parse("2069-12-15")),
+      returnReceiptDate = Some(LocalDate.parse("2069-12-15")),
+      taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+    )
   )
 
   "PenaltyPeriod Helper" should {
     "sortedPenaltyPeriod " should {
       "return sorted Penalty Period with oldest startDate " in {
         val sortedPenaltyPeriod = PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriods)
-        sortedPenaltyPeriod.head.startDate.toLocalDate shouldBe LocalDate.of(2023, 1, 1)
-        sortedPenaltyPeriod.head.endDate.toLocalDate shouldBe LocalDate.of(2023, 1, 15)
+        sortedPenaltyPeriod.head.taxPeriodStartDate.get shouldBe LocalDate.of(2069, 10, 30)
+        sortedPenaltyPeriod.head.taxPeriodEndDate.get shouldBe LocalDate.of(2069, 10, 15)
       }
     }
   }

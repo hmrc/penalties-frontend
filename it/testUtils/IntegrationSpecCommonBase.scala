@@ -17,7 +17,7 @@
 package testUtils
 
 import com.codahale.metrics.SharedMetricRegistries
-import config.featureSwitches.{FeatureSwitching, UseAPI1811Model}
+import config.featureSwitches.FeatureSwitching
 import helpers.WiremockHelper
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -27,7 +27,7 @@ import play.api.Application
 import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.ws.{WSClient, WSRequest}
-import stubs.{AuthStub, PenaltiesStub}
+import stubs.AuthStub
 
 trait IntegrationSpecCommonBase extends AnyWordSpec with Matchers with GuiceOneServerPerSuite with
   BeforeAndAfterAll with BeforeAndAfterEach with TestSuite with WiremockHelper with FeatureSwitching {
@@ -43,8 +43,6 @@ trait IntegrationSpecCommonBase extends AnyWordSpec with Matchers with GuiceOneS
   override def beforeEach(): Unit = {
     super.beforeEach()
     AuthStub.authorised()
-    PenaltiesStub.lspDataStub()
-    PenaltiesStub.getPenaltyDetailsStub(isEnabled(UseAPI1811Model))
     SharedMetricRegistries.clear()
   }
 

@@ -16,17 +16,22 @@
 
 package utils
 
-import models.penalty.PenaltyPeriod
+import models.lsp.LateSubmission
 
 object PenaltyPeriodHelper {
 
-  def sortByPenaltyStartDate(p1: PenaltyPeriod, p2: PenaltyPeriod):Int = {
-    p1.startDate.compareTo(p2.startDate)
+  def sortByPenaltyStartDate(p1: LateSubmission, p2: LateSubmission): Int = {
+    if (p1.taxPeriodStartDate.isDefined && p2.taxPeriodStartDate.isDefined) {
+      p1.taxPeriodStartDate.get.compareTo(p2.taxPeriodStartDate.get)
+    }
+    else {
+      0
+    }
   }
 
-  def sortedPenaltyPeriod(penaltyPeriod: Seq[PenaltyPeriod]):Seq[PenaltyPeriod]= {
-    if(penaltyPeriod.nonEmpty)
-      penaltyPeriod.sortWith(sortByPenaltyStartDate(_ , _) < 0)
+  def sortedPenaltyPeriod(penaltyPeriod: Seq[LateSubmission]): Seq[LateSubmission] = {
+    if (penaltyPeriod.nonEmpty)
+      penaltyPeriod.sortWith(sortByPenaltyStartDate(_, _) < 0)
     else
       Seq.empty
   }

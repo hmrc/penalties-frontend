@@ -18,16 +18,14 @@ package views.components
 
 import base.{BaseSelectors, SpecBase}
 import models.User
-import models.financial.Financial
-import models.penalty.{PaymentPeriod, PaymentStatusEnum}
-import models.point.PenaltyTypeEnum
-import models.reason.PaymentPenaltyReasonEnum
+import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
+import models.lpp.{LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum}
 import org.jsoup.nodes.Document
 import viewmodels.LatePaymentPenaltySummaryCard
 import views.behaviours.ViewBehaviours
 import views.html.components.summaryCardLPP
 
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
 
@@ -37,171 +35,130 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
   val summaryCardHtml: summaryCardLPP = injector.instanceOf[summaryCardLPP]
 
   val summaryCardModel: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyPaid.copy(
-      period = PaymentPeriod(
-        startDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1),
-        endDate = LocalDateTime.of(2020, 1, 31, 1, 1, 1),
-        dueDate = LocalDateTime.of(2020, 3, 7, 1, 1, 1),
-        paymentStatus = PaymentStatusEnum.Paid,
-        paymentReceivedDate = Some(LocalDateTime.of(2020, 3, 8, 1, 1, 1))
-      ))))
+    Some(Seq(sampleLatePaymentPenaltyPaid.copy(principalChargeBillingFrom = LocalDate.of(2020, 1, 1),
+      principalChargeBillingTo = LocalDate.of(2020, 2, 1),
+      principalChargeDueDate = LocalDate.of(2020, 2, 1),
+      penaltyAmountPaid = Some(400),
+      penaltyAmountOutstanding = Some(0))))
   ).get.head
 
-  val summaryCardModelWithVATUnpaid: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
+  val summaryCardModelWithUnappealableStatus: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
     Some(Seq(sampleLatePaymentPenaltyPaid.copy(
-      period = PaymentPeriod(
-        startDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1),
-        endDate = LocalDateTime.of(2020, 1, 31, 1, 1, 1),
-        dueDate = LocalDateTime.of(2020, 3, 7, 1, 1, 1),
-        paymentStatus = PaymentStatusEnum.Due
-      ))))
+      principalChargeBillingFrom = LocalDate.of(2020, 1, 1),
+      principalChargeBillingTo = LocalDate.of(2020, 2, 1),
+      principalChargeDueDate = LocalDate.of(2020, 2, 1),
+      appealInformation = Some(Seq(
+        AppealInformationType(
+          appealStatus = Some(AppealStatusEnum.Unappealable),
+          appealLevel = Some(AppealLevelEnum.HMRC)
+        )
+      )))))
   ).get.head
 
   val summaryCardModelWithTenths: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyPaid.copy(
-      `type` = PenaltyTypeEnum.Financial,
-      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
-      period = PaymentPeriod(
-        startDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1),
-        endDate = LocalDateTime.of(2020, 1, 31, 1, 1, 1),
-        dueDate = LocalDateTime.of(2020, 3, 7, 1, 1, 1),
-        paymentStatus = PaymentStatusEnum.Paid
-      ),
-      financial = Financial(
-        amountDue = 123.4, outstandingAmountDue = 0.00, dueDate = LocalDateTime.of(2020, 2, 1, 1, 1, 1)
-      ))))
+    Some(Seq(sampleLatePaymentPenaltyPaid.copy(penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
+      penaltyAmountPaid = Some(123.4),
+      penaltyAmountOutstanding = Some(00.0),
+      penaltyStatus = LPPPenaltyStatusEnum.Posted,
+      penaltyChargeDueDate = LocalDate.of(2020, 2, 1),
+      principalChargeBillingFrom = LocalDate.of(2020, 1, 1),
+      principalChargeBillingTo = LocalDate.of(2020, 2, 1),
+      principalChargeDueDate = LocalDate.of(2020, 3, 7))))
   ).get.head
 
   val summaryCardModelVATPaymentDate: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyPaid.copy(
-      period = PaymentPeriod(
-        startDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1),
-        endDate = LocalDateTime.of(2020, 1, 31, 1, 1, 1),
-        dueDate = LocalDateTime.of(2020, 3, 7, 1, 1, 1),
-        paymentStatus = PaymentStatusEnum.Paid,
-        paymentReceivedDate = Some(LocalDateTime.of(2020, 3, 8, 1, 1, 1))
-      ))))
+    Some(Seq(sampleLatePaymentPenaltyPaid.copy(penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
+      penaltyAmountPaid = Some(123.45),
+      penaltyAmountOutstanding = Some(00.0),
+      principalChargeBillingFrom = LocalDate.parse("2020-01-01"),
+      principalChargeBillingTo = LocalDate.parse("2020-01-31"),
+      principalChargeDueDate = LocalDate.parse("2020-03-07"))))
   ).get.head
 
   val summaryCardModelForAdditionalPenaltyPaid: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyPaid.copy(
-      `type` = PenaltyTypeEnum.Additional,
-      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
-      period = PaymentPeriod(
-        startDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1),
-        endDate = LocalDateTime.of(2020, 1, 31, 1, 1, 1),
-        dueDate = LocalDateTime.of(2020, 3, 7, 1, 1, 1),
-        paymentReceivedDate = Some(LocalDateTime.of(2020, 3, 8, 1, 1, 1)),
-        paymentStatus = PaymentStatusEnum.Paid
-      ),
-      financial = Financial(
-        amountDue = 123.45, outstandingAmountDue = 0.00, dueDate = LocalDateTime.of(2020, 2, 1, 1, 1, 1)
-      ))))
+    Some(Seq(sampleLatePaymentPenaltyPaid.copy(penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
+      penaltyAmountPaid = Some(123.45),
+      penaltyAmountOutstanding = Some(0.00),
+      penaltyStatus = LPPPenaltyStatusEnum.Posted,
+      penaltyChargeDueDate = LocalDate.of(2020, 2, 1),
+      principalChargeBillingFrom = LocalDate.of(2020, 1, 1),
+      principalChargeBillingTo = LocalDate.of(2020, 2, 1),
+      principalChargeDueDate = LocalDate.of(2020, 3, 7))
+    ))
   ).get.head
 
+  val summaryCardModelForAdditionalPenaltyUnappealable: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
+    Some(Seq(sampleLatePaymentPenaltyPaid.copy(penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
+      penaltyAmountPaid = Some(123.45),
+      penaltyAmountOutstanding = Some(0.00),
+      penaltyStatus = LPPPenaltyStatusEnum.Posted,
+      penaltyChargeDueDate = LocalDate.of(2020, 2, 1),
+      principalChargeBillingFrom = LocalDate.of(2020, 1, 1),
+      principalChargeBillingTo = LocalDate.of(2020, 2, 1),
+      principalChargeDueDate = LocalDate.of(2020, 3, 7),
+      appealInformation = Some(Seq(AppealInformationType(
+        appealStatus = Some(AppealStatusEnum.Unappealable),
+        appealLevel = Some(AppealLevelEnum.HMRC)
+      )))
+    )))
+  ).get.head
+
+
   val summaryCardModelForAdditionalPenaltyPaidWithTenths: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyPaid.copy(
-      `type` = PenaltyTypeEnum.Additional,
-      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
-      period = PaymentPeriod(
-        startDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1),
-        endDate = LocalDateTime.of(2020, 1, 31, 1, 1, 1),
-        dueDate = LocalDateTime.of(2020, 3, 7, 1, 1, 1),
-        paymentStatus = PaymentStatusEnum.Paid
-      ),
-      financial = Financial(
-        amountDue = 123.4, outstandingAmountDue = 0.00, dueDate = LocalDateTime.of(2020, 2, 1, 1, 1, 1)
-      ))))
+    Some(Seq(sampleLatePaymentPenaltyPaid.copy(penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
+      penaltyAmountPaid = Some(00.00),
+      penaltyAmountOutstanding = Some(123.40))))
   ).get.head
 
   val summaryCardModelForAdditionalPenaltyDue: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyDue.copy(
-      `type` = PenaltyTypeEnum.Additional,
-      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
-      period = PaymentPeriod(
-        startDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1),
-        endDate = LocalDateTime.of(2020, 1, 31, 1, 1, 1),
-        dueDate = LocalDateTime.of(2020, 3, 7, 1, 1, 1),
-        paymentStatus = PaymentStatusEnum.Due
-      ),
-      financial = Financial(
-        amountDue = 123.45, outstandingAmountDue = 123.45, dueDate = LocalDateTime.of(2020, 2, 1, 1, 1, 1)
-      ))))
+    Some(Seq(sampleLatePaymentPenalty.copy(penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
+      penaltyAmountPaid = Some(0.00),
+      penaltyAmountOutstanding = Some(23.45),
+      penaltyStatus = LPPPenaltyStatusEnum.Posted)))
   ).get.head
 
   val summaryCardModelForAdditionalPenaltyDuePartiallyPaid: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyDue.copy(
-      `type` = PenaltyTypeEnum.Additional,
-      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
-      period = PaymentPeriod(
-        startDate = LocalDateTime.of(2020, 1, 1, 1, 1, 1),
-        endDate = LocalDateTime.of(2020, 1, 31, 1, 1, 1),
-        dueDate = LocalDateTime.of(2020, 3, 7, 1, 1, 1),
-        paymentStatus = PaymentStatusEnum.Paid
-      ),
-      financial = Financial(
-        amountDue = 123.45, outstandingAmountDue = 60.22, dueDate = LocalDateTime.of(2020, 2, 1, 1, 1, 1)
-      ))))
+    Some(Seq(sampleLatePaymentPenalty.copy(penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
+      penaltyAmountPaid = Some(100.00),
+      penaltyAmountOutstanding = Some(60.22),
+      penaltyStatus = LPPPenaltyStatusEnum.Posted)))
   ).get.head
 
   val summaryCardModelDue: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyDue))
+    Some(Seq(sampleLatePaymentPenaltyPaid.copy(principalChargeLatestClearing = None, penaltyAmountOutstanding = Some(200), penaltyAmountPaid = Some(10))))
   ).get.head
 
   val summaryCardModelDueNoPaymentsMade: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyDue.copy(financial = Financial(
-      amountDue = 400.00,
-      outstandingAmountDue = 400.00,
-      dueDate = LocalDateTime.now
-    ))))
-  ).get.head
-
-  val summaryCardModelWithAppealedPenalty: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyAppealedUnderReview))
-  ).get.head
-
-  val summaryCardModelWithAppealedPenaltyUnderTribunalReview: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyAppealedUnderTribunalReview))
+    Some(Seq(sampleLatePaymentPenaltyPaid.copy(principalChargeLatestClearing = None, penaltyAmountOutstanding = Some(400), penaltyAmountPaid = Some(0))))
   ).get.head
 
   val summaryCardModelWithAppealedPenaltyAccepted: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyAppealedAccepted))
+    Some(Seq(sampleLatePaymentPenaltyPaidPenaltyAppeal(AppealStatusEnum.Upheld, AppealLevelEnum.HMRC)))
   ).get.head
 
   val summaryCardModelWithAppealedPenaltyAcceptedAgent: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyAppealedAccepted))
-  )(implicitly, agentUser).get.head
-
-  val summaryCardModelWithAppealedPenaltyAcceptedByTribunal: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyAppealedAcceptedTribunal))
-  ).get.head
-
-  val summaryCardModelWithAppealedPenaltyAcceptedByTribunalAgent: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyAppealedAcceptedTribunal))
+    Some(Seq(sampleLatePaymentPenaltyPaidPenaltyAppeal(AppealStatusEnum.Upheld, AppealLevelEnum.HMRC)))
   )(implicitly, agentUser).get.head
 
   val summaryCardModelWithAppealedPenaltyRejected: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyAppealedRejected))
+    Some(Seq(sampleLatePaymentPenaltyPaidPenaltyAppeal(AppealStatusEnum.Rejected, AppealLevelEnum.HMRC)))
   ).get.head
 
   val summaryCardModelWithAppealedPenaltyRejectedAgent: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyAppealedRejected))
+    Some(Seq(sampleLatePaymentPenaltyPaidPenaltyAppeal(AppealStatusEnum.Rejected, AppealLevelEnum.HMRC)))
   )(implicitly, agentUser).get.head
 
-  val summaryCardModelWithAppealedPenaltyRejectedTribunal: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyAppealedRejectedTribunal))
+  val summaryCardModelWithAppealedPenalty: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
+    Some(Seq(sampleLatePaymentPenaltyPaidPenaltyAppeal(AppealStatusEnum.Under_Appeal, AppealLevelEnum.HMRC)))
   ).get.head
 
-  val summaryCardModelWithAppealedPenaltyRejectedTribunalAgent: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyAppealedRejectedTribunal))
-  )(implicitly, agentUser).get.head
-
+  // TODO: Update for Reinstated
   val summaryCardModelWithAppealedPenaltyReinstated: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyAppealedReinstated))
+    Some(Seq(sampleLatePaymentPenaltyPaidPenaltyAppeal(AppealStatusEnum.Under_Appeal, AppealLevelEnum.HMRC)))
   ).get.head
 
   val summaryCardModelWithAppealedPenaltyReinstatedAgent: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyAppealedReinstated))
+    Some(Seq(sampleLatePaymentPenaltyPaidPenaltyAppeal(AppealStatusEnum.Under_Appeal, AppealLevelEnum.HMRC)))
   )(implicitly, agentUser).get.head
 
   "summaryCard" when {
@@ -219,7 +176,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
 
       "display the View calculation link" in {
         doc.select("footer > div a").get(0).text() shouldBe "View calculation"
-        doc.select("a").get(0).attr("href") shouldBe "/penalties/calculation?penaltyId=123456789&isAdditional=false"
+        doc.select("a").get(0).attr("href") shouldBe "/penalties/calculation?principalChargeReference=12345678901234&penaltyCategory=LPP1"
       }
 
       "display the 'PAID' status" in {
@@ -236,34 +193,35 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         doc.select("strong").text() shouldBe "£200 due"
       }
 
-      "display the penalty type" in {
+      "display the Penalty type" in {
         doc.select("dt").get(0).text() shouldBe "Penalty type"
         doc.select("dd").get(0).text() shouldBe "First penalty for late payment"
       }
 
-      "display the overdue charge" in {
+      "display the 'Overdue charge' row" in {
         doc.select("dt").get(1).text() shouldBe "Overdue charge"
-        doc.select("dd").get(1).text() shouldBe "VAT for period 1 January 2020 to 31 January 2020"
+        doc.select("dd").get(1).text() shouldBe "VAT for period 1 January 2020 to 1 February 2020"
       }
 
-      "display the charge due" in {
+      "display Date(principalChargeDueDate) in Charge due" in {
         doc.select("dt").get(2).text() shouldBe "Charge due"
-        doc.select("dd").get(2).text() shouldBe "7 March 2020"
+        doc.select("dd").get(2).text() shouldBe "1 February 2020"
       }
 
-      "display the date paid - VAT not paid" in {
-        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithVATUnpaid))
-        doc.select("dt").get(3).text() shouldBe "Date paid"
-        doc.select("dd").get(3).text() shouldBe "Payment not yet received"
-      }
-
-      "display the date paid" in {
-        doc.select("dt").get(3).text() shouldBe "Date paid"
-        doc.select("dd").get(3).text() shouldBe "8 March 2020"
+      "display the date in Charge due" in {
+        val docVATPaymentDate: Document = asDocument(summaryCardHtml.apply(summaryCardModelVATPaymentDate))
+        docVATPaymentDate.select("dt").get(2).text() shouldBe "Charge due"
+        docVATPaymentDate.select("dd").get(2).text() shouldBe "7 March 2020"
       }
 
       "display the appeal link" in {
         doc.select(".app-summary-card__footer a").get(1).text shouldBe "Appeal this penalty"
+      }
+
+      "display the check if you can appeal link if the penalty is unappealable" in {
+        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithUnappealableStatus))
+        doc.select(".app-summary-card__footer a").get(1).text shouldBe "Check if you can appeal"
+        doc.select("dt").eq(4).isEmpty shouldBe true
       }
     }
 
@@ -272,16 +230,16 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       implicit val docWithAdditionalPenaltyTenthsOfPence: Document = asDocument(summaryCardHtml.apply(summaryCardModelForAdditionalPenaltyPaidWithTenths))
 
       "display the penalty amount" in {
-        docWithAdditionalPenalty.select("h3").text() shouldBe "£123.45 additional penalty"
+        docWithAdditionalPenalty.select("h3").text() shouldBe "£123.45 penalty"
       }
 
       "display the penalty amount (with padded zero for whole tenths)" in {
-        docWithAdditionalPenaltyTenthsOfPence.select("h3").text() shouldBe "£123.40 additional penalty"
+        docWithAdditionalPenaltyTenthsOfPence.select("h3").text() shouldBe "£123.40 penalty"
       }
 
       "display the View calculation link" in {
         docWithAdditionalPenalty.select("footer > div a").get(0).text() shouldBe "View calculation"
-        docWithAdditionalPenalty.select("a").get(0).attr("href") shouldBe "/penalties/calculation?penaltyId=123456789&isAdditional=true"
+        docWithAdditionalPenalty.select("a").get(0).attr("href") shouldBe "/penalties/calculation?principalChargeReference=12345678901234&penaltyCategory=LPP2"
       }
 
       "display the 'PAID' status" in {
@@ -298,78 +256,35 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         doc.select("strong").text() shouldBe "£60.22 due"
       }
 
-      "display the penalty type" in {
+      "display the Penalty type" in {
         docWithAdditionalPenalty.select("dt").get(0).text() shouldBe "Penalty type"
         docWithAdditionalPenalty.select("dd").get(0).text() shouldBe "Second penalty for late payment"
-      }
-
-      "display the overdue charge" in {
-        docWithAdditionalPenalty.select("dt").get(1).text() shouldBe "Overdue charge"
-        docWithAdditionalPenalty.select("dd").get(1).text() shouldBe "VAT for period 1 January 2020 to 31 January 2020"
-      }
-
-      "display the charge due" in {
-        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelForAdditionalPenaltyDue))
-        doc.select("dt").get(2).text() shouldBe "Charge due"
-        doc.select("dd").get(2).text() shouldBe "7 March 2020"
-      }
-
-      "display the date paid" in {
-        docWithAdditionalPenalty.select("dt").get(3).text() shouldBe "Date paid"
-        docWithAdditionalPenalty.select("dd").get(3).text() shouldBe "8 March 2020"
-      }
-
-      "display the date paid - VAT not paid" in {
-        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelForAdditionalPenaltyDue))
-        doc.select("dt").get(3).text() shouldBe "Date paid"
-        doc.select("dd").get(3).text() shouldBe "Payment not yet received"
       }
 
       "display the appeal link" in {
         docWithAdditionalPenalty.select(".app-summary-card__footer a").get(1).text shouldBe "Appeal this penalty"
       }
+
+      "display the check if you can appeal link if the penalty is unappealable" in {
+        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelForAdditionalPenaltyUnappealable))
+        doc.select(".app-summary-card__footer a").get(1).text shouldBe "Check if you can appeal"
+        doc.select("dt").eq(4).isEmpty shouldBe true
+      }
     }
 
     "given an appealed penalty" should {
-      val docWithAppealedPenalty: Document =
-        asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenalty))
-      val docWithAppealedPenaltyUnderTribunalReview: Document =
-        asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyUnderTribunalReview))
       val docWithAppealedPenaltyAccepted: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyAccepted))
       val docWithAppealedPenaltyAcceptedAgent: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyAcceptedAgent))
-      val docWithAppealedPenaltyAcceptedByTribunal: Document =
-        asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyAcceptedByTribunal))
-      val docWithAppealedPenaltyAcceptedByTribunalAgent: Document =
-        asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyAcceptedByTribunalAgent))
+
       val docWithAppealedPenaltyRejected: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyRejected))
       val docWithAppealedPenaltyRejectedAgent: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyRejectedAgent))
-      val docWithAppealedPenaltyTribunalRejected: Document =
-        asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyRejectedTribunal))
-      val docWithAppealedPenaltyTribunalRejectedAgent: Document =
-        asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyRejectedTribunalAgent))
-      val docWithAppealedPenaltyTribunalReinstated: Document =
-        asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyReinstated))
-      val docWithAppealedPenaltyTribunalReinstatedAgent: Document =
-        asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyReinstatedAgent))
 
-      "not show the appeal link" in {
-        docWithAppealedPenalty.select(".app-summary-card__footer a").size shouldBe 1
-        docWithAppealedPenalty.select(".app-summary-card__footer a").first().text() shouldBe "View calculation"
-      }
-
-      "have the appeal status for UNDER_REVIEW" in {
-        docWithAppealedPenalty.select("dt").get(4).text() shouldBe "Appeal status"
-        docWithAppealedPenalty.select("dd").get(4).text() shouldBe "Under review by HMRC"
-      }
-
-      "have the appeal status for UNDER_TRIBUNAL_REVIEW" in {
-        docWithAppealedPenaltyUnderTribunalReview.select("dt").get(4).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyUnderTribunalReview.select("dd").get(4).text() shouldBe "Under review by the tax tribunal"
-      }
+      val docWithAppealedPenalty: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenalty))
 
       "have the appeal status for ACCEPTED" in {
         docWithAppealedPenaltyAccepted.select("dt").get(4).text() shouldBe "Appeal status"
@@ -379,16 +294,6 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       "have the appeal status for ACCEPTED - no outcome message for agents" in {
         docWithAppealedPenaltyAcceptedAgent.select("dt").get(4).text() shouldBe "Appeal status"
         docWithAppealedPenaltyAcceptedAgent.select("dd").get(4).text() shouldBe "Appeal accepted"
-      }
-
-      "have the appeal status ACCEPTED_BY_TRIBUNAL" in {
-        docWithAppealedPenaltyAcceptedByTribunal.select("dt").get(4).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyAcceptedByTribunal.select("dd").get(4).text() shouldBe "Appeal accepted by tax tribunal Read outcome message"
-      }
-
-      "have the appeal status ACCEPTED_BY_TRIBUNAL - no outcome message for agents" in {
-        docWithAppealedPenaltyAcceptedByTribunalAgent.select("dt").get(4).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyAcceptedByTribunalAgent.select("dd").get(4).text() shouldBe "Appeal accepted by tax tribunal"
       }
 
       "have the appeal status for REJECTED" in {
@@ -401,24 +306,9 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         docWithAppealedPenaltyRejectedAgent.select("dd").get(4).text() shouldBe "Appeal rejected"
       }
 
-      "have the appeal status for TRIBUNAL REJECTED" in {
-        docWithAppealedPenaltyTribunalRejected.select("dt").get(4).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyTribunalRejected.select("dd").get(4).text() shouldBe "Appeal rejected by tax tribunal Read outcome message"
-      }
-
-      "have the appeal status for TRIBUNAL REJECTED - no outcome message for agents" in {
-        docWithAppealedPenaltyTribunalRejectedAgent.select("dt").get(4).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyTribunalRejectedAgent.select("dd").get(4).text() shouldBe "Appeal rejected by tax tribunal"
-      }
-
-      "have the appeal status for REINSTATED" in {
-        docWithAppealedPenaltyTribunalReinstated.select("dt").get(4).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyTribunalReinstated.select("dd").get(4).text() shouldBe "Appeal outcome changed Read message"
-      }
-
-      "have the appeal status for REINSTATED - no outcome message for agents" in {
-        docWithAppealedPenaltyTribunalReinstatedAgent.select("dt").get(4).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyTribunalReinstatedAgent.select("dd").get(4).text() shouldBe "Appeal outcome changed"
+      "have the appeal status for UNDER_REVIEW" in {
+        docWithAppealedPenalty.select("dt").get(4).text() shouldBe "Appeal status"
+        docWithAppealedPenalty.select("dd").get(4).text() shouldBe "Under review by HMRC"
       }
     }
   }

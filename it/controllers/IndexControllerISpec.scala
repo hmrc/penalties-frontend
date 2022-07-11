@@ -16,17 +16,11 @@
 
 package controllers
 
-import models.ETMPPayload
-import models.communication.{Communication, CommunicationTypeEnum}
-import models.financial.{AmountTypeEnum, Financial, OverviewElement}
-import models.penalty.{LatePaymentPenalty, PaymentPeriod, PaymentStatusEnum, PenaltyPeriod}
-import models.point.{PenaltyPoint, PenaltyTypeEnum, PointStatusEnum}
-import models.reason.PaymentPenaltyReasonEnum
-import models.submission.{Submission, SubmissionStatusEnum}
-import models.v3.appealInfo._
-import models.v3.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum}
-import models.v3.lsp._
-import models.v3.{GetPenaltyDetails, Totalisations}
+import config.AppConfig
+import models.{GetPenaltyDetails, Totalisations, appealInfo, lpp}
+import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
+import models.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty, MainTransactionEnum}
+import models.lsp.{LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum, LSPSummary, LateSubmission, LateSubmissionPenalty, TaxReturnStatusEnum}
 import org.jsoup.Jsoup
 import play.api.http.{HeaderNames, Status}
 import play.api.mvc.AnyContentAsEmpty
@@ -37,9 +31,8 @@ import stubs.PenaltiesStub._
 import testUtils.IntegrationSpecCommonBase
 import uk.gov.hmrc.http.SessionKeys.authToken
 import utils.SessionKeys
-import java.time.{LocalDate, LocalDateTime}
 
-import config.AppConfig
+import java.time.{LocalDate, LocalDateTime}
 
 class IndexControllerISpec extends IntegrationSpecCommonBase {
 
@@ -60,29 +53,6 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
   )
   val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
     authToken -> "12345"
-  )
-  val etmpPayloadWithAddedPoints: ETMPPayload = ETMPPayload(
-    pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, otherPenalties = Some(false), vatOverview = Some(Seq.empty), penaltyPoints = Seq(
-      PenaltyPoint(
-        `type` = PenaltyTypeEnum.Point,
-        id = "1234567890",
-        number = "1",
-        dateCreated = sampleDate1,
-        dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
-        status = PointStatusEnum.Added,
-        reason = None,
-        period = None,
-        communications = Seq.empty,
-        financial = Some(Financial(
-          amountDue = 0,
-          outstandingAmountDue = 0,
-          dueDate = sampleDate1,
-          estimatedInterest = Some(21.00),
-          crystalizedInterest = Some(32.00)
-        ))
-      )
-    ),
-    latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
   )
 
   val getPenaltyDetailsPayloadWithAddedPoint = GetPenaltyDetails(
@@ -111,7 +81,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
             taxPeriodDueDate = Some(sampleDate1V2),
             returnReceiptDate = Some(sampleDate1V2),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(models.v3.appealInfo.AppealStatusEnum.Unappealable), None))),
+          appealInformation = Some(Seq(AppealInformationType(Some(AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
           chargeOutstandingAmount = None,
           chargeDueDate = None
@@ -120,31 +90,6 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     )
     ),
     latePaymentPenalty = None
-  )
-
-  val etmpPayloadWithRemovedPoints: ETMPPayload = ETMPPayload(
-    pointsTotal = 1, lateSubmissions = 2, adjustmentPointsTotal = -1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, otherPenalties = Some(false), vatOverview = Some(Seq.empty),
-    penaltyPoints = Seq(
-      PenaltyPoint(
-        `type` = PenaltyTypeEnum.Point,
-        id = "1234567890",
-        number = "1",
-        dateCreated = sampleDate1,
-        dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
-        status = PointStatusEnum.Removed,
-        reason = Some("This is a great reason."),
-        period = Some(Seq(PenaltyPeriod(
-          startDate = sampleDate1, endDate = sampleDate2, submission = Submission(
-            dueDate = sampleDate3,
-            submittedDate = Some(sampleDate4),
-            status = SubmissionStatusEnum.Submitted
-          )
-        ))),
-        communications = Seq.empty,
-        financial = None
-      )
-    ),
-    latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
   )
 
   val getPenaltyDetailsPayloadWithRemovedPoints = GetPenaltyDetails(
@@ -173,7 +118,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
             taxPeriodDueDate = Some(sampleDate1V2),
             returnReceiptDate = Some(sampleDate1V2),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(models.v3.appealInfo.AppealStatusEnum.Unappealable), None))),
+          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
           chargeOutstandingAmount = None,
           chargeDueDate = None
@@ -194,7 +139,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
             taxPeriodDueDate = Some(sampleDate1V2),
             returnReceiptDate = Some(sampleDate1V2),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(models.v3.appealInfo.AppealStatusEnum.Unappealable), None))),
+          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
           chargeOutstandingAmount = None,
           chargeDueDate = None
@@ -202,87 +147,6 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       )
     )),
     latePaymentPenalty = None
-  )
-
-  val etmpPayloadWith2PointsandOneRemovedPoint: ETMPPayload = ETMPPayload(
-    pointsTotal = 2, lateSubmissions = 3, adjustmentPointsTotal = -1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, otherPenalties = Some(false), vatOverview = Some(Seq.empty), penaltyPoints = Seq(
-      PenaltyPoint(
-        `type` = PenaltyTypeEnum.Point,
-        id = "1234567890",
-        number = "4",
-        appealStatus = None,
-        dateCreated = sampleDate1,
-        dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
-        status = PointStatusEnum.Active,
-        None,
-        period = Some(Seq(PenaltyPeriod(
-          startDate = sampleDate1, endDate = sampleDate2, submission = Submission(
-            dueDate = sampleDate3,
-            submittedDate = Some(sampleDate4),
-            status = SubmissionStatusEnum.Submitted
-          )
-        ))),
-        communications = Seq.empty,
-        financial = None
-      ),
-      PenaltyPoint(
-        `type` = PenaltyTypeEnum.Point,
-        id = "12345678901",
-        number = "3",
-        appealStatus = None,
-        dateCreated = sampleDate1,
-        dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
-        status = PointStatusEnum.Active,
-        None,
-        period = Some(Seq(PenaltyPeriod(
-          startDate = sampleDate1, endDate = sampleDate2, submission = Submission(
-            dueDate = sampleDate3,
-            submittedDate = Some(sampleDate4),
-            status = SubmissionStatusEnum.Submitted
-          )
-        ))),
-        communications = Seq.empty,
-        financial = None
-      ),
-      PenaltyPoint(
-        `type` = PenaltyTypeEnum.Point,
-        id = "12345678902",
-        number = "2",
-        appealStatus = None,
-        dateCreated = sampleDate1,
-        dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
-        status = PointStatusEnum.Active,
-        None,
-        period = Some(Seq(PenaltyPeriod(
-          startDate = sampleDate1, endDate = sampleDate2, submission = Submission(
-            dueDate = sampleDate3,
-            submittedDate = Some(sampleDate4),
-            status = SubmissionStatusEnum.Submitted
-          )
-        ))),
-        communications = Seq.empty,
-        financial = None
-      ),
-      PenaltyPoint(
-        `type` = PenaltyTypeEnum.Point,
-        id = "12345678903",
-        number = "1",
-        dateCreated = sampleDate1,
-        dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
-        status = PointStatusEnum.Removed,
-        reason = Some("This is a great reason."),
-        period = Some(Seq(PenaltyPeriod(
-          startDate = sampleDate1, endDate = sampleDate2, submission = Submission(
-            dueDate = sampleDate3,
-            submittedDate = Some(sampleDate4),
-            status = SubmissionStatusEnum.Submitted
-          )
-        ))),
-        communications = Seq.empty,
-        financial = None
-      )
-    ),
-    latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
   )
 
   val getPenaltiesDataPayloadWith2PointsandOneRemovedPoint: GetPenaltyDetails = GetPenaltyDetails(
@@ -311,7 +175,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
             taxPeriodDueDate = Some(sampleDate1V2),
             returnReceiptDate = Some(sampleDate1V2),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(models.v3.appealInfo.AppealStatusEnum.Unappealable), None))),
+          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
           chargeOutstandingAmount = None,
           chargeDueDate = None
@@ -332,7 +196,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
             taxPeriodDueDate = Some(sampleDate1V2),
             returnReceiptDate = Some(sampleDate1V2),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(models.v3.appealInfo.AppealStatusEnum.Unappealable), None))),
+          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
           chargeOutstandingAmount = None,
           chargeDueDate = None
@@ -353,7 +217,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
             taxPeriodDueDate = Some(sampleDate1V2),
             returnReceiptDate = Some(sampleDate1V2),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(models.v3.appealInfo.AppealStatusEnum.Unappealable), None))),
+          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
           chargeOutstandingAmount = None,
           chargeDueDate = None
@@ -363,36 +227,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     latePaymentPenalty = None
   )
 
-  val paidLatePaymentPenalty: Option[Seq[LatePaymentPenalty]] = Some(Seq(
-    LatePaymentPenalty(
-      `type` = PenaltyTypeEnum.Financial,
-      id = "123456789",
-      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
-      dateCreated = sampleDate1,
-      status = PointStatusEnum.Paid,
-      appealStatus = None,
-      period = PaymentPeriod(
-        startDate = sampleDate1,
-        endDate = sampleDate1.plusMonths(1),
-        dueDate = sampleDate1.plusMonths(2).plusDays(6),
-        paymentStatus = PaymentStatusEnum.Paid,
-        paymentReceivedDate = Some(sampleDate1.plusMonths(2).plusDays(7))
-      ),
-      communications = Seq(
-        Communication(
-          `type` = CommunicationTypeEnum.letter,
-          dateSent = sampleDate1,
-          documentId = "123456789"
-        )
-      ),
-      financial = Financial(
-        amountDue = 400.00,
-        outstandingAmountDue = 0.00,
-        dueDate = sampleDate1
-      )
-    )))
-
-  val paidLatePaymentPenaltyV2: models.v3.lpp.LatePaymentPenalty = models.v3.lpp.LatePaymentPenalty(
+  val paidLatePaymentPenaltyV2: LatePaymentPenalty = lpp.LatePaymentPenalty(
     details = Seq(
       LPPDetails(principalChargeReference = "123456789",
       penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
@@ -422,63 +257,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         )
       )))
 
-  val latePaymentPenaltyWithAdditionalPenalty: Option[Seq[LatePaymentPenalty]] = Some(Seq(
-    LatePaymentPenalty(
-      `type` = PenaltyTypeEnum.Additional,
-      id = "123456790",
-      PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
-      dateCreated = sampleDate1,
-      status = PointStatusEnum.Paid,
-      appealStatus = None,
-      period = PaymentPeriod(
-        startDate = sampleDate1,
-        endDate = sampleDate1.plusMonths(1),
-        dueDate = sampleDate1.plusMonths(2).plusDays(6),
-        paymentReceivedDate = Some(sampleDate1.plusMonths(2).plusDays(7)),
-        paymentStatus = PaymentStatusEnum.Paid
-      ),
-      communications = Seq(
-        Communication(
-          `type` = CommunicationTypeEnum.letter,
-          dateSent = sampleDate1,
-          documentId = "123456789"
-        )
-      ),
-      financial = Financial(
-        amountDue = 123.45,
-        outstandingAmountDue = 0.00,
-        dueDate = sampleDate1
-      )
-    ),
-    LatePaymentPenalty(
-      `type` = PenaltyTypeEnum.Financial,
-      id = "123456789",
-      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_30_DAYS,
-      dateCreated = sampleDate1,
-      status = PointStatusEnum.Paid,
-      appealStatus = None,
-      period = PaymentPeriod(
-        sampleDate1,
-        sampleDate1.plusMonths(1),
-        sampleDate1.plusMonths(2).plusDays(7),
-        PaymentStatusEnum.Paid
-      ),
-      communications = Seq(
-        Communication(
-          `type` = CommunicationTypeEnum.letter,
-          dateSent = sampleDate1,
-          documentId = "123456789"
-        )
-      ),
-      financial = Financial(
-        amountDue = 400.00,
-        outstandingAmountDue = 200.00,
-        dueDate = sampleDate1
-      )
-    )
-  ))
-
-  val latePaymentPenaltyWithAdditionalPenaltyV2: models.v3.lpp.LatePaymentPenalty = models.v3.lpp.LatePaymentPenalty(
+  val latePaymentPenaltyWithAdditionalPenaltyV2: LatePaymentPenalty = lpp.LatePaymentPenalty(
     details = Seq(
       LPPDetails(
         principalChargeReference = "123456789",
@@ -526,7 +305,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         communicationsDate = sampleDate1V2,
         penaltyChargeDueDate = sampleDate1V2,
         appealInformation = Some(Seq(AppealInformationType(
-          appealStatus = Some(models.v3.appealInfo.AppealStatusEnum.Unappealable),
+          appealStatus = Some(appealInfo.AppealStatusEnum.Unappealable),
           appealLevel = None
         ))),
         principalChargeBillingFrom = sampleDate1V2,
@@ -542,36 +321,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     )
   )
 
-  val latePaymentPenaltyVATUnpaid: Option[Seq[LatePaymentPenalty]] = Some(Seq(LatePaymentPenalty(
-    `type` = PenaltyTypeEnum.Financial,
-    id = "123456789",
-    reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
-    dateCreated = sampleDate1,
-    status = PointStatusEnum.Due,
-    appealStatus = None,
-    period = PaymentPeriod(
-      startDate = sampleDate1,
-      endDate = sampleDate1.plusMonths(1),
-      dueDate = sampleDate1.plusMonths(2).plusDays(6),
-      paymentStatus = PaymentStatusEnum.Due
-    ),
-    communications = Seq(
-      Communication(
-        `type` = CommunicationTypeEnum.letter,
-        dateSent = sampleDate1,
-        documentId = "123456789"
-      )
-    ),
-    financial = Financial(
-      amountDue = 400.00,
-      outstandingAmountDue = 200.00,
-      dueDate = sampleDate1,
-      estimatedInterest = Some(21.00),
-      crystalizedInterest = Some(32.00)
-    )
-  )))
-
-  val latePaymentPenaltyVATUnpaidV2: models.v3.lpp.LatePaymentPenalty = models.v3.lpp.LatePaymentPenalty(
+  val latePaymentPenaltyVATUnpaidV2: LatePaymentPenalty = lpp.LatePaymentPenalty(
     details = Seq(
       LPPDetails(principalChargeReference = "123456789",
       penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
@@ -590,7 +340,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       communicationsDate = sampleDate1V2,
       penaltyChargeDueDate = sampleDate1V2,
       appealInformation = Some(Seq(AppealInformationType(
-        appealStatus = Some(models.v3.appealInfo.AppealStatusEnum.Unappealable),
+        appealStatus = Some(appealInfo.AppealStatusEnum.Unappealable),
         appealLevel = None
       ))),
       principalChargeBillingFrom = sampleDate1V2,
@@ -604,69 +354,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         )))
   )
 
-  val latePaymentPenaltiesWithEstimate: Option[Seq[LatePaymentPenalty]] = Some(Seq(
-    LatePaymentPenalty(
-      `type` = PenaltyTypeEnum.Additional,
-      id = "123456789",
-      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_AFTER_30_DAYS,
-      dateCreated = sampleDate1,
-      status = PointStatusEnum.Estimated,
-      appealStatus = None,
-      period = PaymentPeriod(
-        sampleDate1,
-        sampleDate1.plusMonths(1),
-        sampleDate1.plusMonths(1).plusDays(7),
-        PaymentStatusEnum.Paid
-      ),
-      communications = Seq(
-        Communication(
-          `type` = CommunicationTypeEnum.letter,
-          dateSent = sampleDate1,
-          documentId = "123456789"
-        )
-      ),
-      financial = Financial(
-        amountDue = 32.12,
-        outstandingAmountDue = 32.12,
-        dueDate = sampleDate1,
-        estimatedInterest = None,
-        crystalizedInterest = None
-      )
-    ),
-    LatePaymentPenalty(
-      `type` = PenaltyTypeEnum.Financial,
-      id = "123456789",
-      reason = PaymentPenaltyReasonEnum.VAT_NOT_PAID_WITHIN_15_DAYS,
-      dateCreated = sampleDate1,
-      status = PointStatusEnum.Estimated,
-      appealStatus = None,
-      period = PaymentPeriod(
-        sampleDate1,
-        sampleDate1.plusMonths(1),
-        sampleDate1.plusMonths(1).plusDays(7),
-        PaymentStatusEnum.Due
-      ),
-      communications = Seq(
-        Communication(
-          `type` = CommunicationTypeEnum.letter,
-          dateSent = sampleDate1,
-          documentId = "123456789"
-        )
-      ),
-      financial = Financial(
-        amountDue = 400.00,
-        outstandingAmountDue = 200.00,
-        dueDate = sampleDate1,
-        estimatedInterest = None,
-        crystalizedInterest = None
-      )
-    )))
-
-  val latePaymentPenaltyWithAppeal: Option[Seq[LatePaymentPenalty]] =
-    Some(Seq(paidLatePaymentPenalty.get.head.copy(appealStatus = Some(models.point.AppealStatusEnum.Under_Review))))
-
   val latePaymentPenaltyWithAppealV2 = Some(
-    models.v3.lpp.LatePaymentPenalty(
+    lpp.LatePaymentPenalty(
     details = Seq(LPPDetails(principalChargeReference = "123456789",
       penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
       penaltyChargeCreationDate = sampleDate1V2,
@@ -684,7 +373,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       communicationsDate = sampleDate1V2,
       penaltyChargeDueDate = sampleDate1V2,
       appealInformation = Some(Seq(AppealInformationType(
-        appealStatus = Some(models.v3.appealInfo.AppealStatusEnum.Under_Appeal),
+        appealStatus = Some(appealInfo.AppealStatusEnum.Under_Appeal),
         appealLevel = Some(AppealLevelEnum.HMRC)))),
       principalChargeBillingFrom = sampleDate1V2,
       principalChargeBillingTo = sampleDate1V2.plusMonths(1),
@@ -697,136 +386,16 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       ))))
   )
 
-  val etmpPayloadWithPaidLPP: ETMPPayload = etmpPayloadWithAddedPoints.copy(
-    latePaymentPenalties = paidLatePaymentPenalty
-  )
-
   val getPenaltiesDataPayloadWithPaidLPP: GetPenaltyDetails = getPenaltyDetailsPayloadWithAddedPoint.copy(
     latePaymentPenalty = Some(paidLatePaymentPenaltyV2),
-  )
-
-  val etmpPayloadWithLPPAndAdditionalPenalty: ETMPPayload = etmpPayloadWithAddedPoints.copy(
-    latePaymentPenalties = latePaymentPenaltyWithAdditionalPenalty
   )
 
   val getPenaltiesDataPayloadWithLPPAndAdditionalPenalty: GetPenaltyDetails = getPenaltyDetailsPayloadWithAddedPoint.copy(
     latePaymentPenalty = Some(latePaymentPenaltyWithAdditionalPenaltyV2)
   )
 
-  val etmpPayloadWithLPPVATUnpaid: ETMPPayload = etmpPayloadWithAddedPoints.copy(
-    latePaymentPenalties = latePaymentPenaltyVATUnpaid
-  )
-
   val getPenaltiesDataPayloadWithLPPVATUnpaid: GetPenaltyDetails = getPenaltyDetailsPayloadWithAddedPoint.copy(
     latePaymentPenalty = Some(latePaymentPenaltyVATUnpaidV2)
-  )
-
-  val etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue: ETMPPayload = etmpPayloadWithAddedPoints.copy(
-    vatOverview = Some(
-      Seq(
-        OverviewElement(
-          `type` = AmountTypeEnum.VAT,
-          amount = 100.00,
-          estimatedInterest = Some(12.34),
-          crystalizedInterest = Some(34.21)
-        ),
-        OverviewElement(
-          `type` = AmountTypeEnum.Central_Assessment,
-          amount = 21.40,
-          estimatedInterest = Some(12.34),
-          crystalizedInterest = Some(34.21)
-        )
-      )
-    ),
-    latePaymentPenalties = latePaymentPenaltyVATUnpaid,
-    penaltyPoints = Seq(
-      PenaltyPoint(
-        `type` = PenaltyTypeEnum.Financial,
-        id = "1236",
-        number = "3",
-        appealStatus = None,
-        dateCreated = sampleDate1,
-        dateExpired = Some(sampleDate1),
-        status = PointStatusEnum.Due,
-        reason = None,
-        period = Some(
-          Seq(PenaltyPeriod(
-            startDate = sampleDate1,
-            endDate = sampleDate1,
-            submission = Submission(
-              dueDate = sampleDate1,
-              submittedDate = Some(sampleDate1),
-              status = SubmissionStatusEnum.Submitted
-            )
-          )
-          )),
-        communications = Seq.empty,
-        financial = Some(
-          Financial(
-            amountDue = 200.00,
-            outstandingAmountDue = 200.00,
-            dueDate = sampleDate1,
-            estimatedInterest = Some(12.34),
-            crystalizedInterest = Some(34.21)
-          )
-        )
-      ),
-      PenaltyPoint(
-        `type` = PenaltyTypeEnum.Financial,
-        id = "1235",
-        number = "2",
-        appealStatus = None,
-        dateCreated = sampleDate1,
-        dateExpired = Some(sampleDate1),
-        status = PointStatusEnum.Due,
-        reason = None,
-        period = Some(
-          Seq(PenaltyPeriod(
-            startDate = sampleDate1,
-            endDate = sampleDate1,
-            submission = Submission(
-              dueDate = sampleDate1,
-              submittedDate = Some(sampleDate1),
-              status = SubmissionStatusEnum.Submitted
-            )
-          )
-          )),
-        communications = Seq.empty,
-        financial = Some(
-          Financial(
-            amountDue = 200.00,
-            outstandingAmountDue = 200.00,
-            dueDate = sampleDate1,
-            estimatedInterest = None,
-            crystalizedInterest = None
-          )
-        )
-      ),
-      PenaltyPoint(
-        `type` = PenaltyTypeEnum.Point,
-        id = "1234",
-        number = "1",
-        appealStatus = None,
-        dateCreated = sampleDate1,
-        dateExpired = Some(sampleDate1),
-        status = PointStatusEnum.Active,
-        reason = None,
-        period = Some(
-          Seq(PenaltyPeriod(
-            startDate = sampleDate1,
-            endDate = sampleDate1,
-            submission = Submission(
-              dueDate = sampleDate1,
-              submittedDate = Some(sampleDate1),
-              status = SubmissionStatusEnum.Submitted
-            )
-          )
-          )),
-        communications = Seq.empty,
-        financial = None
-      )
-    ),
-    otherPenalties = Some(true)
   )
 
   val getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue: GetPenaltyDetails = getPenaltyDetailsPayloadWithAddedPoint.copy(
@@ -863,7 +432,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
             taxPeriodDueDate = Some(sampleDate1V2),
             returnReceiptDate = Some(sampleDate1V2),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(models.v3.appealInfo.AppealStatusEnum.Unappealable), None))),
+          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
           chargeOutstandingAmount = Some(BigDecimal(100)),
           chargeDueDate = None
@@ -884,7 +453,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
             taxPeriodDueDate = Some(sampleDate1V2),
             returnReceiptDate = Some(sampleDate1V2),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(models.v3.appealInfo.AppealStatusEnum.Unappealable), None))),
+          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
           chargeOutstandingAmount = Some(BigDecimal(100)),
           chargeDueDate = None
@@ -895,37 +464,11 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
      latePaymentPenalty = Some(latePaymentPenaltyVATUnpaidV2)
   )
 
-  val etmpPayloadWithEstimates: ETMPPayload = etmpPayloadWithAddedPoints.copy(
-    vatOverview = None,
-    latePaymentPenalties = latePaymentPenaltiesWithEstimate
-  )
-
-  val etmpPayloadWithLPPAppeal: ETMPPayload = etmpPayloadWithPaidLPP.copy(
-    latePaymentPenalties = latePaymentPenaltyWithAppeal
-  )
-
   val getPenaltyPayloadWithLPPAppeal: GetPenaltyDetails = getPenaltiesDataPayloadWithPaidLPP.copy(
     latePaymentPenalty = latePaymentPenaltyWithAppealV2
   )
 
-  val lppFinancialData: Financial = Financial(
-    amountDue = 400,
-    outstandingAmountDue = 400,
-    LocalDateTime.now,
-    estimatedInterest = Some(15.00),
-    crystalizedInterest = Some(6.00)
-  )
-
-  val unpaidLatePaymentPenalty: Option[Seq[LatePaymentPenalty]] = Some(Seq(paidLatePaymentPenalty.get.head.copy(status = PointStatusEnum.Due,
-    period = PaymentPeriod(
-      sampleDate1,
-      sampleDate1.plusMonths(1),
-      sampleDate1.plusMonths(2).plusDays(7),
-      PaymentStatusEnum.Due
-    ),
-    financial = lppFinancialData)))
-
-  val unpaidLatePaymentPenaltyV2: models.v3.lpp.LatePaymentPenalty = models.v3.lpp.LatePaymentPenalty(
+  val unpaidLatePaymentPenaltyV2: LatePaymentPenalty = lpp.LatePaymentPenalty(
     details = Seq(LPPDetails(principalChargeReference = "123456789",
       penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
       penaltyChargeCreationDate = sampleDate1V2,
@@ -952,48 +495,6 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
         outstandingAmount = Some(99)
       )))
-  )
-
-  val etmpPayloadWithMultiplePenaltyPeriodInLSP: ETMPPayload = ETMPPayload(
-    pointsTotal = 2, lateSubmissions = 1, adjustmentPointsTotal = 1, fixedPenaltyAmount = 0, penaltyAmountsTotal = 0, penaltyPointsThreshold = 4, otherPenalties = Some(false), vatOverview = Some(Seq.empty), penaltyPoints = Seq(
-      PenaltyPoint(
-        `type` = PenaltyTypeEnum.Point,
-        id = "1234567890",
-        number = "1",
-        dateCreated = sampleDate1,
-        dateExpired = Some(sampleDate1.plusMonths(1).plusYears(2)),
-        status = PointStatusEnum.Active,
-        reason = None,
-        period = Some(Seq(PenaltyPeriod(
-          startDate = sampleDate1,
-          endDate = sampleDate1.plusDays(14),
-          submission = Submission(
-            dueDate = sampleDate1.plusMonths(4).plusDays(7),
-            submittedDate = Some(sampleDate1.plusMonths(4).plusDays(12)),
-            status = SubmissionStatusEnum.Submitted
-          )
-        ),
-          PenaltyPeriod(
-            startDate = sampleDate1.plusDays(16),
-            endDate = sampleDate1.plusDays(31),
-            submission = Submission(
-              dueDate = sampleDate1.plusMonths(4).plusDays(23),
-              submittedDate = Some(sampleDate1.plusMonths(4).plusDays(25)),
-              status = SubmissionStatusEnum.Submitted
-            )
-          )
-        )),
-        communications = Seq.empty,
-        financial = Some(Financial(
-          amountDue = 0,
-          outstandingAmountDue = 0,
-          dueDate = sampleDate1,
-          estimatedInterest = Some(21.00),
-          crystalizedInterest = Some(32.00)
-        ))
-      )
-    ),
-    latePaymentPenalties = Some(Seq.empty[LatePaymentPenalty])
   )
 
   val getPenaltiesDetailsPayloadWithMultiplePenaltyPeriodInLSP: GetPenaltyDetails = GetPenaltyDetails(
@@ -1046,6 +547,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
 
   "GET /" should {
     "return 200 (OK) when the user is authorised" in {
+      getPenaltyDetailsStub
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
     }
@@ -1128,7 +630,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
 
     //TODO Changes are being made to overview section based on API restrictions
     "return 200 (OK) and render the view when there is outstanding payments" ignore {
-      returnLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue)
+//      returnLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue)
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -1146,7 +648,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
 
     //TODO Changes are being made to overview section based on API restrictions
     "return 200 (OK) and render the view when there is outstanding estimate payments" ignore {
-      returnLSPDataStub(etmpPayloadWithEstimates)
+//      returnLSPDataStub(etmpPayloadWithEstimates)
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))

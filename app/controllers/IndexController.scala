@@ -16,107 +16,69 @@
 
 package controllers
 
+import config.featureSwitches.FeatureSwitching
 import config.{AppConfig, ErrorHandler}
-import config.featureSwitches.{FeatureSwitching, UseAPI1812Model}
 import controllers.predicates.AuthPredicate
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.PenaltiesService
-import services.v2.{PenaltiesService => PenaltiesServiceV2}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
 import utils.SessionKeys._
 import utils.{CurrencyFormatter, EnrolmentKeys}
 import viewmodels.{IndexPageHelper, SummaryCardHelper}
-import viewmodels.v2.{IndexPageHelper => IndexPageHelperv2, SummaryCardHelper => SummaryCardHelperv2}
 import views.html.IndexView
-import views.html.v2.{IndexView => IndexViewv2}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject()(view: IndexView,
-                                view2: IndexViewv2,
                                 penaltiesService: PenaltiesService,
-                                penaltiesServiceV2: PenaltiesServiceV2,
                                 cardHelper: SummaryCardHelper,
-                                cardHelper2: SummaryCardHelperv2,
-                                pageHelper: IndexPageHelper,
-                                pageHelperv2: IndexPageHelperv2)(implicit ec: ExecutionContext,
-                                                                 val appConfig: AppConfig,
-                                                                 authorise: AuthPredicate,
-                                                                 errorHandler: ErrorHandler,
-                                                                 controllerComponents: MessagesControllerComponents)
+                                pageHelper: IndexPageHelper)(implicit ec: ExecutionContext,
+                                                             val appConfig: AppConfig,
+                                                             authorise: AuthPredicate,
+                                                             errorHandler: ErrorHandler,
+                                                             controllerComponents: MessagesControllerComponents)
   extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter with FeatureSwitching {
 
   //scalastyle:off
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
-    if (!isEnabled(UseAPI1812Model))
-      for {
-        etmpData <- penaltiesService.getETMPDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn))
-        contentToDisplayAboveCards = pageHelper.getContentBasedOnPointsFromModel(etmpData)
-        contentLPPToDisplayAboveCards = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(etmpData)
-        whatYouOweBreakdown = pageHelper.getWhatYouOweBreakdown(etmpData)
-        lspSummaryCards = cardHelper.populateLateSubmissionPenaltyCard(etmpData.penaltyPoints, etmpData.penaltyPointsThreshold, etmpData.pointsTotal)
-        lppSummaryCards = cardHelper.populateLatePaymentPenaltyCard(etmpData.latePaymentPenalties)
-        isAnyUnpaidLSPAndNotSubmittedReturn = penaltiesService.isAnyLSPUnpaidAndSubmissionIsDue(etmpData.penaltyPoints)
-        isAnyUnpaidLSP = penaltiesService.isAnyLSPUnpaid(etmpData.penaltyPoints)
-        latestLSPCreation = penaltiesService.getLatestLSPCreationDate(etmpData)
-      } yield {
-        lazy val result = Ok(view(contentToDisplayAboveCards,
-          contentLPPToDisplayAboveCards,
-          lspSummaryCards,
-          lppSummaryCards,
-          currencyFormatAsNonHTMLString(etmpData.penaltyAmountsTotal),
-          isAnyUnpaidLSP,
-          isAnyUnpaidLSPAndNotSubmittedReturn,
-          whatYouOweBreakdown))
-        if (latestLSPCreation.isDefined) {
-          result
-            .removingFromSession(allKeysExcludingAgentVRN: _*)
-            .addingToSession(latestLSPCreationDate -> latestLSPCreation.get.toString,
-              pointsThreshold -> etmpData.penaltyPointsThreshold.toString)
-        } else {
-          result
-            .removingFromSession(allKeysExcludingAgentVRN: _*)
-        }
-      } else {
-      penaltiesServiceV2.getPenaltyDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn)).map {
-        _.fold(
-          errors => {
-            logger.error(s"[OtherReasonController][getPenaltyDetailsFromNewAPI] - Received error with status ${errors.status} and body ${errors.body} rendering ISE.")
-            errorHandler.showInternalServerError
-          }, penaltyData => {
-            val contentToDisplayAboveCards = pageHelperv2.getContentBasedOnPointsFromModel(penaltyData)
-            val contentLPPToDisplayAboveCards = pageHelperv2.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyData)
-            val whatYouOweBreakdown = pageHelperv2.getWhatYouOweBreakdown(penaltyData)
-            val lspSummaryCards = cardHelper2.populateLateSubmissionPenaltyCard(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty),
-              penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0),
-              penaltyData.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0))
-            val lppSummaryCards = cardHelper2.populateLatePaymentPenaltyCard(penaltyData.latePaymentPenalty.map(_.details))
-            val isAnyUnpaidLSPAndNotSubmittedReturn = penaltiesServiceV2.isAnyLSPUnpaidAndSubmissionIsDue(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
-            val isAnyUnpaidLSP = penaltiesServiceV2.isAnyLSPUnpaid(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
-            val latestLSPCreation = penaltiesServiceV2.getLatestLSPCreationDate(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
-            lazy val result = Ok(view2(contentToDisplayAboveCards,
-              contentLPPToDisplayAboveCards,
-              lspSummaryCards,
-              lppSummaryCards,
-              currencyFormatAsNonHTMLString(penaltyData.totalisations.flatMap(_.LSPTotalValue).getOrElse(0)),
-              isAnyUnpaidLSP,
-              isAnyUnpaidLSPAndNotSubmittedReturn,
-              whatYouOweBreakdown))
-            if (latestLSPCreation.isDefined) {
-              result
-                .removingFromSession(allKeysExcludingAgentVRN: _*)
-                .addingToSession(latestLSPCreationDate -> latestLSPCreation.get.toString,
-                  pointsThreshold -> penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0).toString)
-            } else {
-              result
-                .removingFromSession(allKeysExcludingAgentVRN: _*)
-            }
+    penaltiesService.getPenaltyDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn)).map {
+      _.fold(
+        errors => {
+          logger.error(s"[IndexController][onPageLoad] - Received error with status ${errors.status} and body ${errors.body} rendering ISE.")
+          errorHandler.showInternalServerError
+        }, penaltyData => {
+          val contentToDisplayAboveCards = pageHelper.getContentBasedOnPointsFromModel(penaltyData)
+          val contentLPPToDisplayAboveCards = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyData)
+          val whatYouOweBreakdown = pageHelper.getWhatYouOweBreakdown(penaltyData)
+          val lspSummaryCards = cardHelper.populateLateSubmissionPenaltyCard(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty),
+            penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0),
+            penaltyData.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0))
+          val lppSummaryCards = cardHelper.populateLatePaymentPenaltyCard(penaltyData.latePaymentPenalty.map(_.details))
+          val isAnyUnpaidLSPAndNotSubmittedReturn = penaltiesService.isAnyLSPUnpaidAndSubmissionIsDue(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
+          val isAnyUnpaidLSP = penaltiesService.isAnyLSPUnpaid(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
+          val latestLSPCreation = penaltiesService.getLatestLSPCreationDate(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
+          lazy val result = Ok(view(contentToDisplayAboveCards,
+            contentLPPToDisplayAboveCards,
+            lspSummaryCards,
+            lppSummaryCards,
+            currencyFormatAsNonHTMLString(penaltyData.totalisations.flatMap(_.LSPTotalValue).getOrElse(0)),
+            isAnyUnpaidLSP,
+            isAnyUnpaidLSPAndNotSubmittedReturn,
+            whatYouOweBreakdown))
+          if (latestLSPCreation.isDefined) {
+            result
+              .removingFromSession(allKeysExcludingAgentVRN: _*)
+              .addingToSession(latestLSPCreationDate -> latestLSPCreation.get.toString,
+                pointsThreshold -> penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0).toString)
+          } else {
+            result
+              .removingFromSession(allKeysExcludingAgentVRN: _*)
           }
-        )
-      }
+        }
+      )
     }
   }
 

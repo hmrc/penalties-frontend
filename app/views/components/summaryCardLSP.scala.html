@@ -14,10 +14,10 @@
  * limitations under the License.
  *@
 
+@import models.appealInfo.AppealStatusEnum
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import viewmodels.LateSubmissionPenaltySummaryCard
-@import models.point.AppealStatusEnum
 @import utils.CurrencyFormatter
+@import viewmodels.LateSubmissionPenaltySummaryCard
 
 @this(
         govukSummaryList: GovukSummaryList,
@@ -33,13 +33,13 @@
     <header class="app-summary-card__header">
         <h3 class="app-summary-card__title">
             @{
-                if(summaryCard.isFinancialPoint && summaryCard.penaltyPoint.nonEmpty) {
-                    messages("summaryCard.header.financial", summaryCard.penaltyPoint, CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(summaryCard.amountDue))
-                } else if(summaryCard.isFinancialPoint && summaryCard.penaltyPoint.isEmpty) {
-                    messages("summaryCard.header.financialNoNumber", CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(summaryCard.amountDue))
+                if(summaryCard.isThresholdPoint) {
+                    messages("summaryCard.header.financial", summaryCard.penaltyPoint, CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(summaryCard.totalPenaltyAmount))
+                } else if(summaryCard.isFinancialPoint) {
+                    messages("summaryCard.header.financialNoNumber", CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(summaryCard.totalPenaltyAmount))
                 } else if(summaryCard.isAddedPoint) {
                     messages("summaryCard.header.addedPoint", summaryCard.penaltyPoint)
-                } else if(summaryCard.isAdjustedPoint || summaryCard.appealStatus.contains(AppealStatusEnum.Accepted) || summaryCard.appealStatus.contains(AppealStatusEnum.Accepted_By_Tribunal)) {
+                } else if(summaryCard.isAdjustedPoint || summaryCard.appealStatus.contains(AppealStatusEnum.Upheld)) {
                     messages("summaryCard.header.adjustedPoint")
                 } else {
                     messages("summaryCard.header", summaryCard.penaltyPoint)
@@ -52,7 +52,9 @@
     </header>
     <div class="app-summary-card__body">
         @govukSummaryList(SummaryList(summaryCard.cardRows))
-        <p class="govuk-body">@summaryCard.multiplePenaltyPeriod</p>
+        @if(summaryCard.multiplePenaltyPeriod.isDefined) {
+          <p class="govuk-body">@summaryCard.multiplePenaltyPeriod</p>
+        }
         @if(summaryCard.isAdjustedPoint) {
             <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-3">
             <p class="govuk-body">
@@ -71,8 +73,8 @@
                 if(!summaryCard.isAppealedPoint) {
                     if(summaryCard.isAddedPoint) {
                             {messages("summaryCard.adjustedPoint.cannotAppeal")}
-                    } else if(summaryCard.penaltyPoint.isEmpty && !summaryCard.isAdjustedPoint) {
-                            {if(!summaryCard.isReturnSubmitted) {
+                    } else if(summaryCard.isFinancialPoint && !summaryCard.isAdjustedPoint) {
+                            {if(!summaryCard.isReturnSubmitted || summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
                                     <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}>
                                     {messages("summaryCard.appealCheck")}
                                     </a>
@@ -82,7 +84,7 @@
                                     </a>
                             }}
                     } else if(!summaryCard.isAdjustedPoint) {
-                        if(!summaryCard.isReturnSubmitted) {
+                        if(!summaryCard.isReturnSubmitted || summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
                                 <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}>
                                 {messages("summaryCard.appealCheck")}
                                 </a>
