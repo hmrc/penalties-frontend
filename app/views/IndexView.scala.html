@@ -19,12 +19,12 @@
 @import viewmodels.LatePaymentPenaltySummaryCard
 
 @this(
-    layout: Layout,
-    link: components.link,
-    summaryCardLSP: components.summaryCardLSP,
-    summaryCardLPP: components.summaryCardLPP,
-    button: components.button,
-    details: GovukDetails
+        layout: Layout,
+        link: components.link,
+        summaryCardLSP: components.summaryCardLSP,
+        summaryCardLPP: components.summaryCardLPP,
+        button: components.button,
+        details: GovukDetails
 )
 
 @(
@@ -38,80 +38,93 @@
         whatYouOweContent: Option[Html] = None)(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
 
 @unableToPayTodayContent = {
-    <p class="govuk-body">@getMessage("whatIsOwed.details.body.1") @link("#", "whatIsOwed.details.link.1", isExternal = true)@getMessage("whatIsOwed.details.body.2")</p>
+  <p class="govuk-body">@getMessage("whatIsOwed.details.body.1") @link("#", "whatIsOwed.details.link.1", isExternal = true)@getMessage("whatIsOwed.details.body.2")</p>
 }
 
 @layout(pageTitle = messages("index.headingAndTitle"),
-    isUserAgent = user.isAgent,
-    isPageFullWidth = false,
-    isCustomLayout = true) {
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">@{
-                messages("index.headingAndTitle")
-            }</h1>
+  isUserAgent = user.isAgent,
+  isPageFullWidth = false,
+  isCustomLayout = true) {
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">@{
+        messages("index.headingAndTitle")
+      }</h1>
 
-            @whatYouOweContent.map { breakdownContent =>
-                <div id="what-is-owed">
-                    <p class="govuk-body">@getMessage("whatIsOwed.p1")</p>
-                    @breakdownContent
-                    @if(user.isAgent) {
-                        @link("#", "whatIsOwed.button.checkAmounts", button = true, classes = "govuk-button")
-                    } else {
-                        @link("#", "whatIsOwed.button.checkAndPay", button = true, classes = "govuk-button")
-                    }
+      @whatYouOweContent.map { breakdownContent =>
+        <div id="what-is-owed">
+          <p class="govuk-body">@getMessage("whatIsOwed.p1")</p>
+          @breakdownContent
+          @if(user.isAgent) {
+            @link("#", "whatIsOwed.button.checkAmounts", button = true, classes = "govuk-button")
+          } else {
+            @link("#", "whatIsOwed.button.checkAndPay", button = true, classes = "govuk-button")
+          }
 
-                    @if(!user.isAgent) {
-                        <h2 class="govuk-heading-s">@messages("whatIsOwed.details.heading")</h2>
-                        @unableToPayTodayContent
-                    } else {
-                        @details(Details(
-                            summary = Text(getMessage("whatIsOwed.details.heading")),
-                            content = HtmlContent(unableToPayTodayContent)
-                        ))
-                    }
-                </div>
-                <h2 class="govuk-heading-l">@messages("whatIsOwed.penaltyAndAppealsHeading")</h2>
-            }
+          @if(!user.isAgent) {
+            <h2 class="govuk-heading-s">@messages("whatIsOwed.details.heading")</h2>
+            @unableToPayTodayContent
+          } else {
+            @details(Details(
+              summary = Text(getMessage("whatIsOwed.details.heading")),
+              content = HtmlContent(unableToPayTodayContent)
+            ))
+          }
         </div>
+        <h2 class="govuk-heading-l">@messages("whatIsOwed.penaltyAndAppealsHeading")</h2>
+      }
     </div>
+  </div>
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-three-quarters">
-            <div class="govuk-tabs" data-module="govuk-tabs">
-                <h2 class="govuk-tabs__title">
-                    @messages("index.contents")
-                </h2>
-                <ul class="govuk-tabs__list">
-                    <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
-                        <a class="govuk-tabs__tab" href="#late-submission-penalties">
-                        @messages("index.subheading.lsp")
-                        </a>
-                    </li>
-                    <li class="govuk-tabs__list-item">
-                        <a class="govuk-tabs__tab" href="#late-payment-penalties">
-                        @messages("index.subheading.lpp")
-                        </a>
-                    </li>
-                </ul>
-                <div class="govuk-tabs__panel" id="late-submission-penalties">
-                    <h2 class="govuk-heading-m">@{
-                        messages("index.subheading.lsp")
-                    }</h2>
-                    @contentToDisplayBeforeSummaryCards
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-three-quarters">
+      <div class="govuk-tabs" data-module="govuk-tabs">
+        <h2 class="govuk-tabs__title">
+        @messages("index.contents")
+        </h2>
+        <ul class="govuk-tabs__list">
+          <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab" href="#late-submission-penalties">
+            @messages("index.subheading.lsp")
+            </a>
+          </li>
+          <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab" href="#late-payment-penalties">
+            @messages("index.subheading.lpp")
+            </a>
+          </li>
+        </ul>
+        <div class="govuk-tabs__panel" id="late-submission-penalties">
+          <h2 class="govuk-heading-m">@{
+            messages("index.subheading.lsp")
+          }</h2>
+          @contentToDisplayBeforeSummaryCards
 
-                    @lspCards.map { lspCard =>
-                        @summaryCardLSP(lspCard)
-                    }
-                </div>
-                <div class="govuk-tabs__panel" id="late-payment-penalties">
-                    <h2 class="govuk-heading-m">@{
-                        messages("index.subheading.lpp")
-                    }</h2>
-                    @contentLPPToDisplayBeforeSummaryCards
-                    @lppCards.map(_.map(lppCard => summaryCardLPP(lppCard)))
-                </div>
-            </div>
+          @lspCards.map { lspCard =>
+            @summaryCardLSP(lspCard)
+          }
         </div>
+        <div class="govuk-tabs__panel" id="late-payment-penalties">
+          <h2 class="govuk-heading-m">@{
+            messages("index.subheading.lpp")
+          }</h2>
+          @contentLPPToDisplayBeforeSummaryCards
+          @lppCards.map(_.map(lppCard => summaryCardLPP(lppCard)))
+        </div>
+      </div>
     </div>
+  </div>
+
+  @if(lspCards.isEmpty && lppCards.exists(_.nonEmpty)) {
+    <script>
+            document.addEventListener("DOMContentLoaded", function () {
+              const tabs = document.querySelectorAll('[data-module="govuk-tabs"]');
+              const tabsLib = new window.GOVUKFrontend.Tabs(tabs[0]);
+              window.GOVUKFrontend.Tabs.prototype.unhighlightTab(tabsLib.$tabs[0]);
+              window.GOVUKFrontend.Tabs.prototype.highlightTab(tabsLib.$tabs[1]);
+              document.getElementById('late-payment-penalties').classList.remove('govuk-tabs__panel--hidden');
+              document.getElementById('late-submission-penalties').classList.add('govuk-tabs__panel--hidden');
+            })
+    </script>
+  }
 }
