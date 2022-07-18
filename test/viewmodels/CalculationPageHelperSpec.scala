@@ -127,15 +127,15 @@ class CalculationPageHelperSpec extends SpecBase {
       val rows = calculationPageHelper.getCalculationRowForLPP(lppWith15DayAmount)
       rows.isDefined shouldBe true
       rows.get.size shouldBe 1
-      rows.get.head shouldBe "2% of £99.99 (VAT amount unpaid on 14 November 2069)"
+      rows.get.head shouldBe "2% of £99.99 (the unpaid VAT 15 days after the due date)"
     }
 
     "return 2 rows when the user has an amount after 15 and 30 days" in {
       val rows = calculationPageHelper.getCalculationRowForLPP(lppWith15and30DayAmount)
       rows.isDefined shouldBe true
       rows.get.size shouldBe 2
-      rows.get.head shouldBe "2% of £99.99 (VAT amount unpaid on 14 November 2069)"
-      rows.get(1) shouldBe "2% of £99.99 (VAT amount unpaid on 29 November 2069)"
+      rows.get.head shouldBe "2% of £99.99 (the unpaid VAT 15 days after the due date) = £2.00"
+      rows.get(1) shouldBe "2% of £99.99 (the unpaid VAT 30 days after the due date) = £2.00"
     }
 
     "return None when the user does not have either" in {

@@ -30,18 +30,17 @@ class CalculationPageHelper @Inject()() extends ViewUtils with ImplicitDateForma
       case (Some(amountOnDay15), Some(amountOnDay31)) =>
         val amountOnDay15ParsedAsString = CurrencyFormatter.parseBigDecimalToFriendlyValue(amountOnDay15)
         val amountOnDay31ParsedAsString = CurrencyFormatter.parseBigDecimalToFriendlyValue(amountOnDay31)
-        val firstPaymentDetail = messages("calculation.key.2.paymentDetail", dateToString(lpp.penaltyChargeDueDate.plusDays(15)))
-        val firstCalculation = messages("calculation.key.2.text",
-          s"${lpp.LPP1LRPercentage.get}", amountOnDay15ParsedAsString, firstPaymentDetail)
-        val secondPaymentDetail = messages("calculation.key.2.paymentDetail", dateToString(lpp.penaltyChargeDueDate.plusDays(30)))
-        val secondCalculation = messages("calculation.key.2.text",
-          s"${lpp.LPP1HRPercentage.get}", amountOnDay31ParsedAsString, secondPaymentDetail)
+        val penaltyAmountOnDay15 = CurrencyFormatter.parseBigDecimalToFriendlyValue(amountOnDay15 * 0.02)
+        val penaltyAmountOnDay31 = CurrencyFormatter.parseBigDecimalToFriendlyValue(amountOnDay31 * 0.02)
+        val firstCalculation = messages("calculation.key.2.text.30.days",
+          s"${lpp.LPP1LRPercentage.get}", amountOnDay15ParsedAsString, messages("calculation.lpp1.15days"), penaltyAmountOnDay15)
+        val secondCalculation = messages("calculation.key.2.text.30.days",
+          s"${lpp.LPP1HRPercentage.get}", amountOnDay31ParsedAsString, messages("calculation.lpp1.30days"), penaltyAmountOnDay31)
         Some(Seq(firstCalculation, secondCalculation))
       case (Some(amountOnDay15), None) =>
         val amountOnDay15ParsedAsString = CurrencyFormatter.parseBigDecimalToFriendlyValue(amountOnDay15)
-        val paymentDetail = messages("calculation.key.2.paymentDetail", dateToString(lpp.penaltyChargeDueDate.plusDays(15)))
         val calculation = messages("calculation.key.2.text",
-          s"${lpp.LPP1LRPercentage.get}", amountOnDay15ParsedAsString, paymentDetail)
+          s"${lpp.LPP1LRPercentage.get}", amountOnDay15ParsedAsString, messages("calculation.lpp1.15days"))
         Some(Seq(calculation))
       case _ =>
         None

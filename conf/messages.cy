@@ -201,19 +201,26 @@ whatIsOwed.allPenalties.interest = llog o £{0} ar gosbau
 calculation.headingAndTitle.lpp = Cosb am dalu’n hwyr
 calculation.caption = {0} to {1}
 calculation.heading.lppAndAdditional.hiddenText = The period dates are
+calculation.p.1.15.days = This penalty applies if VAT has not been paid for 15 days.
+calculation.p.1.30.days = This penalty applies if VAT has not been paid for 30 days.
 calculation.p.1.additional = The additional penalty is charged from 31 days after the payment due date, until the total is paid.
+calculation.singular.part.text = The calculation we use is:
+calculation.multiple.parts.text = It is made up of 2 parts:
+calculation.key.dueDate = Due date
 calculation.key.1 = Penalty amount
 calculation.key.1.estimate = Penalty amount (estimate)
 calculation.value.amount = £{0}
 calculation.key = Calculation
 calculation.key.2.additional = Number of days since day 31
 calculation.key.2.text = {0}% of £{1} ({2})
+calculation.key.2.text.30.days = {0}% of £{1} ({2}) = £{3}
 calculation.key.2.additional.text = {0} days
 calculation.key.2.paymentDetail = VAT amount unpaid on {0}
 calculation.key.3 = Amount received
 calculation.key.3.additional = Additional penalty rate
 calculation.key.3.additional.text = {0}%
 calculation.key.4 = Amount left to pay
+calculation.key.4.lpp1 = Left to pay
 calculation.key.4.additional.text = VAT amount unpaid × 4% × number of days since day 31 ÷ 365
 calculation.h2.additional = Estimates
 calculation.p.2.additional = Penalties and interest will show as estimates if HMRC does not have enough information to calculate the final amounts.
@@ -221,6 +228,8 @@ calculation.returnLink = Return to VAT penalties and appeals
 calculation.estimate.footerNote.billPayment = Paying part of your VAT bill will reduce further penalties.
 calculation.estimate.footerNote.warning = This penalty will rise to £{0} (a further 2% of the unpaid VAT) if you do not make a VAT payment by {1}.
 calculation.estimate.footerNote.text = Penalties and interest will show as estimates if HMRC has not been given enough information to calculate the final amounts.
+calculation.lpp1.15days = the unpaid VAT 15 days after the due date
+calculation.lpp1.30days = the unpaid VAT 30 days after the due date
 
 # Timeout messages
 # --------------------------

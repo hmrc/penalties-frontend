@@ -42,6 +42,12 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
     val warning = "#main-content div .govuk-warning-text"
 
     val link = "#main-content a"
+
+    val howPenaltyIsApplied = "#how-penalty-is-applied"
+
+    val fifteenDayCalculation = "#15-day-calculation"
+
+    val thirtyDayCalculation = "#30-day-calculation"
   }
 
   "CalculationView" should {
@@ -71,7 +77,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.HeaderTextNotVisible -> periodHiddenText,
         Selector.h1 -> headingLPP,
         Selector.govukBody(1) -> p1Additional,
-        Selector.summaryListRowKey(1) -> th1Additional,
+        Selector.summaryListRowKey(1) -> th2LPPAccruing,
         Selector.summaryListRowValue(1) -> "£50.50",
         Selector.summaryListRowKey(2) -> th2Additional,
         Selector.summaryListRowValue(2) -> "7 days",
@@ -117,7 +123,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.HeaderTextNotVisible -> periodHiddenText,
         Selector.h1 -> headingLPP,
         Selector.govukBody(1) -> p1Additional,
-        Selector.summaryListRowKey(1) -> th1LPP,
+        Selector.summaryListRowKey(1) -> th2LPP,
         Selector.summaryListRowValue(1) -> "£50.50",
         Selector.summaryListRowKey(2) -> th2Additional,
         Selector.summaryListRowValue(2) -> "7 days",
@@ -138,22 +144,23 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
     "if it is not an additional penalty" must {
       def applyView(calculationRow: Seq[String], isMultipleAmounts: Boolean): HtmlFormat.Appendable = {
         calculationPage.apply(
-          amountReceived = "100",
-          penaltyAmount = "400",
-          amountLeftToPay = "300",
+          amountReceived = "100.00",
+          penaltyAmount = "400.00",
+          amountLeftToPay = "300.00",
           calculationRowSeq = calculationRow,
           isCalculationRowMultipleAmounts = isMultipleAmounts,
           isPenaltyEstimate = false,
           "1 October 2022",
           "31 December 2022",
+          "7 February 2022",
           warningPenaltyAmount = "",
           warningDate = "")(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
       implicit val docWithOnlyOneCalculation: Document =
-        asDocument(applyView(Seq("2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)"), isMultipleAmounts = false))
-      implicit val docWith2Calculations: Document = asDocument(applyView(Seq("2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)",
-        "2% of £10,000.00 (Central assessment amount unpaid on 6 June 2025"), isMultipleAmounts = true))
+        asDocument(applyView(Seq("2% of £3,850.00 (the unpaid VAT 15 days after the due date)"), isMultipleAmounts = false))
+      implicit val docWith2Calculations: Document = asDocument(applyView(Seq("2% of £3,850.00 (the unpaid VAT 15 days after the due date) = £77.00",
+        "2% of £3,850.00 (the unpaid VAT 30 days after the due date) = £77.00"), isMultipleAmounts = true))
 
 
       val expectedContent = Seq(
@@ -164,14 +171,14 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.periodHiddenText -> periodHiddenText,
         Selector.periodWithText -> periodWithText,
         Selector.h1 -> headingLPP,
-        Selector.summaryListRowKey(1) -> th1LPP,
-        Selector.summaryListRowValue(1) -> "£400",
-        Selector.summaryListRowKey(2) -> th2LPP,
-        Selector.summaryListRowValue(2) -> "2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)",
-        Selector.summaryListRowKey(3) -> th3LPP,
-        Selector.summaryListRowValue(3) -> "£100",
-        Selector.summaryListRowKey(4) -> th4LPP,
-        Selector.summaryListRowValue(4) -> "£300",
+        Selector.howPenaltyIsApplied -> howPenaltyIsApplied15Days,
+        Selector.fifteenDayCalculation -> onePartCalculation("2% of £3,850.00 (the unpaid VAT 15 days after the due date)"),
+        Selector.summaryListRowKey(1) -> th2LPP,
+        Selector.summaryListRowValue(1) -> "£400.00",
+        Selector.summaryListRowKey(2) -> th3LPP,
+        Selector.summaryListRowValue(2) -> "£100.00",
+        Selector.summaryListRowKey(3) -> th4LPP1,
+        Selector.summaryListRowValue(3) -> "£300.00",
         Selector.link -> link
       )
 
@@ -189,58 +196,59 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           Selector.periodHiddenText -> periodHiddenText,
           Selector.periodWithText -> periodWithText,
           Selector.h1 -> headingLPP,
-          Selector.summaryListRowKey(1) -> th1LPP,
-          Selector.summaryListRowValue(1) -> "£400",
+          Selector.howPenaltyIsApplied -> howPenaltyIsApplied30Days,
+          Selector.thirtyDayCalculation -> twoPartCalculation,
+          Selector.bulletNthChild(1) -> "2% of £3,850.00 (the unpaid VAT 15 days after the due date) = £77.00",
+          Selector.bulletNthChild(2) -> "2% of £3,850.00 (the unpaid VAT 30 days after the due date) = £77.00",
+          Selector.summaryListRowKey(1) -> dueDate,
+          Selector.summaryListRowValue(1) -> "7 February 2022",
           Selector.summaryListRowKey(2) -> th2LPP,
-          Selector.summaryListRowValue(2) ->
-            "2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025) + 2% of £10,000.00 (Central assessment amount unpaid on 6 June 2025",
+          Selector.summaryListRowValue(2) -> "£400.00",
           Selector.summaryListRowKey(3) -> th3LPP,
-          Selector.summaryListRowValue(3) -> "£100",
-          Selector.summaryListRowKey(4) -> th4LPP,
-          Selector.summaryListRowValue(4) -> "£300",
+          Selector.summaryListRowValue(3) -> "£100.00",
+          Selector.summaryListRowKey(4) -> th4LPP1,
+          Selector.summaryListRowValue(4) -> "£300.00",
           Selector.link -> link
         )
         behave like pageWithExpectedMessages(expectedContent)(docWith2Calculations)
       }
     }
 
-    "it is not an additional penalty and with Penalty Amount " must {
+    "it is not an additional penalty and is estimated" must {
       def applyView(calculationRow: Seq[String], isMultipleAmounts: Boolean): HtmlFormat.Appendable = {
         calculationPage.apply(
-          amountReceived = "100",
-          penaltyAmount = "400",
-          amountLeftToPay = "300",
+          amountReceived = "100.00",
+          penaltyAmount = "400.00",
+          amountLeftToPay = "300.00",
           calculationRowSeq = calculationRow,
           isCalculationRowMultipleAmounts = isMultipleAmounts,
           isPenaltyEstimate = true,
           "1 October 2022",
           "31 December 2022",
-          warningPenaltyAmount = "800",
+          "7 February 2022",
+          warningPenaltyAmount = "800.00",
           warningDate = "15 January 2023")(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
       implicit val docWithOnlyOneCalculation: Document =
-        asDocument(applyView(Seq("2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)"), isMultipleAmounts = false))
-      implicit val docWith2Calculations: Document = asDocument(applyView(Seq("2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)",
-        "2% of £10,000.00 (Central assessment amount unpaid on 6 June 2025"), isMultipleAmounts = true))
-
+        asDocument(applyView(Seq("2% of £3,850.00 (the unpaid VAT 15 days after the due date)"), isMultipleAmounts = false))
 
       val expectedContent = Seq(
         Selector.title -> titleLPP,
         Selector.periodHiddenText -> periodHiddenText,
         Selector.periodWithText -> periodWithText,
         Selector.h1 -> headingLPP,
-        Selector.summaryListRowKey(1) -> th1LPPEstimate,
-        Selector.summaryListRowValue(1) -> "£400",
-        Selector.summaryListRowKey(2) -> th2LPP,
-        Selector.summaryListRowValue(2) -> "2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)",
-        Selector.summaryListRowKey(3) -> th3LPP,
-        Selector.summaryListRowValue(3) -> "£100",
-        Selector.summaryListRowKey(4) -> th4LPP,
-        Selector.summaryListRowValue(4) -> "£300",
+        Selector.howPenaltyIsApplied -> howPenaltyIsApplied15Days,
+        Selector.fifteenDayCalculation -> onePartCalculation("2% of £3,850.00 (the unpaid VAT 15 days after the due date)"),
+        Selector.summaryListRowKey(1) -> th2LPPAccruing,
+        Selector.summaryListRowValue(1) -> "£400.00",
+        Selector.summaryListRowKey(2) -> th3LPP,
+        Selector.summaryListRowValue(2) -> "£100.00",
+        Selector.summaryListRowKey(3) -> th4LPP1,
+        Selector.summaryListRowValue(3) -> "£300.00",
         Selector.warning -> estimateFooterNoteWarning,
-        Selector.govukBody(1) -> estimateFooterNoteBillPayment,
-        Selector.govukBody(2) -> estimateFooterNoteText,
+        Selector.govukBody(3) -> estimateFooterNoteBillPayment,
+        Selector.govukBody(4) -> estimateFooterNoteText,
         Selector.h2 -> h2Additional,
         Selector.link -> link
       )
