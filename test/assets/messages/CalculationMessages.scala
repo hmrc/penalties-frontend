@@ -49,7 +49,17 @@ object CalculationMessages {
 
   val h2Additional = "Estimates"
 
-  val p2Additional = "Penalties and interest will show as estimates if HMRC does not have enough information to calculate the final amounts."
+  val p2AdditionalLPP2 = "Penalties and interest will show as estimates if HMRC does not have enough information to calculate the final amounts."
+
+  val p2AdditionalLPP1 = "Penalties and interest will show as estimates until:"
+
+  val p2EstimatedLPP1 = "The calculation we use is: 2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)"
+
+  val b1Additional = "you pay the VAT bill, or"
+
+  val b1AdditionalAgent = "your client pays the VAT bill, or"
+
+  val b2Additional = "30 days have passed since the VAT due date"
 
   val p3Additional = "This could be because:"
 
@@ -57,9 +67,13 @@ object CalculationMessages {
 
   val bullet2Additional = "you have an unpaid penalty on your account"
 
-  val estimateFooterNoteBillPayment = "Paying part of your VAT bill will reduce further penalties."
+  val estimateFooterNoteBillPayment = "This penalty applies if VAT has not been paid for 15 days."
 
   val estimateFooterNoteWarning = "! This penalty will rise to £800.00 (a further 2% of the unpaid VAT) if you do not make a VAT payment by 15 January 2023."
+
+  val estimateFooterNoteWarningTrader = "! This penalty will increase by a further 2% if VAT remains unpaid 30 days after the due date and you have not set up a payment plan."
+
+  val estimateFooterNoteWarningAgent = "! This penalty will increase by a further 2% if VAT remains unpaid 30 days after the due date and your client has not set up a payment plan."
 
   val estimateFooterNoteText = "Penalties and interest will show as estimates if HMRC has not been given enough information to calculate the final amounts."
 
@@ -74,4 +88,8 @@ object CalculationMessages {
   val onePartCalculation = (calculation: String) => s"The calculation we use is: $calculation"
 
   val dueDate = "Due date"
+
+  val linkEstimatedTrader = "Return to what you owe"
+
+  val linkEstimatedAgent = "Return to what your client owes"
 }

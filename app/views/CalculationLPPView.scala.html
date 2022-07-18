@@ -19,8 +19,8 @@
 @this(
     layout: Layout,
     link: components.link,
-    bullets: components.bullets,
-    details: GovukDetails
+    details: GovukDetails,
+    bullets: components.bullets
 )
 
 @(
@@ -102,15 +102,27 @@
         <div class="govuk-warning-text">
             <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
             <strong class="govuk-warning-text__text">
-                @messages("calculation.estimate.footerNote.warning", warningPenaltyAmount, warningDate)
+                @getMessage("calculation.estimate.footerNote.warning")
             </strong>
         </div>
-        <p class="govuk-body">@messages("calculation.estimate.footerNote.billPayment")</p>
         <h2 class="govuk-heading-s">@messages("calculation.h2.additional")</h2>
-
-        <p class="govuk-body">@messages("calculation.estimate.footerNote.text")</p>
+        <p class="govuk-body">@messages("calculation.p.2.additional.lpp1")</p>
+        @bullets(
+            Seq(
+                Html(
+                        getMessage("calculation.p.2.additional.b1")
+                ),
+                Html(messages("calculation.p.2.additional.b2"))
+            )
+        )
     }
     <p class="govuk-body">
-        <a class="govuk-link" href="@{controllers.routes.IndexController.onPageLoad}">@messages("calculation.returnLink")</a>
+        <a class="govuk-link" href="@{controllers.routes.IndexController.onPageLoad}">
+            @if(isPenaltyEstimate) {
+                @getMessage("calculation.returnLink.estimated")
+            } else {
+                @messages("calculation.returnLink")
+            }
+        </a>
     </p>
 }

@@ -417,7 +417,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£277.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£123.00"
-      parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
+      parsedBody.select("#main-content a").get(0).text() shouldBe "Return to what you owe"
       parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
     }
 
@@ -431,8 +431,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content header p span").first.text() shouldBe "The period dates are"
       parsedBody.select("#how-penalty-is-applied").text() shouldBe "This penalty applies if VAT has not been paid for 30 days."
       parsedBody.select("#30-day-calculation").text() shouldBe "It is made up of 2 parts:"
-      parsedBody.select("#main-content > div > div > ul > li:nth-child(1)").text() shouldBe "2% of £10,000.00 (the unpaid VAT 15 days after the due date) = £200.00"
-      parsedBody.select("#main-content > div > div > ul > li:nth-child(2)").text() shouldBe "2% of £10,000.00 (the unpaid VAT 30 days after the due date) = £200.00"
+      parsedBody.select("#main-content > div > div > ul > li:nth-child(1)").first.text() shouldBe "2% of £10,000.00 (the unpaid VAT 15 days after the due date) = £200.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Due date"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "8 March 2021"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Penalty amount (estimate)"
@@ -441,7 +440,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£277.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dt").text() shouldBe "Left to pay"
       parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dd").text() shouldBe "£123.00"
-      parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
+      parsedBody.select("#main-content a").get(0).text() shouldBe "Return to what you owe"
       parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
     }
 
