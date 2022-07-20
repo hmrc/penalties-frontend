@@ -68,6 +68,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
           } else {
             val startDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeBillingFrom)
             val endDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeBillingTo)
+            val dueDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeDueDate)
             val amountReceived = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.penaltyAmountPaid.get)
             val isPenaltyEstimate = penalty.get.penaltyStatus.equals(LPPPenaltyStatusEnum.Accruing)
             val amountLeftToPay = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.penaltyAmountOutstanding.get)
@@ -87,11 +88,9 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
                   val isTwoCalculations: Boolean = rowSeq.size == 2
                   val warningPenaltyAmount = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.penaltyAmountOutstanding.get * 2)
                   val warningDate = calculationPageHelper.getDateAsDayMonthYear(penaltyEstimateDate)
-                  Ok(viewLPP(amountReceived, parsedPenaltyAmount,
-                    amountLeftToPay, rowSeq,
-                    isTwoCalculations, isPenaltyEstimate,
-                    startDateOfPeriod, endDateOfPeriod,
-                    warningPenaltyAmount, warningDate))
+                  Ok(viewLPP(amountReceived, parsedPenaltyAmount, amountLeftToPay, rowSeq,
+                    isTwoCalculations, isPenaltyEstimate, startDateOfPeriod, endDateOfPeriod,
+                    dueDateOfPeriod, warningPenaltyAmount, warningDate))
                 })
             } else {
               val additionalPenaltyRate = "4"

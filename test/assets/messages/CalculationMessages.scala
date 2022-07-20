@@ -31,11 +31,9 @@ object CalculationMessages {
 
   val th1LPPEstimate = "Penalty amount (estimate)"
 
-  val th1LPP = "Penalty amount"
+  val th2LPP = "Penalty amount"
 
-  val th1Additional = "Penalty amount (estimate)"
-
-  val th2LPP = "Calculation"
+  val th2LPPAccruing = "Penalty amount (estimate)"
 
   val th2Additional = "Number of days since day 31"
 
@@ -44,6 +42,8 @@ object CalculationMessages {
   val th3Additional = "Additional penalty rate"
 
   val th4LPP = "Amount left to pay"
+
+  val th4LPP1 = "Left to pay"
 
   val th4Additional = "Calculation"
 
@@ -59,9 +59,19 @@ object CalculationMessages {
 
   val estimateFooterNoteBillPayment = "Paying part of your VAT bill will reduce further penalties."
 
-  val estimateFooterNoteWarning = "! This penalty will rise to £800 (a further 2% of the unpaid VAT) if you do not make a VAT payment by 15 January 2023."
+  val estimateFooterNoteWarning = "! This penalty will rise to £800.00 (a further 2% of the unpaid VAT) if you do not make a VAT payment by 15 January 2023."
 
-  val estimateFooterNoteText ="Penalties and interest will show as estimates if HMRC has not been given enough information to calculate the final amounts."
+  val estimateFooterNoteText = "Penalties and interest will show as estimates if HMRC has not been given enough information to calculate the final amounts."
 
   val link = "Return to VAT penalties and appeals"
+
+  val howPenaltyIsApplied15Days = "This penalty applies if VAT has not been paid for 15 days."
+
+  val howPenaltyIsApplied30Days = "This penalty applies if VAT has not been paid for 30 days."
+
+  val twoPartCalculation = s"It is made up of 2 parts:"
+
+  val onePartCalculation = (calculation: String) => s"The calculation we use is: $calculation"
+
+  val dueDate = "Due date"
 }

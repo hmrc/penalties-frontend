@@ -19,6 +19,7 @@
 @this(
     layout: Layout,
     link: components.link,
+    bullets: components.bullets,
     details: GovukDetails
 )
 
@@ -31,6 +32,7 @@
         isPenaltyEstimate: Boolean,
         startDate: String,
         endDate: String,
+        dueDate: String,
         warningPenaltyAmount: String,
         warningDate: String
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
@@ -47,7 +49,33 @@
         </p>
     </header>
 
+    @* Haven't reached day 30 yet *@
+    @if(calculationRowSeq.size == 1) {
+      <p class="govuk-body" id="how-penalty-is-applied">@messages("calculation.p.1.15.days")</p>
+      <p class="govuk-body" id="15-day-calculation">
+        @messages("calculation.singular.part.text")
+        <br>
+        @calculationRowSeq.head
+      </p>
+    } else {
+      <p class="govuk-body" id="how-penalty-is-applied">@messages("calculation.p.1.30.days")</p>
+      <p class="govuk-body" id="30-day-calculation">@messages("calculation.multiple.parts.text")</p>
+      @bullets(
+        Seq(
+          Html(calculationRowSeq.head),
+          Html(calculationRowSeq(1))
+        )
+      )
+    }
+
     <dl class="govuk-summary-list">
+      @* Not paid on day 15 or 30 *@
+      @if(calculationRowSeq.size == 2) {
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">@messages("calculation.key.dueDate")</dt>
+          <dd class="govuk-summary-list__value">@dueDate</dd>
+        </div>
+      }
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
                 @{
@@ -61,18 +89,11 @@
             <dd class="govuk-summary-list__value">@messages("calculation.value.amount", penaltyAmount)</dd>
         </div>
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">@messages("calculation.key")</dt>
-            <dd class="govuk-summary-list__value">@{calculationRowSeq.head}
-                @if(isCalculationRowMultipleAmounts) {
-                + <br>@{calculationRowSeq(1)}
-                }</dd>
-        </div>
-        <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">@messages("calculation.key.3")</dt>
             <dd class="govuk-summary-list__value">@messages("calculation.value.amount", amountReceived)</dd>
         </div>
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">@messages("calculation.key.4")</dt>
+            <dt class="govuk-summary-list__key">@messages("calculation.key.4.lpp1")</dt>
             <dd class="govuk-summary-list__value">@messages("calculation.value.amount", amountLeftToPay)</dd>
         </div>
     </dl>
