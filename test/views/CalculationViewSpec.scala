@@ -274,7 +274,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       }
 
       implicit val docWithOnlyOneCalculation: Document =
-        asDocument(applyView(Seq("2% of £10,000.00 (Central assessment amount unpaid on 22 May 2025)"), isMultipleAmounts = false))
+        asDocument(applyView(Seq("2% of £10,000.00 (the unpaid VAT 15 days after the due date)"), isMultipleAmounts = false))
 
       val expectedContent = Seq(
         Selector.title -> titleLPP,
@@ -290,7 +290,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.warning -> estimateFooterNoteWarningAgent,
         Selector.govukBody(1) -> estimateFooterNoteBillPayment,
         Selector.h2 -> h2Additional,
-        Selector.govukBody(2) -> p2EstimatedLPP1,
+        Selector.govukBody(2) -> onePartCalculation("2% of £10,000.00 (the unpaid VAT 15 days after the due date)"),
         Selector.bulletNthChild(1) -> b1AdditionalAgent,
         Selector.bulletNthChild(2) -> b2Additional,
         Selector.link -> linkEstimatedAgent
