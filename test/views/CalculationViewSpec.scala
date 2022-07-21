@@ -239,6 +239,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.periodWithText -> periodWithText,
         Selector.h1 -> headingLPP,
         Selector.howPenaltyIsApplied -> howPenaltyIsApplied15Days,
+        Selector.govukBody(1) -> estimateFooterNoteBillPayment,
         Selector.fifteenDayCalculation -> onePartCalculation("2% of £3,850.00 (the unpaid VAT 15 days after the due date)"),
         Selector.summaryListRowKey(1) -> th2LPPAccruing,
         Selector.summaryListRowValue(1) -> "£400.00",
@@ -247,10 +248,10 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.summaryListRowKey(3) -> th4LPP1,
         Selector.summaryListRowValue(3) -> "£300.00",
         Selector.warning -> estimateFooterNoteWarningTrader,
-        Selector.govukBody(1) -> estimateFooterNoteBillPayment,
+        Selector.h2 -> h2Additional,
+        Selector.govukBody(3) -> p2AdditionalLPP1,
         Selector.bulletNthChild(1) -> b1Additional,
         Selector.bulletNthChild(2) -> b2Additional,
-        Selector.h2 -> h2Additional,
         Selector.link -> linkEstimatedTrader
       )
 
@@ -281,6 +282,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.periodHiddenText -> periodHiddenText,
         Selector.periodWithText -> periodWithText,
         Selector.h1 -> headingLPP,
+        Selector.govukBody(1) -> estimateFooterNoteBillPayment,
+        Selector.govukBody(2) -> onePartCalculation("2% of £10,000.00 (the unpaid VAT 15 days after the due date)"),
         Selector.summaryListRowKey(1) -> th1LPPEstimate,
         Selector.summaryListRowValue(1) -> "£400",
         Selector.summaryListRowKey(2) -> th3LPP,
@@ -288,9 +291,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.summaryListRowKey(3) -> th4LPP1,
         Selector.summaryListRowValue(3) -> "£300",
         Selector.warning -> estimateFooterNoteWarningAgent,
-        Selector.govukBody(1) -> estimateFooterNoteBillPayment,
         Selector.h2 -> h2Additional,
-        Selector.govukBody(2) -> onePartCalculation("2% of £10,000.00 (the unpaid VAT 15 days after the due date)"),
+        Selector.govukBody(3) -> p2AdditionalLPP1,
         Selector.bulletNthChild(1) -> b1AdditionalAgent,
         Selector.bulletNthChild(2) -> b2Additional,
         Selector.link -> linkEstimatedAgent
