@@ -19,8 +19,6 @@ package assets.messages
 object CalculationMessages {
   val titleLPP = "Late payment penalty - Manage your VAT account - GOV.UK"
 
-  val period = "1 October 2022 to 31 December 2022"
-
   val periodHiddenText = "The period dates are"
 
   val periodWithText = "The period dates are 1 October 2022 to 31 December 2022"
@@ -49,19 +47,21 @@ object CalculationMessages {
 
   val h2Additional = "Estimates"
 
-  val p2Additional = "Penalties and interest will show as estimates if HMRC does not have enough information to calculate the final amounts."
+  val p2AdditionalLPP2 = "Penalties and interest will show as estimates if HMRC does not have enough information to calculate the final amounts."
 
-  val p3Additional = "This could be because:"
+  val p2AdditionalLPP1 = "Penalties will show as estimates until:"
 
-  val bullet1Additional = "we have not received your VAT payment"
+  val b1Additional = "you pay the VAT bill, or"
 
-  val bullet2Additional = "you have an unpaid penalty on your account"
+  val b1AdditionalAgent = "your client pays the VAT bill, or"
 
-  val estimateFooterNoteBillPayment = "Paying part of your VAT bill will reduce further penalties."
+  val b2Additional = "30 days have passed since the VAT due date"
 
-  val estimateFooterNoteWarning = "! This penalty will rise to £800.00 (a further 2% of the unpaid VAT) if you do not make a VAT payment by 15 January 2023."
+  val estimateFooterNoteBillPayment = "This penalty applies if VAT has not been paid for 15 days."
 
-  val estimateFooterNoteText = "Penalties and interest will show as estimates if HMRC has not been given enough information to calculate the final amounts."
+  val estimateFooterNoteWarningTrader = "! This penalty will increase by a further 2% if VAT remains unpaid 30 days after the due date and you have not set up a payment plan."
+
+  val estimateFooterNoteWarningAgent = "! This penalty will increase by a further 2% if VAT remains unpaid 30 days after the due date and your client has not set up a payment plan."
 
   val link = "Return to VAT penalties and appeals"
 
@@ -74,4 +74,8 @@ object CalculationMessages {
   val onePartCalculation = (calculation: String) => s"The calculation we use is: $calculation"
 
   val dueDate = "Due date"
+
+  val linkEstimatedTrader = "Return to what you owe"
+
+  val linkEstimatedAgent = "Return to what your client owes"
 }
