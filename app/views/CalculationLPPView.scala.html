@@ -44,7 +44,7 @@
             @messages("calculation.headingAndTitle.lpp")
         </h1>
         <p class="govuk-caption-l hmrc-caption-l penalty-information-caption">
-            <span class="govuk-visually-hidden">@messages("calculation.heading.lppAndAdditional.hiddenText")</span>
+            <span class="govuk-visually-hidden">@messages("calculation.heading.lpp1And2.hiddenText")</span>
             @messages("calculation.caption", startDate, endDate)
         </p>
     </header>
@@ -93,7 +93,7 @@
             <dd class="govuk-summary-list__value">@messages("calculation.value.amount", amountReceived)</dd>
         </div>
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">@messages("calculation.key.4.lpp1")</dt>
+            <dt class="govuk-summary-list__key">@messages("calculation.key.4")</dt>
             <dd class="govuk-summary-list__value">@messages("calculation.value.amount", amountLeftToPay)</dd>
         </div>
     </dl>
@@ -105,14 +105,14 @@
                 @getMessage("calculation.estimate.footerNote.warning")
             </strong>
         </div>
-        <h2 class="govuk-heading-s">@messages("calculation.h2.additional")</h2>
-        <p class="govuk-body">@messages("calculation.p.2.additional.lpp1")</p>
+        <h2 class="govuk-heading-s">@messages("calculation.h2.estimates")</h2>
+        <p class="govuk-body">@messages("calculation.p.2.estimates.lpp1")</p>
         @bullets(
             Seq(
                 Html(
-                        getMessage("calculation.p.2.additional.b1")
+                        getMessage("calculation.p.2.estimates.b1")
                 ),
-                Html(messages("calculation.p.2.additional.b2"))
+                Html(messages("calculation.p.2.estimates.b2"))
             )
         )
     }

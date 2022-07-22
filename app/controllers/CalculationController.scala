@@ -68,7 +68,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
           } else {
             val startDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeBillingFrom)
             val endDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeBillingTo)
-            val dueDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeDueDate)
+            val dueDateOfPenalty: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.penaltyChargeDueDate)
             val amountReceived = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.penaltyAmountPaid.get)
             val isPenaltyEstimate = penalty.get.penaltyStatus.equals(LPPPenaltyStatusEnum.Accruing)
             val amountLeftToPay = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.penaltyAmountOutstanding.get)
@@ -90,13 +90,11 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
                   val warningDate = calculationPageHelper.getDateAsDayMonthYear(penaltyEstimateDate)
                   Ok(viewLPP(amountReceived, parsedPenaltyAmount, amountLeftToPay, rowSeq,
                     isTwoCalculations, isPenaltyEstimate, startDateOfPeriod, endDateOfPeriod,
-                    dueDateOfPeriod, warningPenaltyAmount, warningDate))
+                    dueDateOfPenalty, warningPenaltyAmount, warningDate))
                 })
             } else {
-              val additionalPenaltyRate = "4"
-              val daysSince31 = ChronoUnit.DAYS.between(penalty.get.principalChargeDueDate.plusDays(31), LocalDate.now())
               val isEstimate = penalty.get.penaltyStatus.equals(LPPPenaltyStatusEnum.Accruing)
-              Ok(viewAdd(daysSince31, isEstimate, additionalPenaltyRate, startDateOfPeriod, endDateOfPeriod, parsedPenaltyAmount, amountReceived, amountLeftToPay))
+              Ok(viewAdd(isEstimate, startDateOfPeriod, endDateOfPeriod, dueDateOfPenalty, parsedPenaltyAmount, amountReceived, amountLeftToPay))
             }
           }
         }

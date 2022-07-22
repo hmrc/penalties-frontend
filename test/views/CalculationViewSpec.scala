@@ -48,6 +48,10 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
     val fifteenDayCalculation = "#15-day-calculation"
 
     val thirtyDayCalculation = "#30-day-calculation"
+
+    val whenPenaltyIncreases = "#when-it-increases"
+
+    val calculation = "#calculation"
   }
 
   "CalculationView" should {
@@ -55,11 +59,10 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
     "if it is an additional penalty and the penalty is estimated" must {
       def applyView(): HtmlFormat.Appendable = {
         calculationAdditionalPage.apply(
-          daysSince31 = 7,
           isEstimate = true,
-          additionalPenaltyRate = "4",
-          startDate = "1 October 2022",
-          endDate = "31 December 2022",
+          startDate = "1 April 2022",
+          endDate = "30 June 2022",
+          dueDate = "17 October 2022",
           penaltyAmount = "50.50",
           amountReceived = "10.10",
           amountLeftToPay = "40.40"
@@ -72,25 +75,21 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.breadcrumbWithLink(1) -> breadcrumb1,
         Selector.breadcrumbWithLink(2) -> breadcrumb2,
         Selector.breadcrumbWithLink(3) -> breadcrumb3,
-        Selector.title -> titleLPP,
+        Selector.title -> titleLPP2Estimate,
         Selector.periodWithText -> periodWithText,
         Selector.HeaderTextNotVisible -> periodHiddenText,
-        Selector.h1 -> headingLPP,
-        Selector.govukBody(1) -> p1Additional,
+        Selector.h1 -> headingLPP2Estimate,
+        Selector.howPenaltyIsApplied -> howPenaltyIsAppliedLPP2,
+        Selector.whenPenaltyIncreases -> whenPenaltyIncreasesAccruing,
+        Selector.calculation -> lpp2Calculation,
         Selector.summaryListRowKey(1) -> th2LPPAccruing,
         Selector.summaryListRowValue(1) -> "£50.50",
-        Selector.summaryListRowKey(2) -> th2Additional,
-        Selector.summaryListRowValue(2) -> "7 days",
-        Selector.summaryListRowKey(3) -> th3Additional,
-        Selector.summaryListRowValue(3) -> "4%",
-        Selector.summaryListRowKey(4) -> th4Additional,
-        Selector.summaryListRowValue(4) -> "VAT amount unpaid × 4% × number of days since day 31 ÷ 365",
-        Selector.summaryListRowKey(5) -> th3LPP,
-        Selector.summaryListRowValue(5) -> "£10.10",
-        Selector.summaryListRowKey(6) -> th4LPP,
-        Selector.summaryListRowValue(6) -> "£40.40",
-        Selector.govukBody(2) -> p2AdditionalLPP2,
-        Selector.link -> link
+        Selector.summaryListRowKey(2) -> th3LPP,
+        Selector.summaryListRowValue(2) -> "£10.10",
+        Selector.summaryListRowKey(3) -> th4LPP,
+        Selector.summaryListRowValue(3) -> "£40.40",
+        Selector.govukBody(4) -> p2AdditionalLPP2,
+        Selector.link -> linkEstimatedTrader
       )
 
       behave like pageWithExpectedMessages(expectedContent)
@@ -105,11 +104,10 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
     "if it is an additional penalty and the penalty is not estimated" must {
       def applyView(): HtmlFormat.Appendable = {
         calculationAdditionalPage.apply(
-          daysSince31 = 7,
           isEstimate = false,
-          additionalPenaltyRate = "4",
-          startDate = "1 October 2022",
-          endDate = "31 December 2022",
+          startDate = "1 April 2022",
+          endDate = "30 June 2022",
+          dueDate = "17 October 2022",
           penaltyAmount = "50.50",
           amountReceived = "40.10",
           amountLeftToPay = "10.40")(implicitly, implicitly, implicitly, vatTraderUser)
@@ -122,19 +120,17 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.periodWithText -> periodWithText,
         Selector.HeaderTextNotVisible -> periodHiddenText,
         Selector.h1 -> headingLPP,
-        Selector.govukBody(1) -> p1Additional,
-        Selector.summaryListRowKey(1) -> th2LPP,
-        Selector.summaryListRowValue(1) -> "£50.50",
-        Selector.summaryListRowKey(2) -> th2Additional,
-        Selector.summaryListRowValue(2) -> "7 days",
-        Selector.summaryListRowKey(3) -> th3Additional,
-        Selector.summaryListRowValue(3) -> "4%",
-        Selector.summaryListRowKey(4) -> th4Additional,
-        Selector.summaryListRowValue(4) -> "VAT amount unpaid × 4% × number of days since day 31 ÷ 365",
-        Selector.summaryListRowKey(5) -> th3LPP,
-        Selector.summaryListRowValue(5) -> "£40.10",
-        Selector.summaryListRowKey(6) -> th4LPP,
-        Selector.summaryListRowValue(6) -> "£10.40",
+        Selector.howPenaltyIsApplied -> howPenaltyIsAppliedLPP2,
+        Selector.whenPenaltyIncreases -> whenPenaltyIncreases,
+        Selector.calculation -> lpp2Calculation,
+        Selector.summaryListRowKey(1) -> dueDate,
+        Selector.summaryListRowValue(1) -> "17 October 2022",
+        Selector.summaryListRowKey(2) -> th2LPP,
+        Selector.summaryListRowValue(2) -> "£50.50",
+        Selector.summaryListRowKey(3) -> th3LPP,
+        Selector.summaryListRowValue(3) -> "£40.10",
+        Selector.summaryListRowKey(4) -> th4LPP,
+        Selector.summaryListRowValue(4) -> "£10.40",
         Selector.link -> link
       )
 
@@ -150,9 +146,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           calculationRowSeq = calculationRow,
           isCalculationRowMultipleAmounts = isMultipleAmounts,
           isPenaltyEstimate = false,
-          "1 October 2022",
-          "31 December 2022",
-          "7 February 2022",
+          "1 April 2022",
+          "30 June 2022",
+          "7 September 2022",
           warningPenaltyAmount = "",
           warningDate = "")(implicitly, implicitly, implicitly, vatTraderUser)
       }
@@ -177,7 +173,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.summaryListRowValue(1) -> "£400.00",
         Selector.summaryListRowKey(2) -> th3LPP,
         Selector.summaryListRowValue(2) -> "£100.00",
-        Selector.summaryListRowKey(3) -> th4LPP1,
+        Selector.summaryListRowKey(3) -> th4LPP,
         Selector.summaryListRowValue(3) -> "£300.00",
         Selector.link -> link
       )
@@ -201,12 +197,12 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           Selector.bulletNthChild(1) -> "2% of £3,850.00 (the unpaid VAT 15 days after the due date) = £77.00",
           Selector.bulletNthChild(2) -> "2% of £3,850.00 (the unpaid VAT 30 days after the due date) = £77.00",
           Selector.summaryListRowKey(1) -> dueDate,
-          Selector.summaryListRowValue(1) -> "7 February 2022",
+          Selector.summaryListRowValue(1) -> "7 September 2022",
           Selector.summaryListRowKey(2) -> th2LPP,
           Selector.summaryListRowValue(2) -> "£400.00",
           Selector.summaryListRowKey(3) -> th3LPP,
           Selector.summaryListRowValue(3) -> "£100.00",
-          Selector.summaryListRowKey(4) -> th4LPP1,
+          Selector.summaryListRowKey(4) -> th4LPP,
           Selector.summaryListRowValue(4) -> "£300.00",
           Selector.link -> link
         )
@@ -223,9 +219,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           calculationRowSeq = calculationRow,
           isCalculationRowMultipleAmounts = isMultipleAmounts,
           isPenaltyEstimate = true,
-          "1 October 2022",
-          "31 December 2022",
-          "7 February 2022",
+          "1 April 2022",
+          "30 June 2022",
+          "7 September 2022",
           warningPenaltyAmount = "800.00",
           warningDate = "15 January 2023")(implicitly, implicitly, implicitly, vatTraderUser)
       }
@@ -245,7 +241,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.summaryListRowValue(1) -> "£400.00",
         Selector.summaryListRowKey(2) -> th3LPP,
         Selector.summaryListRowValue(2) -> "£100.00",
-        Selector.summaryListRowKey(3) -> th4LPP1,
+        Selector.summaryListRowKey(3) -> th4LPP,
         Selector.summaryListRowValue(3) -> "£300.00",
         Selector.warning -> estimateFooterNoteWarningTrader,
         Selector.h2 -> h2Additional,
@@ -267,9 +263,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           calculationRowSeq = calculationRow,
           isCalculationRowMultipleAmounts = isMultipleAmounts,
           isPenaltyEstimate = true,
-          "1 October 2022",
-          "31 December 2022",
-          "7 February 2022",
+          "1 April 2022",
+          "30 June 2022",
+          "7 September 2022",
           warningPenaltyAmount = "800",
           warningDate = "15 January 2023")(implicitly, implicitly, implicitly, agentUser)
       }
@@ -288,7 +284,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.summaryListRowValue(1) -> "£400",
         Selector.summaryListRowKey(2) -> th3LPP,
         Selector.summaryListRowValue(2) -> "£100",
-        Selector.summaryListRowKey(3) -> th4LPP1,
+        Selector.summaryListRowKey(3) -> th4LPP,
         Selector.summaryListRowValue(3) -> "£300",
         Selector.warning -> estimateFooterNoteWarningAgent,
         Selector.h2 -> h2Additional,
@@ -299,6 +295,78 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       )
 
       behave like pageWithExpectedMessages(expectedContent)(docWithOnlyOneCalculation)
+    }
+
+    "it is an additional penalty and the user is an Agent (no estimate)" must {
+      def applyView(): HtmlFormat.Appendable = {
+        calculationAdditionalPage.apply(
+          isEstimate = false,
+          startDate = "1 April 2022",
+          endDate = "30 June 2022",
+          dueDate = "17 October 2022",
+          penaltyAmount = "50.50",
+          amountReceived = "40.10",
+          amountLeftToPay = "10.40")(implicitly, implicitly, implicitly, agentUser)
+      }
+
+      implicit val doc: Document = asDocument(applyView())
+
+      val expectedContent = Seq(
+        Selector.title -> titleLPP,
+        Selector.periodWithText -> periodWithText,
+        Selector.HeaderTextNotVisible -> periodHiddenText,
+        Selector.h1 -> headingLPP,
+        Selector.howPenaltyIsApplied -> howPenaltyIsAppliedLPP2,
+        Selector.whenPenaltyIncreases -> whenPenaltyIncreases,
+        Selector.calculation -> lpp2Calculation,
+        Selector.summaryListRowKey(1) -> dueDate,
+        Selector.summaryListRowValue(1) -> "17 October 2022",
+        Selector.summaryListRowKey(2) -> th2LPP,
+        Selector.summaryListRowValue(2) -> "£50.50",
+        Selector.summaryListRowKey(3) -> th3LPP,
+        Selector.summaryListRowValue(3) -> "£40.10",
+        Selector.summaryListRowKey(4) -> th4LPP,
+        Selector.summaryListRowValue(4) -> "£10.40",
+        Selector.link -> link
+      )
+
+      behave like pageWithExpectedMessages(expectedContent)
+    }
+
+    "it is an additional penalty and the user is an Agent (estimate)" must {
+      def applyView(): HtmlFormat.Appendable = {
+        calculationAdditionalPage.apply(
+          isEstimate = true,
+          startDate = "1 April 2022",
+          endDate = "30 June 2022",
+          dueDate = "17 October 2022",
+          penaltyAmount = "50.50",
+          amountReceived = "40.10",
+          amountLeftToPay = "10.40")(implicitly, implicitly, implicitly, agentUser)
+      }
+
+      implicit val doc: Document = asDocument(applyView())
+
+      val expectedContent = Seq(
+        Selector.title -> titleLPP2Estimate,
+        Selector.periodWithText -> periodWithText,
+        Selector.HeaderTextNotVisible -> periodHiddenText,
+        Selector.h1 -> headingLPP2Estimate,
+        Selector.howPenaltyIsApplied -> howPenaltyIsAppliedLPP2,
+        Selector.whenPenaltyIncreases -> whenPenaltyIncreasesAccruingAgent,
+        Selector.calculation -> lpp2Calculation,
+        Selector.summaryListRowKey(1) -> th2LPPAccruing,
+        Selector.summaryListRowValue(1) -> "£50.50",
+        Selector.summaryListRowKey(2) -> th3LPP,
+        Selector.summaryListRowValue(2) -> "£40.10",
+        Selector.summaryListRowKey(3) -> th4LPP,
+        Selector.summaryListRowValue(3) -> "£10.40",
+        Selector.h2 -> h2Additional,
+        Selector.govukBody(4) -> p2AdditionalLPP2Agent,
+        Selector.link -> linkEstimatedAgent
+      )
+
+      behave like pageWithExpectedMessages(expectedContent)
     }
   }
 }
