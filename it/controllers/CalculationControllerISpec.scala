@@ -28,9 +28,10 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.AuthStub
-import stubs.PenaltiesStub.returnPenaltyDetailsStub
+import stubs.PenaltiesStub.{returnPenaltyDetailsStub, returnPenaltyDetailsStubAgent}
 import testUtils.IntegrationSpecCommonBase
 import uk.gov.hmrc.http.SessionKeys.authToken
+import utils.SessionKeys
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -40,6 +41,10 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
   val controller: CalculationController = injector.instanceOf[CalculationController]
   val sampleDate1: LocalDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
   val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
+    authToken -> "1234"
+  )
+  val fakeAgentRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
+    SessionKeys.agentSessionVrn -> "123456789",
     authToken -> "1234"
   )
   
@@ -465,20 +470,17 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
       parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
       parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
-      parsedBody.select("#main-content .govuk-body").get(0).text() shouldBe
-        "The additional penalty is charged from 31 days after the payment due date, until the total is paid."
-      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£123.45"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Number of days since day 31"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "9 days"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Additional penalty rate"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "4%"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dt").text() shouldBe "Calculation"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dd").text() shouldBe "VAT amount unpaid × 4% × number of days since day 31 ÷ 365"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(4).select("dt").text() shouldBe "Amount received"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(4).select("dd").text() shouldBe "£113.45"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(5).select("dt").text() shouldBe "Amount left to pay"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(5).select("dd").text() shouldBe "£10.00"
+      parsedBody.select("#main-content p").get(1).text() shouldBe "This penalty applies from day 31, if any VAT remains unpaid."
+      parsedBody.select("#main-content p").get(2).text() shouldBe "The total increases daily based on the amount of unpaid VAT for the period."
+      parsedBody.select("#main-content p").get(3).text() shouldBe "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Due date"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "8 March 2021"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Penalty amount"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£123.45"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Amount received"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£113.45"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dt").text() shouldBe "Left to pay"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dd").text() shouldBe "£10.00"
     }
 
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due" in {
@@ -486,25 +488,43 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       val request = controller.onPageLoad("65431234567890", "LPP2")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
+      parsedBody.select("#main-content h1").first().ownText() shouldBe "Second late payment penalty"
       parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
       parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
-      parsedBody.select("#main-content p").get(1).text() shouldBe
-        "The additional penalty is charged from 31 days after the payment due date, until the total is paid."
+      parsedBody.select("#main-content p").get(1).text() shouldBe "This penalty applies from day 31, if any VAT remains unpaid."
+      parsedBody.select("#main-content p").get(2).text() shouldBe "The total increases daily until you pay your VAT or set up a payment plan."
+      parsedBody.select("#main-content p").get(3).text() shouldBe "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£123.45"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Number of days since day 31"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "9 days"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Additional penalty rate"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "4%"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dt").text() shouldBe "Calculation"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dd").text() shouldBe "VAT amount unpaid × 4% × number of days since day 31 ÷ 365"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(4).select("dt").text() shouldBe "Amount received"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(4).select("dd").text() shouldBe "£113.45"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(5).select("dt").text() shouldBe "Amount left to pay"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(5).select("dd").text() shouldBe "£10.00"
-      parsedBody.select("#main-content p").get(2).text() shouldBe
-        "Penalties and interest will show as estimates if HMRC does not have enough information to calculate the final amounts."
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£113.45"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£10.00"
+      parsedBody.select("h2").get(0).text() shouldBe "Estimates"
+      parsedBody.select("#main-content p").get(4).text() shouldBe "Penalties and interest will show as estimates until you pay the charge they relate to."
+      parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
+    }
+
+    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due (user is agent)" in {
+      AuthStub.agentAuthorised()
+      returnPenaltyDetailsStubAgent(penaltyDetailsWithAdditionalDuePenalty)
+      val request = controller.onPageLoad("65431234567890", "LPP2")(fakeAgentRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
+      parsedBody.select("#main-content h1").first().ownText() shouldBe "Second late payment penalty"
+      parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
+      parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
+      parsedBody.select("#main-content p").get(1).text() shouldBe "This penalty applies from day 31, if any VAT remains unpaid."
+      parsedBody.select("#main-content p").get(2).text() shouldBe "The total increases daily until your client pays their VAT or sets up a payment plan."
+      parsedBody.select("#main-content p").get(3).text() shouldBe "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£123.45"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£113.45"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£10.00"
+      parsedBody.select("h2").get(0).text() shouldBe "Estimates"
+      parsedBody.select("#main-content p").get(4).text() shouldBe "Penalties and interest will show as estimates until your client pays the charge they relate to."
       parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
     }
 
