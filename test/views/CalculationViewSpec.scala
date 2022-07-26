@@ -22,12 +22,12 @@ import assets.messages.IndexMessages.{breadcrumb1, breadcrumb2, breadcrumb3}
 import play.twirl.api.HtmlFormat
 import utils.ViewUtils
 import views.behaviours.ViewBehaviours
-import views.html.{CalculationAdditionalView, CalculationLPPView}
+import views.html.{CalculationLPP2View, CalculationLPPView}
 import org.jsoup.nodes.Document
 
 class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
   val calculationPage: CalculationLPPView = injector.instanceOf[CalculationLPPView]
-  val calculationAdditionalPage: CalculationAdditionalView = injector.instanceOf[CalculationAdditionalView]
+  val calculationLPP2Page: CalculationLPP2View = injector.instanceOf[CalculationLPP2View]
 
   object Selector extends BaseSelectors {
 
@@ -56,9 +56,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
   "CalculationView" should {
 
-    "if it is an additional penalty and the penalty is estimated" must {
+    "if it is an second penalty and the penalty is estimated" must {
       def applyView(): HtmlFormat.Appendable = {
-        calculationAdditionalPage.apply(
+        calculationLPP2Page.apply(
           isEstimate = true,
           startDate = "1 April 2022",
           endDate = "30 June 2022",
@@ -88,7 +88,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.summaryListRowValue(2) -> "£10.10",
         Selector.summaryListRowKey(3) -> th4LPP,
         Selector.summaryListRowValue(3) -> "£40.40",
-        Selector.govukBody(4) -> p2AdditionalLPP2,
+        Selector.govukBody(4) -> p2EstimatesLPP2,
         Selector.link -> linkEstimatedTrader
       )
 
@@ -101,9 +101,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       }
     }
 
-    "if it is an additional penalty and the penalty is not estimated" must {
+    "if it is a second penalty and the penalty is not estimated" must {
       def applyView(): HtmlFormat.Appendable = {
-        calculationAdditionalPage.apply(
+        calculationLPP2Page.apply(
           isEstimate = false,
           startDate = "1 April 2022",
           endDate = "30 June 2022",
@@ -137,7 +137,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       behave like pageWithExpectedMessages(expectedContent)
     }
 
-    "if it is not an additional penalty" must {
+    "if it is not a second penalty" must {
       def applyView(calculationRow: Seq[String], isMultipleAmounts: Boolean): HtmlFormat.Appendable = {
         calculationPage.apply(
           amountReceived = "100.00",
@@ -210,7 +210,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       }
     }
 
-    "it is not an additional penalty and is estimated" must {
+    "it is not a second penalty and is estimated" must {
       def applyView(calculationRow: Seq[String], isMultipleAmounts: Boolean): HtmlFormat.Appendable = {
         calculationPage.apply(
           amountReceived = "100.00",
@@ -244,17 +244,17 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.summaryListRowKey(3) -> th4LPP,
         Selector.summaryListRowValue(3) -> "£300.00",
         Selector.warning -> estimateFooterNoteWarningTrader,
-        Selector.h2 -> h2Additional,
-        Selector.govukBody(3) -> p2AdditionalLPP1,
-        Selector.bulletNthChild(1) -> b1Additional,
-        Selector.bulletNthChild(2) -> b2Additional,
+        Selector.h2 -> h2Estimates,
+        Selector.govukBody(3) -> p2EstimatesLPP1,
+        Selector.bulletNthChild(1) -> b1Estimates,
+        Selector.bulletNthChild(2) -> b2Estimates,
         Selector.link -> linkEstimatedTrader
       )
 
       behave like pageWithExpectedMessages(expectedContent)(docWithOnlyOneCalculation)
     }
 
-    "it is not an additional penalty and with Penalty Amount and the user is an Agent" must {
+    "it is not a second penalty and with Penalty Amount and the user is an Agent" must {
       def applyView(calculationRow: Seq[String], isMultipleAmounts: Boolean): HtmlFormat.Appendable = {
         calculationPage.apply(
           amountReceived = "100",
@@ -287,19 +287,19 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.summaryListRowKey(3) -> th4LPP,
         Selector.summaryListRowValue(3) -> "£300",
         Selector.warning -> estimateFooterNoteWarningAgent,
-        Selector.h2 -> h2Additional,
-        Selector.govukBody(3) -> p2AdditionalLPP1,
-        Selector.bulletNthChild(1) -> b1AdditionalAgent,
-        Selector.bulletNthChild(2) -> b2Additional,
+        Selector.h2 -> h2Estimates,
+        Selector.govukBody(3) -> p2EstimatesLPP1,
+        Selector.bulletNthChild(1) -> b1EstimatesAgent,
+        Selector.bulletNthChild(2) -> b2Estimates,
         Selector.link -> linkEstimatedAgent
       )
 
       behave like pageWithExpectedMessages(expectedContent)(docWithOnlyOneCalculation)
     }
 
-    "it is an additional penalty and the user is an Agent (no estimate)" must {
+    "it is a second penalty and the user is an Agent (no estimate)" must {
       def applyView(): HtmlFormat.Appendable = {
-        calculationAdditionalPage.apply(
+        calculationLPP2Page.apply(
           isEstimate = false,
           startDate = "1 April 2022",
           endDate = "30 June 2022",
@@ -333,9 +333,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       behave like pageWithExpectedMessages(expectedContent)
     }
 
-    "it is an additional penalty and the user is an Agent (estimate)" must {
+    "it is a second penalty and the user is an Agent (estimate)" must {
       def applyView(): HtmlFormat.Appendable = {
-        calculationAdditionalPage.apply(
+        calculationLPP2Page.apply(
           isEstimate = true,
           startDate = "1 April 2022",
           endDate = "30 June 2022",
@@ -361,8 +361,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.summaryListRowValue(2) -> "£40.10",
         Selector.summaryListRowKey(3) -> th4LPP,
         Selector.summaryListRowValue(3) -> "£10.40",
-        Selector.h2 -> h2Additional,
-        Selector.govukBody(4) -> p2AdditionalLPP2Agent,
+        Selector.h2 -> h2Estimates,
+        Selector.govukBody(4) -> p2EstimatesLPP2Agent,
         Selector.link -> linkEstimatedAgent
       )
 

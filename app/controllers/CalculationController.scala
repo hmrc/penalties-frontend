@@ -28,15 +28,13 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
 import utils.{CurrencyFormatter, EnrolmentKeys}
 import viewmodels.CalculationPageHelper
-import views.html.{CalculationAdditionalView, CalculationLPPView}
+import views.html.{CalculationLPP2View, CalculationLPPView}
 
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CalculationController @Inject()(viewLPP: CalculationLPPView,
-                                      viewAdd: CalculationAdditionalView,
+                                      viewLPP2: CalculationLPP2View,
                                       penaltiesService: PenaltiesService,
                                       calculationPageHelper: CalculationPageHelper)(implicit ec: ExecutionContext,
                                                                                     val appConfig: AppConfig,
@@ -94,7 +92,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
                 })
             } else {
               val isEstimate = penalty.get.penaltyStatus.equals(LPPPenaltyStatusEnum.Accruing)
-              Ok(viewAdd(isEstimate, startDateOfPeriod, endDateOfPeriod, dueDateOfPenalty, parsedPenaltyAmount, amountReceived, amountLeftToPay))
+              Ok(viewLPP2(isEstimate, startDateOfPeriod, endDateOfPeriod, dueDateOfPenalty, parsedPenaltyAmount, amountReceived, amountLeftToPay))
             }
           }
         }

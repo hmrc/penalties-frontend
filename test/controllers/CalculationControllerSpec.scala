@@ -31,7 +31,7 @@ import testUtils.AuthTestModels
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import viewmodels.CalculationPageHelper
-import views.html.{CalculationAdditionalView, CalculationLPPView}
+import views.html.{CalculationLPP2View, CalculationLPPView}
 
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -39,7 +39,7 @@ import scala.concurrent.Future
 
 class CalculationControllerSpec extends SpecBase with FeatureSwitching {
   val calculationView: CalculationLPPView = injector.instanceOf[CalculationLPPView]
-  val calculationAdditionalView: CalculationAdditionalView = injector.instanceOf[CalculationAdditionalView]
+  val calculationAdditionalView: CalculationLPP2View = injector.instanceOf[CalculationLPP2View]
   val mockPenaltiesService: PenaltiesService = mock(classOf[PenaltiesService])
   val calculationPageHelper: CalculationPageHelper = injector.instanceOf[CalculationPageHelper]
 

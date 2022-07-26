@@ -41,19 +41,19 @@ object CalculationMessages {
 
   val th4Additional = "Calculation"
 
-  val h2Additional = "Estimates"
+  val h2Estimates = "Estimates"
 
-  val p2AdditionalLPP2 = "Penalties and interest will show as estimates until you pay the charge they relate to."
+  val p2EstimatesLPP2 = "Penalties and interest will show as estimates until you pay the charge they relate to."
 
-  val p2AdditionalLPP2Agent = "Penalties and interest will show as estimates until your client pays the charge they relate to."
+  val p2EstimatesLPP2Agent = "Penalties and interest will show as estimates until your client pays the charge they relate to."
 
-  val p2AdditionalLPP1 = "Penalties will show as estimates until:"
+  val p2EstimatesLPP1 = "Penalties will show as estimates until:"
 
-  val b1Additional = "you pay the VAT bill, or"
+  val b1Estimates = "you pay the VAT bill, or"
 
-  val b1AdditionalAgent = "your client pays the VAT bill, or"
+  val b1EstimatesAgent = "your client pays the VAT bill, or"
 
-  val b2Additional = "30 days have passed since the VAT due date"
+  val b2Estimates = "30 days have passed since the VAT due date"
 
   val estimateFooterNoteBillPayment = "This penalty applies if VAT has not been paid for 15 days."
 
