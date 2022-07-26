@@ -28,15 +28,13 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
 import utils.{CurrencyFormatter, EnrolmentKeys}
 import viewmodels.CalculationPageHelper
-import views.html.{CalculationAdditionalView, CalculationLPPView}
+import views.html.{CalculationLPP2View, CalculationLPPView}
 
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CalculationController @Inject()(viewLPP: CalculationLPPView,
-                                      viewAdd: CalculationAdditionalView,
+                                      viewLPP2: CalculationLPP2View,
                                       penaltiesService: PenaltiesService,
                                       calculationPageHelper: CalculationPageHelper)(implicit ec: ExecutionContext,
                                                                                     val appConfig: AppConfig,
@@ -68,7 +66,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
           } else {
             val startDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeBillingFrom)
             val endDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeBillingTo)
-            val dueDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeDueDate)
+            val dueDateOfPenalty: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.penaltyChargeDueDate)
             val amountReceived = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.penaltyAmountPaid.get)
             val isPenaltyEstimate = penalty.get.penaltyStatus.equals(LPPPenaltyStatusEnum.Accruing)
             val amountLeftToPay = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.penaltyAmountOutstanding.get)
@@ -90,13 +88,11 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
                   val warningDate = calculationPageHelper.getDateAsDayMonthYear(penaltyEstimateDate)
                   Ok(viewLPP(amountReceived, parsedPenaltyAmount, amountLeftToPay, rowSeq,
                     isTwoCalculations, isPenaltyEstimate, startDateOfPeriod, endDateOfPeriod,
-                    dueDateOfPeriod, warningPenaltyAmount, warningDate))
+                    dueDateOfPenalty, warningPenaltyAmount, warningDate))
                 })
             } else {
-              val additionalPenaltyRate = "4"
-              val daysSince31 = ChronoUnit.DAYS.between(penalty.get.principalChargeDueDate.plusDays(31), LocalDate.now())
               val isEstimate = penalty.get.penaltyStatus.equals(LPPPenaltyStatusEnum.Accruing)
-              Ok(viewAdd(daysSince31, isEstimate, additionalPenaltyRate, startDateOfPeriod, endDateOfPeriod, parsedPenaltyAmount, amountReceived, amountLeftToPay))
+              Ok(viewLPP2(isEstimate, startDateOfPeriod, endDateOfPeriod, dueDateOfPenalty, parsedPenaltyAmount, amountReceived, amountLeftToPay))
             }
           }
         }

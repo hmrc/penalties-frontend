@@ -19,13 +19,15 @@ package assets.messages
 object CalculationMessages {
   val titleLPP = "Late payment penalty - Manage your VAT account - GOV.UK"
 
+  val titleLPP2Estimate = "Second late payment penalty - Manage your VAT account - GOV.UK"
+
   val periodHiddenText = "The period dates are"
 
-  val periodWithText = "The period dates are 1 October 2022 to 31 December 2022"
+  val periodWithText = "The period dates are 1 April 2022 to 30 June 2022"
 
   val headingLPP = "Late payment penalty"
 
-  val p1Additional = "The additional penalty is charged from 31 days after the payment due date, until the total is paid."
+  val headingLPP2Estimate = "Second late payment penalty"
 
   val th1LPPEstimate = "Penalty amount (estimate)"
 
@@ -33,29 +35,25 @@ object CalculationMessages {
 
   val th2LPPAccruing = "Penalty amount (estimate)"
 
-  val th2Additional = "Number of days since day 31"
-
   val th3LPP = "Amount received"
 
-  val th3Additional = "Additional penalty rate"
-
-  val th4LPP = "Amount left to pay"
-
-  val th4LPP1 = "Left to pay"
+  val th4LPP = "Left to pay"
 
   val th4Additional = "Calculation"
 
-  val h2Additional = "Estimates"
+  val h2Estimates = "Estimates"
 
-  val p2AdditionalLPP2 = "Penalties and interest will show as estimates if HMRC does not have enough information to calculate the final amounts."
+  val p2EstimatesLPP2 = "Penalties and interest will show as estimates until you pay the charge they relate to."
 
-  val p2AdditionalLPP1 = "Penalties will show as estimates until:"
+  val p2EstimatesLPP2Agent = "Penalties and interest will show as estimates until your client pays the charge they relate to."
 
-  val b1Additional = "you pay the VAT bill, or"
+  val p2EstimatesLPP1 = "Penalties will show as estimates until:"
 
-  val b1AdditionalAgent = "your client pays the VAT bill, or"
+  val b1Estimates = "you pay the VAT bill, or"
 
-  val b2Additional = "30 days have passed since the VAT due date"
+  val b1EstimatesAgent = "your client pays the VAT bill, or"
+
+  val b2Estimates = "30 days have passed since the VAT due date"
 
   val estimateFooterNoteBillPayment = "This penalty applies if VAT has not been paid for 15 days."
 
@@ -65,9 +63,19 @@ object CalculationMessages {
 
   val link = "Return to VAT penalties and appeals"
 
+  val howPenaltyIsAppliedLPP2 = "This penalty applies from day 31, if any VAT remains unpaid."
+
   val howPenaltyIsApplied15Days = "This penalty applies if VAT has not been paid for 15 days."
 
   val howPenaltyIsApplied30Days = "This penalty applies if VAT has not been paid for 30 days."
+
+  val whenPenaltyIncreases = "The total increases daily based on the amount of unpaid VAT for the period."
+
+  val whenPenaltyIncreasesAccruing = "The total increases daily until you pay your VAT or set up a payment plan."
+
+  val whenPenaltyIncreasesAccruingAgent = "The total increases daily until your client pays their VAT or sets up a payment plan."
+
+  val lpp2Calculation = "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
 
   val twoPartCalculation = s"It is made up of 2 parts:"
 
