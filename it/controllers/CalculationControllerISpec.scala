@@ -488,7 +488,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       val request = controller.onPageLoad("65431234567890", "LPP2")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#main-content h1").first().ownText() shouldBe "Second late payment penalty"
+      parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
       parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
       parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
       parsedBody.select("#main-content p").get(1).text() shouldBe "This penalty applies from day 31, if any VAT remains unpaid."
@@ -511,7 +511,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       val request = controller.onPageLoad("65431234567890", "LPP2")(fakeAgentRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#main-content h1").first().ownText() shouldBe "Second late payment penalty"
+      parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
       parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
       parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
       parsedBody.select("#main-content p").get(1).text() shouldBe "This penalty applies from day 31, if any VAT remains unpaid."
