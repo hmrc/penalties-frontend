@@ -91,12 +91,6 @@
   }
 
   <p class="govuk-body">
-    <a class="govuk-link" href="@{controllers.routes.IndexController.onPageLoad}">
-    @if(isEstimate) {
-      @getMessage("calculation.returnLink.estimated")
-    } else {
-      @messages("calculation.returnLink")
-    }
-    </a>
+    <a class="govuk-link" href="@{controllers.routes.IndexController.onPageLoad}">@messages("calculation.returnLink")</a>
   </p>
 }

@@ -89,7 +89,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.summaryListRowKey(3) -> th4LPP,
         Selector.summaryListRowValue(3) -> "£40.40",
         Selector.govukBody(4) -> p2EstimatesLPP2,
-        Selector.link -> linkEstimatedTrader
+        Selector.link -> link
       )
 
       behave like pageWithExpectedMessages(expectedContent)
@@ -248,7 +248,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.govukBody(3) -> p2EstimatesLPP1,
         Selector.bulletNthChild(1) -> b1Estimates,
         Selector.bulletNthChild(2) -> b2Estimates,
-        Selector.link -> linkEstimatedTrader
+        Selector.link -> link
       )
 
       behave like pageWithExpectedMessages(expectedContent)(docWithOnlyOneCalculation)
@@ -291,7 +291,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.govukBody(3) -> p2EstimatesLPP1,
         Selector.bulletNthChild(1) -> b1EstimatesAgent,
         Selector.bulletNthChild(2) -> b2Estimates,
-        Selector.link -> linkEstimatedAgent
+        Selector.link -> link
       )
 
       behave like pageWithExpectedMessages(expectedContent)(docWithOnlyOneCalculation)
@@ -363,7 +363,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.summaryListRowValue(3) -> "£10.40",
         Selector.h2 -> h2Estimates,
         Selector.govukBody(4) -> p2EstimatesLPP2Agent,
-        Selector.link -> linkEstimatedAgent
+        Selector.link -> link
       )
 
       behave like pageWithExpectedMessages(expectedContent)

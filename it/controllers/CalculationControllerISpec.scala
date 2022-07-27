@@ -422,7 +422,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£277.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£123.00"
-      parsedBody.select("#main-content a").get(0).text() shouldBe "Return to what you owe"
+      parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
       parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
     }
 
@@ -442,7 +442,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£277.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£123.00"
-      parsedBody.select("#main-content a").get(0).text() shouldBe "Return to what you owe"
+      parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
       parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
     }
 
