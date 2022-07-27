@@ -62,19 +62,12 @@ class ComplianceControllerSpec extends SpecBase {
   "onPageLoad" should {
 
     "the user is authorised" must {
-      "return OK - calling the service to retrieve compliance data to the view" in new Setup(AuthTestModels.successfulAuthResult) {
-        val result: Future[Result] = Controller.onPageLoad()(fakeRequest.withSession(
-          SessionKeys.latestLSPCreationDate -> "2020-01-01T13:00:00.000",
-          SessionKeys.pointsThreshold -> "4"
-        ))
-        status(result) shouldBe OK
-      }
-
-      "return OK - calling the service to retrieve compliance data to the view (when given a local date for latest LSP creation date)" in
+      "return OK - calling the service to retrieve compliance data to the view" in
         new Setup(AuthTestModels.successfulAuthResult) {
         val result: Future[Result] = Controller.onPageLoad()(fakeRequest.withSession(
-          SessionKeys.latestLSPCreationDate -> "2020-01-01T13:00:00.000",
-          SessionKeys.pointsThreshold -> "4"
+          SessionKeys.latestLSPCreationDate -> "2020-01-01",
+          SessionKeys.pointsThreshold -> "4",
+          SessionKeys.pocAchievementDate -> "2022-01-01"
         ))
         status(result) shouldBe OK
       }

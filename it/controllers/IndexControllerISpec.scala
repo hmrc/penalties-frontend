@@ -62,7 +62,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         activePenaltyPoints = 1,
         regimeThreshold = 4,
         inactivePenaltyPoints = 0,
-        penaltyChargeAmount = 0
+        penaltyChargeAmount = 0,
+        PoCAchievementDate = LocalDate.of(2022, 1, 1)
       ),
       details = Seq(
         LSPDetails(
@@ -99,7 +100,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         activePenaltyPoints = 1,
         regimeThreshold = 4,
         inactivePenaltyPoints = 1,
-        penaltyChargeAmount = 0
+        penaltyChargeAmount = 0,
+        PoCAchievementDate = LocalDate.of(2022, 1, 1)
       ),
       details = Seq(
         LSPDetails(
@@ -156,7 +158,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         activePenaltyPoints = 2,
         regimeThreshold = 4,
         inactivePenaltyPoints = 1,
-        penaltyChargeAmount = 0
+        penaltyChargeAmount = 0,
+        PoCAchievementDate = LocalDate.of(2022, 1, 1)
       ),
       details = Seq(
         LSPDetails(
@@ -413,7 +416,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         activePenaltyPoints = 2,
         regimeThreshold = 4,
         inactivePenaltyPoints = 0,
-        penaltyChargeAmount = 0
+        penaltyChargeAmount = 0,
+        PoCAchievementDate = LocalDate.of(2022, 1, 1)
       ),
       details = Seq(
         LSPDetails(
@@ -505,7 +509,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           activePenaltyPoints = 1,
           inactivePenaltyPoints = 0,
           regimeThreshold = 4,
-          penaltyChargeAmount = 200
+          penaltyChargeAmount = 200,
+          PoCAchievementDate = LocalDate.of(2022, 1, 1)
         ),
         details = Seq(
           LSPDetails(

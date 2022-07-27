@@ -19,13 +19,16 @@ package models.lsp
 import base.SpecBase
 import play.api.libs.json.Json
 
+import java.time.LocalDate
+
 class LSPSummarySpec extends SpecBase {
 
   val LSPSummaryAsModel = LSPSummary(
     activePenaltyPoints = 10,
     inactivePenaltyPoints = 12,
     regimeThreshold = 10,
-    penaltyChargeAmount = 684.25
+    penaltyChargeAmount = 684.25,
+    PoCAchievementDate = LocalDate.of(2022, 1, 1)
   )
 
   val LSPSummaryAsJson = Json.parse(
@@ -34,7 +37,8 @@ class LSPSummarySpec extends SpecBase {
       |     "activePenaltyPoints": 10,
       |     "inactivePenaltyPoints": 12,
       |     "regimeThreshold": 10,
-      |     "penaltyChargeAmount": 684.25
+      |     "penaltyChargeAmount": 684.25,
+      |     "PoCAchievementDate": "2022-01-01"
       |}
       |""".stripMargin)
 

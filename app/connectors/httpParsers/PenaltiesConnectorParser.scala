@@ -31,7 +31,11 @@ object PenaltiesConnectorParser {
         case OK =>
           response.json.validate[GetPenaltyDetails](GetPenaltyDetails.format) match {
             case JsSuccess(model, _) => Right(model)
-            case _ => Left(InvalidJson)
+            case failure => {
+              logger.debug(s"[GetPenaltyDetailsResponseReads][read]: Failed to parse to model - failures: $failure")
+              logger.error("[GetPenaltyDetailsResponseReads][read]: Failed to parse to model")
+              Left(InvalidJson)
+            }
           }
         case NO_CONTENT =>
           logger.debug(s"[GetPenaltyDetailsResponseReads][read]: No content found for VRN provided, returning empty model")

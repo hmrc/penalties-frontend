@@ -37,14 +37,16 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
   val controller: ComplianceController = injector.instanceOf[ComplianceController]
   val fakeAgentRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
     SessionKeys.agentSessionVrn -> "123456789",
-    SessionKeys.latestLSPCreationDate -> "2022-03-01T12:00:00.000",
+    SessionKeys.latestLSPCreationDate -> "2022-03-01",
     SessionKeys.pointsThreshold -> "5",
+    SessionKeys.pocAchievementDate -> "2024-01-01",
     authToken -> "1234"
   )
   val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
     SessionKeys.agentSessionVrn -> "123456789",
-    SessionKeys.latestLSPCreationDate -> "2022-03-01T12:00:00.000",
+    SessionKeys.latestLSPCreationDate -> "2022-03-01",
     SessionKeys.pointsThreshold -> "5",
+    SessionKeys.pocAchievementDate -> "2024-01-01",
     authToken -> "1234"
   )
 
@@ -196,7 +198,8 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.body().toString.contains("Submit VAT Return by 7 June 2022") shouldBe true
         parsedBody.body().toString.contains("VAT period 1 May 2022 to 31 May 2022") shouldBe true
         parsedBody.body().toString.contains("Submit VAT Return by 7 July 2022") shouldBe true
-      }
+        parsedBody.body().toString.contains("Points to be removed:") shouldBe true
+        parsedBody.body().toString.contains("January 2024") shouldBe true      }
 
       "there is no missing returns - do not show the 'missing returns' content" in {
         ComplianceStub.complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
@@ -215,6 +218,8 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.body().toString.contains("Submit VAT Return by 7 July 2022") shouldBe true
         parsedBody.body().toString.contains("VAT period 1 June 2022 to 30 June 2022") shouldBe true
         parsedBody.body().toString.contains("Submit VAT Return by 7 August 2022") shouldBe true
+        parsedBody.body().toString.contains("Points to be removed:") shouldBe true
+        parsedBody.body().toString.contains("January 2024") shouldBe true
       }
 
       "an agent is present" in {
@@ -224,7 +229,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         status(request) shouldBe OK
         val parsedBody = Jsoup.parse(contentAsString(request))
         parsedBody.body().toString.contains("Points to be removed:") shouldBe true
-        parsedBody.body().toString.contains("sample date") shouldBe true
+        parsedBody.body().toString.contains("January 2024") shouldBe true
         parsedBody.body().toString.contains("This date will extend if your client misses a return deadline.") shouldBe true
       }
     }

@@ -16,8 +16,8 @@
 
 package viewmodels
 
+import models.FilingFrequencyEnum
 import models.compliance.{ComplianceData, CompliancePayload, ComplianceStatusEnum, ObligationDetail}
-import models.{FilingFrequencyEnum, User}
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import utils.{ImplicitDateFormatter, ViewUtils}

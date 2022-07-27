@@ -71,8 +71,11 @@ class IndexController @Inject()(view: IndexView,
           if (latestLSPCreation.isDefined) {
             result
               .removingFromSession(allKeysExcludingAgentVRN: _*)
-              .addingToSession(latestLSPCreationDate -> latestLSPCreation.get.toString,
-                pointsThreshold -> penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0).toString)
+              .addingToSession(
+                latestLSPCreationDate -> latestLSPCreation.get.toString,
+                pointsThreshold -> penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0).toString,
+                pocAchievementDate -> penaltyData.lateSubmissionPenalty.map(_.summary.PoCAchievementDate.toString).getOrElse("")
+              )
           } else {
             result
               .removingFromSession(allKeysExcludingAgentVRN: _*)

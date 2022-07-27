@@ -207,7 +207,7 @@ trait TestData {
     )),
     lateSubmissionPenalty = Some(LateSubmissionPenalty(
       summary = LSPSummary(
-        activePenaltyPoints = 1, inactivePenaltyPoints = 0, regimeThreshold = 4, penaltyChargeAmount = 200
+        activePenaltyPoints = 1, inactivePenaltyPoints = 0, regimeThreshold = 4, penaltyChargeAmount = 200, PoCAchievementDate = LocalDate.of(2022, 1, 1)
       ),
       details = Seq(samplePenaltyPointV2))),
     latePaymentPenalty = Some(

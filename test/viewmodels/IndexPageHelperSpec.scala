@@ -117,7 +117,8 @@ class IndexPageHelperSpec extends SpecBase {
             activePenaltyPoints = 3,
             inactivePenaltyPoints = 0,
             regimeThreshold = 4,
-            penaltyChargeAmount = 200
+            penaltyChargeAmount = 200,
+            PoCAchievementDate = LocalDate.of(2022, 1, 1)
           ),
           details = Seq(
             LSPDetails(
@@ -212,7 +213,8 @@ class IndexPageHelperSpec extends SpecBase {
             activePenaltyPoints = 2,
             inactivePenaltyPoints = 0,
             regimeThreshold = 4,
-            penaltyChargeAmount = 200
+            penaltyChargeAmount = 200,
+            PoCAchievementDate = LocalDate.of(2022, 1, 1)
           ),
           details = Seq(
             LSPDetails(
@@ -281,7 +283,8 @@ class IndexPageHelperSpec extends SpecBase {
             activePenaltyPoints = 1,
             inactivePenaltyPoints = 0,
             regimeThreshold = 4,
-            penaltyChargeAmount = 200
+            penaltyChargeAmount = 200,
+            PoCAchievementDate = LocalDate.of(2022, 1, 1)
           ),
           details = Seq(
             LSPDetails(
@@ -324,7 +327,8 @@ class IndexPageHelperSpec extends SpecBase {
             activePenaltyPoints = 1,
             inactivePenaltyPoints = 0,
             regimeThreshold = 2,
-            penaltyChargeAmount = 200
+            penaltyChargeAmount = 200,
+            PoCAchievementDate = LocalDate.of(2022, 1, 1)
           ),
           details = Seq(
             LSPDetails(
@@ -369,7 +373,8 @@ class IndexPageHelperSpec extends SpecBase {
                 activePenaltyPoints = 0,
                 inactivePenaltyPoints = 0,
                 regimeThreshold = 5,
-                penaltyChargeAmount = 200
+                penaltyChargeAmount = 200,
+                PoCAchievementDate = LocalDate.of(2022, 1, 1)
               ),
               details = Seq.empty
             )
@@ -491,7 +496,8 @@ class IndexPageHelperSpec extends SpecBase {
               activePenaltyPoints = 4,
               inactivePenaltyPoints = 0,
               regimeThreshold = 4,
-              penaltyChargeAmount = 200
+              penaltyChargeAmount = 200,
+              PoCAchievementDate = LocalDate.of(2022, 1, 1)
             ),
             details = Seq(
               LSPDetails(
@@ -646,7 +652,8 @@ class IndexPageHelperSpec extends SpecBase {
               activePenaltyPoints = 2,
               inactivePenaltyPoints = 0,
               regimeThreshold = 4,
-              penaltyChargeAmount = 200
+              penaltyChargeAmount = 200,
+              PoCAchievementDate = LocalDate.of(2022, 1, 1)
             ),
             details = Seq(
               LSPDetails(
@@ -705,7 +712,8 @@ class IndexPageHelperSpec extends SpecBase {
               activePenaltyPoints = 3,
               inactivePenaltyPoints = 0,
               regimeThreshold = 4,
-              penaltyChargeAmount = 200
+              penaltyChargeAmount = 200,
+              PoCAchievementDate = LocalDate.of(2022, 1, 1)
             ),
             details = Seq(
               LSPDetails(
@@ -826,7 +834,8 @@ class IndexPageHelperSpec extends SpecBase {
               activePenaltyPoints = 2,
               inactivePenaltyPoints = 1,
               regimeThreshold = 4,
-              penaltyChargeAmount = 200
+              penaltyChargeAmount = 200,
+              PoCAchievementDate = LocalDate.of(2022, 1, 1)
             ),
             details = Seq(
               LSPDetails(
@@ -911,7 +920,8 @@ class IndexPageHelperSpec extends SpecBase {
               activePenaltyPoints = 3,
               inactivePenaltyPoints = 1,
               regimeThreshold = 4,
-              penaltyChargeAmount = 200
+              penaltyChargeAmount = 200,
+              PoCAchievementDate = LocalDate.of(2022, 1, 1)
             ),
             details = Seq(
               LSPDetails(
@@ -1277,7 +1287,8 @@ class IndexPageHelperSpec extends SpecBase {
               activePenaltyPoints = 3,
               inactivePenaltyPoints = 0,
               regimeThreshold = 2,
-              penaltyChargeAmount = 200
+              penaltyChargeAmount = 200,
+              PoCAchievementDate = LocalDate.of(2022, 1, 1)
             ),
             details = Seq(
               LSPDetails(
@@ -1358,7 +1369,8 @@ class IndexPageHelperSpec extends SpecBase {
               activePenaltyPoints = 3,
               inactivePenaltyPoints = 0,
               regimeThreshold = 2,
-              penaltyChargeAmount = 200
+              penaltyChargeAmount = 200,
+              PoCAchievementDate = LocalDate.of(2022, 1, 1)
             ),
             details = Seq(
               LSPDetails(
@@ -1437,7 +1449,8 @@ class IndexPageHelperSpec extends SpecBase {
               activePenaltyPoints = 2,
               inactivePenaltyPoints = 0,
               regimeThreshold = 2,
-              penaltyChargeAmount = 200
+              penaltyChargeAmount = 200,
+              PoCAchievementDate = LocalDate.of(2022, 1, 1)
             ),
             details = Seq(
               LSPDetails(
@@ -1524,7 +1537,8 @@ class IndexPageHelperSpec extends SpecBase {
               activePenaltyPoints = 0,
               inactivePenaltyPoints = 0,
               regimeThreshold = 2,
-              penaltyChargeAmount = 200
+              penaltyChargeAmount = 200,
+              PoCAchievementDate = LocalDate.of(2022, 1, 1)
             ),
             details = Seq()
           )
@@ -1554,7 +1568,8 @@ class IndexPageHelperSpec extends SpecBase {
               activePenaltyPoints = 0,
               inactivePenaltyPoints = 0,
               regimeThreshold = 2,
-              penaltyChargeAmount = 200
+              penaltyChargeAmount = 200,
+              PoCAchievementDate = LocalDate.of(2022, 1, 1)
             ),
             details = Seq()
           )
@@ -1584,7 +1599,8 @@ class IndexPageHelperSpec extends SpecBase {
               activePenaltyPoints = 0,
               inactivePenaltyPoints = 0,
               regimeThreshold = 2,
-              penaltyChargeAmount = 200
+              penaltyChargeAmount = 200,
+              PoCAchievementDate = LocalDate.of(2022, 1, 1)
             ),
             details = Seq()
           )
