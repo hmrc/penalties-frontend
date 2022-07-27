@@ -20,7 +20,6 @@ import models.compliance.{ComplianceData, CompliancePayload, ComplianceStatusEnu
 import models.{FilingFrequencyEnum, User}
 import play.api.i18n.Messages
 import play.twirl.api.Html
-import utils.MessageRenderer.getMessage
 import utils.{ImplicitDateFormatter, ViewUtils}
 
 import java.time.LocalDate
@@ -29,7 +28,7 @@ import javax.inject.Inject
 class TimelineHelper @Inject()(timeline: views.html.components.timeline,
                                p: views.html.components.p) extends ImplicitDateFormatter with ViewUtils {
 
-  def getTimelineContent(complianceData: ComplianceData, latestLSPCreationDate: LocalDate)(implicit messages: Messages, user: User[_]): Html = {
+  def getTimelineContent(complianceData: ComplianceData, latestLSPCreationDate: LocalDate)(implicit messages: Messages): Html = {
     val returnsAfterLSPCreationDate: Seq[ObligationDetail] = getReturnsAfterLSPCreationDate(complianceData.compliancePayload,
       latestLSPCreationDate)
     if (returnsAfterLSPCreationDate.nonEmpty) {
@@ -42,15 +41,7 @@ class TimelineHelper @Inject()(timeline: views.html.components.timeline,
             Some(messages(s"compliance.timeline.actionEvent.tag.submitted")) else None
         )
       }
-      val expiryDate: LocalDate = getExpiryDateForPenalties(complianceData, latestLSPCreationDate)
-      html(
-        timeline(events),
-        p(
-          content = html(stringAsHtml(getMessage("compliance.point.expiry", dateToMonthYearString(expiryDate)))),
-          classes = "govuk-body-l govuk-!-padding-top-3",
-          id = Some("point-expiry-date")
-        )
-      )
+      timeline(events)
     } else {
       html()
     }

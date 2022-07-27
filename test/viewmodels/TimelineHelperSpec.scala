@@ -151,7 +151,7 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter {
     "getTimelineContent is called and given compliance returns" should {
       "when the user is a VAT trader" must {
         "return the timeline component with VAT trader content wrapped in html" in {
-          val result = helper.getTimelineContent(complianceDataQuarterlyWith24MthsHistory, latestLSPCreationDateQuarterly)(implicitly, vatTraderUser)
+          val result = helper.getTimelineContent(complianceDataQuarterlyWith24MthsHistory, latestLSPCreationDateQuarterly)
           val parsedHtmlResult = Jsoup.parse(result.body)
           parsedHtmlResult.select("ol").attr("class") shouldBe "hmrc-timeline"
           parsedHtmlResult.select("h3").get(0).text() shouldBe "VAT period 1 January 2022 to 31 March 2022"
@@ -166,12 +166,10 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter {
 
           parsedHtmlResult.select("h3").get(3).text() shouldBe "VAT period 1 October 2022 to 31 December 2022"
           parsedHtmlResult.select("span").get(3).text() shouldBe "Submit VAT Return by 7 February 2023"
-
-          parsedHtmlResult.select("#point-expiry-date").text shouldBe "If you complete these actions we will remove your points in March 2023."
         }
 
         "return the timeline component - adding the months required to meet 24mths filing history" in {
-          val result = helper.getTimelineContent(complianceDataMonthlyWithout24MthsHistory, latestLSPCreationDateMonthly)(implicitly, vatTraderUser)
+          val result = helper.getTimelineContent(complianceDataMonthlyWithout24MthsHistory, latestLSPCreationDateMonthly)
           val parsedHtmlResult = Jsoup.parse(result.body)
           parsedHtmlResult.select("ol").attr("class") shouldBe "hmrc-timeline"
           parsedHtmlResult.select("h3").get(0).text() shouldBe "VAT period 1 January 2022 to 31 January 2022"
@@ -192,14 +190,12 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter {
 
           parsedHtmlResult.select("h3").get(5).text() shouldBe "VAT period 1 June 2022 to 30 June 2022"
           parsedHtmlResult.select("span").get(5).text() shouldBe "Submit VAT Return by 7 August 2022"
-
-          parsedHtmlResult.select("#point-expiry-date").text shouldBe "If you complete these actions we will remove your points in October 2022."
         }
       }
 
       "when the user is an agent" must {
         "return the timeline component with Agent content wrapped in html" in {
-          val result = helper.getTimelineContent(complianceDataQuarterlyWith24MthsHistory, latestLSPCreationDateQuarterly)(implicitly, agentUser)
+          val result = helper.getTimelineContent(complianceDataQuarterlyWith24MthsHistory, latestLSPCreationDateQuarterly)
           val parsedHtmlResult = Jsoup.parse(result.body)
           parsedHtmlResult.select("ol").attr("class") shouldBe "hmrc-timeline"
           parsedHtmlResult.select("h3").get(0).text() shouldBe "VAT period 1 January 2022 to 31 March 2022"
@@ -214,12 +210,10 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter {
 
           parsedHtmlResult.select("h3").get(3).text() shouldBe "VAT period 1 October 2022 to 31 December 2022"
           parsedHtmlResult.select("span").get(3).text() shouldBe "Submit VAT Return by 7 February 2023"
-
-          parsedHtmlResult.select("#point-expiry-date").text shouldBe "If these actions are completed we will remove your client’s points in March 2023."
         }
 
         "return the timeline component - adding the months required to meet 24mths filing history" in {
-          val result = helper.getTimelineContent(complianceDataMonthlyWithout24MthsHistory, latestLSPCreationDateMonthly)(implicitly, agentUser)
+          val result = helper.getTimelineContent(complianceDataMonthlyWithout24MthsHistory, latestLSPCreationDateMonthly)
           val parsedHtmlResult = Jsoup.parse(result.body)
           parsedHtmlResult.select("ol").attr("class") shouldBe "hmrc-timeline"
           parsedHtmlResult.select("h3").get(0).text() shouldBe "VAT period 1 January 2022 to 31 January 2022"
@@ -240,8 +234,6 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter {
 
           parsedHtmlResult.select("h3").get(5).text() shouldBe "VAT period 1 June 2022 to 30 June 2022"
           parsedHtmlResult.select("span").get(5).text() shouldBe "Submit VAT Return by 7 August 2022"
-
-          parsedHtmlResult.select("#point-expiry-date").text shouldBe "If these actions are completed we will remove your client’s points in October 2022."
         }
       }
     }

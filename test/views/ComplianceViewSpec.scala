@@ -53,15 +53,13 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
   )
 
   object Selectors extends BaseSelectors {
-    val staticListItem: Int => String = (item: Int) => s"#main-content li:nth-child($item)"
-
-    val submitTheseMissingReturnsH2 = "#submit-these-missing-returns"
-
-    val completeTheseActionsOnTimeH2 = "#complete-these-actions-on-time"
-
     val timelineEvent: Int => String = (item: Int) => s"#main-content > div > div > ol > li:nth-child($item)"
 
-    val pointExpiryContent = "#point-expiry-date"
+    val pointExpiryText = "#expiry-text"
+
+    val pointExpiryDate = "#expiry-date"
+
+    val missingDeadlineText = "#missing-deadline"
 
     val returnToVATLink = "#main-content > div > div > p > a"
   }
@@ -69,25 +67,22 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
   "ComplianceView" should {
 
     "when a VAT trader is on the page" must {
-      def applyView(isUnsubmittedReturns: Boolean, contentForMissingReturns: Html, timelineContent: Html): HtmlFormat.Appendable = {
-        compliancePage.apply(isUnsubmittedReturns, contentForMissingReturns, timelineContent)(implicitly, implicitly, implicitly, vatTraderUser)
+      def applyView(timelineContent: Html, periodOfComplianceAchievementDate: String): HtmlFormat.Appendable = {
+        compliancePage.apply(timelineContent, periodOfComplianceAchievementDate)(implicitly, implicitly, implicitly, vatTraderUser)
       }
 
       implicit val docWithMissingReturns: Document =
-        asDocument(applyView(isUnsubmittedReturns = true, html(stringAsHtml(sampleMissingReturns)), sampleTimelineHtml))
+        asDocument(applyView(html(stringAsHtml(sampleMissingReturns)), "1 January 2022"))
 
       val expectedContent = Seq(
         Selectors.title -> title,
         Selectors.h1 -> heading,
-        Selectors.pNthChild(2) -> p1,
-        Selectors.pNthChild(3) -> p2,
         Selectors.breadcrumbWithLink(1) -> breadcrumb1,
         Selectors.breadcrumbWithLink(2) -> breadcrumb2,
         Selectors.breadcrumbWithLink(3) -> breadcrumb3,
-        Selectors.staticListItem(1) -> li1,
-        Selectors.staticListItem(2) -> li2,
-        Selectors.submitTheseMissingReturnsH2 -> h2MissingReturns,
-        Selectors.completeTheseActionsOnTimeH2 -> completeTheseActionsOnTime,
+        Selectors.pointExpiryText -> expiryContent,
+        Selectors.pointExpiryDate -> "1 January 2022",
+        Selectors.missingDeadlineText -> missingDeadlineContent,
         Selectors.returnToVATLink -> returnToVAT
 
       )
@@ -104,50 +99,29 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         docWithMissingReturns.select(Selectors.breadcrumbWithLink(3)).attr("href") shouldBe controllers.routes.IndexController.onPageLoad.url
       }
 
-      "show a timeline with returns to be submitted and a point expiry date " in {
-        docWithMissingReturns.select(Selectors.timelineEvent(1) + " > h3").text shouldBe "VAT Period 1 October 2021 to 31 December 2021"
-        docWithMissingReturns.select(Selectors.timelineEvent(1) + " > span").text shouldBe "Submit VAT Return by February 2023"
-        docWithMissingReturns.select(Selectors.timelineEvent(1) + " > div > p > strong").text shouldBe "Submitted on time"
-        docWithMissingReturns.body().toString.contains("If you complete these actions we will remove your points in March 2023.") shouldBe true
-      }
-
-      "not display 'submit these missing returns' when the user has no missing returns" in {
-        implicit val docWithNoMissingReturns: Document = asDocument(applyView(isUnsubmittedReturns = false, html(), html()))
-        docWithNoMissingReturns.select(Selectors.submitTheseMissingReturnsH2).hasText shouldBe false
-      }
-
       "have the correct 'Return to VAT penalties and appeals' link" in {
         docWithMissingReturns.select(Selectors.returnToVATLink).attr("href") shouldBe controllers.routes.IndexController.onPageLoad.url
       }
     }
 
     "when a agent is on the page" must {
-      def applyView(isUnsubmittedReturns: Boolean, contentForMissingReturns: Html, timelineContent: Html): HtmlFormat.Appendable = {
-        compliancePage.apply(isUnsubmittedReturns, contentForMissingReturns, timelineContent)(implicitly, implicitly, implicitly, agentUser)
+      def applyView(timelineContent: Html, periodOfComplianceAchievementDate: String): HtmlFormat.Appendable = {
+        compliancePage.apply(timelineContent, periodOfComplianceAchievementDate)(implicitly, implicitly, implicitly, agentUser)
       }
 
       implicit val agentDocWithMissingReturns: Document =
-        asDocument(applyView(isUnsubmittedReturns = true, html(stringAsHtml(sampleMissingReturns)), sampleAgentTimelineHtml))
+        asDocument(applyView(html(stringAsHtml(sampleMissingReturns)), "1 January 2022"))
 
       val expectedContent = Seq(
-        Selectors.title -> title,
-        Selectors.h1 -> heading,
-        Selectors.pNthChild(2) -> agentP1,
-        Selectors.pNthChild(3) -> p2,
-        Selectors.staticListItem(1) -> agentLi1,
-        Selectors.staticListItem(2) -> agentLi2,
-        Selectors.submitTheseMissingReturnsH2 -> h2MissingReturns,
-        Selectors.completeTheseActionsOnTimeH2 -> completeTheseActionsOnTime
+        Selectors.title -> agentTitle,
+        Selectors.h1 -> agentHeading,
+        Selectors.pointExpiryText -> expiryContent,
+        Selectors.pointExpiryDate -> "1 January 2022",
+        Selectors.missingDeadlineText -> agentMissingDeadlineContent
       )
 
       behave like pageWithExpectedMessages(expectedContent)
 
-      "show a timeline with returns to be submitted and a point expiry date " in {
-        agentDocWithMissingReturns.select(Selectors.timelineEvent(1) + " > h3").text shouldBe "VAT Period 1 October 2021 to 31 December 2021"
-        agentDocWithMissingReturns.select(Selectors.timelineEvent(1) + " > span").text shouldBe "Submit VAT Return by February 2023"
-        agentDocWithMissingReturns.select(Selectors.timelineEvent(1) + " > div > p > strong").text shouldBe "Submitted on time"
-        agentDocWithMissingReturns.body().toString.contains("If these actions are completed we will remove your client’s points in March 2023.") shouldBe true
-      }
     }
   }
 }

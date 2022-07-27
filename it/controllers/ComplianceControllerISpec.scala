@@ -186,9 +186,6 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         val request = controller.onPageLoad()(fakeRequest)
         status(request) shouldBe OK
         val parsedBody = Jsoup.parse(contentAsString(request))
-        parsedBody.select("#submit-these-missing-returns").text shouldBe "Submit these missing returns"
-        parsedBody.body().toString.contains("VAT period 1 December 2021 to 31 December 2021") shouldBe true
-        parsedBody.select("#complete-these-actions-on-time").text shouldBe "Complete these actions on time"
         parsedBody.body().toString.contains("VAT period 1 January 2022 to 31 January 2022") shouldBe true
         parsedBody.body().toString.contains("Submit VAT Return by 7 March 2022") shouldBe true
         parsedBody.body().toString.contains("VAT period 1 February 2022 to 28 February 2022") shouldBe true
@@ -206,8 +203,6 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         val request = controller.onPageLoad()(fakeRequest)
         status(request) shouldBe OK
         val parsedBody = Jsoup.parse(contentAsString(request))
-        parsedBody.select("#submit-these-missing-returns").text.isEmpty shouldBe true
-        parsedBody.select("#complete-these-actions-on-time").text shouldBe "Complete these actions on time"
         parsedBody.body().toString.contains("VAT period 1 January 2022 to 31 January 2022") shouldBe true
         parsedBody.body().toString.contains("Submit VAT Return by 7 March 2022") shouldBe true
         parsedBody.body().toString.contains("VAT period 1 February 2022 to 28 February 2022") shouldBe true
@@ -228,9 +223,9 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         val request = controller.onPageLoad()(fakeAgentRequest)
         status(request) shouldBe OK
         val parsedBody = Jsoup.parse(contentAsString(request))
-        parsedBody.body().toString.contains("Your client needs to take action to bring their VAT account up to date.") shouldBe true
-        parsedBody.body().toString.contains("allow HMRC to remove all your client’s penalty points") shouldBe true
-        parsedBody.body().toString.contains("help your client to stop paying late submission financial penalties") shouldBe true
+        parsedBody.body().toString.contains("Points to be removed:") shouldBe true
+        parsedBody.body().toString.contains("sample date") shouldBe true
+        parsedBody.body().toString.contains("This date will extend if your client misses a return deadline.") shouldBe true
       }
     }
 

@@ -53,13 +53,10 @@ class ComplianceController @Inject()(view: ComplianceView,
             Try(LocalDate.parse(request.session.get(SessionKeys.latestLSPCreationDate).get))
               .getOrElse(LocalDateTime.parse(request.session.get(SessionKeys.latestLSPCreationDate).get).toLocalDate)
           }
-          val missingReturns = pageHelper.findMissingReturns(complianceData.compliancePayload, latestLSPCreationDate)
-          val missingReturnsBulletContent = pageHelper.getUnsubmittedReturnContentFromSequence(missingReturns)
           val timelineContent = timelineHelper.getTimelineContent(complianceData, latestLSPCreationDate)
           Ok(view(
-            missingReturns.nonEmpty,
-            missingReturnsBulletContent,
-            timelineContent
+            timelineContent,
+            "sample date"
           ))
         }
       )
