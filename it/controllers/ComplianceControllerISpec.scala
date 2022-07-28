@@ -46,7 +46,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
     SessionKeys.agentSessionVrn -> "123456789",
     SessionKeys.latestLSPCreationDate -> "2022-03-01",
     SessionKeys.pointsThreshold -> "5",
-    SessionKeys.pocAchievementDate -> "2024-01-01",
+    SessionKeys.pocAchievementDate -> "2022-09-01",
     authToken -> "1234"
   )
 
@@ -183,33 +183,31 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         status(request) shouldBe OK
       }
 
-      "there is missing returns - show the 'missing returns' content" in {
+      "there is missing returns - show a late tag next to those that are missing" in {
+        setFeatureDate(Some(LocalDate.of(2022, 5, 8)))
         ComplianceStub.complianceDataStub(Some(compliancePayloadWithMissingReturns))
         val request = controller.onPageLoad()(fakeRequest)
         status(request) shouldBe OK
         val parsedBody = Jsoup.parse(contentAsString(request))
-        parsedBody.body().toString.contains("VAT period 1 January 2022 to 31 January 2022") shouldBe true
-        parsedBody.body().toString.contains("Submit VAT Return by 7 March 2022") shouldBe true
-        parsedBody.body().toString.contains("VAT period 1 February 2022 to 28 February 2022") shouldBe true
-        parsedBody.body().toString.contains("Submit VAT Return by 7 April 2022") shouldBe true
         parsedBody.body().toString.contains("VAT period 1 March 2022 to 31 March 2022") shouldBe true
-        parsedBody.body().toString.contains("Submit VAT Return by 7 May 2022") shouldBe true
+        parsedBody.select(".govuk-tag--red").get(0).text() shouldBe "Late"
+        parsedBody.body().toString.contains("Submit this missing VAT Return now") shouldBe true
         parsedBody.body().toString.contains("VAT period 1 April 2022 to 30 April 2022") shouldBe true
         parsedBody.body().toString.contains("Submit VAT Return by 7 June 2022") shouldBe true
         parsedBody.body().toString.contains("VAT period 1 May 2022 to 31 May 2022") shouldBe true
         parsedBody.body().toString.contains("Submit VAT Return by 7 July 2022") shouldBe true
+        parsedBody.body().toString.contains("VAT period 1 June 2022 to 30 June 2022") shouldBe true
+        parsedBody.body().toString.contains("Submit VAT Return by 7 August 2022") shouldBe true
         parsedBody.body().toString.contains("Points to be removed:") shouldBe true
-        parsedBody.body().toString.contains("January 2024") shouldBe true      }
+        parsedBody.body().toString.contains("September 2022") shouldBe true
+      }
 
-      "there is no missing returns - do not show the 'missing returns' content" in {
+      "there is no missing returns - do not show a late tag" in {
+        setFeatureDate(Some(LocalDate.of(2022, 3, 6)))
         ComplianceStub.complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
         val request = controller.onPageLoad()(fakeRequest)
         status(request) shouldBe OK
         val parsedBody = Jsoup.parse(contentAsString(request))
-        parsedBody.body().toString.contains("VAT period 1 January 2022 to 31 January 2022") shouldBe true
-        parsedBody.body().toString.contains("Submit VAT Return by 7 March 2022") shouldBe true
-        parsedBody.body().toString.contains("VAT period 1 February 2022 to 28 February 2022") shouldBe true
-        parsedBody.body().toString.contains("Submit VAT Return by 7 April 2022") shouldBe true
         parsedBody.body().toString.contains("VAT period 1 March 2022 to 31 March 2022") shouldBe true
         parsedBody.body().toString.contains("Submit VAT Return by 7 May 2022") shouldBe true
         parsedBody.body().toString.contains("VAT period 1 April 2022 to 30 April 2022") shouldBe true
@@ -219,7 +217,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.body().toString.contains("VAT period 1 June 2022 to 30 June 2022") shouldBe true
         parsedBody.body().toString.contains("Submit VAT Return by 7 August 2022") shouldBe true
         parsedBody.body().toString.contains("Points to be removed:") shouldBe true
-        parsedBody.body().toString.contains("January 2024") shouldBe true
+        parsedBody.body().toString.contains("September 2022") shouldBe true
       }
 
       "an agent is present" in {

@@ -24,7 +24,7 @@ import services.ComplianceService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
 import utils.{CurrencyFormatter, ImplicitDateFormatter, SessionKeys}
-import viewmodels.{CompliancePageHelper, TimelineHelper}
+import viewmodels.TimelineHelper
 import views.html.ComplianceView
 
 import java.time.LocalDate
@@ -33,12 +33,12 @@ import scala.concurrent.ExecutionContext
 
 class ComplianceController @Inject()(view: ComplianceView,
                                      complianceService: ComplianceService,
-                                     pageHelper: CompliancePageHelper,
-                                    timelineHelper: TimelineHelper)(implicit ec: ExecutionContext,
-                                                                    appConfig: AppConfig,
-                                                                    authorise: AuthPredicate,
-                                                                    errorHandler: ErrorHandler,
-                                                                    controllerComponents: MessagesControllerComponents)
+                                     timelineHelper: TimelineHelper
+                                    )(implicit ec: ExecutionContext,
+                                      appConfig: AppConfig,
+                                      authorise: AuthPredicate,
+                                      errorHandler: ErrorHandler,
+                                      controllerComponents: MessagesControllerComponents)
   extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter with ImplicitDateFormatter {
 
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>

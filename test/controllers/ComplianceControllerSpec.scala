@@ -27,7 +27,7 @@ import testUtils.AuthTestModels
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import utils.SessionKeys
-import viewmodels.{CompliancePageHelper, TimelineHelper}
+import viewmodels.TimelineHelper
 import views.html.ComplianceView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,7 +35,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class ComplianceControllerSpec extends SpecBase {
   val mockComplianceService: ComplianceService = mock(classOf[ComplianceService])
   val page: ComplianceView = injector.instanceOf[ComplianceView]
-  val pageHelper: CompliancePageHelper = injector.instanceOf[CompliancePageHelper]
   override val timelineHelper: TimelineHelper = injector.instanceOf[TimelineHelper]
   implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
 
@@ -55,7 +54,6 @@ class ComplianceControllerSpec extends SpecBase {
   object Controller extends ComplianceController(
     page,
     mockComplianceService,
-    pageHelper,
     timelineHelper
   )(implicitly, implicitly, authPredicate, errorHandler, stubMessagesControllerComponents())
 

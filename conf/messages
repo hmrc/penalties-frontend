@@ -148,13 +148,11 @@ agent.compliance.titleAndHeading = Actions to take before HMRC can remove your c
 
 compliance.timeline.actionEvent.header = VAT period {0} to {1}
 compliance.timeline.actionEvent.body = Submit VAT Return by {0}
+compliance.timeline.actionEvent.body.late = Submit this missing VAT Return now
 compliance.point.expiry = Points to be removed:
 compliance.point.extension = This date will extend if you miss a return deadline.
 agent.compliance.point.extension = This date will extend if your client misses a return deadline.
-
-#To be removed
-compliance.timeline.actionEvent.tag.submitted = Submitted on time
-compliance.vat.missingReturn = VAT period {0} to {1}
+compliance.timeline.actionEvent.tag.late = Late
 
 # BETA Banner
 # ----------------------------------------------------------
