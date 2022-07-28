@@ -78,8 +78,4 @@ object CalculationMessages {
   val onePartCalculation = (calculation: String) => s"The calculation we use is: $calculation"
 
   val dueDate = "Due date"
-
-  val linkEstimatedTrader = "Return to what you owe"
-
-  val linkEstimatedAgent = "Return to what your client owes"
 }
