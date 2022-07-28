@@ -199,7 +199,6 @@ whatIsOwed.allPenalties.interest = llog o £{0} ar gosbau
 # Calculation messages
 # ----------------------------------------------------------
 calculation.headingAndTitle.lpp = Cosb am dalu’n hwyr
-calculation.headingAndTitle.lpp2.estimate = Second late payment penalty
 calculation.caption = {0} to {1}
 calculation.heading.lpp1And2.hiddenText = The period dates are
 calculation.p.1.15.days = This penalty applies if VAT has not been paid for 15 days.

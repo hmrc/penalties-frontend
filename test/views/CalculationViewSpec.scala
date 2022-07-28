@@ -75,10 +75,10 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selector.breadcrumbWithLink(1) -> breadcrumb1,
         Selector.breadcrumbWithLink(2) -> breadcrumb2,
         Selector.breadcrumbWithLink(3) -> breadcrumb3,
-        Selector.title -> titleLPP2Estimate,
+        Selector.title -> titleLPP,
         Selector.periodWithText -> periodWithText,
         Selector.HeaderTextNotVisible -> periodHiddenText,
-        Selector.h1 -> headingLPP2Estimate,
+        Selector.h1 -> headingLPP,
         Selector.howPenaltyIsApplied -> howPenaltyIsAppliedLPP2,
         Selector.whenPenaltyIncreases -> whenPenaltyIncreasesAccruing,
         Selector.calculation -> lpp2Calculation,
@@ -348,10 +348,10 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       implicit val doc: Document = asDocument(applyView())
 
       val expectedContent = Seq(
-        Selector.title -> titleLPP2Estimate,
+        Selector.title -> titleLPP,
         Selector.periodWithText -> periodWithText,
         Selector.HeaderTextNotVisible -> periodHiddenText,
-        Selector.h1 -> headingLPP2Estimate,
+        Selector.h1 -> headingLPP,
         Selector.howPenaltyIsApplied -> howPenaltyIsAppliedLPP2,
         Selector.whenPenaltyIncreases -> whenPenaltyIncreasesAccruingAgent,
         Selector.calculation -> lpp2Calculation,

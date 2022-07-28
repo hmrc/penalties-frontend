@@ -19,15 +19,11 @@ package assets.messages
 object CalculationMessages {
   val titleLPP = "Late payment penalty - Manage your VAT account - GOV.UK"
 
-  val titleLPP2Estimate = "Second late payment penalty - Manage your VAT account - GOV.UK"
-
   val periodHiddenText = "The period dates are"
 
   val periodWithText = "The period dates are 1 April 2022 to 30 June 2022"
 
   val headingLPP = "Late payment penalty"
-
-  val headingLPP2Estimate = "Second late payment penalty"
 
   val th1LPPEstimate = "Penalty amount (estimate)"
 
