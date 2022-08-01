@@ -18,27 +18,19 @@ package assets.messages
 
 object ComplianceMessages {
 
-  val title = "Bring your VAT account up to date - Manage your VAT account - GOV.UK"
+  val title = "Actions to take before HMRC can remove your points - Manage your VAT account - GOV.UK"
 
-  val heading = "Bring your VAT account up to date"
+  val heading = "Actions to take before HMRC can remove your points"
 
-  val p1 = "You need to take action to bring your VAT account up to date."
+  val agentTitle = "Actions to take before HMRC can remove your client’s points - Manage your VAT account - GOV.UK"
 
-  val agentP1 = "Your client needs to take action to bring their VAT account up to date."
+  val agentHeading = "Actions to take before HMRC can remove your client’s points"
 
-  val p2 = "Taking this action will:"
+  val expiryContent = "Points to be removed:"
 
-  val li1 = "allow HMRC to remove all your penalty points"
+  val missingDeadlineContent = "This date will extend if you miss a return deadline."
 
-  val agentLi1 = "allow HMRC to remove all your client’s penalty points"
-
-  val li2 = "help you stop paying late submission financial penalties"
-
-  val agentLi2 = "help your client to stop paying late submission financial penalties"
-
-  val h2MissingReturns = "Submit these missing returns"
-
-  val completeTheseActionsOnTime = "Complete these actions on time"
+  val agentMissingDeadlineContent = "This date will extend if your client misses a return deadline."
 
   val returnToVAT = "Return to VAT penalties and appeals"
 

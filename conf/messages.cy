@@ -143,26 +143,16 @@ app.common.back = Yn ôl
 
 # Compliance View
 # ----------------------------------------------------------
-compliance.title = Bring your VAT account up to date
-compliance.heading = Bring your VAT account up to date
-compliance.heading.completeActions = Complete these actions on time
-
-compliance.p1 = You need to take action to bring your VAT account up to date.
-agent.compliance.p1 = Your client needs to take action to bring their VAT account up to date.
-compliance.p2 = Taking this action will:
-compliance.b1 = allow HMRC to remove all your penalty points
-agent.compliance.b1 = allow HMRC to remove all your client’s penalty points
-compliance.b2 = help you stop paying late submission financial penalties
-agent.compliance.b2 = help your client to stop paying late submission financial penalties
-compliance.vat.missingReturn = VAT period {0} to {1}
-
-compliance.unsubmitted.header = Submit these missing returns
+compliance.titleAndHeading = Actions to take before HMRC can remove your points
+agent.compliance.titleAndHeading = Actions to take before HMRC can remove your client’s points
 
 compliance.timeline.actionEvent.header = VAT period {0} to {1}
 compliance.timeline.actionEvent.body = Submit VAT Return by {0}
-compliance.timeline.actionEvent.tag.submitted = Submitted on time
-compliance.point.expiry = If you complete these actions we will remove your points in {0}.
-agent.compliance.point.expiry = If these actions are completed we will remove your client’s points in {0}.
+compliance.timeline.actionEvent.body.late = Submit this missing VAT Return now
+compliance.point.expiry = Points to be removed:
+compliance.point.extension = This date will extend if you miss a return deadline.
+agent.compliance.point.extension = This date will extend if your client misses a return deadline.
+compliance.timeline.actionEvent.tag.late = Late
 
 # BETA Banner
 # ----------------------------------------------------------

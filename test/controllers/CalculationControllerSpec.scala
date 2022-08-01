@@ -60,7 +60,8 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
           activePenaltyPoints = 10,
           inactivePenaltyPoints = 12,
           regimeThreshold = 10,
-          penaltyChargeAmount = 684.25
+          penaltyChargeAmount = 684.25,
+          PoCAchievementDate = LocalDate.of(2022, 1, 1)
         ),
         details = Seq(LSPDetails(
           penaltyNumber = "12345678901234",
@@ -143,7 +144,8 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
           activePenaltyPoints = 10,
           inactivePenaltyPoints = 12,
           regimeThreshold = 10,
-          penaltyChargeAmount = 684.25
+          penaltyChargeAmount = 684.25,
+          PoCAchievementDate = LocalDate.of(2022, 1, 1)
         ),
         details = Seq(LSPDetails(
           penaltyNumber = "12345678901234",

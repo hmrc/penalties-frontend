@@ -23,24 +23,23 @@ import play.api.mvc._
 import services.ComplianceService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
-import utils.{CurrencyFormatter, SessionKeys}
-import viewmodels.{CompliancePageHelper, TimelineHelper}
+import utils.{CurrencyFormatter, ImplicitDateFormatter, SessionKeys}
+import viewmodels.TimelineHelper
 import views.html.ComplianceView
 
-import java.time.{LocalDate, LocalDateTime}
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
-import scala.util.Try
 
 class ComplianceController @Inject()(view: ComplianceView,
                                      complianceService: ComplianceService,
-                                     pageHelper: CompliancePageHelper,
-                                    timelineHelper: TimelineHelper)(implicit ec: ExecutionContext,
-                                                                    appConfig: AppConfig,
-                                                                    authorise: AuthPredicate,
-                                                                    errorHandler: ErrorHandler,
-                                                                    controllerComponents: MessagesControllerComponents)
-  extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter {
+                                     timelineHelper: TimelineHelper
+                                    )(implicit ec: ExecutionContext,
+                                      appConfig: AppConfig,
+                                      authorise: AuthPredicate,
+                                      errorHandler: ErrorHandler,
+                                      controllerComponents: MessagesControllerComponents)
+  extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter with ImplicitDateFormatter {
 
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
     complianceService.getDESComplianceData(request.vrn).map {
@@ -49,17 +48,13 @@ class ComplianceController @Inject()(view: ComplianceView,
         errorHandler.showInternalServerError
       })(
         complianceData => {
-          val latestLSPCreationDate: LocalDate = {
-            Try(LocalDate.parse(request.session.get(SessionKeys.latestLSPCreationDate).get))
-              .getOrElse(LocalDateTime.parse(request.session.get(SessionKeys.latestLSPCreationDate).get).toLocalDate)
-          }
-          val missingReturns = pageHelper.findMissingReturns(complianceData.compliancePayload, latestLSPCreationDate)
-          val missingReturnsBulletContent = pageHelper.getUnsubmittedReturnContentFromSequence(missingReturns)
+          val latestLSPCreationDate: LocalDate = LocalDate.parse(request.session.get(SessionKeys.latestLSPCreationDate).get)
+          val pocAchievementDate: LocalDate = LocalDate.parse(request.session.get(SessionKeys.pocAchievementDate).get)
+          val parsedPOCAchievementDate: String = dateToMonthYearString(pocAchievementDate)
           val timelineContent = timelineHelper.getTimelineContent(complianceData, latestLSPCreationDate)
           Ok(view(
-            missingReturns.nonEmpty,
-            missingReturnsBulletContent,
-            timelineContent
+            timelineContent,
+            parsedPOCAchievementDate
           ))
         }
       )

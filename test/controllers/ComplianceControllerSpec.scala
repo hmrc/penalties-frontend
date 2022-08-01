@@ -27,7 +27,7 @@ import testUtils.AuthTestModels
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import utils.SessionKeys
-import viewmodels.{CompliancePageHelper, TimelineHelper}
+import viewmodels.TimelineHelper
 import views.html.ComplianceView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,7 +35,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class ComplianceControllerSpec extends SpecBase {
   val mockComplianceService: ComplianceService = mock(classOf[ComplianceService])
   val page: ComplianceView = injector.instanceOf[ComplianceView]
-  val pageHelper: CompliancePageHelper = injector.instanceOf[CompliancePageHelper]
   override val timelineHelper: TimelineHelper = injector.instanceOf[TimelineHelper]
   implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
 
@@ -55,26 +54,18 @@ class ComplianceControllerSpec extends SpecBase {
   object Controller extends ComplianceController(
     page,
     mockComplianceService,
-    pageHelper,
     timelineHelper
   )(implicitly, implicitly, authPredicate, errorHandler, stubMessagesControllerComponents())
 
   "onPageLoad" should {
 
     "the user is authorised" must {
-      "return OK - calling the service to retrieve compliance data to the view" in new Setup(AuthTestModels.successfulAuthResult) {
-        val result: Future[Result] = Controller.onPageLoad()(fakeRequest.withSession(
-          SessionKeys.latestLSPCreationDate -> "2020-01-01T13:00:00.000",
-          SessionKeys.pointsThreshold -> "4"
-        ))
-        status(result) shouldBe OK
-      }
-
-      "return OK - calling the service to retrieve compliance data to the view (when given a local date for latest LSP creation date)" in
+      "return OK - calling the service to retrieve compliance data to the view" in
         new Setup(AuthTestModels.successfulAuthResult) {
         val result: Future[Result] = Controller.onPageLoad()(fakeRequest.withSession(
-          SessionKeys.latestLSPCreationDate -> "2020-01-01T13:00:00.000",
-          SessionKeys.pointsThreshold -> "4"
+          SessionKeys.latestLSPCreationDate -> "2020-01-01",
+          SessionKeys.pointsThreshold -> "4",
+          SessionKeys.pocAchievementDate -> "2022-01-01"
         ))
         status(result) shouldBe OK
       }

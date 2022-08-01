@@ -17,37 +17,36 @@
 @import config.AppConfig
 
 @this(
-    layout: Layout
+        layout: Layout
 )
 
-@(      isUnsubmittedReturns: Boolean = false,
-        contentForUnsubmittedReturnBullets: Html,
-        timelineContent: Html
+@(
+        timelineContent: Html,
+        datePointsWillBeRemoved: String
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
 
-@layout(pageTitle = messages("compliance.title"),
-    isPageFullWidth = false, isUserAgent = user.isAgent,
-    extraBreadcrumbs = Some(Seq((messages("index.breadcrumb.index"), controllers.routes.IndexController.onPageLoad.url)))) {
+  @layout(
+    pageTitle = getMessage("compliance.titleAndHeading"),
+    isPageFullWidth = false,
+    isUserAgent = user.isAgent,
+    extraBreadcrumbs = Some(Seq((messages("index.breadcrumb.index"), controllers.routes.IndexController.onPageLoad.url)))
+  ) {
 
-    <h1 class="govuk-heading-xl">@{messages("compliance.heading")}</h1>
-
-    <p class="govuk-body">@getMessage("compliance.p1")</p>
-    <p class="govuk-body">@messages("compliance.p2")</p>
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@getMessage("compliance.b1")</li>
-        <li>@getMessage("compliance.b2")</li>
-    </ul>
-
-    @if(isUnsubmittedReturns) {
-        <h2 class="govuk-heading-l" id="submit-these-missing-returns">@messages("compliance.unsubmitted.header")</h2>
-        @contentForUnsubmittedReturnBullets
-    }
-
-    <h2 class="govuk-heading-l" id="complete-these-actions-on-time">@{messages("compliance.heading.completeActions")}</h2>
+    <h1 class="govuk-heading-xl">@getMessage("compliance.titleAndHeading")</h1>
 
     @timelineContent
-    <p>
-        <a class='govuk-link' href='@{controllers.routes.IndexController.onPageLoad.url}'>@messages("calculation.returnLink")</a>
+
+    <p class="govuk-body-l govuk-!-padding-top-3">
+      <span id="expiry-text">@messages("compliance.point.expiry")</span>
+      <span id="expiry-date" class="govuk-!-font-weight-bold">@datePointsWillBeRemoved</span>
+      <br/>
+      <span id="missing-deadline">@getMessage("compliance.point.extension")</span>
     </p>
 
-}
+    <p class="govuk-body">
+      <a class="govuk-link" href="@{
+        controllers.routes.IndexController.onPageLoad.url
+      }">@messages("calculation.returnLink")</a>
+    </p>
+
+  }

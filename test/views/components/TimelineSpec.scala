@@ -45,8 +45,8 @@ class TimelineSpec extends SpecBase with ViewBehaviours with ImplicitDateFormatt
   val timelineEventsWithStatus: Seq[TimelineEvent] = Seq(
     TimelineEvent(
       s"VAT period ${dateTimeToString(sampleDateTime)} to ${dateTimeToString(sampleDateTime.plusDays(7))}",
-      s"Submit VAT Return by ${dateTimeToString(sampleDateTime.plusMonths(1))}",
-      Some("Submitted on time")
+      "Submit this missing VAT Return now",
+      Some("Late")
     ),
     TimelineEvent(
       s"VAT period ${dateTimeToString(sampleDateTime)} to ${dateTimeToString(sampleDateTime.plusDays(7))}",
@@ -56,7 +56,7 @@ class TimelineSpec extends SpecBase with ViewBehaviours with ImplicitDateFormatt
   )
 
   "timeline" when {
-    "given timeline events with no actions completed" should {
+    "given timeline events" should {
       implicit val doc: Document = asDocument(timelineHtml.apply(timelineEventsNoStatus))
 
       "display a timeline with no tag status' " in {
@@ -67,16 +67,13 @@ class TimelineSpec extends SpecBase with ViewBehaviours with ImplicitDateFormatt
         doc.select("h3").get(1).text() shouldBe "VAT period 23 April 2021 to 30 April 2021"
         doc.select("span").get(1).text() shouldBe "Submit VAT Return by 23 May 2021"
       }
-    }
 
-    "given timeline events with some actions completed" should {
-      implicit val doc: Document = asDocument(timelineHtml.apply(timelineEventsWithStatus))
-
-      "display a timeline with no tag status' " in {
+      "display a timeline with a tag status' " in {
+        implicit val doc: Document = asDocument(timelineHtml.apply(timelineEventsWithStatus))
         doc.select("ol").attr("class") shouldBe "hmrc-timeline"
         doc.select("h3").get(0).text() shouldBe "VAT period 23 April 2021 to 30 April 2021"
-        doc.select("span").get(0).text() shouldBe "Submit VAT Return by 23 May 2021"
-        doc.select("strong").text shouldBe "Submitted on time"
+        doc.select("span").get(0).text() shouldBe "Late Submit this missing VAT Return now"
+        doc.select("strong").get(0).text() shouldBe "Late"
 
         doc.select("h3").get(1).text() shouldBe "VAT period 23 April 2021 to 30 April 2021"
         doc.select("span").get(1).text() shouldBe "Submit VAT Return by 23 May 2021"
