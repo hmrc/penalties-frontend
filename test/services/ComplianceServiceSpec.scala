@@ -43,12 +43,11 @@ class ComplianceServiceSpec extends SpecBase {
     s"return a successful response and pass the result back to the controller" in new Setup {
       when(mockComplianceConnector.getComplianceDataFromDES(any(), any(), any())(any())).thenReturn(Future.successful(sampleCompliancePayload))
       val result: Option[ComplianceData] = await(service.getDESComplianceData(vrn)(HeaderCarrier(), User("123456789")(fakeRequest.withSession(
-        SessionKeys.latestLSPCreationDate -> "2020-01-01T01:01:00.000",
+        SessionKeys.latestLSPCreationDate -> "2020-01-01",
         SessionKeys.pointsThreshold -> "5"
       )), implicitly))
       val expectedResult = ComplianceData(
         sampleCompliancePayload,
-        amountOfSubmissionsRequiredFor24MthsHistory = Some(17),
         filingFrequency = FilingFrequencyEnum.monthly
       )
       result.isDefined shouldBe true
@@ -63,7 +62,6 @@ class ComplianceServiceSpec extends SpecBase {
       )), implicitly))
       val expectedResult = ComplianceData(
         sampleCompliancePayload,
-        amountOfSubmissionsRequiredFor24MthsHistory = Some(17),
         filingFrequency = FilingFrequencyEnum.monthly
       )
       result.isDefined shouldBe true
@@ -79,7 +77,7 @@ class ComplianceServiceSpec extends SpecBase {
       when(mockComplianceConnector.getComplianceDataFromDES(any(), any(), any())(any()))
         .thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", INTERNAL_SERVER_ERROR)))
       val result: Exception = intercept[Exception](await(service.getDESComplianceData(vrn)(HeaderCarrier(), User("123456789")(fakeRequest.withSession(
-        SessionKeys.latestLSPCreationDate -> "2020-01-01T01:01:00.000",
+        SessionKeys.latestLSPCreationDate -> "2020-01-01",
         SessionKeys.pointsThreshold -> "5"
       )), implicitly)))
       result.getMessage shouldBe "Upstream error"

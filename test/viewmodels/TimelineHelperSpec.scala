@@ -143,13 +143,11 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter with Featur
 
   val complianceDataQuarterlyWith24MthsHistory: ComplianceData = ComplianceData(
     compliancePayload,
-    amountOfSubmissionsRequiredFor24MthsHistory = None,
     filingFrequency = FilingFrequencyEnum.quarterly
   )
 
   val complianceDataMonthlyWithout24MthsHistory: ComplianceData = ComplianceData(
     compliancePayloadMonthly,
-    amountOfSubmissionsRequiredFor24MthsHistory = Some(3),
     filingFrequency = FilingFrequencyEnum.monthly
   )
 
