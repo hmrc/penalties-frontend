@@ -115,7 +115,6 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with T
 
   val sampleComplianceData: ComplianceData = ComplianceData(
     sampleCompliancePayload,
-    amountOfSubmissionsRequiredFor24MthsHistory = None,
     filingFrequency = FilingFrequencyEnum.quarterly
   )
 

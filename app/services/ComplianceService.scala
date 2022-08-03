@@ -20,16 +20,15 @@ import config.AppConfig
 import config.featureSwitches.FeatureSwitching
 import connectors.ComplianceConnector
 import models.FilingFrequencyEnum._
-import models.compliance.{ComplianceData, ComplianceStatusEnum}
+import models.compliance.ComplianceData
 import models.{FilingFrequencyEnum, User}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logger.logger
 import utils.SessionKeys
 
-import java.time.{LocalDate, LocalDateTime}
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class ComplianceService @Inject()(connector: ComplianceConnector)(implicit val appConfig: AppConfig) extends FeatureSwitching {
 
@@ -37,27 +36,14 @@ class ComplianceService @Inject()(connector: ComplianceConnector)(implicit val a
                                         ec: ExecutionContext): Future[Option[ComplianceData]] = {
     (user.session.get(SessionKeys.latestLSPCreationDate), user.session.get(SessionKeys.pointsThreshold)) match {
       case (Some(lspCreationDateAsString), Some(pointsThresholdAsString)) => {
-        val lspCreationDate: LocalDate = {
-          Try(LocalDate.parse(lspCreationDateAsString))
-            .getOrElse(LocalDateTime.parse(lspCreationDateAsString).toLocalDate)
-        }
+        val lspCreationDate: LocalDate = LocalDate.parse(lspCreationDateAsString)
         val fromDate = lspCreationDate.minusYears(2)
         val filingFrequency: FilingFrequencyEnum.Value = getFilingFrequency(pointsThresholdAsString)
         val toDate: LocalDate = getToDateFromFilingFrequency(lspCreationDate, filingFrequency)
         connector.getComplianceDataFromDES(vrn, fromDate, toDate).map {
           complianceData => {
-            val amountOfFulfilledSubmissionsInPast2Years: Int = complianceData.obligationDetails.count(obligation =>
-              obligation.status == ComplianceStatusEnum.fulfilled && obligation.inboundCorrespondenceToDate.isBefore(LocalDate.now()))
-            logger.debug(s"[ComplianceService][getDESComplianceData] - Amount of fulfilled submissions in " +
-              s"the past 2 years: $amountOfFulfilledSubmissionsInPast2Years")
-            val submissionsNeededForMonthlyFiler: Int = (amountOfFulfilledSubmissionsInPast2Years + 6) - 24
-            val amountOfSubmissionsNeededFor24MonthHistory = {
-              if (submissionsNeededForMonthlyFiler >= 0) None
-              else Some(Math.abs(submissionsNeededForMonthlyFiler))
-            }
-            logger.debug(s"[ComplianceService][getDESComplianceData] - Amount of submissions needed " +
-              s"for 2 year filing history: $amountOfSubmissionsNeededFor24MonthHistory")
-            Some(ComplianceData(complianceData, amountOfSubmissionsNeededFor24MonthHistory, filingFrequency))
+            logger.debug(s"[ComplianceService][getDESComplianceData] - Compliance Data  $complianceData")
+            Some(ComplianceData(complianceData, filingFrequency))
           }
         }
       }
@@ -73,11 +59,11 @@ class ComplianceService @Inject()(connector: ComplianceConnector)(implicit val a
   }
 
   private def getToDateFromFilingFrequency(lspCreationDate: LocalDate, filingFrequency: FilingFrequencyEnum.Value): LocalDate = {
-    (filingFrequency match {
+    filingFrequency match {
       case FilingFrequencyEnum.annually => lspCreationDate.plusYears(2)
       case FilingFrequencyEnum.quarterly => lspCreationDate.plusYears(1)
       case FilingFrequencyEnum.monthly => lspCreationDate.plusMonths(6)
-    })
+    }
   }
 
   private def getFilingFrequency(pointsThreshold: String): FilingFrequencyEnum.Value = {

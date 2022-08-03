@@ -20,6 +20,5 @@ import models.FilingFrequencyEnum
 
 case class ComplianceData(
                            compliancePayload: CompliancePayload,
-                           amountOfSubmissionsRequiredFor24MthsHistory: Option[Int],
                            filingFrequency: FilingFrequencyEnum.Value
                          )
