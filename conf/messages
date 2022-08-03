@@ -19,7 +19,7 @@ unauthorised.alreadySignedUp = If you have already signed up, you need to sign i
 
 # LSP Content
 # -------------------------------------------
-lsp.pointSummary.noActivePoints = No active late submission penalty points.
+lsp.pointSummary.noActivePoints = There are no active late submission penalty points.
 lsp.pointSummary.penaltyPoints.totalSummary = Penalty points total:
 lsp.pointSummary.penaltyPoints.overview.singular = You have {0} penalty point for submitting a VAT Return late.
 agent.lsp.pointSummary.penaltyPoints.overview.singular = Your client has {0} penalty point for submitting a VAT Return late.

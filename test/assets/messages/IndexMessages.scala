@@ -51,7 +51,7 @@ object IndexMessages {
 
   val penaltyPointsTotal = "Penalty points total:"
 
-  val noActivePenaltyPoints = "No active late submission penalty points."
+  val noActivePenaltyPoints = "There are no active late submission penalty points."
 
   val noActivePaymentPenalty = "There are no late payment penalties."
 
