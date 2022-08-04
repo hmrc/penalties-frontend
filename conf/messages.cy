@@ -19,7 +19,7 @@ unauthorised.alreadySignedUp = Os ydych eisoes wedi cofrestru, bydd angen i chi 
 
 # LSP Content
 # -------------------------------------------
-lsp.pointSummary.noActivePoints = Dim pwyntiau cosb gweithredol am gyflwyno’n hwyr.
+lsp.pointSummary.noActivePoints = Nid oes pwyntiau cosb am gyflwyno’n hwyr ar waith ar hyn o bryd.
 lsp.pointSummary.penaltyPoints.totalSummary = Cyfanswm pwyntiau cosb:
 lsp.pointSummary.penaltyPoints.overview.singular = Mae gennych {0} o bwyntiau cosb am gyflwyno Ffurflen TAW yn hwyr.
 agent.lsp.pointSummary.penaltyPoints.overview.singular = Mae gan eich cleient {0} o bwyntiau cosb am gyflwyno Ffurflen TAW yn hwyr.
