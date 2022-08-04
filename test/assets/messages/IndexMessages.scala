@@ -85,19 +85,13 @@ object IndexMessages {
 
   val thresholdReachedAgent = "Your client has reached the financial penalty threshold."
 
-  val lateReturnPenalty = "Until you bring your account up to date:"
+  val lateReturnPenalty = "This means you have to pay a £200 penalty every time you submit a VAT Return late, until we remove your penalty points."
 
-  val lateReturnPenaltyBullet1 = "your penalty points will not expire"
+  val lateReturnPenaltyAgent = "This means they have to pay a £200 penalty every time they submit a VAT Return late, until we remove their points."
 
-  val lateReturnPenaltyBullet2 = "you’ll have to pay a £200 penalty every time you submit a VAT Return late"
+  val bringAccountUpToDate = "Actions to take before HMRC can remove your points"
 
-  val lateReturnPenaltyAgent = "Until they bring their account up to date:"
-
-  val lateReturnPenaltyBullet1Agent = "their penalty points will not expire"
-
-  val lateReturnPenaltyBullet2Agent = "they’ll have to pay a £200 penalty every time they submit a VAT Return late"
-
-  val bringAccountUpToDate = "Show me how to bring this account up to date"
+  val bringAccountUpToDateAgent = "Actions to take before HMRC can remove your points"
 
   val viewCalculationLink = "View calculation"
 

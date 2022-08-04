@@ -627,18 +627,19 @@ class IndexPageHelperSpec extends SpecBase {
 
       "show the penalty amount until account is updated text" in {
         parsedHtmlResult.select("p.govuk-body").get(1).text shouldBe lateReturnPenalty
-        parsedHtmlResult.select("ul li").get(0).text shouldBe lateReturnPenaltyBullet1
-        parsedHtmlResult.select("ul li").get(1).text shouldBe lateReturnPenaltyBullet2
       }
 
       "user is agent - show the penalty amount until account is updated text" in {
         parsedHtmlResultForAgent.select("p.govuk-body").get(1).text shouldBe lateReturnPenaltyAgent
-        parsedHtmlResultForAgent.select("ul li").get(0).text shouldBe lateReturnPenaltyBullet1Agent
-        parsedHtmlResultForAgent.select("ul li").get(1).text shouldBe lateReturnPenaltyBullet2Agent
       }
 
       "show the guidance link text" in {
         parsedHtmlResult.select("a.govuk-link").text shouldBe bringAccountUpToDate
+        parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe controllers.routes.ComplianceController.onPageLoad.url
+      }
+
+      "user is agent - show the guidance link text" in {
+        parsedHtmlResult.select("a.govuk-link").text shouldBe bringAccountUpToDateAgent
         parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe controllers.routes.ComplianceController.onPageLoad.url
       }
     }
