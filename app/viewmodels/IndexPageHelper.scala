@@ -16,7 +16,10 @@
 
 package viewmodels
 
+import config.ErrorHandler
+import javax.inject.Inject
 import models.appealInfo.AppealStatusEnum.Upheld
+import models.compliance.ComplianceData
 import models.lpp.{LPPDetails, LPPPenaltyStatusEnum}
 import models.lsp.{LSPPenaltyStatusEnum, TaxReturnStatusEnum}
 import models.{GetPenaltyDetails, User}
@@ -26,17 +29,17 @@ import services.PenaltiesService
 import utils.MessageRenderer.getMessage
 import utils.{CurrencyFormatter, ViewUtils}
 
-import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class IndexPageHelper @Inject()(p: views.html.components.p,
                                 strong: views.html.components.strong,
                                 bullets: views.html.components.bullets,
                                 link: views.html.components.link,
                                 warningText: views.html.components.warningText,
-                                penaltiesService: PenaltiesService) extends ViewUtils with CurrencyFormatter {
+                                penaltiesService: PenaltiesService)(implicit ec: ExecutionContext) extends ViewUtils with CurrencyFormatter {
 
   //scalastyle:off
-  def getContentBasedOnPointsFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_]): Html = {
+  def getContentBasedOnPointsFromModel(penaltyDetails: GetPenaltyDetails, complianceData: ComplianceData)(implicit messages: Messages, user: User[_]): Html = {
     val fixedPenaltyAmount: String = parseBigDecimalNoPaddedZeroToFriendlyValue(penaltyDetails.lateSubmissionPenalty.map(_.summary.penaltyChargeAmount).getOrElse(0))
     val activePoints: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0)
     val regimeThreshold: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0)
