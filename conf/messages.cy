@@ -51,13 +51,10 @@ agent.lsp.pointSummary.penaltyPoints.overview.warningText = Bydd eich cleient yn
 
 lsp.onThreshold.p1 = Rydych wedi cyrraedd y trothwy ar gyfer cosbau ariannol.
 agent.lsp.onThreshold.p1 = Mae eich cleient wedi cyrraedd y trothwy ar gyfer cosbau ariannol.
-lsp.onThreshold.p2 = Hyd nes eich bod yn diweddaru eich cyfrif:
-agent.lsp.onThreshold.p2 = Hyd nes ei fod yn diweddaru’i gyfrif:
-lsp.onThreshold.p2.b1 = ni fydd eich pwyntiau cosb yn cael eu dileu
-agent.lsp.onThreshold.p2.b1 = ni fydd ei bwyntiau cosb yn cael eu dileu
-lsp.onThreshold.p2.b2 = bydd angen i chi dalu cosb o £{0} bob tro rydych yn cyflwyno Ffurflen TAW yn hwyr
-agent.lsp.onThreshold.p2.b2 = bydd angen iddo dalu cosb o £{0} bob tro mae’n cyflwyno Ffurflen TAW yn hwyr
-lsp.onThreshold.link = Show me how to bring this account up to date
+lsp.onThreshold.p2 = This means you have to pay a £{0} penalty every time you submit a VAT Return late, until we remove your penalty points.
+agent.lsp.onThreshold.p2 = This means they have to pay a £{0} penalty every time they submit a VAT Return late, until we remove their points.
+lsp.onThreshold.link = Actions to take before HMRC can remove your points
+agent.lsp.onThreshold.link = Actions to take before HMRC can remove your client’s points
 
 lsp.multiple.penaltyPeriod = Roedd y Ffurflen TAW a oedd yn ddyledus ar {0} hefyd wedi’i chyflwyno’n hwyr. <br> Dim ond 1 cosb am gyflwyno’n hwyr y mae CThEM yn ei roi bob mis.
 

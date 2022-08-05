@@ -50,12 +50,8 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
         html(
           p(content = html(stringAsHtml(getMessage("lsp.onThreshold.p1"))),
             classes = "govuk-body govuk-!-font-size-24"),
-          p(content = html(stringAsHtml(getMessage("lsp.onThreshold.p2")))),
-          bullets(Seq(
-            stringAsHtml(getMessage("lsp.onThreshold.p2.b1")),
-            stringAsHtml(getMessage("lsp.onThreshold.p2.b2", fixedPenaltyAmount))
-          )),
-          p(link(link = controllers.routes.ComplianceController.onPageLoad.url, messages("lsp.onThreshold.link")))
+          p(content = html(stringAsHtml(getMessage("lsp.onThreshold.p2",fixedPenaltyAmount)))),
+          p(link(link = controllers.routes.ComplianceController.onPageLoad.url, getMessage("lsp.onThreshold.link")))
         )
       case (currentPoints, threshold, addedPoints, _) if addedPoints > 0 =>
         val base = Seq(
