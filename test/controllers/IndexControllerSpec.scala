@@ -48,7 +48,7 @@ class IndexControllerSpec extends SpecBase {
       Matchers.any(), Matchers.any())
     ).thenReturn(authResult)
     when(mockPenaltiesService.getPenaltyDataFromEnrolmentKey(any())(any(), any())).thenReturn(Future.successful(Right(samplePenaltyDetailsModel)))
-    when(mockComplianceService.getDESComplianceData(any())(any(), any(), any())).thenReturn(Future.successful(Right(sampleComplianceData)))
+    when(mockComplianceService.getDESComplianceData(any())(any(), any(), any())).thenReturn(Future.successful(Option(sampleComplianceData)))
   }
 
   object Controller extends IndexController(
