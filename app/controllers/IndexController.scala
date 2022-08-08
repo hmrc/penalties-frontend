@@ -21,20 +21,19 @@ import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.{ComplianceService, PenaltiesService}
+import services.PenaltiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
 import utils.SessionKeys._
 import utils.{CurrencyFormatter, EnrolmentKeys}
 import viewmodels.{IndexPageHelper, SummaryCardHelper}
 import views.html.IndexView
-import javax.inject.Inject
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject()(view: IndexView,
                                 penaltiesService: PenaltiesService,
-                                complianceService: ComplianceService,
                                 cardHelper: SummaryCardHelper,
                                 pageHelper: IndexPageHelper)(implicit ec: ExecutionContext,
                                                              val appConfig: AppConfig,
@@ -45,51 +44,41 @@ class IndexController @Inject()(view: IndexView,
 
   //scalastyle:off
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
-    penaltiesService.getPenaltyDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn)).flatMap {
+    penaltiesService.getPenaltyDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn)).map {
       _.fold(
         errors => {
-          logger.error(s"[IndexController][onPageLoad][getPenaltyDataFromEnrolmentKey] - Received error with status ${errors.status} and body ${errors.body} rendering ISE.")
-          Future(errorHandler.showInternalServerError)
+          logger.error(s"[IndexController][onPageLoad] - Received error with status ${errors.status} and body ${errors.body} rendering ISE.")
+          errorHandler.showInternalServerError
         }, penaltyData => {
-          complianceService.getDESComplianceData(request.vrn).map {
-            _.fold(
-              {
-              logger.error(s"[IndexController][onPageLoad][getDESComplianceData] - Received error, rendering ISE.")
-              errorHandler.showInternalServerError
-            })(
-              complianceData => {
-                val contentToDisplayAboveCards = pageHelper.getContentBasedOnPointsFromModel(penaltyData, complianceData)
-                val contentLPPToDisplayAboveCards = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyData)
-                val whatYouOweBreakdown = pageHelper.getWhatYouOweBreakdown(penaltyData)
-                val lspSummaryCards = cardHelper.populateLateSubmissionPenaltyCard(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty),
-                  penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0),
-                  penaltyData.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0))
-                val lppSummaryCards = cardHelper.populateLatePaymentPenaltyCard(penaltyData.latePaymentPenalty.map(_.details))
-                val isAnyUnpaidLSPAndNotSubmittedReturn = penaltiesService.isAnyLSPUnpaidAndSubmissionIsDue(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
-                val isAnyUnpaidLSP = penaltiesService.isAnyLSPUnpaid(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
-                val latestLSPCreation = penaltiesService.getLatestLSPCreationDate(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
-                lazy val result = Ok(view(contentToDisplayAboveCards,
-                  contentLPPToDisplayAboveCards,
-                  lspSummaryCards,
-                  lppSummaryCards,
-                  currencyFormatAsNonHTMLString(penaltyData.totalisations.flatMap(_.LSPTotalValue).getOrElse(0)),
-                  isAnyUnpaidLSP,
-                  isAnyUnpaidLSPAndNotSubmittedReturn,
-                  whatYouOweBreakdown))
-                if (latestLSPCreation.isDefined) {
-                  result
-                    .removingFromSession(allKeysExcludingAgentVRN: _*)
-                    .addingToSession(
-                      latestLSPCreationDate -> latestLSPCreation.get.toString,
-                      pointsThreshold -> penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0).toString,
-                      pocAchievementDate -> penaltyData.lateSubmissionPenalty.map(_.summary.PoCAchievementDate.toString).getOrElse("")
-                    )
-                } else {
-                  result
-                    .removingFromSession(allKeysExcludingAgentVRN: _*)
-                }
-              }
-            )
+          val contentToDisplayAboveCards = pageHelper.getContentBasedOnPointsFromModel(penaltyData)
+          val contentLPPToDisplayAboveCards = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyData)
+          val whatYouOweBreakdown = pageHelper.getWhatYouOweBreakdown(penaltyData)
+          val lspSummaryCards = cardHelper.populateLateSubmissionPenaltyCard(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty),
+            penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0),
+            penaltyData.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0))
+          val lppSummaryCards = cardHelper.populateLatePaymentPenaltyCard(penaltyData.latePaymentPenalty.map(_.details))
+          val isAnyUnpaidLSPAndNotSubmittedReturn = penaltiesService.isAnyLSPUnpaidAndSubmissionIsDue(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
+          val isAnyUnpaidLSP = penaltiesService.isAnyLSPUnpaid(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
+          val latestLSPCreation = penaltiesService.getLatestLSPCreationDate(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
+          lazy val result = Ok(view(contentToDisplayAboveCards,
+            contentLPPToDisplayAboveCards,
+            lspSummaryCards,
+            lppSummaryCards,
+            currencyFormatAsNonHTMLString(penaltyData.totalisations.flatMap(_.LSPTotalValue).getOrElse(0)),
+            isAnyUnpaidLSP,
+            isAnyUnpaidLSPAndNotSubmittedReturn,
+            whatYouOweBreakdown))
+          if (latestLSPCreation.isDefined) {
+            result
+              .removingFromSession(allKeysExcludingAgentVRN: _*)
+              .addingToSession(
+                latestLSPCreationDate -> latestLSPCreation.get.toString,
+                pointsThreshold -> penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0).toString,
+                pocAchievementDate -> penaltyData.lateSubmissionPenalty.map(_.summary.PoCAchievementDate.toString).getOrElse("")
+              )
+          } else {
+            result
+              .removingFromSession(allKeysExcludingAgentVRN: _*)
           }
         }
       )
