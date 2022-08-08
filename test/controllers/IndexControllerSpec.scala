@@ -22,7 +22,7 @@ import org.mockito.Matchers.any
 import org.mockito.Mockito.{mock, reset, when}
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import services.{ComplianceService, PenaltiesService}
+import services.PenaltiesService
 import testUtils.AuthTestModels
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
@@ -39,22 +39,19 @@ class IndexControllerSpec extends SpecBase {
   val indexPageHelper: IndexPageHelper = injector.instanceOf[IndexPageHelper]
   val cardHelper: SummaryCardHelper = injector.instanceOf[SummaryCardHelper]
   val mockPenaltiesService: PenaltiesService = mock(classOf[PenaltiesService])
-  val mockComplianceService: ComplianceService = mock(classOf[ComplianceService])
 
   class Setup(authResult: Future[~[Option[AffinityGroup], Enrolments]]) {
-    reset(mockAuthConnector, mockPenaltiesService, mockComplianceService)
+    reset(mockAuthConnector, mockPenaltiesService)
     when(mockAuthConnector.authorise[~[Option[AffinityGroup], Enrolments]](
       Matchers.any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
       Matchers.any(), Matchers.any())
     ).thenReturn(authResult)
     when(mockPenaltiesService.getPenaltyDataFromEnrolmentKey(any())(any(), any())).thenReturn(Future.successful(Right(samplePenaltyDetailsModel)))
-    when(mockComplianceService.getDESComplianceData(any())(any(), any(), any())).thenReturn(Future.successful(Option(sampleComplianceData)))
   }
 
   object Controller extends IndexController(
     page,
     mockPenaltiesService,
-    mockComplianceService,
     cardHelper,
     indexPageHelper
   )(implicitly, implicitly, authPredicate, errorHandler, stubMessagesControllerComponents())
