@@ -16,27 +16,34 @@
 
 package viewmodels
 
+import config.ErrorHandler
+import javax.inject.Inject
 import models.appealInfo.AppealStatusEnum.Upheld
 import models.lpp.{LPPDetails, LPPPenaltyStatusEnum}
 import models.lsp.{LSPPenaltyStatusEnum, TaxReturnStatusEnum}
 import models.{GetPenaltyDetails, User}
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
-import services.PenaltiesService
+import services.{ComplianceService, PenaltiesService}
+import uk.gov.hmrc.http.HeaderCarrier
+import utils.Logger.logger
 import utils.MessageRenderer.getMessage
 import utils.{CurrencyFormatter, ViewUtils}
 
-import javax.inject.Inject
+import scala.concurrent.ExecutionContext
+import scala.util.Try
 
 class IndexPageHelper @Inject()(p: views.html.components.p,
                                 strong: views.html.components.strong,
                                 bullets: views.html.components.bullets,
                                 link: views.html.components.link,
                                 warningText: views.html.components.warningText,
-                                penaltiesService: PenaltiesService) extends ViewUtils with CurrencyFormatter {
+                                penaltiesService: PenaltiesService,
+                                complianceService: ComplianceService,
+                                errorHandler: ErrorHandler) extends ViewUtils with CurrencyFormatter {
 
   //scalastyle:off
-  def getContentBasedOnPointsFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_]): Html = {
+  def getContentBasedOnPointsFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_], hc: HeaderCarrier, ec: ExecutionContext): Html = {
     val fixedPenaltyAmount: String = parseBigDecimalNoPaddedZeroToFriendlyValue(penaltyDetails.lateSubmissionPenalty.map(_.summary.penaltyChargeAmount).getOrElse(0))
     val activePoints: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0)
     val regimeThreshold: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0)
@@ -47,6 +54,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       case (0, _, _, _) =>
         p(content = stringAsHtml(messages("lsp.pointSummary.noActivePoints")))
       case (currentPoints, threshold, _, _) if currentPoints >= threshold =>
+        callObligationAPI(user.vrn)
         html(
           p(content = html(stringAsHtml(getMessage("lsp.onThreshold.p1"))),
             classes = "govuk-body govuk-!-font-size-24"),
@@ -227,5 +235,20 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       }
     }
     else None
+  }
+
+  private def callObligationAPI(vrn: String)(implicit ec: ExecutionContext, hc: HeaderCarrier, user: User[_]) = {
+    complianceService.getDESComplianceData(vrn).map {
+      dataOpt => {
+        Try(dataOpt.get).fold(
+          err => {
+            logger.debug(s"[IndexPageHelper][callObligationAPI] - Received error with when calling the Obligation API: ${err.getMessage}")
+            errorHandler.showInternalServerError
+          }, data => {
+            data
+          }
+        )
+      }
+    }
   }
 }
