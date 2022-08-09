@@ -44,7 +44,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
                                 errorHandler: ErrorHandler) extends ViewUtils with CurrencyFormatter {
 
   //scalastyle:off
-  def getContentBasedOnPointsFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_], hc: HeaderCarrier, ec: ExecutionContext): Html = {
+  def getContentBasedOnPointsFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_], hc: HeaderCarrier, ec: ExecutionContext): Future[Either[Result, Html]] = {
     val fixedPenaltyAmount: String = parseBigDecimalNoPaddedZeroToFriendlyValue(penaltyDetails.lateSubmissionPenalty.map(_.summary.penaltyChargeAmount).getOrElse(0))
     val activePoints: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0)
     val regimeThreshold: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0)
@@ -53,15 +53,21 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     val amountOfLateSubmissions: Int = penaltyDetails.lateSubmissionPenalty.map(_.details.count(_.lateSubmissions.flatMap(_.headOption.map(_.taxReturnStatus.equals(TaxReturnStatusEnum.Open))).isDefined)).getOrElse(0)
     (activePoints, regimeThreshold, addedPoints, removedPoints) match {
       case (0, _, _, _) =>
-        p(content = stringAsHtml(messages("lsp.pointSummary.noActivePoints")))
+        Future(Right(p(content = stringAsHtml(messages("lsp.pointSummary.noActivePoints")))))
       case (currentPoints, threshold, _, _) if currentPoints >= threshold =>
-        callObligationAPI(user.vrn)
-        html(
-          p(content = html(stringAsHtml(getMessage("lsp.onThreshold.p1"))),
-            classes = "govuk-body govuk-!-font-size-24"),
-          p(content = html(stringAsHtml(getMessage("lsp.onThreshold.p2",fixedPenaltyAmount)))),
-          p(link(link = controllers.routes.ComplianceController.onPageLoad.url, getMessage("lsp.onThreshold.link")))
-        )
+        callObligationAPI(user.vrn).map {
+          _.fold(
+            Left(_),
+            data => {
+              Right(html(
+                p(content = html(stringAsHtml(getMessage("lsp.onThreshold.p1"))),
+                  classes = "govuk-body govuk-!-font-size-24"),
+                p(content = html(stringAsHtml(getMessage("lsp.onThreshold.p2",fixedPenaltyAmount)))),
+                p(link(link = controllers.routes.ComplianceController.onPageLoad.url, getMessage("lsp.onThreshold.link")))
+              ))
+            }
+          )
+        }
       case (currentPoints, threshold, addedPoints, _) if addedPoints > 0 =>
         val base = Seq(
           p(content = getPluralOrSingular(currentPoints)("lsp.pointSummary.penaltyPoints.adjusted.singular", "lsp.pointSummary.penaltyPoints.adjusted.plural")),
@@ -77,9 +83,9 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           getGuidanceLink
         )
         if (currentPoints == threshold - 1) {
-          html(base.+:(warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText", fixedPenaltyAmount)))): _*)
+          Future(Right(html(base.+:(warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText", fixedPenaltyAmount)))): _*)))
         } else {
-          html(base: _*)
+          Future(Right(html(base: _*)))
         }
 
       case (currentPoints, threshold, _, removedPoints) if removedPoints > 0 =>
@@ -97,13 +103,13 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           getGuidanceLink
         )
         if (currentPoints == threshold - 1) {
-          html(base.+:(warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText", fixedPenaltyAmount)))): _*)
+          Future(Right(html(base.+:(warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText", fixedPenaltyAmount)))): _*)))
         } else {
-          html(base: _*)
+          Future(Right(html(base: _*)))
         }
 
       case (currentPoints, threshold, _, _) if currentPoints < threshold - 1 =>
-        html(
+        Future(Right(html(
           renderPointsTotal(currentPoints),
           p(content = getPluralOrSingularContentForOverview(currentPoints, amountOfLateSubmissions)),
           p(content = stringAsHtml(
@@ -113,15 +119,15 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
             getMessage("lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded", threshold, fixedPenaltyAmount)
           )),
           getGuidanceLink
-        )
+        )))
       case (currentPoints, threshold, _, _) if currentPoints == threshold - 1 =>
-        html(
+        Future(Right(html(
           renderPointsTotal(currentPoints),
           warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText", fixedPenaltyAmount))),
           p(getPluralOrSingularContentForOverview(currentPoints, amountOfLateSubmissions)),
           getGuidanceLink
-        )
-      case _ => p(content = html(stringAsHtml("")))
+        )))
+      case _ => Future(Right(p(content = html(stringAsHtml("")))))
     }
   }
 

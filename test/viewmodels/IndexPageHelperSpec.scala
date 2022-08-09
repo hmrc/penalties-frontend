@@ -20,15 +20,46 @@ import assets.messages.IndexMessages._
 import base.SpecBase
 import models.lpp._
 import models.lsp._
-import models.{GetPenaltyDetails, Totalisations}
+import models.{GetPenaltyDetails, Totalisations, User}
 import org.jsoup.Jsoup
 import java.time.LocalDate
 
-import scala.concurrent.ExecutionContext
+import connectors.ComplianceConnector
+import org.mockito.Matchers
+import org.mockito.Matchers.any
+import org.mockito.Mockito.{mock, reset, when}
+import play.api.test.Helpers.{await, contentAsString, defaultAwaitTimeout}
+import services.{ComplianceService, PenaltiesService}
+import testUtils.AuthTestModels
+import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
+import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
+import utils.SessionKeys
+import views.html.components.{bullets, link, p, strong, warningText}
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class IndexPageHelperSpec extends SpecBase {
-  val pageHelper: IndexPageHelper = injector.instanceOf[IndexPageHelper]
+  val mockPenaltiesService: PenaltiesService = mock(classOf[PenaltiesService])
+  val mockComplianceService: ComplianceService = mock(classOf[ComplianceService])
+  val pInjector: p = injector.instanceOf[views.html.components.p]
+  val strongInjector: strong = injector.instanceOf[views.html.components.strong]
+  val bulletsInjector: bullets = injector.instanceOf[views.html.components.bullets]
+  val linkInjector: link = injector.instanceOf[views.html.components.link]
+  val warningTextInjector: warningText = injector.instanceOf[views.html.components.warningText]
   implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
+  val pageHelper: IndexPageHelper = new IndexPageHelper(pInjector, strongInjector, bulletsInjector, linkInjector,
+    warningTextInjector, mockPenaltiesService, mockComplianceService, errorHandler)
+
+  class Setup(authResult: Future[~[Option[AffinityGroup], Enrolments]]) {
+
+    reset(mockAuthConnector, mockComplianceService, mockPenaltiesService)
+    when(mockAuthConnector.authorise[~[Option[AffinityGroup], Enrolments]](
+      Matchers.any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
+      Matchers.any(), Matchers.any())
+    ).thenReturn(authResult)
+
+    when(mockComplianceService.getDESComplianceData(any())(any(), any(), any())).thenReturn(Future.successful(Some(sampleComplianceData)))
+  }
 
   "getPluralOrSingularContentForOverview" should {
     "show the singular wording" when {
@@ -383,108 +414,108 @@ class IndexPageHelperSpec extends SpecBase {
           ),
           latePaymentPenalty = None
         )
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithNoActivePoints)(implicitly, vatTraderUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithNoActivePoints)(implicitly, vatTraderUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("p.govuk-body").text() shouldBe noActivePenaltyPoints
       }
     }
 
     "points are below threshold and less than warning level" should {
       "show the summary of penalty points" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith2ActivePoints)(implicitly, vatTraderUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith2ActivePoints)(implicitly, vatTraderUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("p.govuk-body").get(1).text() shouldBe multiActivePenaltyPoints(2, 2)
       }
 
       "user is agent - show the summary of penalty points" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith2ActivePoints)(implicitly, agentUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith2ActivePoints)(implicitly, agentUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("p.govuk-body").get(1).text() shouldBe multiAgentActivePenaltyPoints(2, 2)
       }
 
       "show the singular wording when there is only one penalty point" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePoint)(implicitly, vatTraderUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePoint)(implicitly, vatTraderUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("p.govuk-body").get(1).text() shouldBe singularOverviewText
       }
 
       "user is agent - show the singular wording when there is only one penalty point" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePoint)(implicitly, agentUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePoint)(implicitly, agentUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("p.govuk-body").get(1).text() shouldBe singularAgentOverviewText
       }
 
       "show the plural wording when there is multiple penalty points" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith2ActivePoints)(implicitly, vatTraderUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith2ActivePoints)(implicitly, vatTraderUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("p.govuk-body").get(1).text() shouldBe multiActivePenaltyPoints(2, 2)
       }
 
       "user is agent - show the plural wording when there is multiple penalty points" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith2ActivePoints)(implicitly, agentUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith2ActivePoints)(implicitly, agentUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("p.govuk-body").get(1).text() shouldBe multiAgentActivePenaltyPoints(2, 2)
       }
 
       "show what happens when next submission is late" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePoint)(implicitly, vatTraderUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePoint)(implicitly, vatTraderUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("p.govuk-body").get(2).text() shouldBe whatHappensWhenNextSubmissionIsLate
       }
 
       "user is agent - show what happens when next submission is late" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePoint)(implicitly, agentUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePoint)(implicitly, agentUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("p.govuk-body").get(2).text() shouldBe whatHappensWhenNextSubmissionIsLateForAgent
       }
 
       "show the (threshold) amount of points that need to be accrued before a penalty is applied" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePoint)(implicitly, vatTraderUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePoint)(implicitly, vatTraderUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("p.govuk-body").get(3).text() shouldBe quarterlyThresholdPlusOnePenaltyApplication
       }
 
       "user is agent - show the (threshold) amount of points that need to be accrued before a penalty is applied" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePoint)(implicitly, agentUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePoint)(implicitly, agentUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("p.govuk-body").get(3).text() shouldBe quarterlyThresholdPlusOnePenaltyApplicationForAgent
       }
     }
 
     "points are at warning level (1 below threshold)" should {
       "show the summary of penalty points" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePointAnnual)(implicitly, vatTraderUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePointAnnual)(implicitly, vatTraderUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("p.govuk-body").get(1).text() shouldBe singularOverviewText
       }
 
       "user is agent - show the summary of penalty points" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePointAnnual)(implicitly, agentUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePointAnnual)(implicitly, agentUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("p.govuk-body").get(1).text() shouldBe singularAgentOverviewText
       }
 
       "show some warning text explaining what will happen if another submission is late" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePointAnnual)(implicitly, vatTraderUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePointAnnual)(implicitly, vatTraderUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("strong").text() shouldBe warningText
       }
 
       "user is agent - show some warning text explaining what will happen if another submission is late" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePointAnnual)(implicitly, agentUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePointAnnual)(implicitly, agentUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("strong").text() shouldBe warningTextAgent
       }
 
       "show a summary of amount of points accrued and returns submitted late" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith3ActivePoints)(implicitly, vatTraderUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith3ActivePoints)(implicitly, vatTraderUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("p.govuk-body").get(1).text() shouldBe multiActivePenaltyPoints(3, 3)
       }
 
       "user is agent - show a summary of amount of points accrued and returns submitted late" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith3ActivePoints)(implicitly, agentUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith3ActivePoints)(implicitly, agentUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("p.govuk-body").get(1).text() shouldBe multiAgentActivePenaltyPoints(3, 3)
       }
     }
@@ -611,18 +642,21 @@ class IndexPageHelperSpec extends SpecBase {
         ),
         latePaymentPenalty = None
       )
-      val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith4ActivePoints)(implicitly, vatTraderUser, hc, implicitly)
-      val parsedHtmlResult = Jsoup.parse(result.body)
 
-      val resultForAgent = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith4ActivePoints)(implicitly, agentUser, hc, implicitly)
-      val parsedHtmlResultForAgent = Jsoup.parse(resultForAgent.body)
 
-      "show the financial penalty threshold reached text" in {
+      lazy val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith4ActivePoints)(implicitly,
+        vatTraderUserWithObligationSessionKeys, hc, implicitly))
+      lazy val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
+      lazy val resultForAgent = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith4ActivePoints)(implicitly,
+        agentUserWithObligationSessionKeys, hc, implicitly))
+      lazy val parsedHtmlResultForAgent = Jsoup.parse(contentAsString(resultForAgent.right.get))
+
+      "show the financial penalty threshold reached text" in new Setup(AuthTestModels.successfulAuthResult) {
         parsedHtmlResult.select("p.govuk-body").get(0).text shouldBe thresholdReached
         parsedHtmlResult.select("p.govuk-body").get(0).hasClass("govuk-body govuk-!-font-size-24") shouldBe true
       }
 
-      "user is agent - show the financial penalty threshold reached text" in {
+      "user is agent - show the financial penalty threshold reached text" in new Setup(AuthTestModels.successfulAuthResult) {
         parsedHtmlResultForAgent.select("p.govuk-body").get(0).text shouldBe thresholdReachedAgent
         parsedHtmlResultForAgent.select("p.govuk-body").get(0).hasClass("govuk-body govuk-!-font-size-24") shouldBe true
       }
@@ -794,24 +828,24 @@ class IndexPageHelperSpec extends SpecBase {
       )
 
       "show the total of ALL POINTS (i.e. lateSubmissions + adjustmentPointsTotal)" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithAddedPoints)(implicitly, vatTraderUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithAddedPoints)(implicitly, vatTraderUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("p.govuk-body").get(0).text() shouldBe "You have 2 penalty points. This is because:"
         parsedHtmlResult.select("ul li").get(0).text() shouldBe "you have submitted a VAT Return late"
         parsedHtmlResult.select("ul li").get(1).text() shouldBe "we added 1 point and sent you a letter explaining why"
       }
 
       "user is agent - show the total of ALL POINTS (i.e. lateSubmissions + adjustmentPointsTotal)" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithAddedPoints)(implicitly, agentUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithAddedPoints)(implicitly, agentUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("p.govuk-body").get(0).text() shouldBe "Your client has 2 penalty points. This is because:"
         parsedHtmlResult.select("ul li").get(0).text() shouldBe "they have submitted a VAT Return late"
         parsedHtmlResult.select("ul li").get(1).text() shouldBe "we added 1 point and sent them a letter explaining why"
       }
 
       "all points are 1 below the threshold - show some warning text" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithAddedPointsAtPenultimate)(implicitly, vatTraderUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithAddedPointsAtPenultimate)(implicitly, vatTraderUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("strong").text() shouldBe warningText
         parsedHtmlResult.select("p.govuk-body").get(0).text() shouldBe "You have 3 penalty points. This is because:"
         parsedHtmlResult.select("ul li").get(0).text() shouldBe "you have submitted 2 VAT Returns late"
@@ -819,8 +853,8 @@ class IndexPageHelperSpec extends SpecBase {
       }
 
       "user is agent - all points are 1 below the threshold - show some warning text" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithAddedPointsAtPenultimate)(implicitly, agentUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithAddedPointsAtPenultimate)(implicitly, agentUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("strong").text() shouldBe warningTextAgent
         parsedHtmlResult.select("p.govuk-body").get(0).text() shouldBe "Your client has 3 penalty points. This is because:"
         parsedHtmlResult.select("ul li").get(0).text() shouldBe "they have submitted 2 VAT Returns late"
@@ -1038,24 +1072,24 @@ class IndexPageHelperSpec extends SpecBase {
       )
 
       "show the total of ALL POINTS (i.e. lateSubmissions - adjustmentPointsTotal)" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithRemovedPoints)(implicitly, vatTraderUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithRemovedPoints)(implicitly, vatTraderUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("p.govuk-body").get(0).text() shouldBe "You have 2 penalty points. This is because:"
         parsedHtmlResult.select("ul li").get(0).text() shouldBe "you have submitted 2 VAT Returns late"
         parsedHtmlResult.select("ul li").get(1).text() shouldBe "we removed 1 point and sent you a letter explaining why"
       }
 
       "user is agent - show the total of ALL POINTS (i.e. lateSubmissions - adjustmentPointsTotal)" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithRemovedPoints)(implicitly, agentUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithRemovedPoints)(implicitly, agentUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("p.govuk-body").get(0).text() shouldBe "Your client has 2 penalty points. This is because:"
         parsedHtmlResult.select("ul li").get(0).text() shouldBe "they have submitted 2 VAT Returns late"
         parsedHtmlResult.select("ul li").get(1).text() shouldBe "we removed 1 point and sent them a letter explaining why"
       }
 
       "all points are 1 below the threshold - show some warning text" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithRemovedPointsAtPenultimate)(implicitly, vatTraderUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithRemovedPointsAtPenultimate)(implicitly, vatTraderUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("strong").text() shouldBe warningText
         parsedHtmlResult.select("p.govuk-body").get(0).text() shouldBe "You have 3 penalty points. This is because:"
         parsedHtmlResult.select("ul li").get(0).text() shouldBe "you have submitted 4 VAT Returns late"
@@ -1063,8 +1097,8 @@ class IndexPageHelperSpec extends SpecBase {
       }
 
       "user is agent - all points are 1 below the threshold - show some warning text" in {
-        val result = pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithRemovedPointsAtPenultimate)(implicitly, agentUser, hc, implicitly)
-        val parsedHtmlResult = Jsoup.parse(result.body)
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithRemovedPointsAtPenultimate)(implicitly, agentUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.right.get))
         parsedHtmlResult.select("strong").text() shouldBe warningTextAgent
         parsedHtmlResult.select("p.govuk-body").get(0).text() shouldBe "Your client has 3 penalty points. This is because:"
         parsedHtmlResult.select("ul li").get(0).text() shouldBe "they have submitted 4 VAT Returns late"
