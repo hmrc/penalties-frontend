@@ -19,10 +19,12 @@ package viewmodels
 import config.ErrorHandler
 import javax.inject.Inject
 import models.appealInfo.AppealStatusEnum.Upheld
+import models.compliance.ComplianceData
 import models.lpp.{LPPDetails, LPPPenaltyStatusEnum}
 import models.lsp.{LSPPenaltyStatusEnum, TaxReturnStatusEnum}
 import models.{GetPenaltyDetails, User}
 import play.api.i18n.Messages
+import play.api.mvc.Result
 import play.twirl.api.{Html, HtmlFormat}
 import services.{ComplianceService, PenaltiesService}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -30,8 +32,7 @@ import utils.Logger.logger
 import utils.MessageRenderer.getMessage
 import utils.{CurrencyFormatter, ViewUtils}
 
-import scala.concurrent.ExecutionContext
-import scala.util.Try
+import scala.concurrent.{ExecutionContext, Future}
 
 class IndexPageHelper @Inject()(p: views.html.components.p,
                                 strong: views.html.components.strong,
@@ -237,18 +238,15 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     else None
   }
 
-  private def callObligationAPI(vrn: String)(implicit ec: ExecutionContext, hc: HeaderCarrier, user: User[_]) = {
+  private def callObligationAPI(vrn: String)(implicit ec: ExecutionContext, hc: HeaderCarrier, user: User[_]): Future[Either[Result, ComplianceData]] = {
     complianceService.getDESComplianceData(vrn).map {
-      dataOpt => {
-        Try(dataOpt.get).fold(
-          err => {
-            logger.debug(s"[IndexPageHelper][callObligationAPI] - Received error with when calling the Obligation API: ${err.getMessage}")
-            errorHandler.showInternalServerError
-          }, data => {
-            data
-          }
-        )
+        _.fold[Either[Result, ComplianceData]](
+          {
+            logger.debug(s"[IndexPageHelper][callObligationAPI] - Received error with when calling the Obligation API")
+            Left(errorHandler.showInternalServerError)
+          }) (
+            Right(_)
+          )
       }
     }
-  }
 }
