@@ -20,26 +20,24 @@ import assets.messages.IndexMessages._
 import base.SpecBase
 import models.lpp._
 import models.lsp._
-import models.{GetPenaltyDetails, Totalisations, User}
+import models.{GetPenaltyDetails, Totalisations}
 import org.jsoup.Jsoup
-import java.time.LocalDate
-
-import connectors.ComplianceConnector
 import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{mock, reset, when}
 import play.api.test.Helpers.{await, contentAsString, defaultAwaitTimeout}
 import services.{ComplianceService, PenaltiesService}
 import testUtils.AuthTestModels
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
-import utils.SessionKeys
-import views.html.components.{bullets, link, p, strong, warningText}
+import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
+import views.html.components.{warningText, _}
+import play.api.http.Status.INTERNAL_SERVER_ERROR
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndexPageHelperSpec extends SpecBase {
-  val mockPenaltiesService: PenaltiesService = mock(classOf[PenaltiesService])
+  val penaltiesService: PenaltiesService = injector.instanceOf[PenaltiesService]
   val mockComplianceService: ComplianceService = mock(classOf[ComplianceService])
   val pInjector: p = injector.instanceOf[views.html.components.p]
   val strongInjector: strong = injector.instanceOf[views.html.components.strong]
@@ -48,11 +46,11 @@ class IndexPageHelperSpec extends SpecBase {
   val warningTextInjector: warningText = injector.instanceOf[views.html.components.warningText]
   implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
   val pageHelper: IndexPageHelper = new IndexPageHelper(pInjector, strongInjector, bulletsInjector, linkInjector,
-    warningTextInjector, mockPenaltiesService, mockComplianceService, errorHandler)
+    warningTextInjector, penaltiesService, mockComplianceService, errorHandler)
 
   class Setup(authResult: Future[~[Option[AffinityGroup], Enrolments]]) {
 
-    reset(mockAuthConnector, mockComplianceService, mockPenaltiesService)
+    reset(mockAuthConnector, mockComplianceService)
     when(mockAuthConnector.authorise[~[Option[AffinityGroup], Enrolments]](
       Matchers.any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
       Matchers.any(), Matchers.any())
@@ -678,6 +676,13 @@ class IndexPageHelperSpec extends SpecBase {
         parsedHtmlResult.select("a.govuk-link").text shouldBe bringAccountUpToDateAgent
         parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe controllers.routes.ComplianceController.onPageLoad.url
       }
+
+      s"return $Left ISE when the obligation call returns None (no data/network error)" in new Setup(AuthTestModels.successfulAuthResult) {
+        when(mockComplianceService.getDESComplianceData(Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith4ActivePoints)(implicitly,
+          vatTraderUserWithObligationSessionKeys, hc, implicitly))
+        result.left.get.header.status shouldBe INTERNAL_SERVER_ERROR
+      }
     }
 
     "points have been added" should {
@@ -1185,6 +1190,7 @@ class IndexPageHelperSpec extends SpecBase {
   }
 
   "getWhatYouOweBreakdown" should {
+
     "return None" when {
       "the user has no outstanding payments" in {
         val penaltyDetailsWithNoOutstandingPayments: GetPenaltyDetails = GetPenaltyDetails(

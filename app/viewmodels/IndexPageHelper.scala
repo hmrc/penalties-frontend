@@ -248,7 +248,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     complianceService.getDESComplianceData(vrn).map {
         _.fold[Either[Result, ComplianceData]](
           {
-            logger.debug(s"[IndexPageHelper][callObligationAPI] - Received error with when calling the Obligation API")
+            logger.debug(s"[IndexPageHelper][callObligationAPI] - Received error when calling the Obligation API")
             Left(errorHandler.showInternalServerError)
           }) (
             Right(_)
