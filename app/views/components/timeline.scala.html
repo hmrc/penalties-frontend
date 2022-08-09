@@ -22,7 +22,7 @@
 
 @timelineEvent(event: TimelineEvent) = {
 <li class="hmrc-timeline__event">
-    <h3 class="hmrc-timeline__event-title">@event.headerContent</h3>
+    <h2 class="hmrc-timeline__event-title">@event.headerContent</h2>
     <span class="hmrc-timeline__event-meta">
       @event.tagContent.map { content =>
         <strong class="govuk-tag govuk-tag--red">@content</strong>

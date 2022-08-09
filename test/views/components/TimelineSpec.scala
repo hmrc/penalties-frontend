@@ -61,21 +61,21 @@ class TimelineSpec extends SpecBase with ViewBehaviours with ImplicitDateFormatt
 
       "display a timeline with no tag status' " in {
         doc.select("ol").attr("class") shouldBe "hmrc-timeline"
-        doc.select("h3").get(0).text() shouldBe "VAT period 23 April 2021 to 30 April 2021"
+        doc.select("h2").get(0).text() shouldBe "VAT period 23 April 2021 to 30 April 2021"
         doc.select("span").get(0).text() shouldBe "Submit VAT Return by 23 May 2021"
 
-        doc.select("h3").get(1).text() shouldBe "VAT period 23 April 2021 to 30 April 2021"
+        doc.select("h2").get(1).text() shouldBe "VAT period 23 April 2021 to 30 April 2021"
         doc.select("span").get(1).text() shouldBe "Submit VAT Return by 23 May 2021"
       }
 
       "display a timeline with a tag status' " in {
         implicit val doc: Document = asDocument(timelineHtml.apply(timelineEventsWithStatus))
         doc.select("ol").attr("class") shouldBe "hmrc-timeline"
-        doc.select("h3").get(0).text() shouldBe "VAT period 23 April 2021 to 30 April 2021"
+        doc.select("h2").get(0).text() shouldBe "VAT period 23 April 2021 to 30 April 2021"
         doc.select("span").get(0).text() shouldBe "Late Submit this missing VAT Return now"
         doc.select("strong").get(0).text() shouldBe "Late"
 
-        doc.select("h3").get(1).text() shouldBe "VAT period 23 April 2021 to 30 April 2021"
+        doc.select("h2").get(1).text() shouldBe "VAT period 23 April 2021 to 30 April 2021"
         doc.select("span").get(1).text() shouldBe "Submit VAT Return by 23 May 2021"
       }
     }
