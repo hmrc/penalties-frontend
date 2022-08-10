@@ -18,7 +18,7 @@ package viewmodels
 
 import base.SpecBase
 import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
-import models.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum}
+import models.lpp._
 
 import java.time.LocalDate
 

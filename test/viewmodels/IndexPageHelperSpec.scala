@@ -25,13 +25,13 @@ import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{mock, reset, when}
+import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.test.Helpers.{await, contentAsString, defaultAwaitTimeout}
 import services.{ComplianceService, PenaltiesService}
 import testUtils.AuthTestModels
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import views.html.components.{warningText, _}
-import play.api.http.Status.INTERNAL_SERVER_ERROR
 
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
@@ -675,6 +675,15 @@ class IndexPageHelperSpec extends SpecBase {
       "user is agent - show the guidance link text" in {
         parsedHtmlResult.select("a.govuk-link").text shouldBe bringAccountUpToDateAgent
         parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe controllers.routes.ComplianceController.onPageLoad.url
+      }
+
+      "show the correct content when there are no open obligations" in new Setup(AuthTestModels.successfulAuthResult) {
+        when(mockComplianceService.getDESComplianceData(Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
+          .thenReturn(Future.successful(Some(sampleComplianceData.copy(compliancePayload = sampleCompliancePayload.copy(obligationDetails = Seq.empty)))))
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith4ActivePoints)(
+          implicitly, vatTraderUserWithObligationSessionKeys, hc, implicitly))
+        result.isRight shouldBe true
+        parsedHtmlResult.select("") shouldBe
       }
 
       s"return $Left ISE when the obligation call returns None (no data/network error)" in new Setup(AuthTestModels.successfulAuthResult) {

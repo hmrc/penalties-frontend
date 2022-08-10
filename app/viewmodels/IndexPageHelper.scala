@@ -17,9 +17,8 @@
 package viewmodels
 
 import config.ErrorHandler
-import javax.inject.Inject
 import models.appealInfo.AppealStatusEnum.Upheld
-import models.compliance.ComplianceData
+import models.compliance.{ComplianceData, ComplianceStatusEnum}
 import models.lpp.{LPPDetails, LPPPenaltyStatusEnum}
 import models.lsp.{LSPPenaltyStatusEnum, TaxReturnStatusEnum}
 import models.{GetPenaltyDetails, User}
@@ -30,8 +29,10 @@ import services.{ComplianceService, PenaltiesService}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logger.logger
 import utils.MessageRenderer.getMessage
-import utils.{CurrencyFormatter, ViewUtils}
+import utils.{CurrencyFormatter, ImplicitDateFormatter, ViewUtils}
 
+import java.time.LocalDate
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndexPageHelper @Inject()(p: views.html.components.p,
@@ -41,30 +42,45 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
                                 warningText: views.html.components.warningText,
                                 penaltiesService: PenaltiesService,
                                 complianceService: ComplianceService,
-                                errorHandler: ErrorHandler) extends ViewUtils with CurrencyFormatter {
+                                errorHandler: ErrorHandler) extends ViewUtils with CurrencyFormatter with ImplicitDateFormatter {
 
   //scalastyle:off
-  def getContentBasedOnPointsFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_], hc: HeaderCarrier, ec: ExecutionContext): Future[Either[Result, Html]] = {
+  def getContentBasedOnPointsFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_],
+                                                                          hc: HeaderCarrier, ec: ExecutionContext,
+                                                                          lspCreationDate: Option[String], pointsThreshold: Option[String]): Future[Either[Result, Html]] = {
     val fixedPenaltyAmount: String = parseBigDecimalNoPaddedZeroToFriendlyValue(penaltyDetails.lateSubmissionPenalty.map(_.summary.penaltyChargeAmount).getOrElse(0))
     val activePoints: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0)
     val regimeThreshold: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0)
     val removedPoints: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.inactivePenaltyPoints).getOrElse(0)
     val addedPoints: Int = penaltyDetails.lateSubmissionPenalty.map(_.details.count(point => point.FAPIndicator.contains("X") && point.penaltyStatus.equals(LSPPenaltyStatusEnum.Active))).getOrElse(0)
     val amountOfLateSubmissions: Int = penaltyDetails.lateSubmissionPenalty.map(_.details.count(_.lateSubmissions.flatMap(_.headOption.map(_.taxReturnStatus.equals(TaxReturnStatusEnum.Open))).isDefined)).getOrElse(0)
+    val pocAchievementDate: LocalDate = LocalDate.parse(penaltyDetails.lateSubmissionPenalty.map(_.summary.PoCAchievementDate.toString).getOrElse(""))
+    val parsedPOCAchievementDate: String = dateToMonthYearString(pocAchievementDate)
     (activePoints, regimeThreshold, addedPoints, removedPoints) match {
       case (0, _, _, _) =>
         Future(Right(p(content = stringAsHtml(messages("lsp.pointSummary.noActivePoints")))))
       case (currentPoints, threshold, _, _) if currentPoints >= threshold =>
-        callObligationAPI(user.vrn).map {
+        callObligationAPI(user.vrn)(implicitly, implicitly, implicitly, lspCreationDate, pointsThreshold).map {
           _.fold(
             Left(_),
             data => {
-              Right(html(
-                p(content = html(stringAsHtml(getMessage("lsp.onThreshold.p1"))),
-                  classes = "govuk-body govuk-!-font-size-24"),
-                p(content = html(stringAsHtml(getMessage("lsp.onThreshold.p2",fixedPenaltyAmount)))),
-                p(link(link = controllers.routes.ComplianceController.onPageLoad.url, getMessage("lsp.onThreshold.link")))
-              ))
+              val numberOfOpenObligations = data.compliancePayload.obligationDetails.filter(_.status.equals(ComplianceStatusEnum.open))
+              if (numberOfOpenObligations.isEmpty) {
+                Right(html(
+                  p(content = html(stringAsHtml(getMessage("lsp.onThreshold.compliant.p1", parsedPOCAchievementDate)))),
+                  bullets(Seq(
+                    stringAsHtml(getMessage("lsp.onThreshold.compliant.p2")),
+                    stringAsHtml(getMessage("lsp.onThreshold.compliant.p3", "")) //TODO replace empty args string with value from PRM-1640
+                  ))
+                ))
+              } else {
+                Right(html(
+                  p(content = html(stringAsHtml(getMessage("lsp.onThreshold.p1"))),
+                    classes = "govuk-body govuk-!-font-size-24"),
+                  p(content = html(stringAsHtml(getMessage("lsp.onThreshold.p2", fixedPenaltyAmount)))),
+                  p(link(link = controllers.routes.ComplianceController.onPageLoad.url, getMessage("lsp.onThreshold.link")))
+                ))
+              }
             }
           )
         }
@@ -131,26 +147,6 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     }
   }
 
-  def getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_]): Html = {
-    if (penaltyDetails.latePaymentPenalty.map(_.details).getOrElse(List.empty[LPPDetails]).isEmpty) {
-      p(content = stringAsHtml(messages("lpp.penaltiesSummary.noPaymentPenalties")))
-    } else {
-      val isAnyLPPNotPaid: Boolean = penaltyDetails.latePaymentPenalty.exists(_.details.exists(
-        penalty => {
-          penalty.appealInformation.map(_.exists(_.appealStatus.contains(Upheld))).isEmpty &&
-            penalty.penaltyStatus == LPPPenaltyStatusEnum.Accruing
-        }))
-      if (isAnyLPPNotPaid) {
-        html(
-          p(content = html(stringAsHtml(getMessage("lpp.penaltiesSummary.unpaid")))),
-          p(link(link = "#", messages("lpp.penaltiesSummary.howLppCalculated.link", messages("site.opensInNewTab"))))
-        )
-      } else {
-        p(link(link = "#", messages("lpp.penaltiesSummary.howLppCalculated.link", messages("site.opensInNewTab"))))
-      }
-    }
-  }
-
   def getPluralOrSingularContentForOverview(currentPoints: Int, lateSubmissions: Int)(implicit messages: Messages, user: User[_]): Html = {
     if (currentPoints == 1) {
       stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.singular", currentPoints))
@@ -185,6 +181,37 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       isExternal = true),
     classes = "govuk-body")
 
+  private def callObligationAPI(vrn: String)(implicit ec: ExecutionContext, hc: HeaderCarrier, user: User[_], lspCreationDate: Option[String], pointsThreshold: Option[String]): Future[Either[Result, ComplianceData]] = {
+    complianceService.getDESComplianceData(vrn)(implicitly, implicitly, implicitly, lspCreationDate, pointsThreshold).map {
+      _.fold[Either[Result, ComplianceData]](
+        {
+          logger.debug(s"[IndexPageHelper][callObligationAPI] - Received error when calling the Obligation API")
+          Left(errorHandler.showInternalServerError)
+        })(
+        Right(_)
+      )
+    }
+  }
+
+  def getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_]): Html = {
+    if (penaltyDetails.latePaymentPenalty.map(_.details).getOrElse(List.empty[LPPDetails]).isEmpty) {
+      p(content = stringAsHtml(messages("lpp.penaltiesSummary.noPaymentPenalties")))
+    } else {
+      val isAnyLPPNotPaid: Boolean = penaltyDetails.latePaymentPenalty.exists(_.details.exists(
+        penalty => {
+          penalty.appealInformation.map(_.exists(_.appealStatus.contains(Upheld))).isEmpty &&
+            penalty.penaltyStatus == LPPPenaltyStatusEnum.Accruing
+        }))
+      if (isAnyLPPNotPaid) {
+        html(
+          p(content = html(stringAsHtml(getMessage("lpp.penaltiesSummary.unpaid")))),
+          p(link(link = "#", messages("lpp.penaltiesSummary.howLppCalculated.link", messages("site.opensInNewTab"))))
+        )
+      } else {
+        p(link(link = "#", messages("lpp.penaltiesSummary.howLppCalculated.link", messages("site.opensInNewTab"))))
+      }
+    }
+  }
 
   def getWhatYouOweBreakdown(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
     val amountOfLateVAT = penaltiesService.findOverdueVATFromPayload(penaltyDetails)
@@ -243,16 +270,4 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     }
     else None
   }
-
-  private def callObligationAPI(vrn: String)(implicit ec: ExecutionContext, hc: HeaderCarrier, user: User[_]): Future[Either[Result, ComplianceData]] = {
-    complianceService.getDESComplianceData(vrn).map {
-        _.fold[Either[Result, ComplianceData]](
-          {
-            logger.debug(s"[IndexPageHelper][callObligationAPI] - Received error when calling the Obligation API")
-            Left(errorHandler.showInternalServerError)
-          }) (
-            Right(_)
-          )
-      }
-    }
 }

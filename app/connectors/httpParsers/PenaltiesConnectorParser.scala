@@ -17,9 +17,9 @@
 package connectors.httpParsers
 
 import models.GetPenaltyDetails
-import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 import play.api.http.Status._
 import play.api.libs.json.JsSuccess
+import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 import utils.Logger.logger
 
 object PenaltiesConnectorParser {

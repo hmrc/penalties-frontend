@@ -21,8 +21,8 @@ import controllers.predicates.AuthPredicate
 import org.mockito.Matchers
 import org.mockito.Mockito.when
 import org.mockito.stubbing.OngoingStubbing
-import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

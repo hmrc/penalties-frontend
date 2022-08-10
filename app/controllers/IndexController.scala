@@ -24,8 +24,8 @@ import play.api.mvc._
 import services.PenaltiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
-import utils.SessionKeys._
-import utils.{CurrencyFormatter, EnrolmentKeys}
+import utils.SessionKeys.{latestLSPCreationDate, _}
+import utils.{CurrencyFormatter, EnrolmentKeys, SessionKeys}
 import viewmodels.{IndexPageHelper, SummaryCardHelper}
 import views.html.IndexView
 
@@ -50,7 +50,10 @@ class IndexController @Inject()(view: IndexView,
           logger.error(s"[IndexController][onPageLoad] - Received error with status ${errors.status} and body ${errors.body} rendering ISE.")
           Future(errorHandler.showInternalServerError)
         }, penaltyData => {
-          pageHelper.getContentBasedOnPointsFromModel(penaltyData).map {
+          val latestLSPCreation = penaltiesService.getLatestLSPCreationDate(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
+          implicit val lspCreationDate: Option[String] = latestLSPCreation.map(_.toString)
+          implicit val pointsThreshold: Option[String] = penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).map(_.toString)
+          pageHelper.getContentBasedOnPointsFromModel(penaltyData)(implicitly, implicitly,implicitly, implicitly, lspCreationDate, pointsThreshold).map {
             _.fold(
               identity,
               contentToDisplayAboveCards => {
@@ -62,7 +65,6 @@ class IndexController @Inject()(view: IndexView,
                 val lppSummaryCards = cardHelper.populateLatePaymentPenaltyCard(penaltyData.latePaymentPenalty.map(_.details))
                 val isAnyUnpaidLSPAndNotSubmittedReturn = penaltiesService.isAnyLSPUnpaidAndSubmissionIsDue(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
                 val isAnyUnpaidLSP = penaltiesService.isAnyLSPUnpaid(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
-                val latestLSPCreation = penaltiesService.getLatestLSPCreationDate(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
                 lazy val result = Ok(view(contentToDisplayAboveCards,
                   contentLPPToDisplayAboveCards,
                   lspSummaryCards,
@@ -75,8 +77,8 @@ class IndexController @Inject()(view: IndexView,
                   result
                     .removingFromSession(allKeysExcludingAgentVRN: _*)
                     .addingToSession(
-                      latestLSPCreationDate -> latestLSPCreation.get.toString,
-                      pointsThreshold -> penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0).toString,
+                      SessionKeys.latestLSPCreationDate -> latestLSPCreation.get.toString,
+                      SessionKeys.pointsThreshold -> penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0).toString,
                       pocAchievementDate -> penaltyData.lateSubmissionPenalty.map(_.summary.PoCAchievementDate.toString).getOrElse("")
                     )
                 } else {

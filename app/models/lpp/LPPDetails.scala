@@ -17,10 +17,10 @@
 package models.lpp
 
 import models.appealInfo.AppealInformationType
-import play.api.libs.json.{Format, JsResult, JsValue, Json, OFormat}
+import play.api.libs.json._
+import utils.JsonUtils
 
 import java.time.LocalDate
-import utils.JsonUtils
 
 case class LPPDetails(
                        principalChargeReference: String,

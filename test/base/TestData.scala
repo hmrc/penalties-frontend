@@ -16,10 +16,10 @@
 
 package base
 
-import models.{GetPenaltyDetails, Totalisations}
 import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import models.lpp._
 import models.lsp._
+import models.{GetPenaltyDetails, Totalisations}
 
 import java.time.LocalDate
 

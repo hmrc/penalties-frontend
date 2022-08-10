@@ -19,15 +19,15 @@ package controllers.predicates
 import config.{AppConfig, ErrorHandler}
 import models.User
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{ActionBuilder, ActionFunction, Request, _}
+import play.api.mvc._
 import services.AuthService
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.allEnrolments
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.{EnrolmentKeys, SessionKeys}
 import utils.Logger.logger
+import utils.{EnrolmentKeys, SessionKeys}
 import views.html.errors.Unauthorised
 
 import javax.inject.{Inject, Singleton}
