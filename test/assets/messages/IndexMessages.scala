@@ -93,6 +93,10 @@ object IndexMessages {
 
   val bringAccountUpToDateAgent = "Actions to take before HMRC can remove your points"
 
+  val traderCompliantBullet2 = "you have submitted on time for the last 6 months"
+
+  val agentCompliantBullet2 = "they have submitted on time for the last 6 months"
+
   val viewCalculationLink = "View calculation"
 
   val lspHeader = "Penalty point 1"

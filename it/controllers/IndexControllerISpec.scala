@@ -27,6 +27,7 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.AuthStub
+import stubs.ComplianceStub.complianceDataStub
 import stubs.PenaltiesStub._
 import testUtils.IntegrationSpecCommonBase
 import uk.gov.hmrc.http.SessionKeys.authToken
@@ -49,10 +50,14 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
   val controller: IndexController = injector.instanceOf[IndexController]
   val fakeAgentRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
     SessionKeys.agentSessionVrn -> "123456789",
-    authToken -> "12345"
+    authToken -> "12345",
+    SessionKeys.latestLSPCreationDate -> "2020-01-01",
+    SessionKeys.pointsThreshold -> "5"
   )
   val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
-    authToken -> "12345"
+    authToken -> "12345",
+    SessionKeys.latestLSPCreationDate -> "2020-01-01",
+    SessionKeys.pointsThreshold -> "5"
   )
 
   val getPenaltyDetailsPayloadWithAddedPoint = GetPenaltyDetails(
@@ -553,6 +558,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
   "GET /" should {
     "return 200 (OK) when the user is authorised" in {
       getPenaltyDetailsStub
+      complianceDataStub()
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
     }

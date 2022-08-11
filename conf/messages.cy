@@ -56,6 +56,9 @@ agent.lsp.onThreshold.p2 = This means they have to pay a £{0} penalty every tim
 lsp.onThreshold.link = Actions to take before HMRC can remove your points
 agent.lsp.onThreshold.link = Actions to take before HMRC can remove your client’s points
 
+lsp.onThreshold.compliant.p3 = you have submitted on time for the last {0} months
+agent.lsp.onThreshold.compliant.p3 = they have submitted on time for the last {0} months
+
 lsp.multiple.penaltyPeriod = Roedd y Ffurflen TAW a oedd yn ddyledus ar {0} hefyd wedi’i chyflwyno’n hwyr. <br> Dim ond 1 cosb am gyflwyno’n hwyr y mae CThEM yn ei roi bob mis.
 
 # LPP Content

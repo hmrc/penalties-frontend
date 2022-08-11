@@ -48,7 +48,7 @@ object PenaltiesStub {
         summary = LSPSummary(
           activePenaltyPoints = 10,
           inactivePenaltyPoints = 12,
-          regimeThreshold = 10,
+          regimeThreshold = 5,
           penaltyChargeAmount = 684.25,
           PoCAchievementDate = LocalDate.of(2022, 1, 1)
         ),
