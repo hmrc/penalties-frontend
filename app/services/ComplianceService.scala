@@ -33,10 +33,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class ComplianceService @Inject()(connector: ComplianceConnector)(implicit val appConfig: AppConfig) extends FeatureSwitching {
 
   def getDESComplianceData(vrn: String)(implicit hc: HeaderCarrier, user: User[_],
-                                        ec: ExecutionContext, x: Option[String] = None,
-                                        y: Option[String] = None): Future[Option[ComplianceData]] = {
+                                        ec: ExecutionContext, lspCreationDate: Option[String] = None,
+                                        pointsThreshold: Option[String] = None): Future[Option[ComplianceData]] = {
 
-    (x.orElse(user.session.get(SessionKeys.latestLSPCreationDate)), y.orElse(user.session.get(SessionKeys.pointsThreshold))) match {
+    (lspCreationDate.orElse(user.session.get(SessionKeys.latestLSPCreationDate)), pointsThreshold.orElse(user.session.get(SessionKeys.pointsThreshold))) match {
       case (Some(lspCreationDateAsString), Some(pointsThresholdAsString)) => {
         val lspCreationDate: LocalDate = LocalDate.parse(lspCreationDateAsString)
         val fromDate = lspCreationDate.minusYears(2)

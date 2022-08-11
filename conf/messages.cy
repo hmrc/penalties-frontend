@@ -60,8 +60,8 @@ lsp.onThreshold.compliant.p1 = We will remove your penalty points in {0} because
 agent.lsp.onThreshold.compliant.p1 = We will remove your client‘s penalty points in {0} because:
 lsp.onThreshold.compliant.p2 = your VAT Return history is up to date
 agent.lsp.onThreshold.compliant.p2 = their VAT Return history is up to date
-lsp.onThreshold.compliant.p2 = you have submitted on time for the last {0}
-agent.lsp.onThreshold.compliant.p2 = they have submitted on time for the last {0}
+lsp.onThreshold.compliant.p3 = you have submitted on time for the last {0}
+agent.lsp.onThreshold.compliant.p3 = they have submitted on time for the last {0}
 
 lsp.multiple.penaltyPeriod = Roedd y Ffurflen TAW a oedd yn ddyledus ar {0} hefyd wedi’i chyflwyno’n hwyr. <br> Dim ond 1 cosb am gyflwyno’n hwyr y mae CThEM yn ei roi bob mis.
 

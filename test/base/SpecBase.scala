@@ -113,10 +113,33 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with T
     )
   )
 
+  val compliancePayloadObligationsFulfilled: CompliancePayload = sampleCompliancePayload.copy(
+    obligationDetails = Seq(
+      ObligationDetail(
+        status = ComplianceStatusEnum.fulfilled,
+        inboundCorrespondenceFromDate = LocalDate.of(1920, 2, 29),
+        inboundCorrespondenceToDate = LocalDate.of(1920, 2, 29),
+        inboundCorrespondenceDateReceived = Some(LocalDate.of(1920, 2, 29)),
+        inboundCorrespondenceDueDate = LocalDate.of(1920, 2, 29),
+        periodKey = "#001"
+      ),
+      ObligationDetail(
+        status = ComplianceStatusEnum.fulfilled,
+        inboundCorrespondenceFromDate = LocalDate.of(1920, 2, 29),
+        inboundCorrespondenceToDate = LocalDate.of(1920, 2, 29),
+        inboundCorrespondenceDateReceived = Some(LocalDate.of(1920, 2, 29)),
+        inboundCorrespondenceDueDate = LocalDate.of(1920, 2, 29),
+        periodKey = "#001"
+      ),
+    )
+  )
+
   val sampleComplianceData: ComplianceData = ComplianceData(
     sampleCompliancePayload,
     filingFrequency = FilingFrequencyEnum.quarterly
   )
+
+  val complianceDataNoOpenObligations: ComplianceData = sampleComplianceData.copy(compliancePayload = compliancePayloadObligationsFulfilled)
 
   val quarterlyThreshold: Int = 4
 
