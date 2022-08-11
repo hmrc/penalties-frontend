@@ -16,27 +16,37 @@
 
 package viewmodels
 
+import config.ErrorHandler
 import models.appealInfo.AppealStatusEnum.Upheld
+import models.compliance.{ComplianceData, ComplianceStatusEnum}
 import models.lpp.{LPPDetails, LPPPenaltyStatusEnum}
 import models.lsp.{LSPPenaltyStatusEnum, TaxReturnStatusEnum}
 import models.{GetPenaltyDetails, User}
 import play.api.i18n.Messages
+import play.api.mvc.Result
 import play.twirl.api.{Html, HtmlFormat}
-import services.PenaltiesService
+import services.{ComplianceService, PenaltiesService}
+import uk.gov.hmrc.http.HeaderCarrier
+import utils.Logger.logger
 import utils.MessageRenderer.getMessage
-import utils.{CurrencyFormatter, ViewUtils}
+import utils.{CurrencyFormatter, ImplicitDateFormatter, ViewUtils}
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class IndexPageHelper @Inject()(p: views.html.components.p,
                                 strong: views.html.components.strong,
                                 bullets: views.html.components.bullets,
                                 link: views.html.components.link,
                                 warningText: views.html.components.warningText,
-                                penaltiesService: PenaltiesService) extends ViewUtils with CurrencyFormatter {
+                                penaltiesService: PenaltiesService,
+                                complianceService: ComplianceService,
+                                errorHandler: ErrorHandler) extends ViewUtils with CurrencyFormatter with ImplicitDateFormatter {
 
   //scalastyle:off
-  def getContentBasedOnPointsFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_]): Html = {
+  def getContentBasedOnPointsFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_],
+                                                                          hc: HeaderCarrier, ec: ExecutionContext,
+                                                                          lspCreationDate: Option[String], pointsThreshold: Option[String]): Future[Either[Result, Html]] = {
     val fixedPenaltyAmount: String = parseBigDecimalNoPaddedZeroToFriendlyValue(penaltyDetails.lateSubmissionPenalty.map(_.summary.penaltyChargeAmount).getOrElse(0))
     val activePoints: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0)
     val regimeThreshold: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0)
@@ -45,14 +55,30 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     val amountOfLateSubmissions: Int = penaltyDetails.lateSubmissionPenalty.map(_.details.count(_.lateSubmissions.flatMap(_.headOption.map(_.taxReturnStatus.equals(TaxReturnStatusEnum.Open))).isDefined)).getOrElse(0)
     (activePoints, regimeThreshold, addedPoints, removedPoints) match {
       case (0, _, _, _) =>
-        p(content = stringAsHtml(messages("lsp.pointSummary.noActivePoints")))
+        Future(Right(p(content = stringAsHtml(messages("lsp.pointSummary.noActivePoints")))))
       case (currentPoints, threshold, _, _) if currentPoints >= threshold =>
-        html(
-          p(content = html(stringAsHtml(getMessage("lsp.onThreshold.p1"))),
-            classes = "govuk-body govuk-!-font-size-24"),
-          p(content = html(stringAsHtml(getMessage("lsp.onThreshold.p2",fixedPenaltyAmount)))),
-          p(link(link = controllers.routes.ComplianceController.onPageLoad.url, getMessage("lsp.onThreshold.link")))
-        )
+        callObligationAPI(user.vrn)(implicitly, implicitly, implicitly, lspCreationDate, pointsThreshold).map {
+          _.fold(
+            Left(_),
+            data => {
+              val numberOfOpenObligations = data.compliancePayload.obligationDetails.filter(_.status.equals(ComplianceStatusEnum.open))
+              if (numberOfOpenObligations.isEmpty) {
+                Right(html(
+                  bullets(Seq(
+                     stringAsHtml(getMessage("lsp.onThreshold.compliant.p3", getLSPCompliantMonths(pointsThreshold.get)))
+                  ))
+                ))
+              } else {
+                Right(html(
+                  p(content = html(stringAsHtml(getMessage("lsp.onThreshold.p1"))),
+                    classes = "govuk-body govuk-!-font-size-24"),
+                  p(content = html(stringAsHtml(getMessage("lsp.onThreshold.p2", fixedPenaltyAmount)))),
+                  p(link(link = controllers.routes.ComplianceController.onPageLoad.url, getMessage("lsp.onThreshold.link")))
+                ))
+              }
+            }
+          )
+        }
       case (currentPoints, threshold, addedPoints, _) if addedPoints > 0 =>
         val base = Seq(
           p(content = getPluralOrSingular(currentPoints)("lsp.pointSummary.penaltyPoints.adjusted.singular", "lsp.pointSummary.penaltyPoints.adjusted.plural")),
@@ -68,9 +94,9 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           getGuidanceLink
         )
         if (currentPoints == threshold - 1) {
-          html(base.+:(warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText", fixedPenaltyAmount)))): _*)
+          Future(Right(html(base.+:(warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText", fixedPenaltyAmount)))): _*)))
         } else {
-          html(base: _*)
+          Future(Right(html(base: _*)))
         }
 
       case (currentPoints, threshold, _, removedPoints) if removedPoints > 0 =>
@@ -88,13 +114,13 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           getGuidanceLink
         )
         if (currentPoints == threshold - 1) {
-          html(base.+:(warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText", fixedPenaltyAmount)))): _*)
+          Future(Right(html(base.+:(warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText", fixedPenaltyAmount)))): _*)))
         } else {
-          html(base: _*)
+          Future(Right(html(base: _*)))
         }
 
       case (currentPoints, threshold, _, _) if currentPoints < threshold - 1 =>
-        html(
+        Future(Right(html(
           renderPointsTotal(currentPoints),
           p(content = getPluralOrSingularContentForOverview(currentPoints, amountOfLateSubmissions)),
           p(content = stringAsHtml(
@@ -104,15 +130,15 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
             getMessage("lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded", threshold, fixedPenaltyAmount)
           )),
           getGuidanceLink
-        )
+        )))
       case (currentPoints, threshold, _, _) if currentPoints == threshold - 1 =>
-        html(
+        Future(Right(html(
           renderPointsTotal(currentPoints),
           warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText", fixedPenaltyAmount))),
           p(getPluralOrSingularContentForOverview(currentPoints, amountOfLateSubmissions)),
           getGuidanceLink
-        )
-      case _ => p(content = html(stringAsHtml("")))
+        )))
+      case _ => Future(Right(p(content = html(stringAsHtml("")))))
     }
   }
 
@@ -169,6 +195,18 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       id = Some("guidance-link"),
       isExternal = true),
     classes = "govuk-body")
+
+  private def callObligationAPI(vrn: String)(implicit ec: ExecutionContext, hc: HeaderCarrier, user: User[_], lspCreationDate: Option[String], pointsThreshold: Option[String]): Future[Either[Result, ComplianceData]] = {
+    complianceService.getDESComplianceData(vrn)(implicitly, implicitly, implicitly, lspCreationDate, pointsThreshold).map {
+      _.fold[Either[Result, ComplianceData]](
+        {
+          logger.debug(s"[IndexPageHelper][callObligationAPI] - Received error when calling the Obligation API")
+          Left(errorHandler.showInternalServerError)
+        })(
+        Right(_)
+      )
+    }
+  }
 
 
   def getWhatYouOweBreakdown(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
@@ -227,5 +265,13 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       }
     }
     else None
+  }
+
+  private def getLSPCompliantMonths(pointsThreshold: String): Int = {
+    pointsThreshold match {
+      case "5" => 6
+      case "4" => 12
+      case "2" => 24
+    }
   }
 }

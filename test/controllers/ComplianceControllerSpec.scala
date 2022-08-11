@@ -48,7 +48,7 @@ class ComplianceControllerSpec extends SpecBase {
     ).thenReturn(authResult)
 
     reset(mockComplianceService)
-    when(mockComplianceService.getDESComplianceData(any())(any(), any(), any())).thenReturn(Future.successful(Some(sampleComplianceData)))
+    when(mockComplianceService.getDESComplianceData(any())(any(), any(), any(), any(), any())).thenReturn(Future.successful(Some(sampleComplianceData)))
   }
 
   object Controller extends ComplianceController(
@@ -71,13 +71,13 @@ class ComplianceControllerSpec extends SpecBase {
       }
 
       "return ISE - if the service returns None" in new Setup(AuthTestModels.successfulAuthResult) {
-        when(mockComplianceService.getDESComplianceData(any())(any(), any(), any())).thenReturn(Future.successful(None))
+        when(mockComplianceService.getDESComplianceData(any())(any(), any(), any(), any(), any())).thenReturn(Future.successful(None))
         val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
         status(result) shouldBe INTERNAL_SERVER_ERROR
       }
 
       "return ISE (exception thrown) - try retrieving the compliance data but failing" in new Setup(AuthTestModels.successfulAuthResult) {
-        when(mockComplianceService.getDESComplianceData(any())(any(), any(), any())).thenReturn(Future.failed(new Exception("Something went wrong.")))
+        when(mockComplianceService.getDESComplianceData(any())(any(), any(), any(), any(), any())).thenReturn(Future.failed(new Exception("Something went wrong.")))
         val result: Exception = intercept[Exception](await(Controller.onPageLoad()(fakeRequest)))
         result.getMessage shouldBe "Something went wrong."
 
