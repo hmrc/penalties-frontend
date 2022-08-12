@@ -95,11 +95,11 @@ object IndexMessages {
 
   val traderCompliantContentP = "We will remove your penalty points in January 2022 because:"
   val traderCompliantBullet1 = "your VAT Return history is up to date"
-  val traderCompliantBullet2 = "you have submitted on time for the last 12 months"
+  val traderCompliantBullet2 = "you have submitted on time for the last 6 months"
 
   val agentCompliantContentP = "We will remove your client‘s penalty points in January 2022 because:"
   val agentCompliantBullet1 = "their VAT Return history is up to date"
-  val agentCompliantBullet2 = "they have submitted on time for the last 12 months"
+  val agentCompliantBullet2 = "they have submitted on time for the last 6 months"
 
   val viewCalculationLink = "View calculation"
 

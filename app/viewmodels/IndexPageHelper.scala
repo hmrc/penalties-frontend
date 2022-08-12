@@ -70,7 +70,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
                   p(content = html(stringAsHtml(getMessage("lsp.onThreshold.compliant.p1", parsedPOCAchievementDate)))),
                   bullets(Seq(
                     stringAsHtml(getMessage("lsp.onThreshold.compliant.p2")),
-                    stringAsHtml(getMessage("lsp.onThreshold.compliant.p3", "")) //TODO replace empty args string with value from PRM-1640
+                    stringAsHtml(getMessage("lsp.onThreshold.compliant.p3", getLSPCompliantMonths(pointsThreshold.get)))
                   ))
                 ))
               } else {
@@ -147,6 +147,26 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     }
   }
 
+  def getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_]): Html = {
+    if (penaltyDetails.latePaymentPenalty.map(_.details).getOrElse(List.empty[LPPDetails]).isEmpty) {
+      p(content = stringAsHtml(messages("lpp.penaltiesSummary.noPaymentPenalties")))
+    } else {
+      val isAnyLPPNotPaid: Boolean = penaltyDetails.latePaymentPenalty.exists(_.details.exists(
+        penalty => {
+          penalty.appealInformation.map(_.exists(_.appealStatus.contains(Upheld))).isEmpty &&
+            penalty.penaltyStatus == LPPPenaltyStatusEnum.Accruing
+        }))
+      if (isAnyLPPNotPaid) {
+        html(
+          p(content = html(stringAsHtml(getMessage("lpp.penaltiesSummary.unpaid")))),
+          p(link(link = "#", messages("lpp.penaltiesSummary.howLppCalculated.link", messages("site.opensInNewTab"))))
+        )
+      } else {
+        p(link(link = "#", messages("lpp.penaltiesSummary.howLppCalculated.link", messages("site.opensInNewTab"))))
+      }
+    }
+  }
+
   def getPluralOrSingularContentForOverview(currentPoints: Int, lateSubmissions: Int)(implicit messages: Messages, user: User[_]): Html = {
     if (currentPoints == 1) {
       stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.singular", currentPoints))
@@ -193,25 +213,6 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     }
   }
 
-  def getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_]): Html = {
-    if (penaltyDetails.latePaymentPenalty.map(_.details).getOrElse(List.empty[LPPDetails]).isEmpty) {
-      p(content = stringAsHtml(messages("lpp.penaltiesSummary.noPaymentPenalties")))
-    } else {
-      val isAnyLPPNotPaid: Boolean = penaltyDetails.latePaymentPenalty.exists(_.details.exists(
-        penalty => {
-          penalty.appealInformation.map(_.exists(_.appealStatus.contains(Upheld))).isEmpty &&
-            penalty.penaltyStatus == LPPPenaltyStatusEnum.Accruing
-        }))
-      if (isAnyLPPNotPaid) {
-        html(
-          p(content = html(stringAsHtml(getMessage("lpp.penaltiesSummary.unpaid")))),
-          p(link(link = "#", messages("lpp.penaltiesSummary.howLppCalculated.link", messages("site.opensInNewTab"))))
-        )
-      } else {
-        p(link(link = "#", messages("lpp.penaltiesSummary.howLppCalculated.link", messages("site.opensInNewTab"))))
-      }
-    }
-  }
 
   def getWhatYouOweBreakdown(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
     val amountOfLateVAT = penaltiesService.findOverdueVATFromPayload(penaltyDetails)
@@ -269,5 +270,13 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       }
     }
     else None
+  }
+
+  private def getLSPCompliantMonths(pointsThreshold: String): Int = {
+    pointsThreshold match {
+      case "5" => 6
+      case "4" => 12
+      case "2" => 24
+    }
   }
 }
