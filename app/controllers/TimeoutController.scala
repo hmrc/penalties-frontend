@@ -17,11 +17,12 @@
 package controllers
 
 import config.AppConfig
-import javax.inject.Inject
 import play.api.i18n._
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.TimeoutView
+
+import javax.inject.Inject
 
 class TimeoutController @Inject()(view: TimeoutView)(implicit appConfig: AppConfig,
                                                    controllerComponents: MessagesControllerComponents)

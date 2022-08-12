@@ -18,8 +18,8 @@ package connectors
 
 import config.AppConfig
 import models.compliance.CompliancePayload
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import java.time.LocalDate
 import javax.inject.Inject

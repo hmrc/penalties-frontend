@@ -18,10 +18,10 @@ package stubs
 
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, stubFor, urlMatching}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import models.{GetPenaltyDetails, Totalisations}
 import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import models.lpp._
 import models.lsp._
+import models.{GetPenaltyDetails, Totalisations}
 import play.api.http.Status
 import play.api.libs.json.Json
 

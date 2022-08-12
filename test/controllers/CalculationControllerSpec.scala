@@ -18,10 +18,10 @@ package controllers
 
 import base.SpecBase
 import config.featureSwitches.FeatureSwitching
-import models.{GetPenaltyDetails, Totalisations}
 import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import models.lpp._
 import models.lsp._
+import models.{GetPenaltyDetails, Totalisations}
 import org.mockito.Matchers
 import org.mockito.Mockito.{mock, reset, when}
 import play.api.mvc.Result

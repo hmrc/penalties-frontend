@@ -684,7 +684,9 @@ class IndexPageHelperSpec extends SpecBase {
           implicitly, vatTraderUserWithObligationSessionKeys, hc, implicitly, Some("2020-01-01"), Some("5")))
         result.isRight shouldBe true
         val parsedResult = Jsoup.parse(contentAsString(result.right.get))
-        parsedResult.select("ul li").get(0).text shouldBe traderCompliantBullet2
+        parsedResult.select("p").get(0).text shouldBe traderCompliantContentP
+        parsedResult.select("ul li").get(0).text shouldBe traderCompliantBullet1
+        parsedResult.select("ul li").get(1).text shouldBe traderCompliantBullet2
       }
 
       "user is agent - show the correct content when there are no open obligations" in new Setup(AuthTestModels.successfulAuthResult){
@@ -694,7 +696,9 @@ class IndexPageHelperSpec extends SpecBase {
           implicitly, agentUserWithObligationSessionKeys, hc, implicitly, Some("2020-01-01"), Some("5")))
         result.isRight shouldBe true
         val parsedResult = Jsoup.parse(contentAsString(result.right.get))
-        parsedResult.select("ul li").get(0).text shouldBe agentCompliantBullet2
+        parsedResult.select("p").get(0).text shouldBe agentCompliantContentP
+        parsedResult.select("ul li").get(0).text shouldBe agentCompliantBullet1
+        parsedResult.select("ul li").get(1).text shouldBe agentCompliantBullet2
       }
 
       s"return $Left ISE when the obligation call returns None (no data/network error)" in new Setup(AuthTestModels.successfulAuthResult) {

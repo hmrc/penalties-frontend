@@ -16,8 +16,8 @@
 
 package views
 
-import messages.TimeoutMessages._
 import base.{BaseSelectors, SpecBase}
+import messages.TimeoutMessages._
 import org.jsoup.nodes.Document
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours

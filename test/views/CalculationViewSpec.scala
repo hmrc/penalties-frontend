@@ -16,14 +16,14 @@
 
 package views
 
-import base.{BaseSelectors, SpecBase}
 import assets.messages.CalculationMessages._
 import assets.messages.IndexMessages.{breadcrumb1, breadcrumb2, breadcrumb3}
+import base.{BaseSelectors, SpecBase}
+import org.jsoup.nodes.Document
 import play.twirl.api.HtmlFormat
 import utils.ViewUtils
 import views.behaviours.ViewBehaviours
 import views.html.{CalculationLPP2View, CalculationLPPView}
-import org.jsoup.nodes.Document
 
 class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
   val calculationPage: CalculationLPPView = injector.instanceOf[CalculationLPPView]

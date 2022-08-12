@@ -16,7 +16,7 @@
 
 package models.appealInfo
 
-import play.api.libs.json.{Format, JsError, JsResult, JsString, JsSuccess, JsValue}
+import play.api.libs.json._
 
 object AppealLevelEnum extends Enumeration {
 

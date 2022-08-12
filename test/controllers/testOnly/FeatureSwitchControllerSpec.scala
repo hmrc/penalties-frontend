@@ -19,8 +19,8 @@ package controllers.testOnly
 import base.SpecBase
 import config.AppConfig
 import config.featureSwitches.{CallAPI1812ETMP, FeatureSwitch, FeatureSwitching}
-import org.mockito.Mockito.{mock, reset, when}
 import org.mockito.Matchers.any
+import org.mockito.Mockito.{mock, reset, when}
 import play.api.Configuration
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

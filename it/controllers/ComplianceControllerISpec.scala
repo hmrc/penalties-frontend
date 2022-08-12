@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.AppConfig
 import models.compliance.{CompliancePayload, ComplianceStatusEnum, ObligationDetail, ObligationIdentification}
 import org.jsoup.Jsoup
 import play.api.http.Status
@@ -26,9 +27,8 @@ import stubs.{AuthStub, ComplianceStub}
 import testUtils.IntegrationSpecCommonBase
 import uk.gov.hmrc.http.SessionKeys.authToken
 import utils.SessionKeys
-import java.time.LocalDate
 
-import config.AppConfig
+import java.time.LocalDate
 
 class ComplianceControllerISpec extends IntegrationSpecCommonBase {
 

@@ -32,8 +32,9 @@ import stubs.PenaltiesStub._
 import testUtils.IntegrationSpecCommonBase
 import uk.gov.hmrc.http.SessionKeys.authToken
 import utils.SessionKeys
-
 import java.time.{LocalDate, LocalDateTime}
+
+import stubs.ComplianceStub.complianceDataStub
 
 class IndexControllerISpec extends IntegrationSpecCommonBase {
 

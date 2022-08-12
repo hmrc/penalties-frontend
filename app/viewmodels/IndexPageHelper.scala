@@ -31,6 +31,7 @@ import utils.Logger.logger
 import utils.MessageRenderer.getMessage
 import utils.{CurrencyFormatter, ImplicitDateFormatter, ViewUtils}
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -57,6 +58,8 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       case (0, _, _, _) =>
         Future(Right(p(content = stringAsHtml(messages("lsp.pointSummary.noActivePoints")))))
       case (currentPoints, threshold, _, _) if currentPoints >= threshold =>
+        lazy val pocAchievementDate: LocalDate = LocalDate.parse(penaltyDetails.lateSubmissionPenalty.map(_.summary.PoCAchievementDate.toString).getOrElse(""))
+        lazy val parsedPOCAchievementDate: String = dateToMonthYearString(pocAchievementDate)
         callObligationAPI(user.vrn)(implicitly, implicitly, implicitly, lspCreationDate, pointsThreshold).map {
           _.fold(
             Left(_),
@@ -64,8 +67,10 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
               val numberOfOpenObligations = data.compliancePayload.obligationDetails.filter(_.status.equals(ComplianceStatusEnum.open))
               if (numberOfOpenObligations.isEmpty) {
                 Right(html(
+                  p(content = html(stringAsHtml(getMessage("lsp.onThreshold.compliant.p1", parsedPOCAchievementDate)))),
                   bullets(Seq(
-                     stringAsHtml(getMessage("lsp.onThreshold.compliant.p3", getLSPCompliantMonths(pointsThreshold.get)))
+                    stringAsHtml(getMessage("lsp.onThreshold.compliant.p2")),
+                    stringAsHtml(getMessage("lsp.onThreshold.compliant.p3", getLSPCompliantMonths(pointsThreshold.get)))
                   ))
                 ))
               } else {

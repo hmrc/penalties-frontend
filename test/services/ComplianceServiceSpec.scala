@@ -18,8 +18,8 @@ package services
 
 import base.SpecBase
 import connectors.ComplianceConnector
-import models.{FilingFrequencyEnum, User}
 import models.compliance.ComplianceData
+import models.{FilingFrequencyEnum, User}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import play.api.test.Helpers._

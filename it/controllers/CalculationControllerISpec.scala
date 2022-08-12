@@ -18,10 +18,10 @@ package controllers
 
 import config.AppConfig
 import config.featureSwitches.FeatureSwitching
-import models.{GetPenaltyDetails, Totalisations}
 import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import models.lpp._
 import models.lsp._
+import models.{GetPenaltyDetails, Totalisations}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.AnyContentAsEmpty

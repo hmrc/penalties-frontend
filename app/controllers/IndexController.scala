@@ -24,7 +24,7 @@ import play.api.mvc._
 import services.PenaltiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
-import utils.SessionKeys._
+import utils.SessionKeys.{latestLSPCreationDate, _}
 import utils.{CurrencyFormatter, EnrolmentKeys, SessionKeys}
 import viewmodels.{IndexPageHelper, SummaryCardHelper}
 import views.html.IndexView
@@ -53,7 +53,7 @@ class IndexController @Inject()(view: IndexView,
           val latestLSPCreation = penaltiesService.getLatestLSPCreationDate(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
           implicit val lspCreationDate: Option[String] = latestLSPCreation.map(_.toString)
           implicit val pointsThreshold: Option[String] = penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).map(_.toString)
-          pageHelper.getContentBasedOnPointsFromModel(penaltyData)(implicitly, implicitly, implicitly, implicitly, lspCreationDate, pointsThreshold).map {
+          pageHelper.getContentBasedOnPointsFromModel(penaltyData)(implicitly, implicitly,implicitly, implicitly, lspCreationDate, pointsThreshold).map {
             _.fold(
               identity,
               contentToDisplayAboveCards => {
