@@ -54,12 +54,12 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     val removedPoints: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.inactivePenaltyPoints).getOrElse(0)
     val addedPoints: Int = penaltyDetails.lateSubmissionPenalty.map(_.details.count(point => point.FAPIndicator.contains("X") && point.penaltyStatus.equals(LSPPenaltyStatusEnum.Active))).getOrElse(0)
     val amountOfLateSubmissions: Int = penaltyDetails.lateSubmissionPenalty.map(_.details.count(_.lateSubmissions.flatMap(_.headOption.map(_.taxReturnStatus.equals(TaxReturnStatusEnum.Open))).isDefined)).getOrElse(0)
-    val pocAchievementDate: LocalDate = LocalDate.parse(penaltyDetails.lateSubmissionPenalty.map(_.summary.PoCAchievementDate.toString).getOrElse(""))
-    val parsedPOCAchievementDate: String = dateToMonthYearString(pocAchievementDate)
     (activePoints, regimeThreshold, addedPoints, removedPoints) match {
       case (0, _, _, _) =>
         Future(Right(p(content = stringAsHtml(messages("lsp.pointSummary.noActivePoints")))))
       case (currentPoints, threshold, _, _) if currentPoints >= threshold =>
+        lazy val pocAchievementDate: LocalDate = LocalDate.parse(penaltyDetails.lateSubmissionPenalty.map(_.summary.PoCAchievementDate.toString).getOrElse(""))
+        lazy val parsedPOCAchievementDate: String = dateToMonthYearString(pocAchievementDate)
         callObligationAPI(user.vrn)(implicitly, implicitly, implicitly, lspCreationDate, pointsThreshold).map {
           _.fold(
             Left(_),

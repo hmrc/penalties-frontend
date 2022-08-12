@@ -57,7 +57,7 @@ lsp.onThreshold.link = Actions to take before HMRC can remove your points
 agent.lsp.onThreshold.link = Actions to take before HMRC can remove your client’s points
 
 lsp.onThreshold.compliant.p1 = We will remove your penalty points in {0} because:
-agent.lsp.onThreshold.compliant.p1 = We will remove your client‘s penalty points in {0} because:
+agent.lsp.onThreshold.compliant.p1 = We will remove your client’s penalty points in {0} because:
 lsp.onThreshold.compliant.p2 = your VAT Return history is up to date
 agent.lsp.onThreshold.compliant.p2 = their VAT Return history is up to date
 lsp.onThreshold.compliant.p3 = you have submitted on time for the last {0} months
