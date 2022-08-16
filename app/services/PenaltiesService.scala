@@ -85,13 +85,6 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
     filterOutAppealedPenalties(penaltyPoints).exists(_.chargeOutstandingAmount.exists(_ > BigDecimal(0)))
   }
 
-  def getLatestLSPCreationDate(payload: Seq[LSPDetails]): Option[LocalDate] = {
-    filterOutAppealedPenalties(payload)
-      .sortWith((firstLSP, secondLSP) => firstLSP.penaltyCreationDate.isAfter(secondLSP.penaltyCreationDate))
-      .map(_.penaltyCreationDate)
-      .headOption
-  }
-
   private def filterOutAppealedPenalties(penaltyPoints: Seq[LSPDetails]): Seq[LSPDetails] = {
     penaltyPoints
       .filterNot(details => details.appealInformation.exists(_.exists(_.appealStatus.contains(AppealStatusEnum.Upheld))))

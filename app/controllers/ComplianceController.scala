@@ -48,10 +48,9 @@ class ComplianceController @Inject()(view: ComplianceView,
         errorHandler.showInternalServerError
       })(
         complianceData => {
-          val latestLSPCreationDate: LocalDate = LocalDate.parse(request.session.get(SessionKeys.latestLSPCreationDate).get)
           val pocAchievementDate: LocalDate = LocalDate.parse(request.session.get(SessionKeys.pocAchievementDate).get)
           val parsedPOCAchievementDate: String = dateToMonthYearString(pocAchievementDate)
-          val timelineContent = timelineHelper.getTimelineContent(complianceData, latestLSPCreationDate)
+          val timelineContent = timelineHelper.getTimelineContent(complianceData)
           Ok(view(
             timelineContent,
             parsedPOCAchievementDate

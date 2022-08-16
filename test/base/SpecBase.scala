@@ -19,7 +19,7 @@ package base
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
 import models.compliance._
-import models.{FilingFrequencyEnum, User}
+import models.User
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.Mockito.mock
@@ -134,13 +134,6 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with T
     )
   )
 
-  val sampleComplianceData: ComplianceData = ComplianceData(
-    sampleCompliancePayload,
-    filingFrequency = FilingFrequencyEnum.quarterly
-  )
-
-  val complianceDataNoOpenObligations: ComplianceData = sampleComplianceData.copy(compliancePayload = compliancePayloadObligationsFulfilled)
-
   val quarterlyThreshold: Int = 4
 
   val annualThreshold: Int = 2
@@ -167,14 +160,6 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with T
     controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = true, isObligation = false, isAdditional = true).url
 
   val vatTraderUser: User[AnyContent] = User("123456789", arn = None)(fakeRequest)
-  val vatTraderUserWithObligationSessionKeys: User[AnyContent] = vatTraderUser.copy()(fakeRequest.withSession(
-    SessionKeys.latestLSPCreationDate -> "2020-01-01",
-    SessionKeys.pointsThreshold -> "5"
-  ))
+
   val agentUser: User[AnyContent] = User("123456789", arn = Some("AGENT1"))(fakeRequest.withSession(SessionKeys.agentSessionVrn -> "VRN1234"))
-  val agentUserWithObligationSessionKeys: User[AnyContent] = agentUser.copy()(fakeRequest.withSession(
-    SessionKeys.agentSessionVrn -> "VRN1234",
-    SessionKeys.latestLSPCreationDate -> "2020-01-01",
-    SessionKeys.pointsThreshold -> "5"
-  ))
 }

@@ -18,7 +18,7 @@ package viewmodels
 
 import config.ErrorHandler
 import models.appealInfo.AppealStatusEnum.Upheld
-import models.compliance.{ComplianceData, ComplianceStatusEnum}
+import models.compliance.{CompliancePayload, ComplianceStatusEnum}
 import models.lpp.{LPPDetails, LPPPenaltyStatusEnum}
 import models.lsp.{LSPPenaltyStatusEnum, TaxReturnStatusEnum}
 import models.{GetPenaltyDetails, User}
@@ -46,8 +46,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
 
   //scalastyle:off
   def getContentBasedOnPointsFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_],
-                                                                          hc: HeaderCarrier, ec: ExecutionContext,
-                                                                          lspCreationDate: Option[String], pointsThreshold: Option[String]): Future[Either[Result, Html]] = {
+                                                                          hc: HeaderCarrier, ec: ExecutionContext): Future[Either[Result, Html]] = {
     val fixedPenaltyAmount: String = parseBigDecimalNoPaddedZeroToFriendlyValue(penaltyDetails.lateSubmissionPenalty.map(_.summary.penaltyChargeAmount).getOrElse(0))
     val activePoints: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0)
     val regimeThreshold: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0)
@@ -58,19 +57,19 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       case (0, _, _, _) =>
         Future(Right(p(content = stringAsHtml(messages("lsp.pointSummary.noActivePoints")))))
       case (currentPoints, threshold, _, _) if currentPoints >= threshold =>
-        lazy val pocAchievementDate: LocalDate = LocalDate.parse(penaltyDetails.lateSubmissionPenalty.map(_.summary.PoCAchievementDate.toString).getOrElse(""))
-        lazy val parsedPOCAchievementDate: String = dateToMonthYearString(pocAchievementDate)
-        callObligationAPI(user.vrn)(implicitly, implicitly, implicitly, lspCreationDate, pointsThreshold).map {
+        lazy val optPOCAchievementDate: Option[LocalDate] = penaltyDetails.lateSubmissionPenalty.map(_.summary.PoCAchievementDate)
+        lazy val parsedPOCAchievementDate: String = dateToMonthYearString(optPOCAchievementDate.get)
+        callObligationAPI(user.vrn)(implicitly, implicitly, implicitly, optPOCAchievementDate).map {
           _.fold(
             Left(_),
             data => {
-              val numberOfOpenObligations = data.compliancePayload.obligationDetails.filter(_.status.equals(ComplianceStatusEnum.open))
+              val numberOfOpenObligations = data.obligationDetails.filter(_.status.equals(ComplianceStatusEnum.open))
               if (numberOfOpenObligations.isEmpty) {
                 Right(html(
                   p(content = html(stringAsHtml(getMessage("lsp.onThreshold.compliant.p1", parsedPOCAchievementDate)))),
                   bullets(Seq(
                     stringAsHtml(getMessage("lsp.onThreshold.compliant.p2")),
-                    stringAsHtml(getMessage("lsp.onThreshold.compliant.p3", getLSPCompliantMonths(pointsThreshold.get)))
+                    stringAsHtml(getMessage("lsp.onThreshold.compliant.p3", getLSPCompliantMonths(threshold)))
                   ))
                 ))
               } else {
@@ -201,9 +200,9 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       isExternal = true),
     classes = "govuk-body")
 
-  private def callObligationAPI(vrn: String)(implicit ec: ExecutionContext, hc: HeaderCarrier, user: User[_], lspCreationDate: Option[String], pointsThreshold: Option[String]): Future[Either[Result, ComplianceData]] = {
-    complianceService.getDESComplianceData(vrn)(implicitly, implicitly, implicitly, lspCreationDate, pointsThreshold).map {
-      _.fold[Either[Result, ComplianceData]](
+  private def callObligationAPI(vrn: String)(implicit ec: ExecutionContext, hc: HeaderCarrier, user: User[_], pocAchievementDate: Option[LocalDate]): Future[Either[Result, CompliancePayload]] = {
+    complianceService.getDESComplianceData(vrn)(implicitly, implicitly, implicitly, pocAchievementDate).map {
+      _.fold[Either[Result, CompliancePayload]](
         {
           logger.debug(s"[IndexPageHelper][callObligationAPI] - Received error when calling the Obligation API")
           Left(errorHandler.showInternalServerError)
@@ -272,11 +271,11 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     else None
   }
 
-  private def getLSPCompliantMonths(pointsThreshold: String): Int = {
+  private def getLSPCompliantMonths(pointsThreshold: Int): Int = {
     pointsThreshold match {
-      case "5" => 6
-      case "4" => 12
-      case "2" => 24
+      case 5 => 6 //Monthly filer
+      case 4 => 12 //Quarterly filer
+      case 2 => 24 //Annually filer
     }
   }
 }

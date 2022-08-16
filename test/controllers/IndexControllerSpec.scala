@@ -63,23 +63,16 @@ class IndexControllerSpec extends SpecBase {
       "the user is authorised" must {
 
         "return OK and correct view" in new Setup(AuthTestModels.successfulAuthResult) {
-          when(mockPenaltiesService.getLatestLSPCreationDate(any()))
-            .thenReturn(None)
           val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
           status(result) shouldBe OK
-          await(result).session.get(SessionKeys.latestLSPCreationDate).isEmpty shouldBe true
         }
 
-        "return OK and correct view - adding the latest LSP creation date and threshold into the session in case of compliance view" in
+        "return OK and correct view - adding the POC Achievement date in case of compliance view" in
           new Setup(AuthTestModels.successfulAuthResult) {
-            when(mockPenaltiesService.getLatestLSPCreationDate(any()))
-              .thenReturn(Some(sampleDateV2))
             val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
             status(result) shouldBe OK
-            await(result).session.get(SessionKeys.latestLSPCreationDate).isDefined shouldBe true
-            await(result).session.get(SessionKeys.latestLSPCreationDate).get shouldBe sampleDateV2.toString
-            await(result).session.get(SessionKeys.pointsThreshold).isDefined shouldBe true
-            await(result).session.get(SessionKeys.pointsThreshold).get shouldBe "4"
+            await(result).session.get(SessionKeys.pocAchievementDate).isDefined shouldBe true
+            await(result).session.get(SessionKeys.pocAchievementDate).get shouldBe "2022-01-01"
           }
       }
 
