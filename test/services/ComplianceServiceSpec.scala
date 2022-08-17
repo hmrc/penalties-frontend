@@ -18,14 +18,16 @@ package services
 
 import base.SpecBase
 import connectors.ComplianceConnector
-import models.compliance.ComplianceData
-import models.{FilingFrequencyEnum, User}
+import models.User
+import models.compliance.CompliancePayload
+import org.mockito.Matchers
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import utils.SessionKeys
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -40,36 +42,29 @@ class ComplianceServiceSpec extends SpecBase {
   }
 
   "getDESComplianceData" should {
-    s"return a successful response and pass the result back to the controller" in new Setup {
-      when(mockComplianceConnector.getComplianceDataFromDES(any(), any(), any())(any())).thenReturn(Future.successful(sampleCompliancePayload))
-      val result: Option[ComplianceData] = await(service.getDESComplianceData(vrn)(HeaderCarrier(), User("123456789")(fakeRequest.withSession(
-        SessionKeys.latestLSPCreationDate -> "2020-01-01",
-        SessionKeys.pointsThreshold -> "5"
-      )), implicitly))
-      val expectedResult = ComplianceData(
-        sampleCompliancePayload,
-        filingFrequency = FilingFrequencyEnum.monthly
-      )
+    s"return a successful response and pass the result back to the controller (date provided as parameter)" in new Setup {
+      when(mockComplianceConnector.getComplianceDataFromDES(any(),
+        Matchers.eq(LocalDate.of(2020, 1, 1)),
+        Matchers.eq(LocalDate.of(2022, 1, 1)))(any())).thenReturn(Future.successful(sampleCompliancePayload))
+      val result: Option[CompliancePayload] = await(service.getDESComplianceData(vrn)(HeaderCarrier(),
+        User("123456789"), implicitly, Some(LocalDate.of(2022, 1, 1))))
       result.isDefined shouldBe true
-      result.get shouldBe expectedResult
+      result.get shouldBe sampleCompliancePayload
     }
 
-    s"return a successful response and pass the result back to the controller (when given a local date for latest LSP creation date)" in new Setup {
-      when(mockComplianceConnector.getComplianceDataFromDES(any(), any(), any())(any())).thenReturn(Future.successful(sampleCompliancePayload))
-      val result: Option[ComplianceData] = await(service.getDESComplianceData(vrn)(HeaderCarrier(), User("123456789")(fakeRequest.withSession(
-        SessionKeys.latestLSPCreationDate -> "2020-01-01",
-        SessionKeys.pointsThreshold -> "5"
+    s"return a successful response and pass the result back to the controller (date in session)" in new Setup {
+      when(mockComplianceConnector.getComplianceDataFromDES(any(),
+        Matchers.eq(LocalDate.of(2020, 1, 1)),
+        Matchers.eq(LocalDate.of(2022, 1, 1)))(any())).thenReturn(Future.successful(sampleCompliancePayload))
+      val result: Option[CompliancePayload] = await(service.getDESComplianceData(vrn)(HeaderCarrier(), User("123456789")(fakeRequest.withSession(
+        SessionKeys.pocAchievementDate -> "2022-01-01"
       )), implicitly))
-      val expectedResult = ComplianceData(
-        sampleCompliancePayload,
-        filingFrequency = FilingFrequencyEnum.monthly
-      )
       result.isDefined shouldBe true
-      result.get shouldBe expectedResult
+      result.get shouldBe sampleCompliancePayload
     }
 
     "return None when the session keys are not present" in new Setup {
-      val result: Option[ComplianceData] = await(service.getDESComplianceData(vrn)(HeaderCarrier(), User("123456789")(fakeRequest), implicitly))
+      val result: Option[CompliancePayload] = await(service.getDESComplianceData(vrn)(HeaderCarrier(), User("123456789")(fakeRequest), implicitly))
       result shouldBe None
     }
 
@@ -77,8 +72,7 @@ class ComplianceServiceSpec extends SpecBase {
       when(mockComplianceConnector.getComplianceDataFromDES(any(), any(), any())(any()))
         .thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", INTERNAL_SERVER_ERROR)))
       val result: Exception = intercept[Exception](await(service.getDESComplianceData(vrn)(HeaderCarrier(), User("123456789")(fakeRequest.withSession(
-        SessionKeys.latestLSPCreationDate -> "2020-01-01",
-        SessionKeys.pointsThreshold -> "5"
+        SessionKeys.pocAchievementDate -> "2022-01-01"
       )), implicitly)))
       result.getMessage shouldBe "Upstream error"
     }

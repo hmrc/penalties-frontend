@@ -24,8 +24,8 @@ import play.api.mvc._
 import services.PenaltiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
-import utils.SessionKeys.{latestLSPCreationDate, _}
-import utils.{CurrencyFormatter, EnrolmentKeys, SessionKeys}
+import utils.SessionKeys._
+import utils.{CurrencyFormatter, EnrolmentKeys}
 import viewmodels.{IndexPageHelper, SummaryCardHelper}
 import views.html.IndexView
 
@@ -49,14 +49,11 @@ class IndexController @Inject()(view: IndexView,
         errors => {
           logger.error(s"[IndexController][onPageLoad] - Received error with status ${errors.status} and body ${errors.body} rendering ISE.")
           Future(errorHandler.showInternalServerError)
-        }, penaltyData => {
-          val latestLSPCreation = penaltiesService.getLatestLSPCreationDate(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
-          implicit val lspCreationDate: Option[String] = latestLSPCreation.map(_.toString)
-          implicit val pointsThreshold: Option[String] = penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).map(_.toString)
-          pageHelper.getContentBasedOnPointsFromModel(penaltyData)(implicitly, implicitly,implicitly, implicitly, lspCreationDate, pointsThreshold).map {
+        }, penaltyData => {pageHelper.getContentBasedOnPointsFromModel(penaltyData).map {
             _.fold(
               identity,
               contentToDisplayAboveCards => {
+                val optPOCAchievementDate: Option[String] = penaltyData.lateSubmissionPenalty.map(_.summary.PoCAchievementDate.toString)
                 val contentLPPToDisplayAboveCards = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyData)
                 val whatYouOweBreakdown = pageHelper.getWhatYouOweBreakdown(penaltyData)
                 val lspSummaryCards = cardHelper.populateLateSubmissionPenaltyCard(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty),
@@ -73,13 +70,11 @@ class IndexController @Inject()(view: IndexView,
                   isAnyUnpaidLSP,
                   isAnyUnpaidLSPAndNotSubmittedReturn,
                   whatYouOweBreakdown))
-                if (latestLSPCreation.isDefined) {
+                if (optPOCAchievementDate.isDefined) {
                   result
                     .removingFromSession(allKeysExcludingAgentVRN: _*)
                     .addingToSession(
-                      SessionKeys.latestLSPCreationDate -> latestLSPCreation.get.toString,
-                      SessionKeys.pointsThreshold -> penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0).toString,
-                      pocAchievementDate -> penaltyData.lateSubmissionPenalty.map(_.summary.PoCAchievementDate.toString).getOrElse("")
+                      pocAchievementDate -> optPOCAchievementDate.get
                     )
                 } else {
                   result

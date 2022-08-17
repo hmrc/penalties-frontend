@@ -18,21 +18,18 @@ package viewmodels
 
 import config.AppConfig
 import config.featureSwitches.FeatureSwitching
-import models.compliance.{ComplianceData, CompliancePayload, ComplianceStatusEnum, ObligationDetail}
+import models.compliance.{CompliancePayload, ComplianceStatusEnum, ObligationDetail}
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import utils.{ImplicitDateFormatter, ViewUtils}
 
-import java.time.LocalDate
 import javax.inject.Inject
 
 class TimelineHelper @Inject()(timeline: views.html.components.timeline)
                               (implicit val appConfig: AppConfig) extends ImplicitDateFormatter with ViewUtils with FeatureSwitching {
 
-  def getTimelineContent(complianceData: ComplianceData, latestLSPCreationDate: LocalDate)(implicit messages: Messages): Html = {
-    val returnsAfterLSPCreationDate: Seq[ObligationDetail] = getReturnsAfterLSPCreationDate(complianceData.compliancePayload,
-      latestLSPCreationDate)
-    val unfulfilledReturnsAfterLSPCreationDate: Seq[ObligationDetail] = returnsAfterLSPCreationDate.filter(_.status.equals(ComplianceStatusEnum.open))
+  def getTimelineContent(complianceData: CompliancePayload)(implicit messages: Messages): Html = {
+    val unfulfilledReturnsAfterLSPCreationDate: Seq[ObligationDetail] = complianceData.obligationDetails.filter(_.status.equals(ComplianceStatusEnum.open))
     if (unfulfilledReturnsAfterLSPCreationDate.nonEmpty) {
       val events: Seq[TimelineEvent] = unfulfilledReturnsAfterLSPCreationDate.map { compReturn =>
         val isReturnLate = compReturn.inboundCorrespondenceDueDate.isBefore(getFeatureDate)
@@ -49,11 +46,5 @@ class TimelineHelper @Inject()(timeline: views.html.components.timeline)
     } else {
       html()
     }
-  }
-
-  def getReturnsAfterLSPCreationDate(complianceData: CompliancePayload, latestLSPCreationDate: LocalDate): Seq[ObligationDetail] = {
-    complianceData.obligationDetails.filter(
-      obligation => obligation.inboundCorrespondenceDueDate.isAfter(latestLSPCreationDate)
-        || obligation.inboundCorrespondenceDueDate.isEqual(latestLSPCreationDate))
   }
 }

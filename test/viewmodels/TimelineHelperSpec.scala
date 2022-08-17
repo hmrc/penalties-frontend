@@ -19,7 +19,6 @@ package viewmodels
 import base.SpecBase
 import config.AppConfig
 import config.featureSwitches.FeatureSwitching
-import models.FilingFrequencyEnum
 import models.compliance._
 import org.jsoup.Jsoup
 import org.mockito.Mockito.mock
@@ -141,23 +140,12 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter with Featur
     )
   )
 
-  val complianceDataQuarterlyWith24MthsHistory: ComplianceData = ComplianceData(
-    compliancePayload,
-    filingFrequency = FilingFrequencyEnum.quarterly
-  )
-
-  val complianceDataMonthlyWithout24MthsHistory: ComplianceData = ComplianceData(
-    compliancePayloadMonthly,
-    filingFrequency = FilingFrequencyEnum.monthly
-  )
-
-
   "TimelineHelper" when {
     "getTimelineContent is called and given compliance returns" should {
       "when the user is a VAT trader" must {
         "return the timeline component with VAT trader content wrapped in html" in {
           setFeatureDate(Some(LocalDate.of(2022, 4, 4)))
-          val result = helper.getTimelineContent(complianceDataQuarterlyWith24MthsHistory, latestLSPCreationDateQuarterly)
+          val result = helper.getTimelineContent(compliancePayload)
           val parsedHtmlResult = Jsoup.parse(result.body)
           parsedHtmlResult.select("ol").attr("class") shouldBe "hmrc-timeline"
 
@@ -173,7 +161,7 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter with Featur
 
         "return the timeline component - showing a late return where applicable" in {
           setFeatureDate(Some(LocalDate.of(2022, 3, 8)))
-          val result = helper.getTimelineContent(complianceDataMonthlyWithout24MthsHistory, latestLSPCreationDateMonthly)
+          val result = helper.getTimelineContent(compliancePayloadMonthly)
           val parsedHtmlResult = Jsoup.parse(result.body)
           parsedHtmlResult.select("ol").attr("class") shouldBe "hmrc-timeline"
           parsedHtmlResult.select("h2").get(0).text() shouldBe "VAT period 1 January 2022 to 31 January 2022"
@@ -199,7 +187,7 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter with Featur
 
       "when the user is an agent" must {
         "return the timeline component with Agent content wrapped in html" in {
-          val result = helper.getTimelineContent(complianceDataQuarterlyWith24MthsHistory, latestLSPCreationDateQuarterly)
+          val result = helper.getTimelineContent(compliancePayload)
           val parsedHtmlResult = Jsoup.parse(result.body)
           parsedHtmlResult.select("ol").attr("class") shouldBe "hmrc-timeline"
           parsedHtmlResult.select("h2").get(0).text() shouldBe "VAT period 1 April 2022 to 30 June 2022"
@@ -211,14 +199,6 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter with Featur
           parsedHtmlResult.select("h2").get(2).text() shouldBe "VAT period 1 October 2022 to 31 December 2022"
           parsedHtmlResult.select("span").get(2).text() shouldBe "Submit VAT Return by 7 February 2023"
         }
-      }
-    }
-
-    "getReturnsAfterLSPCreationDate" should {
-      "return all obligation details after the latest LSP creation date" in {
-        val result = helper.getReturnsAfterLSPCreationDate(compliancePayloadMonthly, LocalDate.of(2022, 3, 8))
-        result.size shouldBe 5
-        result shouldBe compliancePayloadMonthly.obligationDetails.drop(1)
       }
     }
   }

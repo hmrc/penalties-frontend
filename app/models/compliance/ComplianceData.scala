@@ -16,9 +16,6 @@
 
 package models.compliance
 
-import models.FilingFrequencyEnum
-
 case class ComplianceData(
-                           compliancePayload: CompliancePayload,
-                           filingFrequency: FilingFrequencyEnum.Value
+                           compliancePayload: CompliancePayload
                          )

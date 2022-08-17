@@ -17,10 +17,10 @@
 package controllers
 
 import config.AppConfig
-import models.{GetPenaltyDetails, Totalisations, appealInfo, lpp}
 import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
-import models.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty, MainTransactionEnum}
-import models.lsp.{LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum, LSPSummary, LateSubmission, LateSubmissionPenalty, TaxReturnStatusEnum}
+import models.lpp._
+import models.lsp._
+import models.{GetPenaltyDetails, Totalisations, appealInfo, lpp}
 import org.jsoup.Jsoup
 import play.api.http.{HeaderNames, Status}
 import play.api.mvc.AnyContentAsEmpty
@@ -32,33 +32,26 @@ import stubs.PenaltiesStub._
 import testUtils.IntegrationSpecCommonBase
 import uk.gov.hmrc.http.SessionKeys.authToken
 import utils.SessionKeys
-import java.time.{LocalDate, LocalDateTime}
 
-import stubs.ComplianceStub.complianceDataStub
+import java.time.LocalDate
 
 class IndexControllerISpec extends IntegrationSpecCommonBase {
 
   val appConfig: AppConfig = injector.instanceOf[AppConfig]
 
-  val sampleDate1: LocalDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
-  val sampleDate1V2: LocalDate = sampleDate1.toLocalDate
-  val sampleDate2: LocalDateTime = LocalDateTime.of(2021, 2, 1, 1, 1, 1)
-  val sampleDate2V2: LocalDate = sampleDate2.toLocalDate
-  val sampleDate3: LocalDateTime = LocalDateTime.of(2021, 3, 1, 1, 1, 1)
-  val sampleDate3V2: LocalDate = sampleDate3.toLocalDate
-  val sampleDate4: LocalDateTime = LocalDateTime.of(2021, 4, 1, 1, 1, 1)
-  val sampleDate4V2: LocalDate = sampleDate4.toLocalDate
+  val sampleDate1: LocalDate = LocalDate.of(2021, 1, 1)
+  val sampleDate2: LocalDate = LocalDate.of(2021, 2, 1)
+  val sampleDate3: LocalDate = LocalDate.of(2021, 3, 1)
+  val sampleDate4: LocalDate = LocalDate.of(2021, 4, 1)
   val controller: IndexController = injector.instanceOf[IndexController]
   val fakeAgentRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
     SessionKeys.agentSessionVrn -> "123456789",
     authToken -> "12345",
-    SessionKeys.latestLSPCreationDate -> "2020-01-01",
-    SessionKeys.pointsThreshold -> "5"
+    SessionKeys.pocAchievementDate -> "2022-01-01"
   )
   val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
     authToken -> "12345",
-    SessionKeys.latestLSPCreationDate -> "2020-01-01",
-    SessionKeys.pointsThreshold -> "5"
+    SessionKeys.pocAchievementDate -> "2022-01-01"
   )
 
   val getPenaltyDetailsPayloadWithAddedPoint = GetPenaltyDetails(
@@ -78,15 +71,15 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           penaltyCategory = LSPPenaltyCategoryEnum.Point,
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = Some("X"),
-          penaltyCreationDate = sampleDate1V2,
-          penaltyExpiryDate = sampleDate1V2.plusMonths(1).plusYears(2),
+          penaltyCreationDate = sampleDate1,
+          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
           expiryReason = None,
-          communicationsDate = sampleDate1V2,
+          communicationsDate = sampleDate1,
           lateSubmissions = Some(Seq(LateSubmission(
-            taxPeriodStartDate = Some(sampleDate1V2),
-            taxPeriodEndDate = Some(sampleDate1V2),
-            taxPeriodDueDate = Some(sampleDate1V2),
-            returnReceiptDate = Some(sampleDate1V2),
+            taxPeriodStartDate = Some(sampleDate1),
+            taxPeriodEndDate = Some(sampleDate1),
+            taxPeriodDueDate = Some(sampleDate1),
+            returnReceiptDate = Some(sampleDate1),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
           appealInformation = Some(Seq(AppealInformationType(Some(AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
@@ -116,15 +109,15 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           penaltyCategory = LSPPenaltyCategoryEnum.Point,
           penaltyStatus = LSPPenaltyStatusEnum.Inactive,
           FAPIndicator = None,
-          penaltyCreationDate = sampleDate1V2,
-          penaltyExpiryDate = sampleDate1V2.plusMonths(1).plusYears(2),
+          penaltyCreationDate = sampleDate1,
+          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
           expiryReason = Some("FAP"),
-          communicationsDate = sampleDate1V2,
+          communicationsDate = sampleDate1,
           lateSubmissions = Some(Seq(LateSubmission(
-            taxPeriodStartDate = Some(sampleDate1V2),
-            taxPeriodEndDate = Some(sampleDate1V2.plusMonths(1)),
-            taxPeriodDueDate = Some(sampleDate1V2),
-            returnReceiptDate = Some(sampleDate1V2),
+            taxPeriodStartDate = Some(sampleDate1),
+            taxPeriodEndDate = Some(sampleDate1.plusMonths(1)),
+            taxPeriodDueDate = Some(sampleDate1),
+            returnReceiptDate = Some(sampleDate1),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
           appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
@@ -137,15 +130,15 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           penaltyCategory = LSPPenaltyCategoryEnum.Point,
           penaltyStatus = LSPPenaltyStatusEnum.Inactive,
           FAPIndicator = Some("X"),
-          penaltyCreationDate = sampleDate1V2,
-          penaltyExpiryDate = sampleDate1V2.plusMonths(1).plusYears(2),
+          penaltyCreationDate = sampleDate1,
+          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
           expiryReason = Some("FAP"),
-          communicationsDate = sampleDate1V2,
+          communicationsDate = sampleDate1,
           lateSubmissions = Some(Seq(LateSubmission(
-            taxPeriodStartDate = Some(sampleDate1V2),
-            taxPeriodEndDate = Some(sampleDate1V2),
-            taxPeriodDueDate = Some(sampleDate1V2),
-            returnReceiptDate = Some(sampleDate1V2),
+            taxPeriodStartDate = Some(sampleDate1),
+            taxPeriodEndDate = Some(sampleDate1),
+            taxPeriodDueDate = Some(sampleDate1),
+            returnReceiptDate = Some(sampleDate1),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
           appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
@@ -174,15 +167,15 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           penaltyCategory = LSPPenaltyCategoryEnum.Point,
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
-          penaltyCreationDate = sampleDate1V2,
-          penaltyExpiryDate = sampleDate1V2.plusMonths(1).plusYears(2),
+          penaltyCreationDate = sampleDate1,
+          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
           expiryReason = None,
-          communicationsDate = sampleDate1V2,
+          communicationsDate = sampleDate1,
           lateSubmissions = Some(Seq(LateSubmission(
-            taxPeriodStartDate = Some(sampleDate1V2),
-            taxPeriodEndDate = Some(sampleDate1V2),
-            taxPeriodDueDate = Some(sampleDate1V2),
-            returnReceiptDate = Some(sampleDate1V2),
+            taxPeriodStartDate = Some(sampleDate1),
+            taxPeriodEndDate = Some(sampleDate1),
+            taxPeriodDueDate = Some(sampleDate1),
+            returnReceiptDate = Some(sampleDate1),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
           appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
@@ -195,15 +188,15 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           penaltyCategory = LSPPenaltyCategoryEnum.Point,
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
-          penaltyCreationDate = sampleDate1V2,
-          penaltyExpiryDate = sampleDate1V2.plusMonths(1).plusYears(2),
+          penaltyCreationDate = sampleDate1,
+          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
           expiryReason = None,
-          communicationsDate = sampleDate1V2,
+          communicationsDate = sampleDate1,
           lateSubmissions = Some(Seq(LateSubmission(
-            taxPeriodStartDate = Some(sampleDate1V2),
-            taxPeriodEndDate = Some(sampleDate1V2),
-            taxPeriodDueDate = Some(sampleDate1V2),
-            returnReceiptDate = Some(sampleDate1V2),
+            taxPeriodStartDate = Some(sampleDate1),
+            taxPeriodEndDate = Some(sampleDate1),
+            taxPeriodDueDate = Some(sampleDate1),
+            returnReceiptDate = Some(sampleDate1),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
           appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
@@ -216,15 +209,15 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           penaltyCategory = LSPPenaltyCategoryEnum.Point,
           penaltyStatus = LSPPenaltyStatusEnum.Inactive,
           FAPIndicator = Some("X"),
-          penaltyCreationDate = sampleDate1V2,
-          penaltyExpiryDate = sampleDate1V2.plusMonths(1).plusYears(2),
+          penaltyCreationDate = sampleDate1,
+          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
           expiryReason = Some("FAP"),
-          communicationsDate = sampleDate1V2,
+          communicationsDate = sampleDate1,
           lateSubmissions = Some(Seq(LateSubmission(
-            taxPeriodStartDate = Some(sampleDate1V2),
-            taxPeriodEndDate = Some(sampleDate1V2),
-            taxPeriodDueDate = Some(sampleDate1V2),
-            returnReceiptDate = Some(sampleDate1V2),
+            taxPeriodStartDate = Some(sampleDate1),
+            taxPeriodEndDate = Some(sampleDate1),
+            taxPeriodDueDate = Some(sampleDate1),
+            returnReceiptDate = Some(sampleDate1),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
           appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
@@ -240,7 +233,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     details = Seq(
       LPPDetails(principalChargeReference = "123456789",
       penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-      penaltyChargeCreationDate = sampleDate1V2,
+      penaltyChargeCreationDate = sampleDate1,
       penaltyStatus = LPPPenaltyStatusEnum.Posted,
       penaltyAmountPaid = Some(BigDecimal(400)),
       penaltyAmountOutstanding = Some(BigDecimal(0)),
@@ -252,14 +245,14 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       LPP1LRPercentage = Some(BigDecimal(0.02)),
       LPP1HRPercentage = Some(BigDecimal(0.02)),
       LPP2Percentage = None,
-      communicationsDate = sampleDate1V2,
-      penaltyChargeDueDate = sampleDate1V2,
+      communicationsDate = sampleDate1,
+      penaltyChargeDueDate = sampleDate1,
       appealInformation = None,
-      principalChargeBillingFrom = sampleDate1V2,
-      principalChargeBillingTo = sampleDate1V2.plusMonths(1),
-      principalChargeDueDate = sampleDate1V2.plusMonths(2).plusDays(6),
+      principalChargeBillingFrom = sampleDate1,
+      principalChargeBillingTo = sampleDate1.plusMonths(1),
+      principalChargeDueDate = sampleDate1.plusMonths(2).plusDays(6),
       penaltyChargeReference = Some("123456789"),
-      principalChargeLatestClearing = Some(sampleDate1V2.plusMonths(2).plusDays(7)),
+      principalChargeLatestClearing = Some(sampleDate1.plusMonths(2).plusDays(7)),
       LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
         outstandingAmount = Some(99)
@@ -271,7 +264,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       LPPDetails(
         principalChargeReference = "123456789",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
-        penaltyChargeCreationDate = sampleDate1V2,
+        penaltyChargeCreationDate = sampleDate1,
         penaltyStatus = LPPPenaltyStatusEnum.Posted,
         penaltyAmountPaid = Some(BigDecimal(123.45)),
         penaltyAmountOutstanding = Some(BigDecimal(0)),
@@ -283,14 +276,14 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         LPP1LRPercentage =None,
         LPP1HRPercentage = None,
         LPP2Percentage =  Some(BigDecimal(0.02)),
-        communicationsDate = sampleDate1V2,
-        penaltyChargeDueDate = sampleDate1V2,
+        communicationsDate = sampleDate1,
+        penaltyChargeDueDate = sampleDate1,
         appealInformation = None,
-        principalChargeBillingFrom = sampleDate1V2,
-        principalChargeBillingTo = sampleDate1V2.plusMonths(1),
-        principalChargeDueDate = sampleDate1V2.plusMonths(2).plusDays(6),
+        principalChargeBillingFrom = sampleDate1,
+        principalChargeBillingTo = sampleDate1.plusMonths(1),
+        principalChargeDueDate = sampleDate1.plusMonths(2).plusDays(6),
         penaltyChargeReference = Some("123456789"),
-        principalChargeLatestClearing = Some(sampleDate1V2.plusMonths(2).plusDays(7)),
+        principalChargeLatestClearing = Some(sampleDate1.plusMonths(2).plusDays(7)),
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
           outstandingAmount = Some(99)
@@ -299,7 +292,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       LPPDetails(
         principalChargeReference = "123456789",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-        penaltyChargeCreationDate = sampleDate1V2,
+        penaltyChargeCreationDate = sampleDate1,
         penaltyStatus = LPPPenaltyStatusEnum.Posted,
         penaltyAmountPaid = Some(BigDecimal(200)),
         penaltyAmountOutstanding = Some(BigDecimal(200)),
@@ -311,15 +304,15 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         LPP1LRPercentage = Some(BigDecimal(0.02)),
         LPP1HRPercentage = None,
         LPP2Percentage = None,
-        communicationsDate = sampleDate1V2,
-        penaltyChargeDueDate = sampleDate1V2,
+        communicationsDate = sampleDate1,
+        penaltyChargeDueDate = sampleDate1,
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(appealInfo.AppealStatusEnum.Unappealable),
           appealLevel = None
         ))),
-        principalChargeBillingFrom = sampleDate1V2,
-        principalChargeBillingTo = sampleDate1V2.plusMonths(1),
-        principalChargeDueDate = sampleDate1V2.plusMonths(2).plusDays(6),
+        principalChargeBillingFrom = sampleDate1,
+        principalChargeBillingTo = sampleDate1.plusMonths(1),
+        principalChargeDueDate = sampleDate1.plusMonths(2).plusDays(6),
         penaltyChargeReference = Some("123456789"),
         principalChargeLatestClearing = None,
         LPPDetailsMetadata = LPPDetailsMetadata(
@@ -334,7 +327,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     details = Seq(
       LPPDetails(principalChargeReference = "123456789",
       penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-      penaltyChargeCreationDate = sampleDate1V2,
+      penaltyChargeCreationDate = sampleDate1,
       penaltyStatus = LPPPenaltyStatusEnum.Posted,
       penaltyAmountPaid = Some(BigDecimal(200)),
       penaltyAmountOutstanding = Some(BigDecimal(200)),
@@ -346,15 +339,15 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       LPP1LRPercentage = Some(BigDecimal(0.02)),
       LPP1HRPercentage = None,
       LPP2Percentage = None,
-      communicationsDate = sampleDate1V2,
-      penaltyChargeDueDate = sampleDate1V2,
+      communicationsDate = sampleDate1,
+      penaltyChargeDueDate = sampleDate1,
       appealInformation = Some(Seq(AppealInformationType(
         appealStatus = Some(appealInfo.AppealStatusEnum.Unappealable),
         appealLevel = None
       ))),
-      principalChargeBillingFrom = sampleDate1V2,
-      principalChargeBillingTo = sampleDate1V2.plusMonths(1),
-      principalChargeDueDate = sampleDate1V2.plusMonths(2).plusDays(6),
+      principalChargeBillingFrom = sampleDate1,
+      principalChargeBillingTo = sampleDate1.plusMonths(1),
+      principalChargeDueDate = sampleDate1.plusMonths(2).plusDays(6),
       penaltyChargeReference = Some("123456789"),
       principalChargeLatestClearing = None,
         LPPDetailsMetadata = LPPDetailsMetadata(
@@ -367,7 +360,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     lpp.LatePaymentPenalty(
     details = Seq(LPPDetails(principalChargeReference = "123456789",
       penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-      penaltyChargeCreationDate = sampleDate1V2,
+      penaltyChargeCreationDate = sampleDate1,
       penaltyStatus = LPPPenaltyStatusEnum.Posted,
       penaltyAmountPaid = Some(BigDecimal(400)),
       penaltyAmountOutstanding = Some(BigDecimal(0)),
@@ -379,16 +372,16 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       LPP1LRPercentage = Some(BigDecimal(0.02)),
       LPP1HRPercentage = Some(BigDecimal(0.02)),
       LPP2Percentage = None,
-      communicationsDate = sampleDate1V2,
-      penaltyChargeDueDate = sampleDate1V2,
+      communicationsDate = sampleDate1,
+      penaltyChargeDueDate = sampleDate1,
       appealInformation = Some(Seq(AppealInformationType(
         appealStatus = Some(appealInfo.AppealStatusEnum.Under_Appeal),
         appealLevel = Some(AppealLevelEnum.HMRC)))),
-      principalChargeBillingFrom = sampleDate1V2,
-      principalChargeBillingTo = sampleDate1V2.plusMonths(1),
-      principalChargeDueDate = sampleDate1V2.plusMonths(2).plusDays(6),
+      principalChargeBillingFrom = sampleDate1,
+      principalChargeBillingTo = sampleDate1.plusMonths(1),
+      principalChargeDueDate = sampleDate1.plusMonths(2).plusDays(6),
       penaltyChargeReference = Some("123456789"),
-      principalChargeLatestClearing = Some(sampleDate1V2.plusMonths(2).plusDays(7)),
+      principalChargeLatestClearing = Some(sampleDate1.plusMonths(2).plusDays(7)),
       LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
         outstandingAmount = Some(99)
@@ -432,15 +425,15 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           penaltyCategory = LSPPenaltyCategoryEnum.Point,
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
-          penaltyCreationDate = sampleDate1V2,
-          penaltyExpiryDate = sampleDate1V2.plusMonths(1).plusYears(2),
+          penaltyCreationDate = sampleDate1,
+          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
           expiryReason = None,
-          communicationsDate = sampleDate1V2,
+          communicationsDate = sampleDate1,
           lateSubmissions = Some(Seq(LateSubmission(
-            taxPeriodStartDate = Some(sampleDate1V2),
-            taxPeriodEndDate = Some(sampleDate1V2),
-            taxPeriodDueDate = Some(sampleDate1V2),
-            returnReceiptDate = Some(sampleDate1V2),
+            taxPeriodStartDate = Some(sampleDate1),
+            taxPeriodEndDate = Some(sampleDate1),
+            taxPeriodDueDate = Some(sampleDate1),
+            returnReceiptDate = Some(sampleDate1),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
           appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
@@ -453,15 +446,15 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           penaltyCategory = LSPPenaltyCategoryEnum.Point,
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
-          penaltyCreationDate = sampleDate1V2,
-          penaltyExpiryDate = sampleDate1V2.plusMonths(1).plusYears(2),
+          penaltyCreationDate = sampleDate1,
+          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
           expiryReason = None,
-          communicationsDate = sampleDate1V2,
+          communicationsDate = sampleDate1,
           lateSubmissions = Some(Seq(LateSubmission(
-            taxPeriodStartDate = Some(sampleDate1V2),
-            taxPeriodEndDate = Some(sampleDate1V2),
-            taxPeriodDueDate = Some(sampleDate1V2),
-            returnReceiptDate = Some(sampleDate1V2),
+            taxPeriodStartDate = Some(sampleDate1),
+            taxPeriodEndDate = Some(sampleDate1),
+            taxPeriodDueDate = Some(sampleDate1),
+            returnReceiptDate = Some(sampleDate1),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
           appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
           chargeAmount = None,
@@ -481,7 +474,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
   val unpaidLatePaymentPenaltyV2: LatePaymentPenalty = lpp.LatePaymentPenalty(
     details = Seq(LPPDetails(principalChargeReference = "123456789",
       penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-      penaltyChargeCreationDate = sampleDate1V2,
+      penaltyChargeCreationDate = sampleDate1,
       penaltyStatus = LPPPenaltyStatusEnum.Posted,
       penaltyAmountPaid = Some(BigDecimal(0)),
       penaltyAmountOutstanding = Some(BigDecimal(400)),
@@ -493,12 +486,12 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       LPP1LRPercentage = Some(BigDecimal(0.02)),
       LPP1HRPercentage = None,
       LPP2Percentage = None,
-      communicationsDate = sampleDate1V2,
-      penaltyChargeDueDate = sampleDate1V2,
+      communicationsDate = sampleDate1,
+      penaltyChargeDueDate = sampleDate1,
       appealInformation = None,
-      principalChargeBillingFrom = sampleDate1V2,
-      principalChargeBillingTo = sampleDate1V2.plusMonths(1),
-      principalChargeDueDate = sampleDate1V2.plusMonths(2).plusDays(6),
+      principalChargeBillingFrom = sampleDate1,
+      principalChargeBillingTo = sampleDate1.plusMonths(1),
+      principalChargeDueDate = sampleDate1.plusMonths(2).plusDays(6),
       penaltyChargeReference = Some("123456789"),
       principalChargeLatestClearing = None,
       LPPDetailsMetadata = LPPDetailsMetadata(
@@ -531,17 +524,17 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
             communicationsDate = LocalDate.parse("2069-10-30"),
             lateSubmissions = Some(Seq(
               LateSubmission(
-                taxPeriodStartDate = Some(sampleDate1V2),
-                taxPeriodEndDate = Some(sampleDate1V2.plusDays(14)),
-                taxPeriodDueDate = Some(sampleDate1V2.plusMonths(4).plusDays(7)),
-                returnReceiptDate = Some(sampleDate1V2.plusMonths(4).plusDays(12)),
+                taxPeriodStartDate = Some(sampleDate1),
+                taxPeriodEndDate = Some(sampleDate1.plusDays(14)),
+                taxPeriodDueDate = Some(sampleDate1.plusMonths(4).plusDays(7)),
+                returnReceiptDate = Some(sampleDate1.plusMonths(4).plusDays(12)),
                 taxReturnStatus = TaxReturnStatusEnum.Fulfilled
               ),
               LateSubmission(
-                taxPeriodStartDate = Some(sampleDate1V2.plusDays(16)),
-                taxPeriodEndDate = Some(sampleDate1V2.plusDays(31)),
-                taxPeriodDueDate = Some(sampleDate1V2.plusMonths(4).plusDays(23)),
-                returnReceiptDate = Some(sampleDate1V2.plusMonths(4).plusDays(25)),
+                taxPeriodStartDate = Some(sampleDate1.plusDays(16)),
+                taxPeriodEndDate = Some(sampleDate1.plusDays(31)),
+                taxPeriodDueDate = Some(sampleDate1.plusMonths(4).plusDays(23)),
+                returnReceiptDate = Some(sampleDate1.plusMonths(4).plusDays(25)),
                 taxReturnStatus = TaxReturnStatusEnum.Fulfilled
               )
             )),
@@ -632,7 +625,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("dt").get(0).text shouldBe "Penalty type"
       summaryCardBody.select("dd").get(0).text shouldBe "First penalty for late payment"
       summaryCardBody.select("dt").get(1).text shouldBe "Overdue charge"
-      //      summaryCardBody.select("dd").get(1).text shouldBe "VAT for period 1 January 2021 to 1 February 2021"
+      summaryCardBody.select("dd").get(1).text shouldBe "VAT for period 1 January 2021 to 1 February 2021"
       summaryCardBody.select("dt").get(2).text shouldBe "Charge due"
       summaryCardBody.select("dd").get(2).text shouldBe "7 March 2021"
       summaryCardBody.select("dt").get(3).text shouldBe "Date paid"
@@ -742,10 +735,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       returnPenaltyDetailsStub(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalty = Some(paidLatePaymentPenaltyV2)))
       val request = controller.onPageLoad()(fakeRequest)
       await(request).header.status shouldBe Status.OK
-      await(request).session(fakeRequest).get(SessionKeys.latestLSPCreationDate).isDefined shouldBe true
-      await(request).session(fakeRequest).get(SessionKeys.latestLSPCreationDate).get shouldBe sampleDate1V2.toString
-      await(request).session(fakeRequest).get(SessionKeys.pointsThreshold).isDefined shouldBe true
-      await(request).session(fakeRequest).get(SessionKeys.pointsThreshold).get shouldBe "4"
+      await(request).session(fakeRequest).get(SessionKeys.pocAchievementDate).isDefined shouldBe true
+      await(request).session(fakeRequest).get(SessionKeys.pocAchievementDate).get shouldBe "2022-01-01"
     }
 
     "agent view" must {
@@ -833,10 +824,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           .copy(latePaymentPenalty = Some(paidLatePaymentPenaltyV2)))
         val request = controller.onPageLoad()(fakeAgentRequest)
         await(request).header.status shouldBe Status.OK
-        await(request).session(fakeAgentRequest).get(SessionKeys.latestLSPCreationDate).isDefined shouldBe true
-        await(request).session(fakeAgentRequest).get(SessionKeys.latestLSPCreationDate).get shouldBe sampleDate1V2.toString
-        await(request).session(fakeAgentRequest).get(SessionKeys.pointsThreshold).isDefined shouldBe true
-        await(request).session(fakeAgentRequest).get(SessionKeys.pointsThreshold).get shouldBe "4"
+        await(request).session(fakeAgentRequest).get(SessionKeys.pocAchievementDate).isDefined shouldBe true
+        await(request).session(fakeAgentRequest).get(SessionKeys.pocAchievementDate).get shouldBe "2022-01-01"
       }
     }
 

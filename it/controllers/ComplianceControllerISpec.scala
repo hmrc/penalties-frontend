@@ -37,15 +37,11 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
   val controller: ComplianceController = injector.instanceOf[ComplianceController]
   val fakeAgentRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
     SessionKeys.agentSessionVrn -> "123456789",
-    SessionKeys.latestLSPCreationDate -> "2022-03-01",
-    SessionKeys.pointsThreshold -> "5",
     SessionKeys.pocAchievementDate -> "2024-01-01",
     authToken -> "1234"
   )
   val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
     SessionKeys.agentSessionVrn -> "123456789",
-    SessionKeys.latestLSPCreationDate -> "2022-03-01",
-    SessionKeys.pointsThreshold -> "5",
     SessionKeys.pocAchievementDate -> "2022-09-01",
     authToken -> "1234"
   )

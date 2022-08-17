@@ -48,7 +48,7 @@ class ComplianceControllerSpec extends SpecBase {
     ).thenReturn(authResult)
 
     reset(mockComplianceService)
-    when(mockComplianceService.getDESComplianceData(any())(any(), any(), any(), any(), any())).thenReturn(Future.successful(Some(sampleComplianceData)))
+    when(mockComplianceService.getDESComplianceData(any())(any(), any(), any(), any())).thenReturn(Future.successful(Some(sampleCompliancePayload)))
   }
 
   object Controller extends ComplianceController(
@@ -63,21 +63,19 @@ class ComplianceControllerSpec extends SpecBase {
       "return OK - calling the service to retrieve compliance data to the view" in
         new Setup(AuthTestModels.successfulAuthResult) {
         val result: Future[Result] = Controller.onPageLoad()(fakeRequest.withSession(
-          SessionKeys.latestLSPCreationDate -> "2020-01-01",
-          SessionKeys.pointsThreshold -> "4",
           SessionKeys.pocAchievementDate -> "2022-01-01"
         ))
         status(result) shouldBe OK
       }
 
       "return ISE - if the service returns None" in new Setup(AuthTestModels.successfulAuthResult) {
-        when(mockComplianceService.getDESComplianceData(any())(any(), any(), any(), any(), any())).thenReturn(Future.successful(None))
+        when(mockComplianceService.getDESComplianceData(any())(any(), any(), any(), any())).thenReturn(Future.successful(None))
         val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
         status(result) shouldBe INTERNAL_SERVER_ERROR
       }
 
       "return ISE (exception thrown) - try retrieving the compliance data but failing" in new Setup(AuthTestModels.successfulAuthResult) {
-        when(mockComplianceService.getDESComplianceData(any())(any(), any(), any(), any(), any())).thenReturn(Future.failed(new Exception("Something went wrong.")))
+        when(mockComplianceService.getDESComplianceData(any())(any(), any(), any(), any())).thenReturn(Future.failed(new Exception("Something went wrong.")))
         val result: Exception = intercept[Exception](await(Controller.onPageLoad()(fakeRequest)))
         result.getMessage shouldBe "Something went wrong."
 

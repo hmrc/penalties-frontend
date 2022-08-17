@@ -19,9 +19,8 @@ package services
 import config.AppConfig
 import config.featureSwitches.FeatureSwitching
 import connectors.ComplianceConnector
-import models.FilingFrequencyEnum._
-import models.compliance.ComplianceData
-import models.{FilingFrequencyEnum, User}
+import models.User
+import models.compliance.CompliancePayload
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logger.logger
 import utils.SessionKeys
@@ -33,46 +32,22 @@ import scala.concurrent.{ExecutionContext, Future}
 class ComplianceService @Inject()(connector: ComplianceConnector)(implicit val appConfig: AppConfig) extends FeatureSwitching {
 
   def getDESComplianceData(vrn: String)(implicit hc: HeaderCarrier, user: User[_],
-                                        ec: ExecutionContext, lspCreationDate: Option[String] = None,
-                                        pointsThreshold: Option[String] = None): Future[Option[ComplianceData]] = {
-
-    (lspCreationDate.orElse(user.session.get(SessionKeys.latestLSPCreationDate)), pointsThreshold.orElse(user.session.get(SessionKeys.pointsThreshold))) match {
-      case (Some(lspCreationDateAsString), Some(pointsThresholdAsString)) => {
-        val lspCreationDate: LocalDate = LocalDate.parse(lspCreationDateAsString)
-        val fromDate = lspCreationDate.minusYears(2)
-        val filingFrequency: FilingFrequencyEnum.Value = getFilingFrequency(pointsThresholdAsString)
-        val toDate: LocalDate = getToDateFromFilingFrequency(lspCreationDate, filingFrequency)
-        connector.getComplianceDataFromDES(vrn, fromDate, toDate).map {
+                                        ec: ExecutionContext, pocAchievementDate: Option[LocalDate] = None): Future[Option[CompliancePayload]] = {
+    val pocAchievementDateFromSession: Option[LocalDate] = user.session.get(SessionKeys.pocAchievementDate).map(LocalDate.parse(_))
+    pocAchievementDate.orElse(pocAchievementDateFromSession) match {
+      case Some(pocAchievementDate) => {
+        val fromDate = pocAchievementDate.minusYears(2)
+        connector.getComplianceDataFromDES(vrn, fromDate, pocAchievementDate).map {
           complianceData => {
             logger.debug(s"[ComplianceService][getDESComplianceData] - Compliance Data  $complianceData")
-            Some(ComplianceData(complianceData, filingFrequency))
+            Some(complianceData)
           }
         }
       }
       case _ => {
-        logger.error(s"[ComplianceService][getDESComplianceData] - Some/all session keys were not present: latest LSP creation date defined: ${
-          user.session.get(SessionKeys.latestLSPCreationDate).isDefined
-        } - points threshold defined: ${
-          user.session.get(SessionKeys.pointsThreshold).isDefined
-        }")
+        logger.error(s"[ComplianceService][getDESComplianceData] - POC Achievement date was not present in session")
         Future.successful(None)
       }
-    }
-  }
-
-  private def getToDateFromFilingFrequency(lspCreationDate: LocalDate, filingFrequency: FilingFrequencyEnum.Value): LocalDate = {
-    filingFrequency match {
-      case FilingFrequencyEnum.annually => lspCreationDate.plusYears(2)
-      case FilingFrequencyEnum.quarterly => lspCreationDate.plusYears(1)
-      case FilingFrequencyEnum.monthly => lspCreationDate.plusMonths(6)
-    }
-  }
-
-  private def getFilingFrequency(pointsThreshold: String): FilingFrequencyEnum.Value = {
-    pointsThreshold match {
-      case "5" => monthly
-      case "4" => quarterly
-      case "2" => annually
     }
   }
 }
