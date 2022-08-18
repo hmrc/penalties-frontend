@@ -25,7 +25,7 @@ This service is dependent on other services, all dependent services can be start
 This service can be tested with SBT via `sbt test it:test`
 
 To run coverage and scalastyle, please run: `sbt clean scalastyle coverage test it:test coverageReport`
-
+ 
 ## License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
