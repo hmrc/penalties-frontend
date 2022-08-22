@@ -57,7 +57,7 @@ class LateSubmissionPenaltySpec extends SpecBase {
       |       "appealInformation": [
       |         {
       |           "appealStatus": "99",
-      |           "appealLevel": "01"
+      |           "appealLevel": "L1"
       |         }
       |       ],
       |       "chargeDueDate": "2069-10-30",
