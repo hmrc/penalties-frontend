@@ -49,7 +49,14 @@ class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesCon
 
   lazy val timeoutCountdown: Int = config.get[Int]("timeout.countDown")
 
-  lazy val feedbackUrl: String = config.get[String]("feedback.url")
+  lazy val contactFrontendHost: String = s"${servicesConfig.baseUrl("contact-frontend")}/"
+  val contactFrontendStartUrl: String = "feedback.url"
+  val contactFrontendServiceId: String = "contact-frontend.serviceId"
+  lazy val feedbackUrl: String =
+    contactFrontendHost +
+      config.get[String](contactFrontendStartUrl) +
+      "?service=" + config.get[String](contactFrontendServiceId) +
+      s"&backUrl=" + config.get[String]("host") + "/penalties"
 
   lazy val penaltiesAppealsBaseUrl: String = config.get[String]("urls.penaltiesAppealsBaseurl") + "/penalties-appeals"
 
