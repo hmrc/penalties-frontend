@@ -55,7 +55,9 @@ class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesCon
 
   lazy val contactFrontendHost: String = servicesConfig.baseUrl("contact-frontend")
 
-  lazy val feedbackUrl: String = s"$contactFrontendHost/$contactFrontendUrl?service=$contactFrontendServiceId&backUrl=${config.get[String]("host")}/penalties"
+  def backUrl(url: String): String =  SafeRedirectUrl(config.get[String]("host") + url).encodedUrl
+
+  def feedbackUrl(redirectUrl: String): String = s"$contactFrontendHost/$contactFrontendUrl?service=$contactFrontendServiceId&backUrl=${backUrl(redirectUrl)}"
 
   lazy val penaltiesAppealsBaseUrl: String = config.get[String]("urls.penaltiesAppealsBaseurl") + "/penalties-appeals"
 
