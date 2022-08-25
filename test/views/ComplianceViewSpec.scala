@@ -20,6 +20,7 @@ import assets.messages.ComplianceMessages._
 import assets.messages.IndexMessages.{breadcrumb1, breadcrumb2, breadcrumb3}
 import base.{BaseSelectors, SpecBase}
 import org.jsoup.nodes.Document
+import play.api.test.FakeRequest
 import play.twirl.api.{Html, HtmlFormat}
 import utils.ViewUtils
 import viewmodels.TimelineEvent
@@ -62,13 +63,15 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
     val missingDeadlineText = "#missing-deadline"
 
     val returnToVATLink = "#main-content > div > div > p > a"
+
+    val betaFeedbackBannerText =  "body > div > div.govuk-phase-banner > p > span"
   }
 
   "ComplianceView" should {
 
     "when a VAT trader is on the page" must {
       def applyView(timelineContent: Html, periodOfComplianceAchievementDate: String): HtmlFormat.Appendable = {
-        compliancePage.apply(timelineContent, periodOfComplianceAchievementDate)(implicitly, implicitly, implicitly, vatTraderUser)
+        compliancePage.apply(timelineContent, periodOfComplianceAchievementDate)(fakeRequest, implicitly, implicitly, vatTraderUser)
       }
 
       implicit val docWithMissingReturns: Document =
@@ -102,6 +105,12 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       "have the correct 'Return to VAT penalties and appeals' link" in {
         docWithMissingReturns.select(Selectors.returnToVATLink).attr("href") shouldBe controllers.routes.IndexController.onPageLoad.url
       }
+
+//      "have the correct beta feedback link to redirect to the compliance page" in {
+//        println(Console.BLUE + docWithMissingReturns.select("#beta-feedback-link").attr("href") + Console.RESET)
+//        docWithMissingReturns.select(".beta-feedback-link").attr("href").contains("/penalties/compliance") shouldBe true
+////        docWithMissingReturns.select(".beta-feedback-link").attr("href").contains("/penalties/compliance") shouldBe true
+//      }
     }
 
     "when a agent is on the page" must {
@@ -123,5 +132,14 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       behave like pageWithExpectedMessages(expectedContent)
 
     }
+
+    "have a beta banner with the feedback correct content and a link with the 'backURL' queryParam" in {
+      def applyView(): HtmlFormat.Appendable = compliancePage.apply(html(), "")(implicitly, implicitly, implicitly, vatTraderUser)
+      val doc: Document = asDocument(applyView())
+
+      doc.select(Selectors.betaFeedbackBannerText).text() shouldBe "This is a new service - your feedback will help us to improve it."
+      doc.select("#beta-feedback-link").attr("href").contains("http://localhost:9250/contact/beta-feedback?service=vat-penalties&backURL=") shouldBe true
+    }
+
   }
 }
