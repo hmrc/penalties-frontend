@@ -52,6 +52,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
     val whenPenaltyIncreases = "#when-it-increases"
 
     val calculation = "#calculation"
+
+    val betaFeedbackBannerText =  "body > div > div.govuk-phase-banner > p > span"
   }
 
   "CalculationView" should {
@@ -368,5 +370,21 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
       behave like pageWithExpectedMessages(expectedContent)
     }
+  }
+
+  "have a beta banner with the feedback correct content and a link with the 'backURL' queryParam" in {
+    def applyView(): HtmlFormat.Appendable = calculationLPP2Page.apply(
+      isEstimate = true,
+      startDate = "1 April 2022",
+      endDate = "30 June 2022",
+      dueDate = "17 October 2022",
+      penaltyAmount = "50.50",
+      amountReceived = "10.10",
+      amountLeftToPay = "40.40"
+    )(implicitly, implicitly, implicitly, vatTraderUser)
+    val doc: Document = asDocument(applyView())
+
+    doc.select(Selector.betaFeedbackBannerText).text() shouldBe "This is a new service - your feedback will help us to improve it."
+    doc.select("#beta-feedback-link").attr("href").contains("http://localhost:9514/contact/beta-feedback?service=vat-penalties&backURL=") shouldBe true
   }
 }
