@@ -106,11 +106,6 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         docWithMissingReturns.select(Selectors.returnToVATLink).attr("href") shouldBe controllers.routes.IndexController.onPageLoad.url
       }
 
-//      "have the correct beta feedback link to redirect to the compliance page" in {
-//        println(Console.BLUE + docWithMissingReturns.select("#beta-feedback-link").attr("href") + Console.RESET)
-//        docWithMissingReturns.select(".beta-feedback-link").attr("href").contains("/penalties/compliance") shouldBe true
-////        docWithMissingReturns.select(".beta-feedback-link").attr("href").contains("/penalties/compliance") shouldBe true
-//      }
     }
 
     "when a agent is on the page" must {
@@ -138,7 +133,7 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       val doc: Document = asDocument(applyView())
 
       doc.select(Selectors.betaFeedbackBannerText).text() shouldBe "This is a new service - your feedback will help us to improve it."
-      doc.select("#beta-feedback-link").attr("href").contains("http://localhost:9250/contact/beta-feedback?service=vat-penalties&backURL=") shouldBe true
+      doc.select("#beta-feedback-link").attr("href").contains("http://localhost:9514/contact/beta-feedback?service=vat-penalties&backURL=") shouldBe true
     }
 
   }
