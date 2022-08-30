@@ -133,7 +133,7 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       val doc: Document = asDocument(applyView())
 
       doc.select(Selectors.betaFeedbackBannerText).text() shouldBe "This is a new service - your feedback will help us to improve it."
-      doc.select("#beta-feedback-link").attr("href").contains("http://localhost:9514/contact/beta-feedback?service=vat-penalties&backURL=") shouldBe true
+      doc.select("#beta-feedback-link").attr("href").contains("http://localhost:9250/contact/beta-feedback?service=vat-penalties&backUrl=") shouldBe true
     }
 
   }
