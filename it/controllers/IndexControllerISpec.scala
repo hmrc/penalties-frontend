@@ -20,7 +20,7 @@ import config.AppConfig
 import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import models.lpp._
 import models.lsp._
-import models.{GetPenaltyDetails, Totalisations, appealInfo, lpp}
+import models.{GetPenaltyDetails, Totalisations, appealInfo}
 import org.jsoup.Jsoup
 import play.api.http.{HeaderNames, Status}
 import play.api.mvc.AnyContentAsEmpty
@@ -150,7 +150,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     latePaymentPenalty = None
   )
 
-  val getPenaltiesDataPayloadWith2PointsandOneRemovedPoint: GetPenaltyDetails = GetPenaltyDetails(
+  val getPenaltiesDataPayloadWith2PointsAndOneRemovedPoint: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = None,
     lateSubmissionPenalty = Some(LateSubmissionPenalty(
       summary = LSPSummary(
@@ -229,7 +229,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     latePaymentPenalty = None
   )
 
-  val paidLatePaymentPenaltyV2: LatePaymentPenalty = lpp.LatePaymentPenalty(
+  val paidLatePaymentPenalty: LatePaymentPenalty = LatePaymentPenalty(
     details = Seq(
       LPPDetails(principalChargeReference = "123456789",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
@@ -261,7 +261,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       ))
   )
 
-  val latePaymentPenaltyWithAdditionalPenaltyV2: LatePaymentPenalty = lpp.LatePaymentPenalty(
+  val latePaymentPenaltyWithAdditionalPenalty: LatePaymentPenalty = LatePaymentPenalty(
     details = Seq(
       LPPDetails(
         principalChargeReference = "123456789",
@@ -327,7 +327,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     )
   )
 
-  val latePaymentPenaltyVATUnpaidV2: LatePaymentPenalty = lpp.LatePaymentPenalty(
+  val latePaymentPenaltyVATUnpaid: LatePaymentPenalty = LatePaymentPenalty(
     details = Seq(
       LPPDetails(principalChargeReference = "123456789",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
@@ -362,8 +362,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       ))
   )
 
-  val latePaymentPenaltyWithAppealV2 = Some(
-    lpp.LatePaymentPenalty(
+  val latePaymentPenaltyWithAppeal = Some(
+    LatePaymentPenalty(
       details = Seq(LPPDetails(principalChargeReference = "123456789",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
         penaltyChargeCreationDate = sampleDate1,
@@ -397,15 +397,15 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
   )
 
   val getPenaltiesDataPayloadWithPaidLPP: GetPenaltyDetails = getPenaltyDetailsPayloadWithAddedPoint.copy(
-    latePaymentPenalty = Some(paidLatePaymentPenaltyV2),
+    latePaymentPenalty = Some(paidLatePaymentPenalty),
   )
 
   val getPenaltiesDataPayloadWithLPPAndAdditionalPenalty: GetPenaltyDetails = getPenaltyDetailsPayloadWithAddedPoint.copy(
-    latePaymentPenalty = Some(latePaymentPenaltyWithAdditionalPenaltyV2)
+    latePaymentPenalty = Some(latePaymentPenaltyWithAdditionalPenalty)
   )
 
   val getPenaltiesDataPayloadWithLPPVATUnpaid: GetPenaltyDetails = getPenaltyDetailsPayloadWithAddedPoint.copy(
-    latePaymentPenalty = Some(latePaymentPenaltyVATUnpaidV2)
+    latePaymentPenalty = Some(latePaymentPenaltyVATUnpaid)
   )
 
   val getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue: GetPenaltyDetails = getPenaltyDetailsPayloadWithAddedPoint.copy(
@@ -472,14 +472,14 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       )
     )
     ),
-    latePaymentPenalty = Some(latePaymentPenaltyVATUnpaidV2)
+    latePaymentPenalty = Some(latePaymentPenaltyVATUnpaid)
   )
 
   val getPenaltyPayloadWithLPPAppeal: GetPenaltyDetails = getPenaltiesDataPayloadWithPaidLPP.copy(
-    latePaymentPenalty = latePaymentPenaltyWithAppealV2
+    latePaymentPenalty = latePaymentPenaltyWithAppeal
   )
 
-  val unpaidLatePaymentPenaltyV2: LatePaymentPenalty = lpp.LatePaymentPenalty(
+  val unpaidLatePaymentPenalty: LatePaymentPenalty = LatePaymentPenalty(
     details = Seq(LPPDetails(principalChargeReference = "123456789",
       penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
       penaltyChargeCreationDate = sampleDate1,
@@ -611,7 +611,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     }
 
     "return 200 (OK) and render the view when removed points are below active points (active points are reindexed)" in {
-      returnPenaltyDetailsStub(getPenaltiesDataPayloadWith2PointsandOneRemovedPoint)
+      returnPenaltyDetailsStub(getPenaltiesDataPayloadWith2PointsAndOneRemovedPoint)
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -713,7 +713,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     }
 
     "return 200 (OK) and render the view when there are LPPs with VAT unpaid that are retrieved from the backend" in {
-      returnPenaltyDetailsStub(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalty = Some(unpaidLatePaymentPenaltyV2)))
+      returnPenaltyDetailsStub(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalty = Some(unpaidLatePaymentPenalty)))
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -742,7 +742,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     }
 
     "return 200 (OK) and add the latest lsp creation date and penalty threshold to the session" in {
-      returnPenaltyDetailsStub(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalty = Some(paidLatePaymentPenaltyV2)))
+      returnPenaltyDetailsStub(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalty = Some(paidLatePaymentPenalty)))
       val request = controller.onPageLoad()(fakeRequest)
       await(request).header.status shouldBe Status.OK
       await(request).session(fakeRequest).get(SessionKeys.pocAchievementDate).isDefined shouldBe true
@@ -795,9 +795,63 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.select(".app-summary-card footer a").text shouldBe ""
       }
 
+      "return 200 (OK) and render the view displaying TTP content when TTP is active" in {
+        AuthStub.authorised()
+        val penaltyDetails = GetPenaltyDetails(
+          totalisations = None, lateSubmissionPenalty = None, latePaymentPenalty = Some(
+            LatePaymentPenalty(Seq(LPPDetails(principalChargeReference = "123456789",
+              penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
+              penaltyChargeCreationDate = sampleDate1,
+              penaltyStatus = LPPPenaltyStatusEnum.Posted,
+              penaltyAmountPaid = Some(BigDecimal(200)),
+              penaltyAmountOutstanding = Some(BigDecimal(200)),
+              LPP1LRDays = Some("15"),
+              LPP1HRDays = None,
+              LPP2Days = None,
+              LPP1LRCalculationAmount = None,
+              LPP1HRCalculationAmount = None,
+              LPP1LRPercentage = Some(BigDecimal(0.02)),
+              LPP1HRPercentage = None,
+              LPP2Percentage = None,
+              communicationsDate = sampleDate1,
+              penaltyChargeDueDate = sampleDate1,
+              appealInformation = Some(Seq(AppealInformationType(
+                appealStatus = Some(appealInfo.AppealStatusEnum.Unappealable),
+                appealLevel = None
+              ))),
+              principalChargeBillingFrom = sampleDate1,
+              principalChargeBillingTo = sampleDate1.plusMonths(1),
+              principalChargeDueDate = sampleDate1.plusMonths(2).plusDays(6),
+              penaltyChargeReference = Some("123456789"),
+              principalChargeLatestClearing = None,
+              LPPDetailsMetadata = LPPDetailsMetadata(
+                mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+                outstandingAmount = Some(99),
+                timeToPay = Some(
+                  Seq(
+                    TimeToPay(
+                      TTPStartDate = sampleDate1, TTPEndDate = Some(sampleDate2)
+                    )
+                  )
+                )
+              )
+            )))
+          )
+        )
+        setFeatureDate(Some(sampleDate2.minusDays(1)))
+        returnPenaltyDetailsStub(penaltyDetails)
+        val request = controller.onPageLoad()(fakeRequest)
+        await(request).header.status shouldBe Status.OK
+        val parsedBody = Jsoup.parse(contentAsString(request))
+        parsedBody.select("#time-to-pay > p").get(0).text shouldBe "There is a payment plan set up on this account."
+        parsedBody.select("#time-to-pay > p").get(1).text shouldBe "You must keep up with payments. If you do not, your payment plan will fail and any penalties you owe will be calculated from their original date."
+        parsedBody.select("#time-to-pay > p").get(2).text shouldBe "Check what you owe to see all unpaid charges."
+        setFeatureDate(None)
+      }
+
       "return 200 (OK) and render the view when removed points are below active points (active points are reindexed)" in {
         AuthStub.agentAuthorised()
-        returnPenaltyDetailsStubAgent(getPenaltiesDataPayloadWith2PointsandOneRemovedPoint)
+        returnPenaltyDetailsStubAgent(getPenaltiesDataPayloadWith2PointsAndOneRemovedPoint)
         val request = controller.onPageLoad()(fakeAgentRequest)
         await(request).header.status shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
@@ -813,7 +867,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       "return 200 (OK) and render the view when there is outstanding payments for the client" in {
         AuthStub.agentAuthorised()
         returnPenaltyDetailsStubAgent(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue
-          .copy(latePaymentPenalty = Some(paidLatePaymentPenaltyV2)))
+          .copy(latePaymentPenalty = Some(paidLatePaymentPenalty)))
         val request = controller.onPageLoad()(fakeAgentRequest)
         await(request).header.status shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
@@ -831,7 +885,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       "return 200 (OK) and add the latest lsp creation date and the penalty threshold to the session" in {
         AuthStub.agentAuthorised()
         returnPenaltyDetailsStubAgent(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue
-          .copy(latePaymentPenalty = Some(paidLatePaymentPenaltyV2)))
+          .copy(latePaymentPenalty = Some(paidLatePaymentPenalty)))
         val request = controller.onPageLoad()(fakeAgentRequest)
         await(request).header.status shouldBe Status.OK
         await(request).session(fakeAgentRequest).get(SessionKeys.pocAchievementDate).isDefined shouldBe true

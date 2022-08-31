@@ -49,7 +49,8 @@ class IndexController @Inject()(view: IndexView,
         errors => {
           logger.error(s"[IndexController][onPageLoad] - Received error with status ${errors.status} and body ${errors.body} rendering ISE.")
           Future(errorHandler.showInternalServerError)
-        }, penaltyData => {pageHelper.getContentBasedOnPointsFromModel(penaltyData).map {
+        }, penaltyData => {
+          pageHelper.getContentBasedOnPointsFromModel(penaltyData).map {
             _.fold(
               identity,
               contentToDisplayAboveCards => {
@@ -62,6 +63,7 @@ class IndexController @Inject()(view: IndexView,
                 val lppSummaryCards = cardHelper.populateLatePaymentPenaltyCard(penaltyData.latePaymentPenalty.map(_.details))
                 val isAnyUnpaidLSPAndNotSubmittedReturn = penaltiesService.isAnyLSPUnpaidAndSubmissionIsDue(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
                 val isAnyUnpaidLSP = penaltiesService.isAnyLSPUnpaid(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
+                val isTTPActive = pageHelper.isTTPActive(penaltyData)
                 lazy val result = Ok(view(contentToDisplayAboveCards,
                   contentLPPToDisplayAboveCards,
                   lspSummaryCards,
@@ -69,7 +71,8 @@ class IndexController @Inject()(view: IndexView,
                   currencyFormatAsNonHTMLString(penaltyData.totalisations.flatMap(_.LSPTotalValue).getOrElse(0)),
                   isAnyUnpaidLSP,
                   isAnyUnpaidLSPAndNotSubmittedReturn,
-                  whatYouOweContent = whatYouOweBreakdown)) //TODO: add TTP boolean here if user has a TTP active
+                  isTTPActive,
+                  whatYouOweBreakdown))
                 if (optPOCAchievementDate.isDefined) {
                   result
                     .removingFromSession(allKeysExcludingAgentVRN: _*)
