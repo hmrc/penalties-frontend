@@ -232,32 +232,34 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
   val paidLatePaymentPenaltyV2: LatePaymentPenalty = lpp.LatePaymentPenalty(
     details = Seq(
       LPPDetails(principalChargeReference = "123456789",
-      penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-      penaltyChargeCreationDate = sampleDate1,
-      penaltyStatus = LPPPenaltyStatusEnum.Posted,
-      penaltyAmountPaid = Some(BigDecimal(400)),
-      penaltyAmountOutstanding = Some(BigDecimal(0)),
-      LPP1LRDays = Some("15"),
-      LPP1HRDays = Some("30"),
-      LPP2Days = None,
-      LPP1LRCalculationAmount = None,
-      LPP1HRCalculationAmount = None,
-      LPP1LRPercentage = Some(BigDecimal(0.02)),
-      LPP1HRPercentage = Some(BigDecimal(0.02)),
-      LPP2Percentage = None,
-      communicationsDate = sampleDate1,
-      penaltyChargeDueDate = sampleDate1,
-      appealInformation = None,
-      principalChargeBillingFrom = sampleDate1,
-      principalChargeBillingTo = sampleDate1.plusMonths(1),
-      principalChargeDueDate = sampleDate1.plusMonths(2).plusDays(6),
-      penaltyChargeReference = Some("123456789"),
-      principalChargeLatestClearing = Some(sampleDate1.plusMonths(2).plusDays(7)),
-      LPPDetailsMetadata = LPPDetailsMetadata(
-        mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-        outstandingAmount = Some(99)
-        )
-      )))
+        penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
+        penaltyChargeCreationDate = sampleDate1,
+        penaltyStatus = LPPPenaltyStatusEnum.Posted,
+        penaltyAmountPaid = Some(BigDecimal(400)),
+        penaltyAmountOutstanding = Some(BigDecimal(0)),
+        LPP1LRDays = Some("15"),
+        LPP1HRDays = Some("30"),
+        LPP2Days = None,
+        LPP1LRCalculationAmount = None,
+        LPP1HRCalculationAmount = None,
+        LPP1LRPercentage = Some(BigDecimal(0.02)),
+        LPP1HRPercentage = Some(BigDecimal(0.02)),
+        LPP2Percentage = None,
+        communicationsDate = sampleDate1,
+        penaltyChargeDueDate = sampleDate1,
+        appealInformation = None,
+        principalChargeBillingFrom = sampleDate1,
+        principalChargeBillingTo = sampleDate1.plusMonths(1),
+        principalChargeDueDate = sampleDate1.plusMonths(2).plusDays(6),
+        penaltyChargeReference = Some("123456789"),
+        principalChargeLatestClearing = Some(sampleDate1.plusMonths(2).plusDays(7)),
+        LPPDetailsMetadata = LPPDetailsMetadata(
+          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+          outstandingAmount = Some(99)
+        ),
+        timeToPay = None
+      ))
+  )
 
   val latePaymentPenaltyWithAdditionalPenaltyV2: LatePaymentPenalty = lpp.LatePaymentPenalty(
     details = Seq(
@@ -273,9 +275,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         LPP2Days = Some("30"),
         LPP1LRCalculationAmount = None,
         LPP1HRCalculationAmount = None,
-        LPP1LRPercentage =None,
+        LPP1LRPercentage = None,
         LPP1HRPercentage = None,
-        LPP2Percentage =  Some(BigDecimal(0.02)),
+        LPP2Percentage = Some(BigDecimal(0.02)),
         communicationsDate = sampleDate1,
         penaltyChargeDueDate = sampleDate1,
         appealInformation = None,
@@ -287,7 +289,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
           outstandingAmount = Some(99)
-        )
+        ),
+        timeToPay = None
       ),
       LPPDetails(
         principalChargeReference = "123456789",
@@ -318,7 +321,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
           outstandingAmount = Some(99)
-        )
+        ),
+        timeToPay = None
       )
     )
   )
@@ -326,66 +330,70 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
   val latePaymentPenaltyVATUnpaidV2: LatePaymentPenalty = lpp.LatePaymentPenalty(
     details = Seq(
       LPPDetails(principalChargeReference = "123456789",
-      penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-      penaltyChargeCreationDate = sampleDate1,
-      penaltyStatus = LPPPenaltyStatusEnum.Posted,
-      penaltyAmountPaid = Some(BigDecimal(200)),
-      penaltyAmountOutstanding = Some(BigDecimal(200)),
-      LPP1LRDays = Some("15"),
-      LPP1HRDays = None,
-      LPP2Days = None,
-      LPP1LRCalculationAmount = None,
-      LPP1HRCalculationAmount = None,
-      LPP1LRPercentage = Some(BigDecimal(0.02)),
-      LPP1HRPercentage = None,
-      LPP2Percentage = None,
-      communicationsDate = sampleDate1,
-      penaltyChargeDueDate = sampleDate1,
-      appealInformation = Some(Seq(AppealInformationType(
-        appealStatus = Some(appealInfo.AppealStatusEnum.Unappealable),
-        appealLevel = None
-      ))),
-      principalChargeBillingFrom = sampleDate1,
-      principalChargeBillingTo = sampleDate1.plusMonths(1),
-      principalChargeDueDate = sampleDate1.plusMonths(2).plusDays(6),
-      penaltyChargeReference = Some("123456789"),
-      principalChargeLatestClearing = None,
+        penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
+        penaltyChargeCreationDate = sampleDate1,
+        penaltyStatus = LPPPenaltyStatusEnum.Posted,
+        penaltyAmountPaid = Some(BigDecimal(200)),
+        penaltyAmountOutstanding = Some(BigDecimal(200)),
+        LPP1LRDays = Some("15"),
+        LPP1HRDays = None,
+        LPP2Days = None,
+        LPP1LRCalculationAmount = None,
+        LPP1HRCalculationAmount = None,
+        LPP1LRPercentage = Some(BigDecimal(0.02)),
+        LPP1HRPercentage = None,
+        LPP2Percentage = None,
+        communicationsDate = sampleDate1,
+        penaltyChargeDueDate = sampleDate1,
+        appealInformation = Some(Seq(AppealInformationType(
+          appealStatus = Some(appealInfo.AppealStatusEnum.Unappealable),
+          appealLevel = None
+        ))),
+        principalChargeBillingFrom = sampleDate1,
+        principalChargeBillingTo = sampleDate1.plusMonths(1),
+        principalChargeDueDate = sampleDate1.plusMonths(2).plusDays(6),
+        penaltyChargeReference = Some("123456789"),
+        principalChargeLatestClearing = None,
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
           outstandingAmount = Some(99)
-        )))
+        ),
+        timeToPay = None
+      ))
   )
 
   val latePaymentPenaltyWithAppealV2 = Some(
     lpp.LatePaymentPenalty(
-    details = Seq(LPPDetails(principalChargeReference = "123456789",
-      penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-      penaltyChargeCreationDate = sampleDate1,
-      penaltyStatus = LPPPenaltyStatusEnum.Posted,
-      penaltyAmountPaid = Some(BigDecimal(400)),
-      penaltyAmountOutstanding = Some(BigDecimal(0)),
-      LPP1LRDays = Some("15"),
-      LPP1HRDays = Some("30"),
-      LPP2Days = None,
-      LPP1LRCalculationAmount = None,
-      LPP1HRCalculationAmount = None,
-      LPP1LRPercentage = Some(BigDecimal(0.02)),
-      LPP1HRPercentage = Some(BigDecimal(0.02)),
-      LPP2Percentage = None,
-      communicationsDate = sampleDate1,
-      penaltyChargeDueDate = sampleDate1,
-      appealInformation = Some(Seq(AppealInformationType(
-        appealStatus = Some(appealInfo.AppealStatusEnum.Under_Appeal),
-        appealLevel = Some(AppealLevelEnum.HMRC)))),
-      principalChargeBillingFrom = sampleDate1,
-      principalChargeBillingTo = sampleDate1.plusMonths(1),
-      principalChargeDueDate = sampleDate1.plusMonths(2).plusDays(6),
-      penaltyChargeReference = Some("123456789"),
-      principalChargeLatestClearing = Some(sampleDate1.plusMonths(2).plusDays(7)),
-      LPPDetailsMetadata = LPPDetailsMetadata(
-        mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-        outstandingAmount = Some(99)
-      ))))
+      details = Seq(LPPDetails(principalChargeReference = "123456789",
+        penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
+        penaltyChargeCreationDate = sampleDate1,
+        penaltyStatus = LPPPenaltyStatusEnum.Posted,
+        penaltyAmountPaid = Some(BigDecimal(400)),
+        penaltyAmountOutstanding = Some(BigDecimal(0)),
+        LPP1LRDays = Some("15"),
+        LPP1HRDays = Some("30"),
+        LPP2Days = None,
+        LPP1LRCalculationAmount = None,
+        LPP1HRCalculationAmount = None,
+        LPP1LRPercentage = Some(BigDecimal(0.02)),
+        LPP1HRPercentage = Some(BigDecimal(0.02)),
+        LPP2Percentage = None,
+        communicationsDate = sampleDate1,
+        penaltyChargeDueDate = sampleDate1,
+        appealInformation = Some(Seq(AppealInformationType(
+          appealStatus = Some(appealInfo.AppealStatusEnum.Under_Appeal),
+          appealLevel = Some(AppealLevelEnum.HMRC)))),
+        principalChargeBillingFrom = sampleDate1,
+        principalChargeBillingTo = sampleDate1.plusMonths(1),
+        principalChargeDueDate = sampleDate1.plusMonths(2).plusDays(6),
+        penaltyChargeReference = Some("123456789"),
+        principalChargeLatestClearing = Some(sampleDate1.plusMonths(2).plusDays(7)),
+        LPPDetailsMetadata = LPPDetailsMetadata(
+          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+          outstandingAmount = Some(99)
+        ),
+        timeToPay = None
+      )))
   )
 
   val getPenaltiesDataPayloadWithPaidLPP: GetPenaltyDetails = getPenaltyDetailsPayloadWithAddedPoint.copy(
@@ -464,7 +472,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       )
     )
     ),
-     latePaymentPenalty = Some(latePaymentPenaltyVATUnpaidV2)
+    latePaymentPenalty = Some(latePaymentPenaltyVATUnpaidV2)
   )
 
   val getPenaltyPayloadWithLPPAppeal: GetPenaltyDetails = getPenaltiesDataPayloadWithPaidLPP.copy(
@@ -497,7 +505,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
         outstandingAmount = Some(99)
-      )))
+      ),
+      timeToPay = None
+    ))
   )
 
   val getPenaltiesDetailsPayloadWithMultiplePenaltyPeriodInLSP: GetPenaltyDetails = GetPenaltyDetails(
@@ -635,7 +645,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
 
     //TODO Changes are being made to overview section based on API restrictions
     "return 200 (OK) and render the view when there is outstanding payments" ignore {
-//      returnLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue)
+      //      returnLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue)
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -653,7 +663,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
 
     //TODO Changes are being made to overview section based on API restrictions
     "return 200 (OK) and render the view when there is outstanding estimate payments" ignore {
-//      returnLSPDataStub(etmpPayloadWithEstimates)
+      //      returnLSPDataStub(etmpPayloadWithEstimates)
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))

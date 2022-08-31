@@ -130,7 +130,8 @@ trait TestData {
     LPPDetailsMetadata = LPPDetailsMetadata(
       mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
       outstandingAmount = Some(99)
-    )
+    ),
+    timeToPay = None
   )
 
   val sampleLatePaymentPenaltyPaid: LPPDetails = sampleLatePaymentPenalty.copy(

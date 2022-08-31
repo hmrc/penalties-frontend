@@ -45,7 +45,8 @@ case class LPPDetails(
                        principalChargeDueDate: LocalDate,
                        penaltyChargeReference: Option[String],
                        principalChargeLatestClearing: Option[LocalDate],
-                       LPPDetailsMetadata: LPPDetailsMetadata
+                       LPPDetailsMetadata: LPPDetailsMetadata,
+                       timeToPay: Option[Seq[TimeToPay]]
                      )
 
 object LPPDetails extends JsonUtils {
@@ -75,13 +76,14 @@ object LPPDetails extends JsonUtils {
         penaltyChargeReference <- (json \ "penaltyChargeReference").validateOpt[String]
         principalChargeLatestClearing <- (json \ "principalChargeLatestClearing").validateOpt[LocalDate]
         metadata <- Json.fromJson(json)(LPPDetailsMetadata.format)
+        timeToPay <- (json \ "timeToPay").validateOpt[Seq[TimeToPay]]
       }
       yield {
         LPPDetails(principalChargeReference, penaltyCategory, penaltyChargeCreationDate, penaltyStatus, penaltyAmountPaid,
           penaltyAmountOutstanding, lPP1LRDays, lPP1HRDays, lPP2Days, lPP1LRCalculationAmount, lPP1HRCalculationAmount,
-          lPP1LRPercentage, lPP1HRPercentage, lPP2Percentage, communicationsDate, penaltyChargeDueDate , appealInformation,
-          principalChargeBillingFrom , principalChargeBillingTo, principalChargeDueDate, penaltyChargeReference,
-          principalChargeLatestClearing, metadata)
+          lPP1LRPercentage, lPP1HRPercentage, lPP2Percentage, communicationsDate, penaltyChargeDueDate, appealInformation,
+          principalChargeBillingFrom, principalChargeBillingTo, principalChargeDueDate, penaltyChargeReference,
+          principalChargeLatestClearing, metadata, timeToPay)
       }
     }
 
@@ -108,7 +110,8 @@ object LPPDetails extends JsonUtils {
         "principalChargeBillingTo" -> o.principalChargeBillingTo,
         "principalChargeDueDate" -> o.principalChargeDueDate,
         "penaltyChargeReference" -> o.penaltyChargeReference,
-        "principalChargeLatestClearing" -> o.principalChargeLatestClearing
+        "principalChargeLatestClearing" -> o.principalChargeLatestClearing,
+        "timeToPay" -> o.timeToPay
       ).deepMerge(Json.toJsObject(o.LPPDetailsMetadata)(LPPDetailsMetadata.format))
     }
   }
@@ -121,4 +124,13 @@ case class LPPDetailsMetadata(
 
 object LPPDetailsMetadata {
   implicit val format: OFormat[LPPDetailsMetadata] = Json.format[LPPDetailsMetadata]
+}
+
+case class TimeToPay(
+                       TTPStartDate: LocalDate,
+                       TTPEndDate: LocalDate
+                     )
+
+object TimeToPay {
+  implicit val format: OFormat[TimeToPay] = Json.format[TimeToPay]
 }

@@ -107,7 +107,8 @@ class GetPenaltyDetailsSpec extends AnyWordSpec with Matchers {
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
           outstandingAmount = Some(99)
-        )
+        ),
+        timeToPay = None
       ))
     ))
   )

@@ -54,7 +54,12 @@ class LPPDetailsSpec extends SpecBase {
       |       "penaltyChargeReference": "PEN1234567",
       |       "principalChargeLatestClearing": "2069-10-30",
       |       "mainTransaction": "4700",
-      |       "outstandingAmount": 99
+      |       "outstandingAmount": 99,
+      |       "timeToPay":
+      |       [{
+      |         "TTPStartDate": "2069-10-30",
+      |         "TTPEndDate": "2069-10-30"
+      |       }]
       |   }
       |""".stripMargin)
 
@@ -87,6 +92,14 @@ class LPPDetailsSpec extends SpecBase {
     LPPDetailsMetadata = LPPDetailsMetadata(
       mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
       outstandingAmount = Some(99)
+    ),
+    timeToPay = Some(
+      Seq(
+        TimeToPay(
+          TTPStartDate = LocalDate.parse("2069-10-30"),
+          TTPEndDate = LocalDate.parse("2069-10-30")
+        )
+      )
     )
   )
 

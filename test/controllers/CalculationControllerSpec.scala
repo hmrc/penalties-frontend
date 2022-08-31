@@ -124,7 +124,8 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
           outstandingAmount = Some(99)
-        )
+        ),
+        timeToPay = None
       ))
     ))
   )
@@ -208,7 +209,8 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
           outstandingAmount = Some(99)
-        )
+        ),
+        timeToPay = None
       ))
     ))
   )
