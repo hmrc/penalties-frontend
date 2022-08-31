@@ -79,8 +79,8 @@ object LPPDetails extends JsonUtils {
       yield {
         LPPDetails(principalChargeReference, penaltyCategory, penaltyChargeCreationDate, penaltyStatus, penaltyAmountPaid,
           penaltyAmountOutstanding, lPP1LRDays, lPP1HRDays, lPP2Days, lPP1LRCalculationAmount, lPP1HRCalculationAmount,
-          lPP1LRPercentage, lPP1HRPercentage, lPP2Percentage, communicationsDate, penaltyChargeDueDate , appealInformation,
-          principalChargeBillingFrom , principalChargeBillingTo, principalChargeDueDate, penaltyChargeReference,
+          lPP1LRPercentage, lPP1HRPercentage, lPP2Percentage, communicationsDate, penaltyChargeDueDate, appealInformation,
+          principalChargeBillingFrom, principalChargeBillingTo, principalChargeDueDate, penaltyChargeReference,
           principalChargeLatestClearing, metadata)
       }
     }
@@ -116,9 +116,19 @@ object LPPDetails extends JsonUtils {
 
 case class LPPDetailsMetadata(
                                mainTransaction: Option[MainTransactionEnum.Value],
-                               outstandingAmount: Option[BigDecimal]
+                               outstandingAmount: Option[BigDecimal],
+                               timeToPay: Option[Seq[TimeToPay]]
                              )
 
 object LPPDetailsMetadata {
   implicit val format: OFormat[LPPDetailsMetadata] = Json.format[LPPDetailsMetadata]
+}
+
+case class TimeToPay(
+                       TTPStartDate: LocalDate,
+                       TTPEndDate: Option[LocalDate]
+                     )
+
+object TimeToPay {
+  implicit val format: OFormat[TimeToPay] = Json.format[TimeToPay]
 }

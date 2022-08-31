@@ -1195,7 +1195,8 @@ class IndexPageHelperSpec extends SpecBase {
                 penaltyChargeReference = Some("PEN1234567"),
                 LPPDetailsMetadata = LPPDetailsMetadata(
                   mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-                  outstandingAmount = Some(99)
+                  outstandingAmount = Some(99),
+                  timeToPay = None //TODO Create case for user with TTP (PRM-1720)
                 )
               )
             )

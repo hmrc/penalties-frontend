@@ -55,7 +55,8 @@ class CalculationPageHelperSpec extends SpecBase {
       principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
       LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-        outstandingAmount = Some(99)
+        outstandingAmount = Some(99),
+        timeToPay = None
       )
     )
 
@@ -87,7 +88,8 @@ class CalculationPageHelperSpec extends SpecBase {
       principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
       LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-        outstandingAmount = Some(99)
+        outstandingAmount = Some(99),
+        timeToPay = None
       )
     )
 
@@ -119,7 +121,8 @@ class CalculationPageHelperSpec extends SpecBase {
       principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
       LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-        outstandingAmount = Some(99)
+        outstandingAmount = Some(99),
+        timeToPay = None
       )
     )
 
