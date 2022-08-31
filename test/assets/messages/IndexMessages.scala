@@ -27,17 +27,17 @@ object IndexMessages {
 
   val heading = "VAT penalties and appeals"
 
-  val agentServiceName = "Your client’s VAT details"
+  val ttpText: Seq[String] = Seq(
+    "There is a payment plan set up on this account.",
+    "You must keep up with payments. If you do not, your payment plan will fail and any penalties you owe will be calculated from their original date.",
+    "Check what you owe to see all unpaid charges."
+  )
 
-  val traderServiceName = "Manage your VAT account"
-
-  val tab1 = "Late submission penalties"
-
-  val tab2 = "Late payment penalties"
-
-  val subheading = "Late submission penalties"
-
-  val subheadingLPP = "Late payment penalties"
+  val ttpAgentText: Seq[String] = Seq(
+    "There is a payment plan set up on this account.",
+    "Your client must keep up with all payments. If they do not, their payment plan will fail and any penalties will be calculated from their original date.",
+    "Check what your client owes to see all unpaid charges."
+  )
 
   val externalGuidanceLinkText = "Read the guidance about late submission penalties (opens in a new tab)"
 
@@ -73,10 +73,6 @@ object IndexMessages {
 
   val quarterlyThresholdPlusOnePenaltyApplicationForAgent = "If your client reaches 4 points, they’ll have to pay a £200 penalty."
 
-  val annualThresholdPlusOnePenaltyApplication = "If you reach 2 points, you’ll have to pay a £200 penalty."
-
-  val annualThresholdPlusOnePenaltyApplicationForAgent = "If your client reaches 2 points, they’ll have to pay a £200 penalty."
-
   val warningText = "Warning: You’ll get a £200 penalty if you submit another VAT Return late."
 
   val warningTextAgent = "Warning: Your client will get a £200 penalty if they submit another VAT Return late."
@@ -101,15 +97,9 @@ object IndexMessages {
   val agentCompliantBullet1 = "their VAT Return history is up to date"
   val agentCompliantBullet2 = "they have submitted on time for the last 12 months"
 
-  val viewCalculationLink = "View calculation"
-
-  val lspHeader = "Penalty point 1"
-  val lppHeader = "£400 penalty"
-  val additionalPenaltyHeader = "£123.45 additional penalty"
   val activeTag = "active"
   val reinstatedTag = "reinstated"
   val cancelledTag = "cancelled"
-  val rejectedTag = "rejected"
   val overdueTag = "due"
   val overduePartiallyPaidTag: BigDecimal => String = amount => s"£$amount due"
   val paidTag = "paid"
@@ -125,14 +115,10 @@ object IndexMessages {
   val overdueCharge = "Overdue charge"
   val chargeDue = "Charge due"
   val datePaid = "Date paid"
-  val paymentNotReceived = "Payment not yet received"
 
   val vatPeriodValue: (String, String) => String = (s1, s2) => s"$s1 to $s2"
   val periodValueLPP: (String, String, String) => String = (reason, s1, s2) => s"$reason for period $s1 to $s2"
 
-  val appealPointLinkText = "Appeal penalty point 1"
-  val appealPointText = "Appeal this penalty"
-  val checkAppeal = "Check if you can appeal"
   val appealStatus = "Appeal status"
   def lspMultiplePenaltyPeriodMessage(dueDate : String) = s"The VAT Return due on $dueDate was also submitted late. <br> HMRC only applies 1 penalty for late submission in each month."
 

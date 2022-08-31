@@ -23,7 +23,6 @@ import models.lsp.{LSPDetails, TaxReturnStatusEnum}
 import models.{GetPenaltyDetails, User}
 import uk.gov.hmrc.http.HeaderCarrier
 
-import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.Future
 
