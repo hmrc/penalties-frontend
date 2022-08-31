@@ -29,6 +29,14 @@
         summaryCard: LateSubmissionPenaltySummaryCard
 )(implicit messages: Messages)
 
+@ariaLabelText = @{
+  if(summaryCard.isFinancialPoint && !summaryCard.isReturnSubmitted && summaryCard.dueDate.isDefined) {
+    Some(messages("summaryCard.appealLink.aria.label.lurkingPoint.noReturnSubmitted", summaryCard.dueDate.get))
+  } else {
+    None
+  }
+}
+
 <section class="app-summary-card govuk-!-margin-bottom-3">
     <header class="app-summary-card__header">
         <h3 class="app-summary-card__title">
@@ -75,7 +83,8 @@
                             {messages("summaryCard.adjustedPoint.cannotAppeal")}
                     } else if(summaryCard.isFinancialPoint && !summaryCard.isAdjustedPoint) {
                             {if(!summaryCard.isReturnSubmitted || summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
-                                    <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}>
+                                    <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}
+                                    aria-label={ariaLabelText.fold("")(identity)}>
                                     {messages("summaryCard.appealCheck")}
                                     </a>
                             } else {

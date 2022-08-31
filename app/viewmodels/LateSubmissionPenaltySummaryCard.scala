@@ -21,6 +21,8 @@ import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 
+import java.time.LocalDate
+
 case class LateSubmissionPenaltySummaryCard(
                                              cardRows: Seq[SummaryListRow],
                                              status: Tag,
@@ -35,5 +37,6 @@ case class LateSubmissionPenaltySummaryCard(
                                              appealStatus: Option[AppealStatusEnum.Value] = None,
                                              appealLevel: Option[AppealLevelEnum.Value] = None,
                                              isAdjustedPoint: Boolean = false,
-                                             multiplePenaltyPeriod: Option[Html] = None
+                                             multiplePenaltyPeriod: Option[Html] = None,
+                                             dueDate: Option[String]
                                            )

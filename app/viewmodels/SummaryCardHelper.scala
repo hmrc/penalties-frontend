@@ -82,7 +82,8 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       .fold(false)(_.taxReturnStatus.equals(TaxReturnStatusEnum.Fulfilled))
     val appealStatus = penalty.appealInformation.flatMap(_.headOption.flatMap(_.appealStatus))
     val appealLevel = penalty.appealInformation.flatMap(_.headOption.flatMap(_.appealLevel))
-    viewmodels.LateSubmissionPenaltySummaryCard(
+    val dueDate = penalty.lateSubmissions.map(lateSubmissions => PenaltyPeriodHelper.sortedPenaltyPeriod(lateSubmissions)).map(_.head.taxPeriodDueDate.get)
+    LateSubmissionPenaltySummaryCard(
       rows,
       tagStatus(Some(penalty), None),
       if (!isAnAdjustedPoint || isAnAddedPoint) penalty.penaltyOrder.toInt.toString else "",
@@ -93,7 +94,8 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       appealStatus = appealStatus,
       appealLevel = appealLevel,
       isAdjustedPoint = isAnAdjustedPoint,
-      multiplePenaltyPeriod = getMultiplePenaltyPeriodMessage(penalty)
+      multiplePenaltyPeriod = getMultiplePenaltyPeriodMessage(penalty),
+      dueDate = dueDate.map(dateToString(_))
     )
   }
 
@@ -145,7 +147,8 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     val appealStatus = penalty.appealInformation.flatMap(_.headOption.flatMap(_.appealStatus))
     val appealLevel = penalty.appealInformation.flatMap(_.headOption.flatMap(_.appealLevel))
     val appealInformationWithoutUnappealableStatus = penalty.appealInformation.map(_.filterNot(_.appealStatus.contains(AppealStatusEnum.Unappealable))).getOrElse(Seq.empty)
-    viewmodels.LateSubmissionPenaltySummaryCard(
+    val dueDate = penalty.lateSubmissions.map(lateSubmissions => PenaltyPeriodHelper.sortedPenaltyPeriod(lateSubmissions)).map(_.head.taxPeriodDueDate.get)
+    LateSubmissionPenaltySummaryCard(
       if (appealInformationWithoutUnappealableStatus.nonEmpty) {
         baseRows :+ summaryListRow(
           messages("summaryCard.appeal.status"),
@@ -162,7 +165,8 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       appealStatus = appealStatus,
       appealLevel = appealLevel,
       totalPenaltyAmount = penalty.chargeAmount.getOrElse(BigDecimal(0)),
-      multiplePenaltyPeriod = getMultiplePenaltyPeriodMessage(penalty)
+      multiplePenaltyPeriod = getMultiplePenaltyPeriodMessage(penalty),
+      dueDate = dueDate.map(dateToString(_))
     )
   }
 
@@ -325,7 +329,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     val amountDue = lpp.penaltyAmountOutstanding.getOrElse(BigDecimal(0)) + lpp.penaltyAmountPaid.getOrElse(BigDecimal(0))
     val appealStatus = lpp.appealInformation.flatMap(_.headOption.flatMap(_.appealStatus))
     val appealLevel = lpp.appealInformation.flatMap(_.headOption.flatMap(_.appealLevel))
-    viewmodels.LatePaymentPenaltySummaryCard(
+    LatePaymentPenaltySummaryCard(
       cardRows = rows,
       status = tagStatus(None, Some(lpp)),
       penaltyChargeReference = lpp.penaltyChargeReference,
