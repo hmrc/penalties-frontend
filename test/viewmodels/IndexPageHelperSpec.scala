@@ -18,6 +18,7 @@ package viewmodels
 
 import assets.messages.IndexMessages._
 import base.SpecBase
+import config.featureSwitches.FeatureSwitching
 import models.lpp._
 import models.lsp._
 import models.{GetPenaltyDetails, Totalisations}
@@ -36,7 +37,7 @@ import views.html.components.{warningText, _}
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndexPageHelperSpec extends SpecBase {
+class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
   val penaltiesService: PenaltiesService = injector.instanceOf[PenaltiesService]
   val mockComplianceService: ComplianceService = mock(classOf[ComplianceService])
   val pInjector: p = injector.instanceOf[views.html.components.p]
@@ -48,14 +49,7 @@ class IndexPageHelperSpec extends SpecBase {
   val pageHelper: IndexPageHelper = new IndexPageHelper(pInjector, strongInjector, bulletsInjector, linkInjector,
     warningTextInjector, penaltiesService, mockComplianceService, errorHandler)
 
-  class Setup(authResult: Future[~[Option[AffinityGroup], Enrolments]]) {
-
-    reset(mockAuthConnector, mockComplianceService)
-    when(mockAuthConnector.authorise[~[Option[AffinityGroup], Enrolments]](
-      Matchers.any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
-      Matchers.any(), Matchers.any())
-    ).thenReturn(authResult)
-
+  class Setup {
     when(mockComplianceService.getDESComplianceData(any())(any(), any(), any(), any())).thenReturn(Future.successful(Some(sampleCompliancePayload)))
   }
 
@@ -649,12 +643,12 @@ class IndexPageHelperSpec extends SpecBase {
         agentUser, hc, implicitly))
       lazy val parsedHtmlResultForAgent = Jsoup.parse(contentAsString(resultForAgent.right.get))
 
-      "show the financial penalty threshold reached text" in new Setup(AuthTestModels.successfulAuthResult) {
+      "show the financial penalty threshold reached text" in new Setup {
         parsedHtmlResult.select("p.govuk-body").get(0).text shouldBe thresholdReached
         parsedHtmlResult.select("p.govuk-body").get(0).hasClass("govuk-body govuk-!-font-size-24") shouldBe true
       }
 
-      "user is agent - show the financial penalty threshold reached text" in new Setup(AuthTestModels.successfulAuthResult) {
+      "user is agent - show the financial penalty threshold reached text" in new Setup {
         parsedHtmlResultForAgent.select("p.govuk-body").get(0).text shouldBe thresholdReachedAgent
         parsedHtmlResultForAgent.select("p.govuk-body").get(0).hasClass("govuk-body govuk-!-font-size-24") shouldBe true
       }
@@ -677,7 +671,7 @@ class IndexPageHelperSpec extends SpecBase {
         parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe controllers.routes.ComplianceController.onPageLoad.url
       }
 
-      "show the correct content when there are no open obligations" in new Setup(AuthTestModels.successfulAuthResult) {
+      "show the correct content when there are no open obligations" in new Setup {
         when(mockComplianceService.getDESComplianceData(Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(Some(compliancePayloadObligationsFulfilled)))
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith4ActivePoints)(
@@ -689,7 +683,7 @@ class IndexPageHelperSpec extends SpecBase {
         parsedResult.select("ul li").get(1).text shouldBe traderCompliantBullet2
       }
 
-      "user is agent - show the correct content when there are no open obligations" in new Setup(AuthTestModels.successfulAuthResult){
+      "user is agent - show the correct content when there are no open obligations" in new Setup{
         when(mockComplianceService.getDESComplianceData(Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(Some(compliancePayloadObligationsFulfilled)))
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith4ActivePoints)(
@@ -701,7 +695,7 @@ class IndexPageHelperSpec extends SpecBase {
         parsedResult.select("ul li").get(1).text shouldBe agentCompliantBullet2
       }
 
-      s"return $Left ISE when the obligation call returns None (no data/network error)" in new Setup(AuthTestModels.successfulAuthResult) {
+      s"return $Left ISE when the obligation call returns None (no data/network error)" in new Setup {
         when(mockComplianceService.getDESComplianceData(Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(None))
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith4ActivePoints)(implicitly,
@@ -1688,6 +1682,150 @@ class IndexPageHelperSpec extends SpecBase {
       result.get.body.contains("£223.45 in late VAT") shouldBe true
       result.get.body.contains("in interest on penalties") shouldBe false
       result.get.body.contains("in estimated interest on penalties") shouldBe false
+    }
+  }
+
+  "isTTPActive" should {
+    "return true" when {
+      "a TTP is active and ends today" in new Setup {
+        val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
+          totalisations = None,
+          latePaymentPenalty = Some(
+            LatePaymentPenalty(
+              Seq(
+                sampleLatePaymentPenalty.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+                  mainTransaction = None,
+                  outstandingAmount = None,
+                  timeToPay = Some(
+                    Seq(
+                      TimeToPay(
+                        TTPStartDate = LocalDate.of(2022, 1, 1),
+                        TTPEndDate = Some(LocalDate.of(2022, 7, 2))
+                      )
+                    )
+                  )
+                ))
+              )
+            )
+          ),
+          lateSubmissionPenalty = None
+        )
+        setFeatureDate(Some(LocalDate.of(2022, 7, 2)))
+        val result = pageHelper.isTTPActive(penaltyDetails)
+        result shouldBe true
+      }
+
+      "a TTP is active and ends in the future" in {
+        val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
+          totalisations = None,
+          latePaymentPenalty = Some(
+            LatePaymentPenalty(
+              Seq(
+                sampleLatePaymentPenalty.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+                  mainTransaction = None,
+                  outstandingAmount = None,
+                  timeToPay = Some(
+                    Seq(
+                      TimeToPay(
+                        TTPStartDate = LocalDate.of(2022, 1, 1),
+                        TTPEndDate = Some(LocalDate.of(2022, 7, 2))
+                      )
+                    )
+                  )
+                ))
+              )
+            )
+          ),
+          lateSubmissionPenalty = None
+        )
+        setFeatureDate(Some(LocalDate.of(2022, 7, 1)))
+        val result = pageHelper.isTTPActive(penaltyDetails)
+        result shouldBe true
+      }
+
+      "a TTP has been applied in the past but also has a TTP active now" in {
+        val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
+          totalisations = None,
+          latePaymentPenalty = Some(
+            LatePaymentPenalty(
+              Seq(
+                sampleLatePaymentPenalty.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+                  mainTransaction = None,
+                  outstandingAmount = None,
+                  timeToPay = Some(
+                    Seq(
+                      TimeToPay(
+                        TTPStartDate = LocalDate.of(2022, 1, 1),
+                        TTPEndDate = Some(LocalDate.of(2022, 6, 20))
+                      ),
+                      TimeToPay(
+                        TTPStartDate = LocalDate.of(2022, 6, 24),
+                        TTPEndDate = Some(LocalDate.of(2022, 7, 2))
+                      )
+                    )
+                  )
+                ))
+              )
+            )
+          ),
+          lateSubmissionPenalty = None
+        )
+        setFeatureDate(Some(LocalDate.of(2022, 6, 25)))
+        val result = pageHelper.isTTPActive(penaltyDetails)
+        result shouldBe true
+      }
+    }
+
+    "return false" when {
+      "no TTP field is present" in {
+        val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
+          totalisations = None,
+          latePaymentPenalty = Some(
+            LatePaymentPenalty(
+              Seq(
+                sampleLatePaymentPenalty.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+                  mainTransaction = None,
+                  outstandingAmount = None,
+                  timeToPay = None
+                ))
+              )
+            )
+          ),
+          lateSubmissionPenalty = None
+        )
+        val result = pageHelper.isTTPActive(penaltyDetails)
+        result shouldBe false
+      }
+
+      "a TTP was active but has since expired" in {
+        val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
+          totalisations = None,
+          latePaymentPenalty = Some(
+            LatePaymentPenalty(
+              Seq(
+                sampleLatePaymentPenalty.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+                  mainTransaction = None,
+                  outstandingAmount = None,
+                  timeToPay = Some(
+                    Seq(
+                      TimeToPay(
+                        TTPStartDate = LocalDate.of(2022, 1, 1),
+                        TTPEndDate = Some(LocalDate.of(2022, 7, 2))
+                      )
+                    )
+                  )
+                ))
+              )
+            )
+          ),
+          lateSubmissionPenalty = None
+        )
+        setFeatureDate(Some(LocalDate.of(2022, 7, 3)))
+        val result = pageHelper.isTTPActive(penaltyDetails)
+        result shouldBe false
+      }
+
+      setFeatureDate(None)
     }
   }
 }

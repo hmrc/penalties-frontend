@@ -16,7 +16,8 @@
 
 package viewmodels
 
-import config.ErrorHandler
+import config.{AppConfig, ErrorHandler}
+import config.featureSwitches.FeatureSwitching
 import models.appealInfo.AppealStatusEnum.Upheld
 import models.compliance.{CompliancePayload, ComplianceStatusEnum}
 import models.lpp.{LPPDetails, LPPPenaltyStatusEnum}
@@ -42,7 +43,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
                                 warningText: views.html.components.warningText,
                                 penaltiesService: PenaltiesService,
                                 complianceService: ComplianceService,
-                                errorHandler: ErrorHandler) extends ViewUtils with CurrencyFormatter with ImplicitDateFormatter {
+                                errorHandler: ErrorHandler)(implicit val appConfig: AppConfig) extends ViewUtils with CurrencyFormatter with ImplicitDateFormatter with FeatureSwitching {
 
   //scalastyle:off
   def getContentBasedOnPointsFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_],
@@ -251,6 +252,16 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           stringAsHtml
         }
       ))
+    }
+  }
+
+  def isTTPActive(penaltyDetails: GetPenaltyDetails): Boolean = {
+    penaltyDetails.latePaymentPenalty.exists {
+      _.details.headOption.exists { //Current understanding is that TTP values are replicated across every LPP
+        _.LPPDetailsMetadata.timeToPay.exists {
+          _.exists(ttp => ttp.TTPEndDate.isDefined && (ttp.TTPEndDate.get.isEqual(getFeatureDate) || ttp.TTPEndDate.get.isAfter(getFeatureDate))) //Find any TTP end date that exists and ends today or in the future
+        }
+      }
     }
   }
 
