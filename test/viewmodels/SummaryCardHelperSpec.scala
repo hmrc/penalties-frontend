@@ -38,7 +38,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
   implicit val user: User[_] = vatTraderUser
 
-  val sampleLSPSummaryCardReturnSubmitted: LateSubmissionPenaltySummaryCard = viewmodels.LateSubmissionPenaltySummaryCard(
+  val sampleLSPSummaryCardReturnSubmitted: LateSubmissionPenaltySummaryCard = LateSubmissionPenaltySummaryCard(
     Seq(
       helper.summaryListRow(
         period,
@@ -51,10 +51,11 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
     Tag(content = Text("active")),
     "1",
     "12345678901234",
-    isReturnSubmitted = true
+    isReturnSubmitted = true,
+    dueDate = Some(dateToString(sampleDate))
   )
 
-  def sampleLPPSummaryCardPenaltyPaid(chargeType: String): LatePaymentPenaltySummaryCard = viewmodels.LatePaymentPenaltySummaryCard(
+  def sampleLPPSummaryCardPenaltyPaid(chargeType: String): LatePaymentPenaltySummaryCard = LatePaymentPenaltySummaryCard(
     Seq(
       helper.summaryListRow(
         penaltyType,
@@ -148,7 +149,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
     "financialSummaryCard" should {
       "have an empty string when the penalty number exceeds the threshold" in {
-        val sampleSummaryCardReturnSubmitted: LateSubmissionPenaltySummaryCard = viewmodels.LateSubmissionPenaltySummaryCard(
+        val sampleSummaryCardReturnSubmitted: LateSubmissionPenaltySummaryCard = LateSubmissionPenaltySummaryCard(
           Seq(
             helper.summaryListRow(
               period,
@@ -163,7 +164,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           isReturnSubmitted = true,
           isFinancialPoint = true,
           totalPenaltyAmount = 200,
-          multiplePenaltyPeriod = None
+          multiplePenaltyPeriod = None,
+          dueDate = Some(dateToString(sampleDate))
         )
 
         val pointToPassIn: LSPDetails = sampleFinancialPenaltyV2.copy(penaltyOrder = "5")
@@ -173,7 +175,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "have the penalty number when it DOES NOT exceeds the threshold" in {
-        val sampleSummaryCardReturnSubmitted: LateSubmissionPenaltySummaryCard = viewmodels.LateSubmissionPenaltySummaryCard(
+        val sampleSummaryCardReturnSubmitted: LateSubmissionPenaltySummaryCard = LateSubmissionPenaltySummaryCard(
           Seq(
             helper.summaryListRow(
               period,
@@ -187,7 +189,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           "12345678901234",
           isReturnSubmitted = true,
           isThresholdPoint = true,
-          totalPenaltyAmount = 200
+          totalPenaltyAmount = 200,
+          dueDate = Some(dateToString(sampleDate))
         )
 
         val pointToPassIn: LSPDetails = sampleFinancialPenaltyV2.copy(penaltyOrder = "1", penaltyCategory = LSPPenaltyCategoryEnum.Threshold)
@@ -282,14 +285,14 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "show message for multiple penalty period" in {
-        val expectedResult: LateSubmissionPenaltySummaryCard = viewmodels.LateSubmissionPenaltySummaryCard(
+        val expectedResult: LateSubmissionPenaltySummaryCard = LateSubmissionPenaltySummaryCard(
           Seq(
             helper.summaryListRow(
               period,
-              Html(vatPeriodValue(dateTimeToString(sampleOldestDate), dateTimeToString(sampleOldestDate.plusDays(15))))
+              Html(vatPeriodValue(dateToString(sampleOldestDate), dateToString(sampleOldestDate.plusDays(15))))
             ),
-            helper.summaryListRow(returnDue, Html(dateTimeToString(sampleOldestDate.plusMonths(4).plusDays(7)))),
-            helper.summaryListRow(returnSubmitted, Html(dateTimeToString(sampleOldestDate.plusMonths(4).plusDays(12))))
+            helper.summaryListRow(returnDue, Html(dateToString(sampleOldestDate.plusMonths(4).plusDays(7)))),
+            helper.summaryListRow(returnSubmitted, Html(dateToString(sampleOldestDate.plusMonths(4).plusDays(12))))
           ),
           Tag(content = Text("due"),
             classes = "penalty-due-tag"),
@@ -298,7 +301,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           isReturnSubmitted = true,
           isFinancialPoint = true,
           totalPenaltyAmount = 200,
-          multiplePenaltyPeriod = Some(Html(lspMultiplePenaltyPeriodMessage(dateTimeToString(sampleOldestDate.plusMonths(4).plusDays(23)))))
+          multiplePenaltyPeriod = Some(Html(lspMultiplePenaltyPeriodMessage(dateToString(sampleOldestDate.plusMonths(4).plusDays(23))))),
+          dueDate = Some(dateToString(sampleOldestDate.plusMonths(4).plusDays(7)))
         )
 
         val actualResult = helper.financialSummaryCard(sampleFinancialPenaltyWithMultiplePeriods, quarterlyThreshold)
@@ -306,7 +310,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "display return not yet received for penalty with unsubmitted return" in {
-        val sampleSummaryCardReturnNotSubmitted: LateSubmissionPenaltySummaryCard = viewmodels.LateSubmissionPenaltySummaryCard(
+        val sampleSummaryCardReturnNotSubmitted: LateSubmissionPenaltySummaryCard = LateSubmissionPenaltySummaryCard(
           Seq(
             helper.summaryListRow(
               period,
@@ -320,7 +324,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           "12345678901234",
           isReturnSubmitted = false,
           isThresholdPoint = true,
-          totalPenaltyAmount = 200
+          totalPenaltyAmount = 200,
+          dueDate = Some(dateToString(sampleDate))
         )
 
         val pointToPassIn: LSPDetails = sampleFinancialPenaltyV2.copy(penaltyOrder = "1", penaltyCategory = LSPPenaltyCategoryEnum.Threshold,
@@ -368,9 +373,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
             Tag(content = Text("active")),
             "3",
             "12345678901234",
-            isReturnSubmitted = true
+            isReturnSubmitted = true,
+            dueDate = Some(dateToString(sampleDate))
           ),
-            viewmodels.LateSubmissionPenaltySummaryCard(
+            LateSubmissionPenaltySummaryCard(
               Seq(
                 helper.summaryListRow(
                   period,
@@ -383,9 +389,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               Tag(content = Text("active")),
               "2",
               "12345678901234",
-              isReturnSubmitted = true
+              isReturnSubmitted = true,
+              dueDate = Some(dateToString(sampleDate))
             ),
-            viewmodels.LateSubmissionPenaltySummaryCard(
+            LateSubmissionPenaltySummaryCard(
               Seq(
                 helper.summaryListRow(
                   period,
@@ -398,9 +405,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               Tag(content = Text("active")),
               "1",
               "12345678901234",
-              isReturnSubmitted = true
+              isReturnSubmitted = true,
+              dueDate = Some(dateToString(sampleDate))
             ),
-            viewmodels.LateSubmissionPenaltySummaryCard(
+            LateSubmissionPenaltySummaryCard(
               Seq(
                 helper.summaryListRow(
                   period,
@@ -412,7 +420,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               "",
               "12345678901234",
               isReturnSubmitted = true,
-              isAdjustedPoint = true
+              isAdjustedPoint = true,
+              dueDate = Some(dateToString(sampleDate))
             ))
 
 
@@ -426,7 +435,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "given a Late Payment penalty" when {
-        val sampleLPPSummaryCardPenaltyDue: LatePaymentPenaltySummaryCard = viewmodels.LatePaymentPenaltySummaryCard(
+        val sampleLPPSummaryCardPenaltyDue: LatePaymentPenaltySummaryCard = LatePaymentPenaltySummaryCard(
           Seq(
             helper.summaryListRow(
               penaltyType,

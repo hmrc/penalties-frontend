@@ -76,8 +76,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with T
   val sampleDateTime: LocalDateTime = LocalDateTime.of(2021, 4, 23, 18, 25, 43)
     .plus(511, ChronoUnit.MILLIS)
   val sampleDateV2: LocalDate = LocalDate.of(2021, 4, 23)
-  val sampleOldestDate: LocalDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
-  val sampleOldestDatev2: LocalDate = LocalDate.of(2021, 1, 1)
+  val sampleOldestDate: LocalDate = LocalDate.of(2021, 1, 1)
 
   lazy val authPredicate: AuthPredicate = new AuthPredicate(
     messagesApi,

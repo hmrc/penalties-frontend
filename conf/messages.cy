@@ -91,17 +91,6 @@ summaryCard.key4 = I fod i ddod i ben
 summaryCard.appeal.status = Statws yr apêl
 summaryCard.appeal.readMessage = Darllen neges ynghylch y canlyniad
 summaryCard.appeal.readMessageReinstated = Darllen neges
-
-# to be deleted in cleanup
-# -------------------------------------------
-summaryCard.appeal.Under_Review = Dan adolygiad gan CThEM
-summaryCard.appeal.Under_Tribunal_Review = Dan adolygiad gan y tribiwnlys treth
-summaryCard.appeal.Accepted_By_Tribunal = Mae’r apêl wedi’i dderbyn gan dribiwnlys treth
-summaryCard.appeal.Rejected = Mae’r apêl wedi’i wrthod
-summaryCard.appeal.Accepted = Mae’r apêl wedi’i dderbyn
-summaryCard.appeal.Reinstated = Mae canlyniad yr apêl wedi newid
-summaryCard.appeal.Tribunal_Rejected = Mae’r apêl wedi’i gwrthod gan y tribiwnlys treth
-# -------------------------------------------
 summaryCard.appeal.A.L1 = Dan adolygiad gan CThEM
 summaryCard.appeal.A.L2 = Dan adolygiad gan y tribiwnlys treth
 summaryCard.appeal.B.L2 = Mae’r apêl wedi’i dderbyn gan dribiwnlys treth
@@ -128,6 +117,8 @@ summaryCard.lpp.key4 = Charge due
 summaryCard.lpp.key5 = Date paid
 summaryCard.lpp.paymentNotReceived = Nid yw’r taliad wedi dod i law hyd yn hyn
 summaryCard.viewCalculation = Gweld y cyfrifiad
+
+summaryCard.appealLink.aria.label.lurkingPoint.noReturnSubmitted = Check if you can appeal for penalty on late VAT return due {0}
 
 status.active = gweithredol
 status.due = i’w dalu

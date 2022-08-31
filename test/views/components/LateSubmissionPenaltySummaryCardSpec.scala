@@ -471,7 +471,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       chargeDueDate = Some(LocalDate.parse("2069-10-30"))
     ), quarterlyThreshold)(implicitly, user)
 
-  val summaryCardModelWithFinancialLSP: LateSubmissionPenaltySummaryCard = summaryCardHelper.financialSummaryCard(LSPDetails(
+  val summaryCardModelWithFinancialLSP: Boolean => LateSubmissionPenaltySummaryCard = (isSubmitted: Boolean) => summaryCardHelper.financialSummaryCard(LSPDetails(
     penaltyNumber = "12345678901234",
     penaltyOrder = "01",
     penaltyCategory = LSPPenaltyCategoryEnum.Charge,
@@ -486,8 +486,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
         taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
         taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
-        returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
-        taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+        returnReceiptDate = if(isSubmitted) Some(LocalDate.parse("2069-10-30")) else None,
+        taxReturnStatus = if(isSubmitted) TaxReturnStatusEnum.Fulfilled else TaxReturnStatusEnum.Open
       )
     )),
     appealInformation = None,
@@ -508,17 +508,17 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     communicationsDate = LocalDate.parse("2069-10-30"),
     lateSubmissions = Some(Seq(
       LateSubmission(
-        taxPeriodStartDate = Some(sampleOldestDatev2),
-        taxPeriodEndDate = Some(sampleOldestDatev2.plusDays(15)),
-        taxPeriodDueDate = Some(sampleOldestDatev2.plusMonths(4).plusDays(7)),
-        returnReceiptDate = Some(sampleOldestDatev2.plusMonths(4).plusDays(12)),
+        taxPeriodStartDate = Some(sampleOldestDate),
+        taxPeriodEndDate = Some(sampleOldestDate.plusDays(15)),
+        taxPeriodDueDate = Some(sampleOldestDate.plusMonths(4).plusDays(7)),
+        returnReceiptDate = Some(sampleOldestDate.plusMonths(4).plusDays(12)),
         taxReturnStatus = TaxReturnStatusEnum.Fulfilled
       ),
       LateSubmission(
-        taxPeriodStartDate = Some(sampleOldestDatev2.plusDays(15)),
-        taxPeriodEndDate = Some(sampleOldestDatev2.plusDays(31)),
-        taxPeriodDueDate = Some(sampleOldestDatev2.plusMonths(4).plusDays(23)),
-        returnReceiptDate = Some(sampleOldestDatev2.plusMonths(4).plusDays(24)),
+        taxPeriodStartDate = Some(sampleOldestDate.plusDays(15)),
+        taxPeriodEndDate = Some(sampleOldestDate.plusDays(31)),
+        taxPeriodDueDate = Some(sampleOldestDate.plusMonths(4).plusDays(23)),
+        returnReceiptDate = Some(sampleOldestDate.plusMonths(4).plusDays(24)),
         taxReturnStatus = TaxReturnStatusEnum.Fulfilled
       )
     )),
@@ -546,17 +546,17 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       communicationsDate = LocalDate.of(2020, 6, 1),
       lateSubmissions = Some(Seq(
         LateSubmission(
-          taxPeriodStartDate = Some(sampleOldestDatev2),
-          taxPeriodEndDate = Some(sampleOldestDatev2.plusDays(15)),
-          taxPeriodDueDate = Some(sampleOldestDatev2.plusMonths(4).plusDays(7)),
-          returnReceiptDate = Some(sampleOldestDatev2.plusMonths(4).plusDays(12)),
+          taxPeriodStartDate = Some(sampleOldestDate),
+          taxPeriodEndDate = Some(sampleOldestDate.plusDays(15)),
+          taxPeriodDueDate = Some(sampleOldestDate.plusMonths(4).plusDays(7)),
+          returnReceiptDate = Some(sampleOldestDate.plusMonths(4).plusDays(12)),
           taxReturnStatus = TaxReturnStatusEnum.Fulfilled
         ),
         LateSubmission(
-          taxPeriodStartDate = Some(sampleOldestDatev2.plusDays(15)),
-          taxPeriodEndDate = Some(sampleOldestDatev2.plusDays(31)),
-          taxPeriodDueDate = Some(sampleOldestDatev2.plusMonths(4).plusDays(23)),
-          returnReceiptDate = Some(sampleOldestDatev2.plusMonths(4).plusDays(23)),
+          taxPeriodStartDate = Some(sampleOldestDate.plusDays(15)),
+          taxPeriodEndDate = Some(sampleOldestDate.plusDays(31)),
+          taxPeriodDueDate = Some(sampleOldestDate.plusMonths(4).plusDays(23)),
+          returnReceiptDate = Some(sampleOldestDate.plusMonths(4).plusDays(23)),
           taxReturnStatus = TaxReturnStatusEnum.Fulfilled
         )
       )),
@@ -668,7 +668,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       val docWithThresholdPenalty: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithThresholdPenalty))
       val docWithFinancialLSP: Document =
-        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialLSP))
+        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialLSP(true)))
       val docWithFinancialPointAppealUnderReview: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealInProgress))
       val docWithFinancialPointAppealAccepted: Document =
@@ -834,9 +834,13 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     }
 
     "given no multiple penalty period in LSP" should {
-      implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialLSP))
+      implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialLSP(false)))
       "no message relating to multiple penalties in the same period should appear" in {
         doc.select("p.govuk-body").text().isEmpty shouldBe true
+      }
+
+      "set the correct aria-label for a lurking point with no return submitted" in {
+        doc.select("a").attr("aria-label") shouldBe "Check if you can appeal for penalty on late VAT return due 30 October 2069"
       }
     }
 
