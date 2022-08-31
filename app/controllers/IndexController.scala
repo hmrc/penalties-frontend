@@ -69,7 +69,7 @@ class IndexController @Inject()(view: IndexView,
                   currencyFormatAsNonHTMLString(penaltyData.totalisations.flatMap(_.LSPTotalValue).getOrElse(0)),
                   isAnyUnpaidLSP,
                   isAnyUnpaidLSPAndNotSubmittedReturn,
-                  whatYouOweBreakdown))
+                  whatYouOweContent = whatYouOweBreakdown)) //TODO: add TTP boolean here if user has a TTP active
                 if (optPOCAchievementDate.isDefined) {
                   result
                     .removingFromSession(allKeysExcludingAgentVRN: _*)

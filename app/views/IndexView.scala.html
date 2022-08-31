@@ -35,6 +35,7 @@
         totalAmountToPay: String,
         isUnpaidLSPExists: Boolean = false,
         isAnyUnpaidLSPAndNotSubmittedReturn: Boolean = false,
+        isTTPActive: Boolean = false,
         whatYouOweContent: Option[Html] = None)(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
 
 @unableToPayTodayContent = {
@@ -51,27 +52,37 @@
         messages("index.headingAndTitle")
       }</h1>
 
-      @whatYouOweContent.map { breakdownContent =>
-        <div id="what-is-owed">
-          <p class="govuk-body">@getMessage("whatIsOwed.p1")</p>
-          @breakdownContent
-          @if(user.isAgent) {
-            @link("#", "whatIsOwed.button.checkAmounts", button = true, classes = "govuk-button")
-          } else {
-            @link("#", "whatIsOwed.button.checkAndPay", button = true, classes = "govuk-button")
-          }
+      @if(!isTTPActive) {
+        @whatYouOweContent.map { breakdownContent =>
+          <div id="what-is-owed">
+            <p class="govuk-body">@getMessage("whatIsOwed.p1")</p>
+            @breakdownContent
+            @if(user.isAgent) {
+              @link("#", "whatIsOwed.button.checkAmounts", button = true, classes = "govuk-button")
+            } else {
+              @link("#", "whatIsOwed.button.checkAndPay", button = true, classes = "govuk-button")
+            }
 
-          @if(!user.isAgent) {
-            <h2 class="govuk-heading-s">@messages("whatIsOwed.details.heading")</h2>
-            @unableToPayTodayContent
-          } else {
-            @details(Details(
-              summary = Text(getMessage("whatIsOwed.details.heading")),
-              content = HtmlContent(unableToPayTodayContent)
-            ))
-          }
+            @if(!user.isAgent) {
+              <h2 class="govuk-heading-s">@messages("whatIsOwed.details.heading")</h2>
+              @unableToPayTodayContent
+            } else {
+              @details(Details(
+                summary = Text(getMessage("whatIsOwed.details.heading")),
+                content = HtmlContent(unableToPayTodayContent)
+              ))
+            }
+          </div>
+          <h2 class="govuk-heading-l">@messages("whatIsOwed.penaltyAndAppealsHeading")</h2>
+        }
+      } else {
+        <div id="time-to-pay">
+          <p class="govuk-body">@messages("whatIsOwed.ttp.p1")</p>
+          <p class="govuk-body">@getMessage("whatIsOwed.ttp.p2")</p>
+          <p class="govuk-body">
+            <a class="govuk-link" href="#">@getMessage("whatIsOwed.ttp.p3.link")</a> @messages("whatIsOwed.ttp.p3")
+          </p>
         </div>
-        <h2 class="govuk-heading-l">@messages("whatIsOwed.penaltyAndAppealsHeading")</h2>
       }
     </div>
   </div>

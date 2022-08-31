@@ -189,6 +189,12 @@ whatIsOwed.VATInterest.estimated = llog TAW amcangyfrifedig o £{0}
 whatIsOwed.VATInterest = llog TAW o £{0}
 whatIsOwed.allPenalties.interest.estimated = llog amcangyfrifedig o £{0} ar gosbau
 whatIsOwed.allPenalties.interest = llog o £{0} ar gosbau
+whatIsOwed.ttp.p1 = There is a payment plan set up on this account.
+whatIsOwed.ttp.p2 = You must keep up with payments. If you do not, your payment plan will fail and any penalties you owe will be calculated from their original date.
+agent.whatIsOwed.ttp.p2 = Your client must keep up with all payments. If they do not, their payment plan will fail and any penalties will be calculated from their original date.
+whatIsOwed.ttp.p3.link = Check what you owe
+agent.whatIsOwed.ttp.p3.link = Check what your client owes
+whatIsOwed.ttp.p3 = to see all unpaid charges.
 
 # Calculation messages
 # ----------------------------------------------------------
