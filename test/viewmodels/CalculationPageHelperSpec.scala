@@ -55,9 +55,9 @@ class CalculationPageHelperSpec extends SpecBase {
       principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
       LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-        outstandingAmount = Some(99)
-      ),
-      timeToPay = None
+        outstandingAmount = Some(99),
+        timeToPay = None
+      )
     )
 
     val lppWith15and30DayAmount = LPPDetails(
@@ -88,9 +88,9 @@ class CalculationPageHelperSpec extends SpecBase {
       principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
       LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-        outstandingAmount = Some(99)
-      ),
-      timeToPay = None
+        outstandingAmount = Some(99),
+        timeToPay = None
+      )
     )
 
     val lppWith15DayAmount = LPPDetails(
@@ -121,9 +121,9 @@ class CalculationPageHelperSpec extends SpecBase {
       principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
       LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-        outstandingAmount = Some(99)
-      ),
-      timeToPay = None
+        outstandingAmount = Some(99),
+        timeToPay = None
+      )
     )
 
     "return a single row when the user has an amount after 15 days" in {

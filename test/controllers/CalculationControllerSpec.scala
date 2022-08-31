@@ -123,9 +123,9 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
         principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99)
-        ),
-        timeToPay = None
+          outstandingAmount = Some(99),
+          timeToPay = None
+        )
       ))
     ))
   )
@@ -208,9 +208,9 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
         principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99)
-        ),
-        timeToPay = None
+          outstandingAmount = Some(99),
+          timeToPay = None
+        )
       ))
     ))
   )

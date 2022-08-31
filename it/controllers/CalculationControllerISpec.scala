@@ -126,9 +126,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99)
-        ),
-        timeToPay = None
+          outstandingAmount = Some(99),
+          timeToPay = None
+        )
       ))
     ))
   )
@@ -163,9 +163,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         principalChargeLatestClearing = None,
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99)
-        ),
-        timeToPay = None
+          outstandingAmount = Some(99),
+          timeToPay = None
+        )
       ))
     )))
 
@@ -199,9 +199,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99)
-        ),
-        timeToPay = None
+          outstandingAmount = Some(99),
+          timeToPay = None
+        )
       ))
     )))
 
@@ -235,9 +235,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99)
-        ),
-        timeToPay = None
+          outstandingAmount = Some(99),
+          timeToPay = None
+        )
       ))
     )))
 
@@ -271,9 +271,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         principalChargeLatestClearing = None,
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99)
-        ),
-        timeToPay = None
+          outstandingAmount = Some(99),
+          timeToPay = None
+        )
       ))
     )))
 
@@ -307,9 +307,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99)
-        ),
-        timeToPay = None
+          outstandingAmount = Some(99),
+          timeToPay = None
+        )
       ))
     ))
   )
@@ -344,9 +344,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99)
-        ),
-        timeToPay = None
+          outstandingAmount = Some(99),
+          timeToPay = None
+        )
       ))
     ))
   )

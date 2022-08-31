@@ -452,7 +452,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           "populateLatePaymentPenaltyCard is called" in {
             val firstLatePaymentPenaltyForVAT = Seq(sampleLatePaymentPenaltyPaid.copy(
               LPPDetailsMetadata = LPPDetailsMetadata(
-                mainTransaction = Some(VATReturnFirstLPP), outstandingAmount = Some(0)
+                mainTransaction = Some(VATReturnFirstLPP), outstandingAmount = Some(0), timeToPay = None
               )
             ))
             val result = helper.populateLatePaymentPenaltyCard(Some(firstLatePaymentPenaltyForVAT))
@@ -464,7 +464,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           "populateLatePaymentPenaltyCard is called" in {
             val secondLatePaymentPenaltyForVAT = Seq(sampleLatePaymentPenaltyAdditionalV2.copy(
               LPPDetailsMetadata = LPPDetailsMetadata(
-                mainTransaction = Some(VATReturnSecondLPP), outstandingAmount = Some(0)
+                mainTransaction = Some(VATReturnSecondLPP), outstandingAmount = Some(0), timeToPay = None
               ),
               appealInformation = None,
               penaltyAmountOutstanding = Some(0),
@@ -481,7 +481,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           "populateLatePaymentPenaltyCard is called" in {
             val firstLatePaymentPenaltyForCentralAssessment = Seq(sampleLatePaymentPenaltyPaid.copy(
               LPPDetailsMetadata = LPPDetailsMetadata(
-                mainTransaction = Some(CentralAssessmentFirstLPP), outstandingAmount = Some(1)
+                mainTransaction = Some(CentralAssessmentFirstLPP), outstandingAmount = Some(1), timeToPay = None
               ),
               appealInformation = None,
               penaltyAmountOutstanding = Some(0),
@@ -498,7 +498,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           "populateLatePaymentPenaltyCard is called" in {
             val secondLatePaymentPenaltyForCentralAssessment = Seq(sampleLatePaymentPenaltyAdditionalV2.copy(
               LPPDetailsMetadata = LPPDetailsMetadata(
-                mainTransaction = Some(CentralAssessmentSecondLPP), outstandingAmount = Some(1)
+                mainTransaction = Some(CentralAssessmentSecondLPP), outstandingAmount = Some(1), timeToPay = None
               ),
               appealInformation = None,
               penaltyAmountOutstanding = Some(0),
@@ -515,7 +515,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           "populateLatePaymentPenaltyCard is called" in {
             val firstLatePaymentPenaltyForErrorCorrectionNotice = Seq(sampleLatePaymentPenaltyPaid.copy(
               LPPDetailsMetadata = LPPDetailsMetadata(
-                mainTransaction = Some(ErrorCorrectionFirstLPP), outstandingAmount = Some(1)
+                mainTransaction = Some(ErrorCorrectionFirstLPP), outstandingAmount = Some(1), timeToPay = None
               ),
               appealInformation = None,
               penaltyAmountOutstanding = Some(0),
@@ -532,7 +532,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           "populateLatePaymentPenaltyCard is called" in {
             val secondLatePaymentPenaltyForErrorCorrectionNotice = Seq(sampleLatePaymentPenaltyAdditionalV2.copy(
               LPPDetailsMetadata = LPPDetailsMetadata(
-                mainTransaction = Some(ErrorCorrectionSecondLPP), outstandingAmount = Some(1)
+                mainTransaction = Some(ErrorCorrectionSecondLPP), outstandingAmount = Some(1), timeToPay = None
               ),
               appealInformation = None,
               penaltyAmountOutstanding = Some(0),
@@ -549,7 +549,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           "populateLatePaymentPenaltyCard is called" in {
             val firstLatePaymentPenaltyForOfficersAssessment = Seq(sampleLatePaymentPenaltyPaid.copy(
               LPPDetailsMetadata = LPPDetailsMetadata(
-                mainTransaction = Some(OfficersAssessmentFirstLPP), outstandingAmount = Some(1)
+                mainTransaction = Some(OfficersAssessmentFirstLPP), outstandingAmount = Some(1), timeToPay = None
               )
             ))
             val result = helper.populateLatePaymentPenaltyCard(Some(firstLatePaymentPenaltyForOfficersAssessment))
@@ -561,7 +561,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           "populateLatePaymentPenaltyCard is called" in {
             val secondLatePaymentPenaltyForOfficersAssessment = Seq(sampleLatePaymentPenaltyAdditionalV2.copy(
               LPPDetailsMetadata = LPPDetailsMetadata(
-                mainTransaction = Some(OfficersAssessmentSecondLPP), outstandingAmount = Some(1)
+                mainTransaction = Some(OfficersAssessmentSecondLPP), outstandingAmount = Some(1), timeToPay = None
               ),
               appealInformation = None,
               penaltyAmountOutstanding = Some(0),
@@ -578,7 +578,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           "populateLatePaymentPenalty for is called" in {
             val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyPaid.copy(
               LPPDetailsMetadata = LPPDetailsMetadata(
-                mainTransaction = Some(VATReturnFirstLPP), outstandingAmount = Some(1)
+                mainTransaction = Some(VATReturnFirstLPP), outstandingAmount = Some(1), timeToPay = None
               )
             ))))
             result shouldBe Some(Seq(sampleLPPSummaryCardPenaltyPaid("VAT")))

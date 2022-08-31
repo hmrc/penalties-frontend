@@ -129,9 +129,9 @@ trait TestData {
     principalChargeLatestClearing = None,
     LPPDetailsMetadata = LPPDetailsMetadata(
       mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-      outstandingAmount = Some(99)
-    ),
-    timeToPay = None
+      outstandingAmount = Some(99),
+      timeToPay = None
+    )
   )
 
   val sampleLatePaymentPenaltyPaid: LPPDetails = sampleLatePaymentPenalty.copy(
@@ -214,7 +214,7 @@ trait TestData {
     latePaymentPenalty = Some(
       LatePaymentPenalty(
         Seq(
-          sampleLatePaymentPenalty.copy(LPPDetailsMetadata = LPPDetailsMetadata(mainTransaction = Some(MainTransactionEnum.VATReturnFirstLPP), outstandingAmount = Some(20)))
+          sampleLatePaymentPenalty.copy(LPPDetailsMetadata = LPPDetailsMetadata(mainTransaction = Some(MainTransactionEnum.VATReturnFirstLPP), outstandingAmount = Some(20), timeToPay = None))
         )
       )
     )

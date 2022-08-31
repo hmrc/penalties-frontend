@@ -112,9 +112,9 @@ object PenaltiesStub {
         penaltyChargeReference = Some("PEN1234567"),
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99)
-        ),
-        timeToPay = None
+          outstandingAmount = Some(99),
+          timeToPay = None
+        )
       ))
     ))
   )
@@ -197,9 +197,9 @@ object PenaltiesStub {
         penaltyChargeReference = Some("PEN1234567"),
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = None,
-          outstandingAmount = None
-        ),
-        timeToPay = None
+          outstandingAmount = None,
+          timeToPay = None
+        )
       ))
     ))
   )

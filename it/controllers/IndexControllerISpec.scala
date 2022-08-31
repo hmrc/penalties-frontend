@@ -255,9 +255,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         principalChargeLatestClearing = Some(sampleDate1.plusMonths(2).plusDays(7)),
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99)
-        ),
-        timeToPay = None
+          outstandingAmount = Some(99),
+          timeToPay = None
+        )
       ))
   )
 
@@ -288,9 +288,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         principalChargeLatestClearing = Some(sampleDate1.plusMonths(2).plusDays(7)),
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99)
-        ),
-        timeToPay = None
+          outstandingAmount = Some(99),
+          timeToPay = None
+        )
       ),
       LPPDetails(
         principalChargeReference = "123456789",
@@ -320,9 +320,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         principalChargeLatestClearing = None,
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99)
-        ),
-        timeToPay = None
+          outstandingAmount = Some(99),
+          timeToPay = None
+        )
       )
     )
   )
@@ -356,9 +356,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         principalChargeLatestClearing = None,
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99)
-        ),
-        timeToPay = None
+          outstandingAmount = Some(99),
+          timeToPay = None
+        )
       ))
   )
 
@@ -390,9 +390,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         principalChargeLatestClearing = Some(sampleDate1.plusMonths(2).plusDays(7)),
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99)
-        ),
-        timeToPay = None
+          outstandingAmount = Some(99),
+          timeToPay = None
+        )
       )))
   )
 
@@ -504,9 +504,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       principalChargeLatestClearing = None,
       LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-        outstandingAmount = Some(99)
-      ),
-      timeToPay = None
+        outstandingAmount = Some(99),
+        timeToPay = None
+      )
     ))
   )
 
