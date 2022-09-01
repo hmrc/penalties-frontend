@@ -119,6 +119,7 @@ summaryCard.lpp.paymentNotReceived = Payment not yet received
 summaryCard.viewCalculation = View calculation
 
 summaryCard.appealLink.aria.label.lurkingPoint.noReturnSubmitted = Check if you can appeal for penalty on late VAT return due {0}
+summaryCard.appealLink.aria.label.noReturnSubmitted = Check if you can appeal penalty point {0}
 summaryCard.appealLink.aria.label.lurkingPoint.returnSubmitted = Appeal this penalty for late VAT return due on {0}
 summaryCard.appealLink.aria.label.lpp.vatPaid.LPP1 = first
 summaryCard.appealLink.aria.label.lpp.vatPaid.LPP2 = second

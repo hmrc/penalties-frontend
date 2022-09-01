@@ -254,6 +254,32 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       chargeDueDate = Some(LocalDate.parse("2069-10-30"))
     ), quarterlyThreshold)
 
+  val summaryCardModelNoReturnSubmitted: LateSubmissionPenaltySummaryCard = summaryCardHelper.financialSummaryCard(
+    LSPDetails(
+      penaltyNumber = "12345678901238",
+      penaltyOrder = "01",
+      penaltyCategory = LSPPenaltyCategoryEnum.Point,
+      penaltyStatus = LSPPenaltyStatusEnum.Active,
+      FAPIndicator = None,
+      penaltyCreationDate = LocalDate.parse("2069-10-30"),
+      penaltyExpiryDate = LocalDate.parse("2069-10-30"),
+      expiryReason = None,
+      communicationsDate = LocalDate.parse("2069-10-30"),
+      lateSubmissions = Some(Seq(
+        LateSubmission(
+          taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
+          taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
+          taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
+          returnReceiptDate = None,
+          taxReturnStatus = TaxReturnStatusEnum.Open
+        )
+      )),
+      appealInformation = None,
+      chargeAmount = None,
+      chargeOutstandingAmount = None,
+      chargeDueDate = None
+    ), quarterlyThreshold)
+
   val summaryCardModelWithFinancialPointBelowThresholdAndAppealInProgress: LateSubmissionPenaltySummaryCard =
     summaryCardHelper.financialSummaryCard(LSPDetails(
       penaltyNumber = "12345678901234",
@@ -662,6 +688,16 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         doc.select("dt").get(1).text() shouldBe "Reason"
         doc.select("dd").get(1).text() shouldBe "Change to VAT return deadlines"
       }
+    }
+
+    "given a point - return not submitted" should {
+      val docWithPoint: Document =
+        asDocument(summaryCardHtml.apply(summaryCardModelNoReturnSubmitted))
+
+      "have an aria-label" in {
+        docWithPoint.select(".app-summary-card__footer a").attr("aria-label") shouldBe "Check if you can appeal penalty point 1"
+      }
+
     }
 
     "given a financial point" should {

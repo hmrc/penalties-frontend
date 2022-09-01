@@ -36,6 +36,8 @@
     } else {
         Some(messages("summaryCard.appealLink.aria.label.lurkingPoint.returnSubmitted", summaryCard.dueDate.get))
     }
+  } else if(!summaryCard.isFinancialPoint && !summaryCard.isReturnSubmitted) {
+    Some(messages("summaryCard.appealLink.aria.label.noReturnSubmitted", summaryCard.penaltyPoint))
   } else {
     None
   }
@@ -88,22 +90,24 @@
                     } else if(summaryCard.isFinancialPoint && !summaryCard.isAdjustedPoint) {
                             {if(!summaryCard.isReturnSubmitted || summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
                                     <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}
-                                    aria-label={ariaLabelText.fold("")(identity)}>
+                                    aria-label={ariaLabelText.fold(messages("summaryCard.appealCheck"))(identity)}>
                                     {messages("summaryCard.appealCheck")}
                                     </a>
                             } else {
                                     <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, false, false).url}
-                                    aria-label={ariaLabelText.fold("")(identity)}>
+                                    aria-label={ariaLabelText.fold(messages("summaryCard.footerLinkTextNoPointNumber"))(identity)}>
                                     {messages("summaryCard.footerLinkTextNoPointNumber")}
                                     </a>
                             }}
                     } else if(!summaryCard.isAdjustedPoint) {
                         if(!summaryCard.isReturnSubmitted || summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
-                                <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}>
+                                <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}
+                                aria-label={ariaLabelText.fold(messages("summaryCard.appealCheck"))(identity)}>
                                 {messages("summaryCard.appealCheck")}
                                 </a>
                         } else {
-                                <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, false, false).url}>
+                                <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, false, false).url}
+                                aria-label={ariaLabelText.fold(messages("summaryCard.footerLinkText", summaryCard.penaltyPoint))(identity)}>
                                 {messages("summaryCard.footerLinkText", summaryCard.penaltyPoint)}
                                 </a>
                         }
