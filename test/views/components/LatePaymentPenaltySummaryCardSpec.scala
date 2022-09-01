@@ -203,7 +203,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         doc.select("dd").get(1).text() shouldBe "VAT for period 1 January 2020 to 1 February 2020"
       }
 
-      "display Date(principalChargeDueDate) in Charge due" in {
+      "display principalChargeDueDate in Charge due" in {
         doc.select("dt").get(2).text() shouldBe "Charge due"
         doc.select("dd").get(2).text() shouldBe "1 February 2020"
       }
@@ -214,8 +214,9 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         docVATPaymentDate.select("dd").get(2).text() shouldBe "7 March 2020"
       }
 
-      "display the appeal link" in {
+      "display the appeal link and have the correct aria-label (LPP1)" in {
         doc.select(".app-summary-card__footer a").get(1).text shouldBe "Appeal this penalty"
+        doc.select(".app-summary-card__footer a").get(1).attr("aria-label") shouldBe "Appeal first penalty for late payment of charge due on 1 February 2020"
       }
 
       "display the check if you can appeal link if the penalty is unappealable" in {
@@ -261,8 +262,9 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         docWithAdditionalPenalty.select("dd").get(0).text() shouldBe "Second penalty for late payment"
       }
 
-      "display the appeal link" in {
+      "display the appeal link and have the correct aria-label (LPP2)" in {
         docWithAdditionalPenalty.select(".app-summary-card__footer a").get(1).text shouldBe "Appeal this penalty"
+        docWithAdditionalPenalty.select(".app-summary-card__footer a").get(1).attr("aria-label") shouldBe "Appeal second penalty for late payment of charge due on 7 March 2020"
       }
 
       "display the check if you can appeal link if the penalty is unappealable" in {
