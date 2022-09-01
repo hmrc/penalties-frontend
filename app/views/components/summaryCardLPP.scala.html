@@ -52,7 +52,7 @@
         @messages("summaryCard.appealCheck")
         </a>
     } else {
-        <a class="govuk-link" href=@{
+        <a class="govuk-link" aria-label="@{messages("summaryCard.appealLink.aria.label.lpp.vatPaid", messages(s"summaryCard.appealLink.aria.label.lpp.vatPaid.${summaryCard.penaltyCategory}"), summaryCard.dueDate)}" href=@{
             controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyChargeReference.get, true, false, summaryCard.penaltyCategory.equals(LPP2)).url
         }>
         @messages("summaryCard.footerLinkTextNoPointNumber")

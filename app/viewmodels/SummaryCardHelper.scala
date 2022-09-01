@@ -339,7 +339,8 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       appealStatus,
       appealLevel,
       isVatPaid = isVatPaid,
-      penaltyCategory = lpp.penaltyCategory
+      penaltyCategory = lpp.penaltyCategory,
+      dueDate = dateToString(lpp.principalChargeDueDate)
     )
   }
 

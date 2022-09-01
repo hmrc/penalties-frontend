@@ -74,7 +74,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
     isVatPaid = true,
     amountDue = 1001.45,
     isPenaltyPaid = true,
-    penaltyCategory = LPP1
+    penaltyCategory = LPP1,
+    dueDate = "1 January 2021"
   )
 
   def sampleLPPAdditionalSummaryCardPenaltyPaid(chargeType: String): LatePaymentPenaltySummaryCard = LatePaymentPenaltySummaryCard(
@@ -96,7 +97,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
     isPenaltyPaid = true,
     amountDue = 1001.45,
     isVatPaid = true,
-    penaltyCategory = LPP2
+    penaltyCategory = LPP2,
+    dueDate = "1 January 2021"
   )
 
   val sampleLPPSummaryCardPenaltyUnpaidVAT: LatePaymentPenaltySummaryCard = sampleLPPSummaryCardPenaltyPaid("VAT").copy(isPenaltyPaid = false, isVatPaid = false,
@@ -454,7 +456,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           amountDue = 400.0,
           isPenaltyPaid = false,
           isVatPaid = true,
-          penaltyCategory = LPP1
+          penaltyCategory = LPP1,
+          dueDate = "1 January 2021"
         )
 
         "return SummaryCards when given First Late Payment penalty and chargeType is VAT Return 1st LPP (4703)" when {

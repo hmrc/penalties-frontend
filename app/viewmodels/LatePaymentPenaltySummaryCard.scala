@@ -31,5 +31,6 @@ case class LatePaymentPenaltySummaryCard(
                                           appealStatus: Option[AppealStatusEnum.Value] = None,
                                           appealLevel: Option[AppealLevelEnum.Value] = None,
                                           isVatPaid: Boolean = false,
-                                          penaltyCategory: LPPPenaltyCategoryEnum.Value
+                                          penaltyCategory: LPPPenaltyCategoryEnum.Value,
+                                          dueDate: String
                                         )
