@@ -835,12 +835,17 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
 
     "given no multiple penalty period in LSP" should {
       implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialLSP(false)))
+      val docSubmitted: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialLSP(true)))
       "no message relating to multiple penalties in the same period should appear" in {
         doc.select("p.govuk-body").text().isEmpty shouldBe true
       }
 
       "set the correct aria-label for a lurking point with no return submitted" in {
         doc.select("a").attr("aria-label") shouldBe "Check if you can appeal for penalty on late VAT return due 30 October 2069"
+      }
+
+      "set the correct aria-label for a lurking point with a return submitted" in {
+        docSubmitted.select("a").attr("aria-label") shouldBe "Appeal this penalty for late VAT return due on 30 October 2069"
       }
     }
 

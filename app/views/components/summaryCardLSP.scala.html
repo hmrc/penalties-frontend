@@ -30,8 +30,12 @@
 )(implicit messages: Messages)
 
 @ariaLabelText = @{
-  if(summaryCard.isFinancialPoint && !summaryCard.isReturnSubmitted && summaryCard.dueDate.isDefined) {
-    Some(messages("summaryCard.appealLink.aria.label.lurkingPoint.noReturnSubmitted", summaryCard.dueDate.get))
+  if(summaryCard.isFinancialPoint && summaryCard.dueDate.isDefined) {
+    if(!summaryCard.isReturnSubmitted) {
+        Some(messages("summaryCard.appealLink.aria.label.lurkingPoint.noReturnSubmitted", summaryCard.dueDate.get))
+    } else {
+        Some(messages("summaryCard.appealLink.aria.label.lurkingPoint.returnSubmitted", summaryCard.dueDate.get))
+    }
   } else {
     None
   }
@@ -88,7 +92,8 @@
                                     {messages("summaryCard.appealCheck")}
                                     </a>
                             } else {
-                                    <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, false, false).url}>
+                                    <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, false, false).url}
+                                    aria-label={ariaLabelText.fold("")(identity)}>
                                     {messages("summaryCard.footerLinkTextNoPointNumber")}
                                     </a>
                             }}
