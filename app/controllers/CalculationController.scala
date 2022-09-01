@@ -36,11 +36,12 @@ import scala.concurrent.{ExecutionContext, Future}
 class CalculationController @Inject()(viewLPP: CalculationLPPView,
                                       viewLPP2: CalculationLPP2View,
                                       penaltiesService: PenaltiesService,
-                                      calculationPageHelper: CalculationPageHelper)(implicit ec: ExecutionContext,
-                                                                                    val appConfig: AppConfig,
-                                                                                    errorHandler: ErrorHandler,
-                                                                                    authorise: AuthPredicate,
-                                                                                    controllerComponents: MessagesControllerComponents)
+                                      calculationPageHelper: CalculationPageHelper
+                                     )(implicit ec: ExecutionContext,
+                                       val appConfig: AppConfig,
+                                       errorHandler: ErrorHandler,
+                                       authorise: AuthPredicate,
+                                       controllerComponents: MessagesControllerComponents)
   extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter {
 
   def onPageLoad(principalChargeReference: String, penaltyCategory: String): Action[AnyContent] = authorise.async { implicit request =>

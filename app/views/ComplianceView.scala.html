@@ -29,7 +29,8 @@
     pageTitle = getMessage("compliance.titleAndHeading"),
     isPageFullWidth = false,
     isUserAgent = user.isAgent,
-    extraBreadcrumbs = Some(Seq((messages("index.breadcrumb.index"), controllers.routes.IndexController.onPageLoad.url)))
+    extraBreadcrumbs = Some(Seq((messages("index.breadcrumb.index"), controllers.routes.IndexController.onPageLoad.url))),
+    optPage = Some(CompliancePage)
   ) {
 
     <h1 class="govuk-heading-xl">@getMessage("compliance.titleAndHeading")</h1>

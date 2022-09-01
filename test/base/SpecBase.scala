@@ -20,6 +20,7 @@ import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
 import models.compliance._
 import models.User
+import navigation.Navigation
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.Mockito.mock

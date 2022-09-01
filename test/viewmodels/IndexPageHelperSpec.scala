@@ -25,13 +25,10 @@ import models.{GetPenaltyDetails, Totalisations}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Matchers.any
-import org.mockito.Mockito.{mock, reset, when}
+import org.mockito.Mockito.{mock, when}
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.test.Helpers.{await, contentAsString, defaultAwaitTimeout}
 import services.{ComplianceService, PenaltiesService}
-import testUtils.AuthTestModels
-import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import views.html.components.{warningText, _}
 
 import java.time.LocalDate
