@@ -30,7 +30,7 @@
 )(implicit messages: Messages)
 
 @calculationContent = {
-    <a class="govuk-link" href="@{
+    <a class="govuk-link" aria-label="@{messages("summaryCard.appealLink.aria.label.lpp.vatPaid", messages(s"summaryCard.appealLink.aria.label.lpp.vatPaid.${summaryCard.penaltyCategory}"), summaryCard.dueDate)}" href="@{
         controllers.routes.CalculationController.onPageLoad(summaryCard.principalChargeReference, summaryCard.penaltyCategory.toString).url
     }">
     @messages("summaryCard.viewCalculation")
