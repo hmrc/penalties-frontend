@@ -377,7 +377,6 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   }
 
   private def getLPPPenaltyReasonKey(mainTransactionEnum: MainTransactionEnum.Value): String = {
-    println(s"[SummaryCardHelper][getLPPPenaltyReasonKey] - enum present: ${mainTransactionEnum.toString}")
     mainTransactionEnum match {
       case VATReturnFirstLPP | VATReturnSecondLPP => "summaryCard.lpp.key3.value.vat"
       case CentralAssessmentFirstLPP | CentralAssessmentSecondLPP => "summaryCard.lpp.key3.value.centralAssessment"
