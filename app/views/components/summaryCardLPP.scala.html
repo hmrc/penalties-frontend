@@ -29,6 +29,19 @@
         summaryCard: LatePaymentPenaltySummaryCard
 )(implicit messages: Messages)
 
+
+@ariaLabelText = @{
+    if(!summaryCard.isVatPaid) {
+        messages(
+            "summaryCard.appealLink.aria.label.lpp.change", messages(s"summaryCard.appealLink.aria.label.lpp.vatPaid.${summaryCard.penaltyCategory}"), summaryCard.dueDate
+        )
+    } else {
+        messages(
+            "summaryCard.appealLink.aria.label.lpp.vatPaid", messages(s"summaryCard.appealLink.aria.label.lpp.vatPaid.${summaryCard.penaltyCategory}"), summaryCard.dueDate
+        )
+    }
+}
+
 @calculationContent = {
     <a class="govuk-link" href="@{
         controllers.routes.CalculationController.onPageLoad(summaryCard.principalChargeReference, summaryCard.penaltyCategory.toString).url
@@ -48,13 +61,13 @@
     @if(!summaryCard.isVatPaid) {
         <a class="govuk-link" href=@{
             controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyChargeReference.get, true, true, summaryCard.penaltyCategory.equals(LPP2)).url
-        }>
+        } aria-label="@{ariaLabelText}">
         @messages("summaryCard.appealCheck")
         </a>
     } else {
-        <a class="govuk-link" aria-label="@{messages("summaryCard.appealLink.aria.label.lpp.vatPaid", messages(s"summaryCard.appealLink.aria.label.lpp.vatPaid.${summaryCard.penaltyCategory}"), summaryCard.dueDate)}" href=@{
+        <a class="govuk-link" href=@{
             controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyChargeReference.get, true, false, summaryCard.penaltyCategory.equals(LPP2)).url
-        }>
+        } aria-label="@{ariaLabelText}">
         @messages("summaryCard.footerLinkTextNoPointNumber")
         </a>
     }
