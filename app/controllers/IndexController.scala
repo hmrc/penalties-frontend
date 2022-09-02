@@ -35,11 +35,12 @@ import scala.concurrent.{ExecutionContext, Future}
 class IndexController @Inject()(view: IndexView,
                                 penaltiesService: PenaltiesService,
                                 cardHelper: SummaryCardHelper,
-                                pageHelper: IndexPageHelper)(implicit ec: ExecutionContext,
-                                                             val appConfig: AppConfig,
-                                                             authorise: AuthPredicate,
-                                                             errorHandler: ErrorHandler,
-                                                             controllerComponents: MessagesControllerComponents)
+                                pageHelper: IndexPageHelper
+                               )(implicit ec: ExecutionContext,
+                                 val appConfig: AppConfig,
+                                 authorise: AuthPredicate,
+                                 errorHandler: ErrorHandler,
+                                 controllerComponents: MessagesControllerComponents)
   extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter with FeatureSwitching {
 
   //scalastyle:off

@@ -36,7 +36,8 @@
         isUserAgent: Boolean = false,
         extraBreadcrumbs: Option[Seq[(String, String)]] = None,
         isTimeout: Boolean = false,
-        isCustomLayout: Boolean = false
+        isCustomLayout: Boolean = false,
+        optPage: Option[Page] = None
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @beforeContentBlock = {
@@ -45,7 +46,9 @@
 
 @if(!isTimeout){
     @if(isUserAgent) {
-        @govukBackLink(BackLink(href = "#", content = Text(messages("app.common.back")), attributes = Map("id" -> "back-link")))
+      @if(optPage.isDefined) {
+        @govukBackLink(BackLink(href = controllers.routes.PreviousPageController.previousPage(optPage.get.toString).url, content = Text(messages("app.common.back")), attributes = Map("id" -> "back-link")))
+      }
     } else {
         <div class="govuk-breadcrumbs govuk-breadcrumbs--collapse-on-mobile">
             <ol class="govuk-breadcrumbs__list">
