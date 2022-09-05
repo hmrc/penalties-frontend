@@ -29,13 +29,13 @@ object IndexMessages {
 
   val ttpText: Seq[String] = Seq(
     "There is a payment plan set up on this account.",
-    "You must keep up with payments. If you do not, your payment plan will fail and any penalties you owe will be calculated from their original date.",
+    "You must keep up with all payments. If you do not, your payment plan will fail and any penalties will be calculated from their original date.",
     "Check what you owe to see all unpaid charges."
   )
 
   val ttpAgentText: Seq[String] = Seq(
     "There is a payment plan set up on this account.",
-    "Your client must keep up with all payments. If they do not, their payment plan will fail and any penalties will be calculated from their original date.",
+    "Your client must keep up with all payments. If they do not, their payment plan will fail and any penalties will be calculated from the original date.",
     "Check what your client owes to see all unpaid charges."
   )
 
