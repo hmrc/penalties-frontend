@@ -844,7 +844,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         await(request).header.status shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
         parsedBody.select("#time-to-pay > p").get(0).text shouldBe "There is a payment plan set up on this account."
-        parsedBody.select("#time-to-pay > p").get(1).text shouldBe "You must keep up with payments. If you do not, your payment plan will fail and any penalties you owe will be calculated from their original date."
+        parsedBody.select("#time-to-pay > p").get(1).text shouldBe "You must keep up with all payments. If you do not, your payment plan will fail and any penalties will be calculated from their original date."
         parsedBody.select("#time-to-pay > p").get(2).text shouldBe "Check what you owe to see all unpaid charges."
         setFeatureDate(None)
       }
