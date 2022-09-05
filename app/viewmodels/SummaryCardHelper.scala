@@ -382,10 +382,10 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       case CentralAssessmentFirstLPP | CentralAssessmentSecondLPP => "summaryCard.lpp.key3.value.centralAssessment"
       case OfficersAssessmentFirstLPP | OfficersAssessmentSecondLPP => "summaryCard.lpp.key3.value.officersAssessment"
       case ErrorCorrectionFirstLPP | ErrorCorrectionSecondLPP => "summaryCard.lpp.key3.value.ecn"
-      case AdditionalAssessmentFirstLPP | AdditionalAssessmentSecondLPP => "summaryCard.lpp.key3.value.vat" //TODO: content to be added later
-      case ProtectiveAssessmentFirstLPP | ProtectiveAssessmentSecondLPP => "summaryCard.lpp.key3.value.vat" //TODO: content to be added later
-      case POAReturnChargeFirstLPP | POAReturnChargeSecondLPP => "summaryCard.lpp.key3.value.vat" //TODO: content to be added later
-      case AAReturnChargeFirstLPP | AAReturnChargeSecondLPP => "summaryCard.lpp.key3.value.vat" //TODO: content to be added later
+      case AdditionalAssessmentFirstLPP | AdditionalAssessmentSecondLPP => "summaryCard.lpp.key3.value.additionalAssessment"
+      case ProtectiveAssessmentFirstLPP | ProtectiveAssessmentSecondLPP => "summaryCard.lpp.key3.value.protectiveAssessment"
+      case POAReturnChargeFirstLPP | POAReturnChargeSecondLPP => "summaryCard.lpp.key3.value.poaReturnCharge"
+      case AAReturnChargeFirstLPP | AAReturnChargeSecondLPP => "summaryCard.lpp.key3.value.aaReturnCharge"
       case _ => "summaryCard.lpp.key3.value.vat" //Should be unreachable
     }
   }
