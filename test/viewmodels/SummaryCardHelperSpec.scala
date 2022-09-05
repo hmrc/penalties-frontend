@@ -586,6 +586,144 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           }
         }
 
+        "return SummaryCards when given First Late Payment penalty and chargeType is Additional Assessment 1st LPP (4758)" when {
+          "populateLatePaymentPenaltyCard is called" in {
+            val firstLatePaymentPenaltyForAdditionalAssessment = Seq(sampleLatePaymentPenaltyPaid.copy(
+              LPPDetailsMetadata = LPPDetailsMetadata(
+                mainTransaction = Some(AdditionalAssessmentFirstLPP), outstandingAmount = Some(1), timeToPay = None
+              ),
+              appealInformation = None,
+              penaltyAmountOutstanding = Some(0),
+              penaltyAmountPaid = Some(1001.45),
+              principalChargeLatestClearing = Some(sampleDate),
+              penaltyStatus = LPPPenaltyStatusEnum.Posted
+            ))
+            val result = helper.populateLatePaymentPenaltyCard(Some(firstLatePaymentPenaltyForAdditionalAssessment))
+            result shouldBe Some(Seq(sampleLPPSummaryCardPenaltyPaid("Additional Assessment of VAT")))
+          }
+        }
+
+        "return SummaryCards when given Second Late Payment penalty and chargeType is Additional Assessment 2nd LPP (4759)" when {
+          "populateLatePaymentPenaltyCard is called" in {
+            val secondLatePaymentPenaltyForAdditionalAssessment = Seq(sampleLatePaymentPenaltyAdditionalV2.copy(
+              LPPDetailsMetadata = LPPDetailsMetadata(
+                mainTransaction = Some(AdditionalAssessmentSecondLPP), outstandingAmount = Some(1), timeToPay = None
+              ),
+              appealInformation = None,
+              penaltyAmountOutstanding = Some(0),
+              penaltyAmountPaid = Some(1001.45),
+              principalChargeLatestClearing = Some(sampleDate),
+              penaltyStatus = LPPPenaltyStatusEnum.Posted
+            ))
+            val result = helper.populateLatePaymentPenaltyCard(Some(secondLatePaymentPenaltyForAdditionalAssessment))
+            result shouldBe Some(Seq(sampleLPPAdditionalSummaryCardPenaltyPaid("Additional Assessment of VAT")))
+          }
+        }
+
+        "return SummaryCards when given First Late Payment penalty and chargeType is Protective Assessment 1st LPP (4761)" when {
+          "populateLatePaymentPenaltyCard is called" in {
+            val firstLatePaymentPenaltyForProtectiveAssessment = Seq(sampleLatePaymentPenaltyPaid.copy(
+              LPPDetailsMetadata = LPPDetailsMetadata(
+                mainTransaction = Some(ProtectiveAssessmentFirstLPP), outstandingAmount = Some(1), timeToPay = None
+              ),
+              appealInformation = None,
+              penaltyAmountOutstanding = Some(0),
+              penaltyAmountPaid = Some(1001.45),
+              principalChargeLatestClearing = Some(sampleDate),
+              penaltyStatus = LPPPenaltyStatusEnum.Posted
+            ))
+            val result = helper.populateLatePaymentPenaltyCard(Some(firstLatePaymentPenaltyForProtectiveAssessment))
+            result shouldBe Some(Seq(sampleLPPSummaryCardPenaltyPaid("Protective Assessment of VAT")))
+          }
+        }
+
+        "return SummaryCards when given Second Late Payment penalty and chargeType is Protective Assessment 2nd LPP (4762)" when {
+          "populateLatePaymentPenaltyCard is called" in {
+            val secondLatePaymentPenaltyForProtectiveAssessment = Seq(sampleLatePaymentPenaltyAdditionalV2.copy(
+              LPPDetailsMetadata = LPPDetailsMetadata(
+                mainTransaction = Some(ProtectiveAssessmentSecondLPP), outstandingAmount = Some(1), timeToPay = None
+              ),
+              appealInformation = None,
+              penaltyAmountOutstanding = Some(0),
+              penaltyAmountPaid = Some(1001.45),
+              principalChargeLatestClearing = Some(sampleDate),
+              penaltyStatus = LPPPenaltyStatusEnum.Posted
+            ))
+            val result = helper.populateLatePaymentPenaltyCard(Some(secondLatePaymentPenaltyForProtectiveAssessment))
+            result shouldBe Some(Seq(sampleLPPAdditionalSummaryCardPenaltyPaid("Protective Assessment of VAT")))
+          }
+        }
+
+        "return SummaryCards when given First Late Payment penalty and chargeType is a POA Return Charge 1st LPP (4716)" when {
+          "populateLatePaymentPenaltyCard is called" in {
+            val firstLatePaymentPenaltyForPOAReturnCharge = Seq(sampleLatePaymentPenaltyPaid.copy(
+              LPPDetailsMetadata = LPPDetailsMetadata(
+                mainTransaction = Some(POAReturnChargeFirstLPP), outstandingAmount = Some(1), timeToPay = None
+              ),
+              appealInformation = None,
+              penaltyAmountOutstanding = Some(0),
+              penaltyAmountPaid = Some(1001.45),
+              principalChargeLatestClearing = Some(sampleDate),
+              penaltyStatus = LPPPenaltyStatusEnum.Posted
+            ))
+            val result = helper.populateLatePaymentPenaltyCard(Some(firstLatePaymentPenaltyForPOAReturnCharge))
+            result shouldBe Some(Seq(sampleLPPSummaryCardPenaltyPaid("Payment on Account Instalment")))
+          }
+
+        }
+
+        "return SummaryCards when given Second Late Payment penalty and chargeType is a POA Return Charge 2nd LPP (4717)" when {
+          "populateLatePaymentPenaltyCard is called" in {
+            val secondLatePaymentPenaltyForPOAReturnCharge = Seq(sampleLatePaymentPenaltyAdditionalV2.copy(
+              LPPDetailsMetadata = LPPDetailsMetadata(
+                mainTransaction = Some(POAReturnChargeSecondLPP), outstandingAmount = Some(1), timeToPay = None
+              ),
+              appealInformation = None,
+              penaltyAmountOutstanding = Some(0),
+              penaltyAmountPaid = Some(1001.45),
+              principalChargeLatestClearing = Some(sampleDate),
+              penaltyStatus = LPPPenaltyStatusEnum.Posted
+            ))
+            val result = helper.populateLatePaymentPenaltyCard(Some(secondLatePaymentPenaltyForPOAReturnCharge))
+            result shouldBe Some(Seq(sampleLPPAdditionalSummaryCardPenaltyPaid("Payment on Account Instalment")))
+          }
+        }
+
+        "return SummaryCards when given First Late Payment penalty and chargeType is AA Return charge 1st LPP (4718)" when {
+          "populateLatePaymentPenaltyCard is called" in {
+            val firstLatePaymentPenaltyForAAReturnCharge = Seq(sampleLatePaymentPenaltyPaid.copy(
+              LPPDetailsMetadata = LPPDetailsMetadata(
+                mainTransaction = Some(AAReturnChargeFirstLPP), outstandingAmount = Some(1), timeToPay = None
+              ),
+              appealInformation = None,
+              penaltyAmountOutstanding = Some(0),
+              penaltyAmountPaid = Some(1001.45),
+              principalChargeLatestClearing = Some(sampleDate),
+              penaltyStatus = LPPPenaltyStatusEnum.Posted
+            ))
+            val result = helper.populateLatePaymentPenaltyCard(Some(firstLatePaymentPenaltyForAAReturnCharge))
+            result shouldBe Some(Seq(sampleLPPSummaryCardPenaltyPaid("Annual Accounting Balance")))
+          }
+
+        }
+
+        "return SummaryCards when given Second Late Payment penalty and chargeType is AA Return charge 1st LPP (4719)" when {
+          "populateLatePaymentPenaltyCard is called" in {
+            val secondLatePaymentPenaltyForAAReturnCharge = Seq(sampleLatePaymentPenaltyAdditionalV2.copy(
+              LPPDetailsMetadata = LPPDetailsMetadata(
+                mainTransaction = Some(AAReturnChargeSecondLPP), outstandingAmount = Some(1), timeToPay = None
+              ),
+              appealInformation = None,
+              penaltyAmountOutstanding = Some(0),
+              penaltyAmountPaid = Some(1001.45),
+              principalChargeLatestClearing = Some(sampleDate),
+              penaltyStatus = LPPPenaltyStatusEnum.Posted
+            ))
+            val result = helper.populateLatePaymentPenaltyCard(Some(secondLatePaymentPenaltyForAAReturnCharge))
+            result shouldBe Some(Seq(sampleLPPAdditionalSummaryCardPenaltyPaid("Annual Accounting Balance")))
+          }
+        }
+
         "return SummaryCards with VAT payment date in LPP " when {
           "populateLatePaymentPenalty for is called" in {
             val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLatePaymentPenaltyPaid.copy(
