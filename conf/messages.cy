@@ -125,7 +125,7 @@ summaryCard.appealLink.aria.label.lpp.vatPaid.LPP1 = first
 summaryCard.appealLink.aria.label.lpp.vatPaid.LPP2 = second
 summaryCard.appealLink.aria.label.lpp.vatPaid = Appeal {0} penalty for late payment of charge due on {1}
 summaryCard.appealLink.aria.label.lpp.change = Check if you can appeal {0} penalty for late payment of charge due on {1}
-summaryCard.viewCalculation.aria.label.lpp.change = View calculation of {0}  late payment penalty for charge due on {1}
+summaryCard.viewCalculation.aria.label.lpp.change = View calculation of {0} late payment penalty for charge due on {1}
 
 status.active = gweithredol
 status.due = i’w dalu
