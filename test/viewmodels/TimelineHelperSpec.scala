@@ -41,11 +41,11 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter with Featur
   val latestLSPCreationDateMonthly: LocalDate = LocalDate.of(2022, 1, 1)
 
   val compliancePayload: CompliancePayload = CompliancePayload(
-    identification = ObligationIdentification(
+    identification = Some(ObligationIdentification(
       incomeSourceType = None,
       referenceNumber = "123456789",
       referenceType = "VRN"
-    ),
+    )),
     obligationDetails = Seq(
       ObligationDetail(
         status = ComplianceStatusEnum.fulfilled,
@@ -83,11 +83,11 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter with Featur
   )
 
   val compliancePayloadMonthly: CompliancePayload = CompliancePayload(
-    identification = ObligationIdentification(
+    identification = Some(ObligationIdentification(
       incomeSourceType = None,
       referenceNumber = "123456789",
       referenceType = "VRN"
-    ),
+    )),
     obligationDetails = Seq(
       ObligationDetail(
         status = ComplianceStatusEnum.open,

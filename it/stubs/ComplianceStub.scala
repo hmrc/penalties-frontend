@@ -33,11 +33,11 @@ object ComplianceStub {
   val endDate: LocalDate = LocalDate.of(2020, 1, 31)
 
   val sampleCompliancePayload: CompliancePayload = CompliancePayload(
-    identification = ObligationIdentification(
+    identification = Some(ObligationIdentification(
       incomeSourceType = None,
       referenceNumber = "123456789",
       referenceType = "VRN"
-    ),
+    )),
     obligationDetails = Seq(
       ObligationDetail(
         status = ComplianceStatusEnum.fulfilled,

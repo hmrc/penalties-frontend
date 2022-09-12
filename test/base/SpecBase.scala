@@ -20,7 +20,6 @@ import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
 import models.compliance._
 import models.User
-import navigation.Navigation
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.Mockito.mock
@@ -88,11 +87,11 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with T
   )
 
   val sampleCompliancePayload: CompliancePayload = CompliancePayload(
-    identification = ObligationIdentification(
+    identification = Some(ObligationIdentification(
       incomeSourceType = None,
       referenceNumber = "123456789",
       referenceType = "VRN"
-    ),
+    )),
     obligationDetails = Seq(
       ObligationDetail(
         status = ComplianceStatusEnum.open,

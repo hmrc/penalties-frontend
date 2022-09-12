@@ -19,7 +19,7 @@ package models.compliance
 import play.api.libs.json.{Json, OFormat}
 
 case class CompliancePayload(
-                              identification: ObligationIdentification,
+                              identification: Option[ObligationIdentification],
                               obligationDetails: Seq[ObligationDetail]
                             )
 
