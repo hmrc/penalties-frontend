@@ -47,11 +47,11 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
   )
 
   val compliancePayloadWithMissingReturns: CompliancePayload = CompliancePayload(
-    identification = ObligationIdentification(
+    identification = Some(ObligationIdentification(
       incomeSourceType = None,
       referenceNumber = "123456789",
       referenceType = "VRN"
-    ),
+    )),
     obligationDetails = Seq(
       ObligationDetail(
         status = ComplianceStatusEnum.open,
@@ -113,11 +113,11 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
   )
 
   val compliancePayloadWithNoMissingReturns: CompliancePayload = CompliancePayload(
-    identification = ObligationIdentification(
+    identification = Some(ObligationIdentification(
       incomeSourceType = None,
       referenceNumber = "123456789",
       referenceType = "VRN"
-    ),
+    )),
     obligationDetails = Seq(
       ObligationDetail(
         status = ComplianceStatusEnum.fulfilled,
