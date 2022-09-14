@@ -19,6 +19,8 @@ package assets.messages
 object IndexMessages {
   val title = "VAT penalties and appeals - Manage your VAT account - GOV.UK"
 
+  val titleAgent = "VAT penalties and appeals - Your client’s VAT details - GOV.UK"
+
   val breadcrumb1 = "Business tax account"
 
   val breadcrumb2 = "Your VAT Account"
