@@ -1822,6 +1822,34 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         result shouldBe false
       }
 
+      "a TTP is going to be active but start date is in the future" in {
+        val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
+          totalisations = None,
+          latePaymentPenalty = Some(
+            LatePaymentPenalty(
+              Seq(
+                sampleLatePaymentPenalty.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+                  mainTransaction = None,
+                  outstandingAmount = None,
+                  timeToPay = Some(
+                    Seq(
+                      TimeToPay(
+                        TTPStartDate = LocalDate.of(2022, 8, 1),
+                        TTPEndDate = Some(LocalDate.of(2022, 9, 2))
+                      )
+                    )
+                  )
+                ))
+              )
+            )
+          ),
+          lateSubmissionPenalty = None
+        )
+        setFeatureDate(Some(LocalDate.of(2022, 7, 3)))
+        val result = pageHelper.isTTPActive(penaltyDetails)
+        result shouldBe false
+      }
+
       setFeatureDate(None)
     }
   }
