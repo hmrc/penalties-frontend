@@ -19,6 +19,8 @@ package assets.messages
 object CalculationMessages {
   val titleLPP = "Late payment penalty - Manage your VAT account - GOV.UK"
 
+  val agentTitleLPP = "Late payment penalty - Your client’s VAT details - GOV.UK"
+
   val periodHiddenText = "The period dates are"
 
   val periodWithText = "The period dates are 1 April 2022 to 30 June 2022"

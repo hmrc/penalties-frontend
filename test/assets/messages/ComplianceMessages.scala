@@ -22,7 +22,7 @@ object ComplianceMessages {
 
   val heading = "Actions to take before HMRC can remove your points"
 
-  val agentTitle = "Actions to take before HMRC can remove your client’s points - Manage your VAT account - GOV.UK"
+  val agentTitle = "Actions to take before HMRC can remove your client’s points - Your client’s VAT details - GOV.UK"
 
   val agentHeading = "Actions to take before HMRC can remove your client’s points"
 

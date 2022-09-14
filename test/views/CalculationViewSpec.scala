@@ -276,7 +276,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         asDocument(applyView(Seq("2% of £10,000.00 (the unpaid VAT 15 days after the due date)"), isMultipleAmounts = false))
 
       val expectedContent = Seq(
-        Selector.title -> titleLPP,
+        Selector.title -> agentTitleLPP,
         Selector.periodHiddenText -> periodHiddenText,
         Selector.periodWithText -> periodWithText,
         Selector.h1 -> headingLPP,
@@ -314,7 +314,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       implicit val doc: Document = asDocument(applyView())
 
       val expectedContent = Seq(
-        Selector.title -> titleLPP,
+        Selector.title -> agentTitleLPP,
         Selector.periodWithText -> periodWithText,
         Selector.HeaderTextNotVisible -> periodHiddenText,
         Selector.h1 -> headingLPP,
@@ -350,7 +350,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       implicit val doc: Document = asDocument(applyView())
 
       val expectedContent = Seq(
-        Selector.title -> titleLPP,
+        Selector.title -> agentTitleLPP,
         Selector.periodWithText -> periodWithText,
         Selector.HeaderTextNotVisible -> periodHiddenText,
         Selector.h1 -> headingLPP,

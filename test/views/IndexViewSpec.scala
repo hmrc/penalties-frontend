@@ -77,7 +77,7 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours {
 
     "display TTP (time to pay) content when a TTP is active (user is agent)" must {
       val expectedContent = Seq(
-        Selectors.title -> title,
+        Selectors.title -> titleAgent,
         Selectors.h1 -> heading,
         Selectors.timeToPayParagraph(1) -> ttpAgentText.head,
         Selectors.timeToPayParagraph(2) -> ttpAgentText(1),

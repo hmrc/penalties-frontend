@@ -110,8 +110,11 @@
 }
 }
 
+@titleMessage = @{
+  if(isUserAgent) "agent.service.name" else "service.name"
+}
 @govukLayout(
-    pageTitle = Some(messages("common.pageTitle", pageTitle, messages("service.name"))),
+    pageTitle = Some(messages("common.pageTitle", pageTitle, messages(titleMessage))),
     headBlock = Some(headBlock),
     headerBlock = Some(header(appConfig, !isTimeout)),
     scriptsBlock = Some(scripts),
