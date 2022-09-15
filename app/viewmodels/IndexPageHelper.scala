@@ -259,7 +259,8 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     penaltyDetails.latePaymentPenalty.exists {
       _.details.headOption.exists { //Current understanding is that TTP values are replicated across every LPP
         _.LPPDetailsMetadata.timeToPay.exists {
-          _.exists(ttp => ttp.TTPEndDate.isDefined && (ttp.TTPEndDate.get.isEqual(getFeatureDate) || ttp.TTPEndDate.get.isAfter(getFeatureDate))) //Find any TTP end date that exists and ends today or in the future
+          _.exists(ttp => ttp.TTPEndDate.isDefined && (ttp.TTPEndDate.get.isEqual(getFeatureDate) || ttp.TTPEndDate.get.isAfter(getFeatureDate) && //Find any TTP end date that exists and ends today or in the future
+            (ttp.TTPStartDate.isEqual(getFeatureDate) || ttp.TTPStartDate.isBefore(getFeatureDate))))  //Find any TTP start date that exists and starts today or earlier
         }
       }
     }
