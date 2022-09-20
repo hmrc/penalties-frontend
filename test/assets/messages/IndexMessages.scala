@@ -119,7 +119,8 @@ object IndexMessages {
   val datePaid = "Date paid"
 
   val vatPeriodValue: (String, String) => String = (s1, s2) => s"$s1 to $s2"
-  val periodValueLPP: (String, String, String) => String = (reason, s1, s2) => s"$reason for period $s1 to $s2"
+  val periodValueLPPOnePeriod: (String, String, String) => String = (reason, s1, s2) => s"$reason for period $s1 to $s2"
+  val periodValueLPPMultiplePeriods: (String, String, String) => String = (reason, s1, s2) => s"$reason for $s1 to $s2"
 
   val appealStatus = "Appeal status"
   def lspMultiplePenaltyPeriodMessage(dueDate : String) = s"The VAT Return due on $dueDate was also submitted late. <br> HMRC only applies 1 penalty for late submission in each month."
