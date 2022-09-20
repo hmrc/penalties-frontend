@@ -55,51 +55,64 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
     dueDate = Some(dateToString(sampleDate))
   )
 
-  def sampleLPPSummaryCardPenaltyPaid(chargeType: String): LatePaymentPenaltySummaryCard = LatePaymentPenaltySummaryCard(
-    Seq(
-      helper.summaryListRow(
-        penaltyType,
-        Html("First penalty for late payment")
+  def sampleLPPSummaryCardPenaltyPaid(chargeType: String): LatePaymentPenaltySummaryCard = {
+    val periodText = getPeriodText(chargeType)
+    LatePaymentPenaltySummaryCard(
+      Seq(
+        helper.summaryListRow(
+          penaltyType,
+          Html("First penalty for late payment")
+        ),
+        helper.summaryListRow(
+          overdueCharge,
+          Html(periodText(chargeType, dateToString(sampleDate), dateToString(sampleDate)))
+        ),
+        helper.summaryListRow(chargeDue, Html(dateToString(sampleDate))),
+        helper.summaryListRow(datePaid, Html(dateToString(sampleDate)))
       ),
-      helper.summaryListRow(
-        overdueCharge,
-        Html(periodValueLPP(chargeType, dateToString(sampleDate), dateToString(sampleDate)))
-      ),
-      helper.summaryListRow(chargeDue, Html(dateToString(sampleDate))),
-      helper.summaryListRow(datePaid, Html(dateToString(sampleDate)))
-    ),
-    Tag(content = Text("paid")),
-    penaltyChargeReference = Some("PEN1234567"),
-    principalChargeReference = "12345678901234",
-    isVatPaid = true,
-    amountDue = 1001.45,
-    isPenaltyPaid = true,
-    penaltyCategory = LPP1,
-    dueDate = "1 January 2021"
-  )
+      Tag(content = Text("paid")),
+      penaltyChargeReference = Some("PEN1234567"),
+      principalChargeReference = "12345678901234",
+      isVatPaid = true,
+      amountDue = 1001.45,
+      isPenaltyPaid = true,
+      penaltyCategory = LPP1,
+      dueDate = "1 January 2021"
+    )
+  }
 
-  def sampleLPPAdditionalSummaryCardPenaltyPaid(chargeType: String): LatePaymentPenaltySummaryCard = LatePaymentPenaltySummaryCard(
-    Seq(
-      helper.summaryListRow(
-        penaltyType,
-        Html("Second penalty for late payment")
+  def sampleLPPAdditionalSummaryCardPenaltyPaid(chargeType: String): LatePaymentPenaltySummaryCard = {
+    val periodText = getPeriodText(chargeType)
+    LatePaymentPenaltySummaryCard(
+      Seq(
+        helper.summaryListRow(
+          penaltyType,
+          Html("Second penalty for late payment")
+        ),
+        helper.summaryListRow(
+          overdueCharge,
+          Html(periodText(chargeType, dateToString(sampleDate), dateToString(sampleDate)))
+        ),
+        helper.summaryListRow(chargeDue, Html(dateToString(sampleDate))),
+        helper.summaryListRow(datePaid, Html(dateToString(sampleDate)))
       ),
-      helper.summaryListRow(
-        overdueCharge,
-        Html(periodValueLPP(chargeType, dateToString(sampleDate), dateToString(sampleDate)))
-      ),
-      helper.summaryListRow(chargeDue, Html(dateToString(sampleDate))),
-      helper.summaryListRow(datePaid, Html(dateToString(sampleDate)))
-    ),
-    Tag(content = Text("paid")),
-    penaltyChargeReference = Some("PEN1234567"),
-    principalChargeReference = "12345678901234",
-    isPenaltyPaid = true,
-    amountDue = 1001.45,
-    isVatPaid = true,
-    penaltyCategory = LPP2,
-    dueDate = "1 January 2021"
-  )
+      Tag(content = Text("paid")),
+      penaltyChargeReference = Some("PEN1234567"),
+      principalChargeReference = "12345678901234",
+      isPenaltyPaid = true,
+      amountDue = 1001.45,
+      isVatPaid = true,
+      penaltyCategory = LPP2,
+      dueDate = "1 January 2021"
+    )
+  }
+
+  private def getPeriodText(chargeType: String): (String, String, String) => String = {
+    chargeType match {
+      case "VAT" | "Central Assessment of VAT" => periodValueLPPOnePeriod
+      case _ => periodValueLPPMultiplePeriods
+    }
+  }
 
   val sampleLPPSummaryCardPenaltyUnpaidVAT: LatePaymentPenaltySummaryCard = sampleLPPSummaryCardPenaltyPaid("VAT").copy(isPenaltyPaid = false, isVatPaid = false,
     status = Tag(content = Text("£200 due"), classes = "penalty-due-tag"))
@@ -445,7 +458,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
             ),
             helper.summaryListRow(
               overdueCharge,
-              Html(periodValueLPP("VAT", dateToString(sampleDate), dateToString(sampleDate)))
+              Html(periodValueLPPOnePeriod("VAT", dateToString(sampleDate), dateToString(sampleDate)))
             ),
             helper.summaryListRow(chargeDue, Html(dateToString(sampleDate))),
             helper.summaryListRow(datePaid, Html(dateToString(sampleDate)))
@@ -744,7 +757,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               ),
               helper.summaryListRow(
                 overdueCharge,
-                Html(periodValueLPP("VAT", dateToString(sampleDate), dateToString(sampleDate)))
+                Html(periodValueLPPOnePeriod("VAT", dateToString(sampleDate), dateToString(sampleDate)))
               ),
               helper.summaryListRow(chargeDue, Html(dateToString(sampleDate))),
               helper.summaryListRow(datePaid, Html("Payment not yet received"))

@@ -43,12 +43,14 @@
 }
 
 @calculationContent = {
-<a class="govuk-link" aria-label="@{messages("summaryCard.viewCalculation.aria.label.lpp.change", messages(s"summaryCard.appealLink.aria.label.lpp.vatPaid.${summaryCard.penaltyCategory}"), summaryCard.dueDate
-)}" href="@{
-controllers.routes.CalculationController.onPageLoad(summaryCard.principalChargeReference, summaryCard.penaltyCategory.toString).url
-}">
-@messages("summaryCard.viewCalculation")
-</a>
+  <a class="govuk-link" aria-label="@{
+    messages("summaryCard.viewCalculation.aria.label.lpp.change", messages(s"summaryCard.appealLink.aria.label.lpp.vatPaid.${summaryCard.penaltyCategory}"), summaryCard.dueDate
+    )
+  }" href="@{
+    controllers.routes.CalculationController.onPageLoad(summaryCard.principalChargeReference, summaryCard.penaltyCategory.toString).url
+  }">
+  @messages("summaryCard.viewCalculation")
+  </a>
 }
 @appealContent = {
 @if(summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
@@ -80,16 +82,16 @@ controllers.routes.CalculationController.onPageLoad(summaryCard.principalChargeR
     <div class="app-summary-card__actions">
         <ul class="app-summary-card__actions-list">
             <li class="app-summary-card__actions-list-item">
-            @calculationContent
+              @calculationContent
             </li>
             <li class="app-summary-card__actions-list-item">
-            @appealContent
+              @appealContent
             </li>
         </ul>
     </div>
 } else {
     <div class="app-summary-card__link">
-    @calculationContent
+      @calculationContent
     </div>
 }
 }
@@ -107,9 +109,9 @@ controllers.routes.CalculationController.onPageLoad(summaryCard.principalChargeR
         </div>
     </header>
     <div class="app-summary-card__body">
-    @govukSummaryList(SummaryList(summaryCard.cardRows))
+      @govukSummaryList(SummaryList(summaryCard.cardRows))
     </div>
     <footer class="app-summary-card__footer">
-    @footerDisplayLogic
+      @footerDisplayLogic
     </footer>
 </section>
