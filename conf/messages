@@ -218,7 +218,7 @@ calculation.key.1.estimate = Penalty amount (estimate)
 calculation.value.amount = £{0}
 calculation.key = Calculation
 calculation.key.2.text = {0}% of £{1} ({2})
-calculation.key.2.text.30.days = {0}% of £{1} ({2}) = £{3}
+calculation.key.2.text.remove.30.days = {0}% of £{1} ({2}) = £{3}
 calculation.key.2.additional.text = {0} days
 calculation.key.2.paymentDetail = VAT amount unpaid on {0}
 calculation.key.3 = Amount received
