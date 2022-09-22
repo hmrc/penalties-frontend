@@ -51,17 +51,17 @@ agent.lsp.pointSummary.penaltyPoints.overview.warningText = Bydd eich cleient yn
 
 lsp.onThreshold.p1 = Rydych wedi cyrraedd y trothwy ar gyfer cosbau ariannol.
 agent.lsp.onThreshold.p1 = Mae eich cleient wedi cyrraedd y trothwy ar gyfer cosbau ariannol.
-lsp.onThreshold.p2 = This means you have to pay a £{0} penalty every time you submit a VAT Return late, until we remove your penalty points.
+lsp.onThreshold.p2 = Mae hyn yn golygu bod yn rhaid i chi dalu cosb o £{0} bob tro yr ydych yn cyflwyno Ffurflen TAW yn hwyr, hyd nes yr ydym yn tynnu’ch pwyntiau cosb.
 agent.lsp.onThreshold.p2 = This means they have to pay a £{0} penalty every time they submit a VAT Return late, until we remove their points.
-lsp.onThreshold.link = Actions to take before HMRC can remove your points
-agent.lsp.onThreshold.link = Actions to take before HMRC can remove your client’s points
+lsp.onThreshold.link = Camau i’w cymryd cyn y gall CThEM dynnu’ch pwyntiau
+agent.lsp.onThreshold.link = Camau i’w cymryd cyn y gall CThEM dynnu pwyntiau’ch cleient
 
-lsp.onThreshold.compliant.p1 = We will remove your penalty points in {0} because:
+lsp.onThreshold.compliant.p1 = Byddwn yn tynnu’ch pwyntiau cosb ym mis {0} oherwydd:
 agent.lsp.onThreshold.compliant.p1 = We will remove your client’s penalty points in {0} because:
-lsp.onThreshold.compliant.p2 = your VAT Return history is up to date
+lsp.onThreshold.compliant.p2 = bod hanes eich Ffurflenni TAW yn gyfredol
 agent.lsp.onThreshold.compliant.p2 = their VAT Return history is up to date
-lsp.onThreshold.compliant.p3 = you have submitted on time for the last {0} months
-agent.lsp.onThreshold.compliant.p3 = they have submitted on time for the last {0} months
+lsp.onThreshold.compliant.p3 = eich bod wedi cyflwyno mewn pryd am y {0} o fisoedd diwethaf
+agent.lsp.onThreshold.compliant.p3 = bod eich cleient wedi cyflwyno mewn pryd am y {0} o fisoedd diwethaf
 
 lsp.multiple.penaltyPeriod = Roedd y Ffurflen TAW a oedd yn ddyledus ar {0} hefyd wedi’i chyflwyno’n hwyr. <br> Dim ond 1 cosb am gyflwyno’n hwyr y mae CThEM yn ei roi bob mis.
 
@@ -149,16 +149,16 @@ app.common.back = Yn ôl
 
 # Compliance View
 # ----------------------------------------------------------
-compliance.titleAndHeading = Actions to take before HMRC can remove your points
+compliance.titleAndHeading = Camau i’w cymryd cyn y gall CThEM dynnu’ch pwyntiau
 agent.compliance.titleAndHeading = Actions to take before HMRC can remove your client’s points
 
 compliance.timeline.actionEvent.header = Cyfnod TAW {0} i {1}
 compliance.timeline.actionEvent.body = Cyflwyno Ffurflen TAW erbyn {0}
-compliance.timeline.actionEvent.body.late = Submit this missing VAT Return now
-compliance.point.expiry = Points to be removed:
-compliance.point.extension = This date will extend if you miss a return deadline.
+compliance.timeline.actionEvent.body.late = Cyflwynwch y Ffurflen TAW goll hon nawr
+compliance.point.expiry = Pwyntiau sydd i’w tynnu:
+compliance.point.extension = Bydd y dyddiad hwn yn ymestyn os byddwch yn methu dyddiad cau ar gyfer Ffurflen TAW.
 agent.compliance.point.extension = This date will extend if your client misses a return deadline.
-compliance.timeline.actionEvent.tag.late = Late
+compliance.timeline.actionEvent.tag.late = HWYR
 
 # BETA Banner
 # ----------------------------------------------------------
@@ -176,10 +176,10 @@ whatIsOwed.lateVAT = cosb o £{0} am TAW hwyr
 whatIsOwed.otherPenalties = cosbau eraill nad ydynt yn berthnasol i gyflwyno’n hwyr neu dalu’n hwyr
 whatIsOwed.details.heading = Os na allwch dalu heddiw
 agent.whatIsOwed.details.heading = Help gyda thaliad
-whatIsOwed.details.body.1 = If you cannot pay what you owe, you might be able to
-agent.whatIsOwed.details.body.1 = If your client cannot pay what they owe, they might be able to
-whatIsOwed.details.link.1 = set up a payment plan
-whatIsOwed.details.body.2 = to pay in instalments.
+whatIsOwed.details.body.1 = Os na allwch dalu’r hyn sydd arnoch, mae’n bosibl y byddwch yn gallu
+agent.whatIsOwed.details.body.1 = Os na all eich cleient dalu’r hyn sydd arno, mae’n bosibl y bydd yn gallu
+whatIsOwed.details.link.1 = trefnu cynllun talu
+whatIsOwed.details.body.2 = er mwyn talu fesul rhandaliad misol.
 whatIsOwed.button.checkAndPay = Gwirio’r symiau a thalu
 whatIsOwed.button.checkAmounts = Gwirio’r symiau
 whatIsOwed.lppAmount = cosbau o £{0} am dalu’n hwyr
