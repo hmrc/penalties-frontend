@@ -32,9 +32,9 @@ class CalculationPageHelper @Inject()() extends ViewUtils with ImplicitDateForma
         val amountOnDay31ParsedAsString = CurrencyFormatter.parseBigDecimalToFriendlyValue(amountOnDay31)
         val penaltyAmountOnDay15 = CurrencyFormatter.parseBigDecimalToFriendlyValue(amountOnDay15 * 0.02)
         val penaltyAmountOnDay31 = CurrencyFormatter.parseBigDecimalToFriendlyValue(amountOnDay31 * 0.02)
-        val firstCalculation = messages("calculation.key.2.text.30.days",
+        val firstCalculation = messages("calculation.key.2.text.remove.30.days",
           s"${lpp.LPP1LRPercentage.get}", amountOnDay15ParsedAsString, messages("calculation.lpp1.15days"), penaltyAmountOnDay15)
-        val secondCalculation = messages("calculation.key.2.text.30.days",
+        val secondCalculation = messages("calculation.key.2.text.remove.30.days",
           s"${lpp.LPP1HRPercentage.get}", amountOnDay31ParsedAsString, messages("calculation.lpp1.30days"), penaltyAmountOnDay31)
         Some(Seq(firstCalculation, secondCalculation))
       case (Some(amountOnDay15), None) =>
