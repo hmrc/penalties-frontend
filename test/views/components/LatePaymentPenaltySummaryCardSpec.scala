@@ -136,18 +136,9 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
     Some(Seq(sampleLatePaymentPenaltyPaidPenaltyAppeal(AppealStatusEnum.Upheld, AppealLevelEnum.HMRC)))
   ).get.head
 
-  val summaryCardModelWithAppealedPenaltyAcceptedAgent: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyPaidPenaltyAppeal(AppealStatusEnum.Upheld, AppealLevelEnum.HMRC)))
-  )(implicitly, agentUser).get.head
-
   val summaryCardModelWithAppealedPenaltyRejected: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
     Some(Seq(sampleLatePaymentPenaltyPaidPenaltyAppeal(AppealStatusEnum.Rejected, AppealLevelEnum.HMRC)))
   ).get.head
-
-  val summaryCardModelWithAppealedPenaltyRejectedAgent: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyPaidPenaltyAppeal(AppealStatusEnum.Rejected, AppealLevelEnum.HMRC)))
-  )(implicitly, agentUser).get.head
-
   val summaryCardModelWithAppealedPenalty: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
     Some(Seq(sampleLatePaymentPenaltyPaidPenaltyAppeal(AppealStatusEnum.Under_Appeal, AppealLevelEnum.HMRC)))
   ).get.head
@@ -156,10 +147,6 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
   val summaryCardModelWithAppealedPenaltyReinstated: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
     Some(Seq(sampleLatePaymentPenaltyPaidPenaltyAppeal(AppealStatusEnum.Under_Appeal, AppealLevelEnum.HMRC)))
   ).get.head
-
-  val summaryCardModelWithAppealedPenaltyReinstatedAgent: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyPaidPenaltyAppeal(AppealStatusEnum.Under_Appeal, AppealLevelEnum.HMRC)))
-  )(implicitly, agentUser).get.head
 
   "summaryCard" when {
     "given a penalty" should {
@@ -277,35 +264,19 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
     "given an appealed penalty" should {
       val docWithAppealedPenaltyAccepted: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyAccepted))
-      val docWithAppealedPenaltyAcceptedAgent: Document =
-        asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyAcceptedAgent))
-
       val docWithAppealedPenaltyRejected: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyRejected))
-      val docWithAppealedPenaltyRejectedAgent: Document =
-        asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenaltyRejectedAgent))
-
       val docWithAppealedPenalty: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenalty))
 
       "have the appeal status for ACCEPTED" in {
         docWithAppealedPenaltyAccepted.select("dt").get(4).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyAccepted.select("dd").get(4).text() shouldBe "Appeal accepted Read outcome message"
-      }
-
-      "have the appeal status for ACCEPTED - no outcome message for agents" in {
-        docWithAppealedPenaltyAcceptedAgent.select("dt").get(4).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyAcceptedAgent.select("dd").get(4).text() shouldBe "Appeal accepted"
+        docWithAppealedPenaltyAccepted.select("dd").get(4).text() shouldBe "Appeal accepted"
       }
 
       "have the appeal status for REJECTED" in {
         docWithAppealedPenaltyRejected.select("dt").get(4).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyRejected.select("dd").get(4).text() shouldBe "Appeal rejected Read outcome message"
-      }
-
-      "have the appeal status for REJECTED - no outcome message for agents" in {
-        docWithAppealedPenaltyRejectedAgent.select("dt").get(4).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyRejectedAgent.select("dd").get(4).text() shouldBe "Appeal rejected"
+        docWithAppealedPenaltyRejected.select("dd").get(4).text() shouldBe "Appeal rejected"
       }
 
       "have the appeal status for UNDER_REVIEW" in {
