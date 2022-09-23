@@ -150,7 +150,7 @@ app.common.back = Yn ôl
 # Compliance View
 # ----------------------------------------------------------
 compliance.titleAndHeading = Camau i’w cymryd cyn y gall CThEM dynnu’ch pwyntiau
-agent.compliance.titleAndHeading = Actions to take before HMRC can remove your client’s points
+agent.compliance.titleAndHeading = Camau i’w cymryd cyn y gall CThEM dynnu pwyntiau’ch cleient
 
 compliance.timeline.actionEvent.header = Cyfnod TAW {0} i {1}
 compliance.timeline.actionEvent.body = Cyflwyno Ffurflen TAW erbyn {0}
