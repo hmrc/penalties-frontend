@@ -292,23 +292,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     val appealInformationWithoutUnappealableStatus = seqAppealInformation.map(_.filterNot(_.appealStatus.contains(AppealStatusEnum.Unappealable)))
     val appealStatus = appealInformationWithoutUnappealableStatus.get.headOption.flatMap(_.appealStatus).get
     val appealLevel = appealInformationWithoutUnappealableStatus.get.headOption.flatMap(_.appealLevel).get
-    (appealStatus, appealLevel) match {
-      case (AppealStatusEnum.Upheld | AppealStatusEnum.Rejected, _) =>
-        html(
-          Html(messages(s"summaryCard.appeal.${appealStatus.toString}.${appealLevel.toString}")),
-          Html("<br>"),
-          if (!user.isAgent) link("#", "summaryCard.appeal.readMessage") else HtmlFormat.empty
-        )
-      //TODO: implementation for AppealStatus Reinstated
-      /*case Some(AppealStatusEnum.Reinstated) =>
-        html(
-          Html(messages(s"summaryCard.appeal.${penalty.get.toString}")),
-          Html("<br>"),
-          if (!user.isAgent) link("#", "summaryCard.appeal.readMessageReinstated") else HtmlFormat.empty
-        )*/
-      case _ =>
-        Html(messages(s"summaryCard.appeal.${appealStatus.toString}.${appealLevel.toString}"))
-    }
+    Html(messages(s"summaryCard.appeal.${appealStatus.toString}.${appealLevel.toString}"))
   }
 
   def summaryListRow(label: String, value: Html): SummaryListRow = SummaryListRow(

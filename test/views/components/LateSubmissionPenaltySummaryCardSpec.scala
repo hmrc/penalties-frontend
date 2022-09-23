@@ -709,26 +709,16 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealInProgress))
       val docWithFinancialPointAppealAccepted: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealAccepted(user)))
-      val docWithFinancialPointAppealAcceptedAgent: Document =
-        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealAccepted(agentUser)))
       val docWithFinancialPointAppealRejected: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected(user)))
-      val docWithFinancialPointAppealRejectedAgent: Document =
-        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected(agentUser)))
       val docWithFinancialPointAppealReinstated: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealReinstated(user)))
-      val docWithFinancialPointAppealReinstatedAgent: Document =
-        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealReinstated(agentUser)))
       val docWithFinancialPointAppealUnderTribunalReview: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealUnderTribunalReview))
       val docWithFinancialPointAppealTribunalRejected: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected(user)))
-      val docWithFinancialPointAppealTribunalRejectedAgent: Document =
-        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected(agentUser)))
       val docWithFinancialPointAppealTribunalAccepted: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalAccepted(user)))
-      val docWithFinancialPointAppealTribunalAcceptedAgent: Document =
-        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalAccepted(agentUser)))
 
       "shows the financial heading with point number when the point is below/at threshold for filing frequency" in {
         docWithThresholdPenalty.select(".app-summary-card__title").get(0).text shouldBe "Penalty point 1: £200 penalty"
@@ -746,33 +736,18 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
 
       "have the appeal status for ACCEPTED" in {
         docWithFinancialPointAppealAccepted.select("dt").get(3).text() shouldBe "Appeal status"
-        docWithFinancialPointAppealAccepted.select("dd").get(3).text() shouldBe "Appeal accepted Read outcome message"
-      }
-
-      "have the appeal status for ACCEPTED - no read message for agents" in {
-        docWithFinancialPointAppealAcceptedAgent.select("dt").get(3).text() shouldBe "Appeal status"
-        docWithFinancialPointAppealAcceptedAgent.select("dd").get(3).text() shouldBe "Appeal accepted"
+        docWithFinancialPointAppealAccepted.select("dd").get(3).text() shouldBe "Appeal accepted"
       }
 
       "have the appeal status for REJECTED" in {
         docWithFinancialPointAppealRejected.select("dt").get(3).text() shouldBe "Appeal status"
-        docWithFinancialPointAppealRejected.select("dd").get(3).text() shouldBe "Appeal rejected Read outcome message"
-      }
-
-      "have the appeal status for REJECTED - no read message for agent" in {
-        docWithFinancialPointAppealRejectedAgent.select("dt").get(3).text() shouldBe "Appeal status"
-        docWithFinancialPointAppealRejectedAgent.select("dd").get(3).text() shouldBe "Appeal rejected"
+        docWithFinancialPointAppealRejected.select("dd").get(3).text() shouldBe "Appeal rejected"
       }
       //TODO: Reinstated to be implmented
 
       "have the appeal status for REINSTATED" ignore {
         docWithFinancialPointAppealReinstated.select("dt").get(3).text() shouldBe "Appeal status"
-        docWithFinancialPointAppealReinstated.select("dd").get(3).text() shouldBe "Appeal outcome changed Read message"
-      }
-
-      "have the appeal status for REINSTATED - no read outcome message for agents" ignore {
-        docWithFinancialPointAppealReinstatedAgent.select("dt").get(3).text() shouldBe "Appeal status"
-        docWithFinancialPointAppealReinstatedAgent.select("dd").get(3).text() shouldBe "Appeal outcome changed"
+        docWithFinancialPointAppealReinstated.select("dd").get(3).text() shouldBe "Appeal outcome changed"
       }
 
       "have the appeal status for UNDER_TRIBUNAL_REVIEW" in {
@@ -782,22 +757,12 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
 
       "have the appeal status for TRIBUNAL REJECTED" in {
         docWithFinancialPointAppealTribunalRejected.select("dt").get(3).text() shouldBe "Appeal status"
-        docWithFinancialPointAppealTribunalRejected.select("dd").get(3).text() shouldBe "Appeal rejected by tax tribunal Read outcome message"
-      }
-
-      "have the appeal status for TRIBUNAL REJECTED - no read outcome message for agents" in {
-        docWithFinancialPointAppealTribunalRejectedAgent.select("dt").get(3).text() shouldBe "Appeal status"
-        docWithFinancialPointAppealTribunalRejectedAgent.select("dd").get(3).text() shouldBe "Appeal rejected by tax tribunal"
+        docWithFinancialPointAppealTribunalRejected.select("dd").get(3).text() shouldBe "Appeal rejected by tax tribunal"
       }
 
       "have the appeal status for ACCEPTED BY TRIBUNAL" in {
         docWithFinancialPointAppealTribunalAccepted.select("dt").get(3).text() shouldBe "Appeal status"
-        docWithFinancialPointAppealTribunalAccepted.select("dd").get(3).text() shouldBe "Appeal accepted by tax tribunal Read outcome message"
-      }
-
-      "have the appeal status for ACCEPTED BY TRIBUNAL - no read outcome message for agents" in {
-        docWithFinancialPointAppealTribunalAcceptedAgent.select("dt").get(3).text() shouldBe "Appeal status"
-        docWithFinancialPointAppealTribunalAcceptedAgent.select("dd").get(3).text() shouldBe "Appeal accepted by tax tribunal"
+        docWithFinancialPointAppealTribunalAccepted.select("dd").get(3).text() shouldBe "Appeal accepted by tax tribunal"
       }
 
       "display check if you can appeal link if the penalty is unappealable" in {
@@ -832,26 +797,26 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       "have the appeal status for ACCEPTED - removing the point due to expire and point number" in {
         docWithAppealedPointAccepted.select("dt").text().contains("Point due to expire") shouldBe false
         docWithAppealedPointAccepted.select("dt").get(3).text() shouldBe "Appeal status"
-        docWithAppealedPointAccepted.select("dd").get(3).text() shouldBe "Appeal accepted Read outcome message"
+        docWithAppealedPointAccepted.select("dd").get(3).text() shouldBe "Appeal accepted"
         docWithAppealedPointAccepted.select("h3").get(0).text() shouldBe "Penalty point"
       }
 
       "have the appeal status for ACCEPTED_BY_TRIBUNAL - removing the point due to expire and point number" in {
         docWithAppealedPointAcceptedByTribunal.select("dt").text().contains("Point due to expire") shouldBe false
         docWithAppealedPointAcceptedByTribunal.select("dt").get(3).text() shouldBe "Appeal status"
-        docWithAppealedPointAcceptedByTribunal.select("dd").get(3).text() shouldBe "Appeal accepted by tax tribunal Read outcome message"
+        docWithAppealedPointAcceptedByTribunal.select("dd").get(3).text() shouldBe "Appeal accepted by tax tribunal"
         docWithAppealedPointAcceptedByTribunal.select("h3").get(0).text() shouldBe "Penalty point"
       }
 
       "have the appeal status for REJECTED" in {
         docWithAppealedPointRejected.select("dt").text().contains("Point due to expire") shouldBe true
         docWithAppealedPointRejected.select("dt").get(4).text() shouldBe "Appeal status"
-        docWithAppealedPointRejected.select("dd").get(4).text() shouldBe "Appeal rejected Read outcome message"
+        docWithAppealedPointRejected.select("dd").get(4).text() shouldBe "Appeal rejected"
       }
 
       "have the appeal status for TRIBUNAL REJECTED" in {
         docWithAppealedPointUnderTribunalRejected.select("dt").get(4).text() shouldBe "Appeal status"
-        docWithAppealedPointUnderTribunalRejected.select("dd").get(4).text() shouldBe "Appeal rejected by tax tribunal Read outcome message"
+        docWithAppealedPointUnderTribunalRejected.select("dd").get(4).text() shouldBe "Appeal rejected by tax tribunal"
       }
     }
 
