@@ -47,7 +47,7 @@ class LatePaymentPenaltySpec extends SpecBase {
       |       "appealInformation":
       |       [{
       |         "appealStatus": "99",
-      |         "appealLevel": "L1"
+      |         "appealLevel": "01"
       |       }],
       |       "principalChargeBillingFrom": "2069-10-30",
       |       "principalChargeBillingTo": "2069-10-30",
@@ -82,7 +82,7 @@ class LatePaymentPenaltySpec extends SpecBase {
       |       "appealInformation":
       |       [{
       |         "appealStatus": "99",
-      |         "appealLevel": "L1"
+      |         "appealLevel": "01"
       |       }],
       |       "principalChargeBillingFrom": "2069-10-30",
       |       "principalChargeBillingTo": "2069-10-30",

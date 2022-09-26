@@ -154,7 +154,7 @@ class GetPenaltyDetailsSpec extends AnyWordSpec with Matchers {
        "appealInformation": [
          {
            "appealStatus": "99",
-           "appealLevel": "L1"
+           "appealLevel": "01"
          }
        ],
        "chargeDueDate": "2069-10-30",
@@ -183,7 +183,7 @@ class GetPenaltyDetailsSpec extends AnyWordSpec with Matchers {
        "appealInformation":
        [{
          "appealStatus": "99",
-         "appealLevel": "L1"
+         "appealLevel": "01"
        }],
        "principalChargeBillingFrom": "2069-10-30",
        "principalChargeBillingTo": "2069-10-30",
