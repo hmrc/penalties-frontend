@@ -19,7 +19,8 @@
 @()(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @layout(
-    pageTitle = messages("unauthorised.title")
+    pageTitle = messages("unauthorised.title"),
+    isError = true
 ) {
     <h1 class="govuk-heading-xl">@messages("unauthorised.title")</h1>
     <p class="govuk-body"> @messages("unauthorised.signUp")</p>
