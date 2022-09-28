@@ -29,7 +29,7 @@ case class LSPDetails(
                        FAPIndicator: Option[String],
                        penaltyCreationDate: LocalDate,
                        penaltyExpiryDate: LocalDate,
-                       expiryReason: Option[String],
+                       expiryReason: Option[ExpiryReasonEnum.Value],
                        communicationsDate: LocalDate,
                        lateSubmissions: Option[Seq[LateSubmission]],
                        appealInformation: Option[Seq[AppealInformationType]],

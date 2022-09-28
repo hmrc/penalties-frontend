@@ -82,7 +82,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       FAPIndicator = Some("X"),
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
-      expiryReason = Some("FAP"),
+      expiryReason = Some(ExpiryReasonEnum.Adjustment),
       communicationsDate = LocalDate.parse("2069-10-30"),
       lateSubmissions = Some(Seq(
         LateSubmission(
@@ -174,7 +174,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       FAPIndicator = None,
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
-      expiryReason = Some("A really great reason."),
+      expiryReason = Some(ExpiryReasonEnum.Manual),
       communicationsDate = LocalDate.parse("2069-10-30"),
       lateSubmissions = Some(Seq(
         LateSubmission(
@@ -201,7 +201,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       FAPIndicator = Some("X"),
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
-      expiryReason = Some("FAP"),
+      expiryReason = Some(ExpiryReasonEnum.Adjustment),
       communicationsDate = LocalDate.parse("2069-10-30"),
       lateSubmissions = Some(Seq(
         LateSubmission(
@@ -289,7 +289,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       FAPIndicator = Some("X"),
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
-      expiryReason = Some("FAP"),
+      expiryReason = Some(ExpiryReasonEnum.Adjustment),
       communicationsDate = LocalDate.parse("2069-10-30"),
       lateSubmissions = Some(Seq(
         LateSubmission(
@@ -320,7 +320,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       FAPIndicator = Some("X"),
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
-      expiryReason = Some("FAP"),
+      expiryReason = Some(ExpiryReasonEnum.Adjustment),
       communicationsDate = LocalDate.parse("2069-10-30"),
       lateSubmissions = Some(Seq(
         LateSubmission(
@@ -351,7 +351,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       FAPIndicator = Some("X"),
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
-      expiryReason = Some("FAP"),
+      expiryReason = Some(ExpiryReasonEnum.Adjustment),
       communicationsDate = LocalDate.parse("2069-10-30"),
       lateSubmissions = Some(Seq(
         LateSubmission(
@@ -382,7 +382,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       FAPIndicator = Some("X"),
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
-      expiryReason = Some("FAP"),
+      expiryReason = Some(ExpiryReasonEnum.Adjustment),
       communicationsDate = LocalDate.parse("2069-10-30"),
       lateSubmissions = Some(Seq(
         LateSubmission(
@@ -413,7 +413,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       FAPIndicator = Some("X"),
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
-      expiryReason = Some("FAP"),
+      expiryReason = Some(ExpiryReasonEnum.Adjustment),
       communicationsDate = LocalDate.parse("2069-10-30"),
       lateSubmissions = Some(Seq(
         LateSubmission(
@@ -444,7 +444,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       FAPIndicator = Some("X"),
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
-      expiryReason = Some("FAP"),
+      expiryReason = Some(ExpiryReasonEnum.Adjustment),
       communicationsDate = LocalDate.parse("2069-10-30"),
       lateSubmissions = Some(Seq(
         LateSubmission(
@@ -475,7 +475,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       FAPIndicator = Some("X"),
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
-      expiryReason = Some("FAP"),
+      expiryReason = Some(ExpiryReasonEnum.Adjustment),
       communicationsDate = LocalDate.parse("2069-10-30"),
       lateSubmissions = Some(Seq(
         LateSubmission(
@@ -530,7 +530,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     FAPIndicator = Some("X"),
     penaltyCreationDate = LocalDate.parse("2069-10-30"),
     penaltyExpiryDate = LocalDate.parse("2069-10-30"),
-    expiryReason = Some("FAP"),
+    expiryReason = Some(ExpiryReasonEnum.Adjustment),
     communicationsDate = LocalDate.parse("2069-10-30"),
     lateSubmissions = Some(Seq(
       LateSubmission(
@@ -568,7 +568,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       FAPIndicator = Some("X"),
       penaltyCreationDate = LocalDate.of(2020, 1, 1),
       penaltyExpiryDate = LocalDate.of(2020, 2, 1),
-      expiryReason = Some("FAP"),
+      expiryReason = Some(ExpiryReasonEnum.Adjustment),
       communicationsDate = LocalDate.of(2020, 6, 1),
       lateSubmissions = Some(Seq(
         LateSubmission(
@@ -674,7 +674,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
 
       "display the reason why the point was removed" in {
         doc.select("dt").get(1).text() shouldBe "Reason"
-        doc.select("dd").get(1).text() shouldBe "A really great reason."
+        //TODO: need to add content for removal reasons
+        doc.select("dd").get(1).text() shouldBe "summaryCard.removalReason.MAN"
       }
 
       "not display any footer text" in {
