@@ -16,8 +16,11 @@
 
 package controllers
 
+import java.time.LocalDate
+
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
+import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.ComplianceService
@@ -27,8 +30,6 @@ import utils.{CurrencyFormatter, ImplicitDateFormatter, SessionKeys}
 import viewmodels.TimelineHelper
 import views.html.ComplianceView
 
-import java.time.LocalDate
-import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class ComplianceController @Inject()(view: ComplianceView,
@@ -51,7 +52,7 @@ class ComplianceController @Inject()(view: ComplianceView,
           val pocAchievementDate: LocalDate = LocalDate.parse(request.session.get(SessionKeys.pocAchievementDate).get)
           val parsedPOCAchievementDate: String = dateToMonthYearString(pocAchievementDate)
           val timelineContent = timelineHelper.getTimelineContent(complianceData)
-          val regimeThreshold = request.session.get(SessionKeys.regimeThreshold).get
+          val regimeThreshold =  request.session.get(SessionKeys.regimeThreshold).get
           Ok(view(
             timelineContent,
             parsedPOCAchievementDate,
