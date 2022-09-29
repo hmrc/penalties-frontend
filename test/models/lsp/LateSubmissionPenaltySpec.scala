@@ -83,7 +83,7 @@ class LateSubmissionPenaltySpec extends SpecBase {
       FAPIndicator = Some("X"),
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
-      expiryReason = Some("FAP"),
+      expiryReason = Some(ExpiryReasonEnum.Adjustment),
       communicationsDate = LocalDate.parse("2069-10-30"),
       lateSubmissions = Some(Seq(
         LateSubmission(

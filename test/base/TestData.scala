@@ -98,7 +98,7 @@ trait TestData {
 
   val sampleRemovedPenaltyPointV2: LSPDetails = samplePenaltyPointV2.copy(
     penaltyStatus = LSPPenaltyStatusEnum.Inactive,
-    expiryReason = Some("FAP")
+    expiryReason = Some(ExpiryReasonEnum.Adjustment)
   )
 
   val sampleLatePaymentPenalty: LPPDetails = LPPDetails(

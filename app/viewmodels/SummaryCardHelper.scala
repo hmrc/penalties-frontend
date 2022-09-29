@@ -22,7 +22,7 @@ import models.lpp.MainTransactionEnum._
 import models.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum}
 import models.lsp._
 import play.api.i18n.Messages
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
@@ -244,7 +244,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
         )
       )),
       penalty.expiryReason.fold[Option[SummaryListRow]](None)(expiryReason => {
-        Some(summaryListRow(messages("summaryCard.removedReason"), if(expiryReason.equalsIgnoreCase("FAP")) Html(messages(s"summaryCard.removalReason.FAP")) else Html(expiryReason)))
+        Some(summaryListRow(messages("summaryCard.removedReason"), Html(messages(s"summaryCard.removalReason.${expiryReason.toString}"))))
       })
     ).collect {
       case Some(x) => x

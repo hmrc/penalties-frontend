@@ -111,7 +111,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           FAPIndicator = None,
           penaltyCreationDate = sampleDate1,
           penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
-          expiryReason = Some("FAP"),
+          expiryReason = Some(ExpiryReasonEnum.Adjustment),
           communicationsDate = sampleDate1,
           lateSubmissions = Some(Seq(LateSubmission(
             taxPeriodStartDate = Some(sampleDate1),
@@ -132,7 +132,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           FAPIndicator = Some("X"),
           penaltyCreationDate = sampleDate1,
           penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
-          expiryReason = Some("FAP"),
+          expiryReason = Some(ExpiryReasonEnum.Adjustment),
           communicationsDate = sampleDate1,
           lateSubmissions = Some(Seq(LateSubmission(
             taxPeriodStartDate = Some(sampleDate1),
@@ -211,7 +211,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           FAPIndicator = Some("X"),
           penaltyCreationDate = sampleDate1,
           penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
-          expiryReason = Some("FAP"),
+          expiryReason = Some(ExpiryReasonEnum.Adjustment),
           communicationsDate = sampleDate1,
           lateSubmissions = Some(Seq(LateSubmission(
             taxPeriodStartDate = Some(sampleDate1),
