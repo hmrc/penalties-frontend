@@ -58,7 +58,8 @@ class IndexController @Inject()(view: IndexView,
                 val optPOCAchievementDate: Option[String] = penaltyData.lateSubmissionPenalty.map(_.summary.PoCAchievementDate.toString)
                 val contentLPPToDisplayAboveCards = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyData)
                 val whatYouOweBreakdown = pageHelper.getWhatYouOweBreakdown(penaltyData)
-                val lspSummaryCards = cardHelper.populateLateSubmissionPenaltyCard(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty),
+                val filteredPenalties = pageHelper.filteredExpiredPoints(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
+                val lspSummaryCards = cardHelper.populateLateSubmissionPenaltyCard(filteredPenalties,
                   penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0),
                   penaltyData.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0))
                 val lppSummaryCards = cardHelper.populateLatePaymentPenaltyCard(penaltyData.latePaymentPenalty.map(_.details))

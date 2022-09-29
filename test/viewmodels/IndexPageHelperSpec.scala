@@ -680,7 +680,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         parsedResult.select("ul li").get(1).text shouldBe traderCompliantBullet2
       }
 
-      "user is agent - show the correct content when there are no open obligations" in new Setup{
+      "user is agent - show the correct content when there are no open obligations" in new Setup {
         when(mockComplianceService.getDESComplianceData(Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(Some(compliancePayloadObligationsFulfilled)))
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith4ActivePoints)(
@@ -1851,6 +1851,157 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
       }
 
       setFeatureDate(None)
+    }
+  }
+
+  "filteredExpiredPoints" should {
+    def penaltyDetailsWithReason(expiryReason: ExpiryReasonEnum.Value): Seq[LSPDetails] = Seq(
+      LSPDetails(
+        penaltyNumber = "12345678",
+        penaltyOrder = "3",
+        penaltyCategory = LSPPenaltyCategoryEnum.Threshold,
+        penaltyStatus = LSPPenaltyStatusEnum.Active,
+        FAPIndicator = None,
+        penaltyCreationDate = LocalDate.of(2022, 1, 1),
+        penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+        expiryReason = None,
+        communicationsDate = LocalDate.of(2022, 1, 1),
+        lateSubmissions = None,
+        appealInformation = None,
+        chargeAmount = Some(200),
+        chargeOutstandingAmount = Some(200),
+        chargeDueDate = Some(LocalDate.of(2022, 1, 1))
+      ),
+      LSPDetails(
+        penaltyNumber = "12345677",
+        penaltyOrder = "2",
+        penaltyCategory = LSPPenaltyCategoryEnum.Threshold,
+        penaltyStatus = LSPPenaltyStatusEnum.Inactive,
+        FAPIndicator = None,
+        penaltyCreationDate = LocalDate.of(2022, 1, 1),
+        penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+        expiryReason = Some(expiryReason),
+        communicationsDate = LocalDate.of(2022, 1, 1),
+        lateSubmissions = None,
+        appealInformation = None,
+        chargeAmount = Some(200),
+        chargeOutstandingAmount = Some(200),
+        chargeDueDate = Some(LocalDate.of(2022, 1, 1))
+      ),
+      LSPDetails(
+        penaltyNumber = "12345676",
+        penaltyOrder = "1",
+        penaltyCategory = LSPPenaltyCategoryEnum.Point,
+        penaltyStatus = LSPPenaltyStatusEnum.Active,
+        FAPIndicator = None,
+        penaltyCreationDate = LocalDate.of(2022, 1, 1),
+        penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+        expiryReason = None,
+        communicationsDate = LocalDate.of(2022, 1, 1),
+        lateSubmissions = None,
+        appealInformation = None,
+        chargeAmount = None,
+        chargeOutstandingAmount = None,
+        chargeDueDate = None
+      )
+    )
+
+    "not remove points that have not expired (or are not covered under the removal list)" in new Setup {
+      def expectedResult(expiryReason: ExpiryReasonEnum.Value): Seq[LSPDetails] = Seq(
+        LSPDetails(
+          penaltyNumber = "12345678",
+          penaltyOrder = "3",
+          penaltyCategory = LSPPenaltyCategoryEnum.Threshold,
+          penaltyStatus = LSPPenaltyStatusEnum.Active,
+          FAPIndicator = None,
+          penaltyCreationDate = LocalDate.of(2022, 1, 1),
+          penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+          expiryReason = None,
+          communicationsDate = LocalDate.of(2022, 1, 1),
+          lateSubmissions = None,
+          appealInformation = None,
+          chargeAmount = Some(200),
+          chargeOutstandingAmount = Some(200),
+          chargeDueDate = Some(LocalDate.of(2022, 1, 1))
+        ),
+        LSPDetails(
+          penaltyNumber = "12345677",
+          penaltyOrder = "2",
+          penaltyCategory = LSPPenaltyCategoryEnum.Threshold,
+          penaltyStatus = LSPPenaltyStatusEnum.Inactive,
+          FAPIndicator = None,
+          penaltyCreationDate = LocalDate.of(2022, 1, 1),
+          penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+          expiryReason = Some(expiryReason),
+          communicationsDate = LocalDate.of(2022, 1, 1),
+          lateSubmissions = None,
+          appealInformation = None,
+          chargeAmount = Some(200),
+          chargeOutstandingAmount = Some(200),
+          chargeDueDate = Some(LocalDate.of(2022, 1, 1))
+        ),
+        LSPDetails(
+          penaltyNumber = "12345676",
+          penaltyOrder = "1",
+          penaltyCategory = LSPPenaltyCategoryEnum.Point,
+          penaltyStatus = LSPPenaltyStatusEnum.Active,
+          FAPIndicator = None,
+          penaltyCreationDate = LocalDate.of(2022, 1, 1),
+          penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+          expiryReason = None,
+          communicationsDate = LocalDate.of(2022, 1, 1),
+          lateSubmissions = None,
+          appealInformation = None,
+          chargeAmount = None,
+          chargeOutstandingAmount = None,
+          chargeDueDate = None
+        )
+      )
+      pageHelper.filteredExpiredPoints(penaltyDetailsWithReason(ExpiryReasonEnum.Adjustment)) shouldBe expectedResult(ExpiryReasonEnum.Adjustment)
+      pageHelper.filteredExpiredPoints(penaltyDetailsWithReason(ExpiryReasonEnum.Appeal)) shouldBe expectedResult(ExpiryReasonEnum.Appeal)
+      pageHelper.filteredExpiredPoints(penaltyDetailsWithReason(ExpiryReasonEnum.Manual)) shouldBe expectedResult(ExpiryReasonEnum.Manual)
+      pageHelper.filteredExpiredPoints(penaltyDetailsWithReason(ExpiryReasonEnum.Reset)) shouldBe expectedResult(ExpiryReasonEnum.Reset)
+    }
+
+    "filter out points where expiry reason is covered under the removal list" in new Setup {
+      val expectedResult: Seq[LSPDetails] = Seq(
+        LSPDetails(
+          penaltyNumber = "12345678",
+          penaltyOrder = "3",
+          penaltyCategory = LSPPenaltyCategoryEnum.Threshold,
+          penaltyStatus = LSPPenaltyStatusEnum.Active,
+          FAPIndicator = None,
+          penaltyCreationDate = LocalDate.of(2022, 1, 1),
+          penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+          expiryReason = None,
+          communicationsDate = LocalDate.of(2022, 1, 1),
+          lateSubmissions = None,
+          appealInformation = None,
+          chargeAmount = Some(200),
+          chargeOutstandingAmount = Some(200),
+          chargeDueDate = Some(LocalDate.of(2022, 1, 1))
+        ),
+        LSPDetails(
+          penaltyNumber = "12345676",
+          penaltyOrder = "1",
+          penaltyCategory = LSPPenaltyCategoryEnum.Point,
+          penaltyStatus = LSPPenaltyStatusEnum.Active,
+          FAPIndicator = None,
+          penaltyCreationDate = LocalDate.of(2022, 1, 1),
+          penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+          expiryReason = None,
+          communicationsDate = LocalDate.of(2022, 1, 1),
+          lateSubmissions = None,
+          appealInformation = None,
+          chargeAmount = None,
+          chargeOutstandingAmount = None,
+          chargeDueDate = None
+        )
+      )
+      pageHelper.filteredExpiredPoints(penaltyDetailsWithReason(ExpiryReasonEnum.Reversal)) shouldBe expectedResult
+      pageHelper.filteredExpiredPoints(penaltyDetailsWithReason(ExpiryReasonEnum.NaturalExpiration)) shouldBe expectedResult
+      pageHelper.filteredExpiredPoints(penaltyDetailsWithReason(ExpiryReasonEnum.SubmissionOnTime)) shouldBe expectedResult
+      pageHelper.filteredExpiredPoints(penaltyDetailsWithReason(ExpiryReasonEnum.Compliance)) shouldBe expectedResult
     }
   }
 }
