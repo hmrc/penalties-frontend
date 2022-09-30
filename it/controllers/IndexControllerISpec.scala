@@ -47,11 +47,13 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
   val fakeAgentRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
     SessionKeys.agentSessionVrn -> "123456789",
     authToken -> "12345",
-    SessionKeys.pocAchievementDate -> "2022-01-01"
+    SessionKeys.pocAchievementDate -> "2022-01-01",
+    SessionKeys.regimeThreshold -> "5"
   )
   val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
     authToken -> "12345",
-    SessionKeys.pocAchievementDate -> "2022-01-01"
+    SessionKeys.pocAchievementDate -> "2022-01-01",
+    SessionKeys.regimeThreshold -> "5"
   )
 
   val getPenaltyDetailsPayloadWithAddedPoint = GetPenaltyDetails(

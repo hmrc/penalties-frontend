@@ -22,7 +22,8 @@
 
 @(
         timelineContent: Html,
-        datePointsWillBeRemoved: String
+        datePointsWillBeRemoved: String,
+        threshold: String
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
 
   @layout(
@@ -41,7 +42,10 @@
       <span id="expiry-text">@messages("compliance.point.expiry")</span>
       <span id="expiry-date" class="govuk-!-font-weight-bold">@datePointsWillBeRemoved</span>
       <br/>
-      <span id="missing-deadline">@getMessage("compliance.point.extension")</span>
+    </p>
+
+    <p class="govuk-body-l govuk-!-padding-top-3">
+        <span id="missing-deadline">@getMessage("compliance.point.extension", threshold)</span>
     </p>
 
     <p class="govuk-body">

@@ -50,7 +50,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
                                                                           hc: HeaderCarrier, ec: ExecutionContext): Future[Either[Result, Html]] = {
     val fixedPenaltyAmount: String = parseBigDecimalNoPaddedZeroToFriendlyValue(penaltyDetails.lateSubmissionPenalty.map(_.summary.penaltyChargeAmount).getOrElse(0))
     val activePoints: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0)
-    val regimeThreshold: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0)
+    val regimeThreshold: Int = penaltiesService.getRegimeThreshold(penaltyDetails)
     val removedPoints: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.inactivePenaltyPoints).getOrElse(0)
     val addedPoints: Int = penaltyDetails.lateSubmissionPenalty.map(_.details.count(point => point.FAPIndicator.contains("X") && point.penaltyStatus.equals(LSPPenaltyStatusEnum.Active))).getOrElse(0)
     val amountOfLateSubmissions: Int = penaltyDetails.lateSubmissionPenalty.map(_.details.count(_.lateSubmissions.flatMap(_.headOption.map(_.taxReturnStatus.equals(TaxReturnStatusEnum.Open))).isDefined)).getOrElse(0)
@@ -78,7 +78,8 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
                   p(content = html(stringAsHtml(getMessage("lsp.onThreshold.p1"))),
                     classes = "govuk-body govuk-!-font-size-24"),
                   p(content = html(stringAsHtml(getMessage("lsp.onThreshold.p2", fixedPenaltyAmount)))),
-                  p(link(link = controllers.routes.ComplianceController.onPageLoad.url, getMessage("lsp.onThreshold.link")))
+                  Html("<p class=" + "govuk-body>" + s"${getMessage("lsp.onThreshold.p3")} <strong>$parsedPOCAchievementDate</strong></p>"),
+                  p(link(link = controllers.routes.ComplianceController.onPageLoad.url, getMessage("lsp.onThreshold.link", parsedPOCAchievementDate)))
                 ))
               }
             }

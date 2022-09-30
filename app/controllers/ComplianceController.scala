@@ -51,9 +51,11 @@ class ComplianceController @Inject()(view: ComplianceView,
           val pocAchievementDate: LocalDate = LocalDate.parse(request.session.get(SessionKeys.pocAchievementDate).get)
           val parsedPOCAchievementDate: String = dateToMonthYearString(pocAchievementDate)
           val timelineContent = timelineHelper.getTimelineContent(complianceData)
+          val regimeThreshold = request.session.get(SessionKeys.regimeThreshold).get
           Ok(view(
             timelineContent,
-            parsedPOCAchievementDate
+            parsedPOCAchievementDate,
+            regimeThreshold
           ))
         }
       )

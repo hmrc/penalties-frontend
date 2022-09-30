@@ -19,8 +19,10 @@ package utils
 object SessionKeys {
   val agentSessionVrn = "mtdVatvcClientVrn"
   val pocAchievementDate = "pocAchievementDate"
+  val regimeThreshold = "regimeThreshold"
 
   val allKeysExcludingAgentVRN = Seq(
-    pocAchievementDate
+    pocAchievementDate,
+    regimeThreshold
   )
 }

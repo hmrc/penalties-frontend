@@ -25,7 +25,7 @@ import services.PenaltiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
 import utils.SessionKeys._
-import utils.{CurrencyFormatter, EnrolmentKeys}
+import utils.{CurrencyFormatter, EnrolmentKeys, ImplicitDateFormatter}
 import viewmodels.{IndexPageHelper, SummaryCardHelper}
 import views.html.IndexView
 
@@ -41,7 +41,7 @@ class IndexController @Inject()(view: IndexView,
                                  authorise: AuthPredicate,
                                  errorHandler: ErrorHandler,
                                  controllerComponents: MessagesControllerComponents)
-  extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter with FeatureSwitching {
+  extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter with FeatureSwitching with ImplicitDateFormatter{
 
   //scalastyle:off
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
@@ -56,6 +56,7 @@ class IndexController @Inject()(view: IndexView,
               identity,
               contentToDisplayAboveCards => {
                 val optPOCAchievementDate: Option[String] = penaltyData.lateSubmissionPenalty.map(_.summary.PoCAchievementDate.toString)
+                val optRegimeThreshold = penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold.toString)
                 val contentLPPToDisplayAboveCards = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyData)
                 val whatYouOweBreakdown = pageHelper.getWhatYouOweBreakdown(penaltyData)
                 val filteredPenalties = pageHelper.filteredExpiredPoints(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
@@ -75,15 +76,29 @@ class IndexController @Inject()(view: IndexView,
                   isAnyUnpaidLSPAndNotSubmittedReturn,
                   isTTPActive,
                   whatYouOweBreakdown))
-                if (optPOCAchievementDate.isDefined) {
-                  result
-                    .removingFromSession(allKeysExcludingAgentVRN: _*)
-                    .addingToSession(
-                      pocAchievementDate -> optPOCAchievementDate.get
-                    )
-                } else {
-                  result
-                    .removingFromSession(allKeysExcludingAgentVRN: _*)
+                (optPOCAchievementDate.isDefined, optRegimeThreshold.isDefined) match {
+                  case (true, true) =>
+                    result
+                      .removingFromSession(allKeysExcludingAgentVRN: _*)
+                      .addingToSession(
+                        pocAchievementDate -> optPOCAchievementDate.get,
+                        regimeThreshold -> optRegimeThreshold.get
+                      )
+                  case (true, false) =>
+                    result
+                      .removingFromSession(allKeysExcludingAgentVRN: _*)
+                      .addingToSession(
+                        pocAchievementDate -> optPOCAchievementDate.get
+                      )
+                  case(false, true) =>
+                    result
+                      .removingFromSession(allKeysExcludingAgentVRN: _*)
+                      .addingToSession(
+                        regimeThreshold -> optRegimeThreshold.get
+                      )
+                  case (false, false) =>
+                    result
+                      .removingFromSession(allKeysExcludingAgentVRN: _*)
                 }
               }
             )
