@@ -55,7 +55,7 @@ lsp.onThreshold.p2 = This means you have to pay a £{0} penalty every time you s
 agent.lsp.onThreshold.p2 = This means they have to pay a £{0} penalty every time they submit a VAT Return late, until we remove their points.
 agent.lsp.onThreshold.p3 = Earliest date your client’s points could be removed:
 lsp.onThreshold.link = Actions to take before HMRC can remove your points
-agent.lsp.onThreshold.link = Actions to take before HMRC can remove your client’s points
+agent.lsp.onThreshold.link = Actions your client must take to get their points removed by {0}
 
 lsp.onThreshold.compliant.p1 = We will remove your penalty points in {0} because:
 agent.lsp.onThreshold.compliant.p1 = We will remove your client’s penalty points in {0} because:

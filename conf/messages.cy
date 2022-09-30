@@ -55,7 +55,7 @@ lsp.onThreshold.p2 = Mae hyn yn golygu bod yn rhaid i chi dalu cosb o £{0} bob 
 agent.lsp.onThreshold.p2 = This means they have to pay a £{0} penalty every time they submit a VAT Return late, until we remove their points.
 agent.lsp.onThreshold.p3 = Earliest date your client’s points could be removed:
 lsp.onThreshold.link = Camau i’w cymryd cyn y gall CThEM dynnu’ch pwyntiau
-agent.lsp.onThreshold.link = Actions to take before HMRC can remove your client’s points
+agent.lsp.onThreshold.link = Actions your client must take to get their points removed by {0}
 
 lsp.onThreshold.compliant.p1 = Byddwn yn tynnu’ch pwyntiau cosb ym mis {0} oherwydd:
 agent.lsp.onThreshold.compliant.p1 = We will remove your client’s penalty points in {0} because:
