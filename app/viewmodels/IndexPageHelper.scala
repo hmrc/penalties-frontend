@@ -21,7 +21,7 @@ import config.featureSwitches.FeatureSwitching
 import models.appealInfo.AppealStatusEnum.Upheld
 import models.compliance.{CompliancePayload, ComplianceStatusEnum}
 import models.lpp.{LPPDetails, LPPPenaltyStatusEnum}
-import models.lsp.{LSPPenaltyStatusEnum, TaxReturnStatusEnum}
+import models.lsp.{ExpiryReasonEnum, LSPDetails, LSPPenaltyStatusEnum, TaxReturnStatusEnum}
 import models.{GetPenaltyDetails, User}
 import play.api.i18n.Messages
 import play.api.mvc.Result
@@ -289,5 +289,15 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       case 4 => 12 //Quarterly filer
       case 2 => 24 //Annually filer
     }
+  }
+
+  def filteredExpiredPoints(points: Seq[LSPDetails]): Seq[LSPDetails] = {
+    val expiredReasonsToFilterOut: Seq[ExpiryReasonEnum.Value] = Seq(
+      ExpiryReasonEnum.Reversal,
+      ExpiryReasonEnum.NaturalExpiration,
+      ExpiryReasonEnum.SubmissionOnTime,
+      ExpiryReasonEnum.Compliance
+    )
+    points.filterNot(point => point.expiryReason.exists(expiredReasonsToFilterOut.contains(_)))
   }
 }

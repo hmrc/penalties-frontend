@@ -559,6 +559,82 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     latePaymentPenalty = None
   )
 
+  val getPenaltiesDetailsPayloadWithExpiredPoints: GetPenaltyDetails = GetPenaltyDetails(
+    totalisations = None,
+    lateSubmissionPenalty = Some(
+      LateSubmissionPenalty(
+        summary = LSPSummary(
+          activePenaltyPoints = 2,
+          inactivePenaltyPoints = 0,
+          regimeThreshold = 4,
+          penaltyChargeAmount = 200,
+          PoCAchievementDate = LocalDate.of(2022, 1, 1)
+        ),
+        details = Seq(
+          LSPDetails(
+            penaltyNumber = "12345678",
+            penaltyOrder = "3",
+            penaltyCategory = LSPPenaltyCategoryEnum.Threshold,
+            penaltyStatus = LSPPenaltyStatusEnum.Active,
+            FAPIndicator = None,
+            penaltyCreationDate = LocalDate.of(2022, 1, 1),
+            penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+            expiryReason = None,
+            communicationsDate = LocalDate.of(2022, 1, 1),
+            lateSubmissions = Some(Seq(LateSubmission(
+              taxPeriodStartDate = Some(sampleDate2),
+              taxPeriodEndDate = Some(sampleDate2.plusDays(27)),
+              taxPeriodDueDate = Some(sampleDate2),
+              returnReceiptDate = Some(sampleDate2),
+              taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
+            appealInformation = None,
+            chargeAmount = Some(200),
+            chargeOutstandingAmount = Some(200),
+            chargeDueDate = Some(LocalDate.of(2022, 1, 1))
+          ),
+          LSPDetails(
+            penaltyNumber = "12345677",
+            penaltyOrder = "2",
+            penaltyCategory = LSPPenaltyCategoryEnum.Threshold,
+            penaltyStatus = LSPPenaltyStatusEnum.Inactive,
+            FAPIndicator = None,
+            penaltyCreationDate = LocalDate.of(2022, 1, 1),
+            penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+            expiryReason = Some(ExpiryReasonEnum.Reversal),
+            communicationsDate = LocalDate.of(2022, 1, 1),
+            lateSubmissions = None,
+            appealInformation = None,
+            chargeAmount = Some(200),
+            chargeOutstandingAmount = Some(200),
+            chargeDueDate = Some(LocalDate.of(2022, 1, 1))
+          ),
+          LSPDetails(
+            penaltyNumber = "12345676",
+            penaltyOrder = "1",
+            penaltyCategory = LSPPenaltyCategoryEnum.Point,
+            penaltyStatus = LSPPenaltyStatusEnum.Active,
+            FAPIndicator = None,
+            penaltyCreationDate = LocalDate.of(2022, 1, 1),
+            penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+            expiryReason = None,
+            communicationsDate = LocalDate.of(2022, 1, 1),
+            lateSubmissions = Some(Seq(LateSubmission(
+              taxPeriodStartDate = Some(sampleDate1),
+              taxPeriodEndDate = Some(sampleDate1.plusDays(30)),
+              taxPeriodDueDate = Some(sampleDate1),
+              returnReceiptDate = Some(sampleDate1),
+              taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
+            appealInformation = None,
+            chargeAmount = None,
+            chargeOutstandingAmount = None,
+            chargeDueDate = None
+          )
+        )
+      )
+    ),
+    latePaymentPenalty = None
+  )
+
   "GET /" should {
     "return 200 (OK) when the user is authorised" in {
       getPenaltyDetailsStub
@@ -906,6 +982,19 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("dt").get(2).text shouldBe "Return submitted"
       summaryCardBody.select("dd").get(2).text shouldBe "13 May 2021"
       summaryCardBody.select("p.govuk-body").text() shouldBe "The VAT Return due on 24 May 2021 was also submitted late. HMRC only applies 1 penalty for late submission in each month."
+    }
+
+    "return 200 (OK) and render the view removing an LSP if it is an applicable expiryReason" in {
+      returnPenaltyDetailsStub(getPenaltiesDetailsPayloadWithExpiredPoints)
+      val request = controller.onPageLoad()(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
+      val summaryCardBody = parsedBody.select(" #late-submission-penalties .app-summary-card__body")
+      summaryCardBody.size() shouldBe 2
+      summaryCardBody.get(1).select("dt").get(0).text shouldBe "VAT period"
+      summaryCardBody.get(1).select("dd").get(0).text shouldBe "1 January 2021 to 31 January 2021"
+      summaryCardBody.get(0).select("dt").get(0).text shouldBe "VAT period"
+      summaryCardBody.get(0).select("dd").get(0).text shouldBe "1 February 2021 to 28 February 2021"
     }
 
     "return 303 (SEE_OTHER) when the user is not authorised" in {
