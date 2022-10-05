@@ -87,9 +87,12 @@ object IndexMessages {
 
   val lateReturnPenaltyAgent = "This means they have to pay a £200 penalty every time they submit a VAT Return late, until we remove their points."
 
-  val bringAccountUpToDate = "Actions to take before HMRC can remove your points"
+  val bringAccountUpToDate = "Actions to take to get your points removed by January 2022"
+
+  val lspOnThresholdMessage = "Earliest date your points could be removed: January 2022"
 
   val bringAccountUpToDateAgent = "Actions your client must take to get their points removed by January 2022"
+
   val lspOnThresholdMessageAgent = "Earliest date your client’s points could be removed: January 2022"
   val traderCompliantContentP = "We will remove your penalty points in January 2022 because:"
   val traderCompliantBullet1 = "your VAT Return history is up to date"

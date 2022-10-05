@@ -663,6 +663,11 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe controllers.routes.ComplianceController.onPageLoad.url
       }
 
+      "show the LSP OnThreshold message with POCAchievementDate text" in {
+        parsedHtmlResult.select("p.govuk-body").get(2).text shouldBe lspOnThresholdMessage
+        parsedHtmlResult.select("p.govuk-body strong").text shouldBe "January 2022"
+      }
+
       "user is agent - show the guidance link text" in {
         parsedHtmlResultForAgent.select("a.govuk-link").text shouldBe bringAccountUpToDateAgent
         parsedHtmlResultForAgent.select("a.govuk-link").attr("href") shouldBe controllers.routes.ComplianceController.onPageLoad.url

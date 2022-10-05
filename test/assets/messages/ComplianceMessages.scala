@@ -28,7 +28,9 @@ object ComplianceMessages {
 
   val expiryContent = "Points to be removed:"
 
-  val missingDeadlineContent = "This date will extend if you miss a return deadline."
+  val missingDeadlineContent = "If you miss a return deadline, you will have to submit 5 more returns on time before we can remove your points."
+
+  val missingDeadlineContent2 = "If you miss a return deadline, you will have to submit 2 more returns on time before we can remove your points."
 
   val agentMissingDeadlineContent = "If your client misses a return deadline, they will have to submit 2 more returns on time before we can remove their points."
 

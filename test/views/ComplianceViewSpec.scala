@@ -106,6 +106,13 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         docWithMissingReturns.select(Selectors.returnToVATLink).attr("href") shouldBe controllers.routes.IndexController.onPageLoad.url
       }
 
+      "have correct missing deadline text based on threshold" in {
+        implicit val docWithMissingReturns: Document =
+          asDocument(applyView(html(stringAsHtml(sampleMissingReturns)), "1 January 2022", "2"))
+
+        docWithMissingReturns.body().toString.contains(missingDeadlineContent2) shouldBe true
+      }
+
     }
 
     "when a agent is on the page" must {
@@ -137,7 +144,6 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
     "have a beta banner with the feedback correct content and a link with the 'backURL' queryParam" in {
       def applyView(): HtmlFormat.Appendable = compliancePage.apply(html(), "", "")(implicitly, implicitly, implicitly, vatTraderUser)
-
       val doc: Document = asDocument(applyView())
 
       doc.select(Selectors.betaFeedbackBannerText).text() shouldBe "This is a new service - your feedback will help us to improve it."
