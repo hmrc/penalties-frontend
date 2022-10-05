@@ -89,8 +89,8 @@ object IndexMessages {
 
   val bringAccountUpToDate = "Actions to take before HMRC can remove your points"
 
-  val bringAccountUpToDateAgent = "Actions to take before HMRC can remove your points"
-
+  val bringAccountUpToDateAgent = "Actions your client must take to get their points removed by January 2022"
+  val lspOnThresholdMessageAgent = "Earliest date your client’s points could be removed: January 2022"
   val traderCompliantContentP = "We will remove your penalty points in January 2022 because:"
   val traderCompliantBullet1 = "your VAT Return history is up to date"
   val traderCompliantBullet2 = "you have submitted on time for the last 12 months"

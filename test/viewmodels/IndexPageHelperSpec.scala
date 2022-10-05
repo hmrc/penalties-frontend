@@ -664,8 +664,13 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
       }
 
       "user is agent - show the guidance link text" in {
-        parsedHtmlResult.select("a.govuk-link").text shouldBe bringAccountUpToDateAgent
-        parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe controllers.routes.ComplianceController.onPageLoad.url
+        parsedHtmlResultForAgent.select("a.govuk-link").text shouldBe bringAccountUpToDateAgent
+        parsedHtmlResultForAgent.select("a.govuk-link").attr("href") shouldBe controllers.routes.ComplianceController.onPageLoad.url
+      }
+
+      "user is agent - show the LSP OnThreshold message with POCAchievementDate text" in {
+        parsedHtmlResultForAgent.select("p.govuk-body").get(2).text shouldBe lspOnThresholdMessageAgent
+        parsedHtmlResultForAgent.select("p.govuk-body strong").text shouldBe "January 2022"
       }
 
       "show the correct content when there are no open obligations" in new Setup {

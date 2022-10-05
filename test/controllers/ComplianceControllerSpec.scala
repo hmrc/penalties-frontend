@@ -63,7 +63,8 @@ class ComplianceControllerSpec extends SpecBase {
       "return OK - calling the service to retrieve compliance data to the view" in
         new Setup(AuthTestModels.successfulAuthResult) {
         val result: Future[Result] = Controller.onPageLoad()(fakeRequest.withSession(
-          SessionKeys.pocAchievementDate -> "2022-01-01"
+          SessionKeys.pocAchievementDate -> "2022-01-01",
+          SessionKeys.regimeThreshold -> "5"
         ))
         status(result) shouldBe OK
       }

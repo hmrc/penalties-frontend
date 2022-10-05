@@ -53,8 +53,9 @@ lsp.onThreshold.p1 = You have reached the financial penalty threshold.
 agent.lsp.onThreshold.p1 = Your client has reached the financial penalty threshold.
 lsp.onThreshold.p2 = This means you have to pay a £{0} penalty every time you submit a VAT Return late, until we remove your penalty points.
 agent.lsp.onThreshold.p2 = This means they have to pay a £{0} penalty every time they submit a VAT Return late, until we remove their points.
+agent.lsp.onThreshold.p3 = Earliest date your client’s points could be removed:
 lsp.onThreshold.link = Actions to take before HMRC can remove your points
-agent.lsp.onThreshold.link = Actions to take before HMRC can remove your client’s points
+agent.lsp.onThreshold.link = Actions your client must take to get their points removed by {0}
 
 lsp.onThreshold.compliant.p1 = We will remove your penalty points in {0} because:
 agent.lsp.onThreshold.compliant.p1 = We will remove your client’s penalty points in {0} because:
@@ -155,7 +156,7 @@ compliance.timeline.actionEvent.body = Submit VAT Return by {0}
 compliance.timeline.actionEvent.body.late = Submit this missing VAT Return now
 compliance.point.expiry = Points to be removed:
 compliance.point.extension = This date will extend if you miss a return deadline.
-agent.compliance.point.extension = This date will extend if your client misses a return deadline.
+agent.compliance.point.extension = If your client misses a return deadline, they will have to submit {0} more returns on time before we can remove their points.
 compliance.timeline.actionEvent.tag.late = Late
 
 # BETA Banner

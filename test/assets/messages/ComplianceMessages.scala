@@ -30,7 +30,7 @@ object ComplianceMessages {
 
   val missingDeadlineContent = "This date will extend if you miss a return deadline."
 
-  val agentMissingDeadlineContent = "This date will extend if your client misses a return deadline."
+  val agentMissingDeadlineContent = "If your client misses a return deadline, they will have to submit 2 more returns on time before we can remove their points."
 
   val returnToVAT = "Return to VAT penalties and appeals"
 

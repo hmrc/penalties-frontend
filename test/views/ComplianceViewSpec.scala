@@ -64,18 +64,18 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
     val returnToVATLink = "#main-content > div > div > p > a"
 
-    val betaFeedbackBannerText =  "body > div > div.govuk-phase-banner > p > span"
+    val betaFeedbackBannerText = "body > div > div.govuk-phase-banner > p > span"
   }
 
   "ComplianceView" should {
 
     "when a VAT trader is on the page" must {
-      def applyView(timelineContent: Html, periodOfComplianceAchievementDate: String): HtmlFormat.Appendable = {
-        compliancePage.apply(timelineContent, periodOfComplianceAchievementDate)(fakeRequest, implicitly, implicitly, vatTraderUser)
+      def applyView(timelineContent: Html, periodOfComplianceAchievementDate: String, threshold: String): HtmlFormat.Appendable = {
+        compliancePage.apply(timelineContent, periodOfComplianceAchievementDate, threshold)(fakeRequest, implicitly, implicitly, vatTraderUser)
       }
 
       implicit val docWithMissingReturns: Document =
-        asDocument(applyView(html(stringAsHtml(sampleMissingReturns)), "1 January 2022"))
+        asDocument(applyView(html(stringAsHtml(sampleMissingReturns)), "1 January 2022", "5"))
 
       val expectedContent = Seq(
         Selectors.title -> title,
@@ -109,12 +109,12 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
     }
 
     "when a agent is on the page" must {
-      def applyView(timelineContent: Html, periodOfComplianceAchievementDate: String): HtmlFormat.Appendable = {
-        compliancePage.apply(timelineContent, periodOfComplianceAchievementDate)(implicitly, implicitly, implicitly, agentUser)
+      def applyView(timelineContent: Html, periodOfComplianceAchievementDate: String, threshold: String): HtmlFormat.Appendable = {
+        compliancePage.apply(timelineContent, periodOfComplianceAchievementDate, threshold)(implicitly, implicitly, implicitly, agentUser)
       }
 
       implicit val agentDocWithMissingReturns: Document =
-        asDocument(applyView(html(stringAsHtml(sampleMissingReturns)), "1 January 2022"))
+        asDocument(applyView(html(stringAsHtml(sampleMissingReturns)), "1 January 2022", "2"))
 
       val expectedContent = Seq(
         Selectors.title -> agentTitle,
@@ -126,10 +126,18 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
       behave like pageWithExpectedMessages(expectedContent)
 
+      "have correct missing deadline text based on threshold for agent" in {
+        implicit val docWithMissingReturns: Document =
+          asDocument(applyView(html(stringAsHtml(sampleMissingReturns)), "1 January 2022", "2"))
+
+        println(docWithMissingReturns.body())
+        docWithMissingReturns.body().toString.contains(agentMissingDeadlineContent) shouldBe true
+      }
     }
 
     "have a beta banner with the feedback correct content and a link with the 'backURL' queryParam" in {
-      def applyView(): HtmlFormat.Appendable = compliancePage.apply(html(), "")(implicitly, implicitly, implicitly, vatTraderUser)
+      def applyView(): HtmlFormat.Appendable = compliancePage.apply(html(), "", "")(implicitly, implicitly, implicitly, vatTraderUser)
+
       val doc: Document = asDocument(applyView())
 
       doc.select(Selectors.betaFeedbackBannerText).text() shouldBe "This is a new service - your feedback will help us to improve it."

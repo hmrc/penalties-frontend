@@ -88,4 +88,8 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
     penaltyPoints
       .filterNot(details => details.appealInformation.exists(_.exists(_.appealStatus.contains(AppealStatusEnum.Upheld))))
   }
+
+  def getRegimeThreshold(payload: GetPenaltyDetails): Int = {
+    payload.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0)
+  }
 }

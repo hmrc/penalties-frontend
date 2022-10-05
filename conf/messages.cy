@@ -53,8 +53,9 @@ lsp.onThreshold.p1 = Rydych wedi cyrraedd y trothwy ar gyfer cosbau ariannol.
 agent.lsp.onThreshold.p1 = Mae eich cleient wedi cyrraedd y trothwy ar gyfer cosbau ariannol.
 lsp.onThreshold.p2 = Mae hyn yn golygu bod yn rhaid i chi dalu cosb o £{0} bob tro yr ydych yn cyflwyno Ffurflen TAW yn hwyr, hyd nes yr ydym yn tynnu’ch pwyntiau cosb.
 agent.lsp.onThreshold.p2 = This means they have to pay a £{0} penalty every time they submit a VAT Return late, until we remove their points.
+agent.lsp.onThreshold.p3 = Earliest date your client’s points could be removed:
 lsp.onThreshold.link = Camau i’w cymryd cyn y gall CThEM dynnu’ch pwyntiau
-agent.lsp.onThreshold.link = Camau i’w cymryd cyn y gall CThEM dynnu pwyntiau’ch cleient
+agent.lsp.onThreshold.link = Actions your client must take to get their points removed by {0}
 
 lsp.onThreshold.compliant.p1 = Byddwn yn tynnu’ch pwyntiau cosb ym mis {0} oherwydd:
 agent.lsp.onThreshold.compliant.p1 = We will remove your client’s penalty points in {0} because:
@@ -155,7 +156,7 @@ compliance.timeline.actionEvent.body = Cyflwyno Ffurflen TAW erbyn {0}
 compliance.timeline.actionEvent.body.late = Cyflwynwch y Ffurflen TAW goll hon nawr
 compliance.point.expiry = Pwyntiau sydd i’w tynnu:
 compliance.point.extension = Bydd y dyddiad hwn yn ymestyn os byddwch yn methu dyddiad cau ar gyfer Ffurflen TAW.
-agent.compliance.point.extension = Bydd y dyddiad hwn yn ymestyn os bydd eich cleient yn methu dyddiad cau ar gyfer Ffurflen TAW
+agent.compliance.point.extension = If your client misses a return deadline, they will have to submit {0} more returns on time before we can remove their points.
 compliance.timeline.actionEvent.tag.late = HWYR
 
 # BETA Banner

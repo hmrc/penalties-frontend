@@ -38,11 +38,13 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
   val fakeAgentRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
     SessionKeys.agentSessionVrn -> "123456789",
     SessionKeys.pocAchievementDate -> "2024-01-01",
+    SessionKeys.regimeThreshold -> "5",
     authToken -> "1234"
   )
   val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
     SessionKeys.agentSessionVrn -> "123456789",
     SessionKeys.pocAchievementDate -> "2022-09-01",
+    SessionKeys.regimeThreshold -> "5",
     authToken -> "1234"
   )
 
@@ -224,7 +226,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         val parsedBody = Jsoup.parse(contentAsString(request))
         parsedBody.body().toString.contains("Points to be removed:") shouldBe true
         parsedBody.body().toString.contains("January 2024") shouldBe true
-        parsedBody.body().toString.contains("This date will extend if your client misses a return deadline.") shouldBe true
+        parsedBody.body().toString.contains("If your client misses a return deadline, they will have to submit 5 more returns on time before we can remove their points.") shouldBe true
       }
     }
 
