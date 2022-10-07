@@ -660,7 +660,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("dd").get(0).text() shouldBe "1 January 2021"
       summaryCardBody.select("dt").get(1).text() shouldBe "Point due to expire"
       summaryCardBody.select("dd").get(1).text() shouldBe "February 2023"
-      summaryCardBody.select("p.govuk-body a").text() shouldBe "Find out more about adjustment points (opens in a new tab)"
+      summaryCardBody.select("p.govuk-body a").text() shouldBe "Read the guidance about adjustment points (opens in a new tab)"
       //TODO: Change to external guidance when available
       summaryCardBody.select("p.govuk-body a").attr("href") shouldBe "#"
       parsedBody.select(".app-summary-card footer div").text shouldBe "You cannot appeal this point"
@@ -681,7 +681,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("dd").get(0).text() shouldBe "1 January 2021 to 1 February 2021"
       summaryCardBody.select("dt").get(1).text() shouldBe "Reason"
       summaryCardBody.select("dd").get(1).text() shouldBe "Change to VAT return deadlines"
-      summaryCardBody.select("p.govuk-body a").get(0).text() shouldBe "Find out more about adjustment points (opens in a new tab)"
+      summaryCardBody.select("p.govuk-body a").get(0).text() shouldBe "Read the guidance about adjustment points (opens in a new tab)"
       //TODO: Change to external guidance when available
       summaryCardBody.select("p.govuk-body a").attr("href") shouldBe "#"
       parsedBody.select(".app-summary-card footer div").text shouldBe ""
@@ -844,7 +844,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         summaryCardBody.select("dd").get(0).text() shouldBe "1 January 2021"
         summaryCardBody.select("dt").get(1).text() shouldBe "Point due to expire"
         summaryCardBody.select("dd").get(1).text() shouldBe "February 2023"
-        summaryCardBody.select("p.govuk-body a").text() shouldBe "Find out more about adjustment points (opens in a new tab)"
+        summaryCardBody.select("p.govuk-body a").text() shouldBe "Read the guidance about adjustment points (opens in a new tab)"
         //TODO: Change to external guidance when available
         summaryCardBody.select("p.govuk-body a").attr("href") shouldBe "#"
         parsedBody.select(".app-summary-card footer div").text shouldBe "You cannot appeal this point"
@@ -866,7 +866,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         summaryCardBody.select("dd").get(0).text() shouldBe "1 January 2021 to 1 February 2021"
         summaryCardBody.select("dt").get(1).text() shouldBe "Reason"
         summaryCardBody.select("dd").get(1).text() shouldBe "Change to VAT return deadlines"
-        summaryCardBody.select("p.govuk-body a").get(0).text() shouldBe "Find out more about adjustment points (opens in a new tab)"
+        summaryCardBody.select("p.govuk-body a").get(0).text() shouldBe "Read the guidance about adjustment points (opens in a new tab)"
         //TODO: Change to external guidance when available
         summaryCardBody.select("p.govuk-body a").attr("href") shouldBe "#"
         parsedBody.select(".app-summary-card footer div").text shouldBe ""
