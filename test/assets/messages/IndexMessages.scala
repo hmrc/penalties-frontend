@@ -108,7 +108,7 @@ object IndexMessages {
   val overdueTag = "due"
   val overduePartiallyPaidTag: BigDecimal => String = amount => s"£$amount due"
   val paidTag = "paid"
-  val estimated = "estimated"
+  val estimate = "estimate"
 
   val period = "VAT period"
   val returnDue = "VAT Return due"

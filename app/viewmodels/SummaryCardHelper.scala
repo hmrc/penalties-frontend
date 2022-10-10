@@ -400,7 +400,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     val latePaymentPenaltyAppealStatus = penalty.appealInformation.flatMap(_.headOption.flatMap(_.appealStatus))
     (latePaymentPenaltyAppealStatus, latePaymentPenaltyStatus) match {
       case (Some(AppealStatusEnum.Upheld), _) => renderTag(messages("status.cancelled"))
-      case (_, LPPPenaltyStatusEnum.Accruing) => renderTag(messages("status.estimated"))
+      case (_, LPPPenaltyStatusEnum.Accruing) => renderTag(messages("status.estimate"))
       case (_, LPPPenaltyStatusEnum.Posted) if penalty.penaltyAmountOutstanding.contains(BigDecimal(0)) => renderTag(messages("status.paid"))
       case (_, _) => showDueOrPartiallyPaidDueTag(penalty.penaltyAmountOutstanding, penalty.penaltyAmountPaid.getOrElse(BigDecimal(0)))
     }
