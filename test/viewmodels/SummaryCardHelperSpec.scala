@@ -764,7 +764,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
             ),
             isPenaltyPaid = false,
             isVatPaid = false,
-            status = Tag(content = Text("estimated")))
+            status = Tag(content = Text("estimate")))
 
           val result = helper.populateLatePaymentPenaltyCard(
             Some(
@@ -961,7 +961,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       "a financial penalty has been added and the user has estimated penalty" in {
         val result = helper.tagStatus(None, Some(sampleLatePaymentPenalty))
         result shouldBe Tag(
-          content = Text(estimated)
+          content = Text(estimate)
         )
       }
     }

@@ -139,7 +139,7 @@ status.removed = wedi’i ddileu
 status.paid = wedi’i dalu
 status.cancelled = wed’i ganslo
 status.reinstated = wedi’i ailosod
-status.estimated = wedi’i amcangyfrifo
+status.estimate = amcangyfrif
 
 site.opensInNewTab = (yn agor tab newydd)
 site.warning = Rhybudd:
