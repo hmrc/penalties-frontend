@@ -23,7 +23,8 @@ import models.User
 import models.compliance.CompliancePayload
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logger.logger
-import utils.SessionKeys
+import utils.PagerDutyHelper.PagerDutyKeys.POC_ACHIEVEMENT_DATE_NOT_FOUND
+import utils.{PagerDutyHelper, SessionKeys}
 
 import java.time.LocalDate
 import javax.inject.Inject
@@ -46,6 +47,7 @@ class ComplianceService @Inject()(connector: ComplianceConnector)(implicit val a
       }
       case _ => {
         logger.error(s"[ComplianceService][getDESComplianceData] - POC Achievement date was not present in session")
+        PagerDutyHelper.log("ComplianceService: getDESComplianceData", POC_ACHIEVEMENT_DATE_NOT_FOUND)
         Future.successful(None)
       }
     }

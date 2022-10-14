@@ -26,7 +26,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.PenaltiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
-import utils.{CurrencyFormatter, EnrolmentKeys}
+import utils.PagerDutyHelper.PagerDutyKeys._
+import utils.{CurrencyFormatter, EnrolmentKeys, PagerDutyHelper}
 import viewmodels.CalculationPageHelper
 import views.html.{CalculationLPP2View, CalculationLPPView}
 
@@ -63,6 +64,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
           }))
           if (penalty.isEmpty) {
             logger.error("[CalculationController][getPenaltyDetails] - Tried to render calculation page with new model but could not find penalty specified.")
+            PagerDutyHelper.log("CalculationController: getPenaltyDetails", EMPTY_PENALTY_BODY)
             errorHandler.showInternalServerError
           } else {
             val startDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeBillingFrom)
@@ -81,6 +83,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
                 //TODO: log a PD
                 logger.error("[CalculationController][getPenaltyDetails] - " +
                   "Calculation row returned None - this could be because the user did not have a defined amount after 15 and/or 30 days of due date")
+                PagerDutyHelper.log("CalculationController: getPenaltyDetails", INVALID_DATA_RETURNED_FOR_CALCULATION_ROW)
                 errorHandler.showInternalServerError
               })(
                 rowSeq => {

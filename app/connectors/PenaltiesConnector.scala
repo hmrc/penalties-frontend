@@ -19,8 +19,13 @@ package connectors
 import config.AppConfig
 import config.featureSwitches.FeatureSwitching
 import connectors.httpParsers.PenaltiesConnectorParser.{GetPenaltyDetailsResponse, GetPenaltyDetailsResponseReads}
+import connectors.httpParsers.UnexpectedFailure
 import models.User
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import play.api.http.Status.INTERNAL_SERVER_ERROR
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
+import utils.Logger.logger
+import utils.PagerDutyHelper
+import utils.PagerDutyHelper.PagerDutyKeys._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,6 +41,16 @@ class PenaltiesConnector @Inject()(httpClient: HttpClient,
   }
 
   def getPenaltyDetails(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[GetPenaltyDetailsResponse] = {
-    httpClient.GET[GetPenaltyDetailsResponse](s"$penaltiesBaseUrl${getPenaltiesDataUrl(enrolmentKey)}")(GetPenaltyDetailsResponseReads, hc, ec)
+    httpClient.GET[GetPenaltyDetailsResponse](s"$penaltiesBaseUrl${getPenaltiesDataUrl(enrolmentKey)}")(GetPenaltyDetailsResponseReads, hc, ec).recover{
+      case e: UpstreamErrorResponse =>
+        PagerDutyHelper.logStatusCode("PenaltiesConnector: getPenaltyDetails", e.statusCode)(
+          RECEIVED_4XX_FROM_PENALTIES_BACKEND, RECEIVED_5XX_FROM_PENALTIES_BACKEND)
+        logger.error(s"[PenaltiesConnector][getPenaltyDetails] - Received ${e.statusCode} status from Penalties backend call - returning status to caller")
+        Left(UnexpectedFailure(e.statusCode, e.getMessage))
+      case e: Exception =>
+        PagerDutyHelper.log("PenaltiesConnector: getPenaltyDetails", UNEXPECTED_ERROR_FROM_PENALTIES_BACKEND)
+        logger.error(s"[PenaltiesConnector][getPenaltyDetails] - An unknown exception occurred - returning 500 back to caller - message: ${e.getMessage}")
+        Left(UnexpectedFailure(INTERNAL_SERVER_ERROR, e.getMessage))
+    }
   }
 }
