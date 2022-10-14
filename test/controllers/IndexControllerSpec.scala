@@ -27,8 +27,6 @@ import services.PenaltiesService
 import testUtils.AuthTestModels
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
-import utils.Logger.logger
-import utils.PagerDutyHelper.PagerDutyKeys
 import utils.SessionKeys
 import viewmodels.{IndexPageHelper, SummaryCardHelper}
 import views.html.IndexView
@@ -81,25 +79,15 @@ class IndexControllerSpec extends SpecBase with LogCapturing {
         "return an ISE when a left UnexpectedFailure is returned from the service call" in new Setup(AuthTestModels.successfulAuthResult) {
           when(mockPenaltiesService.getPenaltyDataFromEnrolmentKey(any())(any(), any()))
             .thenReturn(Future.successful(Left(UnexpectedFailure(INTERNAL_SERVER_ERROR, ""))))
-
-          withCaptureOfLoggingFrom(logger) {
-            logs =>
-              val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
-              status(result) shouldBe INTERNAL_SERVER_ERROR
-              logs.exists(_.getMessage.contains(PagerDutyKeys.RECEIVED_5XX_FROM_PENALTIES_BACKEND.toString)) shouldBe true
-          }
+          val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
+          status(result) shouldBe INTERNAL_SERVER_ERROR
         }
 
         "return an ISE when a left BadRequest is returned from the service call" in new Setup(AuthTestModels.successfulAuthResult) {
           when(mockPenaltiesService.getPenaltyDataFromEnrolmentKey(any())(any(), any()))
             .thenReturn(Future.successful(Left(UnexpectedFailure(BAD_REQUEST, ""))))
-
-          withCaptureOfLoggingFrom(logger) {
-            logs =>
-              val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
-              status(result) shouldBe INTERNAL_SERVER_ERROR
-              logs.exists(_.getMessage.contains(PagerDutyKeys.RECEIVED_4XX_FROM_PENALTIES_BACKEND.toString)) shouldBe true
-          }
+          val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
+          status(result) shouldBe INTERNAL_SERVER_ERROR
         }
       }
 

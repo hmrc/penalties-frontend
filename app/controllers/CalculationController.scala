@@ -80,7 +80,6 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
               val penaltyEstimateDate = penalty.get.principalChargeDueDate.plusDays(30)
               val calculationRow = calculationPageHelper.getCalculationRowForLPP(penalty.get)
               calculationRow.fold({
-                //TODO: log a PD
                 logger.error("[CalculationController][getPenaltyDetails] - " +
                   "Calculation row returned None - this could be because the user did not have a defined amount after 15 and/or 30 days of due date")
                 PagerDutyHelper.log("CalculationController: getPenaltyDetails", INVALID_DATA_RETURNED_FOR_CALCULATION_ROW)

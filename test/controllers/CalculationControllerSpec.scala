@@ -31,7 +31,6 @@ import testUtils.AuthTestModels
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import utils.Logger.logger
-import utils.PagerDutyHelper
 import utils.PagerDutyHelper.PagerDutyKeys
 import viewmodels.CalculationPageHelper
 import views.html.{CalculationLPP2View, CalculationLPPView}
@@ -259,9 +258,9 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching with LogC
 
           withCaptureOfLoggingFrom(logger) {
             logs =>
-              val result: Future[Result] = Controller.onPageLoad("12345678901234", "LPP1")(fakeRequest)
+              val result: Result = await(Controller.onPageLoad("12345678901234", "LPP1")(fakeRequest))
               logs.exists(_.getMessage.contains(PagerDutyKeys.INVALID_DATA_RETURNED_FOR_CALCULATION_ROW.toString)) shouldBe true
-              status(result) shouldBe INTERNAL_SERVER_ERROR
+              result.header.status shouldBe INTERNAL_SERVER_ERROR
           }
         }
 
@@ -272,9 +271,9 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching with LogC
 
           withCaptureOfLoggingFrom(logger) {
             logs =>
-              val result: Future[Result] = Controller.onPageLoad("1234", "LPP1")(fakeRequest)
+              val result: Result = await(Controller.onPageLoad("1234", "LPP1")(fakeRequest))
               logs.exists(_.getMessage.contains(PagerDutyKeys.EMPTY_PENALTY_BODY.toString)) shouldBe true
-              status(result) shouldBe INTERNAL_SERVER_ERROR
+              result.header.status shouldBe INTERNAL_SERVER_ERROR
           }
         }
     }

@@ -27,8 +27,6 @@ object PagerDutyHelper {
     final val EMPTY_PENALTY_BODY = Value
     final val INVALID_DATA_RETURNED_FOR_CALCULATION_ROW = Value
     final val NO_DATA_RETURNED_FROM_COMPLIANCE = Value
-    final val RECEIVED_4XX_IN_CONTROLLER = Value
-    final val RECEIVED_5XX_IN_CONTROLLER = Value
     final val POC_ACHIEVEMENT_DATE_NOT_FOUND = Value
     final val UNEXPECTED_ERROR_FROM_PENALTIES_BACKEND = Value
   }

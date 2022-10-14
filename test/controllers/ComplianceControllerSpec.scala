@@ -76,9 +76,9 @@ class ComplianceControllerSpec extends SpecBase with LogCapturing {
 
         withCaptureOfLoggingFrom(logger) {
           logs =>
-            val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
+            val result: Result = await(Controller.onPageLoad()(fakeRequest))
             logs.exists(_.getMessage.contains(PagerDutyKeys.NO_DATA_RETURNED_FROM_COMPLIANCE.toString)) shouldBe true
-            status(result) shouldBe INTERNAL_SERVER_ERROR
+            result.header.status shouldBe INTERNAL_SERVER_ERROR
         }
       }
 

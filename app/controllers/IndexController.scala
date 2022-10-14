@@ -24,9 +24,8 @@ import play.api.mvc._
 import services.PenaltiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
-import utils.PagerDutyHelper.PagerDutyKeys.{RECEIVED_4XX_IN_CONTROLLER, RECEIVED_5XX_IN_CONTROLLER}
 import utils.SessionKeys._
-import utils.{CurrencyFormatter, EnrolmentKeys, ImplicitDateFormatter, PagerDutyHelper}
+import utils.{CurrencyFormatter, EnrolmentKeys, ImplicitDateFormatter}
 import viewmodels.{IndexPageHelper, SummaryCardHelper}
 import views.html.IndexView
 
@@ -50,7 +49,6 @@ class IndexController @Inject()(view: IndexView,
       _.fold(
         errors => {
           logger.error(s"[IndexController][onPageLoad] - Received error with status ${errors.status} and body ${errors.body} rendering ISE.")
-          PagerDutyHelper.logStatusCode("IndexController: onPageLoad", errors.status)(RECEIVED_4XX_IN_CONTROLLER, RECEIVED_5XX_IN_CONTROLLER)
           Future(errorHandler.showInternalServerError)
         }, penaltyData => {
           pageHelper.getContentBasedOnPointsFromModel(penaltyData).map {
