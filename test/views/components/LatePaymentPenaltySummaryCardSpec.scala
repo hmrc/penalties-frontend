@@ -143,11 +143,6 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
     Some(Seq(sampleLatePaymentPenaltyPaidPenaltyAppeal(AppealStatusEnum.Under_Appeal, AppealLevelEnum.HMRC)))
   ).get.head
 
-  // TODO: Update for Reinstated
-  val summaryCardModelWithAppealedPenaltyReinstated: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLatePaymentPenaltyPaidPenaltyAppeal(AppealStatusEnum.Under_Appeal, AppealLevelEnum.HMRC)))
-  ).get.head
-
   "summaryCard" when {
     "given a penalty" should {
       implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModel))

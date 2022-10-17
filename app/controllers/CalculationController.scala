@@ -55,7 +55,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
     penaltiesService.getPenaltyDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn)).map {
       _.fold(
         errors => {
-          logger.error(s"[CalculationController][getPenaltyDetails]  Received status ${errors.status} and body ${errors.body}, rendering ISE.")
+          logger.error(s"[CalculationController][getPenaltyDetails] - Received status ${errors.status} and body ${errors.body}, rendering ISE.")
           errorHandler.showInternalServerError
         },
         payload => {
@@ -64,7 +64,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
           }))
           if (penalty.isEmpty) {
             logger.error("[CalculationController][getPenaltyDetails] - Tried to render calculation page with new model but could not find penalty specified.")
-            PagerDutyHelper.log("CalculationController - getPenaltyDetails", EMPTY_PENALTY_BODY)
+            PagerDutyHelper.log("CalculationController: getPenaltyDetails", EMPTY_PENALTY_BODY)
             errorHandler.showInternalServerError
           } else {
             val startDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeBillingFrom)

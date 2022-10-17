@@ -40,8 +40,8 @@ class ComplianceService @Inject()(connector: PenaltiesConnector)(implicit val ap
         val fromDate = pocAchievementDate.minusYears(2)
         connector.getObligationData(vrn, fromDate, pocAchievementDate).map {
           obligationData => {
-            logger.debug(s"[ComplianceService][getDESComplianceData]: Successful call to get obligation data,  obligation data = $obligationData")
-            logger.info(s"[ComplianceService][getDESComplianceData]: Successful call to get obligation data.")
+            logger.debug(s"[ComplianceService][getDESComplianceData] - Successful call to get obligation data,  obligation data = $obligationData")
+            logger.info(s"[ComplianceService][getDESComplianceData] - Successful call to get obligation data.")
             Some(obligationData)
           }
         }

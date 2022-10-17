@@ -45,7 +45,7 @@ class PenaltiesConnector @Inject()(httpClient: HttpClient,
   }
 
   def getPenaltyDetails(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[GetPenaltyDetailsResponse] = {
-    logger.info(s"[PenaltiesConnector][getPenaltyDetails]: Requesting penalties details from backend for VRN $enrolmentKey.")
+    logger.info(s"[PenaltiesConnector][getPenaltyDetails] - Requesting penalties details from backend for VRN $enrolmentKey.")
     httpClient.GET[GetPenaltyDetailsResponse](s"$penaltiesBaseUrl${getPenaltiesDataUrl(enrolmentKey)}")(GetPenaltyDetailsResponseReads, hc, ec).recover{
       case e: UpstreamErrorResponse =>
         PagerDutyHelper.logStatusCode("PenaltiesConnector: getPenaltyDetails", e.statusCode)(
@@ -63,7 +63,7 @@ class PenaltiesConnector @Inject()(httpClient: HttpClient,
     s"/compliance/des/compliance-data?vrn=$vrn&fromDate=$fromDate&toDate=$toDate"
 
   def getObligationData(vrn: String, fromDate: LocalDate, toDate: LocalDate)(implicit hc: HeaderCarrier): Future[CompliancePayload] = {
-    logger.info(s"[PenaltiesConnector][getObligationData]L Requesting obligation data from backend for VRN $vrn.")
+    logger.info(s"[PenaltiesConnector][getObligationData] - Requesting obligation data from backend for VRN $vrn.")
     httpClient.GET[CompliancePayload](s"$penaltiesBaseUrl${getDESObligationsDataUrl(vrn, fromDate.toString, toDate.toString)}")
   }
 }

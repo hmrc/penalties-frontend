@@ -278,14 +278,6 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         result.appealLevel.get shouldBe AppealLevelEnum.HMRC
       }
 
-      // TODO: Reinstated to be implemented
-      "show the appeal status when the point has been appealed - for reinstated" ignore {
-        val result = helper.financialSummaryCard(lSPDetailsAsModelNoFAP, quarterlyThreshold)
-        result.isAppealedPoint shouldBe true
-        result.appealStatus.isDefined shouldBe true
-        result.appealStatus.get shouldBe "Some Reinstated"
-      }
-
       "show the appeal status when the point has been appealed - for tribunal rejected" in {
         val result = helper.financialSummaryCard(sampleFinancialPenaltyV2.copy(appealInformation = Some(Seq(
           AppealInformationType(
@@ -884,14 +876,6 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         )
       }
 
-      //TODO implement Reinstated
-      "an appealed point is provided - reinstated" ignore {
-        val result = helper.tagStatus(Some(samplePenaltyPointAppeal(AppealStatusEnum.Upheld, AppealLevelEnum.HMRC)), None)
-        result shouldBe Tag(
-          content = Text(reinstatedTag)
-        )
-      }
-
       "an overdue penaltyPointSubmission is provided" in {
         val result = helper.tagStatus(Some(sampleFinancialPenaltyV2), None)
         result shouldBe Tag(
@@ -935,14 +919,6 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         )
       }
 
-      // TODO: implement for Reinstated
-      "a financial penalty has been added and the user has paid - appealStatus Reinstated" ignore {
-        val result = helper.tagStatus(None, Some(sampleLatePaymentPenaltyPaidPenaltyAppeal(AppealStatusEnum.Under_Appeal, AppealLevelEnum.HMRC)))
-        result shouldBe Tag(
-          content = Text(overduePartiallyPaidTag(200)),
-          classes = "penalty-due-tag"
-        )
-      }
       "a financial penalty has been added and the user has paid - appealStatus Rejected" in {
         val result = helper.tagStatus(None, Some(sampleLatePaymentPenaltyPaidPenaltyAppeal(AppealStatusEnum.Rejected, AppealLevelEnum.HMRC)))
         result shouldBe Tag(
@@ -1043,13 +1019,6 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       result.appealStatus shouldBe Some(AppealStatusEnum.Rejected)
       result.appealLevel shouldBe Some(AppealLevelEnum.HMRC)
     }
-    // TODO: implment for Reinstated
-    "when given an appealed point (reinstated) - set the relevant fields" ignore {
-      val result = helper.pointSummaryCard(lSPDetailsAsModelNoFAP, thresholdMet = false)
-      result.isAppealedPoint shouldBe true
-      result.appealStatus.isDefined shouldBe true
-      result.appealStatus.get shouldBe "Some Reinstated"
-    }
 
     "when given an appealed point (tribunal rejected) - set the relevant fields" in {
       val result = helper.pointSummaryCard(samplePenaltyPointAppeal(AppealStatusEnum.Rejected, AppealLevelEnum.Tribunal), thresholdMet = false)
@@ -1099,13 +1068,6 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       result.appealStatus.isDefined shouldBe true
       result.appealStatus shouldBe Some(AppealStatusEnum.Rejected)
       result.appealLevel shouldBe Some(AppealLevelEnum.HMRC)
-    }
-
-    //TODO: implement Reinstated
-    "when given an appealed point (reinstated) - set the relevant fields" ignore {
-      val result = helper.lppSummaryCard(sampleLatePaymentPenaltyPaidPenaltyAppeal(AppealStatusEnum.Under_Appeal, AppealLevelEnum.HMRC))
-      result.appealStatus.isDefined shouldBe true
-      result.appealStatus.get shouldBe "Reinstated"
     }
 
     "when given an appealed point (tribunal rejected) - set the relevant fields" in {
