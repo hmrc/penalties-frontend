@@ -301,4 +301,8 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     )
     points.filterNot(point => point.expiryReason.exists(expiredReasonsToFilterOut.contains(_)))
   }
+
+  def sortPointsInDescendingOrder(points: Seq[LSPDetails]): Seq[LSPDetails] = {
+    points.sortWith((thisElement, nextElement) => thisElement.penaltyOrder.toInt > nextElement.penaltyOrder.toInt)
+  }
 }

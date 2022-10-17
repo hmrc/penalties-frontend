@@ -2014,4 +2014,113 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
       pageHelper.filteredExpiredPoints(penaltyDetailsWithReason(ExpiryReasonEnum.Compliance)) shouldBe expectedResult
     }
   }
+
+  "sortPointsInDescendingOrder" should {
+    "sort penalty points in descending order" in {
+      val penaltiesOutOfOrder: Seq[LSPDetails] = Seq(
+        LSPDetails(
+          penaltyNumber = "12345678",
+          penaltyOrder = "1",
+          penaltyCategory = LSPPenaltyCategoryEnum.Point,
+          penaltyStatus = LSPPenaltyStatusEnum.Active,
+          FAPIndicator = None,
+          penaltyCreationDate = LocalDate.of(2022, 1, 1),
+          penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+          expiryReason = None,
+          communicationsDate = LocalDate.of(2022, 1, 1),
+          lateSubmissions = None,
+          appealInformation = None,
+          chargeAmount = None,
+          chargeOutstandingAmount = None,
+          chargeDueDate = None
+        ),
+        LSPDetails(
+          penaltyNumber = "12345677",
+          penaltyOrder = "2",
+          penaltyCategory = LSPPenaltyCategoryEnum.Point,
+          penaltyStatus = LSPPenaltyStatusEnum.Active,
+          FAPIndicator = None,
+          penaltyCreationDate = LocalDate.of(2022, 1, 1),
+          penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+          expiryReason = None,
+          communicationsDate = LocalDate.of(2022, 1, 1),
+          lateSubmissions = None,
+          appealInformation = None,
+          chargeAmount = Some(200),
+          chargeOutstandingAmount = Some(200),
+          chargeDueDate = Some(LocalDate.of(2022, 1, 1))
+        ),
+        LSPDetails(
+          penaltyNumber = "12345676",
+          penaltyOrder = "3",
+          penaltyCategory = LSPPenaltyCategoryEnum.Point,
+          penaltyStatus = LSPPenaltyStatusEnum.Active,
+          FAPIndicator = None,
+          penaltyCreationDate = LocalDate.of(2022, 1, 1),
+          penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+          expiryReason = None,
+          communicationsDate = LocalDate.of(2022, 1, 1),
+          lateSubmissions = None,
+          appealInformation = None,
+          chargeAmount = Some(200),
+          chargeOutstandingAmount = Some(200),
+          chargeDueDate = Some(LocalDate.of(2022, 1, 1))
+        )
+      )
+
+      val penaltiesInOrder: Seq[LSPDetails] = Seq(
+        LSPDetails(
+          penaltyNumber = "12345676",
+          penaltyOrder = "3",
+          penaltyCategory = LSPPenaltyCategoryEnum.Point,
+          penaltyStatus = LSPPenaltyStatusEnum.Active,
+          FAPIndicator = None,
+          penaltyCreationDate = LocalDate.of(2022, 1, 1),
+          penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+          expiryReason = None,
+          communicationsDate = LocalDate.of(2022, 1, 1),
+          lateSubmissions = None,
+          appealInformation = None,
+          chargeAmount = Some(200),
+          chargeOutstandingAmount = Some(200),
+          chargeDueDate = Some(LocalDate.of(2022, 1, 1))
+        ),
+        LSPDetails(
+          penaltyNumber = "12345677",
+          penaltyOrder = "2",
+          penaltyCategory = LSPPenaltyCategoryEnum.Point,
+          penaltyStatus = LSPPenaltyStatusEnum.Active,
+          FAPIndicator = None,
+          penaltyCreationDate = LocalDate.of(2022, 1, 1),
+          penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+          expiryReason = None,
+          communicationsDate = LocalDate.of(2022, 1, 1),
+          lateSubmissions = None,
+          appealInformation = None,
+          chargeAmount = Some(200),
+          chargeOutstandingAmount = Some(200),
+          chargeDueDate = Some(LocalDate.of(2022, 1, 1))
+        ),
+        LSPDetails(
+          penaltyNumber = "12345678",
+          penaltyOrder = "1",
+          penaltyCategory = LSPPenaltyCategoryEnum.Point,
+          penaltyStatus = LSPPenaltyStatusEnum.Active,
+          FAPIndicator = None,
+          penaltyCreationDate = LocalDate.of(2022, 1, 1),
+          penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+          expiryReason = None,
+          communicationsDate = LocalDate.of(2022, 1, 1),
+          lateSubmissions = None,
+          appealInformation = None,
+          chargeAmount = None,
+          chargeOutstandingAmount = None,
+          chargeDueDate = None
+        )
+      )
+
+      val result: Seq[LSPDetails] = pageHelper.sortPointsInDescendingOrder(penaltiesOutOfOrder)
+      result shouldBe penaltiesInOrder
+    }
+  }
 }

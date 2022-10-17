@@ -138,7 +138,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           communicationsDate = sampleDate1,
           lateSubmissions = Some(Seq(LateSubmission(
             taxPeriodStartDate = Some(sampleDate1),
-            taxPeriodEndDate = Some(sampleDate1),
+            taxPeriodEndDate = Some(sampleDate1.plusMonths(1)),
             taxPeriodDueDate = Some(sampleDate1),
             returnReceiptDate = Some(sampleDate1),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
@@ -222,6 +222,85 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
             returnReceiptDate = Some(sampleDate1),
             taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
           appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
+          chargeAmount = None,
+          chargeOutstandingAmount = None,
+          chargeDueDate = None
+        )
+      ))
+    ),
+    latePaymentPenalty = None
+  )
+
+  val getPenaltiesDataPayloadOutOfOrder: GetPenaltyDetails = GetPenaltyDetails(
+    totalisations = None,
+    lateSubmissionPenalty = Some(LateSubmissionPenalty(
+      summary = LSPSummary(
+        activePenaltyPoints = 3,
+        regimeThreshold = 4,
+        inactivePenaltyPoints = 0,
+        penaltyChargeAmount = 0,
+        PoCAchievementDate = LocalDate.of(2022, 1, 1)
+      ),
+      details = Seq(
+        LSPDetails(
+          penaltyNumber = "1234567893",
+          penaltyOrder = "01",
+          penaltyCategory = LSPPenaltyCategoryEnum.Point,
+          penaltyStatus = LSPPenaltyStatusEnum.Active,
+          FAPIndicator = None,
+          penaltyCreationDate = sampleDate1,
+          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
+          expiryReason = None,
+          communicationsDate = sampleDate1,
+          lateSubmissions = Some(Seq(LateSubmission(
+            taxPeriodStartDate = Some(sampleDate1.minusMonths(3)),
+            taxPeriodEndDate = Some(sampleDate1.minusMonths(3).plusDays(30)),
+            taxPeriodDueDate = Some(sampleDate1),
+            returnReceiptDate = Some(sampleDate1),
+            taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
+          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
+          chargeAmount = None,
+          chargeOutstandingAmount = None,
+          chargeDueDate = None
+        ),
+        LSPDetails(
+          penaltyNumber = "1234567893",
+          penaltyOrder = "02",
+          penaltyCategory = LSPPenaltyCategoryEnum.Point,
+          penaltyStatus = LSPPenaltyStatusEnum.Active,
+          FAPIndicator = None,
+          penaltyCreationDate = sampleDate1,
+          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
+          expiryReason = None,
+          communicationsDate = sampleDate1,
+          lateSubmissions = Some(Seq(LateSubmission(
+            taxPeriodStartDate = Some(sampleDate1.minusMonths(2)),
+            taxPeriodEndDate = Some(sampleDate1.minusMonths(2).plusDays(29)),
+            taxPeriodDueDate = Some(sampleDate1),
+            returnReceiptDate = Some(sampleDate1),
+            taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
+          appealInformation = None,
+          chargeAmount = None,
+          chargeOutstandingAmount = None,
+          chargeDueDate = None
+        ),
+        LSPDetails(
+          penaltyNumber = "1234567891",
+          penaltyOrder = "03",
+          penaltyCategory = LSPPenaltyCategoryEnum.Point,
+          penaltyStatus = LSPPenaltyStatusEnum.Active,
+          FAPIndicator = None,
+          penaltyCreationDate = sampleDate1,
+          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
+          expiryReason = None,
+          communicationsDate = sampleDate1,
+          lateSubmissions = Some(Seq(LateSubmission(
+            taxPeriodStartDate = Some(sampleDate1.minusMonths(1)),
+            taxPeriodEndDate = Some(sampleDate1.minusMonths(1).plusDays(30)),
+            taxPeriodDueDate = Some(sampleDate1),
+            returnReceiptDate = Some(sampleDate1),
+            taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
+          appealInformation = None,
           chargeAmount = None,
           chargeOutstandingAmount = None,
           chargeDueDate = None
@@ -676,7 +755,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#late-submission-penalties ul li").get(1).text shouldBe "we removed 1 point and sent you a letter explaining why"
       parsedBody.select("header h3").get(0).text shouldBe "Penalty point"
       parsedBody.select("main strong").get(0).text shouldBe "removed"
-      val summaryCardBody = parsedBody.select(".app-summary-card__body")
+      val summaryCardBody = parsedBody.select(".app-summary-card__body").get(1)
       summaryCardBody.select("dt").get(0).text shouldBe "VAT period"
       summaryCardBody.select("dd").get(0).text() shouldBe "1 January 2021 to 1 February 2021"
       summaryCardBody.select("dt").get(1).text() shouldBe "Reason"
@@ -700,6 +779,16 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("main section h3").get(1).text shouldBe "Penalty point 1"
       parsedBody.select("main section h3").get(2).text shouldBe "Penalty point"
       parsedBody.select("main section strong").get(2).text shouldBe "removed"
+    }
+
+    "return 200 (OK) and render the view correctly when active points retrieved out of order" in {
+      returnPenaltyDetailsStub(getPenaltiesDataPayloadOutOfOrder)
+      val request = controller.onPageLoad()(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
+      parsedBody.select("main section .govuk-summary-list").get(0).select(".govuk-summary-list__value").get(0).text shouldBe "1 December 2020 to 31 December 2020"
+      parsedBody.select("main section .govuk-summary-list").get(1).select(".govuk-summary-list__value").get(0).text shouldBe "1 November 2020 to 30 November 2020"
+      parsedBody.select("main section .govuk-summary-list").get(2).select(".govuk-summary-list__value").get(0).text shouldBe "1 October 2020 to 31 October 2020"
     }
 
     "return 200 (OK) and render the view when there are LPPs paid that are retrieved from the backend" in {
