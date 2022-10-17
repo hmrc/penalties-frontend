@@ -17,7 +17,7 @@
 package services
 
 import base.SpecBase
-import connectors.ComplianceConnector
+import connectors.PenaltiesConnector
 import models.User
 import models.compliance.CompliancePayload
 import org.mockito.Matchers
@@ -33,17 +33,17 @@ import scala.concurrent.Future
 
 class ComplianceServiceSpec extends SpecBase {
 
-  val mockComplianceConnector: ComplianceConnector = mock(classOf[ComplianceConnector])
+  val mockPenaltiesConnector: PenaltiesConnector = mock(classOf[PenaltiesConnector])
 
   class Setup {
-    val service: ComplianceService = new ComplianceService(mockComplianceConnector)
+    val service: ComplianceService = new ComplianceService(mockPenaltiesConnector)
 
-    reset(mockComplianceConnector)
+    reset(mockPenaltiesConnector)
   }
 
   "getDESComplianceData" should {
     s"return a successful response and pass the result back to the controller (date provided as parameter)" in new Setup {
-      when(mockComplianceConnector.getComplianceDataFromDES(any(),
+      when(mockPenaltiesConnector.getObligationData(any(),
         Matchers.eq(LocalDate.of(2020, 1, 1)),
         Matchers.eq(LocalDate.of(2022, 1, 1)))(any())).thenReturn(Future.successful(sampleCompliancePayload))
       val result: Option[CompliancePayload] = await(service.getDESComplianceData(vrn)(HeaderCarrier(),
@@ -53,7 +53,7 @@ class ComplianceServiceSpec extends SpecBase {
     }
 
     s"return a successful response and pass the result back to the controller (date in session)" in new Setup {
-      when(mockComplianceConnector.getComplianceDataFromDES(any(),
+      when(mockPenaltiesConnector.getObligationData(any(),
         Matchers.eq(LocalDate.of(2020, 1, 1)),
         Matchers.eq(LocalDate.of(2022, 1, 1)))(any())).thenReturn(Future.successful(sampleCompliancePayload))
       val result: Option[CompliancePayload] = await(service.getDESComplianceData(vrn)(HeaderCarrier(), User("123456789")(fakeRequest.withSession(
@@ -69,7 +69,7 @@ class ComplianceServiceSpec extends SpecBase {
     }
 
     s"return an exception and pass the result back to the controller" in new Setup {
-      when(mockComplianceConnector.getComplianceDataFromDES(any(), any(), any())(any()))
+      when(mockPenaltiesConnector.getObligationData(any(), any(), any())(any()))
         .thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", INTERNAL_SERVER_ERROR)))
       val result: Exception = intercept[Exception](await(service.getDESComplianceData(vrn)(HeaderCarrier(), User("123456789")(fakeRequest.withSession(
         SessionKeys.pocAchievementDate -> "2022-01-01"

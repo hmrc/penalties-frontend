@@ -44,16 +44,18 @@ class FeatureSwitchController @Inject()(mcc: MessagesControllerComponents)
   def setTimeMachineDate(dateToSet: Option[String]): Action[AnyContent] = Action {
     dateToSet.fold({
       setFeatureDate(None)
+      logger.info(s"[FeatureSwitchController][setFeatureDate]: Time machine reset to now (${LocalDate.now()})")
       Ok(s"Time machine set to: ${LocalDate.now()}")
     })(
       dateAsString => {
         Try(LocalDate.parse(dateAsString)).fold(
           err => {
-            logger.debug(s"[FeatureSwitchController][setFeatureDate] - Exception was thrown when setting time machine date: ${err.getMessage}")
+            logger.error(s"[FeatureSwitchController][setFeatureDate]: Exception was thrown when setting time machine date: ${err.getMessage}")
             BadRequest("The date provided is in an invalid format")
           },
           date => {
             setFeatureDate(Some(date))
+            logger.info(s"[FeatureSwitchController][setFeatureDate]: Time machine set to $date")
             Ok(s"Time machine set to: $date")
           }
         )

@@ -20,6 +20,7 @@ import base.{LogCapturing, SpecBase}
 import config.AppConfig
 import config.featureSwitches.FeatureSwitching
 import connectors.httpParsers.PenaltiesConnectorParser.GetPenaltyDetailsResponse
+import models.compliance.CompliancePayload
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import play.api.http.Status.INTERNAL_SERVER_ERROR
@@ -28,6 +29,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 import utils.Logger.logger
 import utils.PagerDutyHelper.PagerDutyKeys
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching with LogCapturing {
@@ -115,6 +117,33 @@ class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching with LogCapt
         }
       }
     }
+  }
 
+  "getObligationData" should {
+    s"return a successful response when the call succeeds and the body can be parsed" in new Setup {
+      when(mockHttpClient.GET[CompliancePayload](any(),
+        any(),
+        any())
+        (any(),
+          any(),
+          any())).thenReturn(Future.successful(sampleCompliancePayload))
+
+      val result: CompliancePayload = await(connector.getObligationData(vrn, LocalDate.of(2020, 1, 1),
+        LocalDate.of(2020, 12, 1))(HeaderCarrier()))
+      result shouldBe sampleCompliancePayload
+    }
+
+    "return an error when an error occurs upstream" in new Setup {
+      when(mockHttpClient.GET[CompliancePayload](any(),
+        any(),
+        any())
+        (any(),
+          any(),
+          any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", NOT_FOUND)))
+
+      val result: Exception = intercept[Exception](await(connector.getObligationData(vrn, LocalDate.of(2020, 1, 1),
+        LocalDate.of(2020, 12, 1))(HeaderCarrier())))
+      result.getMessage shouldBe "Upstream error"
+    }
   }
 }

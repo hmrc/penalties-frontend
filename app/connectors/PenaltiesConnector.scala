@@ -19,14 +19,18 @@ package connectors
 import config.AppConfig
 import config.featureSwitches.FeatureSwitching
 import connectors.httpParsers.PenaltiesConnectorParser.{GetPenaltyDetailsResponse, GetPenaltyDetailsResponseReads}
+import models.compliance.CompliancePayload
 import connectors.httpParsers.UnexpectedFailure
 import models.User
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import utils.Logger.logger
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 import utils.Logger.logger
 import utils.PagerDutyHelper
 import utils.PagerDutyHelper.PagerDutyKeys._
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -34,13 +38,14 @@ class PenaltiesConnector @Inject()(httpClient: HttpClient,
                                    val appConfig: AppConfig)(implicit ec: ExecutionContext) extends FeatureSwitching {
 
   private val penaltiesBaseUrl: String = appConfig.penaltiesUrl
+
   private def getPenaltiesDataUrl(enrolmentKey: String)(implicit user: User[_]): String = {
     val urlQueryParams = user.arn.fold("")(arn => s"?arn=$arn")
-
     s"/etmp/penalties/$enrolmentKey$urlQueryParams"
   }
 
   def getPenaltyDetails(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[GetPenaltyDetailsResponse] = {
+    logger.info(s"[PenaltiesConnector][getPenaltyDetails]: Requesting penalties details from backend for VRN $enrolmentKey.")
     httpClient.GET[GetPenaltyDetailsResponse](s"$penaltiesBaseUrl${getPenaltiesDataUrl(enrolmentKey)}")(GetPenaltyDetailsResponseReads, hc, ec).recover{
       case e: UpstreamErrorResponse =>
         PagerDutyHelper.logStatusCode("PenaltiesConnector: getPenaltyDetails", e.statusCode)(
@@ -52,5 +57,13 @@ class PenaltiesConnector @Inject()(httpClient: HttpClient,
         logger.error(s"[PenaltiesConnector][getPenaltyDetails] - An unknown exception occurred - returning 500 back to caller - message: ${e.getMessage}")
         Left(UnexpectedFailure(INTERNAL_SERVER_ERROR, e.getMessage))
     }
+  }
+
+  private def getDESObligationsDataUrl(vrn: String, fromDate: String, toDate: String): String =
+    s"/compliance/des/compliance-data?vrn=$vrn&fromDate=$fromDate&toDate=$toDate"
+
+  def getObligationData(vrn: String, fromDate: LocalDate, toDate: LocalDate)(implicit hc: HeaderCarrier): Future[CompliancePayload] = {
+    logger.info(s"[PenaltiesConnector][getObligationData]L Requesting obligation data from backend for VRN $vrn.")
+    httpClient.GET[CompliancePayload](s"$penaltiesBaseUrl${getDESObligationsDataUrl(vrn, fromDate.toString, toDate.toString)}")
   }
 }

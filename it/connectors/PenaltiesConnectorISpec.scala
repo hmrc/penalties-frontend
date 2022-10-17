@@ -22,6 +22,8 @@ import connectors.httpParsers.{InvalidJson, UnexpectedFailure}
 import models.User
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import stubs.ComplianceStub
+import stubs.ComplianceStub._
 import stubs.PenaltiesStub
 import stubs.PenaltiesStub._
 import testUtils.IntegrationSpecCommonBase
@@ -54,6 +56,28 @@ class PenaltiesConnectorISpec extends IntegrationSpecCommonBase {
       val result = await(connector.getPenaltyDetails(vrn)(vatTraderUser, implicitly))
       result.isLeft shouldBe true
       result shouldBe Left(UnexpectedFailure(INTERNAL_SERVER_ERROR, s"Unexpected response, status $INTERNAL_SERVER_ERROR returned"))
+    }
+  }
+
+  "getObligationData" should {
+    "generate a CompliancePayload when valid JSON is returned from penalties" in {
+      ComplianceStub.complianceDataStub()
+      val result = await(connector.getObligationData("123456789", startDate, endDate))
+      result shouldBe sampleCompliancePayload
+    }
+
+    "throw an exception when invalid JSON is returned from penalties" in {
+      wireMockServer.editStubMapping(invalidComplianceDataStub())
+
+      val result = intercept[Exception](await(connector.getObligationData("123456789", startDate, endDate)))
+      result.getMessage should include("invalid json")
+    }
+
+    "throw an exception when an upstream error is returned from penalties" in {
+      wireMockServer.editStubMapping(upstreamErrorStub())
+
+      val result = intercept[Exception](await(connector.getObligationData("123456789", startDate, endDate)))
+      result.getMessage should include("Upstream Error")
     }
   }
 }
