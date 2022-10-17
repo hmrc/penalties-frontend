@@ -136,8 +136,6 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       "have correct missing deadline text based on threshold for agent" in {
         implicit val docWithMissingReturns: Document =
           asDocument(applyView(html(stringAsHtml(sampleMissingReturns)), "1 January 2022", "2"))
-
-        println(docWithMissingReturns.body())
         docWithMissingReturns.body().toString.contains(agentMissingDeadlineContent) shouldBe true
       }
     }

@@ -47,17 +47,17 @@
     <header class="app-summary-card__header">
         <h3 class="app-summary-card__title">
             @{
-                if(summaryCard.isThresholdPoint) {
-                    messages("summaryCard.header.financial", summaryCard.penaltyPoint, CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(summaryCard.totalPenaltyAmount))
-                } else if(summaryCard.isFinancialPoint) {
-                    messages("summaryCard.header.financialNoNumber", CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(summaryCard.totalPenaltyAmount))
-                } else if(summaryCard.isAddedPoint) {
-                    messages("summaryCard.header.addedPoint", summaryCard.penaltyPoint)
-                } else if(summaryCard.isAdjustedPoint || summaryCard.appealStatus.contains(AppealStatusEnum.Upheld)) {
-                    messages("summaryCard.header.adjustedPoint")
-                } else {
-                    messages("summaryCard.header", summaryCard.penaltyPoint)
-                }
+              if(summaryCard.isAddedPoint) {
+                messages("summaryCard.header.addedPoint", summaryCard.penaltyPoint)
+              } else if(summaryCard.isAdjustedPoint || summaryCard.appealStatus.contains(AppealStatusEnum.Upheld)) {
+                messages("summaryCard.header.adjustedPoint")
+              } else if(summaryCard.isThresholdPoint) {
+                  messages("summaryCard.header.financial", summaryCard.penaltyPoint, CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(summaryCard.totalPenaltyAmount))
+              } else if(summaryCard.isFinancialPoint) {
+                  messages("summaryCard.header.financialNoNumber", CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(summaryCard.totalPenaltyAmount))
+              } else {
+                  messages("summaryCard.header", summaryCard.penaltyPoint)
+              }
             }
         </h3>
         <div class="app-summary-card__tag">
