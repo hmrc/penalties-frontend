@@ -16,7 +16,7 @@
 
 package controllers
 
-import base.SpecBase
+import base.{LogCapturing, SpecBase}
 import config.featureSwitches.FeatureSwitching
 import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import models.lpp._
@@ -30,6 +30,8 @@ import services.PenaltiesService
 import testUtils.AuthTestModels
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
+import utils.Logger.logger
+import utils.PagerDutyHelper.PagerDutyKeys
 import viewmodels.CalculationPageHelper
 import views.html.{CalculationLPP2View, CalculationLPPView}
 
@@ -37,7 +39,7 @@ import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CalculationControllerSpec extends SpecBase with FeatureSwitching {
+class CalculationControllerSpec extends SpecBase with FeatureSwitching with LogCapturing {
   val calculationView: CalculationLPPView = injector.instanceOf[CalculationLPPView]
   val calculationAdditionalView: CalculationLPP2View = injector.instanceOf[CalculationLPP2View]
   val mockPenaltiesService: PenaltiesService = mock(classOf[PenaltiesService])
@@ -240,6 +242,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
         val result: Future[Result] = Controller.onPageLoad("12345678901234", "LPP1")(fakeRequest)
         status(result) shouldBe OK
       }
+
       "show an ISE when the penalty ID specified returns an empty payload" in new Setup(AuthTestModels.successfulAuthResult, isFSEnabled = true) {
         when(mockPenaltiesService.getPenaltyDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(Right(emptyPenaltyDetailsPayload)))
@@ -253,8 +256,12 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
           when(mockPenaltiesService.getPenaltyDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
             .thenReturn(Future.successful(Right(penaltyDetailsPayloadNo15Or30DayAmount)))
 
-          val result: Future[Result] = Controller.onPageLoad("12345678901234", "LPP1")(fakeRequest)
-          status(result) shouldBe INTERNAL_SERVER_ERROR
+          withCaptureOfLoggingFrom(logger) {
+            logs =>
+              val result: Result = await(Controller.onPageLoad("12345678901234", "LPP1")(fakeRequest))
+              logs.exists(_.getMessage.contains(PagerDutyKeys.INVALID_DATA_RETURNED_FOR_CALCULATION_ROW.toString)) shouldBe true
+              result.header.status shouldBe INTERNAL_SERVER_ERROR
+          }
         }
 
       "show an ISE when the user specifies a penalty ID not found with model API1812 enabled" in
@@ -262,8 +269,12 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching {
           when(mockPenaltiesService.getPenaltyDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
             .thenReturn(Future.successful(Right(penaltyDetailsPayload)))
 
-          val result: Future[Result] = Controller.onPageLoad("1234", "LPP1")(fakeRequest)
-          status(result) shouldBe INTERNAL_SERVER_ERROR
+          withCaptureOfLoggingFrom(logger) {
+            logs =>
+              val result: Result = await(Controller.onPageLoad("1234", "LPP1")(fakeRequest))
+              logs.exists(_.getMessage.contains(PagerDutyKeys.EMPTY_PENALTY_BODY.toString)) shouldBe true
+              result.header.status shouldBe INTERNAL_SERVER_ERROR
+          }
         }
     }
 

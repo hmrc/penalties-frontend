@@ -21,6 +21,8 @@ import play.api.http.Status._
 import play.api.libs.json.JsSuccess
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 import utils.Logger.logger
+import utils.PagerDutyHelper
+import utils.PagerDutyHelper.PagerDutyKeys._
 
 object PenaltiesConnectorParser {
   type GetPenaltyDetailsResponse = Either[ErrorResponse, GetPenaltyDetails]
@@ -34,6 +36,7 @@ object PenaltiesConnectorParser {
             case failure => {
               logger.debug(s"[GetPenaltyDetailsResponseReads][read]: Failed to parse to model - failures: $failure")
               logger.error("[GetPenaltyDetailsResponseReads][read]: Failed to parse to model")
+              PagerDutyHelper.log("PenaltiesConnectorParser: GetPenaltyDetailsResponseReads", INVALID_JSON_RECEIVED_FROM_PENALTIES_BACKEND)
               Left(InvalidJson)
             }
           }
@@ -42,8 +45,11 @@ object PenaltiesConnectorParser {
           Right(GetPenaltyDetails(None, None, None))
         case BAD_REQUEST =>
           logger.debug(s"[GetPenaltyDetailsResponseReads][read]: Bad request returned with reason: ${response.body}")
+          PagerDutyHelper.log("PenaltiesConnectorParser: GetPenaltyDetailsResponseReads", RECEIVED_4XX_FROM_PENALTIES_BACKEND)
           Left(BadRequest)
         case status => logger.warn(s"[GetPenaltyDetailsResponseReads][read]: Unexpected response, status $status returned with reason: ${response.body}")
+          PagerDutyHelper.logStatusCode("PenaltiesConnectorParser: GetPenaltyDetailsResponseReads", status)(
+            RECEIVED_4XX_FROM_PENALTIES_BACKEND, RECEIVED_5XX_FROM_PENALTIES_BACKEND)
           Left(UnexpectedFailure(status, s"Unexpected response, status $status returned"))
       }
     }

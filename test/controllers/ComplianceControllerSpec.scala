@@ -16,7 +16,7 @@
 
 package controllers
 
-import base.SpecBase
+import base.{LogCapturing, SpecBase}
 import org.mockito.Matchers
 import org.mockito.Matchers._
 import org.mockito.Mockito.{mock, reset, when}
@@ -26,13 +26,15 @@ import services.ComplianceService
 import testUtils.AuthTestModels
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
+import utils.Logger.logger
+import utils.PagerDutyHelper.PagerDutyKeys
 import utils.SessionKeys
 import viewmodels.TimelineHelper
 import views.html.ComplianceView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ComplianceControllerSpec extends SpecBase {
+class ComplianceControllerSpec extends SpecBase with LogCapturing {
   val mockComplianceService: ComplianceService = mock(classOf[ComplianceService])
   val page: ComplianceView = injector.instanceOf[ComplianceView]
   override val timelineHelper: TimelineHelper = injector.instanceOf[TimelineHelper]
@@ -71,8 +73,13 @@ class ComplianceControllerSpec extends SpecBase {
 
       "return ISE - if the service returns None" in new Setup(AuthTestModels.successfulAuthResult) {
         when(mockComplianceService.getDESComplianceData(any())(any(), any(), any(), any())).thenReturn(Future.successful(None))
-        val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
-        status(result) shouldBe INTERNAL_SERVER_ERROR
+
+        withCaptureOfLoggingFrom(logger) {
+          logs =>
+            val result: Result = await(Controller.onPageLoad()(fakeRequest))
+            logs.exists(_.getMessage.contains(PagerDutyKeys.NO_DATA_RETURNED_FROM_COMPLIANCE.toString)) shouldBe true
+            result.header.status shouldBe INTERNAL_SERVER_ERROR
+        }
       }
 
       "return ISE (exception thrown) - try retrieving the compliance data but failing" in new Setup(AuthTestModels.successfulAuthResult) {

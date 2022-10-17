@@ -16,7 +16,7 @@
 
 package connectors
 
-import base.SpecBase
+import base.{LogCapturing, SpecBase}
 import config.AppConfig
 import config.featureSwitches.FeatureSwitching
 import connectors.httpParsers.PenaltiesConnectorParser.GetPenaltyDetailsResponse
@@ -25,15 +25,17 @@ import org.mockito.Mockito._
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
+import utils.Logger.logger
+import utils.PagerDutyHelper.PagerDutyKeys
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching {
+class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching with LogCapturing {
   implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
   val mockHttpClient: HttpClient = mock(classOf[HttpClient])
   val mockAppConfig: AppConfig = mock(classOf[AppConfig])
 
-  class Setup(isFSEnabled: Boolean = false) {
+  class Setup {
     reset(mockHttpClient)
     reset(mockAppConfig)
 
@@ -43,16 +45,16 @@ class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching {
 
   "getPenaltyDetails" should {
     "return a successful response when the call succeeds and the body can be parsed" when {
-      "UseAPI1811Model is enabled" in new Setup(true) {
+      "UseAPI1811Model is enabled" in new Setup {
         when(mockHttpClient.GET[GetPenaltyDetailsResponse](any(), any(), any())
           (any(), any(), any())).thenReturn(Future.successful(Right(samplePenaltyDetailsModel)))
 
-        val result = await(connector.getPenaltyDetails(vrn)(vatTraderUser, HeaderCarrier()))
+        val result: GetPenaltyDetailsResponse = await(connector.getPenaltyDetails(vrn)(vatTraderUser, HeaderCarrier()))
         result.isRight shouldBe true
         result shouldBe Right(samplePenaltyDetailsModel)
       }
 
-      "UseAPI1811Model is disabled" in new Setup() {
+      "UseAPI1811Model is disabled" in new Setup {
         when(mockHttpClient.GET[GetPenaltyDetailsResponse](any(), any(), any())
           (any(), any(), any())).thenReturn(Future.successful(Right(samplePenaltyDetailsModelWithoutMetadata)))
 
@@ -62,16 +64,57 @@ class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching {
       }
     }
 
-    "return an error when an error occurs upstream" in new Setup{
-      when(mockHttpClient.GET[GetPenaltyDetailsResponse](any(),
-        any(),
-        any())
-        (any(),
+    "return a Left when" when {
+      "an exception with status 4xx occurs upstream" in new Setup {
+        when(mockHttpClient.GET[GetPenaltyDetailsResponse](any(),
           any(),
-          any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", INTERNAL_SERVER_ERROR)))
+          any())
+          (any(),
+            any(),
+            any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", BAD_REQUEST)))
 
-      val result: Exception = intercept[Exception](await(connector.getPenaltyDetails("123456789")(vatTraderUser, HeaderCarrier())))
-      result.getMessage shouldBe "Upstream error"
+        withCaptureOfLoggingFrom(logger) {
+          logs => {
+            val result = await(connector.getPenaltyDetails("123456789")(vatTraderUser, HeaderCarrier()))
+            logs.exists(_.getMessage.contains(PagerDutyKeys.RECEIVED_4XX_FROM_PENALTIES_BACKEND.toString)) shouldBe true
+            result.isLeft shouldBe true
+          }
+        }
+      }
+
+      "an exception with status 5xx occurs upstream is returned" in new Setup {
+        when(mockHttpClient.GET[GetPenaltyDetailsResponse](any(),
+          any(),
+          any())
+          (any(),
+            any(),
+            any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", INTERNAL_SERVER_ERROR)))
+
+        withCaptureOfLoggingFrom(logger) {
+          logs => {
+            val result = await(connector.getPenaltyDetails("123456789")(vatTraderUser, HeaderCarrier()))
+            logs.exists(_.getMessage.contains(PagerDutyKeys.RECEIVED_5XX_FROM_PENALTIES_BACKEND.toString)) shouldBe true
+            result.isLeft shouldBe true
+          }
+        }
+      }
+
+      "an exception is returned" in new Setup {
+        when(mockHttpClient.GET[GetPenaltyDetailsResponse](any(),
+          any(),
+          any())
+          (any(),
+            any(),
+            any())).thenReturn(Future.failed(new Exception("")))
+
+        withCaptureOfLoggingFrom(logger){
+          logs =>
+            val result = await(connector.getPenaltyDetails("123456789")(vatTraderUser, HeaderCarrier()))
+            logs.exists(_.getMessage.contains(PagerDutyKeys.UNEXPECTED_ERROR_FROM_PENALTIES_BACKEND.toString)) shouldBe true
+            result.isLeft shouldBe true
+        }
+      }
     }
+
   }
 }

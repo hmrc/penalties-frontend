@@ -16,20 +16,20 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
-import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.ComplianceService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
-import utils.{CurrencyFormatter, ImplicitDateFormatter, SessionKeys}
+import utils.PagerDutyHelper.PagerDutyKeys.NO_DATA_RETURNED_FROM_COMPLIANCE
+import utils.{CurrencyFormatter, ImplicitDateFormatter, PagerDutyHelper, SessionKeys}
 import viewmodels.TimelineHelper
 import views.html.ComplianceView
 
+import java.time.LocalDate
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class ComplianceController @Inject()(view: ComplianceView,
@@ -46,6 +46,7 @@ class ComplianceController @Inject()(view: ComplianceView,
     complianceService.getDESComplianceData(request.vrn).map {
       _.fold({
         logger.error("[ComplianceController][onPageLoad] - Received None from compliance service")
+        PagerDutyHelper.log("ComplianceController: onPageLoad", NO_DATA_RETURNED_FROM_COMPLIANCE)
         errorHandler.showInternalServerError
       })(
         complianceData => {
