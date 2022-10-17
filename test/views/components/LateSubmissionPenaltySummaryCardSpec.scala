@@ -744,12 +744,6 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         docWithFinancialPointAppealRejected.select("dt").get(3).text() shouldBe "Appeal status"
         docWithFinancialPointAppealRejected.select("dd").get(3).text() shouldBe "Appeal rejected"
       }
-      //TODO: Reinstated to be implmented
-
-      "have the appeal status for REINSTATED" ignore {
-        docWithFinancialPointAppealReinstated.select("dt").get(3).text() shouldBe "Appeal status"
-        docWithFinancialPointAppealReinstated.select("dd").get(3).text() shouldBe "Appeal outcome changed"
-      }
 
       "have the appeal status for UNDER_TRIBUNAL_REVIEW" in {
         docWithFinancialPointAppealUnderTribunalReview.select("dt").get(3).text() shouldBe "Appeal status"

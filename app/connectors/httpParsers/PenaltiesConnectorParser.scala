@@ -32,7 +32,9 @@ object PenaltiesConnectorParser {
       response.status match {
         case OK =>
           response.json.validate[GetPenaltyDetails](GetPenaltyDetails.format) match {
-            case JsSuccess(model, _) => Right(model)
+            case JsSuccess(model, _) =>
+              logger.info("[GetPenaltyDetailsResponseReads][read]: Successful call to retrieve penalties details.")
+              Right(model)
             case failure => {
               logger.debug(s"[GetPenaltyDetailsResponseReads][read]: Failed to parse to model - failures: $failure")
               logger.error("[GetPenaltyDetailsResponseReads][read]: Failed to parse to model")
@@ -41,13 +43,13 @@ object PenaltiesConnectorParser {
             }
           }
         case NO_CONTENT =>
-          logger.debug(s"[GetPenaltyDetailsResponseReads][read]: No content found for VRN provided, returning empty model")
+          logger.info(s"[GetPenaltyDetailsResponseReads][read]: No content found for VRN provided, returning empty model")
           Right(GetPenaltyDetails(None, None, None))
         case BAD_REQUEST =>
-          logger.debug(s"[GetPenaltyDetailsResponseReads][read]: Bad request returned with reason: ${response.body}")
+          logger.error(s"[GetPenaltyDetailsResponseReads][read]: Bad request returned with reason: ${response.body}")
           PagerDutyHelper.log("PenaltiesConnectorParser: GetPenaltyDetailsResponseReads", RECEIVED_4XX_FROM_PENALTIES_BACKEND)
           Left(BadRequest)
-        case status => logger.warn(s"[GetPenaltyDetailsResponseReads][read]: Unexpected response, status $status returned with reason: ${response.body}")
+        case status => logger.error(s"[GetPenaltyDetailsResponseReads][read]: Unexpected response, status $status returned with reason: ${response.body}")
           PagerDutyHelper.logStatusCode("PenaltiesConnectorParser: GetPenaltyDetailsResponseReads", status)(
             RECEIVED_4XX_FROM_PENALTIES_BACKEND, RECEIVED_5XX_FROM_PENALTIES_BACKEND)
           Left(UnexpectedFailure(status, s"Unexpected response, status $status returned"))

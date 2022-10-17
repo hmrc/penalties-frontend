@@ -45,7 +45,7 @@ class ComplianceController @Inject()(view: ComplianceView,
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
     complianceService.getDESComplianceData(request.vrn).map {
       _.fold({
-        logger.error("[ComplianceController][onPageLoad] - Received None from compliance service")
+        logger.error("[ComplianceController][onPageLoad] - Received None from compliance service, rendering ISE.")
         PagerDutyHelper.log("ComplianceController: onPageLoad", NO_DATA_RETURNED_FROM_COMPLIANCE)
         errorHandler.showInternalServerError
       })(

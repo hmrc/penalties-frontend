@@ -18,7 +18,7 @@ package services
 
 import config.AppConfig
 import config.featureSwitches.FeatureSwitching
-import connectors.ComplianceConnector
+import connectors.PenaltiesConnector
 import models.User
 import models.compliance.CompliancePayload
 import uk.gov.hmrc.http.HeaderCarrier
@@ -30,7 +30,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ComplianceService @Inject()(connector: ComplianceConnector)(implicit val appConfig: AppConfig) extends FeatureSwitching {
+class ComplianceService @Inject()(connector: PenaltiesConnector)(implicit val appConfig: AppConfig) extends FeatureSwitching {
 
   def getDESComplianceData(vrn: String)(implicit hc: HeaderCarrier, user: User[_],
                                         ec: ExecutionContext, pocAchievementDate: Option[LocalDate] = None): Future[Option[CompliancePayload]] = {
@@ -38,10 +38,11 @@ class ComplianceService @Inject()(connector: ComplianceConnector)(implicit val a
     pocAchievementDate.orElse(pocAchievementDateFromSession) match {
       case Some(pocAchievementDate) => {
         val fromDate = pocAchievementDate.minusYears(2)
-        connector.getComplianceDataFromDES(vrn, fromDate, pocAchievementDate).map {
-          complianceData => {
-            logger.debug(s"[ComplianceService][getDESComplianceData] - Compliance Data  $complianceData")
-            Some(complianceData)
+        connector.getObligationData(vrn, fromDate, pocAchievementDate).map {
+          obligationData => {
+            logger.debug(s"[ComplianceService][getDESComplianceData] - Successful call to get obligation data,  obligation data = $obligationData")
+            logger.info(s"[ComplianceService][getDESComplianceData] - Successful call to get obligation data.")
+            Some(obligationData)
           }
         }
       }
