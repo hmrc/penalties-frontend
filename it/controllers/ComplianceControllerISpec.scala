@@ -218,6 +218,32 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.body().toString.contains("September 2022") shouldBe true
       }
 
+      "for a monthly filer" in {
+        ComplianceStub.complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
+        val request = controller.onPageLoad()(fakeRequest)
+        status(request) shouldBe OK
+        val parsedBody = Jsoup.parse(contentAsString(request))
+        parsedBody.body().toString.contains("If you miss a return deadline, you will have to submit 6 more returns on time before we can remove your points.") shouldBe true
+      }
+
+      "for a quarterly filer" in {
+        ComplianceStub.complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
+        val quarterlyFilerFakeRequest = fakeRequest.withSession(SessionKeys.regimeThreshold -> "4")
+        val request = controller.onPageLoad()(quarterlyFilerFakeRequest)
+        status(request) shouldBe OK
+        val parsedBody = Jsoup.parse(contentAsString(request))
+        parsedBody.body().toString.contains("If you miss a return deadline, you will have to submit 4 more returns on time before we can remove your points.") shouldBe true
+      }
+
+      "for a annual filer" in {
+        ComplianceStub.complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
+        val annualFilerFakeRequest = fakeRequest.withSession(SessionKeys.regimeThreshold -> "2")
+        val request = controller.onPageLoad()(annualFilerFakeRequest)
+        status(request) shouldBe OK
+        val parsedBody = Jsoup.parse(contentAsString(request))
+        parsedBody.body().toString.contains("If you miss a return deadline, you will have to submit 2 more returns on time before we can remove your points.") shouldBe true
+      }
+
       "an agent is present" in {
         AuthStub.agentAuthorised()
         ComplianceStub.complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
@@ -226,7 +252,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         val parsedBody = Jsoup.parse(contentAsString(request))
         parsedBody.body().toString.contains("Points to be removed:") shouldBe true
         parsedBody.body().toString.contains("January 2024") shouldBe true
-        parsedBody.body().toString.contains("If your client misses a return deadline, they will have to submit 5 more returns on time before we can remove their points.") shouldBe true
+        parsedBody.body().toString.contains("If your client misses a return deadline, they will have to submit 6 more returns on time before we can remove their points.") shouldBe true
       }
     }
 
