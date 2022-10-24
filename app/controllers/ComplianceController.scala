@@ -54,10 +54,15 @@ class ComplianceController @Inject()(view: ComplianceView,
           val parsedPOCAchievementDate: String = dateToMonthYearString(pocAchievementDate)
           val timelineContent = timelineHelper.getTimelineContent(complianceData)
           val regimeThreshold =  request.session.get(SessionKeys.regimeThreshold).get
+          val amountOfSubmissionsNeededIfMissed = regimeThreshold match {
+            //Monthly filer needs to submit 6 submissions on time - different from other frequencies
+            case "5" => "6"
+            case x => x
+          }
           Ok(view(
             timelineContent,
             parsedPOCAchievementDate,
-            regimeThreshold
+            amountOfSubmissionsNeededIfMissed
           ))
         }
       )
