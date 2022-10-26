@@ -59,9 +59,9 @@
             <p class="govuk-body">@getMessage("whatIsOwed.p1")</p>
             @breakdownContent
             @if(user.isAgent) {
-              @link("#", "whatIsOwed.button.checkAmounts", button = true, classes = "govuk-button")
+              @link(appConfig.whatYouOweUrl, "whatIsOwed.button.checkAmounts", button = true, classes = "govuk-button")
             } else {
-              @link("#", "whatIsOwed.button.checkAndPay", button = true, classes = "govuk-button")
+              @link(appConfig.whatYouOweUrl, "whatIsOwed.button.checkAndPay", button = true, classes = "govuk-button")
             }
 
             @if(!user.isAgent) {

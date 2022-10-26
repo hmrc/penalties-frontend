@@ -39,6 +39,8 @@ class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesCon
 
   lazy val signInUrl: String = config.get[String]("signIn.url")
 
+  lazy val whatYouOweUrl: String = config.get[String]("whatYouOwe.url")
+
   lazy val signInContinueBaseUrl: String = config.get[String]("signIn.continueBaseUrl")
 
   lazy val signInContinueUrl: String = SafeRedirectUrl(signInContinueBaseUrl + controllers.routes.IndexController.onPageLoad.url).encodedUrl

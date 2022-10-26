@@ -129,4 +129,7 @@ object IndexMessages {
   def lspMultiplePenaltyPeriodMessage(dueDate : String) = s"The VAT Return due on $dueDate was also submitted late. <br> HMRC only applies 1 penalty for late submission in each month."
 
   val betaFeedbackContent = "This is a new service - your feedback will help us to improve it."
+
+  val whatYouOweButtonText = "Check amounts and pay"
+  val whatYouOweButtonAgentText = "Check amounts"
 }

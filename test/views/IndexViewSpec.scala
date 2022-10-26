@@ -18,26 +18,45 @@ package views
 
 import assets.messages.IndexMessages._
 import base.{BaseSelectors, SpecBase}
+import models.{GetPenaltyDetails, Totalisations}
 import org.jsoup.nodes.Document
 import play.twirl.api.HtmlFormat
 import utils.ViewUtils
+import viewmodels.IndexPageHelper
 import views.behaviours.ViewBehaviours
 import views.html.IndexView
 
 class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours {
   val indexPage: IndexView = injector.instanceOf[IndexView]
+  val helper: IndexPageHelper = injector.instanceOf[IndexPageHelper]
 
 
   object Selectors extends BaseSelectors {
     val betaFeedbackBannerText =  "body > div > div.govuk-phase-banner > p > span"
 
     val timeToPayParagraph: Int => String = (index: Int) => s"#time-to-pay > p:nth-child($index)"
+
+    val whatYouOweButton = "#what-is-owed > a"
   }
 
   "Index View" should {
 
-    def applyView(isTTPActive: Boolean = false, isUserAgent: Boolean = false): HtmlFormat.Appendable = {
-      indexPage.apply(html(), html(), Seq.empty, None, "", isTTPActive = isTTPActive)(implicitly, implicitly, if(isUserAgent) agentUser else vatTraderUser)
+    val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
+      totalisations = Some(
+        Totalisations(
+          LSPTotalValue = Some(100),
+          penalisedPrincipalTotal = Some(223.45),
+          LPPPostedTotal = Some(0),
+          LPPEstimatedTotal = Some(0),
+          LPIPostedTotal = Some(0),
+          LPIEstimatedTotal = Some(0)
+        )
+      ), lateSubmissionPenalty = None, latePaymentPenalty = None
+    )
+
+    def applyView(isTTPActive: Boolean = false, isUserAgent: Boolean = false, userOwes: Boolean = false): HtmlFormat.Appendable = {
+      indexPage.apply(html(), html(), Seq.empty, None, "", isTTPActive = isTTPActive,
+        whatYouOweContent = if(!userOwes) None else helper.getWhatYouOweBreakdown(penaltyDetails))(implicitly, implicitly, if(isUserAgent) agentUser else vatTraderUser)
     }
 
     implicit val doc: Document = asDocument(applyView())
@@ -60,6 +79,20 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours {
       }
     }
 
+    "display button with correct text and link when user owes penalties" when {
+      "user is trader" in {
+        val docWithPenalties = asDocument(applyView(userOwes = true))
+        docWithPenalties.select(Selectors.button).text() shouldBe whatYouOweButtonText
+        docWithPenalties.select(Selectors.button).attr("href").contains("http://localhost:9152/vat-through-software/what-you-owe") shouldBe true
+      }
+
+      "user is agent" in {
+        val docWithPenalties = asDocument(applyView(userOwes = true, isUserAgent = true))
+        docWithPenalties.select(Selectors.button).text() shouldBe whatYouOweButtonAgentText
+        docWithPenalties.select(Selectors.button).attr("href").contains("http://localhost:9152/vat-through-software/what-you-owe") shouldBe true
+      }
+    }
+
     "display TTP (time to pay) content when a TTP is active (user is trader)" must {
       val expectedContent = Seq(
         Selectors.breadcrumbWithLink(1) -> breadcrumb1,
@@ -72,7 +105,7 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours {
         Selectors.betaFeedbackBannerText -> betaFeedbackContent
       )
 
-      behave like pageWithExpectedMessages(expectedContent)(asDocument(applyView(isTTPActive = true)))
+      behave like pageWithExpectedMessages(expectedContent)(asDocument(applyView(isTTPActive = true, userOwes = false)))
     }
 
     "display TTP (time to pay) content when a TTP is active (user is agent)" must {
@@ -85,7 +118,7 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours {
         Selectors.betaFeedbackBannerText -> betaFeedbackContent
       )
 
-      behave like pageWithExpectedMessages(expectedContent)(asDocument(applyView(isTTPActive = true, isUserAgent = true)))
+      behave like pageWithExpectedMessages(expectedContent)(asDocument(applyView(isTTPActive = true, isUserAgent = true, userOwes = false)))
     }
   }
 }
