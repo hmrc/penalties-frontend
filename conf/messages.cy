@@ -190,12 +190,12 @@ whatIsOwed.VATInterest.estimated = llog TAW amcangyfrifedig o £{0}
 whatIsOwed.VATInterest = llog TAW o £{0}
 whatIsOwed.allPenalties.interest.estimated = llog amcangyfrifedig o £{0} ar gosbau
 whatIsOwed.allPenalties.interest = llog o £{0} ar gosbau
-whatIsOwed.ttp.p1 = There is a payment plan set up on this account.
-whatIsOwed.ttp.p2 = You must keep up with all payments. If you do not, your payment plan will fail and any penalties will be calculated from their original date.
-agent.whatIsOwed.ttp.p2 = Your client must keep up with all payments. If they do not, their payment plan will fail and any penalties will be calculated from the original date.
-whatIsOwed.ttp.p3.link = Check what you owe
-agent.whatIsOwed.ttp.p3.link = Check what your client owes
-whatIsOwed.ttp.p3 = to see all unpaid charges.
+whatIsOwed.ttp.p1 = Mae cynllun talu wedi’i drefnu ar y cyfrif hwn.
+whatIsOwed.ttp.p2 = Mae’n rhaid i chi sicrhau eich bod yn gwneud pob taliad mewn pryd. Os na wnewch hynny, bydd eich cynllun talu yn methu a bydd unrhyw gosbau’n cael eu cyfrifo o adeg eu dyddiad gwreiddiol.
+agent.whatIsOwed.ttp.p2 = Mae’n rhaid i’ch cleient sicrhau ei fod yn gwneud pob taliad mewn pryd. Os na wnaiff hynny, bydd ei gynllun talu’n methu a bydd unrhyw gosbau’n cael eu cyfrifo o adeg eu dyddiad gwreiddiol.
+whatIsOwed.ttp.p3.link = Gwirio’r hyn sydd arnoch
+agent.whatIsOwed.ttp.p3.link = Gwirio’r hyn sydd ar eich cleient
+whatIsOwed.ttp.p3 = i fwrw golwg dros yr holl gostau sydd heb eu talu.
 
 # Calculation messages
 # ----------------------------------------------------------
