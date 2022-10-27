@@ -83,13 +83,13 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours {
       "user is trader" in {
         val docWithPenalties = asDocument(applyView(userOwes = true))
         docWithPenalties.select(Selectors.button).text() shouldBe whatYouOweButtonText
-        docWithPenalties.select(Selectors.button).attr("href").contains("http://localhost:9152/vat-through-software/what-you-owe") shouldBe true
+        docWithPenalties.select(Selectors.button).attr("href") shouldBe "http://localhost:9152/vat-through-software/what-you-owe"
       }
 
       "user is agent" in {
         val docWithPenalties = asDocument(applyView(userOwes = true, isUserAgent = true))
         docWithPenalties.select(Selectors.button).text() shouldBe whatYouOweButtonAgentText
-        docWithPenalties.select(Selectors.button).attr("href").contains("http://localhost:9152/vat-through-software/what-you-owe") shouldBe true
+        docWithPenalties.select(Selectors.button).attr("href") shouldBe "http://localhost:9152/vat-through-software/what-you-owe"
       }
     }
 
