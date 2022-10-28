@@ -16,7 +16,6 @@
 
 package viewmodels
 
-import models.User
 import models.appealInfo.AppealStatusEnum
 import models.lpp.MainTransactionEnum._
 import models.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum}
@@ -35,7 +34,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
 
   def populateLateSubmissionPenaltyCard(penalties: Seq[LSPDetails],
                                         threshold: Int, activePoints: Int)
-                                       (implicit messages: Messages, user: User[_]): Seq[LateSubmissionPenaltySummaryCard] = {
+                                       (implicit messages: Messages): Seq[LateSubmissionPenaltySummaryCard] = {
     val thresholdMet: Boolean = pointsThresholdMet(threshold, activePoints)
     val filteredActivePenalties: Seq[LSPDetails] = penalties.filter(_.penaltyStatus != LSPPenaltyStatusEnum.Inactive).reverse
     val indexedActivePoints = filteredActivePenalties.zipWithIndex
@@ -105,7 +104,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     else None
   }
 
-  def financialSummaryCard(penalty: LSPDetails, threshold: Int)(implicit messages: Messages, user: User[_]): LateSubmissionPenaltySummaryCard = {
+  def financialSummaryCard(penalty: LSPDetails, threshold: Int)(implicit messages: Messages): LateSubmissionPenaltySummaryCard = {
     val base = Seq(
       summaryListRow(
         messages("summaryCard.key1"),
@@ -143,7 +142,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   }
 
   private def buildFinancialSummaryCard(penalty: LSPDetails, threshold: Int, baseRows: Seq[SummaryListRow])
-                                       (implicit messages: Messages, user: User[_]): LateSubmissionPenaltySummaryCard = {
+                                       (implicit messages: Messages): LateSubmissionPenaltySummaryCard = {
     val appealStatus = penalty.appealInformation.flatMap(_.headOption.flatMap(_.appealStatus))
     val appealLevel = penalty.appealInformation.flatMap(_.headOption.flatMap(_.appealLevel))
     val appealInformationWithoutUnappealableStatus = penalty.appealInformation.map(_.filterNot(_.appealStatus.contains(AppealStatusEnum.Unappealable))).getOrElse(Seq.empty)
@@ -174,7 +173,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     if (penaltyNumberAsString.toInt > threshold) "" else penaltyNumberAsString.toInt.toString
   }
 
-  def pointSummaryCard(penalty: LSPDetails, thresholdMet: Boolean)(implicit messages: Messages, user: User[_]): LateSubmissionPenaltySummaryCard = {
+  def pointSummaryCard(penalty: LSPDetails, thresholdMet: Boolean)(implicit messages: Messages): LateSubmissionPenaltySummaryCard = {
     val cardBody = PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.lateSubmissions.get).head.returnReceiptDate match {
       case Some(_: LocalDate) => returnSubmittedCardBody(penalty, thresholdMet)
       case None => returnNotSubmittedCardBody(PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.lateSubmissions.get).head)
@@ -265,13 +264,13 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   def pointsThresholdMet(threshold: Int, activePoints: Int): Boolean = activePoints >= threshold
 
   def populateLatePaymentPenaltyCard(lpp: Option[Seq[LPPDetails]])
-                                    (implicit messages: Messages, user: User[_]): Option[Seq[LatePaymentPenaltySummaryCard]] = {
+                                    (implicit messages: Messages): Option[Seq[LatePaymentPenaltySummaryCard]] = {
     lpp.map {
       _.map(penalty => lppSummaryCard(penalty))
     }
   }
 
-  def lppSummaryCard(lpp: LPPDetails)(implicit messages: Messages, user: User[_]): LatePaymentPenaltySummaryCard = {
+  def lppSummaryCard(lpp: LPPDetails)(implicit messages: Messages): LatePaymentPenaltySummaryCard = {
     val cardBody = if (lpp.penaltyCategory == LPPPenaltyCategoryEnum.LPP2) lppAdditionalCardBody(lpp) else lppCardBody(lpp)
     val isPaid = lpp.penaltyAmountOutstanding.contains(BigDecimal(0))
     val isVatPaid = lpp.penaltyStatus == LPPPenaltyStatusEnum.Posted
@@ -287,7 +286,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   }
 
   private def returnAppealStatusMessageBasedOnPenalty(penaltyPoint: Option[LSPDetails], lpp: Option[LPPDetails])
-                                                     (implicit messages: Messages, user: User[_]): Html = {
+                                                     (implicit messages: Messages): Html = {
     val seqAppealInformation = if (penaltyPoint.isDefined) penaltyPoint.get.appealInformation else lpp.get.appealInformation
     val appealInformationWithoutUnappealableStatus = seqAppealInformation.map(_.filterNot(_.appealStatus.contains(AppealStatusEnum.Unappealable)))
     val appealStatus = appealInformationWithoutUnappealableStatus.get.headOption.flatMap(_.appealStatus).get

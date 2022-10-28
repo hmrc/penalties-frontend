@@ -31,15 +31,6 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
   def getPenaltyDataFromEnrolmentKey(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[GetPenaltyDetailsResponse] =
     connector.getPenaltyDetails(enrolmentKey)
 
-  private def findEstimatedVATInterestFromPayload(payload: GetPenaltyDetails): BigDecimal = {
-    //TODO Add interest mapping once known
-    0
-  }
-  private def findCrystalizedInterestFromPayload(payload: GetPenaltyDetails): BigDecimal = {
-    //TODO Add interest mapping once known
-    0
-  }
-
   def findOverdueVATFromPayload(payload: GetPenaltyDetails): BigDecimal = {
     payload.totalisations.flatMap(_.penalisedPrincipalTotal).getOrElse(0)
   }

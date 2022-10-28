@@ -24,7 +24,7 @@ import scala.collection.JavaConverters._
 
 trait LogCapturing {
 
-  def withCaptureOfLoggingFrom(logger: LogbackLogger)(body: (=> List[ILoggingEvent]) => Unit) {
+  def withCaptureOfLoggingFrom(logger: LogbackLogger)(body: (=> List[ILoggingEvent]) => Unit): Unit ={
     val appender = new ListAppender[ILoggingEvent]()
     appender.setContext(logger.getLoggerContext)
     appender.start()
@@ -34,7 +34,7 @@ trait LogCapturing {
     body(appender.list.asScala.toList)
   }
 
-  def withCaptureOfLoggingFrom(logger: LoggerLike)(body: (=> List[ILoggingEvent]) => Unit) {
+  def withCaptureOfLoggingFrom(logger: LoggerLike)(body: (=> List[ILoggingEvent]) => Unit): Unit = {
     withCaptureOfLoggingFrom(logger.logger.asInstanceOf[LogbackLogger])(body)
   }
 }

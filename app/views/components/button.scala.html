@@ -16,7 +16,7 @@
 
 @this(govukButton: GovukButton)
 
-@(msg: String, idForButton: String = "button-1")(implicit request: Request[_], messages: Messages)
+@(msg: String, idForButton: String = "button-1")(implicit messages: Messages)
 
 @govukButton(Button(
  attributes = Map("id" -> idForButton),

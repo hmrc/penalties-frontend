@@ -274,7 +274,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
 
   private def returnEstimatedMessageIfInterestMoreThanZero(interestAmount: BigDecimal, isEstimatedAmount: Boolean, msgKeyToApply: String)(implicit messages: Messages): Option[String] = {
     if (interestAmount > 0) {
-      (isEstimatedAmount, interestAmount.isWhole()) match {
+      (isEstimatedAmount, interestAmount.isWhole) match {
         case (true, true) => Some(messages(s"$msgKeyToApply.estimated", interestAmount))
         case (true, false) => Some(messages(s"$msgKeyToApply.estimated", "%,.2f".format(interestAmount)))
         case (false, false) => Some(messages(s"$msgKeyToApply", "%,.2f".format(interestAmount)))
