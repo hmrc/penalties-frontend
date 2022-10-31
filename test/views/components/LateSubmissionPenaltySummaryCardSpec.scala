@@ -340,7 +340,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       chargeAmount = Some(200),
       chargeOutstandingAmount = Some(200),
       chargeDueDate = Some(LocalDate.parse("2069-10-30"))
-    ), quarterlyThreshold)(implicitly, user)
+    ), quarterlyThreshold)(implicitly)
 
   val summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected: User[_] => LateSubmissionPenaltySummaryCard =
     (user: User[_]) => summaryCardHelper.financialSummaryCard(LSPDetails(
@@ -371,7 +371,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       chargeAmount = Some(200),
       chargeOutstandingAmount = Some(200),
       chargeDueDate = Some(LocalDate.parse("2069-10-30"))
-    ), quarterlyThreshold)(implicitly, user)
+    ), quarterlyThreshold)
 
   val summaryCardModelWithFinancialPointBelowThresholdAndAppealReinstated: User[_] => LateSubmissionPenaltySummaryCard =
     (user: User[_]) => summaryCardHelper.financialSummaryCard(LSPDetails(
@@ -402,7 +402,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       chargeAmount = Some(200),
       chargeOutstandingAmount = Some(200),
       chargeDueDate = Some(LocalDate.parse("2069-10-30"))
-    ), quarterlyThreshold)(implicitly, user)
+    ), quarterlyThreshold)(implicitly)
 
   val summaryCardModelWithFinancialPointBelowThresholdAndAppealUnderTribunalReview: LateSubmissionPenaltySummaryCard =
     summaryCardHelper.financialSummaryCard(LSPDetails(
@@ -464,7 +464,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       chargeAmount = Some(200),
       chargeOutstandingAmount = Some(200),
       chargeDueDate = Some(LocalDate.parse("2069-10-30"))
-    ), quarterlyThreshold)(implicitly, user)
+    ), quarterlyThreshold)(implicitly)
 
   val summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalAccepted: User[_] => LateSubmissionPenaltySummaryCard =
     (user: User[_]) => summaryCardHelper.financialSummaryCard(LSPDetails(
@@ -495,7 +495,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       chargeAmount = Some(200),
       chargeOutstandingAmount = Some(200),
       chargeDueDate = Some(LocalDate.parse("2069-10-30"))
-    ), quarterlyThreshold)(implicitly, user)
+    ), quarterlyThreshold)(implicitly)
 
   val summaryCardModelWithFinancialLSP: Boolean => LateSubmissionPenaltySummaryCard = (isSubmitted: Boolean) => summaryCardHelper.financialSummaryCard(LSPDetails(
     penaltyNumber = "12345678901234",
@@ -520,7 +520,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     chargeAmount = Some(200),
     chargeOutstandingAmount = Some(200),
     chargeDueDate = Some(LocalDate.parse("2069-10-30"))
-  ), annualThreshold)(implicitly, user)
+  ), annualThreshold)(implicitly)
 
   val summaryCardModelWithMultiplePenaltyPeriodLSP: LateSubmissionPenaltySummaryCard = summaryCardHelper.financialSummaryCard(LSPDetails(
     penaltyNumber = "12345678901234",
@@ -557,7 +557,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     chargeAmount = Some(200),
     chargeOutstandingAmount = Some(200),
     chargeDueDate = Some(LocalDate.parse("2069-10-30"))
-  ), annualThreshold)(implicitly, user)
+  ), annualThreshold)(implicitly)
 
   val summaryCardModelWithMultiplePenaltyPeriodLSPP: LateSubmissionPenaltySummaryCard = summaryCardHelper.pointSummaryCard(
     LSPDetails(
@@ -595,7 +595,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       chargeAmount = Some(200),
       chargeOutstandingAmount = Some(200),
       chargeDueDate = Some(LocalDate.parse("2069-10-30"))
-    ), true)(implicitly, user)
+    ), true)(implicitly)
 
 
   "summaryCard" when {
@@ -712,8 +712,6 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealAccepted(user)))
       val docWithFinancialPointAppealRejected: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected(user)))
-      val docWithFinancialPointAppealReinstated: Document =
-        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealReinstated(user)))
       val docWithFinancialPointAppealUnderTribunalReview: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealUnderTribunalReview))
       val docWithFinancialPointAppealTribunalRejected: Document =

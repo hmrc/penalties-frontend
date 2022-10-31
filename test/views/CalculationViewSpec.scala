@@ -68,7 +68,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           penaltyAmount = "50.50",
           amountReceived = "10.10",
           amountLeftToPay = "40.40"
-        )(implicitly, implicitly, implicitly, vatTraderUser)
+        )(implicitly, implicitly, vatTraderUser)
       }
 
       implicit val doc: Document = asDocument(applyView())
@@ -112,7 +112,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           dueDate = "17 October 2022",
           penaltyAmount = "50.50",
           amountReceived = "40.10",
-          amountLeftToPay = "10.40")(implicitly, implicitly, implicitly, vatTraderUser)
+          amountLeftToPay = "10.40")(implicitly, implicitly, vatTraderUser)
       }
 
       implicit val doc: Document = asDocument(applyView())
@@ -152,7 +152,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           "30 June 2022",
           "7 September 2022",
           warningPenaltyAmount = "",
-          warningDate = "")(implicitly, implicitly, implicitly, vatTraderUser)
+          warningDate = "")(implicitly, implicitly, vatTraderUser)
       }
 
       implicit val docWithOnlyOneCalculation: Document =
@@ -225,7 +225,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           "30 June 2022",
           "7 September 2022",
           warningPenaltyAmount = "800.00",
-          warningDate = "15 January 2023")(implicitly, implicitly, implicitly, vatTraderUser)
+          warningDate = "15 January 2023")(implicitly, implicitly, vatTraderUser)
       }
 
       implicit val docWithOnlyOneCalculation: Document =
@@ -269,7 +269,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           "30 June 2022",
           "7 September 2022",
           warningPenaltyAmount = "800",
-          warningDate = "15 January 2023")(implicitly, implicitly, implicitly, agentUser)
+          warningDate = "15 January 2023")(implicitly, implicitly, agentUser)
       }
 
       implicit val docWithOnlyOneCalculation: Document =
@@ -308,7 +308,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           dueDate = "17 October 2022",
           penaltyAmount = "50.50",
           amountReceived = "40.10",
-          amountLeftToPay = "10.40")(implicitly, implicitly, implicitly, agentUser)
+          amountLeftToPay = "10.40")(implicitly, implicitly, agentUser)
       }
 
       implicit val doc: Document = asDocument(applyView())
@@ -344,7 +344,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           dueDate = "17 October 2022",
           penaltyAmount = "50.50",
           amountReceived = "40.10",
-          amountLeftToPay = "10.40")(implicitly, implicitly, implicitly, agentUser)
+          amountLeftToPay = "10.40")(implicitly, implicitly, agentUser)
       }
 
       implicit val doc: Document = asDocument(applyView())
@@ -381,7 +381,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       penaltyAmount = "50.50",
       amountReceived = "10.10",
       amountLeftToPay = "40.40"
-    )(implicitly, implicitly, implicitly, vatTraderUser)
+    )(implicitly, implicitly, vatTraderUser)
     val doc: Document = asDocument(applyView())
 
     doc.select(Selector.betaFeedbackBannerText).text() shouldBe "This is a new service - your feedback will help us to improve it."

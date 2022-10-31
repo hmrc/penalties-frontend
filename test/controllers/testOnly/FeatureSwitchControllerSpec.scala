@@ -73,7 +73,7 @@ class FeatureSwitchControllerSpec extends SpecBase with FeatureSwitching {
       val result = controller.setTimeMachineDate(Some("2022-01-01"))(FakeRequest())
       status(result) shouldBe OK
       contentAsString(result) shouldBe s"Time machine set to: ${LocalDate.of(2022,1,1).toString}"
-      (sys.props get "TIME_MACHINE_NOW" get) shouldBe LocalDate.of(2022,1,1).toString
+      (sys.props get "TIME_MACHINE_NOW") shouldBe Some(LocalDate.of(2022,1,1).toString)
     }
 
     s"return $OK (OK) and the systems current date when no date is provided" in new Setup {

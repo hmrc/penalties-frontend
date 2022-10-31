@@ -75,14 +75,14 @@ class FeatureSwitchingSpec extends SpecBase with BeforeAndAfterAll with FeatureS
   "enableFeatureSwitch" should {
     s"set ${CallAPI1812ETMP.name} property to true" in new Setup {
       featureSwitching.enableFeatureSwitch(CallAPI1812ETMP)
-      (sys.props get CallAPI1812ETMP.name get) shouldBe "true"
+      (sys.props get CallAPI1812ETMP.name) shouldBe Some("true")
     }
   }
 
   "disableFeatureSwitch" should {
     s"set ${CallAPI1812ETMP.name} property to false" in new Setup {
       featureSwitching.disableFeatureSwitch(CallAPI1812ETMP)
-      (sys.props get CallAPI1812ETMP.name get) shouldBe "false"
+      (sys.props get CallAPI1812ETMP.name) shouldBe Some("false")
     }
   }
 

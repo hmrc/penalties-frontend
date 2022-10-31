@@ -36,7 +36,7 @@
         isUnpaidLSPExists: Boolean = false,
         isAnyUnpaidLSPAndNotSubmittedReturn: Boolean = false,
         isTTPActive: Boolean = false,
-        whatYouOweContent: Option[Html] = None)(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
+        whatYouOweContent: Option[Html] = None)(implicit messages: Messages, appConfig: AppConfig, user: User[_])
 
 @unableToPayTodayContent = {
   <p class="govuk-body">@getMessage("whatIsOwed.details.body.1") @link("#", "whatIsOwed.details.link.1", isExternal = true) @messages("whatIsOwed.details.body.2")</p>

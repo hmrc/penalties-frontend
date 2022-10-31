@@ -37,7 +37,7 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours {
   "Index View" should {
 
     def applyView(isTTPActive: Boolean = false, isUserAgent: Boolean = false): HtmlFormat.Appendable = {
-      indexPage.apply(html(), html(), Seq.empty, None, "", isTTPActive = isTTPActive)(implicitly, implicitly, implicitly, if(isUserAgent) agentUser else vatTraderUser)
+      indexPage.apply(html(), html(), Seq.empty, None, "", isTTPActive = isTTPActive)(implicitly, implicitly, if(isUserAgent) agentUser else vatTraderUser)
     }
 
     implicit val doc: Document = asDocument(applyView())

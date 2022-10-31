@@ -20,7 +20,6 @@ import assets.messages.ComplianceMessages._
 import assets.messages.IndexMessages.{breadcrumb1, breadcrumb2, breadcrumb3}
 import base.{BaseSelectors, SpecBase}
 import org.jsoup.nodes.Document
-import play.api.test.FakeRequest
 import play.twirl.api.{Html, HtmlFormat}
 import utils.ViewUtils
 import viewmodels.TimelineEvent
@@ -71,7 +70,7 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
     "when a VAT trader is on the page" must {
       def applyView(timelineContent: Html, periodOfComplianceAchievementDate: String, threshold: String): HtmlFormat.Appendable = {
-        compliancePage.apply(timelineContent, periodOfComplianceAchievementDate, threshold)(fakeRequest, implicitly, implicitly, vatTraderUser)
+        compliancePage.apply(timelineContent, periodOfComplianceAchievementDate, threshold)(implicitly, implicitly, vatTraderUser)
       }
 
       implicit val docWithMissingReturns: Document =
@@ -117,7 +116,7 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
     "when a agent is on the page" must {
       def applyView(timelineContent: Html, periodOfComplianceAchievementDate: String, threshold: String): HtmlFormat.Appendable = {
-        compliancePage.apply(timelineContent, periodOfComplianceAchievementDate, threshold)(implicitly, implicitly, implicitly, agentUser)
+        compliancePage.apply(timelineContent, periodOfComplianceAchievementDate, threshold)(implicitly, implicitly, agentUser)
       }
 
       implicit val agentDocWithMissingReturns: Document =
@@ -141,7 +140,7 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
     }
 
     "have a beta banner with the feedback correct content and a link with the 'backURL' queryParam" in {
-      def applyView(): HtmlFormat.Appendable = compliancePage.apply(html(), "", "")(implicitly, implicitly, implicitly, vatTraderUser)
+      def applyView(): HtmlFormat.Appendable = compliancePage.apply(html(), "", "")(implicitly, implicitly, vatTraderUser)
       val doc: Document = asDocument(applyView())
 
       doc.select(Selectors.betaFeedbackBannerText).text() shouldBe "This is a new service - your feedback will help us to improve it."

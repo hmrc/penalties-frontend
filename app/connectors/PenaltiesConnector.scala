@@ -25,8 +25,7 @@ import models.User
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import utils.Logger.logger
 import play.api.http.Status.INTERNAL_SERVER_ERROR
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
-import utils.Logger.logger
+import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.PagerDutyHelper
 import utils.PagerDutyHelper.PagerDutyKeys._
 

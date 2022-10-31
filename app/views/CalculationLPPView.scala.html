@@ -35,7 +35,7 @@
         dueDate: String,
         warningPenaltyAmount: String,
         warningDate: String
-)(implicit request: Request[_], messages: Messages, appConfig: AppConfig, user: User[_])
+)(implicit messages: Messages, appConfig: AppConfig, user: User[_])
 
 @layout(pageTitle = messages("calculation.headingAndTitle.lpp"),
   isPageFullWidth = false,
