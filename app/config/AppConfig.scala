@@ -36,6 +36,7 @@ class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesCon
   lazy val vatOverviewUrlAgent: String = servicesConfig.getString("urls.vatAgentClientLookUp")
   lazy val btaUrl: String = config.get[String]("urls.btaHomepage")
   lazy val penaltiesUrl: String = s"${servicesConfig.baseUrl("penalties")}/penalties"
+  lazy val whatYouOweUrl: String = config.get[String]("urls.whatYouOwe")
 
   lazy val signInUrl: String = config.get[String]("signIn.url")
 
