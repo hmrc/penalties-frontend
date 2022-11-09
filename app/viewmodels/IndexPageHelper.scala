@@ -226,8 +226,6 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
         penalty.chargeOutstandingAmount.exists(_ > BigDecimal(0))
     )).map(_.size).getOrElse(0)
     val estimatedVATInterest = penaltiesService.findEstimatedVATInterest(penaltyDetails)
-    val penaltiesCrystalizedInterest = penaltiesService.findCrystalizedPenaltiesInterest(penaltyDetails)
-    val penaltiesEstimatedInterest = penaltiesService.findEstimatedPenaltiesInterest(penaltyDetails)
     val singularOrPluralAmountOfLSPs = if (totalNumberOfLSPs > 1) {
       returnEstimatedMessageIfInterestMoreThanZero(totalAmountOfLSPs, isEstimatedAmount = false, "whatIsOwed.amountOfLSPs.plural")
     } else {
@@ -239,7 +237,6 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       returnEstimatedMessageIfInterestMoreThanZero(estimatedVATInterest._1, estimatedVATInterest._2, "whatIsOwed.VATInterest"),
       returnEstimatedMessageIfInterestMoreThanZero(crystallisedLPPAmount, isEstimatedAmount = false, "whatIsOwed.lppAmount"),
       returnEstimatedMessageIfInterestMoreThanZero(estimatedLPPAmount, isEstimatedAmount = true, "whatIsOwed.lppAmount"),
-      returnEstimatedMessageIfInterestMoreThanZero(penaltiesCrystalizedInterest + penaltiesEstimatedInterest, penaltiesEstimatedInterest > BigDecimal(0), "whatIsOwed.allPenalties.interest"),
       singularOrPluralAmountOfLSPs,
       //TODO implement Other penalties mapping
       returnMessageIfOtherUnrelatedPenalties(false, "whatIsOwed.otherPenalties")

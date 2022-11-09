@@ -57,14 +57,6 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
     false
   }
 
-  def findCrystalizedPenaltiesInterest(payload: GetPenaltyDetails): BigDecimal = {
-    payload.totalisations.flatMap(_.LPIPostedTotal).getOrElse(0)
-  }
-
-  def findEstimatedPenaltiesInterest(payload: GetPenaltyDetails): BigDecimal = {
-    payload.totalisations.flatMap(_.LPIEstimatedTotal).getOrElse(0)
-  }
-
   def isAnyLSPUnpaidAndSubmissionIsDue(penaltyPoints: Seq[LSPDetails]): Boolean = {
     filterOutAppealedPenalties(penaltyPoints).exists(details => {
       details.chargeOutstandingAmount.exists(_ > BigDecimal(0)) && details.lateSubmissions.exists(_.exists(_.taxReturnStatus == TaxReturnStatusEnum.Open))

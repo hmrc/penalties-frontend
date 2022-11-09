@@ -53,9 +53,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       LSPTotalValue = Some(BigDecimal(200)),
       penalisedPrincipalTotal = Some(BigDecimal(2000)),
       LPPPostedTotal = Some(BigDecimal(165.25)),
-      LPPEstimatedTotal = Some(BigDecimal(15.26)),
-      LPIPostedTotal = Some(BigDecimal(1968.2)),
-      LPIEstimatedTotal = Some(BigDecimal(7))
+      LPPEstimatedTotal = Some(BigDecimal(15.26))
     )),
     lateSubmissionPenalty = Some(
       LateSubmissionPenalty(
@@ -75,7 +73,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
           penaltyCreationDate = LocalDate.parse("2069-10-30"),
           penaltyExpiryDate = LocalDate.parse("2069-10-30"),
           expiryReason = Some(ExpiryReasonEnum.Adjustment),
-          communicationsDate = LocalDate.parse("2069-10-30"),
+          communicationsDate = Some(LocalDate.parse("2069-10-30")),
           lateSubmissions = Some(Seq(
             LateSubmission(
               taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
@@ -112,9 +110,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         LPP2Percentage = Some(4.00),
         LPP1LRPercentage = Some(2.00),
         LPP1HRPercentage = Some(2.00),
-        penaltyChargeCreationDate = LocalDate.parse("2069-10-30"),
-        communicationsDate = LocalDate.parse("2069-10-30"),
-        penaltyChargeDueDate = LocalDate.parse("2021-03-08"),
+        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
+        communicationsDate = Some(LocalDate.parse("2069-10-30")),
+        penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
           appealLevel =  Some(AppealLevelEnum.HMRC)
@@ -149,9 +147,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         LPP2Percentage = None,
         LPP1LRPercentage = Some(2.00),
         LPP1HRPercentage = None,
-        penaltyChargeCreationDate = LocalDate.parse("2069-10-30"),
-        communicationsDate = LocalDate.parse("2069-10-30"),
-        penaltyChargeDueDate = LocalDate.parse("2021-03-08"),
+        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
+        communicationsDate = Some(LocalDate.parse("2069-10-30")),
+        penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
           appealLevel = Some(AppealLevelEnum.HMRC)
@@ -185,9 +183,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         LPP2Percentage = None,
         LPP1LRPercentage = Some(2.00),
         LPP1HRPercentage = None,
-        penaltyChargeCreationDate = LocalDate.parse("2069-10-30"),
-        communicationsDate = LocalDate.parse("2069-10-30"),
-        penaltyChargeDueDate = LocalDate.parse("2021-03-08"),
+        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
+        communicationsDate = Some(LocalDate.parse("2069-10-30")),
+        penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
           appealLevel = Some(AppealLevelEnum.HMRC)
@@ -221,9 +219,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         LPP2Percentage = None,
         LPP1LRPercentage = Some(2.00),
         LPP1HRPercentage = Some(2.00),
-        penaltyChargeCreationDate = LocalDate.parse("2069-10-30"),
-        communicationsDate = LocalDate.parse("2069-10-30"),
-        penaltyChargeDueDate = LocalDate.parse("2021-03-08"),
+        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
+        communicationsDate = Some(LocalDate.parse("2069-10-30")),
+        penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
           appealLevel = Some(AppealLevelEnum.HMRC)
@@ -257,9 +255,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         LPP2Percentage = None,
         LPP1LRPercentage = Some(2.00),
         LPP1HRPercentage = Some(2.00),
-        penaltyChargeCreationDate = LocalDate.parse("2069-10-30"),
-        communicationsDate = LocalDate.parse("2069-10-30"),
-        penaltyChargeDueDate = LocalDate.parse("2021-03-08"),
+        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
+        communicationsDate = Some(LocalDate.parse("2069-10-30")),
+        penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
           appealLevel = Some(AppealLevelEnum.HMRC)
@@ -293,9 +291,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         LPP2Percentage = Some(2.00),
         LPP1LRPercentage = Some(1.00),
         LPP1HRPercentage = Some(1.00),
-        penaltyChargeCreationDate = LocalDate.parse("2069-10-30"),
-        communicationsDate = LocalDate.parse("2069-10-30"),
-        penaltyChargeDueDate = LocalDate.parse("2021-03-08"),
+        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
+        communicationsDate = Some(LocalDate.parse("2069-10-30")),
+        penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
           appealLevel = Some(AppealLevelEnum.HMRC)
@@ -330,9 +328,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         LPP2Percentage = Some(2.00),
         LPP1LRPercentage = Some(1.00),
         LPP1HRPercentage = Some(1.00),
-        penaltyChargeCreationDate = LocalDate.parse("2069-10-30"),
-        communicationsDate = LocalDate.parse("2069-10-30"),
-        penaltyChargeDueDate = LocalDate.parse("2021-03-08"),
+        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
+        communicationsDate = Some(LocalDate.parse("2069-10-30")),
+        penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
           appealLevel = Some(AppealLevelEnum.HMRC)

@@ -60,7 +60,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       penaltyAmountPaid = Some(123.4),
       penaltyAmountOutstanding = Some(00.0),
       penaltyStatus = LPPPenaltyStatusEnum.Posted,
-      penaltyChargeDueDate = LocalDate.of(2020, 2, 1),
+      penaltyChargeDueDate = Some(LocalDate.of(2020, 2, 1)),
       principalChargeBillingFrom = LocalDate.of(2020, 1, 1),
       principalChargeBillingTo = LocalDate.of(2020, 2, 1),
       principalChargeDueDate = LocalDate.of(2020, 3, 7))))
@@ -80,7 +80,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       penaltyAmountPaid = Some(123.45),
       penaltyAmountOutstanding = Some(0.00),
       penaltyStatus = LPPPenaltyStatusEnum.Posted,
-      penaltyChargeDueDate = LocalDate.of(2020, 2, 1),
+      penaltyChargeDueDate = Some(LocalDate.of(2020, 2, 1)),
       principalChargeBillingFrom = LocalDate.of(2020, 1, 1),
       principalChargeBillingTo = LocalDate.of(2020, 2, 1),
       principalChargeDueDate = LocalDate.of(2020, 3, 7))
@@ -92,7 +92,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       penaltyAmountPaid = Some(123.45),
       penaltyAmountOutstanding = Some(0.00),
       penaltyStatus = LPPPenaltyStatusEnum.Posted,
-      penaltyChargeDueDate = LocalDate.of(2020, 2, 1),
+      penaltyChargeDueDate = Some(LocalDate.of(2020, 2, 1)),
       principalChargeBillingFrom = LocalDate.of(2020, 1, 1),
       principalChargeBillingTo = LocalDate.of(2020, 2, 1),
       principalChargeDueDate = LocalDate.of(2020, 3, 7),

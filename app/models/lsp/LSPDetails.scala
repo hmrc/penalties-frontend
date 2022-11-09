@@ -30,7 +30,7 @@ case class LSPDetails(
                        penaltyCreationDate: LocalDate,
                        penaltyExpiryDate: LocalDate,
                        expiryReason: Option[ExpiryReasonEnum.Value],
-                       communicationsDate: LocalDate,
+                       communicationsDate: Option[LocalDate],
                        lateSubmissions: Option[Seq[LateSubmission]],
                        appealInformation: Option[Seq[AppealInformationType]],
                        chargeAmount: Option[BigDecimal],

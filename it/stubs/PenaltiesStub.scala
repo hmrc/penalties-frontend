@@ -39,9 +39,7 @@ object PenaltiesStub {
       LSPTotalValue = Some(200),
       penalisedPrincipalTotal = Some(2000),
       LPPPostedTotal = Some(165.25),
-      LPPEstimatedTotal = Some(15.26),
-      LPIPostedTotal = Some(1968.2),
-      LPIEstimatedTotal = Some(7)
+      LPPEstimatedTotal = Some(15.26)
     )),
     lateSubmissionPenalty = Some(
       LateSubmissionPenalty(
@@ -61,7 +59,7 @@ object PenaltiesStub {
           penaltyCreationDate = LocalDate.parse("2069-10-30"),
           penaltyExpiryDate = LocalDate.parse("2069-10-30"),
           expiryReason = Some(ExpiryReasonEnum.Adjustment),
-          communicationsDate = LocalDate.parse("2069-10-30"),
+          communicationsDate = Some(LocalDate.parse("2069-10-30")),
           lateSubmissions = Some(Seq(
             LateSubmission(
               taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
@@ -98,9 +96,9 @@ object PenaltiesStub {
         LPP2Percentage = Some(4.00),
         LPP1LRPercentage = Some(2.00),
         LPP1HRPercentage = Some(BigDecimal(2.00).setScale(2)),
-        penaltyChargeCreationDate = LocalDate.parse("2069-10-30"),
-        communicationsDate = LocalDate.parse("2069-10-30"),
-        penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
+        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
+        communicationsDate = Some(LocalDate.parse("2069-10-30")),
+        penaltyChargeDueDate = Some(LocalDate.parse("2069-10-30")),
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
           appealLevel = Some(AppealLevelEnum.HMRC)
@@ -124,9 +122,7 @@ object PenaltiesStub {
       LSPTotalValue = Some(200),
       penalisedPrincipalTotal = Some(2000),
       LPPPostedTotal = Some(165.25),
-      LPPEstimatedTotal = Some(15.26),
-      LPIPostedTotal = Some(1968.2),
-      LPIEstimatedTotal = Some(7)
+      LPPEstimatedTotal = Some(15.26)
     )),
     lateSubmissionPenalty = Some(
       LateSubmissionPenalty(
@@ -146,7 +142,7 @@ object PenaltiesStub {
           penaltyCreationDate = LocalDate.parse("2069-10-30"),
           penaltyExpiryDate = LocalDate.parse("2069-10-30"),
           expiryReason = Some(ExpiryReasonEnum.Adjustment),
-          communicationsDate = LocalDate.parse("2069-10-30"),
+          communicationsDate = Some(LocalDate.parse("2069-10-30")),
           lateSubmissions = Some(Seq(
             LateSubmission(
               taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
@@ -183,9 +179,9 @@ object PenaltiesStub {
         LPP2Percentage = Some(4.00),
         LPP1LRPercentage = Some(2.00),
         LPP1HRPercentage = Some(BigDecimal(2.00).setScale(2)),
-        penaltyChargeCreationDate = LocalDate.parse("2069-10-30"),
-        communicationsDate = LocalDate.parse("2069-10-30"),
-        penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
+        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
+        communicationsDate = Some(LocalDate.parse("2069-10-30")),
+        penaltyChargeDueDate = Some(LocalDate.parse("2069-10-30")),
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
           appealLevel = Some(AppealLevelEnum.HMRC)
