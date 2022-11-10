@@ -27,7 +27,7 @@
         isEstimate: Boolean,
         startDate: String,
         endDate: String,
-        dueDate: String,
+        dueDate: Option[String],
         penaltyAmount: String,
         amountReceived: String,
         amountLeftToPay: String
@@ -56,7 +56,7 @@
     @if(!isEstimate) {
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">@messages("calculation.key.dueDate")</dt>
-        <dd class="govuk-summary-list__value">@dueDate</dd>
+        <dd class="govuk-summary-list__value">@dueDate.get</dd>
       </div>
     }
 

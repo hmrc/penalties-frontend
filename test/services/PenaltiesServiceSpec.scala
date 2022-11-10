@@ -37,9 +37,7 @@ class PenaltiesServiceSpec extends SpecBase {
       LSPTotalValue = Some(0),
       penalisedPrincipalTotal = Some(0),
       LPPPostedTotal = Some(0),
-      LPPEstimatedTotal = Some(0),
-      LPIPostedTotal = Some(0),
-      LPIEstimatedTotal = Some(0)
+      LPPEstimatedTotal = Some(0)
     )),
     lateSubmissionPenalty = None,
     latePaymentPenalty = None
@@ -50,9 +48,7 @@ class PenaltiesServiceSpec extends SpecBase {
       LSPTotalValue = Some(0),
       penalisedPrincipalTotal = Some(223.45),
       LPPPostedTotal = Some(0),
-      LPPEstimatedTotal = Some(0),
-      LPIPostedTotal = Some(0),
-      LPIEstimatedTotal = Some(0)
+      LPPEstimatedTotal = Some(0)
     )),
     lateSubmissionPenalty = None,
     latePaymentPenalty = None
@@ -63,9 +59,7 @@ class PenaltiesServiceSpec extends SpecBase {
       LSPTotalValue = Some(0),
       penalisedPrincipalTotal = Some(0),
       LPPPostedTotal = Some(0),
-      LPPEstimatedTotal = Some(50),
-      LPIPostedTotal = Some(0),
-      LPIEstimatedTotal = Some(0)
+      LPPEstimatedTotal = Some(50)
     )),
     lateSubmissionPenalty = None,
     latePaymentPenalty = None
@@ -76,9 +70,7 @@ class PenaltiesServiceSpec extends SpecBase {
       LSPTotalValue = Some(0),
       penalisedPrincipalTotal = Some(0),
       LPPPostedTotal = Some(50),
-      LPPEstimatedTotal = Some(0),
-      LPIPostedTotal = Some(0),
-      LPIEstimatedTotal = Some(0)
+      LPPEstimatedTotal = Some(0)
     )),
     lateSubmissionPenalty = None,
     latePaymentPenalty = None
@@ -195,9 +187,7 @@ class PenaltiesServiceSpec extends SpecBase {
           LSPTotalValue = Some(400),
           penalisedPrincipalTotal = Some(0),
           LPPPostedTotal = Some(0),
-          LPPEstimatedTotal = Some(0),
-          LPIPostedTotal = Some(0),
-          LPIEstimatedTotal = Some(0)
+          LPPEstimatedTotal = Some(0)
         )
       ),
       lateSubmissionPenalty = None, latePaymentPenalty = None
@@ -244,96 +234,6 @@ class PenaltiesServiceSpec extends SpecBase {
     }
   }
 
-  "findCrystalizedPenaltiesInterest" should {
-    "return 0 when the payload does not have any financial penalties for LSP or LPP" in new Setup {
-      val result: BigDecimal = service.findCrystalizedPenaltiesInterest(penaltyDetailsWithNoVATDue)
-      result shouldBe 0
-    }
-
-    "return 0 when the payload contains financial penalties but does not contain crystalized interest penalties for LPP" in new Setup {
-      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-        totalisations = Some(
-          Totalisations(
-            LSPTotalValue = Some(400),
-            penalisedPrincipalTotal = Some(2000.23),
-            LPPPostedTotal = Some(100),
-            LPPEstimatedTotal = Some(0),
-            LPIPostedTotal = Some(0),
-            LPIEstimatedTotal = Some(0)
-          )
-        ),
-        lateSubmissionPenalty = None,
-        latePaymentPenalty = None
-      )
-      val result: BigDecimal = service.findCrystalizedPenaltiesInterest(penaltyDetails)
-      result shouldBe 0
-    }
-
-    "return total amount when the payload contains crystalized interest penalties for LSP and LPP" in new Setup {
-      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-        totalisations = Some(
-          Totalisations(
-            LSPTotalValue = Some(400),
-            penalisedPrincipalTotal = Some(2000.23),
-            LPPPostedTotal = Some(100),
-            LPPEstimatedTotal = Some(0),
-            LPIPostedTotal = Some(40),
-            LPIEstimatedTotal = Some(0)
-          )
-        ),
-        lateSubmissionPenalty = None,
-        latePaymentPenalty = None
-      )
-      val result: BigDecimal = service.findCrystalizedPenaltiesInterest(penaltyDetails)
-      result shouldBe 40
-    }
-  }
-
-  "findEstimatedPenaltiesInterest" should {
-    "return 0 when the payload does not have any financial penalties for LPS or LPP" in new Setup {
-      val result: BigDecimal = service.findEstimatedPenaltiesInterest(penaltyDetailsWithNoVATDue)
-      result shouldBe 0
-    }
-
-    "return 0 when the payload contains financial penalties but does not contain estimated interest penalties for LSP and LPP" in new Setup {
-      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-        totalisations = Some(
-          Totalisations(
-            LSPTotalValue = Some(400),
-            penalisedPrincipalTotal = Some(2000.23),
-            LPPPostedTotal = Some(100),
-            LPPEstimatedTotal = Some(23.45),
-            LPIPostedTotal = Some(40),
-            LPIEstimatedTotal = Some(0)
-          )
-        ),
-        lateSubmissionPenalty = None,
-        latePaymentPenalty = None
-      )
-      val result: BigDecimal = service.findEstimatedPenaltiesInterest(penaltyDetails)
-      result shouldBe 0
-    }
-
-    "return total amount when the payload contains estimated interest penalties for LPP" in new Setup {
-      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-        totalisations = Some(
-          Totalisations(
-            LSPTotalValue = Some(400),
-            penalisedPrincipalTotal = Some(2000.23),
-            LPPPostedTotal = Some(100),
-            LPPEstimatedTotal = Some(23.45),
-            LPIPostedTotal = Some(40),
-            LPIEstimatedTotal = Some(30)
-          )
-        ),
-        lateSubmissionPenalty = None,
-        latePaymentPenalty = None
-      )
-      val result: BigDecimal = service.findEstimatedPenaltiesInterest(penaltyDetails)
-      result shouldBe 30
-    }
-  }
-
   "isAnyLSPUnpaidAndSubmissionIsDue" should {
     "return false" when {
       "there is no LSPs unpaid" in new Setup {
@@ -346,7 +246,7 @@ class PenaltiesServiceSpec extends SpecBase {
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
           penaltyExpiryDate = LocalDate.of(2024, 1, 1),
           expiryReason = None,
-          communicationsDate = LocalDate.of(2022, 1, 1),
+          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
           lateSubmissions = Some(
             Seq(
               LateSubmission(
@@ -377,7 +277,7 @@ class PenaltiesServiceSpec extends SpecBase {
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
           penaltyExpiryDate = LocalDate.of(2024, 1, 1),
           expiryReason = None,
-          communicationsDate = LocalDate.of(2022, 1, 1),
+          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
           lateSubmissions = Some(
             Seq(
               LateSubmission(
@@ -408,7 +308,7 @@ class PenaltiesServiceSpec extends SpecBase {
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
           penaltyExpiryDate = LocalDate.of(2024, 1, 1),
           expiryReason = None,
-          communicationsDate = LocalDate.of(2022, 1, 1),
+          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
           lateSubmissions = Some(
             Seq(
               LateSubmission(
@@ -447,7 +347,7 @@ class PenaltiesServiceSpec extends SpecBase {
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
           penaltyExpiryDate = LocalDate.of(2024, 1, 1),
           expiryReason = None,
-          communicationsDate = LocalDate.of(2022, 1, 1),
+          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
           lateSubmissions = Some(
             Seq(
               LateSubmission(
@@ -482,7 +382,7 @@ class PenaltiesServiceSpec extends SpecBase {
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
           penaltyExpiryDate = LocalDate.of(2024, 1, 1),
           expiryReason = None,
-          communicationsDate = LocalDate.of(2022, 1, 1),
+          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
           lateSubmissions = Some(
             Seq(
               LateSubmission(
@@ -514,7 +414,7 @@ class PenaltiesServiceSpec extends SpecBase {
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
           penaltyExpiryDate = LocalDate.of(2024, 1, 1),
           expiryReason = None,
-          communicationsDate = LocalDate.of(2022, 1, 1),
+          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
           lateSubmissions = Some(
             Seq(
               LateSubmission(
@@ -553,7 +453,7 @@ class PenaltiesServiceSpec extends SpecBase {
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
           penaltyExpiryDate = LocalDate.of(2024, 1, 1),
           expiryReason = None,
-          communicationsDate = LocalDate.of(2022, 1, 1),
+          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
           lateSubmissions = Some(
             Seq(
               LateSubmission(

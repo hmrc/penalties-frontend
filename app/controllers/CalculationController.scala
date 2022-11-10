@@ -69,7 +69,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
           } else {
             val startDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeBillingFrom)
             val endDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeBillingTo)
-            val dueDateOfPenalty: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.penaltyChargeDueDate)
+            val dueDateOfPenalty: Option[String] = penalty.get.penaltyChargeDueDate.map(calculationPageHelper.getDateAsDayMonthYear(_))
             val amountReceived = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.penaltyAmountPaid.get)
             val isPenaltyEstimate = penalty.get.penaltyStatus.equals(LPPPenaltyStatusEnum.Accruing)
             val amountLeftToPay = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.penaltyAmountOutstanding.get)

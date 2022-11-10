@@ -77,9 +77,9 @@ class LPPDetailsSpec extends SpecBase {
     LPP2Percentage = Some(4.00),
     LPP1LRPercentage = Some(2.00),
     LPP1HRPercentage = Some(BigDecimal(2.00).setScale(2)),
-    penaltyChargeCreationDate = LocalDate.parse("2069-10-30"),
-    communicationsDate = LocalDate.parse("2069-10-30"),
-    penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
+    penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
+    communicationsDate = Some(LocalDate.parse("2069-10-30")),
+    penaltyChargeDueDate = Some(LocalDate.parse("2069-10-30")),
     appealInformation = Some(Seq(AppealInformationType(
       appealStatus = Some(AppealStatusEnum.Unappealable),
       appealLevel = Some(AppealLevelEnum.HMRC)

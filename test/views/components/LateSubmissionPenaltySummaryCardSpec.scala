@@ -83,7 +83,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
       expiryReason = Some(ExpiryReasonEnum.Adjustment),
-      communicationsDate = LocalDate.parse("2069-10-30"),
+      communicationsDate = Some(LocalDate.parse("2069-10-30")),
       lateSubmissions = Some(Seq(
         LateSubmission(
           taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
@@ -148,7 +148,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
       expiryReason = None,
-      communicationsDate = LocalDate.parse("2069-10-30"),
+      communicationsDate = Some(LocalDate.parse("2069-10-30")),
       lateSubmissions = Some(Seq(
         LateSubmission(
           taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
@@ -175,7 +175,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
       expiryReason = Some(ExpiryReasonEnum.Manual),
-      communicationsDate = LocalDate.parse("2069-10-30"),
+      communicationsDate = Some(LocalDate.parse("2069-10-30")),
       lateSubmissions = Some(Seq(
         LateSubmission(
           taxPeriodStartDate = Some(LocalDate.parse("2020-01-01")),
@@ -202,7 +202,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
       expiryReason = Some(ExpiryReasonEnum.Adjustment),
-      communicationsDate = LocalDate.parse("2069-10-30"),
+      communicationsDate = Some(LocalDate.parse("2069-10-30")),
       lateSubmissions = Some(Seq(
         LateSubmission(
           taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
@@ -233,7 +233,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
       expiryReason = None,
-      communicationsDate = LocalDate.parse("2069-10-30"),
+      communicationsDate = Some(LocalDate.parse("2069-10-30")),
       lateSubmissions = Some(Seq(
         LateSubmission(
           taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
@@ -264,7 +264,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
       expiryReason = None,
-      communicationsDate = LocalDate.parse("2069-10-30"),
+      communicationsDate = Some(LocalDate.parse("2069-10-30")),
       lateSubmissions = Some(Seq(
         LateSubmission(
           taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
@@ -290,7 +290,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
       expiryReason = Some(ExpiryReasonEnum.Adjustment),
-      communicationsDate = LocalDate.parse("2069-10-30"),
+      communicationsDate = Some(LocalDate.parse("2069-10-30")),
       lateSubmissions = Some(Seq(
         LateSubmission(
           taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
@@ -321,7 +321,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
       expiryReason = Some(ExpiryReasonEnum.Adjustment),
-      communicationsDate = LocalDate.parse("2069-10-30"),
+      communicationsDate = Some(LocalDate.parse("2069-10-30")),
       lateSubmissions = Some(Seq(
         LateSubmission(
           taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
@@ -352,7 +352,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
       expiryReason = Some(ExpiryReasonEnum.Adjustment),
-      communicationsDate = LocalDate.parse("2069-10-30"),
+      communicationsDate = Some(LocalDate.parse("2069-10-30")),
       lateSubmissions = Some(Seq(
         LateSubmission(
           taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
@@ -383,7 +383,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
       expiryReason = Some(ExpiryReasonEnum.Adjustment),
-      communicationsDate = LocalDate.parse("2069-10-30"),
+      communicationsDate = Some(LocalDate.parse("2069-10-30")),
       lateSubmissions = Some(Seq(
         LateSubmission(
           taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
@@ -414,7 +414,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
       expiryReason = Some(ExpiryReasonEnum.Adjustment),
-      communicationsDate = LocalDate.parse("2069-10-30"),
+      communicationsDate = Some(LocalDate.parse("2069-10-30")),
       lateSubmissions = Some(Seq(
         LateSubmission(
           taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
@@ -445,7 +445,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
       expiryReason = Some(ExpiryReasonEnum.Adjustment),
-      communicationsDate = LocalDate.parse("2069-10-30"),
+      communicationsDate = Some(LocalDate.parse("2069-10-30")),
       lateSubmissions = Some(Seq(
         LateSubmission(
           taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
@@ -476,7 +476,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
       expiryReason = Some(ExpiryReasonEnum.Adjustment),
-      communicationsDate = LocalDate.parse("2069-10-30"),
+      communicationsDate = Some(LocalDate.parse("2069-10-30")),
       lateSubmissions = Some(Seq(
         LateSubmission(
           taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
@@ -506,7 +506,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     penaltyCreationDate = LocalDate.parse("2069-10-30"),
     penaltyExpiryDate = LocalDate.parse("2069-10-30"),
     expiryReason = None,
-    communicationsDate = LocalDate.parse("2069-10-30"),
+    communicationsDate = Some(LocalDate.parse("2069-10-30")),
     lateSubmissions = Some(Seq(
       LateSubmission(
         taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
@@ -531,7 +531,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     penaltyCreationDate = LocalDate.parse("2069-10-30"),
     penaltyExpiryDate = LocalDate.parse("2069-10-30"),
     expiryReason = Some(ExpiryReasonEnum.Adjustment),
-    communicationsDate = LocalDate.parse("2069-10-30"),
+    communicationsDate = Some(LocalDate.parse("2069-10-30")),
     lateSubmissions = Some(Seq(
       LateSubmission(
         taxPeriodStartDate = Some(sampleOldestDate),
@@ -569,7 +569,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       penaltyCreationDate = LocalDate.of(2020, 1, 1),
       penaltyExpiryDate = LocalDate.of(2020, 2, 1),
       expiryReason = Some(ExpiryReasonEnum.Adjustment),
-      communicationsDate = LocalDate.of(2020, 6, 1),
+      communicationsDate = Some(LocalDate.of(2020, 6, 1)),
       lateSubmissions = Some(Seq(
         LateSubmission(
           taxPeriodStartDate = Some(sampleOldestDate),

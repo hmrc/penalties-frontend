@@ -64,7 +64,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           isEstimate = true,
           startDate = "1 April 2022",
           endDate = "30 June 2022",
-          dueDate = "17 October 2022",
+          dueDate = None,
           penaltyAmount = "50.50",
           amountReceived = "10.10",
           amountLeftToPay = "40.40"
@@ -109,7 +109,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           isEstimate = false,
           startDate = "1 April 2022",
           endDate = "30 June 2022",
-          dueDate = "17 October 2022",
+          dueDate = Some("17 October 2022"),
           penaltyAmount = "50.50",
           amountReceived = "40.10",
           amountLeftToPay = "10.40")(implicitly, implicitly, vatTraderUser)
@@ -148,9 +148,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           calculationRowSeq = calculationRow,
           isCalculationRowMultipleAmounts = isMultipleAmounts,
           isPenaltyEstimate = false,
-          "1 April 2022",
-          "30 June 2022",
-          "7 September 2022",
+          startDate = "1 April 2022",
+          endDate = "30 June 2022",
+          dueDate = Some("7 September 2022"),
           warningPenaltyAmount = "",
           warningDate = "")(implicitly, implicitly, vatTraderUser)
       }
@@ -221,9 +221,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           calculationRowSeq = calculationRow,
           isCalculationRowMultipleAmounts = isMultipleAmounts,
           isPenaltyEstimate = true,
-          "1 April 2022",
-          "30 June 2022",
-          "7 September 2022",
+          startDate = "1 April 2022",
+          endDate = "30 June 2022",
+          dueDate = None,
           warningPenaltyAmount = "800.00",
           warningDate = "15 January 2023")(implicitly, implicitly, vatTraderUser)
       }
@@ -265,9 +265,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           calculationRowSeq = calculationRow,
           isCalculationRowMultipleAmounts = isMultipleAmounts,
           isPenaltyEstimate = true,
-          "1 April 2022",
-          "30 June 2022",
-          "7 September 2022",
+          startDate = "1 April 2022",
+          endDate = "30 June 2022",
+          dueDate = None,
           warningPenaltyAmount = "800",
           warningDate = "15 January 2023")(implicitly, implicitly, agentUser)
       }
@@ -305,7 +305,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           isEstimate = false,
           startDate = "1 April 2022",
           endDate = "30 June 2022",
-          dueDate = "17 October 2022",
+          dueDate = Some("17 October 2022"),
           penaltyAmount = "50.50",
           amountReceived = "40.10",
           amountLeftToPay = "10.40")(implicitly, implicitly, agentUser)
@@ -341,7 +341,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           isEstimate = true,
           startDate = "1 April 2022",
           endDate = "30 June 2022",
-          dueDate = "17 October 2022",
+          dueDate = Some("17 October 2022"),
           penaltyAmount = "50.50",
           amountReceived = "40.10",
           amountLeftToPay = "10.40")(implicitly, implicitly, agentUser)
@@ -377,7 +377,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       isEstimate = true,
       startDate = "1 April 2022",
       endDate = "30 June 2022",
-      dueDate = "17 October 2022",
+      dueDate = None,
       penaltyAmount = "50.50",
       amountReceived = "10.10",
       amountLeftToPay = "40.40"

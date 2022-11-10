@@ -52,9 +52,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching with LogC
       LSPTotalValue = Some(BigDecimal(200)),
       penalisedPrincipalTotal = Some(BigDecimal(2000)),
       LPPPostedTotal = Some(BigDecimal(165.25)),
-      LPPEstimatedTotal = Some(BigDecimal(15.26)),
-      LPIPostedTotal = Some(BigDecimal(1968.2)),
-      LPIEstimatedTotal = Some(BigDecimal(7))
+      LPPEstimatedTotal = Some(BigDecimal(15.26))
     )),
     lateSubmissionPenalty = Some(
       LateSubmissionPenalty(
@@ -74,7 +72,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching with LogC
           penaltyCreationDate = LocalDate.parse("2069-10-30"),
           penaltyExpiryDate = LocalDate.parse("2069-10-30"),
           expiryReason = Some(ExpiryReasonEnum.Adjustment),
-          communicationsDate = LocalDate.parse("2069-10-30"),
+          communicationsDate = Some(LocalDate.parse("2069-10-30")),
           lateSubmissions = Some(Seq(
             LateSubmission(
               taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
@@ -111,9 +109,9 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching with LogC
         LPP2Percentage = Some(4.00),
         LPP1LRPercentage = Some(2.00),
         LPP1HRPercentage = Some(BigDecimal(2.00).setScale(2)),
-        penaltyChargeCreationDate = LocalDate.parse("2069-10-30"),
-        communicationsDate = LocalDate.parse("2069-10-30"),
-        penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
+        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
+        communicationsDate = Some(LocalDate.parse("2069-10-30")),
+        penaltyChargeDueDate = Some(LocalDate.parse("2069-10-30")),
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
           appealLevel = Some(AppealLevelEnum.HMRC)
@@ -137,9 +135,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching with LogC
       LSPTotalValue = Some(BigDecimal(200)),
       penalisedPrincipalTotal = Some(BigDecimal(2000)),
       LPPPostedTotal = Some(BigDecimal(165.25)),
-      LPPEstimatedTotal = Some(BigDecimal(15.26)),
-      LPIPostedTotal = Some(BigDecimal(1968.2)),
-      LPIEstimatedTotal = Some(BigDecimal(7))
+      LPPEstimatedTotal = Some(BigDecimal(15.26))
     )),
     lateSubmissionPenalty = Some(
       LateSubmissionPenalty(
@@ -159,7 +155,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching with LogC
           penaltyCreationDate = LocalDate.parse("2069-10-30"),
           penaltyExpiryDate = LocalDate.parse("2069-10-30"),
           expiryReason = Some(ExpiryReasonEnum.Adjustment),
-          communicationsDate = LocalDate.parse("2069-10-30"),
+          communicationsDate = Some(LocalDate.parse("2069-10-30")),
           lateSubmissions = Some(Seq(
             LateSubmission(
               taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
@@ -196,9 +192,9 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching with LogC
         LPP2Percentage = Some(4.00),
         LPP1LRPercentage = Some(2.00),
         LPP1HRPercentage = Some(BigDecimal(2.00).setScale(2)),
-        penaltyChargeCreationDate = LocalDate.parse("2069-10-30"),
-        communicationsDate = LocalDate.parse("2069-10-30"),
-        penaltyChargeDueDate = LocalDate.parse("2069-10-30"),
+        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
+        communicationsDate = Some(LocalDate.parse("2069-10-30")),
+        penaltyChargeDueDate = Some(LocalDate.parse("2069-10-30")),
         appealInformation = Some(Seq(AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
           appealLevel = Some(AppealLevelEnum.HMRC)

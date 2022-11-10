@@ -153,7 +153,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               penaltyCreationDate = LocalDate.of(2022, 1, 1),
               penaltyExpiryDate = LocalDate.of(2022, 1, 1),
               expiryReason = None,
-              communicationsDate = LocalDate.of(2022, 1, 1),
+              communicationsDate = Some(LocalDate.of(2022, 1, 1)),
               lateSubmissions = Some(
                 Seq(
                   LateSubmission(
@@ -179,7 +179,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               penaltyCreationDate = LocalDate.of(2022, 1, 1),
               penaltyExpiryDate = LocalDate.of(2022, 1, 1),
               expiryReason = None,
-              communicationsDate = LocalDate.of(2022, 1, 1),
+              communicationsDate = Some(LocalDate.of(2022, 1, 1)),
               lateSubmissions = Some(
                 Seq(
                   LateSubmission(
@@ -205,7 +205,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               penaltyCreationDate = LocalDate.of(2022, 1, 1),
               penaltyExpiryDate = LocalDate.of(2022, 1, 1),
               expiryReason = None,
-              communicationsDate = LocalDate.of(2022, 1, 1),
+              communicationsDate = Some(LocalDate.of(2022, 1, 1)),
               lateSubmissions = Some(
                 Seq(
                   LateSubmission(
@@ -249,7 +249,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               penaltyCreationDate = LocalDate.of(2022, 1, 1),
               penaltyExpiryDate = LocalDate.of(2022, 1, 1),
               expiryReason = None,
-              communicationsDate = LocalDate.of(2022, 1, 1),
+              communicationsDate = Some(LocalDate.of(2022, 1, 1)),
               lateSubmissions = Some(
                 Seq(
                   LateSubmission(
@@ -275,7 +275,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               penaltyCreationDate = LocalDate.of(2022, 1, 1),
               penaltyExpiryDate = LocalDate.of(2022, 1, 1),
               expiryReason = None,
-              communicationsDate = LocalDate.of(2022, 1, 1),
+              communicationsDate = Some(LocalDate.of(2022, 1, 1)),
               lateSubmissions = Some(
                 Seq(
                   LateSubmission(
@@ -319,7 +319,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               penaltyCreationDate = LocalDate.of(2022, 1, 1),
               penaltyExpiryDate = LocalDate.of(2022, 1, 1),
               expiryReason = None,
-              communicationsDate = LocalDate.of(2022, 1, 1),
+              communicationsDate = Some(LocalDate.of(2022, 1, 1)),
               lateSubmissions = Some(
                 Seq(
                   LateSubmission(
@@ -363,7 +363,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               penaltyCreationDate = LocalDate.of(2022, 1, 1),
               penaltyExpiryDate = LocalDate.of(2022, 1, 1),
               expiryReason = None,
-              communicationsDate = LocalDate.of(2022, 1, 1),
+              communicationsDate = Some(LocalDate.of(2022, 1, 1)),
               lateSubmissions = Some(
                 Seq(
                   LateSubmission(
@@ -532,7 +532,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = Some(
                   Seq(
                     LateSubmission(
@@ -558,7 +558,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = Some(
                   Seq(
                     LateSubmission(
@@ -584,7 +584,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = Some(
                   Seq(
                     LateSubmission(
@@ -610,7 +610,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = Some(
                   Seq(
                     LateSubmission(
@@ -734,7 +734,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = None,
                 appealInformation = None,
                 chargeAmount = None,
@@ -750,7 +750,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = Some(
                   Seq(
                     LateSubmission(
@@ -794,7 +794,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = None,
                 appealInformation = None,
                 chargeAmount = None,
@@ -810,7 +810,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = Some(
                   Seq(
                     LateSubmission(
@@ -836,7 +836,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = Some(
                   Seq(
                     LateSubmission(
@@ -920,7 +920,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = None,
                 appealInformation = None,
                 chargeAmount = None,
@@ -936,7 +936,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = Some(
                   Seq(
                     LateSubmission(
@@ -962,7 +962,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = Some(
                   Seq(
                     LateSubmission(
@@ -1006,7 +1006,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = Some(
                   Seq(
                     LateSubmission(
@@ -1032,7 +1032,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = Some(
                   Seq(
                     LateSubmission(
@@ -1058,7 +1058,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = Some(
                   Seq(
                     LateSubmission(
@@ -1084,7 +1084,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = Some(
                   Seq(
                     LateSubmission(
@@ -1175,7 +1175,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               LPPDetails(
                 principalChargeReference = "12345678",
                 penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-                penaltyChargeCreationDate = LocalDate.of(2022, 1, 1),
+                penaltyChargeCreationDate = Some(LocalDate.of(2022, 1, 1)),
                 penaltyStatus = LPPPenaltyStatusEnum.Accruing,
                 penaltyAmountPaid = Some(0),
                 penaltyAmountOutstanding = Some(144.21),
@@ -1187,8 +1187,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 LPP1LRPercentage = None,
                 LPP1HRPercentage = None,
                 LPP2Percentage = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
-                penaltyChargeDueDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
+                penaltyChargeDueDate = Some(LocalDate.of(2022, 1, 1)),
                 appealInformation = None,
                 principalChargeBillingFrom = LocalDate.of(2022, 1, 1),
                 principalChargeBillingTo = LocalDate.of(2022, 1, 1),
@@ -1245,9 +1245,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               LSPTotalValue = Some(100),
               penalisedPrincipalTotal = Some(223.45),
               LPPPostedTotal = Some(0),
-              LPPEstimatedTotal = Some(0),
-              LPIPostedTotal = Some(0),
-              LPIEstimatedTotal = Some(0)
+              LPPEstimatedTotal = Some(0)
             )
           ), lateSubmissionPenalty = None, latePaymentPenalty = None
         )
@@ -1264,9 +1262,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             LSPTotalValue = Some(100),
             penalisedPrincipalTotal = Some(223.45),
             LPPPostedTotal = Some(144.21),
-            LPPEstimatedTotal = Some(0),
-            LPIPostedTotal = Some(0),
-            LPIEstimatedTotal = Some(0)
+            LPPEstimatedTotal = Some(0)
           )
         ),
         latePaymentPenalty = None,
@@ -1284,9 +1280,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             LSPTotalValue = Some(100),
             penalisedPrincipalTotal = Some(223.45),
             LPPPostedTotal = Some(144.21),
-            LPPEstimatedTotal = Some(60.24),
-            LPIPostedTotal = Some(0),
-            LPIEstimatedTotal = Some(0)
+            LPPEstimatedTotal = Some(60.24)
           )
         ),
         latePaymentPenalty = None,
@@ -1304,9 +1298,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             LSPTotalValue = Some(100),
             penalisedPrincipalTotal = Some(223.45),
             LPPPostedTotal = Some(144.21),
-            LPPEstimatedTotal = Some(71.57),
-            LPIPostedTotal = Some(0),
-            LPIEstimatedTotal = Some(0)
+            LPPEstimatedTotal = Some(71.57)
           )
         ),
         latePaymentPenalty = None,
@@ -1325,9 +1317,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             LSPTotalValue = Some(100),
             penalisedPrincipalTotal = Some(223.45),
             LPPPostedTotal = Some(144.21),
-            LPPEstimatedTotal = Some(71.57),
-            LPIPostedTotal = Some(0),
-            LPIEstimatedTotal = Some(0)
+            LPPEstimatedTotal = Some(71.57)
           )
         ),
         latePaymentPenalty = None,
@@ -1354,9 +1344,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             LSPTotalValue = Some(400),
             penalisedPrincipalTotal = Some(223.45),
             LPPPostedTotal = Some(144.21),
-            LPPEstimatedTotal = Some(71.57),
-            LPIPostedTotal = Some(0),
-            LPIEstimatedTotal = Some(0)
+            LPPEstimatedTotal = Some(71.57)
           )
         ),
         latePaymentPenalty = None,
@@ -1379,7 +1367,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = None,
                 appealInformation = None,
                 chargeAmount = Some(200),
@@ -1395,7 +1383,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = None,
                 appealInformation = None,
                 chargeAmount = Some(200),
@@ -1411,7 +1399,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = None,
                 appealInformation = None,
                 chargeAmount = None,
@@ -1436,9 +1424,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             LSPTotalValue = Some(400),
             penalisedPrincipalTotal = Some(0),
             LPPPostedTotal = Some(0),
-            LPPEstimatedTotal = Some(0),
-            LPIPostedTotal = Some(0),
-            LPIEstimatedTotal = Some(0)
+            LPPEstimatedTotal = Some(0)
           )
         ),
         latePaymentPenalty = None,
@@ -1461,7 +1447,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = None,
                 appealInformation = None,
                 chargeAmount = Some(200),
@@ -1477,7 +1463,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = None,
                 appealInformation = None,
                 chargeAmount = Some(200),
@@ -1493,7 +1479,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = None,
                 appealInformation = None,
                 chargeAmount = None,
@@ -1516,9 +1502,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             LSPTotalValue = Some(200),
             penalisedPrincipalTotal = Some(0),
             LPPPostedTotal = Some(0),
-            LPPEstimatedTotal = Some(0),
-            LPIPostedTotal = Some(0),
-            LPIEstimatedTotal = Some(0)
+            LPPEstimatedTotal = Some(0)
           )
         ),
         latePaymentPenalty = None,
@@ -1541,7 +1525,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = None,
                 appealInformation = None,
                 chargeAmount = Some(200),
@@ -1557,7 +1541,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
-                communicationsDate = LocalDate.of(2022, 1, 1),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = None,
                 appealInformation = None,
                 chargeAmount = None,
@@ -1596,101 +1580,6 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
     //        result.isDefined shouldBe true
     //        result.get.body.contains("£21.23 in VAT interest") shouldBe true
     //      }
-
-    "the user has crystalized and estimated interest on penalties" in {
-      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-        totalisations = Some(
-          Totalisations(
-            LSPTotalValue = Some(400),
-            penalisedPrincipalTotal = Some(0),
-            LPPPostedTotal = Some(0),
-            LPPEstimatedTotal = Some(0),
-            LPIPostedTotal = Some(100),
-            LPIEstimatedTotal = Some(20.23)
-          )
-        ),
-        latePaymentPenalty = None,
-        lateSubmissionPenalty = Some(
-          LateSubmissionPenalty(
-            summary = LSPSummary(
-              activePenaltyPoints = 0,
-              inactivePenaltyPoints = 0,
-              regimeThreshold = 2,
-              penaltyChargeAmount = 200,
-              PoCAchievementDate = LocalDate.of(2022, 1, 1)
-            ),
-            details = Seq()
-          )
-        )
-      )
-      val result = pageHelper.getWhatYouOweBreakdown(penaltyDetails)
-      result.isDefined shouldBe true
-      result.get.body.contains("£120.23 in estimated interest on penalties") shouldBe true
-    }
-
-    "the user has just crystalized interest on penalties" in {
-      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-        totalisations = Some(
-          Totalisations(
-            LSPTotalValue = Some(400),
-            penalisedPrincipalTotal = Some(0),
-            LPPPostedTotal = Some(0),
-            LPPEstimatedTotal = Some(0),
-            LPIPostedTotal = Some(45.10),
-            LPIEstimatedTotal = Some(0)
-          )
-        ),
-        latePaymentPenalty = None,
-        lateSubmissionPenalty = Some(
-          LateSubmissionPenalty(
-            summary = LSPSummary(
-              activePenaltyPoints = 0,
-              inactivePenaltyPoints = 0,
-              regimeThreshold = 2,
-              penaltyChargeAmount = 200,
-              PoCAchievementDate = LocalDate.of(2022, 1, 1)
-            ),
-            details = Seq()
-          )
-        )
-      )
-      val result = pageHelper.getWhatYouOweBreakdown(penaltyDetails)
-      result.isDefined shouldBe true
-      result.get.body.contains("£45.10 in interest on penalties") shouldBe true
-    }
-
-    "the user has no estimated or crystalized interest on penalties" in {
-      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-        totalisations = Some(
-          Totalisations(
-            LSPTotalValue = Some(400),
-            penalisedPrincipalTotal = Some(223.45),
-            LPPPostedTotal = Some(0),
-            LPPEstimatedTotal = Some(0),
-            LPIPostedTotal = Some(0),
-            LPIEstimatedTotal = Some(0)
-          )
-        ),
-        latePaymentPenalty = None,
-        lateSubmissionPenalty = Some(
-          LateSubmissionPenalty(
-            summary = LSPSummary(
-              activePenaltyPoints = 0,
-              inactivePenaltyPoints = 0,
-              regimeThreshold = 2,
-              penaltyChargeAmount = 200,
-              PoCAchievementDate = LocalDate.of(2022, 1, 1)
-            ),
-            details = Seq()
-          )
-        )
-      )
-      val result = pageHelper.getWhatYouOweBreakdown(penaltyDetails)
-      result.isDefined shouldBe true
-      result.get.body.contains("£223.45 in late VAT") shouldBe true
-      result.get.body.contains("in interest on penalties") shouldBe false
-      result.get.body.contains("in estimated interest on penalties") shouldBe false
-    }
   }
 
   "isTTPActive" should {
@@ -1876,7 +1765,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         penaltyCreationDate = LocalDate.of(2022, 1, 1),
         penaltyExpiryDate = LocalDate.of(2022, 1, 1),
         expiryReason = None,
-        communicationsDate = LocalDate.of(2022, 1, 1),
+        communicationsDate = Some(LocalDate.of(2022, 1, 1)),
         lateSubmissions = None,
         appealInformation = None,
         chargeAmount = Some(200),
@@ -1892,7 +1781,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         penaltyCreationDate = LocalDate.of(2022, 1, 1),
         penaltyExpiryDate = LocalDate.of(2022, 1, 1),
         expiryReason = Some(expiryReason),
-        communicationsDate = LocalDate.of(2022, 1, 1),
+        communicationsDate = Some(LocalDate.of(2022, 1, 1)),
         lateSubmissions = None,
         appealInformation = None,
         chargeAmount = Some(200),
@@ -1908,7 +1797,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         penaltyCreationDate = LocalDate.of(2022, 1, 1),
         penaltyExpiryDate = LocalDate.of(2022, 1, 1),
         expiryReason = None,
-        communicationsDate = LocalDate.of(2022, 1, 1),
+        communicationsDate = Some(LocalDate.of(2022, 1, 1)),
         lateSubmissions = None,
         appealInformation = None,
         chargeAmount = None,
@@ -1928,7 +1817,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
           penaltyExpiryDate = LocalDate.of(2022, 1, 1),
           expiryReason = None,
-          communicationsDate = LocalDate.of(2022, 1, 1),
+          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
           lateSubmissions = None,
           appealInformation = None,
           chargeAmount = Some(200),
@@ -1944,7 +1833,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
           penaltyExpiryDate = LocalDate.of(2022, 1, 1),
           expiryReason = Some(expiryReason),
-          communicationsDate = LocalDate.of(2022, 1, 1),
+          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
           lateSubmissions = None,
           appealInformation = None,
           chargeAmount = Some(200),
@@ -1960,7 +1849,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
           penaltyExpiryDate = LocalDate.of(2022, 1, 1),
           expiryReason = None,
-          communicationsDate = LocalDate.of(2022, 1, 1),
+          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
           lateSubmissions = None,
           appealInformation = None,
           chargeAmount = None,
@@ -1985,7 +1874,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
           penaltyExpiryDate = LocalDate.of(2022, 1, 1),
           expiryReason = None,
-          communicationsDate = LocalDate.of(2022, 1, 1),
+          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
           lateSubmissions = None,
           appealInformation = None,
           chargeAmount = Some(200),
@@ -2001,7 +1890,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
           penaltyExpiryDate = LocalDate.of(2022, 1, 1),
           expiryReason = None,
-          communicationsDate = LocalDate.of(2022, 1, 1),
+          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
           lateSubmissions = None,
           appealInformation = None,
           chargeAmount = None,
@@ -2028,7 +1917,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
           penaltyExpiryDate = LocalDate.of(2022, 1, 1),
           expiryReason = None,
-          communicationsDate = LocalDate.of(2022, 1, 1),
+          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
           lateSubmissions = None,
           appealInformation = None,
           chargeAmount = None,
@@ -2044,7 +1933,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
           penaltyExpiryDate = LocalDate.of(2022, 1, 1),
           expiryReason = None,
-          communicationsDate = LocalDate.of(2022, 1, 1),
+          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
           lateSubmissions = None,
           appealInformation = None,
           chargeAmount = Some(200),
@@ -2060,7 +1949,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
           penaltyExpiryDate = LocalDate.of(2022, 1, 1),
           expiryReason = None,
-          communicationsDate = LocalDate.of(2022, 1, 1),
+          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
           lateSubmissions = None,
           appealInformation = None,
           chargeAmount = Some(200),
@@ -2079,7 +1968,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
           penaltyExpiryDate = LocalDate.of(2022, 1, 1),
           expiryReason = None,
-          communicationsDate = LocalDate.of(2022, 1, 1),
+          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
           lateSubmissions = None,
           appealInformation = None,
           chargeAmount = Some(200),
@@ -2095,7 +1984,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
           penaltyExpiryDate = LocalDate.of(2022, 1, 1),
           expiryReason = None,
-          communicationsDate = LocalDate.of(2022, 1, 1),
+          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
           lateSubmissions = None,
           appealInformation = None,
           chargeAmount = Some(200),
@@ -2111,7 +2000,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
           penaltyExpiryDate = LocalDate.of(2022, 1, 1),
           expiryReason = None,
-          communicationsDate = LocalDate.of(2022, 1, 1),
+          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
           lateSubmissions = None,
           appealInformation = None,
           chargeAmount = None,

@@ -36,7 +36,7 @@ trait TestData {
     penaltyCreationDate = sampleDate,
     penaltyExpiryDate = sampleDate,
     expiryReason = None,
-    communicationsDate = sampleDate,
+    communicationsDate = Some(sampleDate),
     lateSubmissions = Some(Seq(
       LateSubmission(
         taxPeriodStartDate = Some(sampleDate),
@@ -115,9 +115,9 @@ trait TestData {
     LPP2Percentage = Some(4.00),
     LPP1LRPercentage = Some(2.00),
     LPP1HRPercentage = Some(BigDecimal(2.00).setScale(2)),
-    penaltyChargeCreationDate = sampleDate,
-    communicationsDate = sampleDate,
-    penaltyChargeDueDate = sampleDate,
+    penaltyChargeCreationDate = Some(sampleDate),
+    communicationsDate = Some(sampleDate),
+    penaltyChargeDueDate = Some(sampleDate),
     appealInformation = Some(Seq(AppealInformationType(
       appealStatus = Some(AppealStatusEnum.Rejected),
       appealLevel = Some(AppealLevelEnum.HMRC)
@@ -202,9 +202,7 @@ trait TestData {
       LSPTotalValue = Some(200),
       penalisedPrincipalTotal = Some(2000),
       LPPPostedTotal = Some(165.25),
-      LPPEstimatedTotal = Some(15.26),
-      LPIPostedTotal = Some(1968.2),
-      LPIEstimatedTotal = Some(7)
+      LPPEstimatedTotal = Some(15.26)
     )),
     lateSubmissionPenalty = Some(LateSubmissionPenalty(
       summary = LSPSummary(
