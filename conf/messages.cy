@@ -59,9 +59,9 @@ agent.lsp.onThreshold.p3 = Dyma’r dyddiad cynharaf y gellid tynnu pwyntiau’c
 agent.lsp.onThreshold.link = Y camau i’ch cleient eu cymryd i gael ei bwyntiau wedi’u tynnu erbyn {0}
 
 lsp.onThreshold.compliant.p1 = Byddwn yn tynnu’ch pwyntiau cosb ym mis {0} oherwydd:
-agent.lsp.onThreshold.compliant.p1 = We will remove your client’s penalty points in {0} because:
+agent.lsp.onThreshold.compliant.p1 = Byddwn yn tynnu pwyntiau cosb eich cleient ym mis {0} oherwydd:
 lsp.onThreshold.compliant.p2 = bod hanes eich Ffurflenni TAW yn gyfredol
-agent.lsp.onThreshold.compliant.p2 = their VAT Return history is up to date
+agent.lsp.onThreshold.compliant.p2 = bod hanes Ffurflenni TAW eich cleient yn gyfredol
 lsp.onThreshold.compliant.p3 = eich bod wedi cyflwyno mewn pryd am y {0} o fisoedd diwethaf
 agent.lsp.onThreshold.compliant.p3 = bod eich cleient wedi cyflwyno mewn pryd am y {0} o fisoedd diwethaf
 
@@ -227,8 +227,8 @@ calculation.p.2.estimates.b1 = you pay the VAT bill, or
 agent.calculation.p.2.estimates.b1 = your client pays the VAT bill, or
 calculation.p.2.estimates.b2 = bod 30 diwrnod wedi mynd heibio ers dyddiad dyledus y TAW
 calculation.returnLink = Yn ôl i gosbau TAW ac apeliadau
-calculation.estimate.footerNote.warning = This penalty will increase by a further 2% if VAT remains unpaid 30 days after the due date and you have not set up a payment plan.
-agent.calculation.estimate.footerNote.warning = This penalty will increase by a further 2% if VAT remains unpaid 30 days after the due date and your client has not set up a payment plan.
+calculation.estimate.footerNote.warning = Bydd y gosb yn cynyddu 2% pellach os bydd TAW yn dal i fod heb ei thalu 30 diwrnod ar ôl y dyddiad dyledus a’ch bod heb drefnu cynllun talu.
+agent.calculation.estimate.footerNote.warning = Bydd y gosb yn cynyddu 2% pellach os bydd TAW yn dal i fod heb ei thalu 30 diwrnod ar ôl y dyddiad dyledus a bod eich cleient heb drefnu cynllun talu.
 calculation.lpp1.15days = y TAW sydd heb ei thalu 15 diwrnod ar ôl y dyddiad dyledus
 calculation.lpp1.30days = y TAW sydd heb ei thalu 30 diwrnod ar ôl y dyddiad dyledus
 
