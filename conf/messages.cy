@@ -217,8 +217,6 @@ calculation.value.amount = £{0}
 calculation.key = Calculation
 calculation.key.2.text = {0}% o £{1} ({2})
 calculation.key.2.text.remove.30.days = {0}% o £{1} ({2}) = £{3}
-calculation.key.2.additional.text = {0} days
-calculation.key.2.paymentDetail = VAT amount unpaid on {0}
 calculation.key.3 = Swm a gafwyd
 calculation.key.4 = Yn weddill i’w dalu
 calculation.h2.estimates = Amcangyfrifon
@@ -229,10 +227,8 @@ calculation.p.2.estimates.b1 = you pay the VAT bill, or
 agent.calculation.p.2.estimates.b1 = your client pays the VAT bill, or
 calculation.p.2.estimates.b2 = bod 30 diwrnod wedi mynd heibio ers dyddiad dyledus y TAW
 calculation.returnLink = Yn ôl i gosbau TAW ac apeliadau
-calculation.estimate.footerNote.billPayment = Paying part of your VAT bill will reduce further penalties.
 calculation.estimate.footerNote.warning = This penalty will increase by a further 2% if VAT remains unpaid 30 days after the due date and you have not set up a payment plan.
 agent.calculation.estimate.footerNote.warning = This penalty will increase by a further 2% if VAT remains unpaid 30 days after the due date and your client has not set up a payment plan.
-calculation.estimate.footerNote.text = Penalties and interest will show as estimates if HMRC has not been given enough information to calculate the final amounts.
 calculation.lpp1.15days = y TAW sydd heb ei thalu 15 diwrnod ar ôl y dyddiad dyledus
 calculation.lpp1.30days = y TAW sydd heb ei thalu 30 diwrnod ar ôl y dyddiad dyledus
 
