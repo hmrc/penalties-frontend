@@ -227,8 +227,8 @@ calculation.p.2.estimates.b1 = you pay the VAT bill, or
 agent.calculation.p.2.estimates.b1 = your client pays the VAT bill, or
 calculation.p.2.estimates.b2 = 30 days have passed since the VAT due date
 calculation.returnLink = Return to VAT penalties and appeals
-calculation.estimate.footerNote.warning = This penalty will increase by a further 2% if VAT remains unpaid 30 days after the due date and you have not set up a payment plan.
-agent.calculation.estimate.footerNote.warning = This penalty will increase by a further 2% if VAT remains unpaid 30 days after the due date and your client has not set up a payment plan.
+calculation.estimate.footerNote.warning = The penalty will increase by a further 2% if VAT remains unpaid 30 days after the due date and you have not set up a payment plan.
+agent.calculation.estimate.footerNote.warning = The penalty will increase by a further 2% if VAT remains unpaid 30 days after the due date and your client has not set up a payment plan.
 calculation.lpp1.15days = the unpaid VAT 15 days after the due date
 calculation.lpp1.30days = the unpaid VAT 30 days after the due date
 
