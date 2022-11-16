@@ -214,7 +214,6 @@ calculation.key.dueDate = Dyddiad dyledus
 calculation.key.1 = Swm y gosb
 calculation.key.1.estimate = Swm y gosb (amcangyfrif)
 calculation.value.amount = £{0}
-calculation.key = Calculation
 calculation.key.2.text = {0}% o £{1} ({2})
 calculation.key.2.text.remove.30.days = {0}% o £{1} ({2}) = £{3}
 calculation.key.3 = Swm a gafwyd
