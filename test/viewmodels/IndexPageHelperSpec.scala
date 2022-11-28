@@ -1193,7 +1193,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 principalChargeBillingFrom = LocalDate.of(2022, 1, 1),
                 principalChargeBillingTo = LocalDate.of(2022, 1, 1),
                 principalChargeDueDate = LocalDate.of(2022, 1, 1),
-                principalChargeLatestClearing = Some(LocalDate.of(2022, 1, 1)),
+                principalChargeLatestClearing = None,
                 penaltyChargeReference = Some("PEN1234567"),
                 LPPDetailsMetadata = LPPDetailsMetadata(
                   mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
