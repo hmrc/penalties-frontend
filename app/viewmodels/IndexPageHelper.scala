@@ -152,12 +152,12 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     if (penaltyDetails.latePaymentPenalty.map(_.details).getOrElse(List.empty[LPPDetails]).isEmpty) {
       p(content = stringAsHtml(messages("lpp.penaltiesSummary.noPaymentPenalties")))
     } else {
-      val isAnyLPPNotPaid: Boolean = penaltyDetails.latePaymentPenalty.exists(_.details.exists(
+      val isAnyLPPNotPaidAndNotAppealed: Boolean = penaltyDetails.latePaymentPenalty.exists(_.details.exists(
         penalty => {
-          penalty.appealInformation.map(_.exists(_.appealStatus.contains(Upheld))).isEmpty &&
-            penalty.penaltyStatus == LPPPenaltyStatusEnum.Accruing
+          !penalty.appealInformation.exists(_.exists(_.appealStatus.contains(Upheld))) &&
+            penalty.principalChargeLatestClearing.isEmpty
         }))
-      if (isAnyLPPNotPaid) {
+      if (isAnyLPPNotPaidAndNotAppealed) {
         html(
           p(content = html(stringAsHtml(getMessage("lpp.penaltiesSummary.unpaid")))),
           p(link(link = "#", messages("lpp.penaltiesSummary.howLppCalculated.link", messages("site.opensInNewTab"))))
