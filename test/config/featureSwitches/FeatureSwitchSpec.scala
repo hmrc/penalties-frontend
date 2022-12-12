@@ -28,12 +28,12 @@ class FeatureSwitchSpec extends SpecBase {
     val featureSwitching: FeatureSwitching = new FeatureSwitching {
       override implicit val appConfig: AppConfig = mockAppConfig
     }
-    sys.props -= CallAPI1812ETMP.name
+    sys.props -= UseNewWYOSection.name
   }
 
   "FeatureSwitch listOfAllFeatureSwitches" should {
     "be all the featureswitches in the app" in {
-      FeatureSwitch.listOfAllFeatureSwitches shouldBe List(CallAPI1812ETMP)
+      FeatureSwitch.listOfAllFeatureSwitches shouldBe List(UseNewWYOSection)
     }
   }
   "FeatureSwitching constants" should {
@@ -43,19 +43,19 @@ class FeatureSwitchSpec extends SpecBase {
     }
   }
 
-  "return true if CallAPI1812ETMP feature switch is enabled" in new Setup {
-    featureSwitching.enableFeatureSwitch(CallAPI1812ETMP)
-    featureSwitching.isEnabled(CallAPI1812ETMP) shouldBe true
+  "return true if UseNewWYOSection feature switch is enabled" in new Setup {
+    featureSwitching.enableFeatureSwitch(UseNewWYOSection)
+    featureSwitching.isEnabled(UseNewWYOSection) shouldBe true
   }
 
-  "return false if CallAPI1812ETMP feature switch is disabled" in new Setup {
-    featureSwitching.disableFeatureSwitch(CallAPI1812ETMP)
-    featureSwitching.isEnabled(CallAPI1812ETMP) shouldBe false
+  "return false if UseNewWYOSection feature switch is disabled" in new Setup {
+    featureSwitching.disableFeatureSwitch(UseNewWYOSection)
+    featureSwitching.isEnabled(UseNewWYOSection) shouldBe false
   }
 
-  "return true if CallAPI1812ETMP feature switch does not exist in cache but does in config" in new Setup {
-    when(mockAppConfig.isFeatureSwitchEnabled(Matchers.eq(CallAPI1812ETMP)))
+  "return true if UseNewWYOSection feature switch does not exist in cache but does in config" in new Setup {
+    when(mockAppConfig.isFeatureSwitchEnabled(Matchers.eq(UseNewWYOSection)))
       .thenReturn(true)
-    featureSwitching.isEnabled(CallAPI1812ETMP) shouldBe true
+    featureSwitching.isEnabled(UseNewWYOSection) shouldBe true
   }
 }

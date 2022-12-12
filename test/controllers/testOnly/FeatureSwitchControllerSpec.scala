@@ -18,7 +18,7 @@ package controllers.testOnly
 
 import base.SpecBase
 import config.AppConfig
-import config.featureSwitches.{CallAPI1812ETMP, FeatureSwitch, FeatureSwitching}
+import config.featureSwitches.{FeatureSwitch, FeatureSwitching, UseNewWYOSection}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{mock, reset, when}
 import play.api.Configuration
@@ -49,15 +49,15 @@ class FeatureSwitchControllerSpec extends SpecBase with FeatureSwitching {
     }
 
     "return OK and enable the feature switch when specified" in {
-      val result = controller.enableOrDisableFeature("feature.switch.call-api-1812-etmp", true)(FakeRequest())
+      val result = controller.enableOrDisableFeature("feature.switch.use-new-wyo-section", true)(FakeRequest())
       status(result) shouldBe OK
-      isEnabled(CallAPI1812ETMP) shouldBe true
+      isEnabled(UseNewWYOSection) shouldBe true
     }
 
     "return OK and disable the feature switch when specified" in {
-      val result = controller.enableOrDisableFeature("feature.switch.call-api-1812-etmp", false)(FakeRequest())
+      val result = controller.enableOrDisableFeature("feature.switch.use-new-wyo-section", false)(FakeRequest())
       status(result) shouldBe OK
-      isEnabled(CallAPI1812ETMP) shouldBe false
+      isEnabled(UseNewWYOSection) shouldBe false
     }
   }
 
