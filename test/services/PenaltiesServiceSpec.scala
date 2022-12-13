@@ -37,7 +37,10 @@ class PenaltiesServiceSpec extends SpecBase {
       LSPTotalValue = Some(0),
       penalisedPrincipalTotal = Some(0),
       LPPPostedTotal = Some(0),
-      LPPEstimatedTotal = Some(0)
+      LPPEstimatedTotal = Some(0),
+      totalAccountOverdue = None,
+      totalAccountPostedInterest = None,
+      totalAccountAccruingInterest = None
     )),
     lateSubmissionPenalty = None,
     latePaymentPenalty = None
@@ -48,7 +51,10 @@ class PenaltiesServiceSpec extends SpecBase {
       LSPTotalValue = Some(0),
       penalisedPrincipalTotal = Some(223.45),
       LPPPostedTotal = Some(0),
-      LPPEstimatedTotal = Some(0)
+      LPPEstimatedTotal = Some(0),
+      totalAccountOverdue = None,
+      totalAccountPostedInterest = None,
+      totalAccountAccruingInterest = None
     )),
     lateSubmissionPenalty = None,
     latePaymentPenalty = None
@@ -59,7 +65,10 @@ class PenaltiesServiceSpec extends SpecBase {
       LSPTotalValue = Some(0),
       penalisedPrincipalTotal = Some(0),
       LPPPostedTotal = Some(0),
-      LPPEstimatedTotal = Some(50)
+      LPPEstimatedTotal = Some(50),
+      totalAccountOverdue = None,
+      totalAccountPostedInterest = None,
+      totalAccountAccruingInterest = None
     )),
     lateSubmissionPenalty = None,
     latePaymentPenalty = None
@@ -70,7 +79,10 @@ class PenaltiesServiceSpec extends SpecBase {
       LSPTotalValue = Some(0),
       penalisedPrincipalTotal = Some(0),
       LPPPostedTotal = Some(50),
-      LPPEstimatedTotal = Some(0)
+      LPPEstimatedTotal = Some(0),
+      totalAccountOverdue = None,
+      totalAccountPostedInterest = None,
+      totalAccountAccruingInterest = None
     )),
     lateSubmissionPenalty = None,
     latePaymentPenalty = None
@@ -187,7 +199,10 @@ class PenaltiesServiceSpec extends SpecBase {
           LSPTotalValue = Some(400),
           penalisedPrincipalTotal = Some(0),
           LPPPostedTotal = Some(0),
-          LPPEstimatedTotal = Some(0)
+          LPPEstimatedTotal = Some(0),
+          totalAccountOverdue = None,
+          totalAccountPostedInterest = None,
+          totalAccountAccruingInterest = None
         )
       ),
       lateSubmissionPenalty = None, latePaymentPenalty = None

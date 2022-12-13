@@ -33,7 +33,10 @@ class GetPenaltyDetailsSpec extends AnyWordSpec with Matchers {
       LSPTotalValue = Some(200),
       penalisedPrincipalTotal = Some(2000),
       LPPPostedTotal = Some(165.25),
-      LPPEstimatedTotal = Some(15.26)
+      LPPEstimatedTotal = Some(15.26),
+      totalAccountOverdue = Some(10432.21),
+      totalAccountPostedInterest = Some(4.32),
+      totalAccountAccruingInterest = Some(1.23)
     )),
     lateSubmissionPenalty = Some(
       LateSubmissionPenalty(
@@ -112,86 +115,89 @@ class GetPenaltyDetailsSpec extends AnyWordSpec with Matchers {
   )
   val penaltyDetailsAsJson: JsValue = Json.parse(
     """
-{
- "totalisations": {
-   "LSPTotalValue": 200,
-   "penalisedPrincipalTotal": 2000,
-   "LPPPostedTotal": 165.25,
-   "LPPEstimatedTotal": 15.26
- },
- "lateSubmissionPenalty": {
-   "summary": {
-     "activePenaltyPoints": 10,
-     "inactivePenaltyPoints": 12,
-     "regimeThreshold": 10,
-     "penaltyChargeAmount": 684.25,
-     "PoCAchievementDate": "2022-01-01"
-   },
-   "details": [
-     {
-       "penaltyNumber": "12345678901234",
-       "penaltyOrder": "01",
-       "penaltyCategory": "P",
-       "penaltyStatus": "ACTIVE",
-       "FAPIndicator": "X",
-       "penaltyCreationDate": "2069-10-30",
-       "penaltyExpiryDate": "2069-10-30",
-       "expiryReason": "FAP",
-       "communicationsDate": "2069-10-30",
-       "lateSubmissions": [
+    {
+     "totalisations": {
+       "LSPTotalValue": 200,
+       "penalisedPrincipalTotal": 2000,
+       "LPPPostedTotal": 165.25,
+       "LPPEstimatedTotal": 15.26,
+       "totalAccountOverdue": 10432.21,
+       "totalAccountPostedInterest": 4.32,
+       "totalAccountAccruingInterest": 1.23
+     },
+     "lateSubmissionPenalty": {
+       "summary": {
+         "activePenaltyPoints": 10,
+         "inactivePenaltyPoints": 12,
+         "regimeThreshold": 10,
+         "penaltyChargeAmount": 684.25,
+         "PoCAchievementDate": "2022-01-01"
+       },
+       "details": [
          {
-           "taxPeriodStartDate": "2069-10-30",
-           "taxPeriodEndDate": "2069-10-30",
-           "taxPeriodDueDate": "2069-10-30",
-           "returnReceiptDate": "2069-10-30",
-           "taxReturnStatus": "Fulfilled"
-         }
-       ],
-       "appealInformation": [
-         {
-           "appealStatus": "99",
-           "appealLevel": "01"
-         }
-       ],
-       "chargeDueDate": "2069-10-30",
-       "chargeOutstandingAmount": 200,
-       "chargeAmount": 200
-   }]
- },
- "latePaymentPenalty": {
-     "details": [{
-       "penaltyCategory": "LPP1",
-       "penaltyStatus": "A",
-       "penaltyAmountPaid": 1001.45,
-       "penaltyAmountOutstanding": 99.99,
-       "LPP1LRCalculationAmount": 99.99,
-       "LPP1LRDays": "15",
-       "LPP1LRPercentage": 2.00,
-       "LPP1HRCalculationAmount": 99.99,
-       "LPP1HRDays": "31",
-       "LPP1HRPercentage": 2.00,
-       "LPP2Days": "31",
-       "LPP2Percentage": 4.00,
-       "penaltyChargeCreationDate": "2069-10-30",
-       "communicationsDate": "2069-10-30",
-       "penaltyChargeDueDate": "2069-10-30",
-       "principalChargeReference": "12345678901234",
-       "appealInformation":
-       [{
-         "appealStatus": "99",
-         "appealLevel": "01"
-       }],
-       "principalChargeBillingFrom": "2069-10-30",
-       "principalChargeBillingTo": "2069-10-30",
-       "principalChargeDueDate": "2069-10-30",
-       "penaltyChargeReference": "PEN1234567",
-       "principalChargeLatestClearing": "2069-10-30",
-       "mainTransaction": "4700",
-       "outstandingAmount": 99
-   }]
- }
-}
-""".stripMargin)
+           "penaltyNumber": "12345678901234",
+           "penaltyOrder": "01",
+           "penaltyCategory": "P",
+           "penaltyStatus": "ACTIVE",
+           "FAPIndicator": "X",
+           "penaltyCreationDate": "2069-10-30",
+           "penaltyExpiryDate": "2069-10-30",
+           "expiryReason": "FAP",
+           "communicationsDate": "2069-10-30",
+           "lateSubmissions": [
+             {
+               "taxPeriodStartDate": "2069-10-30",
+               "taxPeriodEndDate": "2069-10-30",
+               "taxPeriodDueDate": "2069-10-30",
+               "returnReceiptDate": "2069-10-30",
+               "taxReturnStatus": "Fulfilled"
+             }
+           ],
+           "appealInformation": [
+             {
+               "appealStatus": "99",
+               "appealLevel": "01"
+             }
+           ],
+           "chargeDueDate": "2069-10-30",
+           "chargeOutstandingAmount": 200,
+           "chargeAmount": 200
+       }]
+     },
+     "latePaymentPenalty": {
+         "details": [{
+           "penaltyCategory": "LPP1",
+           "penaltyStatus": "A",
+           "penaltyAmountPaid": 1001.45,
+           "penaltyAmountOutstanding": 99.99,
+           "LPP1LRCalculationAmount": 99.99,
+           "LPP1LRDays": "15",
+           "LPP1LRPercentage": 2.00,
+           "LPP1HRCalculationAmount": 99.99,
+           "LPP1HRDays": "31",
+           "LPP1HRPercentage": 2.00,
+           "LPP2Days": "31",
+           "LPP2Percentage": 4.00,
+           "penaltyChargeCreationDate": "2069-10-30",
+           "communicationsDate": "2069-10-30",
+           "penaltyChargeDueDate": "2069-10-30",
+           "principalChargeReference": "12345678901234",
+           "appealInformation":
+           [{
+             "appealStatus": "99",
+             "appealLevel": "01"
+           }],
+           "principalChargeBillingFrom": "2069-10-30",
+           "principalChargeBillingTo": "2069-10-30",
+           "principalChargeDueDate": "2069-10-30",
+           "penaltyChargeReference": "PEN1234567",
+           "principalChargeLatestClearing": "2069-10-30",
+           "mainTransaction": "4700",
+           "outstandingAmount": 99
+       }]
+     }
+    }
+  """.stripMargin)
 
   "PenaltyDetailsSpec" should {
 

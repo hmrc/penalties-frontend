@@ -494,7 +494,10 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       LSPTotalValue = Some(400),
       penalisedPrincipalTotal = Some(121.40),
       LPPPostedTotal = Some(165.25),
-      LPPEstimatedTotal = Some(46.55)
+      LPPEstimatedTotal = Some(46.55),
+      totalAccountOverdue = Some(10432.21),
+      totalAccountPostedInterest = Some(4.32),
+      totalAccountAccruingInterest = Some(1.23)
     )),
 
     lateSubmissionPenalty = Some(LateSubmissionPenalty(
