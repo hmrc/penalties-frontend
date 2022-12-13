@@ -20,6 +20,7 @@ import base.SpecBase
 import connectors.PenaltiesConnector
 import connectors.httpParsers.{BadRequest, InvalidJson, UnexpectedFailure}
 import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
+import models.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty, MainTransactionEnum}
 import models.lsp._
 import models.{GetPenaltyDetails, Totalisations}
 import org.mockito.Matchers.any
@@ -518,6 +519,69 @@ class PenaltiesServiceSpec extends SpecBase {
       )
       val result = service.findUnpaidVATCharges(Some(totalisationFieldWithOverdueVAT))
       result shouldBe 0
+    }
+  }
+
+  "findNumberOfLatePaymentPenalties" should {
+    val sampleLPP: LPPDetails = LPPDetails(principalChargeReference = "123456789",
+      penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
+      penaltyChargeCreationDate = Some(LocalDate.of(2022, 1, 1)),
+      penaltyStatus = LPPPenaltyStatusEnum.Posted,
+      penaltyAmountPaid = Some(BigDecimal(400)),
+      penaltyAmountOutstanding = Some(BigDecimal(10)),
+      LPP1LRDays = Some("15"),
+      LPP1HRDays = Some("30"),
+      LPP2Days = None,
+      LPP1LRCalculationAmount = None,
+      LPP1HRCalculationAmount = None,
+      LPP1LRPercentage = Some(BigDecimal(0.02)),
+      LPP1HRPercentage = Some(BigDecimal(0.02)),
+      LPP2Percentage = None,
+      communicationsDate = Some(LocalDate.of(2022, 1, 1)),
+      penaltyChargeDueDate = Some(LocalDate.of(2022, 1, 1)),
+      appealInformation = None,
+      principalChargeBillingFrom = LocalDate.of(2022, 1, 1),
+      principalChargeBillingTo = LocalDate.of(2022, 1, 1).plusMonths(1),
+      principalChargeDueDate = LocalDate.of(2022, 1, 1).plusMonths(2).plusDays(6),
+      penaltyChargeReference = Some("123456789"),
+      principalChargeLatestClearing = Some(LocalDate.of(2022, 1, 1).plusMonths(2).plusDays(7)),
+      LPPDetailsMetadata = LPPDetailsMetadata(
+        mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+        outstandingAmount = Some(99),
+        timeToPay = None
+      )
+    )
+    "return 0" when {
+      "all the penalties have been appealed successfully" in new Setup {
+        val allLPPsAppealedSuccessfully: LatePaymentPenalty = LatePaymentPenalty(
+          Seq(sampleLPP.copy(appealInformation = Some(Seq(AppealInformationType(Some(AppealStatusEnum.Upheld), Some(AppealLevelEnum.HMRC))))))
+        )
+        val result = service.findNumberOfLatePaymentPenalties(Some(allLPPsAppealedSuccessfully))
+        result shouldBe 0
+      }
+
+      "all the penalties have been paid" in new Setup {
+        val allLPPsPaid: LatePaymentPenalty = LatePaymentPenalty(
+          Seq(sampleLPP.copy(penaltyAmountOutstanding = Some(0)))
+        )
+        val result = service.findNumberOfLatePaymentPenalties(Some(allLPPsPaid))
+        result shouldBe 0
+      }
+
+      "no penalties exist" in new Setup {
+        val noneResult = service.findNumberOfLatePaymentPenalties(None)
+        noneResult shouldBe 0
+        val emptySeqResult = service.findNumberOfLatePaymentPenalties(Some(LatePaymentPenalty(Seq())))
+        emptySeqResult shouldBe 0
+      }
+    }
+
+    "return the amount of penalties that haven't been appealed successfully and are unpaid" in new Setup {
+      val allLPPs: LatePaymentPenalty = LatePaymentPenalty(
+        Seq(sampleLPP, sampleLPP)
+      )
+      val result = service.findNumberOfLatePaymentPenalties(Some(allLPPs))
+      result shouldBe 2
     }
   }
 }

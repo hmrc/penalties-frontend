@@ -1611,7 +1611,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
   "getWhatYouOweBreakdownV2" should {
 
     "return None" when {
-      "the user has no outstanding payments" in {
+      "the user has no outstanding items" in {
         val penaltyDetailsWithNoOutstandingPayments: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = None, lateSubmissionPenalty = None, latePaymentPenalty = None
         )
@@ -1638,6 +1638,59 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         val result = pageHelper.getWhatYouOweBreakdownV2(penaltyDetailsWithOutstandingVAT)
         result.isDefined shouldBe true
         result.get.body.contains("unpaid VAT charges") shouldBe true
+      }
+
+      val sampleLPP: LPPDetails = LPPDetails(principalChargeReference = "123456789",
+        penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
+        penaltyChargeCreationDate = Some(LocalDate.of(2022, 1, 1)),
+        penaltyStatus = LPPPenaltyStatusEnum.Posted,
+        penaltyAmountPaid = Some(BigDecimal(400)),
+        penaltyAmountOutstanding = Some(BigDecimal(10)),
+        LPP1LRDays = Some("15"),
+        LPP1HRDays = Some("30"),
+        LPP2Days = None,
+        LPP1LRCalculationAmount = None,
+        LPP1HRCalculationAmount = None,
+        LPP1LRPercentage = Some(BigDecimal(0.02)),
+        LPP1HRPercentage = Some(BigDecimal(0.02)),
+        LPP2Percentage = None,
+        communicationsDate = Some(LocalDate.of(2022, 1, 1)),
+        penaltyChargeDueDate = Some(LocalDate.of(2022, 1, 1)),
+        appealInformation = None,
+        principalChargeBillingFrom = LocalDate.of(2022, 1, 1),
+        principalChargeBillingTo = LocalDate.of(2022, 1, 1).plusMonths(1),
+        principalChargeDueDate = LocalDate.of(2022, 1, 1).plusMonths(2).plusDays(6),
+        penaltyChargeReference = Some("123456789"),
+        principalChargeLatestClearing = Some(LocalDate.of(2022, 1, 1).plusMonths(2).plusDays(7)),
+        LPPDetailsMetadata = LPPDetailsMetadata(
+          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+          outstandingAmount = Some(99),
+          timeToPay = None
+        )
+      )
+
+      "the user has 1 unpaid (and not successfully appealed) LPP" in {
+        val penaltyDetailsWithUnpaidLPP: GetPenaltyDetails = GetPenaltyDetails(
+          totalisations = None, lateSubmissionPenalty = None,
+          latePaymentPenalty = Some(LatePaymentPenalty(
+            Seq(sampleLPP)
+          ))
+        )
+        val result = pageHelper.getWhatYouOweBreakdownV2(penaltyDetailsWithUnpaidLPP)
+        result.isDefined shouldBe true
+        result.get.body.contains("a late payment penalty") shouldBe true
+      }
+
+      "the user has > 1 unpaid (and not successfully appealed) LPPs" in {
+        val penaltyDetailsWithUnpaidLPPs: GetPenaltyDetails = GetPenaltyDetails(
+          totalisations = None, lateSubmissionPenalty = None,
+          latePaymentPenalty = Some(LatePaymentPenalty(
+            Seq(sampleLPP, sampleLPP)
+          ))
+        )
+        val result = pageHelper.getWhatYouOweBreakdownV2(penaltyDetailsWithUnpaidLPPs)
+        result.isDefined shouldBe true
+        result.get.body.contains("late payment penalties") shouldBe true
       }
     }
   }
