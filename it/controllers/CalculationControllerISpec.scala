@@ -53,7 +53,10 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       LSPTotalValue = Some(BigDecimal(200)),
       penalisedPrincipalTotal = Some(BigDecimal(2000)),
       LPPPostedTotal = Some(BigDecimal(165.25)),
-      LPPEstimatedTotal = Some(BigDecimal(15.26))
+      LPPEstimatedTotal = Some(BigDecimal(15.26)),
+      totalAccountOverdue = Some(10432.21),
+      totalAccountPostedInterest = Some(4.32),
+      totalAccountAccruingInterest = Some(1.23)
     )),
     lateSubmissionPenalty = Some(
       LateSubmissionPenalty(

@@ -39,7 +39,10 @@ object PenaltiesStub {
       LSPTotalValue = Some(200),
       penalisedPrincipalTotal = Some(2000),
       LPPPostedTotal = Some(165.25),
-      LPPEstimatedTotal = Some(15.26)
+      LPPEstimatedTotal = Some(15.26),
+      totalAccountOverdue = Some(10432.21),
+      totalAccountPostedInterest = Some(4.32),
+      totalAccountAccruingInterest = Some(1.23)
     )),
     lateSubmissionPenalty = Some(
       LateSubmissionPenalty(
@@ -122,7 +125,10 @@ object PenaltiesStub {
       LSPTotalValue = Some(200),
       penalisedPrincipalTotal = Some(2000),
       LPPPostedTotal = Some(165.25),
-      LPPEstimatedTotal = Some(15.26)
+      LPPEstimatedTotal = Some(15.26),
+      totalAccountOverdue = Some(10432.21),
+      totalAccountPostedInterest = Some(4.32),
+      totalAccountAccruingInterest = Some(1.23)
     )),
     lateSubmissionPenalty = Some(
       LateSubmissionPenalty(

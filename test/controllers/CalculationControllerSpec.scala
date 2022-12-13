@@ -52,7 +52,10 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching with LogC
       LSPTotalValue = Some(BigDecimal(200)),
       penalisedPrincipalTotal = Some(BigDecimal(2000)),
       LPPPostedTotal = Some(BigDecimal(165.25)),
-      LPPEstimatedTotal = Some(BigDecimal(15.26))
+      LPPEstimatedTotal = Some(BigDecimal(15.26)),
+      totalAccountOverdue = None,
+      totalAccountPostedInterest = None,
+      totalAccountAccruingInterest = None
     )),
     lateSubmissionPenalty = Some(
       LateSubmissionPenalty(
@@ -135,7 +138,10 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching with LogC
       LSPTotalValue = Some(BigDecimal(200)),
       penalisedPrincipalTotal = Some(BigDecimal(2000)),
       LPPPostedTotal = Some(BigDecimal(165.25)),
-      LPPEstimatedTotal = Some(BigDecimal(15.26))
+      LPPEstimatedTotal = Some(BigDecimal(15.26)),
+      totalAccountOverdue = None,
+      totalAccountPostedInterest = None,
+      totalAccountAccruingInterest = None
     )),
     lateSubmissionPenalty = Some(
       LateSubmissionPenalty(

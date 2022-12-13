@@ -1245,7 +1245,10 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               LSPTotalValue = Some(100),
               penalisedPrincipalTotal = Some(223.45),
               LPPPostedTotal = Some(0),
-              LPPEstimatedTotal = Some(0)
+              LPPEstimatedTotal = Some(0),
+              totalAccountOverdue = None,
+              totalAccountPostedInterest = None,
+              totalAccountAccruingInterest = None
             )
           ), lateSubmissionPenalty = None, latePaymentPenalty = None
         )
@@ -1262,7 +1265,10 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             LSPTotalValue = Some(100),
             penalisedPrincipalTotal = Some(223.45),
             LPPPostedTotal = Some(144.21),
-            LPPEstimatedTotal = Some(0)
+            LPPEstimatedTotal = Some(0),
+            totalAccountOverdue = None,
+            totalAccountPostedInterest = None,
+            totalAccountAccruingInterest = None
           )
         ),
         latePaymentPenalty = None,
@@ -1280,7 +1286,10 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             LSPTotalValue = Some(100),
             penalisedPrincipalTotal = Some(223.45),
             LPPPostedTotal = Some(144.21),
-            LPPEstimatedTotal = Some(60.24)
+            LPPEstimatedTotal = Some(60.24),
+            totalAccountOverdue = None,
+            totalAccountPostedInterest = None,
+            totalAccountAccruingInterest = None
           )
         ),
         latePaymentPenalty = None,
@@ -1298,7 +1307,10 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             LSPTotalValue = Some(100),
             penalisedPrincipalTotal = Some(223.45),
             LPPPostedTotal = Some(144.21),
-            LPPEstimatedTotal = Some(71.57)
+            LPPEstimatedTotal = Some(71.57),
+            totalAccountOverdue = None,
+            totalAccountPostedInterest = None,
+            totalAccountAccruingInterest = None
           )
         ),
         latePaymentPenalty = None,
@@ -1317,7 +1329,10 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             LSPTotalValue = Some(100),
             penalisedPrincipalTotal = Some(223.45),
             LPPPostedTotal = Some(144.21),
-            LPPEstimatedTotal = Some(71.57)
+            LPPEstimatedTotal = Some(71.57),
+            totalAccountOverdue = None,
+            totalAccountPostedInterest = None,
+            totalAccountAccruingInterest = None
           )
         ),
         latePaymentPenalty = None,
@@ -1344,7 +1359,10 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             LSPTotalValue = Some(400),
             penalisedPrincipalTotal = Some(223.45),
             LPPPostedTotal = Some(144.21),
-            LPPEstimatedTotal = Some(71.57)
+            LPPEstimatedTotal = Some(71.57),
+            totalAccountOverdue = None,
+            totalAccountPostedInterest = None,
+            totalAccountAccruingInterest = None
           )
         ),
         latePaymentPenalty = None,
@@ -1424,7 +1442,10 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             LSPTotalValue = Some(400),
             penalisedPrincipalTotal = Some(0),
             LPPPostedTotal = Some(0),
-            LPPEstimatedTotal = Some(0)
+            LPPEstimatedTotal = Some(0),
+            totalAccountOverdue = None,
+            totalAccountPostedInterest = None,
+            totalAccountAccruingInterest = None
           )
         ),
         latePaymentPenalty = None,
@@ -1502,7 +1523,10 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             LSPTotalValue = Some(200),
             penalisedPrincipalTotal = Some(0),
             LPPPostedTotal = Some(0),
-            LPPEstimatedTotal = Some(0)
+            LPPEstimatedTotal = Some(0),
+            totalAccountOverdue = None,
+            totalAccountPostedInterest = None,
+            totalAccountAccruingInterest = None
           )
         ),
         latePaymentPenalty = None,

@@ -47,7 +47,10 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours {
           LSPTotalValue = Some(100),
           penalisedPrincipalTotal = Some(223.45),
           LPPPostedTotal = Some(0),
-          LPPEstimatedTotal = Some(0)
+          LPPEstimatedTotal = Some(0),
+          totalAccountOverdue = None,
+          totalAccountPostedInterest = None,
+          totalAccountAccruingInterest = None
         )
       ), lateSubmissionPenalty = None, latePaymentPenalty = None
     )

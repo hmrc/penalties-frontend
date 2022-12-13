@@ -27,7 +27,10 @@ class TotalisationsSpec extends SpecBase {
       |   "LSPTotalValue": 200,
       |   "penalisedPrincipalTotal": 2000,
       |   "LPPPostedTotal": 165.25,
-      |   "LPPEstimatedTotal": 15.26
+      |   "LPPEstimatedTotal": 15.26,
+      |   "totalAccountOverdue": 10432.21,
+      |   "totalAccountPostedInterest": 4.32,
+      |   "totalAccountAccruingInterest": 1.23
       |}
       |""".stripMargin)
 
@@ -35,7 +38,10 @@ class TotalisationsSpec extends SpecBase {
     LSPTotalValue = Some(200),
     penalisedPrincipalTotal = Some(2000),
     LPPPostedTotal = Some(165.25),
-    LPPEstimatedTotal = Some(15.26)
+    LPPEstimatedTotal = Some(15.26),
+    totalAccountOverdue = Some(10432.21),
+    totalAccountPostedInterest = Some(4.32),
+    totalAccountAccruingInterest = Some(1.23)
   )
 
   "Totalisation" should {
