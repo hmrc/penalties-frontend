@@ -37,13 +37,13 @@ class FeatureSwitchingSpec extends SpecBase with BeforeAndAfterAll with FeatureS
     val featureSwitching: FeatureSwitching = new FeatureSwitching {
       override implicit val appConfig: AppConfig = config
     }
-    sys.props -= CallAPI1812ETMP.name
+    sys.props -= UseNewWYOSection.name
     sys.props -= featureSwitching.TIME_MACHINE_NOW
   }
 
   override protected def afterAll(): Unit = {
     super.afterAll()
-    sys.props -= CallAPI1812ETMP.name
+    sys.props -= UseNewWYOSection.name
     sys.props -= TIME_MACHINE_NOW
   }
 
@@ -56,33 +56,33 @@ class FeatureSwitchingSpec extends SpecBase with BeforeAndAfterAll with FeatureS
 
   "isEnabled" should {
     s"return true if feature switch is enabled" in new Setup {
-      featureSwitching.enableFeatureSwitch(CallAPI1812ETMP)
-      featureSwitching.isEnabled(CallAPI1812ETMP) shouldBe true
+      featureSwitching.enableFeatureSwitch(UseNewWYOSection)
+      featureSwitching.isEnabled(UseNewWYOSection) shouldBe true
     }
 
     s"return false if feature switch is disabled" in new Setup {
-      featureSwitching.disableFeatureSwitch(CallAPI1812ETMP)
-      featureSwitching.isEnabled(CallAPI1812ETMP) shouldBe false
+      featureSwitching.disableFeatureSwitch(UseNewWYOSection)
+      featureSwitching.isEnabled(UseNewWYOSection) shouldBe false
     }
 
     "return true if system props is empty but config has value" in new Setup {
       when(mockConfig.get[Boolean](any())(any()))
         .thenReturn(true)
-      featureSwitching.isEnabled(CallAPI1812ETMP) shouldBe true
+      featureSwitching.isEnabled(UseNewWYOSection) shouldBe true
     }
   }
 
   "enableFeatureSwitch" should {
-    s"set ${CallAPI1812ETMP.name} property to true" in new Setup {
-      featureSwitching.enableFeatureSwitch(CallAPI1812ETMP)
-      (sys.props get CallAPI1812ETMP.name) shouldBe Some("true")
+    s"set ${UseNewWYOSection.name} property to true" in new Setup {
+      featureSwitching.enableFeatureSwitch(UseNewWYOSection)
+      (sys.props get UseNewWYOSection.name) shouldBe Some("true")
     }
   }
 
   "disableFeatureSwitch" should {
-    s"set ${CallAPI1812ETMP.name} property to false" in new Setup {
-      featureSwitching.disableFeatureSwitch(CallAPI1812ETMP)
-      (sys.props get CallAPI1812ETMP.name) shouldBe Some("false")
+    s"set ${UseNewWYOSection.name} property to false" in new Setup {
+      featureSwitching.disableFeatureSwitch(UseNewWYOSection)
+      (sys.props get UseNewWYOSection.name) shouldBe Some("false")
     }
   }
 
