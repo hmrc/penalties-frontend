@@ -1225,6 +1225,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
     }
   }
 
+  //TODO: remove when new WYO complete
   "getWhatYouOweBreakdown" should {
 
     "return None" when {
@@ -1604,6 +1605,41 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
     //        result.isDefined shouldBe true
     //        result.get.body.contains("£21.23 in VAT interest") shouldBe true
     //      }
+  }
+
+  //TODO: remove V2 suffix when new WYO complete
+  "getWhatYouOweBreakdownV2" should {
+
+    "return None" when {
+      "the user has no outstanding payments" in {
+        val penaltyDetailsWithNoOutstandingPayments: GetPenaltyDetails = GetPenaltyDetails(
+          totalisations = None, lateSubmissionPenalty = None, latePaymentPenalty = None
+        )
+        val result = pageHelper.getWhatYouOweBreakdownV2(penaltyDetailsWithNoOutstandingPayments)
+        result.isEmpty shouldBe true
+      }
+    }
+
+    "return Some" when {
+      "the user has outstanding VAT to pay" in {
+        val penaltyDetailsWithOutstandingVAT: GetPenaltyDetails = GetPenaltyDetails(
+          totalisations = Some(
+            Totalisations(
+              LSPTotalValue = Some(100),
+              penalisedPrincipalTotal = None,
+              LPPPostedTotal = Some(0),
+              LPPEstimatedTotal = Some(0),
+              totalAccountOverdue = Some(100.23),
+              totalAccountPostedInterest = None,
+              totalAccountAccruingInterest = None
+            )
+          ), lateSubmissionPenalty = None, latePaymentPenalty = None
+        )
+        val result = pageHelper.getWhatYouOweBreakdownV2(penaltyDetailsWithOutstandingVAT)
+        result.isDefined shouldBe true
+        result.get.body.contains("unpaid VAT charges") shouldBe true
+      }
+    }
   }
 
   "isTTPActive" should {

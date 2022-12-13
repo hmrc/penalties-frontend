@@ -36,6 +36,7 @@
         isUnpaidLSPExists: Boolean = false,
         isAnyUnpaidLSPAndNotSubmittedReturn: Boolean = false,
         isTTPActive: Boolean = false,
+        isNewWYOSection: Boolean = false,
         whatYouOweContent: Option[Html] = None)(implicit messages: Messages, appConfig: AppConfig, user: User[_])
 
 @unableToPayTodayContent = {
@@ -56,7 +57,13 @@
       @if(!isTTPActive) {
         @whatYouOweContent.map { breakdownContent =>
           <div id="what-is-owed">
-            <p class="govuk-body">@getMessage("whatIsOwed.p1")</p>
+            @if(isNewWYOSection) {
+              <h2 class="govuk-heading-l">@messages("whatIsOwed.heading")</h2>
+              <p class="govuk-body">@getMessage("whatIsOwed.new.p1")</p>
+            } else {
+              <p class="govuk-body">@getMessage("whatIsOwed.p1")</p>
+            }
+
             @breakdownContent
             @if(user.isAgent) {
               @link(appConfig.whatYouOweUrl, "whatIsOwed.button.checkAmounts", button = true, classes = "govuk-button")

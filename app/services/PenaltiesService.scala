@@ -20,7 +20,7 @@ import connectors.PenaltiesConnector
 import connectors.httpParsers.PenaltiesConnectorParser.GetPenaltyDetailsResponse
 import models.appealInfo.AppealStatusEnum
 import models.lsp.{LSPDetails, TaxReturnStatusEnum}
-import models.{GetPenaltyDetails, User}
+import models.{GetPenaltyDetails, Totalisations, User}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -74,5 +74,10 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
 
   def getRegimeThreshold(payload: GetPenaltyDetails): Int = {
     payload.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0)
+  }
+
+  //V2 content
+  def findUnpaidVATCharges(totalisations: Option[Totalisations]): BigDecimal = {
+    totalisations.flatMap(_.totalAccountOverdue).getOrElse(BigDecimal(0))
   }
 }

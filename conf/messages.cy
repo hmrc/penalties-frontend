@@ -195,6 +195,13 @@ whatIsOwed.ttp.p3.link = Gwirio’r hyn sydd arnoch
 agent.whatIsOwed.ttp.p3.link = Gwirio’r hyn sydd ar eich cleient
 whatIsOwed.ttp.p3 = i fwrw golwg dros yr holl gostau sydd heb eu talu.
 
+# New messages for what is owed
+# ----------------------------------------------------------
+whatIsOwed.heading = Overview
+whatIsOwed.new.p1 = Your account has:
+agent.whatIsOwed.new.p1 = Your client’s account has:
+whatIsOwed.unpaidVATCharges = unpaid VAT charges
+
 # Calculation messages
 # ----------------------------------------------------------
 calculation.headingAndTitle.lpp = Cosb am dalu’n hwyr
