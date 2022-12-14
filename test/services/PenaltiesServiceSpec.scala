@@ -490,4 +490,34 @@ class PenaltiesServiceSpec extends SpecBase {
       }
     }
   }
+
+  "findUnpaidVATCharges" should {
+    "find the totalAccountOverdue in the totalisation field and return the value if present" in new Setup {
+      val totalisationFieldWithOverdueVAT = Totalisations(
+        totalAccountOverdue = Some(123.45),
+        penalisedPrincipalTotal = Some(543.21),
+        LPPPostedTotal = None,
+        LPPEstimatedTotal = None,
+        totalAccountPostedInterest = None,
+        totalAccountAccruingInterest = None,
+        LSPTotalValue = None
+      )
+      val result = service.findUnpaidVATCharges(Some(totalisationFieldWithOverdueVAT))
+      result shouldBe 123.45
+    }
+
+    "return 0 if no totalAccountOverdue field present" in new Setup {
+      val totalisationFieldWithOverdueVAT = Totalisations(
+        totalAccountOverdue = None,
+        penalisedPrincipalTotal = Some(543.21),
+        LPPPostedTotal = None,
+        LPPEstimatedTotal = None,
+        totalAccountPostedInterest = None,
+        totalAccountAccruingInterest = None,
+        LSPTotalValue = None
+      )
+      val result = service.findUnpaidVATCharges(Some(totalisationFieldWithOverdueVAT))
+      result shouldBe 0
+    }
+  }
 }

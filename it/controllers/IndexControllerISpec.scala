@@ -17,6 +17,7 @@
 package controllers
 
 import config.AppConfig
+import config.featureSwitches.UseNewWYOSection
 import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import models.lpp._
 import models.lsp._
@@ -811,35 +812,19 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#late-payment-penalties footer li").get(1).text() shouldBe "Appeal this penalty"
     }
 
-    //TODO Changes are being made to overview section based on API restrictions
-    "return 200 (OK) and render the view when there is outstanding payments" ignore {
-      //      returnLSPDataStub(etmpPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue)
+    "return 200 (OK) and render the what you owe section when relevant fields are present" in {
+      enableFeatureSwitch(UseNewWYOSection)
+      returnPenaltyDetailsStub(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue)
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#what-is-owed > p").first.text shouldBe "You owe:"
-      parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£121.40 in late VAT"
-      parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "£93.10 in estimated VAT interest"
-      parsedBody.select("#what-is-owed > ul > li").get(2).text shouldBe "£200 in late payment penalties"
-      parsedBody.select("#what-is-owed > ul > li").get(3).text shouldBe "£99.55 in estimated interest on penalties"
-      parsedBody.select("#what-is-owed > ul > li").get(4).text shouldBe "£400 fixed penalties for late submission"
-      parsedBody.select("#what-is-owed > ul > li").get(5).text shouldBe "other penalties not related to late submission or late payment"
-      parsedBody.select("#main-content h2:nth-child(3)").text shouldBe "Penalty and appeal details"
+      parsedBody.select("#what-is-owed > h2").first.text shouldBe "Overview"
+      parsedBody.select("#what-is-owed > p").first.text shouldBe "Your account has:"
+      parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "unpaid VAT charges"
       parsedBody.select("#what-is-owed > a").text shouldBe "Check amounts and pay"
-      parsedBody.select("#what-is-owed > h2").text shouldBe "If you cannot pay today"
-    }
-
-    //TODO Changes are being made to overview section based on API restrictions
-    "return 200 (OK) and render the view when there is outstanding estimate payments" ignore {
-      //      returnLSPDataStub(etmpPayloadWithEstimates)
-      val request = controller.onPageLoad()(fakeRequest)
-      status(request) shouldBe Status.OK
-      val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "£232.12 in estimated late payment penalties"
-      parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "£53 in estimated interest on penalties"
+      parsedBody.select("#what-is-owed > h2").get(1).text shouldBe "If you cannot pay today"
       parsedBody.select("#main-content h2:nth-child(3)").text shouldBe "Penalty and appeal details"
-      parsedBody.select("#what-is-owed > a").text shouldBe "Check amounts and pay"
-      parsedBody.select("#what-is-owed > h2").text shouldBe "If you cannot pay today"
+      disableFeatureSwitch(UseNewWYOSection)
     }
 
     "return 200 (OK) and render the view when there are LPPs and additional penalties paid that are retrieved from the backend" in {
@@ -1047,6 +1032,23 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.select("#main-content h2:nth-child(3)").text shouldBe "Penalty and appeal details"
         parsedBody.select("#what-is-owed > a").text shouldBe "Check amounts"
         parsedBody.select("#main-content .govuk-details__summary-text").text shouldBe "Payment help"
+      }
+
+      //TODO: remove 'new WYO' when WYO has been implemented
+      "return 200 (OK) and render the view when there is outstanding payments for the client (new WYO)" in {
+        AuthStub.agentAuthorised()
+        enableFeatureSwitch(UseNewWYOSection)
+        returnPenaltyDetailsStubAgent(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalty = Some(paidLatePaymentPenalty)))
+        val request = controller.onPageLoad()(fakeAgentRequest)
+        await(request).header.status shouldBe Status.OK
+        val parsedBody = Jsoup.parse(contentAsString(request))
+        parsedBody.select("#what-is-owed > h2").first.text shouldBe "Overview"
+        parsedBody.select("#what-is-owed > p").first.text shouldBe "Your client’s account has:"
+        parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "unpaid VAT charges"
+        parsedBody.select("#what-is-owed > a").text shouldBe "Check amounts"
+        parsedBody.select("#main-content .govuk-details__summary-text").text shouldBe "Payment help"
+        parsedBody.select("#main-content h2:nth-child(3)").text shouldBe "Penalty and appeal details"
+        disableFeatureSwitch(UseNewWYOSection)
       }
 
       "return 200 (OK) and add the latest lsp creation date and the penalty threshold to the session" in {

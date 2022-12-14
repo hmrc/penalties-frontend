@@ -214,7 +214,23 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     }
   }
 
+  //TODO: remove V2 suffix when new WYO content added
+  def getWhatYouOweBreakdownV2(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
+    val unpaidVATCharges = penaltiesService.findUnpaidVATCharges(penaltyDetails.totalisations)
+    val whatYouOweContent: Seq[String] = Seq(
+      if(unpaidVATCharges > BigDecimal(0)) Some(messages("whatIsOwed.unpaidVATCharges")) else None
+    ).collect { case Some(x) => x }
 
+    if(whatYouOweContent.nonEmpty) {
+      Some(bullets(
+        whatYouOweContent.map {
+          stringAsHtml
+        }
+      ))
+    } else None
+  }
+
+  //TODO: remove when new WYO content added
   def getWhatYouOweBreakdown(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
     val amountOfLateVAT = penaltiesService.findOverdueVATFromPayload(penaltyDetails)
     val crystallisedLPPAmount = penaltiesService.findCrystallisedLPPsFromPayload(penaltyDetails)

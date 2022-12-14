@@ -195,6 +195,13 @@ whatIsOwed.ttp.p3.link = Check what you owe
 agent.whatIsOwed.ttp.p3.link = Check what your client owes
 whatIsOwed.ttp.p3 = to see all unpaid charges.
 
+# New messages for what is owed
+# ----------------------------------------------------------
+whatIsOwed.heading = Overview
+whatIsOwed.new.p1 = Your account has:
+agent.whatIsOwed.new.p1 = Your client’s account has:
+whatIsOwed.unpaidVATCharges = unpaid VAT charges
+
 # Calculation messages
 # ----------------------------------------------------------
 calculation.headingAndTitle.lpp = Late payment penalty
