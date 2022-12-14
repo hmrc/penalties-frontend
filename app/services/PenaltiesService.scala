@@ -19,6 +19,7 @@ package services
 import connectors.PenaltiesConnector
 import connectors.httpParsers.PenaltiesConnectorParser.GetPenaltyDetailsResponse
 import models.appealInfo.AppealStatusEnum
+import models.lpp.{LPPDetails, LatePaymentPenalty}
 import models.lsp.{LSPDetails, TaxReturnStatusEnum}
 import models.{GetPenaltyDetails, Totalisations, User}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -72,6 +73,11 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
       .filterNot(details => details.appealInformation.exists(_.exists(_.appealStatus.contains(AppealStatusEnum.Upheld))))
   }
 
+  private def filterOutAppealedLPPs(lpps: Seq[LPPDetails]): Seq[LPPDetails] = {
+    lpps
+      .filterNot(details => details.appealInformation.exists(_.exists(_.appealStatus.contains(AppealStatusEnum.Upheld))))
+  }
+
   def getRegimeThreshold(payload: GetPenaltyDetails): Int = {
     payload.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0)
   }
@@ -79,5 +85,18 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
   //V2 content
   def findUnpaidVATCharges(totalisations: Option[Totalisations]): BigDecimal = {
     totalisations.flatMap(_.totalAccountOverdue).getOrElse(BigDecimal(0))
+  }
+
+  def findNumberOfLatePaymentPenalties(optLPPs: Option[LatePaymentPenalty]): Int = {
+    //Find LPPs that have not been appealed successfully and are unpaid
+    optLPPs.map {
+      lpps => {
+        val lppsThatHaveNotBeenAppealedSuccessfully = filterOutAppealedLPPs(lpps.details)
+        lppsThatHaveNotBeenAppealedSuccessfully.count(details => {
+            details.penaltyAmountOutstanding.isDefined &&
+            details.penaltyAmountOutstanding.exists(_ > BigDecimal(0))
+        })
+      }
+    }.getOrElse(0)
   }
 }

@@ -16,11 +16,11 @@
 
 package viewmodels
 
-import config.{AppConfig, ErrorHandler}
 import config.featureSwitches.FeatureSwitching
+import config.{AppConfig, ErrorHandler}
 import models.appealInfo.AppealStatusEnum.Upheld
 import models.compliance.{CompliancePayload, ComplianceStatusEnum}
-import models.lpp.{LPPDetails, LPPPenaltyStatusEnum}
+import models.lpp.LPPDetails
 import models.lsp.{ExpiryReasonEnum, LSPDetails, LSPPenaltyStatusEnum, TaxReturnStatusEnum}
 import models.{GetPenaltyDetails, User}
 import play.api.i18n.Messages
@@ -217,17 +217,12 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
   //TODO: remove V2 suffix when new WYO content added
   def getWhatYouOweBreakdownV2(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
     val unpaidVATCharges = penaltiesService.findUnpaidVATCharges(penaltyDetails.totalisations)
+    val latePaymentPenalties = penaltiesService.findNumberOfLatePaymentPenalties(penaltyDetails.latePaymentPenalty)
     val whatYouOweContent: Seq[String] = Seq(
-      if(unpaidVATCharges > BigDecimal(0)) Some(messages("whatIsOwed.unpaidVATCharges")) else None
+      if(unpaidVATCharges > BigDecimal(0)) Some(messages("whatIsOwed.unpaidVATCharges")) else None,
+      if(latePaymentPenalties == 1) Some(messages("whatIsOwed.lpp")) else if(latePaymentPenalties > 1) Some(messages("whatIsOwed.lpp.multi")) else None
     ).collect { case Some(x) => x }
-
-    if(whatYouOweContent.nonEmpty) {
-      Some(bullets(
-        whatYouOweContent.map {
-          stringAsHtml
-        }
-      ))
-    } else None
+    if(whatYouOweContent.nonEmpty) Some(bullets(whatYouOweContent.map(stringAsHtml))) else None
   }
 
   //TODO: remove when new WYO content added
