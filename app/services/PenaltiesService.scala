@@ -19,9 +19,10 @@ package services
 import connectors.PenaltiesConnector
 import connectors.httpParsers.PenaltiesConnectorParser.GetPenaltyDetailsResponse
 import models.appealInfo.AppealStatusEnum
-import models.lpp.{LPPDetails, LatePaymentPenalty}
-import models.lsp.{LSPDetails, TaxReturnStatusEnum}
+import models.lsp._
+import models.lpp._
 import models.{GetPenaltyDetails, Totalisations, User}
+import play.api.i18n.Messages
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -104,5 +105,21 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
         })
       }
     }.getOrElse(0)
+  }
+
+  def findActiveLateSubmissionPenaltyPoints(lateSubmissionPenalties: Option[LateSubmissionPenalty]): Option[Int] = {
+    lateSubmissionPenalties.map(_.summary.activePenaltyPoints)
+  }
+
+  def getRegimeThreshold(lateSubmissionPenalties: Option[LateSubmissionPenalty]): Option[Int] = {
+    lateSubmissionPenalties.map(_.summary.regimeThreshold)
+  }
+
+  def getContentForLSP(amountOfLSPs: Int, regimeThreshold: Int)(implicit messages: Messages): Option[String] = {
+    if(amountOfLSPs == 0 || regimeThreshold == 0) None
+    else if(amountOfLSPs == 1) Some(messages("whatIsOwed.lsp.one"))
+    else if(amountOfLSPs < regimeThreshold) Some(messages("whatIsOwed.lsp.multi", amountOfLSPs))
+    //Now only amountOfLSPs >= regimeThreshold is possible
+    else Some(messages("whatIsOwed.lsp.max"))
   }
 }

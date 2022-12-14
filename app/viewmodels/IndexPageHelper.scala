@@ -219,10 +219,14 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     val unpaidVATCharges = penaltiesService.findUnpaidVATCharges(penaltyDetails.totalisations)
     val interestOnAccount = penaltiesService.findInterestOnAccount(penaltyDetails.totalisations)
     val latePaymentPenalties = penaltiesService.findNumberOfLatePaymentPenalties(penaltyDetails.latePaymentPenalty)
+    val lateSubmissionPenalties = penaltiesService.findActiveLateSubmissionPenaltyPoints(penaltyDetails.lateSubmissionPenalty).getOrElse(0)
+    val regimeThreshold = penaltiesService.getRegimeThreshold(penaltyDetails.lateSubmissionPenalty).getOrElse(0)
+    val lateSubmissionPenaltyOptContent = penaltiesService.getContentForLSP(lateSubmissionPenalties, regimeThreshold)
     val whatYouOweContent: Seq[String] = Seq(
       if(unpaidVATCharges > BigDecimal(0)) Some(messages("whatIsOwed.unpaidVATCharges")) else None,
       if(interestOnAccount > BigDecimal(0)) Some(messages("whatIsOwed.unpaidInterest")) else None,
-      if(latePaymentPenalties == 1) Some(messages("whatIsOwed.lpp")) else if(latePaymentPenalties > 1) Some(messages("whatIsOwed.lpp.multi")) else None
+      if(latePaymentPenalties == 1) Some(messages("whatIsOwed.lpp")) else if(latePaymentPenalties > 1) Some(messages("whatIsOwed.lpp.multi")) else None,
+      lateSubmissionPenaltyOptContent
     ).collect { case Some(x) => x }
     if(whatYouOweContent.nonEmpty) Some(bullets(whatYouOweContent.map(stringAsHtml))) else None
   }
