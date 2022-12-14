@@ -1630,14 +1630,16 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               LPPPostedTotal = Some(0),
               LPPEstimatedTotal = Some(0),
               totalAccountOverdue = Some(100.23),
-              totalAccountPostedInterest = None,
-              totalAccountAccruingInterest = None
+              totalAccountPostedInterest = Some(100),
+              totalAccountAccruingInterest = Some(10)
             )
           ), lateSubmissionPenalty = None, latePaymentPenalty = None
         )
         val result = pageHelper.getWhatYouOweBreakdownV2(penaltyDetailsWithOutstandingVAT)
         result.isDefined shouldBe true
+        println(result.get)
         result.get.body.contains("unpaid VAT charges") shouldBe true
+        result.get.body.contains("unpaid interest") shouldBe true
       }
 
       val sampleLPP: LPPDetails = LPPDetails(principalChargeReference = "123456789",

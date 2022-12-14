@@ -217,9 +217,11 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
   //TODO: remove V2 suffix when new WYO content added
   def getWhatYouOweBreakdownV2(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
     val unpaidVATCharges = penaltiesService.findUnpaidVATCharges(penaltyDetails.totalisations)
+    val interestOnAccount = penaltiesService.findInterestOnAccount(penaltyDetails.totalisations)
     val latePaymentPenalties = penaltiesService.findNumberOfLatePaymentPenalties(penaltyDetails.latePaymentPenalty)
     val whatYouOweContent: Seq[String] = Seq(
       if(unpaidVATCharges > BigDecimal(0)) Some(messages("whatIsOwed.unpaidVATCharges")) else None,
+      if(interestOnAccount > BigDecimal(0)) Some(messages("whatIsOwed.unpaidInterest")) else None,
       if(latePaymentPenalties == 1) Some(messages("whatIsOwed.lpp")) else if(latePaymentPenalties > 1) Some(messages("whatIsOwed.lpp.multi")) else None
     ).collect { case Some(x) => x }
     if(whatYouOweContent.nonEmpty) Some(bullets(whatYouOweContent.map(stringAsHtml))) else None

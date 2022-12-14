@@ -201,6 +201,7 @@ whatIsOwed.heading = Overview
 whatIsOwed.new.p1 = Your account has:
 agent.whatIsOwed.new.p1 = Your client’s account has:
 whatIsOwed.unpaidVATCharges = unpaid VAT charges
+whatIsOwed.unpaidInterest = unpaid interest
 whatIsOwed.lpp = a late payment penalty
 whatIsOwed.lpp.multi = late payment penalties
 

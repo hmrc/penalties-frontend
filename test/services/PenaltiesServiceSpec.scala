@@ -219,34 +219,66 @@ class PenaltiesServiceSpec extends SpecBase {
     }
   }
 
-  "estimatedVATInterest" should {
-    "return 0 when the payload does not have any VAT overview field" ignore new Setup {
-      val result: (BigDecimal, Boolean) = service.findEstimatedVATInterest(penaltyDetailsWithNoVATDue)
-      result._1 shouldBe 0.00
-      result._2 shouldBe false
+  "findInterestOnAccount" should {
+    "return 0 when the payload does not have any totalisations field" in new Setup {
+      val result: BigDecimal = service.findInterestOnAccount(None)
+      result shouldBe 0.00
     }
 
-    "return 0 when the payload contains VAT overview but has no crystalized and estimated interest" ignore new Setup {
-      val result: (BigDecimal, Boolean) = service.findEstimatedVATInterest(penaltyDetailsWithVATOnly)
-      result._1 shouldBe 0.00
-      result._2 shouldBe false
+    "return 0 when the payload contains totalisations but has no posted and accruing interest" in new Setup {
+      val totalisations = Totalisations(
+        totalAccountOverdue = Some(123.45),
+        penalisedPrincipalTotal = Some(543.21),
+        LPPPostedTotal = None,
+        LPPEstimatedTotal = None,
+        totalAccountPostedInterest = None,
+        totalAccountAccruingInterest = None,
+        LSPTotalValue = None
+      )
+      val result: BigDecimal = service.findInterestOnAccount(Some(totalisations))
+      result shouldBe 0.00
     }
 
-    "return total estimated VAT interest when crystalized and estimated interest is present" ignore new Setup {
-      val result: (BigDecimal, Boolean) = service.findEstimatedVATInterest(penaltyDetailsWithVATOnly)
-      result._1 shouldBe 40.00
-      result._2 shouldBe true
+    "return the total when the payload contains totalisations and has posted and accruing interest" in new Setup {
+      val totalisations = Totalisations(
+        totalAccountOverdue = Some(123.45),
+        penalisedPrincipalTotal = Some(543.21),
+        LPPPostedTotal = None,
+        LPPEstimatedTotal = None,
+        totalAccountPostedInterest = Some(100),
+        totalAccountAccruingInterest = Some(10),
+        LSPTotalValue = None
+      )
+      val result: BigDecimal = service.findInterestOnAccount(Some(totalisations))
+      result shouldBe 110.00
     }
 
-    "return total VAT interest when the VAT overview is present without estimated interest" ignore new Setup {
-      val result: (BigDecimal, Boolean) = service.findEstimatedVATInterest(penaltyDetailsWithVATOnly)
-      result._1 shouldBe 20.00
-      result._2 shouldBe false
+    "return the total when the payload contains totalisations and has posted but not accruing interest" in new Setup {
+      val totalisations = Totalisations(
+        totalAccountOverdue = Some(123.45),
+        penalisedPrincipalTotal = Some(543.21),
+        LPPPostedTotal = None,
+        LPPEstimatedTotal = None,
+        totalAccountPostedInterest = Some(100),
+        totalAccountAccruingInterest = None,
+        LSPTotalValue = None
+      )
+      val result: BigDecimal = service.findInterestOnAccount(Some(totalisations))
+      result shouldBe 100.00
     }
-    "return total VAT interest when the VAT overview is present without crystalized interest" ignore new Setup {
-      val result: (BigDecimal, Boolean) = service.findEstimatedVATInterest(penaltyDetailsWithVATOnly)
-      result._1 shouldBe 43.00
-      result._2 shouldBe true
+
+    "return the total when the payload contains totalisations and has accruing but not posted interest" in new Setup {
+      val totalisations = Totalisations(
+        totalAccountOverdue = Some(123.45),
+        penalisedPrincipalTotal = Some(543.21),
+        LPPPostedTotal = None,
+        LPPEstimatedTotal = None,
+        totalAccountPostedInterest = None,
+        totalAccountAccruingInterest = Some(10),
+        LSPTotalValue = None
+      )
+      val result: BigDecimal = service.findInterestOnAccount(Some(totalisations))
+      result shouldBe 10.00
     }
   }
 
