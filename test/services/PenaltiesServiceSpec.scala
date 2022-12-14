@@ -526,7 +526,7 @@ class PenaltiesServiceSpec extends SpecBase {
 
   "findUnpaidVATCharges" should {
     "find the totalAccountOverdue in the totalisation field and return the value if present" in new Setup {
-      val totalisationFieldWithOverdueVAT = Totalisations(
+      val totalisationFieldWithOverdueVAT: Totalisations = Totalisations(
         totalAccountOverdue = Some(123.45),
         penalisedPrincipalTotal = Some(543.21),
         LPPPostedTotal = None,
@@ -535,12 +535,12 @@ class PenaltiesServiceSpec extends SpecBase {
         totalAccountAccruingInterest = None,
         LSPTotalValue = None
       )
-      val result = service.findUnpaidVATCharges(Some(totalisationFieldWithOverdueVAT))
+      val result: BigDecimal = service.findUnpaidVATCharges(Some(totalisationFieldWithOverdueVAT))
       result shouldBe 123.45
     }
 
     "return 0 if no totalAccountOverdue field present" in new Setup {
-      val totalisationFieldWithOverdueVAT = Totalisations(
+      val totalisationFieldWithOverdueVAT: Totalisations = Totalisations(
         totalAccountOverdue = None,
         penalisedPrincipalTotal = Some(543.21),
         LPPPostedTotal = None,
@@ -549,7 +549,7 @@ class PenaltiesServiceSpec extends SpecBase {
         totalAccountAccruingInterest = None,
         LSPTotalValue = None
       )
-      val result = service.findUnpaidVATCharges(Some(totalisationFieldWithOverdueVAT))
+      val result: BigDecimal = service.findUnpaidVATCharges(Some(totalisationFieldWithOverdueVAT))
       result shouldBe 0
     }
   }
@@ -588,7 +588,7 @@ class PenaltiesServiceSpec extends SpecBase {
         val allLPPsAppealedSuccessfully: LatePaymentPenalty = LatePaymentPenalty(
           Seq(sampleLPP.copy(appealInformation = Some(Seq(AppealInformationType(Some(AppealStatusEnum.Upheld), Some(AppealLevelEnum.HMRC))))))
         )
-        val result = service.findNumberOfLatePaymentPenalties(Some(allLPPsAppealedSuccessfully))
+        val result: Int = service.findNumberOfLatePaymentPenalties(Some(allLPPsAppealedSuccessfully))
         result shouldBe 0
       }
 
@@ -596,14 +596,14 @@ class PenaltiesServiceSpec extends SpecBase {
         val allLPPsPaid: LatePaymentPenalty = LatePaymentPenalty(
           Seq(sampleLPP.copy(penaltyAmountOutstanding = Some(0)))
         )
-        val result = service.findNumberOfLatePaymentPenalties(Some(allLPPsPaid))
+        val result: Int = service.findNumberOfLatePaymentPenalties(Some(allLPPsPaid))
         result shouldBe 0
       }
 
       "no penalties exist" in new Setup {
-        val noneResult = service.findNumberOfLatePaymentPenalties(None)
+        val noneResult: Int = service.findNumberOfLatePaymentPenalties(None)
         noneResult shouldBe 0
-        val emptySeqResult = service.findNumberOfLatePaymentPenalties(Some(LatePaymentPenalty(Seq())))
+        val emptySeqResult: Int = service.findNumberOfLatePaymentPenalties(Some(LatePaymentPenalty(Seq())))
         emptySeqResult shouldBe 0
       }
     }
@@ -612,8 +612,87 @@ class PenaltiesServiceSpec extends SpecBase {
       val allLPPs: LatePaymentPenalty = LatePaymentPenalty(
         Seq(sampleLPP, sampleLPP)
       )
-      val result = service.findNumberOfLatePaymentPenalties(Some(allLPPs))
+      val result: Int = service.findNumberOfLatePaymentPenalties(Some(allLPPs))
       result shouldBe 2
+    }
+  }
+
+  "findActiveLateSubmissionPenaltyPoints" should {
+    "return Some" when {
+      "the payload has an entry for active penalty points" in new Setup {
+        val lateSubmissionPenalty: LateSubmissionPenalty = LateSubmissionPenalty(
+          summary = LSPSummary(
+            activePenaltyPoints = 1, inactivePenaltyPoints = 0, regimeThreshold = 4, penaltyChargeAmount = 0, PoCAchievementDate = LocalDate.of(9999, 1, 1)
+          ), details = Seq.empty
+        )
+        val result: Option[Int] = service.findActiveLateSubmissionPenaltyPoints(Some(lateSubmissionPenalty))
+        result.isDefined shouldBe true
+        result.get shouldBe 1
+      }
+    }
+
+    "return None" when {
+      "the payload does not have a summary section for LSP" in new Setup {
+        val result: Option[Int] = service.findActiveLateSubmissionPenaltyPoints(None)
+        result.isEmpty shouldBe true
+      }
+    }
+  }
+
+  "getRegimeThreshold" should {
+    "return Some" when {
+      "the payload has an entry for regime threshold" in new Setup {
+        val lateSubmissionPenalty: LateSubmissionPenalty = LateSubmissionPenalty(
+          summary = LSPSummary(
+            activePenaltyPoints = 0, inactivePenaltyPoints = 0, regimeThreshold = 4, penaltyChargeAmount = 0, PoCAchievementDate = LocalDate.of(9999, 1, 1)
+          ), details = Seq.empty
+        )
+        val result: Option[Int] = service.getRegimeThreshold(Some(lateSubmissionPenalty))
+        result.isDefined shouldBe true
+        result.get shouldBe 4
+      }
+    }
+
+    "return None" when {
+      "the payload does not have a summary section for LSP" in new Setup {
+        val result: Option[Int] = service.findActiveLateSubmissionPenaltyPoints(None)
+        result.isEmpty shouldBe true
+      }
+    }
+  }
+
+  "getContentForLSP" should {
+    "return None" when {
+      "the active LSP amount is 0" in new Setup {
+        val result: Option[String] = service.getContentForLSP(amountOfLSPs = 0, regimeThreshold = 4)
+        result.isEmpty shouldBe true
+      }
+
+      //Theoretically should never happen but worth guarding
+      "the regime threshold is 0" in new Setup {
+        val result: Option[String] = service.getContentForLSP(amountOfLSPs = 4, regimeThreshold = 0)
+        result.isEmpty shouldBe true
+      }
+    }
+
+    "return Some and the correct message" when {
+      "the amount of LSPs is 1" in new Setup {
+        val result: Option[String] = service.getContentForLSP(amountOfLSPs = 1, regimeThreshold = 4)
+        result.isDefined shouldBe true
+        result.get shouldBe "1 late submission penalty point"
+      }
+
+      "the amount of LSPs is > 1" in new Setup {
+        val result: Option[String] = service.getContentForLSP(amountOfLSPs = 3, regimeThreshold = 4)
+        result.isDefined shouldBe true
+        result.get shouldBe "3 late submission penalty points"
+      }
+
+      "the amount of LSPs is at the threshold" in new Setup {
+        val result: Option[String] = service.getContentForLSP(amountOfLSPs = 4, regimeThreshold = 4)
+        result.isDefined shouldBe true
+        result.get shouldBe "the maximum number of late submission penalty points"
+      }
     }
   }
 }

@@ -1711,6 +1711,72 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         result.isDefined shouldBe true
         result.get.body.contains("late payment penalties") shouldBe true
       }
+
+      "the user has 1 LSP" in {
+        val penaltyDetailsWith1LSP: GetPenaltyDetails = GetPenaltyDetails(
+          totalisations = None,
+          latePaymentPenalty = None,
+          lateSubmissionPenalty = Some(
+            LateSubmissionPenalty(
+              summary = LSPSummary(
+                activePenaltyPoints = 1,
+                inactivePenaltyPoints = 0,
+                regimeThreshold = 4,
+                penaltyChargeAmount = 200,
+                PoCAchievementDate = LocalDate.of(2022, 1, 1)
+              ),
+              details = Seq()
+            )
+          )
+        )
+        val result = pageHelper.getWhatYouOweBreakdownV2(penaltyDetailsWith1LSP)
+        result.isDefined shouldBe true
+        result.get.body.contains("1 late submission penalty point") shouldBe true
+      }
+
+      "the user has > 1 LSP (but less than threshold)" in {
+        val penaltyDetailsWith2LSPs: GetPenaltyDetails = GetPenaltyDetails(
+          totalisations = None,
+          latePaymentPenalty = None,
+          lateSubmissionPenalty = Some(
+            LateSubmissionPenalty(
+              summary = LSPSummary(
+                activePenaltyPoints = 2,
+                inactivePenaltyPoints = 0,
+                regimeThreshold = 4,
+                penaltyChargeAmount = 200,
+                PoCAchievementDate = LocalDate.of(2022, 1, 1)
+              ),
+              details = Seq()
+            )
+          )
+        )
+        val result = pageHelper.getWhatYouOweBreakdownV2(penaltyDetailsWith2LSPs)
+        result.isDefined shouldBe true
+        result.get.body.contains("2 late submission penalty points") shouldBe true
+      }
+
+      "the user has reached the threshold" in {
+        val penaltyDetailsWith2LSPs: GetPenaltyDetails = GetPenaltyDetails(
+          totalisations = None,
+          latePaymentPenalty = None,
+          lateSubmissionPenalty = Some(
+            LateSubmissionPenalty(
+              summary = LSPSummary(
+                activePenaltyPoints = 4,
+                inactivePenaltyPoints = 0,
+                regimeThreshold = 4,
+                penaltyChargeAmount = 200,
+                PoCAchievementDate = LocalDate.of(2022, 1, 1)
+              ),
+              details = Seq()
+            )
+          )
+        )
+        val result = pageHelper.getWhatYouOweBreakdownV2(penaltyDetailsWith2LSPs)
+        result.isDefined shouldBe true
+        result.get.body.contains("the maximum number of late submission penalty points") shouldBe true
+      }
     }
   }
 
