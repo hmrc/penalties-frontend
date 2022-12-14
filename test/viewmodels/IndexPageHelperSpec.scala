@@ -1712,6 +1712,62 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         result.get.body.contains("late payment penalties") shouldBe true
       }
 
+      val sampleLSP: LSPDetails = LSPDetails(
+        penaltyNumber = "123456789",
+        penaltyOrder = "1",
+        penaltyCategory = LSPPenaltyCategoryEnum.Charge,
+        penaltyStatus = LSPPenaltyStatusEnum.Active,
+        FAPIndicator = None,
+        penaltyCreationDate = LocalDate.of(2022, 1, 1),
+        penaltyExpiryDate = LocalDate.of(2024, 1, 1),
+        expiryReason = None,
+        communicationsDate = Some(LocalDate.of(2022, 1, 1)),
+        lateSubmissions = Some(
+          Seq(
+            LateSubmission(
+              taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
+              taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
+              taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
+              returnReceiptDate = None,
+              taxReturnStatus = TaxReturnStatusEnum.Open
+            )
+          )
+        ),
+        appealInformation = None,
+        chargeAmount = Some(200),
+        chargeOutstandingAmount = Some(10),
+        chargeDueDate = Some(LocalDate.of(2022, 1, 1))
+      )
+      val sampleSummary = LSPSummary(activePenaltyPoints = 3,
+        inactivePenaltyPoints = 0,
+        regimeThreshold = 4,
+        penaltyChargeAmount = 200,
+        PoCAchievementDate = LocalDate.of(2022, 1, 1))
+
+      "the user has 1 unpaid (and not successfully appealed) LSP" in {
+        val penaltyDetailsWithUnpaidLSP: GetPenaltyDetails = GetPenaltyDetails(
+          totalisations = None,
+          lateSubmissionPenalty = Some(LateSubmissionPenalty(
+            sampleSummary, Seq(sampleLSP)
+          )),
+          latePaymentPenalty = None)
+        val result = pageHelper.getWhatYouOweBreakdownV2(penaltyDetailsWithUnpaidLSP)
+        result.isDefined shouldBe true
+        result.get.body.contains("a late submission penalty") shouldBe true
+      }
+
+      "the user has > 1 unpaid (and not successfully appealed) LSP" in {
+        val penaltyDetailsWithUnpaidLSP: GetPenaltyDetails = GetPenaltyDetails(
+          totalisations = None,
+          lateSubmissionPenalty = Some(LateSubmissionPenalty(
+            sampleSummary, Seq(sampleLSP, sampleLSP)
+          )),
+          latePaymentPenalty = None)
+        val result = pageHelper.getWhatYouOweBreakdownV2(penaltyDetailsWithUnpaidLSP)
+        result.isDefined shouldBe true
+        result.get.body.contains("late submission penalties") shouldBe true
+      }
+
       "the user has 1 LSP" in {
         val penaltyDetailsWith1LSP: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = None,

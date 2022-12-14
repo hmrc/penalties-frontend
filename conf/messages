@@ -204,8 +204,10 @@ whatIsOwed.unpaidVATCharges = unpaid VAT charges
 whatIsOwed.unpaidInterest = unpaid interest
 whatIsOwed.lpp = a late payment penalty
 whatIsOwed.lpp.multi = late payment penalties
-whatIsOwed.lsp.one = 1 late submission penalty point
-whatIsOwed.lsp.multi = {0} late submission penalty points
+whatIsOwed.lsp = a late submission penalty
+whatIsOwed.lsp.multi = late submission penalties
+whatIsOwed.lsp.onePoint = 1 late submission penalty point
+whatIsOwed.lsp.multiPoints = {0} late submission penalty points
 whatIsOwed.lsp.max = the maximum number of late submission penalty points
 
 # Calculation messages
