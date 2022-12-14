@@ -48,13 +48,19 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
     payload.totalisations.flatMap(_.LSPTotalValue).getOrElse(0)
   }
 
+  def findInterestOnAccount(totalisations: Option[Totalisations]): BigDecimal = {
+    val accruingInterest: BigDecimal = totalisations.flatMap(_.totalAccountAccruingInterest).getOrElse(0)
+    val postedInterest: BigDecimal = totalisations.flatMap(_.totalAccountPostedInterest).getOrElse(0)
+    accruingInterest + postedInterest
+  }
+
+  //TODO remove
   def findEstimatedVATInterest(payload: GetPenaltyDetails): (BigDecimal, Boolean) = {
-    //TODO add functionality that implements finding estimated VAT interest
     (0, false)
   }
 
+  //TODO remove
   def isOtherUnrelatedPenalties(payload: GetPenaltyDetails): Boolean = {
-    //TODO add functionality that finds unrelated penalties
     false
   }
 

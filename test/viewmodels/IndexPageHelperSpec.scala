@@ -1640,6 +1640,25 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         result.get.body.contains("unpaid VAT charges") shouldBe true
       }
 
+      "the user has outstanding interest to pay" in {
+        val penaltyDetailsWithOutstandingVAT: GetPenaltyDetails = GetPenaltyDetails(
+          totalisations = Some(
+            Totalisations(
+              LSPTotalValue = Some(100),
+              penalisedPrincipalTotal = None,
+              LPPPostedTotal = Some(0),
+              LPPEstimatedTotal = Some(0),
+              totalAccountOverdue = None,
+              totalAccountPostedInterest = Some(100),
+              totalAccountAccruingInterest = Some(10)
+            )
+          ), lateSubmissionPenalty = None, latePaymentPenalty = None
+        )
+        val result = pageHelper.getWhatYouOweBreakdownV2(penaltyDetailsWithOutstandingVAT)
+        result.isDefined shouldBe true
+        result.get.body.contains("unpaid interest") shouldBe true
+      }
+
       val sampleLPP: LPPDetails = LPPDetails(principalChargeReference = "123456789",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
         penaltyChargeCreationDate = Some(LocalDate.of(2022, 1, 1)),
