@@ -24,8 +24,8 @@ import models.lpp._
 import models.{GetPenaltyDetails, Totalisations, User}
 import play.api.i18n.Messages
 import uk.gov.hmrc.http.HeaderCarrier
-
 import javax.inject.Inject
+
 import scala.concurrent.Future
 
 class PenaltiesService @Inject()(connector: PenaltiesConnector) {
@@ -107,6 +107,18 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
     }.getOrElse(0)
   }
 
+  def findNumberOfLateSubmissionPenalties(optLSPs: Option[LateSubmissionPenalty]): Int = {
+    optLSPs.map {
+      lsps => {
+        val lspsThatHaveNotBeenAppealedSuccessfully = filterOutAppealedPenalties(lsps.details)
+        lspsThatHaveNotBeenAppealedSuccessfully.count(details => {
+          details.chargeOutstandingAmount.isDefined &&
+          details.chargeOutstandingAmount.exists(_ > BigDecimal(0))
+        })
+      }
+    }
+  }.getOrElse(0)
+
   def findActiveLateSubmissionPenaltyPoints(lateSubmissionPenalties: Option[LateSubmissionPenalty]): Option[Int] = {
     lateSubmissionPenalties.map(_.summary.activePenaltyPoints)
   }
@@ -115,10 +127,10 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
     lateSubmissionPenalties.map(_.summary.regimeThreshold)
   }
 
-  def getContentForLSP(amountOfLSPs: Int, regimeThreshold: Int)(implicit messages: Messages): Option[String] = {
+  def getContentForLSPPoints(amountOfLSPs: Int, regimeThreshold: Int)(implicit messages: Messages): Option[String] = {
     if(amountOfLSPs == 0 || regimeThreshold == 0) None
-    else if(amountOfLSPs == 1) Some(messages("whatIsOwed.lsp.one"))
-    else if(amountOfLSPs < regimeThreshold) Some(messages("whatIsOwed.lsp.multi", amountOfLSPs))
+    else if(amountOfLSPs == 1) Some(messages("whatIsOwed.lsp.onePoint"))
+    else if(amountOfLSPs < regimeThreshold) Some(messages("whatIsOwed.lsp.multiPoints", amountOfLSPs))
     //Now only amountOfLSPs >= regimeThreshold is possible
     else Some(messages("whatIsOwed.lsp.max"))
   }

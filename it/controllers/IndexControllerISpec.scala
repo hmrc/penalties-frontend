@@ -823,7 +823,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "unpaid VAT charges"
       parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "unpaid interest"
       parsedBody.select("#what-is-owed > ul > li").get(2).text shouldBe "a late payment penalty"
-      parsedBody.select("#what-is-owed > ul > li").get(3).text shouldBe "2 late submission penalty points"
+      parsedBody.select("#what-is-owed > ul > li").get(3).text shouldBe "late submission penalties"
+      parsedBody.select("#what-is-owed > ul > li").get(4).text shouldBe "2 late submission penalty points"
       parsedBody.select("#what-is-owed > a").text shouldBe "Check amounts and pay"
       parsedBody.select("#what-is-owed > h2").get(1).text shouldBe "If you cannot pay today"
       parsedBody.select("#main-content h2:nth-child(3)").text shouldBe "Penalty and appeal details"
@@ -1022,6 +1023,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
 
       "return 200 (OK) and render the view when there is outstanding payments for the client" in {
         AuthStub.agentAuthorised()
+        disableFeatureSwitch(UseNewWYOSection)
         returnPenaltyDetailsStubAgent(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue
           .copy(latePaymentPenalty = Some(paidLatePaymentPenalty)))
         val request = controller.onPageLoad()(fakeAgentRequest)
@@ -1050,7 +1052,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.select("#what-is-owed > ul > li").first().text shouldBe "unpaid VAT charges"
         parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "unpaid interest"
         parsedBody.select("#what-is-owed > ul > li").get(2).text shouldBe "a late payment penalty"
-        parsedBody.select("#what-is-owed > ul > li").get(3).text shouldBe "2 late submission penalty points"
+        parsedBody.select("#what-is-owed > ul > li").get(3).text shouldBe "late submission penalties"
+        parsedBody.select("#what-is-owed > ul > li").get(4).text shouldBe "2 late submission penalty points"
         parsedBody.select("#what-is-owed > a").text shouldBe "Check amounts"
         parsedBody.select("#main-content .govuk-details__summary-text").text shouldBe "Payment help"
         parsedBody.select("#main-content h2:nth-child(3)").text shouldBe "Penalty and appeal details"
