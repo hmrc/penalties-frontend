@@ -127,7 +127,7 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
     lateSubmissionPenalties.map(_.summary.regimeThreshold)
   }
 
-  def getContentForLSP(amountOfLSPs: Int, regimeThreshold: Int)(implicit messages: Messages): Option[String] = {
+  def getContentForLSPPoints(amountOfLSPs: Int, regimeThreshold: Int)(implicit messages: Messages): Option[String] = {
     if(amountOfLSPs == 0 || regimeThreshold == 0) None
     else if(amountOfLSPs == 1) Some(messages("whatIsOwed.lsp.onePoint"))
     else if(amountOfLSPs < regimeThreshold) Some(messages("whatIsOwed.lsp.multiPoints", amountOfLSPs))

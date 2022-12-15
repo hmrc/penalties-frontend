@@ -732,32 +732,32 @@ class PenaltiesServiceSpec extends SpecBase {
   "getContentForLSP" should {
     "return None" when {
       "the active LSP amount is 0" in new Setup {
-        val result: Option[String] = service.getContentForLSP(amountOfLSPs = 0, regimeThreshold = 4)
+        val result: Option[String] = service.getContentForLSPPoints(amountOfLSPs = 0, regimeThreshold = 4)
         result.isEmpty shouldBe true
       }
 
       //Theoretically should never happen but worth guarding
       "the regime threshold is 0" in new Setup {
-        val result: Option[String] = service.getContentForLSP(amountOfLSPs = 4, regimeThreshold = 0)
+        val result: Option[String] = service.getContentForLSPPoints(amountOfLSPs = 4, regimeThreshold = 0)
         result.isEmpty shouldBe true
       }
     }
 
     "return Some and the correct message" when {
       "the amount of LSPs is 1" in new Setup {
-        val result: Option[String] = service.getContentForLSP(amountOfLSPs = 1, regimeThreshold = 4)
+        val result: Option[String] = service.getContentForLSPPoints(amountOfLSPs = 1, regimeThreshold = 4)
         result.isDefined shouldBe true
         result.get shouldBe "1 late submission penalty point"
       }
 
       "the amount of LSPs is > 1" in new Setup {
-        val result: Option[String] = service.getContentForLSP(amountOfLSPs = 3, regimeThreshold = 4)
+        val result: Option[String] = service.getContentForLSPPoints(amountOfLSPs = 3, regimeThreshold = 4)
         result.isDefined shouldBe true
         result.get shouldBe "3 late submission penalty points"
       }
 
       "the amount of LSPs is at the threshold" in new Setup {
-        val result: Option[String] = service.getContentForLSP(amountOfLSPs = 4, regimeThreshold = 4)
+        val result: Option[String] = service.getContentForLSPPoints(amountOfLSPs = 4, regimeThreshold = 4)
         result.isDefined shouldBe true
         result.get shouldBe "the maximum number of late submission penalty points"
       }
