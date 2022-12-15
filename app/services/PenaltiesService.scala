@@ -33,36 +33,10 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
   def getPenaltyDataFromEnrolmentKey(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[GetPenaltyDetailsResponse] =
     connector.getPenaltyDetails(enrolmentKey)
 
-  def findOverdueVATFromPayload(payload: GetPenaltyDetails): BigDecimal = {
-    payload.totalisations.flatMap(_.penalisedPrincipalTotal).getOrElse(0)
-  }
-
-  def findCrystallisedLPPsFromPayload(payload: GetPenaltyDetails): BigDecimal = {
-    payload.totalisations.flatMap(_.LPPPostedTotal).getOrElse(0)
-  }
-
-  def findEstimatedLPPsFromPayload(payload: GetPenaltyDetails): BigDecimal = {
-    payload.totalisations.flatMap(_.LPPEstimatedTotal).getOrElse(0)
-  }
-
-  def findTotalLSPFromPayload(payload: GetPenaltyDetails): BigDecimal = {
-    payload.totalisations.flatMap(_.LSPTotalValue).getOrElse(0)
-  }
-
   def findInterestOnAccount(totalisations: Option[Totalisations]): BigDecimal = {
     val accruingInterest: BigDecimal = totalisations.flatMap(_.totalAccountAccruingInterest).getOrElse(0)
     val postedInterest: BigDecimal = totalisations.flatMap(_.totalAccountPostedInterest).getOrElse(0)
     accruingInterest + postedInterest
-  }
-
-  //TODO remove
-  def findEstimatedVATInterest(payload: GetPenaltyDetails): (BigDecimal, Boolean) = {
-    (0, false)
-  }
-
-  //TODO remove
-  def isOtherUnrelatedPenalties(payload: GetPenaltyDetails): Boolean = {
-    false
   }
 
   def isAnyLSPUnpaidAndSubmissionIsDue(penaltyPoints: Seq[LSPDetails]): Boolean = {

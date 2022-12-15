@@ -170,10 +170,6 @@ feedback.after = yn ein helpu i’w wella.
 # What is owed messages
 # ----------------------------------------------------------
 whatIsOwed.penaltyAndAppealsHeading = Manylion y gosb a’r apêl
-whatIsOwed.p1 = Mae arnoch:
-agent.whatIsOwed.p1 = Mae ar eich cleient:
-whatIsOwed.lateVAT = cosb o £{0} am TAW hwyr
-whatIsOwed.otherPenalties = cosbau eraill nad ydynt yn berthnasol i gyflwyno’n hwyr neu dalu’n hwyr
 whatIsOwed.details.heading = Os na allwch dalu heddiw
 agent.whatIsOwed.details.heading = Help gyda thaliad
 whatIsOwed.details.body.1 = Os na allwch dalu’r hyn sydd arnoch, mae’n bosibl y byddwch yn gallu
@@ -182,24 +178,15 @@ whatIsOwed.details.link.1 = trefnu cynllun talu
 whatIsOwed.details.body.2 = er mwyn talu fesul rhandaliad.
 whatIsOwed.button.checkAndPay = Gwirio’r symiau a thalu
 whatIsOwed.button.checkAmounts = Gwirio’r symiau
-whatIsOwed.lppAmount = cosbau o £{0} am dalu’n hwyr
-whatIsOwed.lppAmount.estimated = cosbau amcangyfrifedig o £{0} am dalu’n hwyr
-whatIsOwed.amountOfLSPs.plural = cosbau pendodol o £{0} am gyflwyno’n hwyr
-whatIsOwed.amountOfLSPs.singular = cosb benodol o £{0} am gyflwyno’n hwyr
-whatIsOwed.VATInterest.estimated = llog TAW amcangyfrifedig o £{0}
-whatIsOwed.VATInterest = llog TAW o £{0}
 whatIsOwed.ttp.p1 = Mae cynllun talu wedi’i drefnu ar y cyfrif hwn.
 whatIsOwed.ttp.p2 = Mae’n rhaid i chi sicrhau eich bod yn gwneud pob taliad mewn pryd. Os na wnewch hynny, bydd eich cynllun talu yn methu a bydd unrhyw gosbau’n cael eu cyfrifo o adeg eu dyddiad gwreiddiol.
 agent.whatIsOwed.ttp.p2 = Mae’n rhaid i’ch cleient sicrhau ei fod yn gwneud pob taliad mewn pryd. Os na wnaiff hynny, bydd ei gynllun talu’n methu a bydd unrhyw gosbau’n cael eu cyfrifo o adeg eu dyddiad gwreiddiol.
 whatIsOwed.ttp.p3.link = Gwirio’r hyn sydd arnoch
 agent.whatIsOwed.ttp.p3.link = Gwirio’r hyn sydd ar eich cleient
 whatIsOwed.ttp.p3 = i fwrw golwg dros yr holl gostau sydd heb eu talu.
-
-# New messages for what is owed
-# ----------------------------------------------------------
 whatIsOwed.heading = Overview
-whatIsOwed.new.p1 = Your account has:
-agent.whatIsOwed.new.p1 = Your client’s account has:
+whatIsOwed.p1 = Your account has:
+agent.whatIsOwed.p1 = Your client’s account has:
 whatIsOwed.unpaidVATCharges = unpaid VAT charges
 whatIsOwed.unpaidInterest = unpaid interest
 whatIsOwed.lpp = a late payment penalty

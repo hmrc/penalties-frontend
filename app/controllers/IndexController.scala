@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.featureSwitches.{FeatureSwitching, UseNewWYOSection}
+import config.featureSwitches.FeatureSwitching
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
 import play.api.i18n.I18nSupport
@@ -58,7 +58,7 @@ class IndexController @Inject()(view: IndexView,
                 val optPOCAchievementDate: Option[String] = penaltyData.lateSubmissionPenalty.map(_.summary.PoCAchievementDate.toString)
                 val optRegimeThreshold = penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold.toString)
                 val contentLPPToDisplayAboveCards = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyData)
-                val whatYouOweBreakdown = if(!isEnabled(UseNewWYOSection)) pageHelper.getWhatYouOweBreakdown(penaltyData) else pageHelper.getWhatYouOweBreakdownV2(penaltyData)
+                val whatYouOweBreakdown = pageHelper.getWhatYouOweBreakdown(penaltyData)
                 val filteredPenalties = pageHelper.filteredExpiredPoints(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
                 val orderedPenalties = pageHelper.sortPointsInDescendingOrder(filteredPenalties)
                 val lspSummaryCards = cardHelper.populateLateSubmissionPenaltyCard(orderedPenalties,
@@ -76,8 +76,6 @@ class IndexController @Inject()(view: IndexView,
                   isAnyUnpaidLSP,
                   isAnyUnpaidLSPAndNotSubmittedReturn,
                   isTTPActive,
-                  //TODO: remove when new WYO section in place
-                  isEnabled(UseNewWYOSection),
                   whatYouOweBreakdown))
                 (optPOCAchievementDate.isDefined, optRegimeThreshold.isDefined) match {
                   case (true, true) =>
