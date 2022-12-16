@@ -21,7 +21,7 @@ import config.{AppConfig, ErrorHandler}
 import models.appealInfo.AppealStatusEnum.Upheld
 import models.compliance.{CompliancePayload, ComplianceStatusEnum}
 import models.lpp.LPPDetails
-import models.lsp.{ExpiryReasonEnum, LSPDetails, LSPPenaltyStatusEnum, TaxReturnStatusEnum}
+import models.lsp.{ExpiryReasonEnum, LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum, TaxReturnStatusEnum}
 import models.{GetPenaltyDetails, User}
 import play.api.i18n.Messages
 import play.api.mvc.Result
@@ -320,5 +320,18 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
 
   def sortPointsInDescendingOrder(points: Seq[LSPDetails]): Seq[LSPDetails] = {
     points.sortWith((thisElement, nextElement) => thisElement.penaltyOrder.toInt > nextElement.penaltyOrder.toInt)
+  }
+
+  def showRemovedPointsMessage(inactivePenaltyPoints: Int, penaltyDetails: GetPenaltyDetails): Boolean = {
+    val nltCount = penaltyDetails.lateSubmissionPenalty.map(_.details.exists(
+      penalty => penalty.expiryReason.exists(_.equals(ExpiryReasonEnum.SubmissionOnTime))
+    )).size
+    val pointExpiredList = penaltyDetails.lateSubmissionPenalty.map(_.details.filter(
+      penalty => penalty.penaltyCategory.equals(LSPPenaltyCategoryEnum.Point) &&
+        penalty.penaltyStatus.equals(LSPPenaltyStatusEnum.Inactive)
+    )).get.map(_.lateSubmissions.get.map(_.returnReceiptDate))
+      .flatMap(_.map(_.get.plusMonths(24).isAfter(LocalDate.now())))
+    val natCount = pointExpiredList.count(_.equals(true))
+      !((nltCount + natCount) == inactivePenaltyPoints)
   }
 }
