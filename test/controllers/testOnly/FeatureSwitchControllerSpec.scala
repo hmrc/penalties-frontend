@@ -18,7 +18,7 @@ package controllers.testOnly
 
 import base.SpecBase
 import config.AppConfig
-import config.featureSwitches.{FeatureSwitch, FeatureSwitching, UseNewWYOSection}
+import config.featureSwitches.{FeatureSwitch, FeatureSwitching}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{mock, reset, when}
 import play.api.Configuration
@@ -46,18 +46,6 @@ class FeatureSwitchControllerSpec extends SpecBase with FeatureSwitching {
     "return NOT FOUND when the feature switch is not defined" in {
       val result = controller.enableOrDisableFeature("fake", true)(FakeRequest())
       status(result) shouldBe NOT_FOUND
-    }
-
-    "return OK and enable the feature switch when specified" in {
-      val result = controller.enableOrDisableFeature("feature.switch.use-new-wyo-section", true)(FakeRequest())
-      status(result) shouldBe OK
-      isEnabled(UseNewWYOSection) shouldBe true
-    }
-
-    "return OK and disable the feature switch when specified" in {
-      val result = controller.enableOrDisableFeature("feature.switch.use-new-wyo-section", false)(FakeRequest())
-      status(result) shouldBe OK
-      isEnabled(UseNewWYOSection) shouldBe false
     }
   }
 

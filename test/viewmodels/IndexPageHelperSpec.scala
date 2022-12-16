@@ -1225,388 +1225,6 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
     }
   }
 
-  //TODO: remove when new WYO complete
-  "getWhatYouOweBreakdown" should {
-
-    "return None" when {
-      "the user has no outstanding payments" in {
-        val penaltyDetailsWithNoOutstandingPayments: GetPenaltyDetails = GetPenaltyDetails(
-          totalisations = None, lateSubmissionPenalty = None, latePaymentPenalty = None
-        )
-        val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWithNoOutstandingPayments)
-        result.isEmpty shouldBe true
-      }
-    }
-
-    "return Some" when {
-      "the user has outstanding VAT to pay" in {
-        val penaltyDetailsWithOutstandingVAT: GetPenaltyDetails = GetPenaltyDetails(
-          totalisations = Some(
-            Totalisations(
-              LSPTotalValue = Some(100),
-              penalisedPrincipalTotal = Some(223.45),
-              LPPPostedTotal = Some(0),
-              LPPEstimatedTotal = Some(0),
-              totalAccountOverdue = None,
-              totalAccountPostedInterest = None,
-              totalAccountAccruingInterest = None
-            )
-          ), lateSubmissionPenalty = None, latePaymentPenalty = None
-        )
-        val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWithOutstandingVAT)
-        result.isDefined shouldBe true
-        result.get.body.contains("£223.45 in late VAT") shouldBe true
-      }
-    }
-
-    "the user has outstanding LPP's to pay - no estimates" in {
-      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-        totalisations = Some(
-          Totalisations(
-            LSPTotalValue = Some(100),
-            penalisedPrincipalTotal = Some(223.45),
-            LPPPostedTotal = Some(144.21),
-            LPPEstimatedTotal = Some(0),
-            totalAccountOverdue = None,
-            totalAccountPostedInterest = None,
-            totalAccountAccruingInterest = None
-          )
-        ),
-        latePaymentPenalty = None,
-        lateSubmissionPenalty = None
-      )
-      val result = pageHelper.getWhatYouOweBreakdown(penaltyDetails)
-      result.isDefined shouldBe true
-      result.get.body.contains("£144.21 in late payment penalties") shouldBe true
-    }
-
-    "the user has outstanding LPP's to pay - with estimates" in {
-      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-        totalisations = Some(
-          Totalisations(
-            LSPTotalValue = Some(100),
-            penalisedPrincipalTotal = Some(223.45),
-            LPPPostedTotal = Some(144.21),
-            LPPEstimatedTotal = Some(60.24),
-            totalAccountOverdue = None,
-            totalAccountPostedInterest = None,
-            totalAccountAccruingInterest = None
-          )
-        ),
-        latePaymentPenalty = None,
-        lateSubmissionPenalty = None
-      )
-      val result = pageHelper.getWhatYouOweBreakdown(penaltyDetails)
-      result.isDefined shouldBe true
-      result.get.body.contains("£60.24 in estimated late payment penalties") shouldBe true
-    }
-
-    "the user has outstanding VAT and outstanding LPP's" in {
-      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-        totalisations = Some(
-          Totalisations(
-            LSPTotalValue = Some(100),
-            penalisedPrincipalTotal = Some(223.45),
-            LPPPostedTotal = Some(144.21),
-            LPPEstimatedTotal = Some(71.57),
-            totalAccountOverdue = None,
-            totalAccountPostedInterest = None,
-            totalAccountAccruingInterest = None
-          )
-        ),
-        latePaymentPenalty = None,
-        lateSubmissionPenalty = None
-      )
-      val result = pageHelper.getWhatYouOweBreakdown(penaltyDetails)
-      result.isDefined shouldBe true
-      result.get.body.contains("£71.57 in estimated late payment penalties") shouldBe true
-      result.get.body.contains("£223.45 in late VAT") shouldBe true
-    }
-
-    "the user has outstanding VAT to pay and has other unrelated penalties" in {
-      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-        totalisations = Some(
-          Totalisations(
-            LSPTotalValue = Some(100),
-            penalisedPrincipalTotal = Some(223.45),
-            LPPPostedTotal = Some(144.21),
-            LPPEstimatedTotal = Some(71.57),
-            totalAccountOverdue = None,
-            totalAccountPostedInterest = None,
-            totalAccountAccruingInterest = None
-          )
-        ),
-        latePaymentPenalty = None,
-        lateSubmissionPenalty = None
-      )
-      val result = pageHelper.getWhatYouOweBreakdown(penaltyDetails)
-      result.isDefined shouldBe true
-      result.get.body.contains("£223.45 in late VAT") shouldBe true
-      //            result.get.body.contains("other penalties not related to late submission or late payment") shouldBe true
-    }
-    //
-    //      "the user has other unrelated penalties only" in {
-    //        val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
-    //          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3, penaltyPoints = Seq.empty, latePaymentPenalties = None,
-    //          vatOverview = None, otherPenalties = Some(true))
-    //        val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithOutstandingPayments)
-    //        result.isDefined shouldBe false
-    //      }
-
-    "the user has outstanding VAT to pay and outstanding LSP's" in {
-      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-        totalisations = Some(
-          Totalisations(
-            LSPTotalValue = Some(400),
-            penalisedPrincipalTotal = Some(223.45),
-            LPPPostedTotal = Some(144.21),
-            LPPEstimatedTotal = Some(71.57),
-            totalAccountOverdue = None,
-            totalAccountPostedInterest = None,
-            totalAccountAccruingInterest = None
-          )
-        ),
-        latePaymentPenalty = None,
-        lateSubmissionPenalty = Some(
-          LateSubmissionPenalty(
-            summary = LSPSummary(
-              activePenaltyPoints = 3,
-              inactivePenaltyPoints = 0,
-              regimeThreshold = 2,
-              penaltyChargeAmount = 200,
-              PoCAchievementDate = LocalDate.of(2022, 1, 1)
-            ),
-            details = Seq(
-              LSPDetails(
-                penaltyNumber = "12345678",
-                penaltyOrder = "3",
-                penaltyCategory = LSPPenaltyCategoryEnum.Charge,
-                penaltyStatus = LSPPenaltyStatusEnum.Active,
-                FAPIndicator = None,
-                penaltyCreationDate = LocalDate.of(2022, 1, 1),
-                penaltyExpiryDate = LocalDate.of(2022, 1, 1),
-                expiryReason = None,
-                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
-                lateSubmissions = None,
-                appealInformation = None,
-                chargeAmount = Some(200),
-                chargeOutstandingAmount = Some(200),
-                chargeDueDate = Some(LocalDate.of(2022, 1, 1))
-              ),
-              LSPDetails(
-                penaltyNumber = "12345677",
-                penaltyOrder = "2",
-                penaltyCategory = LSPPenaltyCategoryEnum.Threshold,
-                penaltyStatus = LSPPenaltyStatusEnum.Active,
-                FAPIndicator = None,
-                penaltyCreationDate = LocalDate.of(2022, 1, 1),
-                penaltyExpiryDate = LocalDate.of(2022, 1, 1),
-                expiryReason = None,
-                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
-                lateSubmissions = None,
-                appealInformation = None,
-                chargeAmount = Some(200),
-                chargeOutstandingAmount = Some(200),
-                chargeDueDate = Some(LocalDate.of(2022, 1, 1))
-              ),
-              LSPDetails(
-                penaltyNumber = "12345676",
-                penaltyOrder = "1",
-                penaltyCategory = LSPPenaltyCategoryEnum.Point,
-                penaltyStatus = LSPPenaltyStatusEnum.Active,
-                FAPIndicator = None,
-                penaltyCreationDate = LocalDate.of(2022, 1, 1),
-                penaltyExpiryDate = LocalDate.of(2022, 1, 1),
-                expiryReason = None,
-                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
-                lateSubmissions = None,
-                appealInformation = None,
-                chargeAmount = None,
-                chargeOutstandingAmount = None,
-                chargeDueDate = None
-              )
-            )
-          )
-        )
-      )
-      val result = pageHelper.getWhatYouOweBreakdown(penaltyDetails)
-      result.isDefined shouldBe true
-      result.get.body.contains("£223.45 in late VAT") shouldBe true
-      result.get.body.contains("£400 fixed penalties for late submission") shouldBe true
-      //            result.get.body.contains("£43.27 in estimated VAT interest") shouldBe true
-    }
-
-    "the user has outstanding LSP's" in {
-      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-        totalisations = Some(
-          Totalisations(
-            LSPTotalValue = Some(400),
-            penalisedPrincipalTotal = Some(0),
-            LPPPostedTotal = Some(0),
-            LPPEstimatedTotal = Some(0),
-            totalAccountOverdue = None,
-            totalAccountPostedInterest = None,
-            totalAccountAccruingInterest = None
-          )
-        ),
-        latePaymentPenalty = None,
-        lateSubmissionPenalty = Some(
-          LateSubmissionPenalty(
-            summary = LSPSummary(
-              activePenaltyPoints = 3,
-              inactivePenaltyPoints = 0,
-              regimeThreshold = 2,
-              penaltyChargeAmount = 200,
-              PoCAchievementDate = LocalDate.of(2022, 1, 1)
-            ),
-            details = Seq(
-              LSPDetails(
-                penaltyNumber = "12345678",
-                penaltyOrder = "3",
-                penaltyCategory = LSPPenaltyCategoryEnum.Charge,
-                penaltyStatus = LSPPenaltyStatusEnum.Active,
-                FAPIndicator = None,
-                penaltyCreationDate = LocalDate.of(2022, 1, 1),
-                penaltyExpiryDate = LocalDate.of(2022, 1, 1),
-                expiryReason = None,
-                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
-                lateSubmissions = None,
-                appealInformation = None,
-                chargeAmount = Some(200),
-                chargeOutstandingAmount = Some(200),
-                chargeDueDate = Some(LocalDate.of(2022, 1, 1))
-              ),
-              LSPDetails(
-                penaltyNumber = "12345677",
-                penaltyOrder = "2",
-                penaltyCategory = LSPPenaltyCategoryEnum.Threshold,
-                penaltyStatus = LSPPenaltyStatusEnum.Active,
-                FAPIndicator = None,
-                penaltyCreationDate = LocalDate.of(2022, 1, 1),
-                penaltyExpiryDate = LocalDate.of(2022, 1, 1),
-                expiryReason = None,
-                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
-                lateSubmissions = None,
-                appealInformation = None,
-                chargeAmount = Some(200),
-                chargeOutstandingAmount = Some(200),
-                chargeDueDate = Some(LocalDate.of(2022, 1, 1))
-              ),
-              LSPDetails(
-                penaltyNumber = "12345676",
-                penaltyOrder = "1",
-                penaltyCategory = LSPPenaltyCategoryEnum.Point,
-                penaltyStatus = LSPPenaltyStatusEnum.Active,
-                FAPIndicator = None,
-                penaltyCreationDate = LocalDate.of(2022, 1, 1),
-                penaltyExpiryDate = LocalDate.of(2022, 1, 1),
-                expiryReason = None,
-                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
-                lateSubmissions = None,
-                appealInformation = None,
-                chargeAmount = None,
-                chargeOutstandingAmount = None,
-                chargeDueDate = None
-              )
-            )
-          )
-        )
-      )
-      val result = pageHelper.getWhatYouOweBreakdown(penaltyDetails)
-      result.isDefined shouldBe true
-      result.get.body.contains("£400 fixed penalties for late submission") shouldBe true
-    }
-
-    "the user has a single outstanding LSP" in {
-      val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-        totalisations = Some(
-          Totalisations(
-            LSPTotalValue = Some(200),
-            penalisedPrincipalTotal = Some(0),
-            LPPPostedTotal = Some(0),
-            LPPEstimatedTotal = Some(0),
-            totalAccountOverdue = None,
-            totalAccountPostedInterest = None,
-            totalAccountAccruingInterest = None
-          )
-        ),
-        latePaymentPenalty = None,
-        lateSubmissionPenalty = Some(
-          LateSubmissionPenalty(
-            summary = LSPSummary(
-              activePenaltyPoints = 2,
-              inactivePenaltyPoints = 0,
-              regimeThreshold = 2,
-              penaltyChargeAmount = 200,
-              PoCAchievementDate = LocalDate.of(2022, 1, 1)
-            ),
-            details = Seq(
-              LSPDetails(
-                penaltyNumber = "12345677",
-                penaltyOrder = "2",
-                penaltyCategory = LSPPenaltyCategoryEnum.Threshold,
-                penaltyStatus = LSPPenaltyStatusEnum.Active,
-                FAPIndicator = None,
-                penaltyCreationDate = LocalDate.of(2022, 1, 1),
-                penaltyExpiryDate = LocalDate.of(2022, 1, 1),
-                expiryReason = None,
-                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
-                lateSubmissions = None,
-                appealInformation = None,
-                chargeAmount = Some(200),
-                chargeOutstandingAmount = Some(200),
-                chargeDueDate = Some(LocalDate.of(2022, 1, 1))
-              ),
-              LSPDetails(
-                penaltyNumber = "12345676",
-                penaltyOrder = "1",
-                penaltyCategory = LSPPenaltyCategoryEnum.Point,
-                penaltyStatus = LSPPenaltyStatusEnum.Active,
-                FAPIndicator = None,
-                penaltyCreationDate = LocalDate.of(2022, 1, 1),
-                penaltyExpiryDate = LocalDate.of(2022, 1, 1),
-                expiryReason = None,
-                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
-                lateSubmissions = None,
-                appealInformation = None,
-                chargeAmount = None,
-                chargeOutstandingAmount = None,
-                chargeDueDate = None
-              )
-            )
-          )
-        )
-      )
-      val result = pageHelper.getWhatYouOweBreakdown(penaltyDetails)
-      result.isDefined shouldBe true
-      result.get.body.contains("£200 fixed penalty for late submission") shouldBe true
-    }
-    //
-    //      "the user has outstanding VAT Interest to pay - no estimated interest " in {
-    //        val etmpPayloadWithOutstandingPayments: ETMPPayload = ETMPPayload(
-    //          pointsTotal = 0, lateSubmissions = 0, adjustmentPointsTotal = 0, fixedPenaltyAmount = 200, penaltyAmountsTotal = 0, penaltyPointsThreshold = 3,
-    //          penaltyPoints = Seq.empty,
-    //          latePaymentPenalties = None,
-    //          vatOverview = Some(
-    //            Seq(
-    //              OverviewElement(
-    //                `type` = AmountTypeEnum.VAT,
-    //                amount = 100.00,
-    //                crystalizedInterest = Some(10.00)
-    //              ),
-    //              OverviewElement(
-    //                `type` = AmountTypeEnum.Central_Assessment,
-    //                amount = 123.45,
-    //                crystalizedInterest = Some(11.23)
-    //              )
-    //            )
-    //          ))
-    //        val result = pageHelper.getWhatYouOweBreakdown(etmpPayloadWithOutstandingPayments)
-    //        result.isDefined shouldBe true
-    //        result.get.body.contains("£21.23 in VAT interest") shouldBe true
-    //      }
-  }
-
   //TODO: remove V2 suffix when new WYO complete
   "getWhatYouOweBreakdownV2" should {
 
@@ -1615,7 +1233,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         val penaltyDetailsWithNoOutstandingPayments: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = None, lateSubmissionPenalty = None, latePaymentPenalty = None
         )
-        val result = pageHelper.getWhatYouOweBreakdownV2(penaltyDetailsWithNoOutstandingPayments)
+        val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWithNoOutstandingPayments)
         result.isEmpty shouldBe true
       }
     }
@@ -1635,7 +1253,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             )
           ), lateSubmissionPenalty = None, latePaymentPenalty = None
         )
-        val result = pageHelper.getWhatYouOweBreakdownV2(penaltyDetailsWithOutstandingVAT)
+        val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWithOutstandingVAT)
         result.isDefined shouldBe true
         result.get.body.contains("unpaid VAT charges") shouldBe true
       }
@@ -1654,7 +1272,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             )
           ), lateSubmissionPenalty = None, latePaymentPenalty = None
         )
-        val result = pageHelper.getWhatYouOweBreakdownV2(penaltyDetailsWithOutstandingVAT)
+        val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWithOutstandingVAT)
         result.isDefined shouldBe true
         result.get.body.contains("unpaid interest") shouldBe true
       }
@@ -1695,7 +1313,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             Seq(sampleLPP)
           ))
         )
-        val result = pageHelper.getWhatYouOweBreakdownV2(penaltyDetailsWithUnpaidLPP)
+        val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWithUnpaidLPP)
         result.isDefined shouldBe true
         result.get.body.contains("a late payment penalty") shouldBe true
       }
@@ -1707,7 +1325,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             Seq(sampleLPP, sampleLPP)
           ))
         )
-        val result = pageHelper.getWhatYouOweBreakdownV2(penaltyDetailsWithUnpaidLPPs)
+        val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWithUnpaidLPPs)
         result.isDefined shouldBe true
         result.get.body.contains("late payment penalties") shouldBe true
       }
@@ -1751,7 +1369,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             sampleSummary, Seq(sampleLSP)
           )),
           latePaymentPenalty = None)
-        val result = pageHelper.getWhatYouOweBreakdownV2(penaltyDetailsWithUnpaidLSP)
+        val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWithUnpaidLSP)
         result.isDefined shouldBe true
         result.get.body.contains("a late submission penalty") shouldBe true
       }
@@ -1763,7 +1381,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             sampleSummary, Seq(sampleLSP, sampleLSP)
           )),
           latePaymentPenalty = None)
-        val result = pageHelper.getWhatYouOweBreakdownV2(penaltyDetailsWithUnpaidLSP)
+        val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWithUnpaidLSP)
         result.isDefined shouldBe true
         result.get.body.contains("late submission penalties") shouldBe true
       }
@@ -1785,7 +1403,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             )
           )
         )
-        val result = pageHelper.getWhatYouOweBreakdownV2(penaltyDetailsWith1LSP)
+        val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWith1LSP)
         result.isDefined shouldBe true
         result.get.body.contains("1 late submission penalty point") shouldBe true
       }
@@ -1807,7 +1425,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             )
           )
         )
-        val result = pageHelper.getWhatYouOweBreakdownV2(penaltyDetailsWith2LSPs)
+        val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWith2LSPs)
         result.isDefined shouldBe true
         result.get.body.contains("2 late submission penalty points") shouldBe true
       }
@@ -1829,7 +1447,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             )
           )
         )
-        val result = pageHelper.getWhatYouOweBreakdownV2(penaltyDetailsWith2LSPs)
+        val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWith2LSPs)
         result.isDefined shouldBe true
         result.get.body.contains("the maximum number of late submission penalty points") shouldBe true
       }

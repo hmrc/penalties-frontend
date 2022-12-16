@@ -48,7 +48,7 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours {
           penalisedPrincipalTotal = Some(223.45),
           LPPPostedTotal = Some(0),
           LPPEstimatedTotal = Some(0),
-          totalAccountOverdue = None,
+          totalAccountOverdue = Some(123.45),
           totalAccountPostedInterest = None,
           totalAccountAccruingInterest = None
         )
@@ -83,6 +83,7 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours {
     "display button with correct text and link when user owes penalties" when {
       "user is trader" in {
         val docWithPenalties = asDocument(applyView(userOwes = true))
+        println(docWithPenalties)
         docWithPenalties.select(Selectors.button).text() shouldBe whatYouOweButtonText
         docWithPenalties.select(Selectors.button).attr("href") shouldBe "http://localhost:9152/vat-through-software/what-you-owe"
       }

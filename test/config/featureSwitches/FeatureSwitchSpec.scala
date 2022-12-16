@@ -28,34 +28,18 @@ class FeatureSwitchSpec extends SpecBase {
     val featureSwitching: FeatureSwitching = new FeatureSwitching {
       override implicit val appConfig: AppConfig = mockAppConfig
     }
-    sys.props -= UseNewWYOSection.name
   }
 
   "FeatureSwitch listOfAllFeatureSwitches" should {
     "be all the featureswitches in the app" in {
-      FeatureSwitch.listOfAllFeatureSwitches shouldBe List(UseNewWYOSection)
+      FeatureSwitch.listOfAllFeatureSwitches shouldBe List()
     }
   }
+
   "FeatureSwitching constants" should {
     "be true and false" in new Setup {
       featureSwitching.FEATURE_SWITCH_ON shouldBe "true"
       featureSwitching.FEATURE_SWITCH_OFF shouldBe "false"
     }
-  }
-
-  "return true if UseNewWYOSection feature switch is enabled" in new Setup {
-    featureSwitching.enableFeatureSwitch(UseNewWYOSection)
-    featureSwitching.isEnabled(UseNewWYOSection) shouldBe true
-  }
-
-  "return false if UseNewWYOSection feature switch is disabled" in new Setup {
-    featureSwitching.disableFeatureSwitch(UseNewWYOSection)
-    featureSwitching.isEnabled(UseNewWYOSection) shouldBe false
-  }
-
-  "return true if UseNewWYOSection feature switch does not exist in cache but does in config" in new Setup {
-    when(mockAppConfig.isFeatureSwitchEnabled(Matchers.eq(UseNewWYOSection)))
-      .thenReturn(true)
-    featureSwitching.isEnabled(UseNewWYOSection) shouldBe true
   }
 }

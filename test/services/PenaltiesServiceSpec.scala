@@ -158,67 +158,6 @@ class PenaltiesServiceSpec extends SpecBase {
     }
   }
 
-  "findOverdueVATFromPayload" should {
-    "return 0 when the payload does not have any VAT due" in new Setup {
-      val result: BigDecimal = service.findOverdueVATFromPayload(penaltyDetailsWithNoVATDue)
-      result shouldBe 0
-    }
-    "return total amount of VAT overdue when the VAT overview is present with elements" in new Setup {
-      val result: BigDecimal = service.findOverdueVATFromPayload(penaltyDetailsWithVATOnly)
-      result shouldBe 223.45
-    }
-  }
-
-  "findEstimatedLPPsFromPayload" should {
-    "return 0 when the user has no estimated LPP's due" in new Setup {
-      val result: BigDecimal = service.findEstimatedLPPsFromPayload(penaltyDetailsWithNoVATDue)
-      result shouldBe 0
-    }
-
-    "return the correct amount due of estimated penalties" in new Setup {
-      val result: BigDecimal = service.findEstimatedLPPsFromPayload(penaltyDetailsWithEstimatedLPPs)
-      result shouldBe 50.00
-    }
-  }
-
-  "findCrystallisedLPPsFromPayload" should {
-    "return 0 when the user has no LPP's" in new Setup {
-      val result: BigDecimal = service.findCrystallisedLPPsFromPayload(penaltyDetailsWithNoVATDue)
-      result shouldBe 0
-    }
-
-    "return the correct amount due of crystallised penalties" in new Setup {
-      val result: BigDecimal = service.findCrystallisedLPPsFromPayload(penaltyDetailsWithCrystallisedLPPs)
-      result shouldBe 50.00
-    }
-  }
-
-  "findTotalLSPFromPayload" should {
-    val penaltyDetailsWithLSPs: GetPenaltyDetails = GetPenaltyDetails(
-      totalisations = Some(
-        Totalisations(
-          LSPTotalValue = Some(400),
-          penalisedPrincipalTotal = Some(0),
-          LPPPostedTotal = Some(0),
-          LPPEstimatedTotal = Some(0),
-          totalAccountOverdue = None,
-          totalAccountPostedInterest = None,
-          totalAccountAccruingInterest = None
-        )
-      ),
-      lateSubmissionPenalty = None, latePaymentPenalty = None
-    )
-    "return 0 when the payload does not have any LSP's" in new Setup {
-      val result: BigDecimal = service.findTotalLSPFromPayload(penaltyDetailsWithNoVATDue)
-      result shouldBe 0
-    }
-
-    "return total amount of LSP's" in new Setup {
-      val result: BigDecimal = service.findTotalLSPFromPayload(penaltyDetailsWithLSPs)
-      result shouldBe 400
-    }
-  }
-
   "findInterestOnAccount" should {
     "return 0 when the payload does not have any totalisations field" in new Setup {
       val result: BigDecimal = service.findInterestOnAccount(None)

@@ -37,13 +37,11 @@ class FeatureSwitchingSpec extends SpecBase with BeforeAndAfterAll with FeatureS
     val featureSwitching: FeatureSwitching = new FeatureSwitching {
       override implicit val appConfig: AppConfig = config
     }
-    sys.props -= UseNewWYOSection.name
     sys.props -= featureSwitching.TIME_MACHINE_NOW
   }
 
   override protected def afterAll(): Unit = {
     super.afterAll()
-    sys.props -= UseNewWYOSection.name
     sys.props -= TIME_MACHINE_NOW
   }
 
@@ -51,38 +49,6 @@ class FeatureSwitchingSpec extends SpecBase with BeforeAndAfterAll with FeatureS
     "be true and false" in new Setup {
       featureSwitching.FEATURE_SWITCH_ON shouldBe "true"
       featureSwitching.FEATURE_SWITCH_OFF shouldBe "false"
-    }
-  }
-
-  "isEnabled" should {
-    s"return true if feature switch is enabled" in new Setup {
-      featureSwitching.enableFeatureSwitch(UseNewWYOSection)
-      featureSwitching.isEnabled(UseNewWYOSection) shouldBe true
-    }
-
-    s"return false if feature switch is disabled" in new Setup {
-      featureSwitching.disableFeatureSwitch(UseNewWYOSection)
-      featureSwitching.isEnabled(UseNewWYOSection) shouldBe false
-    }
-
-    "return true if system props is empty but config has value" in new Setup {
-      when(mockConfig.get[Boolean](any())(any()))
-        .thenReturn(true)
-      featureSwitching.isEnabled(UseNewWYOSection) shouldBe true
-    }
-  }
-
-  "enableFeatureSwitch" should {
-    s"set ${UseNewWYOSection.name} property to true" in new Setup {
-      featureSwitching.enableFeatureSwitch(UseNewWYOSection)
-      (sys.props get UseNewWYOSection.name) shouldBe Some("true")
-    }
-  }
-
-  "disableFeatureSwitch" should {
-    s"set ${UseNewWYOSection.name} property to false" in new Setup {
-      featureSwitching.disableFeatureSwitch(UseNewWYOSection)
-      (sys.props get UseNewWYOSection.name) shouldBe Some("false")
     }
   }
 

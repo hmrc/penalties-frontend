@@ -214,8 +214,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     }
   }
 
-  //TODO: remove V2 suffix when new WYO content added
-  def getWhatYouOweBreakdownV2(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
+  def getWhatYouOweBreakdown(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
     val unpaidVATCharges = penaltiesService.findUnpaidVATCharges(penaltyDetails.totalisations)
     val interestOnAccount = penaltiesService.findInterestOnAccount(penaltyDetails.totalisations)
     val latePaymentPenalties = penaltiesService.findNumberOfLatePaymentPenalties(penaltyDetails.latePaymentPenalty)
@@ -231,45 +230,6 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       lateSubmissionPenaltyOptContent
     ).collect { case Some(x) => x }
     if(whatYouOweContent.nonEmpty) Some(bullets(whatYouOweContent.map(stringAsHtml))) else None
-  }
-
-  //TODO: remove when new WYO content added
-  def getWhatYouOweBreakdown(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
-    val amountOfLateVAT = penaltiesService.findOverdueVATFromPayload(penaltyDetails)
-    val crystallisedLPPAmount = penaltiesService.findCrystallisedLPPsFromPayload(penaltyDetails)
-    val estimatedLPPAmount = penaltiesService.findEstimatedLPPsFromPayload(penaltyDetails)
-    val otherUnrelatedPenalties = penaltiesService.isOtherUnrelatedPenalties(penaltyDetails)
-    val totalAmountOfLSPs = penaltiesService.findTotalLSPFromPayload(penaltyDetails)
-    val totalNumberOfLSPs = penaltyDetails.lateSubmissionPenalty.map(_.details.filter(
-      penalty => penalty.penaltyStatus.equals(LSPPenaltyStatusEnum.Active) &&
-        penalty.chargeOutstandingAmount.exists(_ > BigDecimal(0))
-    )).map(_.size).getOrElse(0)
-    val estimatedVATInterest = penaltiesService.findEstimatedVATInterest(penaltyDetails)
-    val singularOrPluralAmountOfLSPs = if (totalNumberOfLSPs > 1) {
-      returnEstimatedMessageIfInterestMoreThanZero(totalAmountOfLSPs, isEstimatedAmount = false, "whatIsOwed.amountOfLSPs.plural")
-    } else {
-      returnEstimatedMessageIfInterestMoreThanZero(totalAmountOfLSPs, isEstimatedAmount = false, "whatIsOwed.amountOfLSPs.singular")
-    }
-    val stringToConvertToBulletPoints = Seq(
-      returnEstimatedMessageIfInterestMoreThanZero(amountOfLateVAT, isEstimatedAmount = false, "whatIsOwed.lateVAT"),
-      //TODO implement functionality for VAT interest
-      returnEstimatedMessageIfInterestMoreThanZero(estimatedVATInterest._1, estimatedVATInterest._2, "whatIsOwed.VATInterest"),
-      returnEstimatedMessageIfInterestMoreThanZero(crystallisedLPPAmount, isEstimatedAmount = false, "whatIsOwed.lppAmount"),
-      returnEstimatedMessageIfInterestMoreThanZero(estimatedLPPAmount, isEstimatedAmount = true, "whatIsOwed.lppAmount"),
-      singularOrPluralAmountOfLSPs,
-      //TODO implement Other penalties mapping
-      returnMessageIfOtherUnrelatedPenalties(false, "whatIsOwed.otherPenalties")
-    ).collect { case Some(x) => x }
-    if (stringToConvertToBulletPoints.isEmpty || (stringToConvertToBulletPoints.size == 1 && otherUnrelatedPenalties)) {
-      None
-    }
-    else {
-      Some(bullets(
-        stringToConvertToBulletPoints.map {
-          stringAsHtml
-        }
-      ))
-    }
   }
 
   def isTTPActive(penaltyDetails: GetPenaltyDetails): Boolean = {

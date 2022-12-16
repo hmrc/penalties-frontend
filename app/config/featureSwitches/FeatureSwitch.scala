@@ -22,11 +22,9 @@ sealed trait FeatureSwitch {
 
 object FeatureSwitch {
   val prefix: String = "feature.switch"
-  val listOfAllFeatureSwitches: List[FeatureSwitch] = List(UseNewWYOSection)
+  val listOfAllFeatureSwitches: List[FeatureSwitch] = List()
 }
 
-case object UseNewWYOSection extends FeatureSwitch {
-  override val name: String = s"${FeatureSwitch.prefix}.use-new-wyo-section"
-}
+
 
 
