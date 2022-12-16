@@ -108,12 +108,18 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       case (currentPoints, threshold, _, removedPoints) if removedPoints > 0 =>
         val base = Seq(
           p(content = getPluralOrSingular(currentPoints)("lsp.pointSummary.penaltyPoints.adjusted.singular", "lsp.pointSummary.penaltyPoints.adjusted.plural")),
-          bullets(Seq(
-            getPluralOrSingular(amountOfLateSubmissions)("lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular",
-              "lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.plural"),
-            getPluralOrSingular(removedPoints)("lsp.pointSummary.penaltyPoints.adjusted.removedPoints.singular",
-              "lsp.pointSummary.penaltyPoints.adjusted.removedPoints.plural")
-          )),
+          bullets(if (showRemovedPointsMessage(removedPoints, penaltyDetails))
+            Seq(
+              getPluralOrSingular(amountOfLateSubmissions)("lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular",
+                "lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.plural")
+            ) else
+            Seq(
+              getPluralOrSingular(amountOfLateSubmissions)("lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular",
+                "lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.plural"),
+              getPluralOrSingular(removedPoints)("lsp.pointSummary.penaltyPoints.adjusted.removedPoints.singular",
+                "lsp.pointSummary.penaltyPoints.adjusted.removedPoints.plural")
+            )
+          ),
           p(content = stringAsHtml(
             messages("lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded", threshold, fixedPenaltyAmount)
           )),
@@ -326,12 +332,12 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     val nltCount = penaltyDetails.lateSubmissionPenalty.map(_.details.exists(
       penalty => penalty.expiryReason.exists(_.equals(ExpiryReasonEnum.SubmissionOnTime))
     )).size
-    val pointExpiredList = penaltyDetails.lateSubmissionPenalty.map(_.details.filter(
+    val natCount = penaltyDetails.lateSubmissionPenalty.map(_.details.filter(
       penalty => penalty.penaltyCategory.equals(LSPPenaltyCategoryEnum.Point) &&
-        penalty.penaltyStatus.equals(LSPPenaltyStatusEnum.Inactive)
+        penalty.penaltyStatus.equals(LSPPenaltyStatusEnum.Inactive) &&
+        penalty.FAPIndicator.isEmpty
     )).get.map(_.lateSubmissions.get.map(_.returnReceiptDate))
-      .flatMap(_.map(_.get.plusMonths(24).isAfter(LocalDate.now())))
-    val natCount = pointExpiredList.count(_.equals(true))
-      !((nltCount + natCount) == inactivePenaltyPoints)
+      .flatMap(_.map(_.get.plusMonths(24).isAfter(LocalDate.now()))).size
+    !((nltCount + natCount) == inactivePenaltyPoints)
   }
 }
