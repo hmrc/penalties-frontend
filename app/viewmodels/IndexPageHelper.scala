@@ -110,7 +110,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           p(content = getPluralOrSingular(currentPoints)("lsp.pointSummary.penaltyPoints.adjusted.singular", "lsp.pointSummary.penaltyPoints.adjusted.plural")),
           bullets(if (showRemovedPointsMessage(removedPoints, penaltyDetails))
             Seq(
-              getPluralOrSingular(amountOfLateSubmissions)("lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular",
+              getPluralOrSingular(amountOfLateSubmissions - removedPoints)("lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular",
                 "lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.plural")
             ) else
             Seq(
