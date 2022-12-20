@@ -904,38 +904,22 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         lateSubmissionPenalty = Some(
           LateSubmissionPenalty(
             summary = LSPSummary(
-              activePenaltyPoints = 2,
-              inactivePenaltyPoints = 1,
+              activePenaltyPoints = 1,
+              inactivePenaltyPoints = 2,
               regimeThreshold = 4,
               penaltyChargeAmount = 200,
               PoCAchievementDate = LocalDate.of(2022, 1, 1)
             ),
             details = Seq(
               LSPDetails(
-                penaltyNumber = "12345679",
+                penaltyCategory = LSPPenaltyCategoryEnum.Point,
+                penaltyNumber = "123456789",
                 penaltyOrder = "3",
-                penaltyCategory = LSPPenaltyCategoryEnum.Point,
                 penaltyStatus = LSPPenaltyStatusEnum.Inactive,
-                FAPIndicator = Some("X"),
-                penaltyCreationDate = LocalDate.of(2022, 1, 1),
-                penaltyExpiryDate = LocalDate.of(2022, 1, 1),
-                expiryReason = None,
-                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
-                lateSubmissions = None,
-                appealInformation = None,
-                chargeAmount = None,
-                chargeOutstandingAmount = None,
-                chargeDueDate = None
-              ),
-              LSPDetails(
-                penaltyNumber = "12345677",
-                penaltyOrder = "2",
-                penaltyCategory = LSPPenaltyCategoryEnum.Point,
-                penaltyStatus = LSPPenaltyStatusEnum.Active,
                 FAPIndicator = None,
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
-                expiryReason = None,
+                expiryReason = Some(ExpiryReasonEnum.Adjustment),
                 communicationsDate = Some(LocalDate.of(2022, 1, 1)),
                 lateSubmissions = Some(
                   Seq(
@@ -954,7 +938,33 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 chargeDueDate = None
               ),
               LSPDetails(
-                penaltyNumber = "12345676",
+                penaltyCategory = LSPPenaltyCategoryEnum.Point,
+                penaltyNumber = "123456788",
+                penaltyOrder = "2",
+                penaltyStatus = LSPPenaltyStatusEnum.Inactive,
+                FAPIndicator = None,
+                penaltyCreationDate = LocalDate.of(2022, 1, 1),
+                penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+                expiryReason = Some(ExpiryReasonEnum.SubmissionOnTime),
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
+                lateSubmissions = Some(
+                  Seq(
+                    LateSubmission(
+                      taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
+                      taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
+                      taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
+                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
+                      taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+                    )
+                  )
+                ),
+                appealInformation = None,
+                chargeAmount = None,
+                chargeOutstandingAmount = None,
+                chargeDueDate = None
+              ),
+              LSPDetails(
+                penaltyNumber = "123456787",
                 penaltyOrder = "1",
                 penaltyCategory = LSPPenaltyCategoryEnum.Point,
                 penaltyStatus = LSPPenaltyStatusEnum.Active,
@@ -969,8 +979,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                       taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                       taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
-                      returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
-                      taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+                      returnReceiptDate = None,
+                      taxReturnStatus = TaxReturnStatusEnum.Open
                     )
                   )
                 ),
@@ -1111,18 +1121,16 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithRemovedPoints)(
           implicitly, vatTraderUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
-        parsedHtmlResult.select("p.govuk-body").get(0).text() shouldBe "You have 2 penalty points. This is because:"
-        parsedHtmlResult.select("ul li").get(0).text() shouldBe "you have submitted 2 VAT Returns late"
-        parsedHtmlResult.select("ul li").get(1).text() shouldBe "we removed 1 point and sent you a letter explaining why"
+        parsedHtmlResult.select("p.govuk-body").get(0).text() shouldBe "You have 1 penalty point. This is because:"
+        parsedHtmlResult.select("ul li").get(0).text() shouldBe "you have submitted a VAT Return late"
       }
 
       "user is agent - show the total of ALL POINTS (i.e. lateSubmissions - adjustmentPointsTotal)" in {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithRemovedPoints)(
           implicitly, agentUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
-        parsedHtmlResult.select("p.govuk-body").get(0).text() shouldBe "Your client has 2 penalty points. This is because:"
-        parsedHtmlResult.select("ul li").get(0).text() shouldBe "they have submitted 2 VAT Returns late"
-        parsedHtmlResult.select("ul li").get(1).text() shouldBe "we removed 1 point and sent them a letter explaining why"
+        parsedHtmlResult.select("p.govuk-body").get(0).text() shouldBe "Your client has 1 penalty point. This is because:"
+        parsedHtmlResult.select("ul li").get(0).text() shouldBe "they have submitted a VAT Return late"
       }
 
       "all points are 1 below the threshold - show some warning text" in {
@@ -1883,6 +1891,240 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
 
       val result: Seq[LSPDetails] = pageHelper.sortPointsInDescendingOrder(penaltiesOutOfOrder)
       result shouldBe penaltiesInOrder
+    }
+  }
+
+  "showRemovedPointsMessage" should {
+    "return true for nat or nlt present and less than inactive points" in {
+      val penaltiesWithNATAndNLT = GetPenaltyDetails(
+        totalisations = None,
+        lateSubmissionPenalty = Some(LateSubmissionPenalty(
+          summary = LSPSummary(
+            activePenaltyPoints = 10,
+            inactivePenaltyPoints = 4,
+            regimeThreshold = 5,
+            penaltyChargeAmount = 684.25,
+            PoCAchievementDate = LocalDate.of(2022, 1, 1)
+          ),
+          Seq(
+            LSPDetails(
+              penaltyNumber = "12345678",
+              penaltyOrder = "1",
+              penaltyCategory = LSPPenaltyCategoryEnum.Point,
+              penaltyStatus = LSPPenaltyStatusEnum.Active,
+              FAPIndicator = None,
+              penaltyCreationDate = LocalDate.of(2022, 1, 1),
+              penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+              expiryReason = Some(ExpiryReasonEnum.SubmissionOnTime),
+              communicationsDate = Some(LocalDate.of(2022, 1, 1)),
+              lateSubmissions = Some(Seq(
+                LateSubmission(
+                  taxPeriodStartDate = Some(LocalDate.parse("2019-05-01")),
+                  taxPeriodEndDate = Some(LocalDate.parse("2019-05-31")),
+                  taxPeriodDueDate = Some(LocalDate.parse("2019-07-07")),
+                  returnReceiptDate = Some(LocalDate.parse("2019-07-24")),
+                  taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+                )
+              )),
+              appealInformation = None,
+              chargeAmount = None,
+              chargeOutstandingAmount = None,
+              chargeDueDate = None
+            ),
+            LSPDetails(
+              penaltyNumber = "12345677",
+              penaltyOrder = "2",
+              penaltyCategory = LSPPenaltyCategoryEnum.Point,
+              penaltyStatus = LSPPenaltyStatusEnum.Inactive,
+              FAPIndicator = None,
+              penaltyCreationDate = LocalDate.of(2022, 1, 1),
+              penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+              expiryReason = None,
+              communicationsDate = Some(LocalDate.of(2022, 1, 1)),
+              lateSubmissions = Some(Seq(
+                LateSubmission(
+                  taxPeriodStartDate = Some(LocalDate.parse("2019-08-01")),
+                  taxPeriodEndDate = Some(LocalDate.parse("2019-08-31")),
+                  taxPeriodDueDate = Some(LocalDate.parse("2019-10-07")),
+                  returnReceiptDate = Some(LocalDate.parse("2019-10-24")),
+                  taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+                )
+              )),
+              appealInformation = None,
+              chargeAmount = None,
+              chargeOutstandingAmount = None,
+              chargeDueDate = None
+            ),
+            LSPDetails(
+              penaltyNumber = "12345676",
+              penaltyOrder = "3",
+              penaltyCategory = LSPPenaltyCategoryEnum.Point,
+              penaltyStatus = LSPPenaltyStatusEnum.Inactive,
+              FAPIndicator = None,
+              penaltyCreationDate = LocalDate.of(2022, 1, 1),
+              penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+              expiryReason = None,
+              communicationsDate = Some(LocalDate.of(2022, 1, 1)),
+              lateSubmissions = Some(Seq(
+                LateSubmission(
+                  taxPeriodStartDate = Some(LocalDate.parse("2019-05-01")),
+                  taxPeriodEndDate = Some(LocalDate.parse("2019-05-31")),
+                  taxPeriodDueDate = Some(LocalDate.parse("2019-07-07")),
+                  returnReceiptDate = Some(LocalDate.parse("2019-07-24")),
+                  taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+                )
+              )),
+              appealInformation = None,
+              chargeAmount = None,
+              chargeOutstandingAmount = None,
+              chargeDueDate = None
+            ),
+            LSPDetails(
+              penaltyNumber = "12345676",
+              penaltyOrder = "3",
+              penaltyCategory = LSPPenaltyCategoryEnum.Point,
+              penaltyStatus = LSPPenaltyStatusEnum.Active,
+              FAPIndicator = None,
+              penaltyCreationDate = LocalDate.of(2022, 1, 1),
+              penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+              expiryReason = None,
+              communicationsDate = Some(LocalDate.of(2022, 1, 1)),
+              lateSubmissions = Some(Seq(
+                LateSubmission(
+                  taxPeriodStartDate = Some(LocalDate.parse("2020-05-01")),
+                  taxPeriodEndDate = Some(LocalDate.parse("2020-05-31")),
+                  taxPeriodDueDate = Some(LocalDate.parse("2020-07-07")),
+                  returnReceiptDate = Some(LocalDate.parse("2020-07-24")),
+                  taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+                )
+              )),
+              appealInformation = None,
+              chargeAmount = None,
+              chargeOutstandingAmount = None,
+              chargeDueDate = None
+            )
+          )
+        )),
+        latePaymentPenalty = None
+      )
+      val result = pageHelper.showRemovedPointsMessage(4, penaltiesWithNATAndNLT)
+      result shouldBe true
+    }
+
+    "return false for nat or nlt present and equals inactive points" in {
+      val penaltiesWithNATAndNLT = GetPenaltyDetails(
+        totalisations = None,
+        lateSubmissionPenalty = Some(LateSubmissionPenalty(
+          summary = LSPSummary(
+            activePenaltyPoints = 10,
+            inactivePenaltyPoints = 3,
+            regimeThreshold = 5,
+            penaltyChargeAmount = 684.25,
+            PoCAchievementDate = LocalDate.of(2022, 1, 1)
+          ),
+          Seq(
+            LSPDetails(
+              penaltyNumber = "12345678",
+              penaltyOrder = "1",
+              penaltyCategory = LSPPenaltyCategoryEnum.Point,
+              penaltyStatus = LSPPenaltyStatusEnum.Active,
+              FAPIndicator = None,
+              penaltyCreationDate = LocalDate.of(2022, 1, 1),
+              penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+              expiryReason = Some(ExpiryReasonEnum.SubmissionOnTime),
+              communicationsDate = Some(LocalDate.of(2022, 1, 1)),
+              lateSubmissions = Some(Seq(
+                LateSubmission(
+                  taxPeriodStartDate = Some(LocalDate.parse("2019-05-01")),
+                  taxPeriodEndDate = Some(LocalDate.parse("2019-05-31")),
+                  taxPeriodDueDate = Some(LocalDate.parse("2019-07-07")),
+                  returnReceiptDate = Some(LocalDate.parse("2019-07-24")),
+                  taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+                )
+              )),
+              appealInformation = None,
+              chargeAmount = None,
+              chargeOutstandingAmount = None,
+              chargeDueDate = None
+            ),
+            LSPDetails(
+              penaltyNumber = "12345677",
+              penaltyOrder = "2",
+              penaltyCategory = LSPPenaltyCategoryEnum.Point,
+              penaltyStatus = LSPPenaltyStatusEnum.Inactive,
+              FAPIndicator = None,
+              penaltyCreationDate = LocalDate.of(2022, 1, 1),
+              penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+              expiryReason = None,
+              communicationsDate = Some(LocalDate.of(2022, 1, 1)),
+              lateSubmissions = Some(Seq(
+                LateSubmission(
+                  taxPeriodStartDate = Some(LocalDate.parse("2019-08-01")),
+                  taxPeriodEndDate = Some(LocalDate.parse("2019-08-31")),
+                  taxPeriodDueDate = Some(LocalDate.parse("2019-10-07")),
+                  returnReceiptDate = Some(LocalDate.parse("2019-10-24")),
+                  taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+                )
+              )),
+              appealInformation = None,
+              chargeAmount = None,
+              chargeOutstandingAmount = None,
+              chargeDueDate = None
+            ),
+            LSPDetails(
+              penaltyNumber = "12345676",
+              penaltyOrder = "3",
+              penaltyCategory = LSPPenaltyCategoryEnum.Point,
+              penaltyStatus = LSPPenaltyStatusEnum.Inactive,
+              FAPIndicator = None,
+              penaltyCreationDate = LocalDate.of(2022, 1, 1),
+              penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+              expiryReason = None,
+              communicationsDate = Some(LocalDate.of(2022, 1, 1)),
+              lateSubmissions = Some(Seq(
+                LateSubmission(
+                  taxPeriodStartDate = Some(LocalDate.parse("2019-05-01")),
+                  taxPeriodEndDate = Some(LocalDate.parse("2019-05-31")),
+                  taxPeriodDueDate = Some(LocalDate.parse("2019-07-07")),
+                  returnReceiptDate = Some(LocalDate.parse("2019-07-24")),
+                  taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+                )
+              )),
+              appealInformation = None,
+              chargeAmount = None,
+              chargeOutstandingAmount = None,
+              chargeDueDate = None
+            ),
+            LSPDetails(
+              penaltyNumber = "12345676",
+              penaltyOrder = "3",
+              penaltyCategory = LSPPenaltyCategoryEnum.Point,
+              penaltyStatus = LSPPenaltyStatusEnum.Active,
+              FAPIndicator = None,
+              penaltyCreationDate = LocalDate.of(2022, 1, 1),
+              penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+              expiryReason = None,
+              communicationsDate = Some(LocalDate.of(2022, 1, 1)),
+              lateSubmissions = Some(Seq(
+                LateSubmission(
+                  taxPeriodStartDate = Some(LocalDate.parse("2020-05-01")),
+                  taxPeriodEndDate = Some(LocalDate.parse("2020-05-31")),
+                  taxPeriodDueDate = Some(LocalDate.parse("2020-07-07")),
+                  returnReceiptDate = Some(LocalDate.parse("2020-07-24")),
+                  taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+                )
+              )),
+              appealInformation = None,
+              chargeAmount = None,
+              chargeOutstandingAmount = None,
+              chargeDueDate = None
+            )
+          )
+        )),
+        latePaymentPenalty = None
+      )
+      val result = pageHelper.showRemovedPointsMessage(3, penaltiesWithNATAndNLT)
+      result shouldBe false
     }
   }
 }

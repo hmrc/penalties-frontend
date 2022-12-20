@@ -21,7 +21,7 @@ import config.{AppConfig, ErrorHandler}
 import models.appealInfo.AppealStatusEnum.Upheld
 import models.compliance.{CompliancePayload, ComplianceStatusEnum}
 import models.lpp.LPPDetails
-import models.lsp.{ExpiryReasonEnum, LSPDetails, LSPPenaltyStatusEnum, TaxReturnStatusEnum}
+import models.lsp.{ExpiryReasonEnum, LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum, TaxReturnStatusEnum}
 import models.{GetPenaltyDetails, User}
 import play.api.i18n.Messages
 import play.api.mvc.Result
@@ -108,12 +108,18 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       case (currentPoints, threshold, _, removedPoints) if removedPoints > 0 =>
         val base = Seq(
           p(content = getPluralOrSingular(currentPoints)("lsp.pointSummary.penaltyPoints.adjusted.singular", "lsp.pointSummary.penaltyPoints.adjusted.plural")),
-          bullets(Seq(
-            getPluralOrSingular(amountOfLateSubmissions)("lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular",
-              "lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.plural"),
-            getPluralOrSingular(removedPoints)("lsp.pointSummary.penaltyPoints.adjusted.removedPoints.singular",
-              "lsp.pointSummary.penaltyPoints.adjusted.removedPoints.plural")
-          )),
+          bullets(if (showRemovedPointsMessage(removedPoints, penaltyDetails))
+            Seq(
+              getPluralOrSingular(amountOfLateSubmissions - removedPoints)("lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular",
+                "lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.plural")
+            ) else
+            Seq(
+              getPluralOrSingular(amountOfLateSubmissions)("lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular",
+                "lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.plural"),
+              getPluralOrSingular(removedPoints)("lsp.pointSummary.penaltyPoints.adjusted.removedPoints.singular",
+                "lsp.pointSummary.penaltyPoints.adjusted.removedPoints.plural")
+            )
+          ),
           p(content = stringAsHtml(
             messages("lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded", threshold, fixedPenaltyAmount)
           )),
@@ -280,5 +286,18 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
 
   def sortPointsInDescendingOrder(points: Seq[LSPDetails]): Seq[LSPDetails] = {
     points.sortWith((thisElement, nextElement) => thisElement.penaltyOrder.toInt > nextElement.penaltyOrder.toInt)
+  }
+
+  def showRemovedPointsMessage(inactivePenaltyPoints: Int, penaltyDetails: GetPenaltyDetails): Boolean = {
+    val nltCount = penaltyDetails.lateSubmissionPenalty.map(_.details.exists(
+      penalty => penalty.expiryReason.exists(_.equals(ExpiryReasonEnum.SubmissionOnTime))
+    )).size
+    val natCount = penaltyDetails.lateSubmissionPenalty.map(_.details.filter(
+      penalty => penalty.penaltyCategory.equals(LSPPenaltyCategoryEnum.Point) &&
+        penalty.penaltyStatus.equals(LSPPenaltyStatusEnum.Inactive) &&
+        penalty.FAPIndicator.isEmpty
+    )).get.map(_.lateSubmissions.get.map(_.returnReceiptDate))
+      .flatMap(_.map(_.get.plusMonths(24).isAfter(LocalDate.now()))).size
+    !((nltCount + natCount) == inactivePenaltyPoints)
   }
 }
