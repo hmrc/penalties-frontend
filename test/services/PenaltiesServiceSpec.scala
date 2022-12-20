@@ -125,8 +125,8 @@ class PenaltiesServiceSpec extends SpecBase {
           val result = await(service.getPenaltyDataFromEnrolmentKey("1234567890")(vatTraderUser, hc))
           result.isLeft shouldBe true
           result shouldBe Left(InvalidJson)
-          result.left.get.status shouldBe 400
-          result.left.get.body shouldBe "Invalid JSON received"
+          for(left <- result.left) yield left.status shouldBe 400
+          for(left <- result.left) yield left.body shouldBe "Invalid JSON received"
         }
       }
 
@@ -138,8 +138,8 @@ class PenaltiesServiceSpec extends SpecBase {
           val result = await(service.getPenaltyDataFromEnrolmentKey("1234567890")(vatTraderUser, hc))
           result.isLeft shouldBe true
           result shouldBe Left(BadRequest)
-          result.left.get.status shouldBe 400
-          result.left.get.body shouldBe "Incorrect JSON body sent"
+          for(left <- result.left) yield left.status shouldBe 400
+          for(left <- result.left) yield left.body shouldBe "Incorrect JSON body sent"
         }
       }
 
@@ -151,8 +151,8 @@ class PenaltiesServiceSpec extends SpecBase {
           val result = await(service.getPenaltyDataFromEnrolmentKey("1234567890")(vatTraderUser, hc))
           result.isLeft shouldBe true
           result shouldBe Left(UnexpectedFailure(INTERNAL_SERVER_ERROR, s"Unexpected response, status $INTERNAL_SERVER_ERROR returned"))
-          result.left.get.status shouldBe 500
-          result.left.get.body shouldBe "Unexpected response, status 500 returned"
+          for(left <- result.left) yield left.status shouldBe 500
+          for(left <- result.left) yield left.body shouldBe "Unexpected response, status 500 returned"
         }
       }
     }
