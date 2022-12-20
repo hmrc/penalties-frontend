@@ -108,15 +108,13 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       case (currentPoints, threshold, _, removedPoints) if removedPoints > 0 =>
         val base = Seq(
           p(content = getPluralOrSingular(currentPoints)("lsp.pointSummary.penaltyPoints.adjusted.singular", "lsp.pointSummary.penaltyPoints.adjusted.plural")),
-          bullets(if (showRemovedPointsMessage(removedPoints, penaltyDetails))
+          bullets(
             Seq(
-              getPluralOrSingular(amountOfLateSubmissions - removedPoints)("lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular",
-                "lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.plural")
-            ) else
-            Seq(
-              getPluralOrSingular(amountOfLateSubmissions)("lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular",
+              getPluralOrSingular(
+                if (showRemovedPointsMessage(removedPoints, penaltyDetails)) amountOfLateSubmissions - removedPoints else amountOfLateSubmissions
+              )("lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular",
                 "lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.plural"),
-              getPluralOrSingular(removedPoints)("lsp.pointSummary.penaltyPoints.adjusted.removedPoints.singular",
+                getPluralOrSingular(removedPoints)("lsp.pointSummary.penaltyPoints.adjusted.removedPoints.singular",
                 "lsp.pointSummary.penaltyPoints.adjusted.removedPoints.plural")
             )
           ),
