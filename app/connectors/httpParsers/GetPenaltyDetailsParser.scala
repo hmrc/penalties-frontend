@@ -24,7 +24,7 @@ import utils.Logger.logger
 import utils.PagerDutyHelper
 import utils.PagerDutyHelper.PagerDutyKeys._
 
-object PenaltiesConnectorParser {
+object GetPenaltyDetailsParser {
   type GetPenaltyDetailsResponse = Either[ErrorResponse, GetPenaltyDetails]
 
   implicit object GetPenaltyDetailsResponseReads extends HttpReads[GetPenaltyDetailsResponse] {

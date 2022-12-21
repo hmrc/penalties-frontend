@@ -18,6 +18,7 @@ package services
 
 import base.SpecBase
 import connectors.PenaltiesConnector
+import connectors.httpParsers.ComplianceDataParser._
 import models.User
 import models.compliance.CompliancePayload
 import org.mockito.Matchers
@@ -45,7 +46,7 @@ class ComplianceServiceSpec extends SpecBase {
     s"return a successful response and pass the result back to the controller (date provided as parameter)" in new Setup {
       when(mockPenaltiesConnector.getObligationData(any(),
         Matchers.eq(LocalDate.of(2020, 1, 1)),
-        Matchers.eq(LocalDate.of(2022, 1, 1)))(any())).thenReturn(Future.successful(sampleCompliancePayload))
+        Matchers.eq(LocalDate.of(2022, 1, 1)))(any())).thenReturn(Future.successful(Right(CompliancePayloadSuccessResponse(sampleCompliancePayload))))
       val result: Option[CompliancePayload] = await(service.getDESComplianceData(vrn)(HeaderCarrier(),
         User("123456789"), implicitly, Some(LocalDate.of(2022, 1, 1))))
       result.isDefined shouldBe true
@@ -55,7 +56,7 @@ class ComplianceServiceSpec extends SpecBase {
     s"return a successful response and pass the result back to the controller (date in session)" in new Setup {
       when(mockPenaltiesConnector.getObligationData(any(),
         Matchers.eq(LocalDate.of(2020, 1, 1)),
-        Matchers.eq(LocalDate.of(2022, 1, 1)))(any())).thenReturn(Future.successful(sampleCompliancePayload))
+        Matchers.eq(LocalDate.of(2022, 1, 1)))(any())).thenReturn(Future.successful(Right(CompliancePayloadSuccessResponse(sampleCompliancePayload))))
       val result: Option[CompliancePayload] = await(service.getDESComplianceData(vrn)(HeaderCarrier(), User("123456789")(fakeRequest.withSession(
         SessionKeys.pocAchievementDate -> "2022-01-01"
       )), implicitly))

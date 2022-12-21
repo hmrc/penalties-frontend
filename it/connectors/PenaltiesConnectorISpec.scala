@@ -16,10 +16,11 @@
 
 package connectors
 
-
 import config.AppConfig
+import connectors.httpParsers.ComplianceDataParser._
 import connectors.httpParsers.{InvalidJson, UnexpectedFailure}
 import models.User
+import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.ComplianceStub
@@ -62,22 +63,38 @@ class PenaltiesConnectorISpec extends IntegrationSpecCommonBase {
   "getObligationData" should {
     "generate a CompliancePayload when valid JSON is returned from penalties" in {
       ComplianceStub.complianceDataStub()
-      val result = await(connector.getObligationData("123456789", startDate, endDate))
-      result shouldBe sampleCompliancePayload
+      val result: CompliancePayloadResponse = await(connector.getObligationData("123456789", startDate, endDate))
+      result.isRight shouldBe true
+      result.toOption.get.model shouldBe sampleCompliancePayload
     }
 
-    "throw an exception when invalid JSON is returned from penalties" in {
-      wireMockServer.editStubMapping(invalidComplianceDataStub())
-
-      val result = intercept[Exception](await(connector.getObligationData("123456789", startDate, endDate)))
-      result.getMessage should include("invalid json")
+    //Unlikely to happen as hopefully Penalties BE will catch up
+    s"return a $CompliancePayloadMalformed when the data is malformed" in {
+      ComplianceStub.complianceDataStub("not valid")
+      val result: CompliancePayloadResponse = await(connector.getObligationData("123456789", startDate, endDate))
+      result.isLeft shouldBe true
+      result.left.getOrElse(false) shouldBe CompliancePayloadMalformed
     }
 
-    "throw an exception when an upstream error is returned from penalties" in {
-      wireMockServer.editStubMapping(upstreamErrorStub())
+    s"return a $CompliancePayloadNoData when the response status is Not Found (${Status.NOT_FOUND})" in {
+      errorStatusStub(Status.NOT_FOUND)
+      val result: CompliancePayloadResponse = await(connector.getObligationData("123456789", startDate, endDate))
+      result.isLeft shouldBe true
+      result.left.getOrElse(false) shouldBe CompliancePayloadNoData
+    }
 
-      val result = intercept[Exception](await(connector.getObligationData("123456789", startDate, endDate)))
-      result.getMessage should include("Upstream Error")
+    s"return a $CompliancePayloadFailureResponse when the response status is ISE (${Status.INTERNAL_SERVER_ERROR})" in {
+      errorStatusStub(Status.INTERNAL_SERVER_ERROR)
+      val result: CompliancePayloadResponse = await(connector.getObligationData("123456789", startDate, endDate))
+      result.isLeft shouldBe true
+      result.left.getOrElse(false) shouldBe CompliancePayloadFailureResponse(Status.INTERNAL_SERVER_ERROR)
+    }
+
+    s"return a $CompliancePayloadFailureResponse when the response status is unmatched i.e. Service Unavailable (${Status.SERVICE_UNAVAILABLE})" in {
+      errorStatusStub(Status.SERVICE_UNAVAILABLE)
+      val result: CompliancePayloadResponse = await(connector.getObligationData("123456789", startDate, endDate))
+      result.isLeft shouldBe true
+      result.left.getOrElse(false) shouldBe CompliancePayloadFailureResponse(Status.SERVICE_UNAVAILABLE)
     }
   }
 }

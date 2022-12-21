@@ -18,8 +18,7 @@ package config.featureSwitches
 
 import base.SpecBase
 import config.AppConfig
-import org.mockito.Matchers
-import org.mockito.Mockito.{mock, when}
+import org.mockito.Mockito.mock
 
 class FeatureSwitchSpec extends SpecBase {
   val mockAppConfig: AppConfig = mock(classOf[AppConfig])

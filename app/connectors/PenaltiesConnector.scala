@@ -18,8 +18,8 @@ package connectors
 
 import config.AppConfig
 import config.featureSwitches.FeatureSwitching
-import connectors.httpParsers.PenaltiesConnectorParser.{GetPenaltyDetailsResponse, GetPenaltyDetailsResponseReads}
-import models.compliance.CompliancePayload
+import connectors.httpParsers.ComplianceDataParser.{CompliancePayloadFailureResponse, CompliancePayloadResponse}
+import connectors.httpParsers.GetPenaltyDetailsParser.{GetPenaltyDetailsResponse, GetPenaltyDetailsResponseReads}
 import connectors.httpParsers.UnexpectedFailure
 import models.User
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -61,8 +61,21 @@ class PenaltiesConnector @Inject()(httpClient: HttpClient,
   private def getDESObligationsDataUrl(vrn: String, fromDate: String, toDate: String): String =
     s"/compliance/des/compliance-data?vrn=$vrn&fromDate=$fromDate&toDate=$toDate"
 
-  def getObligationData(vrn: String, fromDate: LocalDate, toDate: LocalDate)(implicit hc: HeaderCarrier): Future[CompliancePayload] = {
+  def getObligationData(vrn: String, fromDate: LocalDate, toDate: LocalDate)(implicit hc: HeaderCarrier): Future[CompliancePayloadResponse] = {
     logger.info(s"[PenaltiesConnector][getObligationData] - Requesting obligation data from backend for VRN $vrn.")
-    httpClient.GET[CompliancePayload](s"$penaltiesBaseUrl${getDESObligationsDataUrl(vrn, fromDate.toString, toDate.toString)}")
+    httpClient.GET[CompliancePayloadResponse](s"$penaltiesBaseUrl${getDESObligationsDataUrl(vrn, fromDate.toString, toDate.toString)}").recover {
+      case e: UpstreamErrorResponse => {
+        PagerDutyHelper.logStatusCode("getObligationData", e.statusCode)(RECEIVED_4XX_FROM_PENALTIES_BACKEND, RECEIVED_5XX_FROM_PENALTIES_BACKEND)
+        logger.error(s"[PenaltiesConnector][getObligationData] -" +
+          s" Received ${e.statusCode} status from API 1330 call - returning status to caller")
+        Left(CompliancePayloadFailureResponse(e.statusCode))
+      }
+      case e: Exception => {
+        PagerDutyHelper.log("getObligationData", UNEXPECTED_ERROR_FROM_PENALTIES_BACKEND)
+        logger.error(s"[PenaltiesConnector][getObligationData] -" +
+          s" An unknown exception occurred - returning 500 back to caller - message: ${e.getMessage}")
+        Left(CompliancePayloadFailureResponse(INTERNAL_SERVER_ERROR))
+      }
+    }
   }
 }

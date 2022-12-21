@@ -39,11 +39,18 @@ class ComplianceService @Inject()(connector: PenaltiesConnector)(implicit val ap
       case Some(pocAchievementDate) => {
         val fromDate = pocAchievementDate.minusYears(2)
         connector.getObligationData(vrn, fromDate, pocAchievementDate).map {
-          obligationData => {
-            logger.debug(s"[ComplianceService][getDESComplianceData] - Successful call to get obligation data,  obligation data = $obligationData")
-            logger.info(s"[ComplianceService][getDESComplianceData] - Successful call to get obligation data.")
-            Some(obligationData)
-          }
+          _.fold(
+            failure => {
+              logger.error(s"[ComplianceService][getDESComplianceData] - Connector failure: ${failure.message}")
+              logger.error("[ComplianceService][getDESComplianceData] - Failed to retrieve obligation data, returning None back to controller (renders ISE)")
+              None
+            },
+            obligationData => {
+              logger.debug(s"[ComplianceService][getDESComplianceData] - Successful call to get obligation data,  obligation data = $obligationData")
+              logger.info(s"[ComplianceService][getDESComplianceData] - Successful call to get obligation data.")
+              Some(obligationData.model)
+            }
+          )
         }
       }
       case _ => {

@@ -247,23 +247,6 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     }
   }
 
-  private def returnMessageIfOtherUnrelatedPenalties(isUnrelatedPenalties: Boolean, msgKey: String)(implicit messages: Messages): Option[String] = {
-    //TODO implement other unrelated penalties functionality
-    None
-  }
-
-  private def returnEstimatedMessageIfInterestMoreThanZero(interestAmount: BigDecimal, isEstimatedAmount: Boolean, msgKeyToApply: String)(implicit messages: Messages): Option[String] = {
-    if (interestAmount > 0) {
-      (isEstimatedAmount, interestAmount.isWhole) match {
-        case (true, true) => Some(messages(s"$msgKeyToApply.estimated", interestAmount))
-        case (true, false) => Some(messages(s"$msgKeyToApply.estimated", "%,.2f".format(interestAmount)))
-        case (false, false) => Some(messages(s"$msgKeyToApply", "%,.2f".format(interestAmount)))
-        case (false, true) => Some(messages(s"$msgKeyToApply", interestAmount))
-      }
-    }
-    else None
-  }
-
   private def getLSPCompliantMonths(pointsThreshold: Int): Int = {
     pointsThreshold match {
       case 5 => 6 //Monthly filer
