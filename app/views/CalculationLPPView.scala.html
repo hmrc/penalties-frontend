@@ -20,7 +20,8 @@
     layout: Layout,
     link: components.link,
     details: GovukDetails,
-    bullets: components.bullets
+    bullets: components.bullets,
+    warningText: components.warningText
 )
 
 @(
@@ -102,12 +103,7 @@
     </dl>
 
     @if(isPenaltyEstimate){
-        <div class="govuk-warning-text">
-            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-            <strong class="govuk-warning-text__text">
-                @getMessage("calculation.estimate.footerNote.warning")
-            </strong>
-        </div>
+        @warningText(Html(getMessage("calculation.estimate.footerNote.warning")))
         <h2 class="govuk-heading-s">@messages("calculation.h2.estimates")</h2>
         <p class="govuk-body">@messages("calculation.p.2.estimates.lpp1")</p>
         @bullets(

@@ -55,9 +55,9 @@ object CalculationMessages {
 
   val estimateFooterNoteBillPayment = "This penalty applies if VAT has not been paid for 15 days."
 
-  val estimateFooterNoteWarningTrader = "! The penalty will increase by a further 2% if VAT remains unpaid 30 days after the due date and you have not set up a payment plan."
+  val estimateFooterNoteWarningTrader = "! Warning: The penalty will increase by a further 2% if VAT remains unpaid 30 days after the due date and you have not set up a payment plan."
 
-  val estimateFooterNoteWarningAgent = "! The penalty will increase by a further 2% if VAT remains unpaid 30 days after the due date and your client has not set up a payment plan."
+  val estimateFooterNoteWarningAgent = "! Warning: The penalty will increase by a further 2% if VAT remains unpaid 30 days after the due date and your client has not set up a payment plan."
 
   val link = "Return to VAT penalties and appeals"
 
