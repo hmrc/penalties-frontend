@@ -85,11 +85,28 @@ object ComplianceStub {
     )
   )
 
+  def complianceDataStub(compliancePayload: String): StubMapping = stubFor(get(urlPathEqualTo(getComplianceDataUrl))
+    .willReturn(
+      aResponse()
+        .withStatus(Status.OK)
+        .withBody(
+          Json.toJson(compliancePayload).toString()
+        )
+    )
+  )
+
   def invalidComplianceDataStub(): StubMapping = stubFor(get(urlPathEqualTo(getComplianceDataUrl))
   .willReturn(
     aResponse()
       .withStatus(Status.OK)
       .withBody("{}")
+    )
+  )
+
+  def errorStatusStub(status: Int): StubMapping = stubFor(get(urlPathEqualTo(getComplianceDataUrl))
+    .willReturn(
+      aResponse()
+        .withStatus(status)
     )
   )
 

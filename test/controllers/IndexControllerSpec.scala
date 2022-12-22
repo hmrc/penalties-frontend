@@ -42,7 +42,8 @@ class IndexControllerSpec extends SpecBase with LogCapturing {
   val mockPenaltiesService: PenaltiesService = mock(classOf[PenaltiesService])
 
   class Setup(authResult: Future[~[Option[AffinityGroup], Enrolments]]) {
-    reset(mockAuthConnector, mockPenaltiesService)
+    reset(mockAuthConnector)
+    reset(mockPenaltiesService)
     when(mockAuthConnector.authorise[~[Option[AffinityGroup], Enrolments]](
       Matchers.any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
       Matchers.any(), Matchers.any())

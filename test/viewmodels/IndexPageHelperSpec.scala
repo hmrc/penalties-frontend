@@ -27,6 +27,7 @@ import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{mock, when}
 import play.api.http.Status.INTERNAL_SERVER_ERROR
+import play.api.mvc.Result
 import play.api.test.Helpers.{await, contentAsString, defaultAwaitTimeout}
 import play.twirl.api.Html
 import services.{ComplianceService, PenaltiesService}
@@ -706,9 +707,9 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
       s"return $Left ISE when the obligation call returns None (no data/network error)" in new Setup {
         when(mockComplianceService.getDESComplianceData(Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(None))
-        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith4ActivePoints)(implicitly,
+        val result: Either[Result, Html] = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith4ActivePoints)(implicitly,
           vatTraderUser, hc, implicitly))
-        result.left.get.header.status shouldBe INTERNAL_SERVER_ERROR
+        for(left <- result.left) yield left.header.status shouldBe INTERNAL_SERVER_ERROR
       }
     }
 

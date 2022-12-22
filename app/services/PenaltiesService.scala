@@ -17,7 +17,7 @@
 package services
 
 import connectors.PenaltiesConnector
-import connectors.httpParsers.PenaltiesConnectorParser.GetPenaltyDetailsResponse
+import connectors.httpParsers.GetPenaltyDetailsParser.GetPenaltyDetailsResponse
 import models.appealInfo.AppealStatusEnum
 import models.lsp._
 import models.lpp._

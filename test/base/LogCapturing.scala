@@ -20,7 +20,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.classic.{Level, Logger => LogbackLogger}
 import ch.qos.logback.core.read.ListAppender
 import play.api.LoggerLike
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 trait LogCapturing {
 
