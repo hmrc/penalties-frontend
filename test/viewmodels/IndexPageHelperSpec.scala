@@ -18,6 +18,7 @@ package viewmodels
 
 import assets.messages.IndexMessages._
 import base.SpecBase
+import config.AppConfig
 import config.featureSwitches.FeatureSwitching
 import models.lpp._
 import models.lsp._
@@ -25,7 +26,7 @@ import models.{GetPenaltyDetails, Totalisations}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Matchers.any
-import org.mockito.Mockito.{mock, when}
+import org.mockito.Mockito.{mock, reset, times, verify, when}
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.mvc.Result
 import play.api.test.Helpers.{await, contentAsString, defaultAwaitTimeout}
@@ -45,10 +46,13 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
   val linkInjector: link = injector.instanceOf[views.html.components.link]
   val warningTextInjector: warningText = injector.instanceOf[views.html.components.warningText]
   implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
+  val mockAppConfig: AppConfig = mock(classOf[AppConfig])
   val pageHelper: IndexPageHelper = new IndexPageHelper(pInjector, strongInjector, bulletsInjector, linkInjector,
-    warningTextInjector, penaltiesService, mockComplianceService, errorHandler)
+    warningTextInjector, penaltiesService, mockComplianceService, errorHandler)(mockAppConfig)
 
   class Setup {
+    reset(mockAppConfig)
+    when(mockAppConfig.penaltyChargeAmount).thenReturn("200")
     when(mockComplianceService.getDESComplianceData(any())(any(), any(), any(), any())).thenReturn(Future.successful(Some(sampleCompliancePayload)))
   }
 
@@ -460,13 +464,13 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         parsedHtmlResult.select("p.govuk-body").get(2).text() shouldBe whatHappensWhenNextSubmissionIsLateForAgent
       }
 
-      "show the (threshold) amount of points that need to be accrued before a penalty is applied" in {
+      "show the (threshold) amount of points that need to be accrued before a penalty is applied" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePoint)(implicitly, vatTraderUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
         parsedHtmlResult.select("p.govuk-body").get(3).text() shouldBe quarterlyThresholdPlusOnePenaltyApplication
       }
 
-      "user is agent - show the (threshold) amount of points that need to be accrued before a penalty is applied" in {
+      "user is agent - show the (threshold) amount of points that need to be accrued before a penalty is applied" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePoint)(implicitly, agentUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
         parsedHtmlResult.select("p.govuk-body").get(3).text() shouldBe quarterlyThresholdPlusOnePenaltyApplicationForAgent
@@ -486,13 +490,13 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         parsedHtmlResult.select("p.govuk-body").get(1).text() shouldBe singularAgentOverviewText
       }
 
-      "show some warning text explaining what will happen if another submission is late" in {
+      "show some warning text explaining what will happen if another submission is late" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePointAnnual)(implicitly, vatTraderUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
         parsedHtmlResult.select("strong").text() shouldBe warningText
       }
 
-      "user is agent - show some warning text explaining what will happen if another submission is late" in {
+      "user is agent - show some warning text explaining what will happen if another submission is late" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePointAnnual)(implicitly, agentUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
         parsedHtmlResult.select("strong").text() shouldBe warningTextAgent
@@ -653,6 +657,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
       }
 
       "show the penalty amount until account is updated text" in {
+        verify(mockAppConfig, times(1)).penaltyChargeAmount
         parsedHtmlResult.select("p.govuk-body").get(1).text shouldBe lateReturnPenalty
       }
 

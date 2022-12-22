@@ -75,4 +75,8 @@ class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesCon
       s"?redirectUrl=${agentClientLookupRedirectUrl(uri)}"
 
   def isFeatureSwitchEnabled(featureSwitch: FeatureSwitch): Boolean = config.get[Boolean](featureSwitch.name)
+
+  lazy val penaltyChargeAmount: String = config.get[String]("penaltyChargeAmount")
 }
+
+

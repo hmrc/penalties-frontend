@@ -48,7 +48,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
   //scalastyle:off
   def getContentBasedOnPointsFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_],
                                                                           hc: HeaderCarrier, ec: ExecutionContext): Future[Either[Result, Html]] = {
-    val fixedPenaltyAmount: String = parseBigDecimalNoPaddedZeroToFriendlyValue(penaltyDetails.lateSubmissionPenalty.map(_.summary.penaltyChargeAmount).getOrElse(0))
+    val fixedPenaltyAmount: String = appConfig.penaltyChargeAmount
     val activePoints: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0)
     val regimeThreshold: Int = penaltiesService.getRegimeThreshold(penaltyDetails)
     val removedPoints: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.inactivePenaltyPoints).getOrElse(0)
