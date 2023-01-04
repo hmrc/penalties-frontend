@@ -92,9 +92,9 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-three-quarters">
       <div class="govuk-tabs" data-module="govuk-tabs">
-        <h2 class="govuk-tabs__title">
+        <h3 class="govuk-tabs__title">
         @messages("index.contents")
-        </h2>
+        </h3>
         <ul class="govuk-tabs__list">
           <li class="govuk-tabs__list-item" id="lsp-tab">
             <a class="govuk-tabs__tab" href="#late-submission-penalties">
@@ -108,9 +108,9 @@
           </li>
         </ul>
         <div class="govuk-tabs__panel" id="late-submission-penalties">
-          <h2 class="govuk-heading-m">@{
+          <h3 class="govuk-heading-m">@{
             messages("index.subheading.lsp")
-          }</h2>
+          }</h3>
           @contentToDisplayBeforeSummaryCards
 
           @lspCards.map { lspCard =>
@@ -118,9 +118,9 @@
           }
         </div>
         <div class="govuk-tabs__panel" id="late-payment-penalties">
-          <h2 class="govuk-heading-m">@{
+          <h3 class="govuk-heading-m">@{
             messages("index.subheading.lpp")
-          }</h2>
+          }</h3>
           @contentLPPToDisplayBeforeSummaryCards
           @lppCards.map(_.map(lppCard => summaryCardLPP(lppCard)))
         </div>

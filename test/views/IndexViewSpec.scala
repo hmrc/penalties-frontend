@@ -83,7 +83,6 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours {
     "display button with correct text and link when user owes penalties" when {
       "user is trader" in {
         val docWithPenalties = asDocument(applyView(userOwes = true))
-        println(docWithPenalties)
         docWithPenalties.select(Selectors.button).text() shouldBe whatYouOweButtonText
         docWithPenalties.select(Selectors.button).attr("href") shouldBe "http://localhost:9152/vat-through-software/what-you-owe"
       }
