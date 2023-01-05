@@ -602,7 +602,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     "given an added point and the threshold has not been met" should {
       implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAddedPoint))
       "display that the point has been added i.e. Penalty point X: adjustment point" in {
-        doc.select("h3").text() shouldBe "Penalty point 1: adjustment point"
+        doc.select("h4").text() shouldBe "Penalty point 1: adjustment point"
       }
 
       "display a link to allow the user to find information about adjusted points" in {
@@ -633,7 +633,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     "given an added point and the threshold has been met" should {
       implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAddedPointAtThreshold))
       "display that the point has been added i.e. Penalty point X: adjustment point" in {
-        doc.select("h3").text() shouldBe "Penalty point 1: adjustment point"
+        doc.select("h4").text() shouldBe "Penalty point 1: adjustment point"
       }
 
       "display a link to allow the user to find information about adjusted points" in {
@@ -664,7 +664,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     "given a removed point(not FAP)" should {
       implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithRemovedPoint))
       "display that the point number as usual" in {
-        doc.select("h3").text() shouldBe "Penalty point"
+        doc.select("h4").text() shouldBe "Penalty point"
       }
 
       "display the VAT period the point was removed from" in {
@@ -791,14 +791,14 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         docWithAppealedPointAccepted.select("dt").text().contains("Point due to expire") shouldBe false
         docWithAppealedPointAccepted.select("dt").get(3).text() shouldBe "Appeal status"
         docWithAppealedPointAccepted.select("dd").get(3).text() shouldBe "Appeal accepted"
-        docWithAppealedPointAccepted.select("h3").get(0).text() shouldBe "Penalty point"
+        docWithAppealedPointAccepted.select("h4").get(0).text() shouldBe "Penalty point"
       }
 
       "have the appeal status for ACCEPTED_BY_TRIBUNAL - removing the point due to expire and point number" in {
         docWithAppealedPointAcceptedByTribunal.select("dt").text().contains("Point due to expire") shouldBe false
         docWithAppealedPointAcceptedByTribunal.select("dt").get(3).text() shouldBe "Appeal status"
         docWithAppealedPointAcceptedByTribunal.select("dd").get(3).text() shouldBe "Appeal accepted by tax tribunal"
-        docWithAppealedPointAcceptedByTribunal.select("h3").get(0).text() shouldBe "Penalty point"
+        docWithAppealedPointAcceptedByTribunal.select("h4").get(0).text() shouldBe "Penalty point"
       }
 
       "have the appeal status for REJECTED" in {

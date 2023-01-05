@@ -733,7 +733,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#late-submission-penalties p.govuk-body").get(0).text shouldBe "You have 1 penalty point. This is because:"
       parsedBody.select("#late-submission-penalties ul li").get(0).text shouldBe "you have submitted a VAT Return late"
       parsedBody.select("#late-submission-penalties ul li").get(1).text shouldBe "we added 1 point and sent you a letter explaining why"
-      parsedBody.select("header h3").text shouldBe "Penalty point 1: adjustment point"
+      parsedBody.select("header h4").text shouldBe "Penalty point 1: adjustment point"
       parsedBody.select("main strong").text shouldBe "active"
       val summaryCardBody = parsedBody.select(".app-summary-card__body")
       summaryCardBody.select("dt").get(0).text shouldBe "Added on"
@@ -753,7 +753,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#late-submission-penalties p.govuk-body").get(0).text shouldBe "You have 1 penalty point. This is because:"
       parsedBody.select("#late-submission-penalties ul li").get(0).text shouldBe "you have submitted a VAT Return late"
-      parsedBody.select("header h3").get(0).text shouldBe "Penalty point"
+      parsedBody.select("header h4").get(0).text shouldBe "Penalty point"
       parsedBody.select("main strong").get(0).text shouldBe "removed"
       val summaryCardBody = parsedBody.select(".app-summary-card__body").get(1)
       summaryCardBody.select("dt").get(0).text shouldBe "VAT period"
@@ -775,9 +775,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#late-submission-penalties p.govuk-body").get(0).text shouldBe "You have 2 penalty points. This is because:"
       parsedBody.select("#late-submission-penalties ul li").get(0).text shouldBe "you have submitted 3 VAT Returns late"
       parsedBody.select("#late-submission-penalties ul li").get(1).text shouldBe "we removed 1 point and sent you a letter explaining why"
-      parsedBody.select("main section h3").get(0).text shouldBe "Penalty point 2"
-      parsedBody.select("main section h3").get(1).text shouldBe "Penalty point 1"
-      parsedBody.select("main section h3").get(2).text shouldBe "Penalty point"
+      parsedBody.select("main section h4").get(0).text shouldBe "Penalty point 2"
+      parsedBody.select("main section h4").get(1).text shouldBe "Penalty point 1"
+      parsedBody.select("main section h4").get(2).text shouldBe "Penalty point"
       parsedBody.select("main section strong").get(2).text shouldBe "removed"
     }
 
@@ -796,7 +796,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#late-payment-penalties section header h3").get(0).text shouldBe "£400 penalty"
+      parsedBody.select("#late-payment-penalties section header h4").get(0).text shouldBe "£400 penalty"
       parsedBody.select("#late-payment-penalties section header strong").text shouldBe "paid"
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
       summaryCardBody.select("dt").get(0).text shouldBe "Penalty type"
@@ -832,7 +832,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#late-payment-penalties section header h3").get(0).text shouldBe "£123.45 penalty"
+      parsedBody.select("#late-payment-penalties section header h4").get(0).text shouldBe "£123.45 penalty"
       parsedBody.select("#late-payment-penalties section header strong").get(0).text shouldBe "paid"
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body").first()
       summaryCardBody.select("dt").get(0).text shouldBe "Penalty type"
@@ -851,7 +851,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#late-payment-penalties section header h3").text shouldBe "£400 penalty"
+      parsedBody.select("#late-payment-penalties section header h4").text shouldBe "£400 penalty"
       parsedBody.select("#late-payment-penalties section header strong").text shouldBe "£200 due"
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
       summaryCardBody.select("dt").get(0).text shouldBe "Penalty type"
@@ -870,7 +870,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#late-payment-penalties section header h3").text shouldBe "£400 penalty"
+      parsedBody.select("#late-payment-penalties section header h4").text shouldBe "£400 penalty"
       parsedBody.select("#late-payment-penalties section header strong").text shouldBe "due"
     }
 
@@ -879,7 +879,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#late-payment-penalties section header h3").text shouldBe "£400 penalty"
+      parsedBody.select("#late-payment-penalties section header h4").text shouldBe "£400 penalty"
       parsedBody.select("#late-payment-penalties section header strong").text shouldBe "paid"
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
       summaryCardBody.select("dt").get(0).text shouldBe "Penalty type"
@@ -912,7 +912,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.select("#late-submission-penalties p.govuk-body").get(0).text shouldBe "Your client has 1 penalty point. This is because:"
         parsedBody.select("#late-submission-penalties ul li").get(0).text shouldBe "they have submitted a VAT Return late"
         parsedBody.select("#late-submission-penalties ul li").get(1).text shouldBe "we added 1 point and sent them a letter explaining why"
-        parsedBody.select("header h3").text shouldBe "Penalty point 1: adjustment point"
+        parsedBody.select("header h4").text shouldBe "Penalty point 1: adjustment point"
         parsedBody.select("main strong").text shouldBe "active"
         val summaryCardBody = parsedBody.select(".app-summary-card__body")
         summaryCardBody.select("dt").get(0).text shouldBe "Added on"
@@ -933,7 +933,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         val parsedBody = Jsoup.parse(contentAsString(request))
         parsedBody.select("#late-submission-penalties p.govuk-body").get(0).text shouldBe "Your client has 1 penalty point. This is because:"
         parsedBody.select("#late-submission-penalties ul li").get(0).text shouldBe "they have submitted a VAT Return late"
-        parsedBody.select("header h3").get(0).text shouldBe "Penalty point"
+        parsedBody.select("header h4").get(0).text shouldBe "Penalty point"
         parsedBody.select("main strong").get(0).text shouldBe "removed"
         val summaryCardBody = parsedBody.select(".app-summary-card__body")
         summaryCardBody.select("dt").get(0).text shouldBe "VAT period"
@@ -1010,9 +1010,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.select("#late-submission-penalties p.govuk-body").get(0).text shouldBe "Your client has 2 penalty points. This is because:"
         parsedBody.select("#late-submission-penalties ul li").get(0).text shouldBe "they have submitted 3 VAT Returns late"
         parsedBody.select("#late-submission-penalties ul li").get(1).text shouldBe "we removed 1 point and sent them a letter explaining why"
-        parsedBody.select("main section h3").get(0).text shouldBe "Penalty point 2"
-        parsedBody.select("main section h3").get(1).text shouldBe "Penalty point 1"
-        parsedBody.select("main section h3").get(2).text shouldBe "Penalty point"
+        parsedBody.select("main section h4").get(0).text shouldBe "Penalty point 2"
+        parsedBody.select("main section h4").get(1).text shouldBe "Penalty point 1"
+        parsedBody.select("main section h4").get(2).text shouldBe "Penalty point"
         parsedBody.select("main section strong").get(2).text shouldBe "removed"
       }
 
