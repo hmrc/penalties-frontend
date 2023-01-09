@@ -45,7 +45,7 @@
 
 <section class="app-summary-card govuk-!-margin-bottom-3">
     <header class="app-summary-card__header">
-        <h3 class="app-summary-card__title">
+        <h4 class="app-summary-card__title">
             @{
               if(summaryCard.isAddedPoint) {
                 messages("summaryCard.header.addedPoint", summaryCard.penaltyPoint)
@@ -59,7 +59,7 @@
                   messages("summaryCard.header", summaryCard.penaltyPoint)
               }
             }
-        </h3>
+        </h4>
         <div class="app-summary-card__tag">
             @govukTag(summaryCard.status)
         </div>
