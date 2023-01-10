@@ -121,5 +121,18 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours {
 
       behave like pageWithExpectedMessages(expectedContent)(asDocument(applyView(isTTPActive = true, isUserAgent = true, userOwes = false)))
     }
+
+    "the footer should have the correct links" in {
+      implicit val doc: Document = asDocument(applyView())
+      val footerLinks = doc.select(".govuk-footer__link")
+      footerLinks.get(0).text shouldBe "Cookies"
+      footerLinks.get(1).text shouldBe "Accessibility statement"
+      footerLinks.get(1).attr("href").contains("http://localhost:12346/accessibility-statement/penalties") shouldBe true
+      footerLinks.get(2).text shouldBe "Privacy policy"
+      footerLinks.get(3).text shouldBe "Terms and conditions"
+      footerLinks.get(4).text shouldBe "Help using GOV.UK"
+      footerLinks.get(5).text shouldBe "Contact"
+
+    }
   }
 }
