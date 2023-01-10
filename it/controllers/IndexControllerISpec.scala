@@ -110,7 +110,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           penaltyOrder = "01",
           penaltyCategory = LSPPenaltyCategoryEnum.Point,
           penaltyStatus = LSPPenaltyStatusEnum.Inactive,
-          FAPIndicator = None,
+          FAPIndicator = Some("X"),
           penaltyCreationDate = sampleDate1,
           penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
           expiryReason = Some(ExpiryReasonEnum.Adjustment),
@@ -752,7 +752,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#late-submission-penalties p.govuk-body").get(0).text shouldBe "You have 1 penalty point. This is because:"
-      parsedBody.select("#late-submission-penalties ul li").get(0).text shouldBe "you have submitted a VAT Return late"
+      parsedBody.select("#late-submission-penalties ul li").get(0).text shouldBe "you have submitted 2 VAT Returns late"
       parsedBody.select("header h4").get(0).text shouldBe "Penalty point"
       parsedBody.select("main strong").get(0).text shouldBe "removed"
       val summaryCardBody = parsedBody.select(".app-summary-card__body").get(1)
@@ -932,7 +932,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         await(request).header.status shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
         parsedBody.select("#late-submission-penalties p.govuk-body").get(0).text shouldBe "Your client has 1 penalty point. This is because:"
-        parsedBody.select("#late-submission-penalties ul li").get(0).text shouldBe "they have submitted a VAT Return late"
+        parsedBody.select("#late-submission-penalties ul li").get(0).text shouldBe "they have submitted 2 VAT Returns late"
         parsedBody.select("header h4").get(0).text shouldBe "Penalty point"
         parsedBody.select("main strong").get(0).text shouldBe "removed"
         val summaryCardBody = parsedBody.select(".app-summary-card__body")

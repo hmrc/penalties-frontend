@@ -49,11 +49,12 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
   def getContentBasedOnPointsFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_],
                                                                           hc: HeaderCarrier, ec: ExecutionContext): Future[Either[Result, Html]] = {
     val fixedPenaltyAmount: String = appConfig.penaltyChargeAmount
+    val filteredPoints = filteredExpiredPoints(penaltyDetails.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
     val activePoints: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0)
     val regimeThreshold: Int = penaltiesService.getRegimeThreshold(penaltyDetails)
-    val removedPoints: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.inactivePenaltyPoints).getOrElse(0)
-    val addedPoints: Int = penaltyDetails.lateSubmissionPenalty.map(_.details.count(point => point.FAPIndicator.contains("X") && point.penaltyStatus.equals(LSPPenaltyStatusEnum.Active))).getOrElse(0)
-    val amountOfLateSubmissions: Int = penaltyDetails.lateSubmissionPenalty.map(_.details.count(_.lateSubmissions.flatMap(_.headOption.map(_.taxReturnStatus.equals(TaxReturnStatusEnum.Open))).isDefined)).getOrElse(0)
+    val removedPoints: Int = filteredPoints.count(_.expiryReason.nonEmpty)
+    val addedPoints: Int = filteredPoints.count(point => point.FAPIndicator.contains("X") && point.penaltyStatus.equals(LSPPenaltyStatusEnum.Active))
+    val amountOfLateSubmissions: Int = filteredPoints.count(_.lateSubmissions.flatMap(_.headOption.map(_.taxReturnStatus.equals(TaxReturnStatusEnum.Open))).isDefined)
     (activePoints, regimeThreshold, addedPoints, removedPoints) match {
       case (0, _, _, _) =>
         Future(Right(p(content = stringAsHtml(messages("lsp.pointSummary.noActivePoints")))))
@@ -111,7 +112,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           bullets(
             Seq(
               getPluralOrSingular(
-                if (showRemovedPointsMessage(removedPoints, penaltyDetails)) amountOfLateSubmissions - removedPoints else amountOfLateSubmissions
+                amountOfLateSubmissions
               )("lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.singular",
                 "lsp.pointSummary.penaltyPoints.adjusted.vatReturnsLate.plural"),
                 getPluralOrSingular(removedPoints)("lsp.pointSummary.penaltyPoints.adjusted.removedPoints.singular",
@@ -262,23 +263,18 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       ExpiryReasonEnum.SubmissionOnTime,
       ExpiryReasonEnum.Compliance
     )
-    points.filterNot(point => point.expiryReason.exists(expiredReasonsToFilterOut.contains(_)))
+    filterNAT(points.filterNot(point => point.expiryReason.exists(expiredReasonsToFilterOut.contains(_))))
+  }
+
+  private def filterNAT(points: Seq[LSPDetails]): Seq[LSPDetails] = {
+    points.filterNot(
+      penalty => penalty.penaltyCategory.equals(LSPPenaltyCategoryEnum.Point) &&
+        penalty.penaltyStatus.equals(LSPPenaltyStatusEnum.Inactive) &&
+        penalty.FAPIndicator.isEmpty &&
+        !penalty.lateSubmissions.exists(_.exists(_.returnReceiptDate.exists(_.plusMonths(24)isAfter (LocalDate.now())))))
   }
 
   def sortPointsInDescendingOrder(points: Seq[LSPDetails]): Seq[LSPDetails] = {
     points.sortWith((thisElement, nextElement) => thisElement.penaltyOrder.toInt > nextElement.penaltyOrder.toInt)
-  }
-
-  def showRemovedPointsMessage(inactivePenaltyPoints: Int, penaltyDetails: GetPenaltyDetails): Boolean = {
-    val nltCount = penaltyDetails.lateSubmissionPenalty.map(_.details.exists(
-      penalty => penalty.expiryReason.exists(_.equals(ExpiryReasonEnum.SubmissionOnTime))
-    )).size
-    val natCount = penaltyDetails.lateSubmissionPenalty.map(_.details.filter(
-      penalty => penalty.penaltyCategory.equals(LSPPenaltyCategoryEnum.Point) &&
-        penalty.penaltyStatus.equals(LSPPenaltyStatusEnum.Inactive) &&
-        penalty.FAPIndicator.isEmpty
-    )).get.map(_.lateSubmissions.get.map(_.returnReceiptDate))
-      .flatMap(_.map(_.get.plusMonths(24).isAfter(LocalDate.now()))).size
-    !((nltCount + natCount) == inactivePenaltyPoints)
   }
 }
