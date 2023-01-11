@@ -200,8 +200,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
 
   def getGuidanceLink(implicit messages: Messages): HtmlFormat.Appendable = p(
     content = link(
-      //TODO: change this to external guidance link
-      link = "#",
+      link = appConfig.lspGuidanceLink,
       messageKey = messages("index.guidance.link"),
       id = Some("guidance-link"),
       isExternal = true),

@@ -47,35 +47,36 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
   val warningTextInjector: warningText = injector.instanceOf[views.html.components.warningText]
   implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
   val mockAppConfig: AppConfig = mock(classOf[AppConfig])
-  val pageHelper: IndexPageHelper = new IndexPageHelper(pInjector, strongInjector, bulletsInjector, linkInjector,
-    warningTextInjector, penaltiesService, mockComplianceService, errorHandler)(mockAppConfig)
 
-  class Setup {
+  class Setup(useRealAppConfig: Boolean = false) {
     reset(mockAppConfig)
+    val appConfigToUse: AppConfig = if (useRealAppConfig) appConfig else mockAppConfig
     when(mockAppConfig.penaltyChargeAmount).thenReturn("200")
     when(mockComplianceService.getDESComplianceData(any())(any(), any(), any(), any())).thenReturn(Future.successful(Some(sampleCompliancePayload)))
+    val pageHelper: IndexPageHelper = new IndexPageHelper(pInjector, strongInjector, bulletsInjector, linkInjector,
+      warningTextInjector, penaltiesService, mockComplianceService, errorHandler)(appConfigToUse)
   }
 
   "getPluralOrSingularContentForOverview" should {
     "show the singular wording" when {
-      "there is only one current point" in {
+      "there is only one current point" in new Setup {
         val result = pageHelper.getPluralOrSingularContentForOverview(1, 1)(implicitly, vatTraderUser)
         result.body shouldBe singularOverviewText
       }
 
-      "user is agent - there is only one current point" in {
+      "user is agent - there is only one current point" in new Setup {
         val result = pageHelper.getPluralOrSingularContentForOverview(1, 1)(implicitly, agentUser)
         result.body shouldBe singularAgentOverviewText
       }
     }
 
     "show the plural wording" when {
-      "there is more than one current point" in {
+      "there is more than one current point" in new Setup {
         val result = pageHelper.getPluralOrSingularContentForOverview(2, 2)(implicitly, vatTraderUser)
         result.body shouldBe pluralOverviewText
       }
 
-      "user is agent - there is more than one current point" in {
+      "user is agent - there is more than one current point" in new Setup {
         val result = pageHelper.getPluralOrSingularContentForOverview(2, 2)(implicitly, agentUser)
         result.body shouldBe pluralAgentOverviewText
       }
@@ -84,24 +85,24 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
 
   "getPluralOrSingular" should {
     "show the singular wording" when {
-      "there is only one total passed in" in {
+      "there is only one total passed in" in new Setup {
         val result = pageHelper.getPluralOrSingular(1)("this.is.a.message.singular", "this.is.a.message.plural")(implicitly, vatTraderUser)
         result.body shouldBe "this.is.a.message.singular"
       }
 
-      "user is agent - there is only one total passed in" in {
+      "user is agent - there is only one total passed in" in new Setup {
         val result = pageHelper.getPluralOrSingular(1)("this.is.a.message.singular", "this.is.a.message.plural")(implicitly, agentUser)
         result.body shouldBe "agent.this.is.a.message.singular"
       }
     }
 
     "show the plural wording" when {
-      "there is more than one total passed in" in {
+      "there is more than one total passed in" in new Setup {
         val result = pageHelper.getPluralOrSingular(2)("this.is.a.message.singular", "this.is.a.message.plural")(implicitly, vatTraderUser)
         result.body shouldBe "this.is.a.message.plural"
       }
 
-      "user is agent - there is only one total passed in" in {
+      "user is agent - there is only one total passed in" in new Setup {
         val result = pageHelper.getPluralOrSingular(2)("this.is.a.message.singular", "this.is.a.message.plural")(implicitly, agentUser)
         result.body shouldBe "agent.this.is.a.message.plural"
       }
@@ -109,7 +110,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
   }
 
   "renderPointsTotal" should {
-    "show the text 'Penalty points total' and have the total amount in a span (with a bold class name)" in {
+    "show the text 'Penalty points total' and have the total amount in a span (with a bold class name)" in new Setup {
       val result = pageHelper.renderPointsTotal(1)
       val parsedHtmlResult = Jsoup.parse(result.body)
       parsedHtmlResult.select("p.govuk-body").text().contains(penaltyPointsTotal) shouldBe true
@@ -117,7 +118,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
       parsedHtmlResult.select("span").hasClass("govuk-!-font-weight-bold") shouldBe true
     }
 
-    "the p class should have a larger font i.e. 27pt" in {
+    "the p class should have a larger font i.e. 27pt" in new Setup {
       val result = pageHelper.renderPointsTotal(1)
       val parsedHtmlResult = Jsoup.parse(result.body)
       parsedHtmlResult.select("p").hasClass("govuk-!-font-size-27") shouldBe true
@@ -125,12 +126,12 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
   }
 
   "getGuidanceLink" should {
-    "show the text 'Read the guidance about late submission penalties (opens in a new tab)' and have a link to external guidance which opens in a new tab" in {
+    "show the text 'Read the guidance about late submission penalties (opens in a new tab)' and have a" +
+      " link to external guidance which opens in a new tab" in new Setup(useRealAppConfig = true) {
       val result = pageHelper.getGuidanceLink
       val parsedHtmlResult = Jsoup.parse(result.body)
       parsedHtmlResult.select("#guidance-link").text shouldBe externalGuidanceLinkText
-      //TODO: change this when we have a GOV.UK guidance page
-      parsedHtmlResult.select("#guidance-link").attr("href") shouldBe "#"
+      parsedHtmlResult.select("#guidance-link").attr("href") shouldBe appConfig.lspGuidanceLink
       parsedHtmlResult.select("#guidance-link").attr("target") shouldBe "_blank"
     }
   }
@@ -392,7 +393,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
     )
 
     "no active penalty points" should {
-      "display a message in a <p> tag" in {
+      "display a message in a <p> tag" in new Setup {
         val penaltyDetailsWithNoActivePoints: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = None,
           lateSubmissionPenalty = Some(
@@ -416,49 +417,49 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
     }
 
     "points are below threshold and less than warning level" should {
-      "show the summary of penalty points" in {
+      "show the summary of penalty points" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith2ActivePoints)(implicitly, vatTraderUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
         parsedHtmlResult.select("p.govuk-body").get(1).text() shouldBe multiActivePenaltyPoints(2, 2)
       }
 
-      "user is agent - show the summary of penalty points" in {
+      "user is agent - show the summary of penalty points" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith2ActivePoints)(implicitly, agentUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
         parsedHtmlResult.select("p.govuk-body").get(1).text() shouldBe multiAgentActivePenaltyPoints(2, 2)
       }
 
-      "show the singular wording when there is only one penalty point" in {
+      "show the singular wording when there is only one penalty point" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePoint)(implicitly, vatTraderUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
         parsedHtmlResult.select("p.govuk-body").get(1).text() shouldBe singularOverviewText
       }
 
-      "user is agent - show the singular wording when there is only one penalty point" in {
+      "user is agent - show the singular wording when there is only one penalty point" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePoint)(implicitly, agentUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
         parsedHtmlResult.select("p.govuk-body").get(1).text() shouldBe singularAgentOverviewText
       }
 
-      "show the plural wording when there is multiple penalty points" in {
+      "show the plural wording when there is multiple penalty points" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith2ActivePoints)(implicitly, vatTraderUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
         parsedHtmlResult.select("p.govuk-body").get(1).text() shouldBe multiActivePenaltyPoints(2, 2)
       }
 
-      "user is agent - show the plural wording when there is multiple penalty points" in {
+      "user is agent - show the plural wording when there is multiple penalty points" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith2ActivePoints)(implicitly, agentUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
         parsedHtmlResult.select("p.govuk-body").get(1).text() shouldBe multiAgentActivePenaltyPoints(2, 2)
       }
 
-      "show what happens when next submission is late" in {
+      "show what happens when next submission is late" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePoint)(implicitly, vatTraderUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
         parsedHtmlResult.select("p.govuk-body").get(2).text() shouldBe whatHappensWhenNextSubmissionIsLate
       }
 
-      "user is agent - show what happens when next submission is late" in {
+      "user is agent - show what happens when next submission is late" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePoint)(implicitly, agentUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
         parsedHtmlResult.select("p.govuk-body").get(2).text() shouldBe whatHappensWhenNextSubmissionIsLateForAgent
@@ -478,13 +479,13 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
     }
 
     "points are at warning level (1 below threshold)" should {
-      "show the summary of penalty points" in {
+      "show the summary of penalty points" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePointAnnual)(implicitly, vatTraderUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
         parsedHtmlResult.select("p.govuk-body").get(1).text() shouldBe singularOverviewText
       }
 
-      "user is agent - show the summary of penalty points" in {
+      "user is agent - show the summary of penalty points" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePointAnnual)(implicitly, agentUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
         parsedHtmlResult.select("p.govuk-body").get(1).text() shouldBe singularAgentOverviewText
@@ -502,13 +503,13 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         parsedHtmlResult.select("strong").text() shouldBe warningTextAgent
       }
 
-      "show a summary of amount of points accrued and returns submitted late" in {
+      "show a summary of amount of points accrued and returns submitted late" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith3ActivePoints)(implicitly, vatTraderUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
         parsedHtmlResult.select("p.govuk-body").get(1).text() shouldBe multiActivePenaltyPoints(3, 3)
       }
 
-      "user is agent - show a summary of amount of points accrued and returns submitted late" in {
+      "user is agent - show a summary of amount of points accrued and returns submitted late" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith3ActivePoints)(implicitly, agentUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
         parsedHtmlResult.select("p.govuk-body").get(1).text() shouldBe multiAgentActivePenaltyPoints(3, 3)
@@ -638,49 +639,29 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         latePaymentPenalty = None
       )
 
-
-      lazy val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith4ActivePoints)(implicitly,
-        vatTraderUser, hc, implicitly))
-      lazy val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
-      lazy val resultForAgent = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith4ActivePoints)(implicitly,
-        agentUser, hc, implicitly))
-      lazy val parsedHtmlResultForAgent = Jsoup.parse(contentAsString(resultForAgent.getOrElse(Html(""))))
-
-      "show the financial penalty threshold reached text" in new Setup {
+      "show the correct content" in new Setup {
+        lazy val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith4ActivePoints)(implicitly,
+          vatTraderUser, hc, implicitly))
+        lazy val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
         parsedHtmlResult.select("p.govuk-body").get(0).text shouldBe thresholdReached
         parsedHtmlResult.select("p.govuk-body").get(0).hasClass("govuk-body govuk-!-font-size-24") shouldBe true
-      }
-
-      "user is agent - show the financial penalty threshold reached text" in new Setup {
-        parsedHtmlResultForAgent.select("p.govuk-body").get(0).text shouldBe thresholdReachedAgent
-        parsedHtmlResultForAgent.select("p.govuk-body").get(0).hasClass("govuk-body govuk-!-font-size-24") shouldBe true
-      }
-
-      "show the penalty amount until account is updated text" in {
         verify(mockAppConfig, times(1)).penaltyChargeAmount
         parsedHtmlResult.select("p.govuk-body").get(1).text shouldBe lateReturnPenalty
-      }
-
-      "user is agent - show the penalty amount until account is updated text" in {
-        parsedHtmlResultForAgent.select("p.govuk-body").get(1).text shouldBe lateReturnPenaltyAgent
-      }
-
-      "show the guidance link text" in {
         parsedHtmlResult.select("a.govuk-link").text shouldBe bringAccountUpToDate
         parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe controllers.routes.ComplianceController.onPageLoad.url
-      }
-
-      "show the LSP OnThreshold message with POCAchievementDate text" in {
         parsedHtmlResult.select("p.govuk-body").get(2).text shouldBe lspOnThresholdMessage
         parsedHtmlResult.select("p.govuk-body strong").text shouldBe "January 2022"
       }
 
-      "user is agent - show the guidance link text" in {
+      "show the correct content for agent" in new Setup {
+        lazy val resultForAgent = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith4ActivePoints)(implicitly,
+          agentUser, hc, implicitly))
+        lazy val parsedHtmlResultForAgent = Jsoup.parse(contentAsString(resultForAgent.getOrElse(Html(""))))
+        parsedHtmlResultForAgent.select("p.govuk-body").get(0).text shouldBe thresholdReachedAgent
+        parsedHtmlResultForAgent.select("p.govuk-body").get(0).hasClass("govuk-body govuk-!-font-size-24") shouldBe true
+        parsedHtmlResultForAgent.select("p.govuk-body").get(1).text shouldBe lateReturnPenaltyAgent
         parsedHtmlResultForAgent.select("a.govuk-link").text shouldBe bringAccountUpToDateAgent
         parsedHtmlResultForAgent.select("a.govuk-link").attr("href") shouldBe controllers.routes.ComplianceController.onPageLoad.url
-      }
-
-      "user is agent - show the LSP OnThreshold message with POCAchievementDate text" in {
         parsedHtmlResultForAgent.select("p.govuk-body").get(2).text shouldBe lspOnThresholdMessageAgent
         parsedHtmlResultForAgent.select("p.govuk-body strong").text shouldBe "January 2022"
       }
@@ -714,7 +695,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           .thenReturn(Future.successful(None))
         val result: Either[Result, Html] = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith4ActivePoints)(implicitly,
           vatTraderUser, hc, implicitly))
-        for(left <- result.left) yield left.header.status shouldBe INTERNAL_SERVER_ERROR
+        for (left <- result.left) yield left.header.status shouldBe INTERNAL_SERVER_ERROR
       }
     }
 
@@ -865,7 +846,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         latePaymentPenalty = None
       )
 
-      "show the total of ALL POINTS (i.e. lateSubmissions + adjustmentPointsTotal)" in {
+      "show the total of ALL POINTS (i.e. lateSubmissions + adjustmentPointsTotal)" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithAddedPoints)(
           implicitly, vatTraderUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
@@ -874,7 +855,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         parsedHtmlResult.select("ul li").get(1).text() shouldBe "we added 1 point and sent you a letter explaining why"
       }
 
-      "user is agent - show the total of ALL POINTS (i.e. lateSubmissions + adjustmentPointsTotal)" in {
+      "user is agent - show the total of ALL POINTS (i.e. lateSubmissions + adjustmentPointsTotal)" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithAddedPoints)(
           implicitly, agentUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
@@ -883,7 +864,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         parsedHtmlResult.select("ul li").get(1).text() shouldBe "we added 1 point and sent them a letter explaining why"
       }
 
-      "all points are 1 below the threshold - show some warning text" in {
+      "all points are 1 below the threshold - show some warning text" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithAddedPointsAtPenultimate)(
           implicitly, vatTraderUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
@@ -893,7 +874,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         parsedHtmlResult.select("ul li").get(1).text() shouldBe "we added 1 point and sent you a letter explaining why"
       }
 
-      "user is agent - all points are 1 below the threshold - show some warning text" in {
+      "user is agent - all points are 1 below the threshold - show some warning text" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithAddedPointsAtPenultimate)(
           implicitly, agentUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
@@ -1123,7 +1104,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         latePaymentPenalty = None
       )
 
-      "show the total of ALL POINTS (i.e. lateSubmissions - adjustmentPointsTotal)" in {
+      "show the total of ALL POINTS (i.e. lateSubmissions - adjustmentPointsTotal)" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithRemovedPoints)(
           implicitly, vatTraderUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
@@ -1132,7 +1113,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         parsedHtmlResult.select("ul li").get(1).text() shouldBe "we removed 2 points and sent you a letter explaining why"
       }
 
-      "user is agent - show the total of ALL POINTS (i.e. lateSubmissions - adjustmentPointsTotal)" in {
+      "user is agent - show the total of ALL POINTS (i.e. lateSubmissions - adjustmentPointsTotal)" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithRemovedPoints)(
           implicitly, agentUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
@@ -1141,7 +1122,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         parsedHtmlResult.select("ul li").get(1).text() shouldBe "we removed 2 points and sent them a letter explaining why"
       }
 
-      "all points are 1 below the threshold - show some warning text" in {
+      "all points are 1 below the threshold - show some warning text" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithRemovedPointsAtPenultimate)(
           implicitly, vatTraderUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
@@ -1151,7 +1132,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         parsedHtmlResult.select("ul li").get(1).text() shouldBe "we removed 1 point and sent you a letter explaining why"
       }
 
-      "user is agent - all points are 1 below the threshold - show some warning text" in {
+      "user is agent - all points are 1 below the threshold - show some warning text" in new Setup {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithRemovedPointsAtPenultimate)(
           implicitly, agentUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
@@ -1165,7 +1146,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
 
   "getContentBasedOnLatePaymentPenaltiesFromModel" should {
     "no active payment penalties" should {
-      "display a message in a <p> tag" in {
+      "display a message in a <p> tag" in new Setup {
         val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = None,
           lateSubmissionPenalty = None,
@@ -1221,7 +1202,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           )
         )
       )
-      "user has outstanding vat to pay" in {
+      "user has outstanding vat to pay" in new Setup {
         val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetailsUnpaidVAT)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
         parsedHtmlResult.select("p.govuk-body").get(0).text shouldBe unpaidVATText
@@ -1230,7 +1211,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe "#"
       }
 
-      "client has outstanding vat to pay" in {
+      "client has outstanding vat to pay" in new Setup {
         val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetailsUnpaidVAT)(implicitly, agentUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
         parsedHtmlResult.select("p.govuk-body").get(0).text shouldBe agentClientUnpaidVATText
@@ -1245,7 +1226,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
   "getWhatYouOweBreakdownV2" should {
 
     "return None" when {
-      "the user has no outstanding items" in {
+      "the user has no outstanding items" in new Setup {
         val penaltyDetailsWithNoOutstandingPayments: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = None, lateSubmissionPenalty = None, latePaymentPenalty = None
         )
@@ -1255,7 +1236,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
     }
 
     "return Some" when {
-      "the user has outstanding VAT to pay" in {
+      "the user has outstanding VAT to pay" in new Setup {
         val penaltyDetailsWithOutstandingVAT: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = Some(
             Totalisations(
@@ -1274,7 +1255,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         result.get.body.contains("unpaid VAT charges") shouldBe true
       }
 
-      "the user has outstanding interest to pay" in {
+      "the user has outstanding interest to pay" in new Setup {
         val penaltyDetailsWithOutstandingVAT: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = Some(
             Totalisations(
@@ -1322,7 +1303,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         )
       )
 
-      "the user has 1 unpaid (and not successfully appealed) LPP" in {
+      "the user has 1 unpaid (and not successfully appealed) LPP" in new Setup {
         val penaltyDetailsWithUnpaidLPP: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = None, lateSubmissionPenalty = None,
           latePaymentPenalty = Some(LatePaymentPenalty(
@@ -1334,7 +1315,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         result.get.body.contains("a late payment penalty") shouldBe true
       }
 
-      "the user has > 1 unpaid (and not successfully appealed) LPPs" in {
+      "the user has > 1 unpaid (and not successfully appealed) LPPs" in new Setup {
         val penaltyDetailsWithUnpaidLPPs: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = None, lateSubmissionPenalty = None,
           latePaymentPenalty = Some(LatePaymentPenalty(
@@ -1378,7 +1359,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         penaltyChargeAmount = 200,
         PoCAchievementDate = LocalDate.of(2022, 1, 1))
 
-      "the user has 1 unpaid (and not successfully appealed) LSP" in {
+      "the user has 1 unpaid (and not successfully appealed) LSP" in new Setup {
         val penaltyDetailsWithUnpaidLSP: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = None,
           lateSubmissionPenalty = Some(LateSubmissionPenalty(
@@ -1390,7 +1371,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         result.get.body.contains("a late submission penalty") shouldBe true
       }
 
-      "the user has > 1 unpaid (and not successfully appealed) LSP" in {
+      "the user has > 1 unpaid (and not successfully appealed) LSP" in new Setup {
         val penaltyDetailsWithUnpaidLSP: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = None,
           lateSubmissionPenalty = Some(LateSubmissionPenalty(
@@ -1402,7 +1383,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         result.get.body.contains("late submission penalties") shouldBe true
       }
 
-      "the user has 1 LSP" in {
+      "the user has 1 LSP" in new Setup {
         val penaltyDetailsWith1LSP: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = None,
           latePaymentPenalty = None,
@@ -1424,7 +1405,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         result.get.body.contains("1 late submission penalty point") shouldBe true
       }
 
-      "the user has > 1 LSP (but less than threshold)" in {
+      "the user has > 1 LSP (but less than threshold)" in new Setup {
         val penaltyDetailsWith2LSPs: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = None,
           latePaymentPenalty = None,
@@ -1446,7 +1427,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         result.get.body.contains("2 late submission penalty points") shouldBe true
       }
 
-      "the user has reached the threshold" in {
+      "the user has reached the threshold" in new Setup {
         val penaltyDetailsWith2LSPs: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = None,
           latePaymentPenalty = None,
@@ -1500,7 +1481,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         result shouldBe true
       }
 
-      "a TTP is active and ends in the future" in {
+      "a TTP is active and ends in the future" in new Setup {
         val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = None,
           latePaymentPenalty = Some(
@@ -1528,7 +1509,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         result shouldBe true
       }
 
-      "a TTP has been applied in the past but also has a TTP active now" in {
+      "a TTP has been applied in the past but also has a TTP active now" in new Setup {
         val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = None,
           latePaymentPenalty = Some(
@@ -1562,7 +1543,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
     }
 
     "return false" when {
-      "no TTP field is present" in {
+      "no TTP field is present" in new Setup {
         val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = None,
           latePaymentPenalty = Some(
@@ -1582,7 +1563,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         result shouldBe false
       }
 
-      "a TTP was active but has since expired" in {
+      "a TTP was active but has since expired" in new Setup {
         val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = None,
           latePaymentPenalty = Some(
@@ -1610,7 +1591,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         result shouldBe false
       }
 
-      "a TTP is going to be active but start date is in the future" in {
+      "a TTP is going to be active but start date is in the future" in new Setup {
         val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = None,
           latePaymentPenalty = Some(
@@ -1745,6 +1726,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           chargeDueDate = None
         )
       )
+
       pageHelper.filteredExpiredPoints(penaltyDetailsWithReason(ExpiryReasonEnum.Adjustment)) shouldBe expectedResult(ExpiryReasonEnum.Adjustment)
       pageHelper.filteredExpiredPoints(penaltyDetailsWithReason(ExpiryReasonEnum.Appeal)) shouldBe expectedResult(ExpiryReasonEnum.Appeal)
       pageHelper.filteredExpiredPoints(penaltyDetailsWithReason(ExpiryReasonEnum.Manual)) shouldBe expectedResult(ExpiryReasonEnum.Manual)
@@ -1794,7 +1776,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
   }
 
   "sortPointsInDescendingOrder" should {
-    "sort penalty points in descending order" in {
+    "sort penalty points in descending order" in new Setup {
       val penaltiesOutOfOrder: Seq[LSPDetails] = Seq(
         LSPDetails(
           penaltyNumber = "12345678",
