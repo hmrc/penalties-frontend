@@ -77,6 +77,8 @@ class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesCon
   def isFeatureSwitchEnabled(featureSwitch: FeatureSwitch): Boolean = config.get[Boolean](featureSwitch.name)
 
   lazy val penaltyChargeAmount: String = config.get[String]("penaltyChargeAmount")
+
+  lazy val adjustmentLink: String = config.get[String]("urls.adjustmentUrl")
 }
 
 

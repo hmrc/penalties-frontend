@@ -607,8 +607,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
 
       "display a link to allow the user to find information about adjusted points" in {
         doc.select("a").text() shouldBe "Read the guidance about adjustment points (opens in a new tab)"
-        //TODO: change this once we have the adjustment point info page
-        doc.select("a").attr("href") shouldBe "#"
+        doc.select("a").attr("href") shouldBe appConfig.adjustmentLink
       }
 
       "display the 'active' status for an added point" in {
@@ -638,8 +637,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
 
       "display a link to allow the user to find information about adjusted points" in {
         doc.select("a").text() shouldBe "Read the guidance about adjustment points (opens in a new tab)"
-        //TODO: change this once we have the adjustment point info page
-        doc.select("a").attr("href") shouldBe "#"
+        doc.select("a").attr("href") shouldBe appConfig.adjustmentLink
       }
 
       "display the 'active' status for an added point" in {

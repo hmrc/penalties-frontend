@@ -27,7 +27,7 @@
 
 @(
         summaryCard: LateSubmissionPenaltySummaryCard
-)(implicit messages: Messages)
+)(implicit messages: Messages, appConfig: AppConfig)
 
 @ariaLabelText = @{
   if(summaryCard.isFinancialPoint && summaryCard.dueDate.isDefined) {
@@ -72,9 +72,8 @@
         @if(summaryCard.isAdjustedPoint) {
             <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-3">
             <p class="govuk-body">
-                @* TODO: change this to adjustment points link *@
                 @link(
-                    link = "#",
+                    link = appConfig.adjustmentLink,
                     messageKey = messages("summaryCard.infoOnAdjustmentPointsLinkText"),
                     isExternal = true
                 )

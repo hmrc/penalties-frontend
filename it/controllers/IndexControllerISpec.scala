@@ -741,8 +741,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("dt").get(1).text() shouldBe "Point due to expire"
       summaryCardBody.select("dd").get(1).text() shouldBe "February 2023"
       summaryCardBody.select("p.govuk-body a").text() shouldBe "Read the guidance about adjustment points (opens in a new tab)"
-      //TODO: Change to external guidance when available
-      summaryCardBody.select("p.govuk-body a").attr("href") shouldBe "#"
+      summaryCardBody.select("p.govuk-body a").attr("href") shouldBe appConfig.adjustmentLink
       parsedBody.select(".app-summary-card footer div").text shouldBe "You cannot appeal this point"
     }
 
@@ -761,8 +760,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("dt").get(1).text() shouldBe "Reason"
       summaryCardBody.select("dd").get(1).text() shouldBe "Change to VAT return deadlines"
       summaryCardBody.select("p.govuk-body a").get(0).text() shouldBe "Read the guidance about adjustment points (opens in a new tab)"
-      //TODO: Change to external guidance when available
-      summaryCardBody.select("p.govuk-body a").attr("href") shouldBe "#"
+      summaryCardBody.select("p.govuk-body a").attr("href") shouldBe appConfig.adjustmentLink
       parsedBody.select(".app-summary-card footer div").text shouldBe ""
       parsedBody.select(".app-summary-card footer a").text shouldBe ""
     }
@@ -920,8 +918,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         summaryCardBody.select("dt").get(1).text() shouldBe "Point due to expire"
         summaryCardBody.select("dd").get(1).text() shouldBe "February 2023"
         summaryCardBody.select("p.govuk-body a").text() shouldBe "Read the guidance about adjustment points (opens in a new tab)"
-        //TODO: Change to external guidance when available
-        summaryCardBody.select("p.govuk-body a").attr("href") shouldBe "#"
+        summaryCardBody.select("p.govuk-body a").attr("href") shouldBe appConfig.adjustmentLink
         parsedBody.select(".app-summary-card footer div").text shouldBe "You cannot appeal this point"
       }
 
@@ -941,8 +938,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         summaryCardBody.select("dt").get(1).text() shouldBe "Reason"
         summaryCardBody.select("dd").get(1).text() shouldBe "Change to VAT return deadlines"
         summaryCardBody.select("p.govuk-body a").get(0).text() shouldBe "Read the guidance about adjustment points (opens in a new tab)"
-        //TODO: Change to external guidance when available
-        summaryCardBody.select("p.govuk-body a").attr("href") shouldBe "#"
+        summaryCardBody.select("p.govuk-body a").attr("href") shouldBe appConfig.adjustmentLink
         parsedBody.select(".app-summary-card footer div").text shouldBe ""
         parsedBody.select(".app-summary-card footer a").text shouldBe ""
       }
