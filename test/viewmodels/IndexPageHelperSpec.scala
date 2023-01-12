@@ -126,16 +126,24 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
   }
 
   "getGuidanceLink" should {
-    "show the text 'Read the guidance about late submission penalties (opens in a new tab)' and have a" +
-      " link to external guidance which opens in a new tab" in new Setup(useRealAppConfig = true) {
-      val result = pageHelper.getGuidanceLink
+    "show the text 'Find out how late payment penalties are calculated (opens in a new tab)' and have a" +
+      " link to external guidance which opens in a new tab for LPP guidance" in new Setup(useRealAppConfig = true) {
+      val result = pageHelper.getGuidanceLink(appConfig.lppCalculationGuidanceLink, messages("lpp.penaltiesSummary.howLppCalculated.link"))
       val parsedHtmlResult = Jsoup.parse(result.body)
-      parsedHtmlResult.select("#guidance-link").text shouldBe externalGuidanceLinkText
-      parsedHtmlResult.select("#guidance-link").attr("href") shouldBe appConfig.lspGuidanceLink
-      parsedHtmlResult.select("#guidance-link").attr("target") shouldBe "_blank"
+      parsedHtmlResult.select("a").text shouldBe externalLPPGuidanceLinkText
+      parsedHtmlResult.select("a").attr("href") shouldBe appConfig.lppCalculationGuidanceLink
+      parsedHtmlResult.select("a").attr("target") shouldBe "_blank"
+    }
+
+    "show the text 'Read the guidance about late submission penalties (opens in a new tab)' and have a" +
+      " link to external guidance which opens in a new tab for LSP guidance" in new Setup(useRealAppConfig = true) {
+      val result = pageHelper.getGuidanceLink(appConfig.lspGuidanceLink, messages("index.guidance.link"))
+      val parsedHtmlResult = Jsoup.parse(result.body)
+      parsedHtmlResult.select("a").text shouldBe externalLSPGuidanceLinkText
+      parsedHtmlResult.select("a").attr("href") shouldBe appConfig.lspGuidanceLink
+      parsedHtmlResult.select("a").attr("target") shouldBe "_blank"
     }
   }
-
 
   "getContentBasedOnPointsFromModel" should {
     val penaltyDetailsWith3ActivePoints: GetPenaltyDetails = GetPenaltyDetails(
@@ -476,6 +484,14 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
         parsedHtmlResult.select("p.govuk-body").get(3).text() shouldBe quarterlyThresholdPlusOnePenaltyApplicationForAgent
       }
+
+      "have a link to the guidance for LSP" in new Setup(useRealAppConfig = true) {
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith1ActivePoint)(implicitly, vatTraderUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
+        parsedHtmlResult.select("p.govuk-body > a").text shouldBe externalLSPGuidanceLinkText
+        parsedHtmlResult.select("p.govuk-body > a").attr("href") shouldBe appConfig.lspGuidanceLink
+        parsedHtmlResult.select("p.govuk-body > a").attr("target") shouldBe "_blank"
+      }
     }
 
     "points are at warning level (1 below threshold)" should {
@@ -513,6 +529,14 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith3ActivePoints)(implicitly, agentUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
         parsedHtmlResult.select("p.govuk-body").get(1).text() shouldBe multiAgentActivePenaltyPoints(3, 3)
+      }
+
+      "have a link to the guidance for LSP" in new Setup(useRealAppConfig = true) {
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith3ActivePoints)(implicitly, vatTraderUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
+        parsedHtmlResult.select("p.govuk-body > a").text shouldBe externalLSPGuidanceLinkText
+        parsedHtmlResult.select("p.govuk-body > a").attr("href") shouldBe appConfig.lspGuidanceLink
+        parsedHtmlResult.select("p.govuk-body > a").attr("target") shouldBe "_blank"
       }
     }
 
@@ -633,7 +657,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 chargeOutstandingAmount = None,
                 chargeDueDate = None
 
-        )
+              )
             )
           )
         ),
@@ -883,6 +907,14 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         parsedHtmlResult.select("p.govuk-body").get(0).text() shouldBe "Your client has 3 penalty points. This is because:"
         parsedHtmlResult.select("ul li").get(0).text() shouldBe "they have submitted 2 VAT Returns late"
         parsedHtmlResult.select("ul li").get(1).text() shouldBe "we added 1 point and sent them a letter explaining why"
+      }
+
+      "have a link to the guidance for LSP" in new Setup(useRealAppConfig = true) {
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithAddedPoints)(implicitly, vatTraderUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
+        parsedHtmlResult.select("p.govuk-body > a").text shouldBe externalLSPGuidanceLinkText
+        parsedHtmlResult.select("p.govuk-body > a").attr("href") shouldBe appConfig.lspGuidanceLink
+        parsedHtmlResult.select("p.govuk-body > a").attr("target") shouldBe "_blank"
       }
     }
 
@@ -1142,6 +1174,14 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         parsedHtmlResult.select("ul li").get(0).text() shouldBe "they have submitted 4 VAT Returns late"
         parsedHtmlResult.select("ul li").get(1).text() shouldBe "we removed 1 point and sent them a letter explaining why"
       }
+
+      "have a link to the guidance for LSP" in new Setup(useRealAppConfig = true) {
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithRemovedPoints)(implicitly, vatTraderUser, hc, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
+        parsedHtmlResult.select("p.govuk-body > a").text shouldBe externalLSPGuidanceLinkText
+        parsedHtmlResult.select("p.govuk-body > a").attr("href") shouldBe appConfig.lspGuidanceLink
+        parsedHtmlResult.select("p.govuk-body > a").attr("target") shouldBe "_blank"
+      }
     }
   }
 
@@ -1215,6 +1255,56 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetailsUnpaidVAT)(implicitly, agentUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
         parsedHtmlResult.select("p.govuk-body").get(0).text shouldBe agentClientUnpaidVATText
+        parsedHtmlResult.select("a.govuk-link").text shouldBe howLppCalculatedLinkText
+        parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe "https://www.gov.uk/guidance/how-late-payment-penalties-work-if-you-pay-vat-late"
+      }
+    }
+
+    "display just the LPP guidance link" when {
+      val penaltyDetailsPaidVAT: GetPenaltyDetails = GetPenaltyDetails(
+        totalisations = None,
+        lateSubmissionPenalty = None,
+        latePaymentPenalty = Some(
+          LatePaymentPenalty(
+            details = Seq(
+              LPPDetails(
+                principalChargeReference = "12345678",
+                penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
+                penaltyChargeCreationDate = Some(LocalDate.of(2022, 1, 1)),
+                penaltyStatus = LPPPenaltyStatusEnum.Posted,
+                penaltyAmountPaid = Some(0),
+                penaltyAmountOutstanding = Some(144.21),
+                LPP1LRDays = None,
+                LPP1HRDays = None,
+                LPP2Days = None,
+                LPP1LRCalculationAmount = None,
+                LPP1HRCalculationAmount = None,
+                LPP1LRPercentage = None,
+                LPP1HRPercentage = None,
+                LPP2Percentage = None,
+                communicationsDate = Some(LocalDate.of(2022, 1, 1)),
+                penaltyChargeDueDate = Some(LocalDate.of(2022, 1, 1)),
+                appealInformation = None,
+                principalChargeBillingFrom = LocalDate.of(2022, 1, 1),
+                principalChargeBillingTo = LocalDate.of(2022, 1, 1),
+                principalChargeDueDate = LocalDate.of(2022, 1, 1),
+                principalChargeLatestClearing = Some(LocalDate.of(2022, 1, 1)),
+                penaltyChargeReference = Some("PEN1234567"),
+                LPPDetailsMetadata = LPPDetailsMetadata(
+                  mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+                  outstandingAmount = Some(99),
+                  timeToPay = None
+                )
+              )
+            )
+          )
+        )
+      )
+      "the user has paid their LPP's" in new Setup(useRealAppConfig = true) {
+        val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetailsPaidVAT)(implicitly, vatTraderUser)
+        val parsedHtmlResult = Jsoup.parse(result.body)
+        parsedHtmlResult.select("p.govuk-body").size() shouldBe 1 //Only contains the link
+        parsedHtmlResult.select("p.govuk-body").get(0).childrenSize() shouldBe 1 //Only contains the link
         parsedHtmlResult.select("a.govuk-link").text shouldBe howLppCalculatedLinkText
         parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe "https://www.gov.uk/guidance/how-late-payment-penalties-work-if-you-pay-vat-late"
       }

@@ -72,8 +72,7 @@ lsp.multiple.penaltyPeriod = The VAT Return due on {0} was also submitted late. 
 lpp.penaltiesSummary.noPaymentPenalties = There are no late payment penalties.
 lpp.penaltiesSummary.unpaid = The earlier you pay your VAT, the lower your penalties and interest will be.
 agent.lpp.penaltiesSummary.unpaid = The earlier your client pays their VAT, the lower their penalties and interest will be.
-lpp.penaltiesSummary.howLppCalculated.link = Find out how late payment penalties are calculated {0}
-
+lpp.penaltiesSummary.howLppCalculated.link = Find out how late payment penalties are calculated
 
 # SummaryCard
 # -------------------------------------------

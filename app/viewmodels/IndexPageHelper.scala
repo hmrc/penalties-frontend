@@ -49,6 +49,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
   def getContentBasedOnPointsFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_],
                                                                           hc: HeaderCarrier, ec: ExecutionContext): Future[Either[Result, Html]] = {
     val fixedPenaltyAmount: String = appConfig.penaltyChargeAmount
+    val lspGuidanceLink: HtmlFormat.Appendable = getGuidanceLink(appConfig.lspGuidanceLink, messages("index.guidance.link"))
     val filteredPoints = filteredExpiredPoints(penaltyDetails.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
     val activePoints: Int = penaltyDetails.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0)
     val regimeThreshold: Int = penaltiesService.getRegimeThreshold(penaltyDetails)
@@ -98,7 +99,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           p(content = stringAsHtml(
             messages("lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded", threshold, fixedPenaltyAmount)
           )),
-          getGuidanceLink
+          lspGuidanceLink
         )
         if (currentPoints == threshold - 1) {
           Future(Right(html(base.+:(warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText", fixedPenaltyAmount)))): _*)))
@@ -122,7 +123,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           p(content = stringAsHtml(
             messages("lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded", threshold, fixedPenaltyAmount)
           )),
-          getGuidanceLink
+          lspGuidanceLink
         )
         if (currentPoints == threshold - 1) {
           Future(Right(html(base.+:(warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText", fixedPenaltyAmount)))): _*)))
@@ -140,20 +141,21 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           p(content = stringAsHtml(
             getMessage("lsp.pointSummary.penaltyPoints.overview.whatHappensWhenThresholdExceeded", threshold, fixedPenaltyAmount)
           )),
-          getGuidanceLink
+          lspGuidanceLink
         )))
       case (currentPoints, threshold, _, _) if currentPoints == threshold - 1 =>
         Future(Right(html(
           renderPointsTotal(currentPoints),
           warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText", fixedPenaltyAmount))),
           p(getPluralOrSingularContentForOverview(currentPoints, amountOfLateSubmissions)),
-          getGuidanceLink
+          lspGuidanceLink
         )))
       case _ => Future(Right(p(content = html(stringAsHtml("")))))
     }
   }
 
   def getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_]): Html = {
+    val lppGuidanceLink: HtmlFormat.Appendable = getGuidanceLink(appConfig.lppCalculationGuidanceLink, messages("lpp.penaltiesSummary.howLppCalculated.link"))
     if (penaltyDetails.latePaymentPenalty.map(_.details).getOrElse(List.empty[LPPDetails]).isEmpty) {
       p(content = stringAsHtml(messages("lpp.penaltiesSummary.noPaymentPenalties")))
     } else {
@@ -165,10 +167,10 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       if (isAnyLPPNotPaidAndNotAppealed) {
         html(
           p(content = html(stringAsHtml(getMessage("lpp.penaltiesSummary.unpaid")))),
-          p(link(link = appConfig.lppCalculationGuidance, messages("lpp.penaltiesSummary.howLppCalculated.link", messages("site.opensInNewTab"))))
+          lppGuidanceLink
         )
       } else {
-        p(link(link = appConfig.lppCalculationGuidance, messages("lpp.penaltiesSummary.howLppCalculated.link", messages("site.opensInNewTab"))))
+        lppGuidanceLink
       }
     }
   }
@@ -198,12 +200,12 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     })
   }
 
-  def getGuidanceLink(implicit messages: Messages): HtmlFormat.Appendable = p(
+  def getGuidanceLink(linkDestination: String, message: String)(implicit messages: Messages): HtmlFormat.Appendable = p(
     content = link(
-      link = appConfig.lspGuidanceLink,
-      messageKey = messages("index.guidance.link"),
-      id = Some("guidance-link"),
-      isExternal = true),
+      link = linkDestination,
+      messageKey = message,
+      isExternal = true
+    ),
     classes = "govuk-body")
 
   private def callObligationAPI(vrn: String)(implicit ec: ExecutionContext, hc: HeaderCarrier, user: User[_], pocAchievementDate: Option[LocalDate]): Future[Either[Result, CompliancePayload]] = {

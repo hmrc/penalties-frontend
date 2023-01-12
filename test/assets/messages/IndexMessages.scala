@@ -41,7 +41,9 @@ object IndexMessages {
     "Check what your client owes to see all unpaid charges."
   )
 
-  val externalGuidanceLinkText = "Read the guidance about late submission penalties (opens in a new tab)"
+  val externalLSPGuidanceLinkText = "Read the guidance about late submission penalties (opens in a new tab)"
+
+  val externalLPPGuidanceLinkText = "Find out how late payment penalties are calculated (opens in a new tab)"
 
   val singularOverviewText = "You have 1 penalty point for submitting a VAT Return late."
 
