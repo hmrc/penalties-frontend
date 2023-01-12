@@ -79,6 +79,8 @@ class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesCon
   lazy val penaltyChargeAmount: String = config.get[String]("penaltyChargeAmount")
 
   lazy val adjustmentLink: String = config.get[String]("urls.adjustmentUrl")
+
+  lazy val lspGuidanceLink: String = config.get[String]("urls.lspGuidanceUrl")
 }
 
 
