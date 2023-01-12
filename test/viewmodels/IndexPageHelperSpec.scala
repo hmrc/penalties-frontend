@@ -1203,7 +1203,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           )
         )
       )
-      "user has outstanding vat to pay" in new Setup(useRealConfig = true) {
+      "user has outstanding vat to pay" in new Setup(useRealAppConfig = true) {
         val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetailsUnpaidVAT)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
         parsedHtmlResult.select("p.govuk-body").get(0).text shouldBe unpaidVATText
@@ -1211,7 +1211,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
         parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe "https://www.gov.uk/guidance/how-late-payment-penalties-work-if-you-pay-vat-late"
       }
 
-      "client has outstanding vat to pay" in new Setup(useRealConfig = true) {
+      "client has outstanding vat to pay" in new Setup(useRealAppConfig = true) {
         val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetailsUnpaidVAT)(implicitly, agentUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
         parsedHtmlResult.select("p.govuk-body").get(0).text shouldBe agentClientUnpaidVATText
