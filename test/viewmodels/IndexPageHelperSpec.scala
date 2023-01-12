@@ -632,7 +632,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
                 chargeAmount = None,
                 chargeOutstandingAmount = None,
                 chargeDueDate = None
-              )
+
+        )
             )
           )
         ),
@@ -1202,28 +1203,25 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           )
         )
       )
-      "user has outstanding vat to pay" in new Setup {
+      "user has outstanding vat to pay" in new Setup(useRealConfig = true) {
         val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetailsUnpaidVAT)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
         parsedHtmlResult.select("p.govuk-body").get(0).text shouldBe unpaidVATText
         parsedHtmlResult.select("a.govuk-link").text shouldBe howLppCalculatedLinkText
-        //TODO: change this when we have link to calculation (external guidance) page
-        parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe "#"
+        parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe "https://www.gov.uk/guidance/how-late-payment-penalties-work-if-you-pay-vat-late"
       }
 
-      "client has outstanding vat to pay" in new Setup {
+      "client has outstanding vat to pay" in new Setup(useRealConfig = true) {
         val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetailsUnpaidVAT)(implicitly, agentUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
         parsedHtmlResult.select("p.govuk-body").get(0).text shouldBe agentClientUnpaidVATText
         parsedHtmlResult.select("a.govuk-link").text shouldBe howLppCalculatedLinkText
-        //TODO: change this when we have link to calculation (external guidance) page
-        parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe "#"
+        parsedHtmlResult.select("a.govuk-link").attr("href") shouldBe "https://www.gov.uk/guidance/how-late-payment-penalties-work-if-you-pay-vat-late"
       }
     }
   }
 
-  //TODO: remove V2 suffix when new WYO complete
-  "getWhatYouOweBreakdownV2" should {
+  "getWhatYouOweBreakdown" should {
 
     "return None" when {
       "the user has no outstanding items" in new Setup {

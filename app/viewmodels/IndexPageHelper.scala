@@ -165,10 +165,10 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       if (isAnyLPPNotPaidAndNotAppealed) {
         html(
           p(content = html(stringAsHtml(getMessage("lpp.penaltiesSummary.unpaid")))),
-          p(link(link = "#", messages("lpp.penaltiesSummary.howLppCalculated.link", messages("site.opensInNewTab"))))
+          p(link(link = appConfig.lppCalculationGuidance, messages("lpp.penaltiesSummary.howLppCalculated.link", messages("site.opensInNewTab"))))
         )
       } else {
-        p(link(link = "#", messages("lpp.penaltiesSummary.howLppCalculated.link", messages("site.opensInNewTab"))))
+        p(link(link = appConfig.lppCalculationGuidance, messages("lpp.penaltiesSummary.howLppCalculated.link", messages("site.opensInNewTab"))))
       }
     }
   }

@@ -54,6 +54,8 @@ class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesCon
 
   lazy val contactFrontendServiceId: String = config.get[String]("contact-frontend.serviceId")
 
+  lazy val lppCalculationGuidance: String = config.get[String]("urls.lppCalculationGuidance")
+
   def backUrl(url: String): String =  SafeRedirectUrl(platformHost ++ url).encodedUrl
 
   def feedbackUrl(redirectUrl: String): String = s"$contactFrontendUrl?service=$contactFrontendServiceId&backUrl=${backUrl(redirectUrl)}"
