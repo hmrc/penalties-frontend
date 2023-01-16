@@ -72,8 +72,7 @@ lsp.multiple.penaltyPeriod = Roedd y Ffurflen TAW a oedd yn ddyledus ar {0} hefy
 lpp.penaltiesSummary.noPaymentPenalties = Nid oes unrhyw gosbau am dalu’n hwyr.
 lpp.penaltiesSummary.unpaid = Gorau i gyd po gyntaf y byddwch yn talu eich TAW, oherwydd y bydd hyn yn lleihau swm eich cosbau a llog.
 agent.lpp.penaltiesSummary.unpaid = Gorau i gyd po gyntaf y mae’ch cleient yn talu’i TAW, oherwydd y bydd hyn yn lleihau swm ei gosbau a llog.
-lpp.penaltiesSummary.howLppCalculated.link = Dysgwch sut y caiff cosbau am dalu’n hwyr eu cyfrifo {0}
-
+lpp.penaltiesSummary.howLppCalculated.link = Dysgwch sut y caiff cosbau am dalu’n hwyr eu cyfrifo
 
 # SummaryCard
 # -------------------------------------------

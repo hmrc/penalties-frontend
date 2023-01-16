@@ -44,8 +44,6 @@ class BaseSelectors {
 
   val tabHeadingLPP = "#late-payment-penalties > h2"
 
-  val externalGuidance = "#guidance-link"
-
   val pNthChild: Int => String = (nThChild: Int) => s"#main-content p:nth-child($nThChild)"
 
   val viewCalculation = "#late-payment-penalties > section > header > div > ul > li > a"
