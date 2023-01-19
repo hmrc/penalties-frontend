@@ -361,14 +361,14 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
 
   private def getLPPPenaltyReasonKey(mainTransactionEnum: MainTransactionEnum.Value): String = {
     mainTransactionEnum match {
-      case VATReturnFirstLPP | VATReturnSecondLPP => "summaryCard.lpp.key3.value.vat"
-      case CentralAssessmentFirstLPP | CentralAssessmentSecondLPP => "summaryCard.lpp.key3.value.centralAssessment"
-      case OfficersAssessmentFirstLPP | OfficersAssessmentSecondLPP => "summaryCard.lpp.key3.value.officersAssessment"
-      case ErrorCorrectionFirstLPP | ErrorCorrectionSecondLPP => "summaryCard.lpp.key3.value.ecn"
-      case AdditionalAssessmentFirstLPP | AdditionalAssessmentSecondLPP => "summaryCard.lpp.key3.value.additionalAssessment"
-      case ProtectiveAssessmentFirstLPP | ProtectiveAssessmentSecondLPP => "summaryCard.lpp.key3.value.protectiveAssessment"
-      case POAReturnChargeFirstLPP | POAReturnChargeSecondLPP => "summaryCard.lpp.key3.value.poaReturnCharge"
-      case AAReturnChargeFirstLPP | AAReturnChargeSecondLPP => "summaryCard.lpp.key3.value.aaReturnCharge"
+      case VATReturnFirstLPP | VATReturnSecondLPP | VATReturnCharge => "summaryCard.lpp.key3.value.vat"
+      case CentralAssessmentFirstLPP | CentralAssessmentSecondLPP | CentralAssessment => "summaryCard.lpp.key3.value.centralAssessment"
+      case OfficersAssessmentFirstLPP | OfficersAssessmentSecondLPP | OfficersAssessment => "summaryCard.lpp.key3.value.officersAssessment"
+      case ErrorCorrectionFirstLPP | ErrorCorrectionSecondLPP| ErrorCorrection => "summaryCard.lpp.key3.value.ecn"
+      case AdditionalAssessmentFirstLPP | AdditionalAssessmentSecondLPP | AdditionalAssessment => "summaryCard.lpp.key3.value.additionalAssessment"
+      case ProtectiveAssessmentFirstLPP | ProtectiveAssessmentSecondLPP | ProtectiveAssessment => "summaryCard.lpp.key3.value.protectiveAssessment"
+      case POAReturnChargeFirstLPP | POAReturnChargeSecondLPP | POAReturnCharge => "summaryCard.lpp.key3.value.poaReturnCharge"
+      case AAReturnChargeFirstLPP | AAReturnChargeSecondLPP | AAReturnCharge => "summaryCard.lpp.key3.value.aaReturnCharge"
       case _ => "summaryCard.lpp.key3.value.vat" //Should be unreachable
     }
   }

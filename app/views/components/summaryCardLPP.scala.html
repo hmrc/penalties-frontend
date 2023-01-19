@@ -55,14 +55,14 @@
 @appealContent = {
 @if(summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
     <a class="govuk-link" href=@{
-        controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyChargeReference.get, true, true, summaryCard.penaltyCategory.equals(LPP2)).url
+        controllers.routes.IndexController.redirectToAppeals(summaryCard.principalChargeReference, true, true, summaryCard.penaltyCategory.equals(LPP2)).url
     }>
     @messages("summaryCard.appealCheck")
     </a>
 } else {
     @if(!summaryCard.isVatPaid) {
         <a class="govuk-link" href=@{
-            controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyChargeReference.get, true, true, summaryCard.penaltyCategory.equals(LPP2)).url
+            controllers.routes.IndexController.redirectToAppeals(summaryCard.principalChargeReference, true, true, summaryCard.penaltyCategory.equals(LPP2)).url
         } aria-label="@{ariaLabelText}">
         @messages("summaryCard.appealCheck")
         </a>
