@@ -821,8 +821,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#what-is-owed > ul > li").get(3).text shouldBe "late submission penalties"
       parsedBody.select("#what-is-owed > ul > li").get(4).text shouldBe "2 late submission penalty points"
       parsedBody.select("#what-is-owed > a").text shouldBe "Check amounts and pay"
-      parsedBody.select("#what-is-owed > h2").get(1).text shouldBe "If you cannot pay today"
-      parsedBody.select("#main-content h2:nth-child(3)").text shouldBe "Penalty and appeal details"
+      parsedBody.select("#main-content > h2").text shouldBe "Penalty and appeal details"
     }
 
     "return 200 (OK) and render the view when there are LPPs and additional penalties paid that are retrieved from the backend" in {
@@ -1026,8 +1025,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.select("#what-is-owed > ul > li").get(3).text shouldBe "late submission penalties"
         parsedBody.select("#what-is-owed > ul > li").get(4).text shouldBe "2 late submission penalty points"
         parsedBody.select("#what-is-owed > a").text shouldBe "Check amounts"
-        parsedBody.select("#main-content .govuk-details__summary-text").text shouldBe "Payment help"
-        parsedBody.select("#main-content h2:nth-child(3)").text shouldBe "Penalty and appeal details"
+        parsedBody.select("#main-content > h2").text shouldBe "Penalty and appeal details"
       }
 
       "return 200 (OK) and add the latest lsp creation date and the penalty threshold to the session" in {

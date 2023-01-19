@@ -105,7 +105,6 @@ object IndexMessages {
   val agentCompliantBullet2 = "they have submitted on time for the last 12 months"
 
   val activeTag = "active"
-  val reinstatedTag = "reinstated"
   val cancelledTag = "cancelled"
   val overdueTag = "due"
   val overduePartiallyPaidTag: BigDecimal => String = amount => s"£$amount due"

@@ -169,12 +169,6 @@ feedback.after = yn ein helpu i’w wella.
 # What is owed messages
 # ----------------------------------------------------------
 whatIsOwed.penaltyAndAppealsHeading = Manylion y gosb a’r apêl
-whatIsOwed.details.heading = Os na allwch dalu heddiw
-agent.whatIsOwed.details.heading = Help gyda thaliad
-whatIsOwed.details.body.1 = Os na allwch dalu’r hyn sydd arnoch, mae’n bosibl y byddwch yn gallu
-agent.whatIsOwed.details.body.1 = Os na all eich cleient dalu’r hyn sydd arno, mae’n bosibl y bydd yn gallu
-whatIsOwed.details.link.1 = trefnu cynllun talu
-whatIsOwed.details.body.2 = er mwyn talu fesul rhandaliad.
 whatIsOwed.button.checkAndPay = Gwirio’r symiau a thalu
 whatIsOwed.button.checkAmounts = Gwirio’r symiau
 whatIsOwed.ttp.p1 = Mae cynllun talu wedi’i drefnu ar y cyfrif hwn.
