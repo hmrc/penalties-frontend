@@ -38,9 +38,6 @@
         isTTPActive: Boolean = false,
         whatYouOweContent: Option[Html] = None)(implicit messages: Messages, appConfig: AppConfig, user: User[_])
 
-@unableToPayTodayContent = {
-  <p class="govuk-body">@getMessage("whatIsOwed.details.body.1") @link("#", "whatIsOwed.details.link.1", isExternal = true) @messages("whatIsOwed.details.body.2")</p>
-}
 
 @layout(pageTitle = messages("index.headingAndTitle"),
   isUserAgent = user.isAgent,
@@ -56,26 +53,15 @@
       @if(!isTTPActive) {
         @whatYouOweContent.map { breakdownContent =>
           <div id="what-is-owed">
-              <h2 class="govuk-heading-l">@messages("whatIsOwed.heading")</h2>
-              <p class="govuk-body">@getMessage("whatIsOwed.p1")</p>
+            <h2 class="govuk-heading-l">@messages("whatIsOwed.heading")</h2>
+            <p class="govuk-body">@getMessage("whatIsOwed.p1")</p>
             @breakdownContent
             @if(user.isAgent) {
               @link(appConfig.whatYouOweUrl, "whatIsOwed.button.checkAmounts", button = true, classes = "govuk-button")
             } else {
               @link(appConfig.whatYouOweUrl, "whatIsOwed.button.checkAndPay", button = true, classes = "govuk-button")
             }
-
-            @if(!user.isAgent) {
-              <h2 class="govuk-heading-s">@messages("whatIsOwed.details.heading")</h2>
-              @unableToPayTodayContent
-            } else {
-              @details(Details(
-                summary = Text(getMessage("whatIsOwed.details.heading")),
-                content = HtmlContent(unableToPayTodayContent)
-              ))
-            }
           </div>
-          <h2 class="govuk-heading-l">@messages("whatIsOwed.penaltyAndAppealsHeading")</h2>
         }
       } else {
         <div id="time-to-pay">
@@ -89,6 +75,7 @@
     </div>
   </div>
 
+  <h2 class="govuk-heading-l">@messages("whatIsOwed.penaltyAndAppealsHeading")</h2>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-three-quarters">
       <div class="govuk-tabs" data-module="govuk-tabs">

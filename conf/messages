@@ -169,13 +169,6 @@ feedback.after = will help us to improve it.
 # What is owed messages
 # ----------------------------------------------------------
 whatIsOwed.penaltyAndAppealsHeading = Penalty and appeal details
-agent.whatIsOwed.p1 = Your client owes:
-whatIsOwed.details.heading = If you cannot pay today
-agent.whatIsOwed.details.heading = Payment help
-whatIsOwed.details.body.1 = If you cannot pay what you owe, you might be able to
-agent.whatIsOwed.details.body.1 = If your client cannot pay what they owe, they might be able to
-whatIsOwed.details.link.1 = set up a payment plan
-whatIsOwed.details.body.2 = to pay in instalments.
 whatIsOwed.button.checkAndPay = Check amounts and pay
 whatIsOwed.button.checkAmounts = Check amounts
 whatIsOwed.ttp.p1 = There is a payment plan set up on this account.
