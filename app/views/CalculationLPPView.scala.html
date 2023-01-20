@@ -29,13 +29,10 @@
         penaltyAmount: String,
         amountLeftToPay: String,
         calculationRowSeq: Seq[String],
-        isCalculationRowMultipleAmounts: Boolean,
         isPenaltyEstimate: Boolean,
         startDate: String,
         endDate: String,
-        dueDate: Option[String],
-        warningPenaltyAmount: String,
-        warningDate: String
+        dueDate: Option[String]
 )(implicit messages: Messages, appConfig: AppConfig, user: User[_])
 
 @layout(pageTitle = messages("calculation.headingAndTitle.lpp"),

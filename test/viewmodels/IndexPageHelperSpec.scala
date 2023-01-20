@@ -1547,7 +1547,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           latePaymentPenalty = Some(
             LatePaymentPenalty(
               Seq(
-                sampleLatePaymentPenalty.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+                sampleLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
                   mainTransaction = None,
                   outstandingAmount = None,
                   timeToPay = Some(
@@ -1575,7 +1575,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           latePaymentPenalty = Some(
             LatePaymentPenalty(
               Seq(
-                sampleLatePaymentPenalty.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+                sampleLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
                   mainTransaction = None,
                   outstandingAmount = None,
                   timeToPay = Some(
@@ -1603,7 +1603,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           latePaymentPenalty = Some(
             LatePaymentPenalty(
               Seq(
-                sampleLatePaymentPenalty.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+                sampleLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
                   mainTransaction = None,
                   outstandingAmount = None,
                   timeToPay = Some(
@@ -1637,7 +1637,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           latePaymentPenalty = Some(
             LatePaymentPenalty(
               Seq(
-                sampleLatePaymentPenalty.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+                sampleLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
                   mainTransaction = None,
                   outstandingAmount = None,
                   timeToPay = None
@@ -1657,7 +1657,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           latePaymentPenalty = Some(
             LatePaymentPenalty(
               Seq(
-                sampleLatePaymentPenalty.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+                sampleLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
                   mainTransaction = None,
                   outstandingAmount = None,
                   timeToPay = Some(
@@ -1685,7 +1685,7 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           latePaymentPenalty = Some(
             LatePaymentPenalty(
               Seq(
-                sampleLatePaymentPenalty.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+                sampleLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
                   mainTransaction = None,
                   outstandingAmount = None,
                   timeToPay = Some(
