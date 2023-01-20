@@ -27,7 +27,7 @@ trait TestData {
 
   val sampleDate: LocalDate = LocalDate.of(2021, 1, 1)
 
-  val samplePenaltyPointV2: LSPDetails = LSPDetails(
+  val samplePenaltyPoint: LSPDetails = LSPDetails(
     penaltyNumber = "12345678901234",
     penaltyOrder = "01",
     penaltyCategory = LSPPenaltyCategoryEnum.Point,
@@ -52,18 +52,18 @@ trait TestData {
     chargeDueDate = None
   )
 
-  val sampleFinancialPenaltyV2: LSPDetails = samplePenaltyPointV2.copy(
+  val sampleFinancialPenalty: LSPDetails = samplePenaltyPoint.copy(
     penaltyCategory = LSPPenaltyCategoryEnum.Charge,
     chargeAmount = Some(200),
     chargeOutstandingAmount = Some(200),
     chargeDueDate = Some(sampleDate)
   )
 
-  val lSPDetailsAsModelNoFAP: LSPDetails = samplePenaltyPointV2.copy(
+  val lSPDetailsAsModelNoFAP: LSPDetails = samplePenaltyPoint.copy(
     FAPIndicator = None
   )
 
-  val sampleFinancialPenaltyWithMultiplePeriods: LSPDetails = sampleFinancialPenaltyV2.copy(
+  val sampleFinancialPenaltyWithMultiplePeriods: LSPDetails = sampleFinancialPenalty.copy(
     lateSubmissions = Some(Seq(
       LateSubmission(
         taxPeriodStartDate = Some(sampleDate),
@@ -82,7 +82,7 @@ trait TestData {
     ))
   )
 
-  val sampleReturnSubmittedPenaltyPointV2: LSPDetails = samplePenaltyPointV2.copy(chargeAmount = None,
+  val sampleReturnSubmittedPenaltyPoint: LSPDetails = samplePenaltyPoint.copy(chargeAmount = None,
     chargeOutstandingAmount = None,
     FAPIndicator = None,
     lateSubmissions = Some(Seq(
@@ -96,12 +96,12 @@ trait TestData {
     ))
   )
 
-  val sampleRemovedPenaltyPointV2: LSPDetails = samplePenaltyPointV2.copy(
+  val sampleRemovedPenaltyPoint: LSPDetails = samplePenaltyPoint.copy(
     penaltyStatus = LSPPenaltyStatusEnum.Inactive,
     expiryReason = Some(ExpiryReasonEnum.Adjustment)
   )
 
-  val sampleLatePaymentPenalty: LPPDetails = LPPDetails(
+  val sampleLPP1: LPPDetails = LPPDetails(
     principalChargeReference = "12345678901234",
     penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
     penaltyStatus = LPPPenaltyStatusEnum.Accruing,
@@ -134,18 +134,18 @@ trait TestData {
     )
   )
 
-  val sampleLatePaymentPenaltyPaid: LPPDetails = sampleLatePaymentPenalty.copy(
+  val sampleLPP1Paid: LPPDetails = sampleLPP1.copy(
     principalChargeLatestClearing = Some(sampleDate),
     penaltyAmountOutstanding = Some(0),
     penaltyStatus = LPPPenaltyStatusEnum.Posted,
     appealInformation = None
   )
 
-  val sampleLatePaymentPenaltyAdditionalV2: LPPDetails = sampleLatePaymentPenalty.copy(
+  val sampleLPP2: LPPDetails = sampleLPP1.copy(
     penaltyCategory = LPPPenaltyCategoryEnum.LPP2
   )
 
-  val samplePenaltyPointNotSubmitted: LSPDetails = samplePenaltyPointV2.copy(
+  val samplePenaltyPointNotSubmitted: LSPDetails = samplePenaltyPoint.copy(
     lateSubmissions = Some(
       Seq(
         LateSubmission(
@@ -159,7 +159,7 @@ trait TestData {
     )
   )
 
-  val samplePenaltyPointAppeal: (AppealStatusEnum.Value, AppealLevelEnum.Value) => LSPDetails = (appealStatus, appealLevel) => samplePenaltyPointV2.copy(
+  val samplePenaltyPointAppeal: (AppealStatusEnum.Value, AppealLevelEnum.Value) => LSPDetails = (appealStatus, appealLevel) => samplePenaltyPoint.copy(
     penaltyStatus = if(appealStatus.equals(AppealStatusEnum.Upheld)) LSPPenaltyStatusEnum.Inactive else LSPPenaltyStatusEnum.Active,
     appealInformation = Some(
       Seq(
@@ -170,7 +170,7 @@ trait TestData {
     )
   )
 
-  val sampleLatePaymentPenaltyUnpaidPenaltyAppeal: (AppealStatusEnum.Value, AppealLevelEnum.Value) => LPPDetails = (appealStatus, appealLevel) => sampleLatePaymentPenalty.copy(
+  val sampleLPP1AppealUnpaid: (AppealStatusEnum.Value, AppealLevelEnum.Value) => LPPDetails = (appealStatus, appealLevel) => sampleLPP1.copy(
     appealInformation = Some(
       Seq(
         AppealInformationType(
@@ -184,7 +184,7 @@ trait TestData {
     penaltyStatus = LPPPenaltyStatusEnum.Posted
   )
 
-  val sampleLatePaymentPenaltyPaidPenaltyAppeal: (AppealStatusEnum.Value, AppealLevelEnum.Value) => LPPDetails = (appealStatus, appealLevel) => sampleLatePaymentPenalty.copy(
+  val sampleLPP1AppealPaid: (AppealStatusEnum.Value, AppealLevelEnum.Value) => LPPDetails = (appealStatus, appealLevel) => sampleLPP1.copy(
     appealInformation = Some(
       Seq(
         AppealInformationType(
@@ -211,15 +211,15 @@ trait TestData {
       summary = LSPSummary(
         activePenaltyPoints = 1, inactivePenaltyPoints = 0, regimeThreshold = 4, penaltyChargeAmount = 200, PoCAchievementDate = LocalDate.of(2022, 1, 1)
       ),
-      details = Seq(samplePenaltyPointV2))),
+      details = Seq(samplePenaltyPoint))),
     latePaymentPenalty = Some(
       LatePaymentPenalty(
         Seq(
-          sampleLatePaymentPenalty.copy(LPPDetailsMetadata = LPPDetailsMetadata(mainTransaction = Some(MainTransactionEnum.VATReturnFirstLPP), outstandingAmount = Some(20), timeToPay = None))
+          sampleLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(mainTransaction = Some(MainTransactionEnum.VATReturnFirstLPP), outstandingAmount = Some(20), timeToPay = None))
         )
       )
     )
   )
 
-  val samplePenaltyDetailsModelWithoutMetadata: GetPenaltyDetails = samplePenaltyDetailsModel.copy(latePaymentPenalty = Some(LatePaymentPenalty(Seq(sampleLatePaymentPenalty))))
+  val samplePenaltyDetailsModelWithoutMetadata: GetPenaltyDetails = samplePenaltyDetailsModel.copy(latePaymentPenalty = Some(LatePaymentPenalty(Seq(sampleLPP1))))
 }

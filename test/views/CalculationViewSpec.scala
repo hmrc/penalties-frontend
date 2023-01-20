@@ -139,26 +139,23 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       behave like pageWithExpectedMessages(expectedContent)
     }
 
-    "if it is not a second penalty" must {
-      def applyView(calculationRow: Seq[String], isMultipleAmounts: Boolean): HtmlFormat.Appendable = {
+    "if it is a first penalty" must {
+      def applyView(calculationRow: Seq[String]): HtmlFormat.Appendable = {
         calculationPage.apply(
           amountReceived = "100.00",
           penaltyAmount = "400.00",
           amountLeftToPay = "300.00",
           calculationRowSeq = calculationRow,
-          isCalculationRowMultipleAmounts = isMultipleAmounts,
           isPenaltyEstimate = false,
           startDate = "1 April 2022",
           endDate = "30 June 2022",
-          dueDate = Some("7 September 2022"),
-          warningPenaltyAmount = "",
-          warningDate = "")(implicitly, implicitly, vatTraderUser)
+          dueDate = Some("7 September 2022"))(implicitly, implicitly, vatTraderUser)
       }
 
       implicit val docWithOnlyOneCalculation: Document =
-        asDocument(applyView(Seq("2% of £3,850.00 (the unpaid VAT 15 days after the due date)"), isMultipleAmounts = false))
+        asDocument(applyView(Seq("2% of £3,850.00 (the unpaid VAT 15 days after the due date)")))
       implicit val docWith2Calculations: Document = asDocument(applyView(Seq("2% of £3,850.00 (the unpaid VAT 15 days after the due date) = £77.00",
-        "2% of £3,850.00 (the unpaid VAT 30 days after the due date) = £77.00"), isMultipleAmounts = true))
+        "2% of £3,850.00 (the unpaid VAT 30 days after the due date) = £77.00")))
 
 
       val expectedContent = Seq(
@@ -212,20 +209,17 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       }
     }
 
-    "it is not a second penalty and is estimated" must {
+    "it is a first penalty and is estimated" must {
       def applyView(calculationRow: Seq[String], isMultipleAmounts: Boolean): HtmlFormat.Appendable = {
         calculationPage.apply(
           amountReceived = "100.00",
           penaltyAmount = "400.00",
           amountLeftToPay = "300.00",
           calculationRowSeq = calculationRow,
-          isCalculationRowMultipleAmounts = isMultipleAmounts,
           isPenaltyEstimate = true,
           startDate = "1 April 2022",
           endDate = "30 June 2022",
-          dueDate = None,
-          warningPenaltyAmount = "800.00",
-          warningDate = "15 January 2023")(implicitly, implicitly, vatTraderUser)
+          dueDate = None)(implicitly, implicitly, vatTraderUser)
       }
 
       implicit val docWithOnlyOneCalculation: Document =
@@ -256,20 +250,17 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       behave like pageWithExpectedMessages(expectedContent)(docWithOnlyOneCalculation)
     }
 
-    "it is not a second penalty and with Penalty Amount and the user is an Agent" must {
+    "it is a first penalty and with Penalty Amount and the user is an Agent" must {
       def applyView(calculationRow: Seq[String], isMultipleAmounts: Boolean): HtmlFormat.Appendable = {
         calculationPage.apply(
           amountReceived = "100",
           penaltyAmount = "400",
           amountLeftToPay = "300",
           calculationRowSeq = calculationRow,
-          isCalculationRowMultipleAmounts = isMultipleAmounts,
           isPenaltyEstimate = true,
           startDate = "1 April 2022",
           endDate = "30 June 2022",
-          dueDate = None,
-          warningPenaltyAmount = "800",
-          warningDate = "15 January 2023")(implicitly, implicitly, agentUser)
+          dueDate = None)(implicitly, implicitly, agentUser)
       }
 
       implicit val docWithOnlyOneCalculation: Document =
