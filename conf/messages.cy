@@ -65,7 +65,7 @@ agent.lsp.onThreshold.compliant.p2 = bod hanes Ffurflenni TAW eich cleient yn gy
 lsp.onThreshold.compliant.p3 = eich bod wedi cyflwyno mewn pryd am y {0} o fisoedd diwethaf
 agent.lsp.onThreshold.compliant.p3 = bod eich cleient wedi cyflwyno mewn pryd am y {0} o fisoedd diwethaf
 
-lsp.multiple.penaltyPeriod = Roedd y Ffurflen TAW a oedd yn ddyledus ar {0} hefyd wedi’i chyflwyno’n hwyr. <br> Dim ond 1 cosb am gyflwyno’n hwyr y mae CThEM yn ei roi bob mis.
+lsp.multiple.penaltyPeriod = Roedd y Ffurflen TAW a oedd yn ddyledus ar {0} hefyd wedi’i chyflwyno’n hwyr. <br> Dim ond 1 cosb am gyflwyno’n hwyr y mae CThEF yn ei roi bob mis.
 
 # LPP Content
 # -------------------------------------------
@@ -90,7 +90,7 @@ summaryCard.key3 = Cyflwynwyd Ffurflen TAW
 summaryCard.key3.defaultValue = Ffurflen TAW heb ddod i law hyd yn hyn
 summaryCard.key4 = I fod i ddod i ben
 summaryCard.appeal.status = Statws yr apêl
-summaryCard.appeal.A.01 = Dan adolygiad gan CThEM
+summaryCard.appeal.A.01 = Dan adolygiad gan CThEF
 summaryCard.appeal.A.02 = Dan adolygiad gan y tribiwnlys treth
 summaryCard.appeal.B.02 = Mae’r apêl wedi’i dderbyn gan dribiwnlys treth
 summaryCard.appeal.B.01 = Mae’r apêl wedi’i dderbyn
@@ -148,8 +148,8 @@ app.common.back = Yn ôl
 
 # Compliance View
 # ----------------------------------------------------------
-compliance.titleAndHeading = Camau i’w cymryd cyn y gall CThEM dynnu’ch pwyntiau
-agent.compliance.titleAndHeading = Camau i’w cymryd cyn y gall CThEM dynnu pwyntiau’ch cleient
+compliance.titleAndHeading = Camau i’w cymryd cyn y gall CThEF dynnu’ch pwyntiau
+agent.compliance.titleAndHeading = Camau i’w cymryd cyn y gall CThEF dynnu pwyntiau’ch cleient
 
 compliance.timeline.actionEvent.header = Cyfnod TAW {0} i {1}
 compliance.timeline.actionEvent.body = Cyflwyno Ffurflen TAW erbyn {0}
