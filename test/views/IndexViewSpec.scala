@@ -52,7 +52,10 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours {
           totalAccountPostedInterest = None,
           totalAccountAccruingInterest = None
         )
-      ), lateSubmissionPenalty = None, latePaymentPenalty = None
+      ),
+      lateSubmissionPenalty = None,
+      latePaymentPenalty = None,
+      breathingSpace = None
     )
 
     def applyView(isTTPActive: Boolean = false, isUserAgent: Boolean = false, userOwes: Boolean = false): HtmlFormat.Appendable = {

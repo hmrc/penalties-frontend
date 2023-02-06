@@ -91,7 +91,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       )
     )
     ),
-    latePaymentPenalty = None
+    latePaymentPenalty = None,
+    breathingSpace = None
   )
 
   val getPenaltyDetailsPayloadWithRemovedPoints = GetPenaltyDetails(
@@ -149,7 +150,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         )
       )
     )),
-    latePaymentPenalty = None
+    latePaymentPenalty = None,
+    breathingSpace = None
   )
 
   val getPenaltiesDataPayloadWith2PointsAndOneRemovedPoint: GetPenaltyDetails = GetPenaltyDetails(
@@ -228,7 +230,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         )
       ))
     ),
-    latePaymentPenalty = None
+    latePaymentPenalty = None,
+    breathingSpace = None
   )
 
   val getPenaltiesDataPayloadOutOfOrder: GetPenaltyDetails = GetPenaltyDetails(
@@ -307,7 +310,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         )
       ))
     ),
-    latePaymentPenalty = None
+    latePaymentPenalty = None,
+    breathingSpace = None
   )
 
   val paidLatePaymentPenalty: LatePaymentPenalty = LatePaymentPenalty(
@@ -638,7 +642,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         )
       )
     ),
-    latePaymentPenalty = None
+    latePaymentPenalty = None,
+    breathingSpace = None
   )
 
   val getPenaltiesDetailsPayloadWithExpiredPoints: GetPenaltyDetails = GetPenaltyDetails(
@@ -714,7 +719,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         )
       )
     ),
-    latePaymentPenalty = None
+    latePaymentPenalty = None,
+    breathingSpace = None
   )
 
   "GET /" should {
@@ -983,7 +989,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
                 )
               )
             )))
-          )
+          ),
+          breathingSpace = None
         )
         setFeatureDate(Some(sampleDate2.minusDays(1)))
         returnPenaltyDetailsStub(penaltyDetails)

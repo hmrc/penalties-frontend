@@ -26,7 +26,7 @@ import models.{GetPenaltyDetails, Totalisations}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Matchers.any
-import org.mockito.Mockito.{mock, reset, times, verify, when}
+import org.mockito.Mockito._
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.mvc.Result
 import play.api.test.Helpers.{await, contentAsString, defaultAwaitTimeout}
@@ -239,7 +239,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           )
         )
       ),
-      latePaymentPenalty = None
+      latePaymentPenalty = None,
+      breathingSpace = None
     )
 
     val penaltyDetailsWith2ActivePoints: GetPenaltyDetails = GetPenaltyDetails(
@@ -309,7 +310,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           )
         )
       ),
-      latePaymentPenalty = None
+      latePaymentPenalty = None,
+      breathingSpace = None
     )
 
     val penaltyDetailsWith1ActivePoint: GetPenaltyDetails = GetPenaltyDetails(
@@ -353,7 +355,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           )
         )
       ),
-      latePaymentPenalty = None
+      latePaymentPenalty = None,
+      breathingSpace = None
     )
 
     val penaltyDetailsWith1ActivePointAnnual: GetPenaltyDetails = GetPenaltyDetails(
@@ -397,7 +400,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           )
         )
       ),
-      latePaymentPenalty = None
+      latePaymentPenalty = None,
+      breathingSpace = None
     )
 
     "no active penalty points" should {
@@ -416,7 +420,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               details = Seq.empty
             )
           ),
-          latePaymentPenalty = None
+          latePaymentPenalty = None,
+          breathingSpace = None
         )
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithNoActivePoints)(implicitly, vatTraderUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
@@ -661,7 +666,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             )
           )
         ),
-        latePaymentPenalty = None
+        latePaymentPenalty = None,
+        breathingSpace = None
       )
 
       "show the correct content" in new Setup {
@@ -782,7 +788,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             )
           )
         ),
-        latePaymentPenalty = None
+        latePaymentPenalty = None,
+        breathingSpace = None
       )
 
       val penaltyDetailsWithAddedPointsAtPenultimate: GetPenaltyDetails = GetPenaltyDetails(
@@ -868,7 +875,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             )
           )
         ),
-        latePaymentPenalty = None
+        latePaymentPenalty = None,
+        breathingSpace = None
       )
 
       "show the total of ALL POINTS (i.e. lateSubmissions + adjustmentPointsTotal)" in new Setup {
@@ -1012,7 +1020,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             )
           )
         ),
-        latePaymentPenalty = None
+        latePaymentPenalty = None,
+        breathingSpace = None
       )
 
       val penaltyDetailsWithRemovedPointsAtPenultimate: GetPenaltyDetails = GetPenaltyDetails(
@@ -1134,7 +1143,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             )
           )
         ),
-        latePaymentPenalty = None
+        latePaymentPenalty = None,
+        breathingSpace = None
       )
 
       "show the total of ALL POINTS (i.e. lateSubmissions - adjustmentPointsTotal)" in new Setup {
@@ -1195,7 +1205,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
             LatePaymentPenalty(
               details = Seq.empty
             )
-          )
+          ),
+          breathingSpace = None
         )
         val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetails)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
@@ -1241,7 +1252,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               )
             )
           )
-        )
+        ),
+        breathingSpace = None
       )
       "user has outstanding vat to pay" in new Setup(useRealAppConfig = true) {
         val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetailsUnpaidVAT)(implicitly, vatTraderUser)
@@ -1298,7 +1310,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               )
             )
           )
-        )
+        ),
+        breathingSpace = None
       )
       "the user has paid their LPP's" in new Setup(useRealAppConfig = true) {
         val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetailsPaidVAT)(implicitly, vatTraderUser)
@@ -1316,7 +1329,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
     "return None" when {
       "the user has no outstanding items" in new Setup {
         val penaltyDetailsWithNoOutstandingPayments: GetPenaltyDetails = GetPenaltyDetails(
-          totalisations = None, lateSubmissionPenalty = None, latePaymentPenalty = None
+          totalisations = None, lateSubmissionPenalty = None, latePaymentPenalty = None,
+          breathingSpace = None
         )
         val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWithNoOutstandingPayments)
         result.isEmpty shouldBe true
@@ -1336,7 +1350,10 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               totalAccountPostedInterest = None,
               totalAccountAccruingInterest = None
             )
-          ), lateSubmissionPenalty = None, latePaymentPenalty = None
+          ),
+          lateSubmissionPenalty = None,
+          latePaymentPenalty = None,
+          breathingSpace = None
         )
         val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWithOutstandingVAT)
         result.isDefined shouldBe true
@@ -1355,7 +1372,10 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               totalAccountPostedInterest = Some(100),
               totalAccountAccruingInterest = Some(10)
             )
-          ), lateSubmissionPenalty = None, latePaymentPenalty = None
+          ),
+          lateSubmissionPenalty = None,
+          latePaymentPenalty = None,
+          breathingSpace = None
         )
         val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWithOutstandingVAT)
         result.isDefined shouldBe true
@@ -1396,7 +1416,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           totalisations = None, lateSubmissionPenalty = None,
           latePaymentPenalty = Some(LatePaymentPenalty(
             Seq(sampleLPP)
-          ))
+          )),
+          breathingSpace = None
         )
         val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWithUnpaidLPP)
         result.isDefined shouldBe true
@@ -1408,7 +1429,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           totalisations = None, lateSubmissionPenalty = None,
           latePaymentPenalty = Some(LatePaymentPenalty(
             Seq(sampleLPP, sampleLPP)
-          ))
+          )),
+          breathingSpace = None
         )
         val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWithUnpaidLPPs)
         result.isDefined shouldBe true
@@ -1453,7 +1475,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           lateSubmissionPenalty = Some(LateSubmissionPenalty(
             sampleSummary, Seq(sampleLSP)
           )),
-          latePaymentPenalty = None)
+          latePaymentPenalty = None,
+          breathingSpace = None)
         val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWithUnpaidLSP)
         result.isDefined shouldBe true
         result.get.body.contains("a late submission penalty") shouldBe true
@@ -1465,7 +1488,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
           lateSubmissionPenalty = Some(LateSubmissionPenalty(
             sampleSummary, Seq(sampleLSP, sampleLSP)
           )),
-          latePaymentPenalty = None)
+          latePaymentPenalty = None,
+          breathingSpace = None)
         val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWithUnpaidLSP)
         result.isDefined shouldBe true
         result.get.body.contains("late submission penalties") shouldBe true
@@ -1486,7 +1510,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               ),
               details = Seq()
             )
-          )
+          ),
+          breathingSpace = None
         )
         val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWith1LSP)
         result.isDefined shouldBe true
@@ -1508,7 +1533,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               ),
               details = Seq()
             )
-          )
+          ),
+          breathingSpace = None
         )
         val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWith2LSPs)
         result.isDefined shouldBe true
@@ -1530,7 +1556,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               ),
               details = Seq()
             )
-          )
+          ),
+          breathingSpace = None
         )
         val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWith2LSPs)
         result.isDefined shouldBe true
@@ -1562,7 +1589,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               )
             )
           ),
-          lateSubmissionPenalty = None
+          lateSubmissionPenalty = None,
+          breathingSpace = None
         )
         setFeatureDate(Some(LocalDate.of(2022, 7, 2)))
         val result = pageHelper.isTTPActive(penaltyDetails)
@@ -1590,7 +1618,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               )
             )
           ),
-          lateSubmissionPenalty = None
+          lateSubmissionPenalty = None,
+          breathingSpace = None
         )
         setFeatureDate(Some(LocalDate.of(2022, 7, 1)))
         val result = pageHelper.isTTPActive(penaltyDetails)
@@ -1622,7 +1651,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               )
             )
           ),
-          lateSubmissionPenalty = None
+          lateSubmissionPenalty = None,
+          breathingSpace = None
         )
         setFeatureDate(Some(LocalDate.of(2022, 6, 25)))
         val result = pageHelper.isTTPActive(penaltyDetails)
@@ -1645,7 +1675,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               )
             )
           ),
-          lateSubmissionPenalty = None
+          lateSubmissionPenalty = None,
+          breathingSpace = None
         )
         val result = pageHelper.isTTPActive(penaltyDetails)
         result shouldBe false
@@ -1672,7 +1703,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               )
             )
           ),
-          lateSubmissionPenalty = None
+          lateSubmissionPenalty = None,
+          breathingSpace = None
         )
         setFeatureDate(Some(LocalDate.of(2022, 7, 3)))
         val result = pageHelper.isTTPActive(penaltyDetails)
@@ -1700,7 +1732,8 @@ class IndexPageHelperSpec extends SpecBase with FeatureSwitching {
               )
             )
           ),
-          lateSubmissionPenalty = None
+          lateSubmissionPenalty = None,
+          breathingSpace = None
         )
         setFeatureDate(Some(LocalDate.of(2022, 7, 3)))
         val result = pageHelper.isTTPActive(penaltyDetails)

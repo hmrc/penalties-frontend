@@ -19,6 +19,7 @@ package stubs
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, stubFor, urlMatching}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
+import models.breathingSpace.BreathingSpace
 import models.lpp._
 import models.lsp._
 import models.{GetPenaltyDetails, Totalisations}
@@ -117,7 +118,11 @@ object PenaltiesStub {
           timeToPay = None
         )
       ))
-    ))
+    )),
+    breathingSpace = Some(Seq(BreathingSpace(
+      BSStartDate = LocalDate.of(2023, 1, 1),
+      BSEndDate = LocalDate.of(2023, 12, 31)
+    )))
   )
 
   val samplePenaltyDetailsNoMetaData: GetPenaltyDetails = GetPenaltyDetails(
@@ -203,7 +208,8 @@ object PenaltiesStub {
           timeToPay = None
         )
       ))
-    ))
+    )),
+    breathingSpace = None
   )
 
   val sampleInvalidPenaltyDetailsJson = Json.obj(

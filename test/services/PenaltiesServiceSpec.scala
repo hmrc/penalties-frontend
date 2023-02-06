@@ -44,7 +44,8 @@ class PenaltiesServiceSpec extends SpecBase {
       totalAccountAccruingInterest = None
     )),
     lateSubmissionPenalty = None,
-    latePaymentPenalty = None
+    latePaymentPenalty = None,
+    breathingSpace = None
   )
 
   val penaltyDetailsWithVATOnly: GetPenaltyDetails = GetPenaltyDetails(
@@ -58,7 +59,8 @@ class PenaltiesServiceSpec extends SpecBase {
       totalAccountAccruingInterest = None
     )),
     lateSubmissionPenalty = None,
-    latePaymentPenalty = None
+    latePaymentPenalty = None,
+    breathingSpace = None
   )
 
   val penaltyDetailsWithEstimatedLPPs: GetPenaltyDetails = GetPenaltyDetails(
@@ -72,7 +74,8 @@ class PenaltiesServiceSpec extends SpecBase {
       totalAccountAccruingInterest = None
     )),
     lateSubmissionPenalty = None,
-    latePaymentPenalty = None
+    latePaymentPenalty = None,
+    breathingSpace = None
   )
 
   val penaltyDetailsWithCrystallisedLPPs: GetPenaltyDetails = GetPenaltyDetails(
@@ -86,7 +89,8 @@ class PenaltiesServiceSpec extends SpecBase {
       totalAccountAccruingInterest = None
     )),
     lateSubmissionPenalty = None,
-    latePaymentPenalty = None
+    latePaymentPenalty = None,
+    breathingSpace = None
   )
 
   class Setup {
@@ -110,11 +114,11 @@ class PenaltiesServiceSpec extends SpecBase {
     s"$NO_CONTENT (No content) is returned from the parser" should {
       "return an empty Right GetPenaltyDetails model" in new Setup {
         when(mockPenaltiesConnector.getPenaltyDetails(any())(any(), any()))
-          .thenReturn(Future.successful(Right(GetPenaltyDetails(None, None, None))))
+          .thenReturn(Future.successful(Right(GetPenaltyDetails(None, None, None, None))))
 
         val result = await(service.getPenaltyDataFromEnrolmentKey("1234567890")(vatTraderUser, hc))
         result.isRight shouldBe true
-        result shouldBe Right(GetPenaltyDetails(None, None, None))
+        result shouldBe Right(GetPenaltyDetails(None, None, None, None))
       }
 
       s"$BAD_REQUEST (Bad request) is returned from the parser because of invalid json" should {

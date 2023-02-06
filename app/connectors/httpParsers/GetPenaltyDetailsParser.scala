@@ -44,7 +44,7 @@ object GetPenaltyDetailsParser {
           }
         case NO_CONTENT =>
           logger.info(s"[GetPenaltyDetailsResponseReads][read]: No content found for VRN provided, returning empty model")
-          Right(GetPenaltyDetails(None, None, None))
+          Right(GetPenaltyDetails(None, None, None, None))
         case BAD_REQUEST =>
           logger.error(s"[GetPenaltyDetailsResponseReads][read]: Bad request returned with reason: ${response.body}")
           PagerDutyHelper.log("PenaltiesConnectorParser: GetPenaltyDetailsResponseReads", RECEIVED_4XX_FROM_PENALTIES_BACKEND)

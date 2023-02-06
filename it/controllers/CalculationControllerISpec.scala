@@ -131,7 +131,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
           timeToPay = None
         )
       ))
-    ))
+    )),
+    breathingSpace = None
   )
 
   val penaltyDetailsWithDay15Charge: GetPenaltyDetails = samplePenaltyDetails.copy(
