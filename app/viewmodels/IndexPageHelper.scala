@@ -276,6 +276,17 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
   }
 
   def sortPointsInDescendingOrder(points: Seq[LSPDetails]): Seq[LSPDetails] = {
-    points.sortWith((thisElement, nextElement) => thisElement.penaltyOrder.toInt > nextElement.penaltyOrder.toInt)
+    val pointsWithOrder = points.zipWithIndex.map(pointAndIndex => {
+      val point = pointAndIndex._1
+      val idx = pointAndIndex._2
+      val newPenaltyOrder = (point.penaltyOrder, point.penaltyStatus) match {
+        case (" ", LSPPenaltyStatusEnum.Inactive) => "0"
+        case (" ", LSPPenaltyStatusEnum.Active) => (idx + 1).toString
+        case _ => point.penaltyOrder
+      }
+      point.copy(penaltyOrder = newPenaltyOrder)
+    })
+
+    pointsWithOrder.sortWith((thisElement, nextElement) => thisElement.penaltyOrder.toInt > nextElement.penaltyOrder.toInt)
   }
 }
