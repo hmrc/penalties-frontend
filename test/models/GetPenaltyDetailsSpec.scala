@@ -17,6 +17,7 @@
 package models
 
 import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
+import models.breathingSpace.BreathingSpace
 import models.lpp._
 import models.lsp._
 import org.scalatest.matchers.should.Matchers
@@ -111,7 +112,11 @@ class GetPenaltyDetailsSpec extends AnyWordSpec with Matchers {
           timeToPay = None
         )
       ))
-    ))
+    )),
+    breathingSpace = Some(Seq(BreathingSpace(
+      BSStartDate = LocalDate.of(2023, 1, 1),
+      BSEndDate = LocalDate.of(2023, 12, 31)
+    )))
   )
   val penaltyDetailsAsJson: JsValue = Json.parse(
     """
@@ -195,7 +200,11 @@ class GetPenaltyDetailsSpec extends AnyWordSpec with Matchers {
            "mainTransaction": "4700",
            "outstandingAmount": 99
        }]
-     }
+     },
+     "breathingSpace": [{
+       "BSStartDate": "2023-01-01",
+       "BSEndDate": "2023-12-31"
+     }]
     }
   """.stripMargin)
 
@@ -212,5 +221,4 @@ class GetPenaltyDetailsSpec extends AnyWordSpec with Matchers {
       result.get shouldBe penaltyDetails
     }
   }
-
 }

@@ -218,7 +218,8 @@ trait TestData {
           sampleLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(mainTransaction = Some(MainTransactionEnum.VATReturnFirstLPP), outstandingAmount = Some(20), timeToPay = None))
         )
       )
-    )
+    ),
+    breathingSpace = None
   )
 
   val samplePenaltyDetailsModelWithoutMetadata: GetPenaltyDetails = samplePenaltyDetailsModel.copy(latePaymentPenalty = Some(LatePaymentPenalty(Seq(sampleLPP1))))

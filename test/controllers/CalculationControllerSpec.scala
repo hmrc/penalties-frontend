@@ -45,7 +45,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching with LogC
   val mockPenaltiesService: PenaltiesService = mock(classOf[PenaltiesService])
   val calculationPageHelper: CalculationPageHelper = injector.instanceOf[CalculationPageHelper]
 
-  val emptyPenaltyDetailsPayload: GetPenaltyDetails = GetPenaltyDetails(None, None, None)
+  val emptyPenaltyDetailsPayload: GetPenaltyDetails = GetPenaltyDetails(None, None, None, None)
 
   val penaltyDetailsPayload: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = Some(Totalisations(
@@ -130,7 +130,8 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching with LogC
           timeToPay = None
         )
       ))
-    ))
+    )),
+    breathingSpace = None
   )
 
   val penaltyDetailsPayloadNo15Or30DayAmount: GetPenaltyDetails = GetPenaltyDetails(
@@ -216,7 +217,8 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching with LogC
           timeToPay = None
         )
       ))
-    ))
+    )),
+    breathingSpace = None
   )
 
   class Setup(authResult: Future[~[Option[AffinityGroup], Enrolments]], isFSEnabled: Boolean = false) {
