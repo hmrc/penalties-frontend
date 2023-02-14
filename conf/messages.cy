@@ -177,18 +177,18 @@ agent.whatIsOwed.ttp.p2 = Mae’n rhaid i’ch cleient sicrhau ei fod yn gwneud 
 whatIsOwed.ttp.p3.link = Gwirio’r hyn sydd arnoch
 agent.whatIsOwed.ttp.p3.link = Gwirio’r hyn sydd ar eich cleient
 whatIsOwed.ttp.p3 = i fwrw golwg dros yr holl gostau sydd heb eu talu.
-whatIsOwed.heading = Overview
-whatIsOwed.p1 = Your account has:
-agent.whatIsOwed.p1 = Your client’s account has:
-whatIsOwed.unpaidVATCharges = unpaid VAT charges
-whatIsOwed.unpaidInterest = unpaid interest
-whatIsOwed.lpp = a late payment penalty
-whatIsOwed.lpp.multi = late payment penalties
-whatIsOwed.lsp = a late submission penalty
-whatIsOwed.lsp.multi = late submission penalties
-whatIsOwed.lsp.onePoint = 1 late submission penalty point
-whatIsOwed.lsp.multiPoints = {0} late submission penalty points
-whatIsOwed.lsp.max = the maximum number of late submission penalty points
+whatIsOwed.heading = Trosolwg
+whatIsOwed.p1 = Mae gan eich cyfrif y canlynol:
+agent.whatIsOwed.p1 = Mae gan gyfrif eich cleient y canlynol:
+whatIsOwed.unpaidVATCharges = ffioedd TAW sydd heb eu talu
+whatIsOwed.unpaidInterest = llog sydd heb ei dalu
+whatIsOwed.lpp = cosb am dalu’n hwyr
+whatIsOwed.lpp.multi = cosbau am dalu’n hwyr
+whatIsOwed.lsp = cosb am gyflwyno’n hwyr
+whatIsOwed.lsp.multi = cosbau am gyflwyno’n hwyr
+whatIsOwed.lsp.onePoint = 1 pwynt cosb am gyflwyno’n hwyr
+whatIsOwed.lsp.multiPoints = {0} o bwyntiau cosb am gyflwyno’n hwyr
+whatIsOwed.lsp.max = uchafswm nifer y pwyntiau cosb am gyflwyno’n hwyr
 
 # Calculation messages
 # ----------------------------------------------------------
