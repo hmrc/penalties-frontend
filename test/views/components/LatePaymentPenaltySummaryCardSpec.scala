@@ -39,7 +39,8 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       principalChargeBillingTo = LocalDate.of(2020, 2, 1),
       principalChargeDueDate = LocalDate.of(2020, 2, 1),
       penaltyAmountPaid = Some(400),
-      penaltyAmountOutstanding = Some(0))))
+      penaltyAmountOutstanding = Some(0),
+      penaltyChargeReference = Some("CHRG1234"))))
   ).get.head
 
   val summaryCardModelWithUnappealableStatus: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
@@ -129,7 +130,13 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
   ).get.head
 
   val summaryCardModelDueNoPaymentsMade: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLPP1Paid.copy(principalChargeLatestClearing = None, penaltyAmountOutstanding = Some(400), penaltyAmountPaid = Some(0))))
+    Some(Seq(sampleLPP1Paid.copy(principalChargeLatestClearing = None, penaltyAmountOutstanding = Some(400), penaltyAmountPaid = Some(0),
+      penaltyStatus = LPPPenaltyStatusEnum.Accruing)))
+  ).get.head
+
+  val summaryCardModelDueNoPaymentsMadePenaltyPosted: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
+    Some(Seq(sampleLPP1Paid.copy(principalChargeLatestClearing = None, penaltyAmountOutstanding = Some(400), penaltyAmountPaid = Some(0),
+      penaltyStatus = LPPPenaltyStatusEnum.Posted, penaltyChargeReference = Some("CHRG1234"))))
   ).get.head
 
   val summaryCardModelWithAppealedPenaltyAccepted: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
@@ -166,7 +173,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       }
 
       "display the 'DUE' status" in {
-        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMade))
+        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMadePenaltyPosted))
         doc.select("strong").text() shouldBe "due"
       }
 
@@ -201,10 +208,24 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         doc.select(".app-summary-card__footer a").get(1).attr("aria-label") shouldBe "Appeal first penalty for late payment of charge due on 1 February 2020"
       }
 
-      "display the check if you can appeal link if the penalty is unappealable" in {
-        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithUnappealableStatus))
+      "display the 'check if you can appeal' link if the VAT has not been paid and the penalty has no charge reference" in {
+        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDue))
         doc.select(".app-summary-card__footer a").get(1).text shouldBe "Check if you can appeal"
-        doc.select(".app-summary-card__footer a").get(1).attr("href").contains(summaryCardModelWithUnappealableStatus.principalChargeReference)
+        doc.select(".app-summary-card__footer a").get(1).attr("href").contains(summaryCardModelDue.principalChargeReference)
+        doc.select("dt").eq(4).isEmpty shouldBe true
+      }
+
+      "display the 'check if you can appeal' link if the VAT has not been paid (but penalty is posted)" in {
+        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMadePenaltyPosted))
+        doc.select(".app-summary-card__footer a").get(1).text shouldBe "Check if you can appeal"
+        doc.select(".app-summary-card__footer a").get(1).attr("href").contains(summaryCardModelDueNoPaymentsMadePenaltyPosted.penaltyChargeReference.get)
+        doc.select("dt").eq(4).isEmpty shouldBe true
+      }
+
+      "display the 'appeal this penalty' link if the VAT has been paid" in {
+        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModel))
+        doc.select(".app-summary-card__footer a").get(1).text shouldBe "Appeal this penalty"
+        doc.select(".app-summary-card__footer a").get(1).attr("href").contains(summaryCardModel.penaltyChargeReference.get)
         doc.select("dt").eq(4).isEmpty shouldBe true
       }
     }
