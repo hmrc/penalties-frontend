@@ -273,7 +273,7 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
   def lppSummaryCard(lpp: LPPDetails)(implicit messages: Messages): LatePaymentPenaltySummaryCard = {
     val cardBody = if (lpp.penaltyCategory == LPPPenaltyCategoryEnum.LPP2) lppAdditionalCardBody(lpp) else lppCardBody(lpp)
     val isPaid = lpp.penaltyAmountOutstanding.contains(BigDecimal(0))
-    val isVatPaid = lpp.penaltyStatus == LPPPenaltyStatusEnum.Posted
+    val isVatPaid = lpp.principalChargeLatestClearing.isDefined
     val appealInformationWithoutUnappealableStatus = lpp.appealInformation.map(_.filterNot(_.appealStatus.contains(AppealStatusEnum.Unappealable))).getOrElse(Seq.empty)
     if (appealInformationWithoutUnappealableStatus.nonEmpty) {
       buildLPPSummaryCard(cardBody :+ summaryListRow(

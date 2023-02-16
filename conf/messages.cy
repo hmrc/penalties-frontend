@@ -127,7 +127,7 @@ summaryCard.appealLink.aria.label.lurkingPoint.returnSubmitted = Apelio yn erbyn
 summaryCard.appealLink.aria.label.lpp.vatPaid.LPP1 = cyntaf
 summaryCard.appealLink.aria.label.lpp.vatPaid.LPP2 = ail
 summaryCard.appealLink.aria.label.lpp.vatPaid = Apelio cosb {0} ar gyfer taliad hwyr a oedd yn ddyledus ar {1}
-summaryCard.appealLink.aria.label.lpp.change = Gwirio a allwch apelio cosb {0} ar gyfer taliad hwyr a oedd yn ddyledus ar {1}
+summaryCard.appealLink.aria.label.lpp.checkIfYouCanAppeal = Gwirio a allwch apelio cosb {0} ar gyfer taliad hwyr a oedd yn ddyledus ar {1}
 summaryCard.viewCalculation.aria.label.lpp.change = Bwrw golwg dros gyfrifiad o gosb {0} am dalu’n hwyr ar gyfer tâl a oedd yn ddyledus ar {1}
 
 status.active = gweithredol
