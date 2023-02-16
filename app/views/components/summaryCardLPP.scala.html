@@ -43,23 +43,16 @@
 }
 
 @calculationContent = {
-  <a class="govuk-link" aria-label="@{
-    messages("summaryCard.viewCalculation.aria.label.lpp.change", messages(s"summaryCard.appealLink.aria.label.lpp.vatPaid.${summaryCard.penaltyCategory}"), summaryCard.dueDate
-    )
-  }" href="@{
-    controllers.routes.CalculationController.onPageLoad(summaryCard.principalChargeReference, summaryCard.penaltyCategory.toString).url
-  }">
-  @messages("summaryCard.viewCalculation")
-  </a>
+    <a class="govuk-link" aria-label="@{
+        messages("summaryCard.viewCalculation.aria.label.lpp.change", messages(s"summaryCard.appealLink.aria.label.lpp.vatPaid.${summaryCard.penaltyCategory}"), summaryCard.dueDate
+        )
+    }" href="@{
+        controllers.routes.CalculationController.onPageLoad(summaryCard.principalChargeReference, summaryCard.penaltyCategory.toString).url
+    }">
+    @messages("summaryCard.viewCalculation")
+    </a>
 }
 @appealContent = {
-@if(summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
-    <a class="govuk-link" href=@{
-        controllers.routes.IndexController.redirectToAppeals(summaryCard.principalChargeReference, isLPP = true, isObligation = true, isAdditional = summaryCard.penaltyCategory.equals(LPP2)).url
-    }>
-    @messages("summaryCard.appealCheck")
-    </a>
-} else {
     @if(!summaryCard.isVatPaid && summaryCard.penaltyChargeReference.isDefined) { @* Penalty is posted but VAT not paid *@
         <a class="govuk-link" href=@{
             controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyChargeReference.get, isLPP = true, isObligation = true, isAdditional = summaryCard.penaltyCategory.equals(LPP2)).url
@@ -68,7 +61,7 @@
         </a>
     } else if(!summaryCard.isVatPaid) { @* Penalty is accruing but VAT not paid *@
       <a class="govuk-link" href=@{
-        controllers.routes.IndexController.redirectToAppeals(summaryCard.principalChargeReference, isLPP = true, isObligation = true, isAdditional = summaryCard.penaltyCategory.equals(LPP2)).url
+        controllers.routes.IndexController.redirectToEstimateAppeal(summaryCard.taxPeriodStartDate, summaryCard.taxPeriodEndDate).url
       } aria-label="@{ariaLabelText}">
       @messages("summaryCard.appealCheck")
       </a>
@@ -80,7 +73,6 @@
         </a>
     }
 }
-}
 
 
 @footerDisplayLogic = {
@@ -88,16 +80,16 @@
     <div class="app-summary-card__actions">
         <ul class="app-summary-card__actions-list">
             <li class="app-summary-card__actions-list-item">
-              @calculationContent
+            @calculationContent
             </li>
             <li class="app-summary-card__actions-list-item">
-              @appealContent
+            @appealContent
             </li>
         </ul>
     </div>
 } else {
     <div class="app-summary-card__link">
-      @calculationContent
+    @calculationContent
     </div>
 }
 }
@@ -115,9 +107,9 @@
         </div>
     </header>
     <div class="app-summary-card__body">
-      @govukSummaryList(SummaryList(summaryCard.cardRows))
+    @govukSummaryList(SummaryList(summaryCard.cardRows))
     </div>
     <footer class="app-summary-card__footer">
-      @footerDisplayLogic
+    @footerDisplayLogic
     </footer>
 </section>

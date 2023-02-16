@@ -77,7 +77,9 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       amountDue = 1001.45,
       isPenaltyPaid = true,
       penaltyCategory = LPP1,
-      dueDate = "1 January 2021"
+      dueDate = "1 January 2021",
+      taxPeriodStartDate = sampleDate.toString,
+      taxPeriodEndDate = sampleDate.toString
     )
   }
 
@@ -103,7 +105,9 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       amountDue = 1001.45,
       isVatPaid = true,
       penaltyCategory = LPP2,
-      dueDate = "1 January 2021"
+      dueDate = "1 January 2021",
+      taxPeriodStartDate = sampleDate.toString,
+      taxPeriodEndDate = sampleDate.toString
     )
   }
 
@@ -462,7 +466,9 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           isPenaltyPaid = false,
           isVatPaid = true,
           penaltyCategory = LPP1,
-          dueDate = "1 January 2021"
+          dueDate = "1 January 2021",
+          taxPeriodEndDate = sampleDate.toString,
+          taxPeriodStartDate = sampleDate.toString
         )
 
         "return SummaryCards when given First Late Payment penalty and chargeType is VAT Return 1st LPP (4703)" when {

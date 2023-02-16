@@ -88,15 +88,17 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
     ))
   ).get.head
 
-  val summaryCardModelForAdditionalPenaltyUnappealable: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
+  val summaryCardModelForUnappealableLPP2: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
     Some(Seq(sampleLPP1Paid.copy(penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
+      penaltyChargeReference = None,
       penaltyAmountPaid = Some(123.45),
       penaltyAmountOutstanding = Some(0.00),
-      penaltyStatus = LPPPenaltyStatusEnum.Posted,
+      penaltyStatus = LPPPenaltyStatusEnum.Accruing,
       penaltyChargeDueDate = Some(LocalDate.of(2020, 2, 1)),
       principalChargeBillingFrom = LocalDate.of(2020, 1, 1),
       principalChargeBillingTo = LocalDate.of(2020, 2, 1),
       principalChargeDueDate = LocalDate.of(2020, 3, 7),
+      principalChargeLatestClearing = None,
       appealInformation = Some(Seq(AppealInformationType(
         appealStatus = Some(AppealStatusEnum.Unappealable),
         appealLevel = Some(AppealLevelEnum.HMRC)
@@ -211,7 +213,8 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       "display the 'check if you can appeal' link if the VAT has not been paid and the penalty has no charge reference" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDue))
         doc.select(".app-summary-card__footer a").get(1).text shouldBe "Check if you can appeal"
-        doc.select(".app-summary-card__footer a").get(1).attr("href").contains(summaryCardModelDue.principalChargeReference)
+        doc.select(".app-summary-card__footer a").get(1).attr("href").contains(summaryCardModelForUnappealableLPP2.taxPeriodStartDate)
+        doc.select(".app-summary-card__footer a").get(1).attr("href").contains(summaryCardModelForUnappealableLPP2.taxPeriodEndDate)
         doc.select("dt").eq(4).isEmpty shouldBe true
       }
 
@@ -271,10 +274,11 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         docWithAdditionalPenalty.select(".app-summary-card__footer a").get(1).attr("aria-label") shouldBe "Appeal second penalty for late payment of charge due on 7 March 2020"
       }
 
-      "display the check if you can appeal link if the penalty is unappealable" in {
-        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelForAdditionalPenaltyUnappealable))
+      "display the check if you can appeal link if the penalty is unappealable (VAT has not been paid)" in {
+        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelForUnappealableLPP2))
         doc.select(".app-summary-card__footer a").get(1).text shouldBe "Check if you can appeal"
-        doc.select(".app-summary-card__footer a").get(1).attr("href").contains(summaryCardModelForAdditionalPenaltyUnappealable.principalChargeReference)
+        doc.select(".app-summary-card__footer a").get(1).attr("href").contains(summaryCardModelForUnappealableLPP2.taxPeriodStartDate)
+        doc.select(".app-summary-card__footer a").get(1).attr("href").contains(summaryCardModelForUnappealableLPP2.taxPeriodEndDate)
         doc.select("dt").eq(4).isEmpty shouldBe true
       }
     }

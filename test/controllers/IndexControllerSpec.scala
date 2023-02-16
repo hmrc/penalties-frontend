@@ -31,6 +31,7 @@ import utils.SessionKeys
 import viewmodels.{IndexPageHelper, SummaryCardHelper}
 import views.html.IndexView
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -107,21 +108,21 @@ class IndexControllerSpec extends SpecBase with LogCapturing {
     }
 
     "redirectToAppeals" when {
-      "the user wants to appeal a penalty" in new Setup(AuthTestModels.successfulAuthResult) {
+      "the user wants to appeal a penalty for LSP" in new Setup(AuthTestModels.successfulAuthResult) {
         val result: Future[Result] = Controller.redirectToAppeals("123456789")(fakeRequest)
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=false&isAdditional=false")
       }
 
-      "the user wants to appeal a penalty for LPP" in new Setup(AuthTestModels.successfulAuthResult) {
+      "the user wants to appeal a penalty for LPP1" in new Setup(AuthTestModels.successfulAuthResult) {
         val result: Future[Result] = Controller.redirectToAppeals("123456789", isLPP = true)(fakeRequest)
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=true&isAdditional=false")
       }
 
-      "the user wants to appeal a penalty for LPP - Additional" in new Setup(AuthTestModels.successfulAuthResult) {
+      "the user wants to appeal a penalty for LPP2" in new Setup(AuthTestModels.successfulAuthResult) {
         val result: Future[Result] = Controller.redirectToAppeals("123456789", isLPP = true, isAdditional = true)(fakeRequest)
 
         status(result) shouldBe SEE_OTHER
@@ -142,6 +143,17 @@ class IndexControllerSpec extends SpecBase with LogCapturing {
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}" +
           s"/initialise-appeal-against-the-obligation?penaltyId=$penaltyId&isLPP=true&isAdditional=false")
+      }
+    }
+
+    "redirectToEstimateAppeal" when {
+      "the user wants to appeal the obligation on an estimated LPP" in new Setup(AuthTestModels.successfulAuthResult) {
+        val sampleDate: LocalDate = LocalDate.now()
+        val result: Future[Result] = Controller.redirectToEstimateAppeal(sampleDate.toString, sampleDate.toString)(fakeRequest)
+
+        status(result) shouldBe(SEE_OTHER)
+        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}" +
+          s"/initialise-appeal-against-the-obligation-estimated-lpp?taxPeriodStartDate=${sampleDate.toString}&taxPeriodEndDate=${sampleDate.toString}")
       }
     }
   }
