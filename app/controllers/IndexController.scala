@@ -120,4 +120,8 @@ class IndexController @Inject()(view: IndexView,
       Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=$isLPP&isAdditional=$isAdditional"))
     }
   }
+
+  def redirectToEstimateAppeal(taxPeriodStartDate: String, taxPeriodEndDate: String): Action[AnyContent] = authorise.async {
+    Future(Redirect( s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal-against-the-obligation-estimated-lpp?taxPeriodStartDate=${taxPeriodStartDate.toString}&taxPeriodEndDate=${taxPeriodEndDate.toString}"))
+  }
 }

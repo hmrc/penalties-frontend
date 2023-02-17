@@ -1082,7 +1082,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
   }
 
   "GET /appeal-penalty" should {
-    "redirect the user to the appeals service when the penalty is not a LPP" in {
+    "redirect the user to the appeals service when the penalty is a LSP" in {
       val request = controller.redirectToAppeals(
         penaltyId = "1234",
         isLPP = false,
@@ -1095,7 +1095,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=false&isAdditional=false"
     }
 
-    "redirect the user to the appeals service when the penalty is a LPP" in {
+    "redirect the user to the appeals service when the penalty is a LPP1" in {
       val request = controller.redirectToAppeals(
         penaltyId = "1234",
         isLPP = true,
@@ -1108,7 +1108,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=true&isAdditional=false"
     }
 
-    "redirect the user to the appeals service when the penalty is a LPP - Additional" in {
+    "redirect the user to the appeals service when the penalty is a LPP2" in {
       val request = controller.redirectToAppeals(
         penaltyId = "1234",
         isLPP = true,
@@ -1121,7 +1121,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=true&isAdditional=true"
     }
 
-    "redirect the user to the obligations appeals service when the penalty is not a LPP" in {
+    "redirect the user to the obligations appeals service when the penalty is a LSP" in {
       val request = controller.redirectToAppeals(
         penaltyId = "1234",
         isLPP = false,
@@ -1134,7 +1134,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234&isLPP=false&isAdditional=false"
     }
 
-    "redirect the user to the obligations appeals service when the penalty is a LPP" in {
+    "redirect the user to the obligations appeals service when the penalty is a LPP1" in {
       val request = controller.redirectToAppeals(
         penaltyId = "1234",
         isLPP = true,
@@ -1147,7 +1147,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234&isLPP=true&isAdditional=false"
     }
 
-    "redirect the user to the obligations appeals service when the penalty is a LPP - Additional" in {
+    "redirect the user to the obligations appeals service when the penalty is a LPP2" in {
       val request = controller.redirectToAppeals(
         penaltyId = "1234",
         isLPP = true,
@@ -1158,6 +1158,18 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       status(request) shouldBe Status.SEE_OTHER
       headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe
         "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234&isLPP=true&isAdditional=true"
+    }
+  }
+
+  "GET /appeal-estimated-penalty" should {
+    "redirect the user to the appeals service" in {
+      val sampleDate = LocalDate.now()
+      val request = controller.redirectToEstimateAppeal(sampleDate.toString, sampleDate.toString)(FakeRequest("GET", "/").withSession(
+        authToken -> "1234"
+      ))
+      status(request) shouldBe Status.SEE_OTHER
+      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe
+        s"http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation-estimated-lpp?taxPeriodStartDate=${sampleDate.toString}&taxPeriodEndDate=${sampleDate.toString}"
     }
   }
 }

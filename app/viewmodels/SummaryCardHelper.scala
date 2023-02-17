@@ -323,7 +323,9 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
       appealLevel,
       isVatPaid = isVatPaid,
       penaltyCategory = lpp.penaltyCategory,
-      dueDate = dateToString(lpp.principalChargeDueDate)
+      dueDate = dateToString(lpp.principalChargeDueDate),
+      taxPeriodStartDate = lpp.principalChargeBillingFrom.toString,
+      taxPeriodEndDate = lpp.principalChargeBillingTo.toString
     )
   }
 
