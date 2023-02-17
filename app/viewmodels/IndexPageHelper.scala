@@ -16,7 +16,6 @@
 
 package viewmodels
 
-import config.featureSwitches.FeatureSwitching
 import config.{AppConfig, ErrorHandler}
 import models.appealInfo.AppealStatusEnum.Upheld
 import models.compliance.{CompliancePayload, ComplianceStatusEnum}
