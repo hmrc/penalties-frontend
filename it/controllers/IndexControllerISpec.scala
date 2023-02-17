@@ -948,61 +948,6 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.select(".app-summary-card footer a").text shouldBe ""
       }
 
-      "return 200 (OK) and render the view displaying TTP content when TTP is active" in {
-        AuthStub.authorised()
-        val penaltyDetails = GetPenaltyDetails(
-          totalisations = None, lateSubmissionPenalty = None, latePaymentPenalty = Some(
-            LatePaymentPenalty(Seq(LPPDetails(principalChargeReference = "123456789",
-              penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-              penaltyChargeCreationDate = Some(sampleDate1),
-              penaltyStatus = LPPPenaltyStatusEnum.Posted,
-              penaltyAmountPaid = Some(BigDecimal(200)),
-              penaltyAmountOutstanding = Some(BigDecimal(200)),
-              LPP1LRDays = Some("15"),
-              LPP1HRDays = None,
-              LPP2Days = None,
-              LPP1LRCalculationAmount = None,
-              LPP1HRCalculationAmount = None,
-              LPP1LRPercentage = Some(BigDecimal(0.02)),
-              LPP1HRPercentage = None,
-              LPP2Percentage = None,
-              communicationsDate = Some(sampleDate1),
-              penaltyChargeDueDate = Some(sampleDate1),
-              appealInformation = Some(Seq(AppealInformationType(
-                appealStatus = Some(appealInfo.AppealStatusEnum.Unappealable),
-                appealLevel = None
-              ))),
-              principalChargeBillingFrom = sampleDate1,
-              principalChargeBillingTo = sampleDate1.plusMonths(1),
-              principalChargeDueDate = sampleDate1.plusMonths(2).plusDays(6),
-              penaltyChargeReference = Some("123456789"),
-              principalChargeLatestClearing = None,
-              LPPDetailsMetadata = LPPDetailsMetadata(
-                mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-                outstandingAmount = Some(99),
-                timeToPay = Some(
-                  Seq(
-                    TimeToPay(
-                      TTPStartDate = sampleDate1, TTPEndDate = Some(sampleDate2)
-                    )
-                  )
-                )
-              )
-            )))
-          ),
-          breathingSpace = None
-        )
-        setFeatureDate(Some(sampleDate2.minusDays(1)))
-        returnPenaltyDetailsStub(penaltyDetails)
-        val request = controller.onPageLoad()(fakeRequest)
-        await(request).header.status shouldBe Status.OK
-        val parsedBody = Jsoup.parse(contentAsString(request))
-        parsedBody.select("#time-to-pay > p").get(0).text shouldBe "There is a payment plan set up on this account."
-        parsedBody.select("#time-to-pay > p").get(1).text shouldBe "You must keep up with all payments. If you do not, your payment plan will fail and any penalties will be calculated from their original date."
-        parsedBody.select("#time-to-pay > p").get(2).text shouldBe "Check what you owe to see all unpaid charges."
-        setFeatureDate(None)
-      }
-
       "return 200 (OK) and render the view when removed points are below active points (active points are reindexed)" in {
         AuthStub.agentAuthorised()
         returnPenaltyDetailsStubAgent(getPenaltiesDataPayloadWith2PointsAndOneRemovedPoint)

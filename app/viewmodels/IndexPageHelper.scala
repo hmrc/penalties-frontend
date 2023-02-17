@@ -43,7 +43,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
                                 warningText: views.html.components.warningText,
                                 penaltiesService: PenaltiesService,
                                 complianceService: ComplianceService,
-                                errorHandler: ErrorHandler)(implicit val appConfig: AppConfig) extends ViewUtils with CurrencyFormatter with ImplicitDateFormatter with FeatureSwitching {
+                                errorHandler: ErrorHandler)(implicit val appConfig: AppConfig) extends ViewUtils with CurrencyFormatter with ImplicitDateFormatter {
 
   //scalastyle:off
   def getContentBasedOnPointsFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_],
@@ -236,17 +236,6 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       lateSubmissionPenaltyOptContent
     ).collect { case Some(x) => x }
     if(whatYouOweContent.nonEmpty) Some(bullets(whatYouOweContent.map(stringAsHtml))) else None
-  }
-
-  def isTTPActive(penaltyDetails: GetPenaltyDetails): Boolean = {
-    penaltyDetails.latePaymentPenalty.exists {
-      _.details.exists { //Current understanding is that TTP values are replicated across every LPP
-        _.LPPDetailsMetadata.timeToPay.exists {
-          _.exists(ttp => ttp.TTPEndDate.isDefined && (ttp.TTPEndDate.get.isEqual(getFeatureDate) || ttp.TTPEndDate.get.isAfter(getFeatureDate) && //Find any TTP end date that exists and ends today or in the future
-            (ttp.TTPStartDate.isEqual(getFeatureDate) || ttp.TTPStartDate.isBefore(getFeatureDate))))  //Find any TTP start date that exists and starts today or earlier
-        }
-      }
-    }
   }
 
   private def getLSPCompliantMonths(pointsThreshold: Int): Int = {
