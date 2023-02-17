@@ -213,8 +213,12 @@ calculation.key.2.text = {0}% o £{1} ({2})
 calculation.key.2.text.remove.30.days = {0}% o £{1} ({2}) = £{3}
 calculation.key.3 = Swm a gafwyd
 calculation.key.4 = Yn weddill i’w dalu
+calculation.ttp.insetText = You’ve asked HMRC if you can set up a payment plan. If a payment plan has been agreed, and you keep up with all payments, this penalty will not increase further.
+agent.calculation.ttp.insetText = Your client has asked HMRC if they can set up a payment plan. If a payment plan has been agreed, and they keep up with all payments, this penalty will not increase further.
 calculation.h2.estimates = Amcangyfrifon
 calculation.p.3.estimates.lpp2 = Bydd cosbau a llog yn ymddangos fel amcangyfrifon hyd nes y byddwch yn talu’r tâl cysylltiedig.
+calculation.p.3.estimates.lpp2.ttpActive = Penalties will show as estimates until you make all payments due under the payment plan.
+agent.calculation.p.3.estimates.lpp2.ttpActive = Penalties will show as estimates until your client makes all payments due under the payment plan.
 agent.calculation.p.3.estimates.lpp2 = Bydd cosbau a llog yn ymddangos fel amcangyfrifon hyd nes y bydd eich cleient yn talu’r tâl cysylltiedig.
 calculation.p.2.estimates.lpp1 = Bydd cosbau’n dangos fel amcangyfrifon hyd nes:
 calculation.p.2.estimates.b1 = rydych yn talu’r bil TAW, neu
