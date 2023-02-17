@@ -59,7 +59,7 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours {
     )
 
     def applyView(isTTPActive: Boolean = false, isUserAgent: Boolean = false, userOwes: Boolean = false): HtmlFormat.Appendable = {
-      indexPage.apply(html(), html(), Seq.empty, None, "", isTTPActive = isTTPActive,
+      indexPage.apply(html(), html(), Seq.empty, None, "",
         whatYouOweContent = if(!userOwes) None else helper.getWhatYouOweBreakdown(penaltyDetails))(implicitly, implicitly, if(isUserAgent) agentUser else vatTraderUser)
     }
 
@@ -97,34 +97,6 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours {
       }
     }
 
-    "display TTP (time to pay) content when a TTP is active (user is trader)" must {
-      val expectedContent = Seq(
-        Selectors.breadcrumbWithLink(1) -> breadcrumb1,
-        Selectors.breadcrumbWithLink(2) -> breadcrumb2,
-        Selectors.title -> title,
-        Selectors.h1 -> heading,
-        Selectors.timeToPayParagraph(1) -> ttpText.head,
-        Selectors.timeToPayParagraph(2) -> ttpText(1),
-        Selectors.timeToPayParagraph(3) -> ttpText(2),
-        Selectors.betaFeedbackBannerText -> betaFeedbackContent
-      )
-
-      behave like pageWithExpectedMessages(expectedContent)(asDocument(applyView(isTTPActive = true, userOwes = false)))
-    }
-
-    "display TTP (time to pay) content when a TTP is active (user is agent)" must {
-      val expectedContent = Seq(
-        Selectors.title -> titleAgent,
-        Selectors.h1 -> heading,
-        Selectors.timeToPayParagraph(1) -> ttpAgentText.head,
-        Selectors.timeToPayParagraph(2) -> ttpAgentText(1),
-        Selectors.timeToPayParagraph(3) -> ttpAgentText(2),
-        Selectors.betaFeedbackBannerText -> betaFeedbackContent
-      )
-
-      behave like pageWithExpectedMessages(expectedContent)(asDocument(applyView(isTTPActive = true, isUserAgent = true, userOwes = false)))
-    }
-
     "the footer should have the correct links" in {
       implicit val doc: Document = asDocument(applyView())
       val footerLinks = doc.select(".govuk-footer__link")
@@ -135,7 +107,6 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours {
       footerLinks.get(3).text shouldBe "Terms and conditions"
       footerLinks.get(4).text shouldBe "Help using GOV.UK"
       footerLinks.get(5).text shouldBe "Contact"
-
     }
   }
 }

@@ -67,7 +67,6 @@ class IndexController @Inject()(view: IndexView,
                 val lppSummaryCards = cardHelper.populateLatePaymentPenaltyCard(penaltyData.latePaymentPenalty.map(_.details))
                 val isAnyUnpaidLSPAndNotSubmittedReturn = penaltiesService.isAnyLSPUnpaidAndSubmissionIsDue(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
                 val isAnyUnpaidLSP = penaltiesService.isAnyLSPUnpaid(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
-                val isTTPActive = pageHelper.isTTPActive(penaltyData)
                 lazy val result = Ok(view(contentToDisplayAboveCards,
                   contentLPPToDisplayAboveCards,
                   lspSummaryCards,
@@ -75,7 +74,6 @@ class IndexController @Inject()(view: IndexView,
                   currencyFormatAsNonHTMLString(penaltyData.totalisations.flatMap(_.LSPTotalValue).getOrElse(0)),
                   isAnyUnpaidLSP,
                   isAnyUnpaidLSPAndNotSubmittedReturn,
-                  isTTPActive,
                   whatYouOweBreakdown))
                 (optPOCAchievementDate.isDefined, optRegimeThreshold.isDefined) match {
                   case (true, true) =>

@@ -16,14 +16,17 @@
 
 package viewmodels
 
+import config.AppConfig
+import config.featureSwitches.FeatureSwitching
+import models.GetPenaltyDetails
 import models.lpp.LPPDetails
 import play.api.i18n.Messages
 import utils.{CurrencyFormatter, ImplicitDateFormatter, ViewUtils}
 
-import java.time.{LocalDate, LocalDateTime}
+import java.time.LocalDate
 import javax.inject.Inject
 
-class CalculationPageHelper @Inject()() extends ViewUtils with ImplicitDateFormatter {
+class CalculationPageHelper @Inject()(implicit val appConfig: AppConfig) extends ViewUtils with ImplicitDateFormatter with FeatureSwitching {
 
   def getCalculationRowForLPP(lpp: LPPDetails)(implicit messages: Messages): Option[Seq[String]] = {
     (lpp.LPP1LRCalculationAmount, lpp.LPP1HRCalculationAmount) match {
@@ -47,11 +50,18 @@ class CalculationPageHelper @Inject()() extends ViewUtils with ImplicitDateForma
     }
   }
 
-  def getDateTimeAsDayMonthYear(dateTime: LocalDateTime)(implicit messages: Messages): String = {
-    dateTimeToString(dateTime)
-  }
-
   def getDateAsDayMonthYear(date: LocalDate)(implicit messages: Messages): String = {
     dateToString(date)
+  }
+
+  def isTTPActive(penaltyDetails: GetPenaltyDetails): Boolean = {
+    penaltyDetails.latePaymentPenalty.exists {
+      _.details.exists { //Current understanding is that TTP values are replicated across every LPP
+        _.LPPDetailsMetadata.timeToPay.exists {
+          _.exists(ttp => ttp.TTPEndDate.isDefined && (ttp.TTPEndDate.get.isEqual(getFeatureDate) || ttp.TTPEndDate.get.isAfter(getFeatureDate) && //Find any TTP end date that exists and ends today or in the future
+            (ttp.TTPStartDate.isEqual(getFeatureDate) || ttp.TTPStartDate.isBefore(getFeatureDate)))) //Find any TTP start date that exists and starts today or earlier
+        }
+      }
+    }
   }
 }
