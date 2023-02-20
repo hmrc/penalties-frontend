@@ -538,6 +538,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     }
 
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due (TTP Active)" in {
+      setFeatureDate(Some(LocalDate.of(2021, 1, 31)))
       returnPenaltyDetailsStub(penaltyDetailsWithDay15ChargeTPPActive)
       val request = controller.onPageLoad("12345678901239", "LPP1")(fakeRequest)
       status(request) shouldBe Status.OK
@@ -555,7 +556,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£400.00"
       parsedBody.select("#ttp-inset-text").text() shouldBe "You’ve asked HMRC if you can set up a payment plan. If a payment plan has been agreed, and you keep up with all payments, this penalty will not increase further."
       parsedBody.select("h2").get(0).text() shouldBe "Estimates"
-      parsedBody.select("#main-content p").get(4).text() shouldBe "Penalties will show as estimates until you make all payments due under the payment plan."
+      parsedBody.select("#main-content p").get(3).text() shouldBe "Penalties will show as estimates until you make all payments due under the payment plan."
+      parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
       parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
     }
 
