@@ -67,9 +67,9 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
             PagerDutyHelper.log("CalculationController: getPenaltyDetails", EMPTY_PENALTY_BODY)
             errorHandler.showInternalServerError
           } else {
-            val startDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeBillingFrom)
-            val endDateOfPeriod: String = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeBillingTo)
-            val dueDateOfPenalty: Option[String] = penalty.get.penaltyChargeDueDate.map(calculationPageHelper.getDateAsDayMonthYear(_))
+            val startDateOfPeriod = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeBillingFrom)
+            val endDateOfPeriod = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeBillingTo)
+            val dueDateOfPenalty = penalty.get.penaltyChargeDueDate.map(calculationPageHelper.getDateAsDayMonthYear(_))
             val isPenaltyEstimate = penalty.get.penaltyStatus.equals(LPPPenaltyStatusEnum.Accruing)
             val amountReceived = if(isPenaltyEstimate) CurrencyFormatter.parseBigDecimalToFriendlyValue(0) else CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.penaltyAmountPaid.getOrElse(0))
             val amountLeftToPay = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.penaltyAmountOutstanding.get)
@@ -89,8 +89,9 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
                     dueDateOfPenalty))
                 })
             } else {
+              val isTTPActive = calculationPageHelper.isTTPActive(payload)
               val isEstimate = penalty.get.penaltyStatus.equals(LPPPenaltyStatusEnum.Accruing)
-              Ok(viewLPP2(isEstimate, startDateOfPeriod, endDateOfPeriod, dueDateOfPenalty, parsedPenaltyAmount, amountReceived, amountLeftToPay))
+              Ok(viewLPP2(isEstimate, startDateOfPeriod, endDateOfPeriod, dueDateOfPenalty, parsedPenaltyAmount, amountReceived, amountLeftToPay, isTTPActive))
             }
           }
         }

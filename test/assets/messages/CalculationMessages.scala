@@ -37,13 +37,19 @@ object CalculationMessages {
 
   val th4LPP = "Left to pay"
 
-  val th4Additional = "Calculation"
-
   val h2Estimates = "Estimates"
+
+  val ttpActiveInsetText = "You’ve asked HMRC if you can set up a payment plan. If a payment plan has been agreed, and you keep up with all payments, this penalty will not increase further."
+
+  val ttpActiveAgentInsetText = "Your client has asked HMRC if they can set up a payment plan. If a payment plan has been agreed, and they keep up with all payments, this penalty will not increase further."
 
   val p2EstimatesLPP2 = "Penalties and interest will show as estimates until you pay the charge they relate to."
 
+  val p2EstimatesTTPActive = "Penalties will show as estimates until you make all payments due under the payment plan."
+
   val p2EstimatesLPP2Agent = "Penalties and interest will show as estimates until your client pays the charge they relate to."
+
+  val p2EstimatesAgentTTPActive = "Penalties will show as estimates until your client makes all payments due under the payment plan."
 
   val p2EstimatesLPP1 = "Penalties will show as estimates until:"
 

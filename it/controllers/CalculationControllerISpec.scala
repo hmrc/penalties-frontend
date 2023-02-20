@@ -141,8 +141,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         principalChargeReference = "12345678901234",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
         penaltyStatus = LPPPenaltyStatusEnum.Accruing,
-        penaltyAmountPaid = Some(277.00),
-        penaltyAmountOutstanding = Some(123.00),
+        penaltyAmountPaid = None,
+        penaltyAmountOutstanding = Some(400.00),
         LPP1LRDays = Some("15"),
         LPP1HRDays = None,
         LPP2Days = None,
@@ -249,8 +249,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         principalChargeReference = "12345678901234",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
         penaltyStatus = LPPPenaltyStatusEnum.Accruing,
-        penaltyAmountPaid = Some(277.00),
-        penaltyAmountOutstanding = Some(123.00),
+        penaltyAmountPaid = None,
+        penaltyAmountOutstanding = Some(400.00),
         LPP1LRDays = Some("15"),
         LPP1HRDays = Some("31"),
         LPP2Days = None,
@@ -290,11 +290,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         LPP1LRDays = Some("15"),
         LPP1HRDays = Some("31"),
         LPP2Days = Some("31"),
-        LPP1LRCalculationAmount = Some(123.00),
-        LPP1HRCalculationAmount = Some(123.00),
-        LPP2Percentage = Some(2.00),
-        LPP1LRPercentage = Some(1.00),
-        LPP1HRPercentage = Some(1.00),
+        LPP1LRCalculationAmount = Some(61.72),
+        LPP1HRCalculationAmount = Some(61.73),
+        LPP2Percentage = Some(4.00),
+        LPP1LRPercentage = Some(2.00),
+        LPP1HRPercentage = Some(2.00),
         penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
         communicationsDate = Some(LocalDate.parse("2069-10-30")),
         penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
@@ -322,16 +322,16 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         principalChargeReference = "65431234567890",
         penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
         penaltyStatus = LPPPenaltyStatusEnum.Accruing,
-        penaltyAmountPaid = Some(113.45),
-        penaltyAmountOutstanding = Some(10.00),
+        penaltyAmountPaid = None,
+        penaltyAmountOutstanding = Some(123.45),
         LPP1LRDays = Some("15"),
         LPP1HRDays = Some("31"),
         LPP2Days = Some("31"),
-        LPP1LRCalculationAmount = Some(123.00),
-        LPP1HRCalculationAmount = Some(123.00),
-        LPP2Percentage = Some(2.00),
-        LPP1LRPercentage = Some(1.00),
-        LPP1HRPercentage = Some(1.00),
+        LPP1LRCalculationAmount = Some(61.72),
+        LPP1HRCalculationAmount = Some(61.73),
+        LPP2Percentage = Some(4.00),
+        LPP1LRPercentage = Some(2.00),
+        LPP1HRPercentage = Some(2.00),
         penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
         communicationsDate = Some(LocalDate.parse("2069-10-30")),
         penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
@@ -348,6 +348,47 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
           outstandingAmount = Some(99),
           timeToPay = None
+        )
+      ))
+    ))
+  )
+
+  val penaltyDetailsWithAdditionalDuePenaltyTTPActive: GetPenaltyDetails = samplePenaltyDetails.copy(
+    latePaymentPenalty = Some(LatePaymentPenalty(
+      details = Seq(LPPDetails(
+        principalChargeReference = "65431234567890",
+        penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
+        penaltyStatus = LPPPenaltyStatusEnum.Accruing,
+        penaltyAmountPaid = None,
+        penaltyAmountOutstanding = Some(123.45),
+        LPP1LRDays = Some("15"),
+        LPP1HRDays = Some("31"),
+        LPP2Days = Some("31"),
+        LPP1LRCalculationAmount = Some(61.72),
+        LPP1HRCalculationAmount = Some(61.73),
+        LPP2Percentage = Some(4.00),
+        LPP1LRPercentage = Some(2.00),
+        LPP1HRPercentage = Some(2.00),
+        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
+        communicationsDate = Some(LocalDate.parse("2069-10-30")),
+        penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
+        appealInformation = Some(Seq(AppealInformationType(
+          appealStatus = Some(AppealStatusEnum.Unappealable),
+          appealLevel = Some(AppealLevelEnum.HMRC)
+        ))),
+        principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
+        principalChargeBillingTo = LocalDate.parse("2021-02-01"),
+        principalChargeDueDate = LocalDate.now().minusDays(40),
+        penaltyChargeReference = Some("1234567890"),
+        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+        LPPDetailsMetadata = LPPDetailsMetadata(
+          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+          outstandingAmount = Some(99),
+          timeToPay = Some(
+            Seq(
+              TimeToPay(TTPStartDate = LocalDate.parse("2021-01-01"), TTPEndDate = Some(LocalDate.parse("2021-02-01")))
+            )
+          )
         )
       ))
     ))
@@ -431,7 +472,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£0.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£123.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£400.00"
       parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
       parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
     }
@@ -451,7 +492,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£0.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£123.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£400.00"
       parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
       parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
     }
@@ -509,9 +550,33 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£0.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£10.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£123.45"
       parsedBody.select("h2").get(0).text() shouldBe "Estimates"
       parsedBody.select("#main-content p").get(4).text() shouldBe "Penalties and interest will show as estimates until you pay the charge they relate to."
+      parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
+    }
+
+    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due (TTP Active)" in {
+      setFeatureDate(Some(LocalDate.of(2021, 1, 31)))
+      returnPenaltyDetailsStub(penaltyDetailsWithAdditionalDuePenaltyTTPActive)
+      val request = controller.onPageLoad("65431234567890", "LPP2")(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
+      parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
+      parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
+      parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
+      parsedBody.select("#main-content p").get(1).text() shouldBe "This penalty applies from day 31, if any VAT remains unpaid."
+      parsedBody.select("#main-content p").get(2).text() shouldBe "The total increases daily until you pay your VAT or set up a payment plan."
+      parsedBody.select("#main-content p").get(3).text() shouldBe "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£123.45"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£0.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£123.45"
+      parsedBody.select("#ttp-inset-text").get(0).text() shouldBe "You’ve asked HMRC if you can set up a payment plan. If a payment plan has been agreed, and you keep up with all payments, this penalty will not increase further."
+      parsedBody.select("h2").get(0).text() shouldBe "Estimates"
+      parsedBody.select("#main-content p").get(4).text() shouldBe "Penalties will show as estimates until you make all payments due under the payment plan."
       parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
     }
 
@@ -532,7 +597,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£0.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£10.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£123.45"
       parsedBody.select("h2").get(0).text() shouldBe "Estimates"
       parsedBody.select("#main-content p").get(4).text() shouldBe "Penalties and interest will show as estimates until your client pays the charge they relate to."
       parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"

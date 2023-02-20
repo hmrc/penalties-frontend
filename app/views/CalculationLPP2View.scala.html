@@ -19,7 +19,8 @@
 @this(
         layout: Layout,
         link: components.link,
-        details: GovukDetails
+        details: GovukDetails,
+        insetText: GovukInsetText
 )
 
 
@@ -30,7 +31,8 @@
         dueDate: Option[String],
         penaltyAmount: String,
         amountReceived: String,
-        amountLeftToPay: String
+        amountLeftToPay: String,
+        isTTPActive: Boolean
 )(implicit messages: Messages, appConfig: AppConfig, user: User[_])
 
 @layout(pageTitle = messages("calculation.headingAndTitle.lpp"),
@@ -85,9 +87,20 @@
 
   </dl>
 
+  @if(isTTPActive) {
+    @insetText(InsetText(
+      id = Some("ttp-inset-text"),
+      content = HtmlContent(getMessage("calculation.ttp.insetText"))))
+  }
+
   @if(isEstimate) {
     <h2 class="govuk-heading-s">@messages("calculation.h2.estimates")</h2>
-    <p class="govuk-body">@getMessage("calculation.p.3.estimates.lpp2")</p>
+    @if(isTTPActive) {
+      <p class="govuk-body">@getMessage("calculation.p.3.estimates.lpp2.ttpActive")</p>
+    } else {
+      <p class="govuk-body">@getMessage("calculation.p.3.estimates.lpp2")</p>
+    }
+
   }
 
   <p class="govuk-body">
