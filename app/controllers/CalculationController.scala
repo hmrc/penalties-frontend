@@ -75,6 +75,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
             val amountLeftToPay = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.penaltyAmountOutstanding.get)
             val penaltyAmount = penalty.get.penaltyAmountOutstanding.get + penalty.get.penaltyAmountPaid.getOrElse(BigDecimal(0))
             val parsedPenaltyAmount = CurrencyFormatter.parseBigDecimalToFriendlyValue(penaltyAmount)
+            val isTTPActive = calculationPageHelper.isTTPActive(payload)
             logger.debug(s"[CalculationController][getPenaltyDetails] - found penalty: ${penalty.get}")
             if (!penaltyCategory.equals(LPP2)) {
               val calculationRow = calculationPageHelper.getCalculationRowForLPP(penalty.get)
@@ -86,10 +87,9 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
               })(
                 rowSeq => {
                   Ok(viewLPP(amountReceived, parsedPenaltyAmount, amountLeftToPay, rowSeq, isPenaltyEstimate, startDateOfPeriod, endDateOfPeriod,
-                    dueDateOfPenalty))
+                    dueDateOfPenalty, isTTPActive))
                 })
             } else {
-              val isTTPActive = calculationPageHelper.isTTPActive(payload)
               val isEstimate = penalty.get.penaltyStatus.equals(LPPPenaltyStatusEnum.Accruing)
               Ok(viewLPP2(isEstimate, startDateOfPeriod, endDateOfPeriod, dueDateOfPenalty, parsedPenaltyAmount, amountReceived, amountLeftToPay, isTTPActive))
             }

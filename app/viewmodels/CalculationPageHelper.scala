@@ -58,8 +58,8 @@ class CalculationPageHelper @Inject()(implicit val appConfig: AppConfig) extends
     penaltyDetails.latePaymentPenalty.exists {
       _.details.exists { //Current understanding is that TTP values are replicated across every LPP
         _.LPPDetailsMetadata.timeToPay.exists {
-          _.exists(ttp => {
-            if(ttp.TTPEndDate.isDefined) {
+          value => value.exists(ttp => {
+            if (ttp.TTPEndDate.isDefined) {
               (ttp.TTPStartDate.isEqual(getFeatureDate) || ttp.TTPStartDate.isBefore(getFeatureDate)) && (ttp.TTPEndDate.get.isEqual(getFeatureDate) || ttp.TTPEndDate.get.isAfter(getFeatureDate))
             } else {
               ttp.TTPStartDate.isEqual(getFeatureDate) || ttp.TTPStartDate.isBefore(getFeatureDate)

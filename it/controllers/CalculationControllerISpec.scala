@@ -393,6 +393,46 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       ))
     ))
   )
+
+  val penaltyDetailsWithDay15ChargeTPPActive: GetPenaltyDetails = samplePenaltyDetails.copy(
+    latePaymentPenalty = Some(LatePaymentPenalty(
+      details = Seq(LPPDetails(
+        principalChargeReference = "12345678901239",
+        penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
+        penaltyStatus = LPPPenaltyStatusEnum.Accruing,
+        penaltyAmountPaid = None,
+        penaltyAmountOutstanding = Some(400.00),
+        LPP1LRDays = Some("15"),
+        LPP1HRDays = None,
+        LPP2Days = None,
+        LPP1LRCalculationAmount = Some(20000.00),
+        LPP1HRCalculationAmount = None,
+        LPP2Percentage = None,
+        LPP1LRPercentage = Some(2.00),
+        LPP1HRPercentage = None,
+        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
+        communicationsDate = Some(LocalDate.parse("2069-10-30")),
+        penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
+        appealInformation = Some(Seq(AppealInformationType(
+          appealStatus = Some(AppealStatusEnum.Unappealable),
+          appealLevel = Some(AppealLevelEnum.HMRC)
+        ))),
+        principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
+        principalChargeBillingTo = LocalDate.parse("2021-02-01"),
+        principalChargeDueDate = LocalDate.parse("2021-03-08"),
+        penaltyChargeReference = Some("1234567890"),
+        principalChargeLatestClearing = None,
+        LPPDetailsMetadata = LPPDetailsMetadata(
+          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+          outstandingAmount = Some(99),
+          timeToPay = Some(
+            Seq(
+              TimeToPay(TTPStartDate = LocalDate.parse("2021-01-01"), TTPEndDate = Some(LocalDate.parse("2021-02-01")))
+            )
+          )
+        )
+      ))
+    )))
   
   "GET /calculation when it is not an additional penalty" should {
       "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in {
@@ -495,6 +535,28 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£400.00"
       parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
       parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
+    }
+
+    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due (TTP Active)" in {
+      returnPenaltyDetailsStub(penaltyDetailsWithDay15ChargeTPPActive)
+      val request = controller.onPageLoad("12345678901239", "LPP1")(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
+      parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
+      parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
+      parsedBody.select("#main-content header p span").first.text() shouldBe "The period dates are"
+      parsedBody.select("#how-penalty-is-applied").text() shouldBe "This penalty applies if VAT has not been paid for 15 days."
+      parsedBody.select("#15-day-calculation").text() shouldBe "The calculation we use is: 2% of £20,000.00 (the unpaid VAT 15 days after the due date)"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£400.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£0.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£400.00"
+      parsedBody.select("#ttp-inset-text").text() shouldBe "You’ve asked HMRC if you can set up a payment plan. If a payment plan has been agreed, and you keep up with all payments, this penalty will not increase further."
+      parsedBody.select("h2").get(0).text() shouldBe "Estimates"
+      parsedBody.select("#main-content p").get(4).text() shouldBe "Penalties will show as estimates until you make all payments due under the payment plan."
+      parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
     }
 
     "return 500 (ISE) when the user specifies a penalty not within their data" in {
