@@ -265,6 +265,50 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         }
       }
 
+      "it is a first penalty and TTP is active (penalty is not estimated)" must {
+        def applyView(calculationRow: Seq[String]): HtmlFormat.Appendable = {
+          calculationPage.apply(
+            amountReceived = "100.00",
+            penaltyAmount = "400.00",
+            amountLeftToPay = "300.00",
+            calculationRowSeq = calculationRow,
+            isPenaltyEstimate = false,
+            startDate = "1 April 2022",
+            endDate = "30 June 2022",
+            dueDate = Some("7 September 2022"),
+            isTTPActive = true)(implicitly, implicitly, vatTraderUser)
+        }
+
+        implicit val docWithOnlyOneCalculation: Document =
+          asDocument(applyView(Seq("2% of £3,850.00 (the unpaid VAT 15 days after the due date)")))
+
+
+        val expectedContent = Seq(
+          Selector.breadcrumbWithLink(1) -> breadcrumb1,
+          Selector.breadcrumbWithLink(2) -> breadcrumb2,
+          Selector.breadcrumbWithLink(3) -> breadcrumb3,
+          Selector.title -> titleLPP,
+          Selector.periodHiddenText -> periodHiddenText,
+          Selector.periodWithText -> periodWithText,
+          Selector.h1 -> headingLPP,
+          Selector.howPenaltyIsApplied -> howPenaltyIsApplied15Days,
+          Selector.fifteenDayCalculation -> onePartCalculation("2% of £3,850.00 (the unpaid VAT 15 days after the due date)"),
+          Selector.summaryListRowKey(1) -> th2LPP,
+          Selector.summaryListRowValue(1) -> "£400.00",
+          Selector.summaryListRowKey(2) -> th3LPP,
+          Selector.summaryListRowValue(2) -> "£100.00",
+          Selector.summaryListRowKey(3) -> th4LPP,
+          Selector.summaryListRowValue(3) -> "£300.00",
+          Selector.link -> link
+        )
+
+        behave like pageWithExpectedMessages(expectedContent)(docWithOnlyOneCalculation)
+
+        "not display TTP information when TTP is not active" in {
+          docWithOnlyOneCalculation.select(".ttp-info").isEmpty shouldBe true
+        }
+      }
+
       "it is a first penalty and is estimated" must {
         def applyView(calculationRow: Seq[String], isMultipleAmounts: Boolean): HtmlFormat.Appendable = {
           calculationPage.apply(
@@ -305,6 +349,10 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         )
 
         behave like pageWithExpectedMessages(expectedContent)(docWithOnlyOneCalculation)
+
+        "not display TTP information when TTP is not active" in {
+          docWithOnlyOneCalculation.select(".ttp-info").isEmpty shouldBe true
+        }
       }
 
       "it is a first penalty and is estimated (TTP active)" must {
