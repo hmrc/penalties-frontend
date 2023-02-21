@@ -20,6 +20,7 @@ import assets.messages.CalculationMessages._
 import assets.messages.IndexMessages.{breadcrumb1, breadcrumb2, breadcrumb3}
 import base.{BaseSelectors, SpecBase}
 import org.jsoup.nodes.Document
+import org.openqa.selenium.NoSuchElementException
 import play.twirl.api.HtmlFormat
 import utils.ViewUtils
 import views.behaviours.ViewBehaviours
@@ -106,6 +107,10 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           doc.select(Selector.breadcrumbWithLink(1)).attr("href") shouldBe appConfig.btaUrl
           doc.select(Selector.breadcrumbWithLink(2)).attr("href") shouldBe appConfig.vatOverviewUrl
           doc.select(Selector.breadcrumbWithLink(3)).attr("href") shouldBe controllers.routes.IndexController.onPageLoad.url
+        }
+
+        "not display TPP content" in {
+          doc.select("#ttp-inset-text").isEmpty shouldBe true
         }
       }
 

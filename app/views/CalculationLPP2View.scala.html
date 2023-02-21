@@ -87,13 +87,12 @@
 
   </dl>
 
-  @if(isTTPActive) {
-    @insetText(InsetText(
-      id = Some("ttp-inset-text"),
-      content = HtmlContent(getMessage("calculation.ttp.insetText"))))
-  }
-
   @if(isEstimate) {
+    @if(isTTPActive) {
+        @insetText(InsetText(
+            id = Some("ttp-inset-text"),
+            content = HtmlContent(getMessage("calculation.ttp.insetText"))))
+    }
     <h2 class="govuk-heading-s">@messages("calculation.h2.estimates")</h2>
     @if(isTTPActive) {
       <p class="govuk-body">@getMessage("calculation.p.3.estimates.lpp.ttpActive")</p>
