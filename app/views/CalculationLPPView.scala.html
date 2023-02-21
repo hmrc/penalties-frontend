@@ -34,7 +34,7 @@
         startDate: String,
         endDate: String,
         dueDate: Option[String],
-        isTPPActive: Boolean
+        isTTPActive: Boolean
 )(implicit messages: Messages, appConfig: AppConfig, user: User[_])
 
 @layout(pageTitle = messages("calculation.headingAndTitle.lpp"),
@@ -101,18 +101,18 @@
         </div>
     </dl>
 
-    @if(isTPPActive) {
+    @if(isTTPActive) {
         @insetText(InsetText(
         id = Some("ttp-inset-text"),
         content = HtmlContent(getMessage("calculation.ttp.insetText"))))
     }
 
     @if(isPenaltyEstimate){
-        @if(!isTPPActive) {
+        @if(!isTTPActive) {
             @warningText(Html(getMessage("calculation.estimate.footerNote.warning")))
         }
         <h2 class="govuk-heading-s">@messages("calculation.h2.estimates")</h2>
-        @if(isTPPActive) {
+        @if(isTTPActive) {
             <p class="govuk-body">@getMessage("calculation.p.3.estimates.lpp.ttpActive")</p>
         } else {
             <p class="govuk-body">@messages("calculation.p.2.estimates.lpp1")</p>
