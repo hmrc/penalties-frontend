@@ -59,7 +59,7 @@ class CalculationPageHelper @Inject()(implicit val appConfig: AppConfig) extends
       _.details.exists { //Current understanding is that TTP values are replicated across every LPP
         _.LPPDetailsMetadata.timeToPay.exists {
           _.exists(ttp => {
-            if(ttp.TTPEndDate.isDefined) {
+            if (ttp.TTPEndDate.isDefined) {
               (ttp.TTPStartDate.isEqual(getFeatureDate) || ttp.TTPStartDate.isBefore(getFeatureDate)) && (ttp.TTPEndDate.get.isEqual(getFeatureDate) || ttp.TTPEndDate.get.isAfter(getFeatureDate))
             } else {
               ttp.TTPStartDate.isEqual(getFeatureDate) || ttp.TTPStartDate.isBefore(getFeatureDate)
