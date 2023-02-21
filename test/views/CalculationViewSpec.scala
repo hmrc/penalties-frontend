@@ -307,7 +307,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         behave like pageWithExpectedMessages(expectedContent)(docWithOnlyOneCalculation)
       }
 
-      "it is a first penalty and is estimated (TPP active)" must {
+      "it is a first penalty and is estimated (TTP active)" must {
         def applyView(calculationRow: Seq[String], isMultipleAmounts: Boolean): HtmlFormat.Appendable = {
           calculationPage.apply(
             amountReceived = "100.00",
@@ -430,7 +430,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         behave like pageWithExpectedMessages(expectedContent)(docWithOnlyOneCalculation)
       }
 
-      "it is a first penalty and the user is an Agent (estimate and TPP is active)" must {
+      "it is a first penalty and the user is an Agent (estimate and TTP is active)" must {
         def applyView(calculationRow: Seq[String], isMultipleAmounts: Boolean): HtmlFormat.Appendable = {
           calculationPage.apply(
             amountReceived = "100",

@@ -394,7 +394,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     ))
   )
 
-  val penaltyDetailsWithDay15ChargeTPPActive: GetPenaltyDetails = samplePenaltyDetails.copy(
+  val penaltyDetailsWithDay15ChargeTTPActive: GetPenaltyDetails = samplePenaltyDetails.copy(
     latePaymentPenalty = Some(LatePaymentPenalty(
       details = Seq(LPPDetails(
         principalChargeReference = "12345678901239",
@@ -433,7 +433,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         )
       ))
     )))
-  
+
   "GET /calculation when it is not an additional penalty" should {
       "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in {
         returnPenaltyDetailsStub(penaltyDetailsWithDay15ChargePosted)
@@ -539,7 +539,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
 
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due (TTP Active)" in {
       setFeatureDate(Some(LocalDate.of(2021, 1, 31)))
-      returnPenaltyDetailsStub(penaltyDetailsWithDay15ChargeTPPActive)
+      returnPenaltyDetailsStub(penaltyDetailsWithDay15ChargeTTPActive)
       val request = controller.onPageLoad("12345678901239", "LPP1")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
