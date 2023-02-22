@@ -20,6 +20,7 @@ import assets.messages.CalculationMessages._
 import assets.messages.IndexMessages.{breadcrumb1, breadcrumb2, breadcrumb3}
 import base.{BaseSelectors, SpecBase}
 import org.jsoup.nodes.Document
+import org.openqa.selenium.NoSuchElementException
 import play.twirl.api.HtmlFormat
 import utils.ViewUtils
 import views.behaviours.ViewBehaviours
@@ -107,6 +108,10 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           doc.select(Selector.breadcrumbWithLink(2)).attr("href") shouldBe appConfig.vatOverviewUrl
           doc.select(Selector.breadcrumbWithLink(3)).attr("href") shouldBe controllers.routes.IndexController.onPageLoad.url
         }
+
+        "not display TTP content" in {
+          doc.select(".ttp-content").isEmpty shouldBe true
+        }
       }
 
       "it is an second penalty and the penalty is estimated (TTP active)" must {
@@ -192,6 +197,51 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         )
 
         behave like pageWithExpectedMessages(expectedContent)
+
+        "not display TTP content" in {
+          doc.select(".ttp-content").isEmpty shouldBe true
+        }
+      }
+
+      "it is a second penalty and TTP is active (it is not estimated)" must {
+        def applyView(): HtmlFormat.Appendable = {
+          calculationLPP2Page.apply(
+            isEstimate = false,
+            startDate = "1 April 2022",
+            endDate = "30 June 2022",
+            dueDate = Some("17 October 2022"),
+            penaltyAmount = "50.50",
+            amountReceived = "40.10",
+            amountLeftToPay = "10.40",
+            isTTPActive = true)(implicitly, implicitly, vatTraderUser)
+        }
+
+        implicit val doc: Document = asDocument(applyView())
+
+        val expectedContent = Seq(
+          Selector.title -> titleLPP,
+          Selector.periodWithText -> periodWithText,
+          Selector.HeaderTextNotVisible -> periodHiddenText,
+          Selector.h1 -> headingLPP,
+          Selector.howPenaltyIsApplied -> howPenaltyIsAppliedLPP2,
+          Selector.whenPenaltyIncreases -> whenPenaltyIncreases,
+          Selector.calculation -> lpp2Calculation,
+          Selector.summaryListRowKey(1) -> dueDate,
+          Selector.summaryListRowValue(1) -> "17 October 2022",
+          Selector.summaryListRowKey(2) -> th2LPP,
+          Selector.summaryListRowValue(2) -> "£50.50",
+          Selector.summaryListRowKey(3) -> th3LPP,
+          Selector.summaryListRowValue(3) -> "£40.10",
+          Selector.summaryListRowKey(4) -> th4LPP,
+          Selector.summaryListRowValue(4) -> "£10.40",
+          Selector.link -> link
+        )
+
+        behave like pageWithExpectedMessages(expectedContent)
+
+        "not display TTP content" in {
+          doc.select(".ttp-content").isEmpty shouldBe true
+        }
       }
 
       "it is a first penalty" must {
