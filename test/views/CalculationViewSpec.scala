@@ -238,6 +238,10 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         )
 
         behave like pageWithExpectedMessages(expectedContent)
+
+        "not display TTP content" in {
+          doc.select(".ttp-content").isEmpty shouldBe true
+        }
       }
 
       "it is a first penalty" must {
