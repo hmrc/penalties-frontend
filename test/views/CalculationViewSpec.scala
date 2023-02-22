@@ -109,8 +109,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           doc.select(Selector.breadcrumbWithLink(3)).attr("href") shouldBe controllers.routes.IndexController.onPageLoad.url
         }
 
-        "not display TPP content" in {
-          doc.select("#ttp-inset-text").isEmpty shouldBe true
+        "not display TTP content" in {
+          doc.select(".ttp-content").isEmpty shouldBe true
         }
       }
 
