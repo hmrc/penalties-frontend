@@ -515,6 +515,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£400.00"
       parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
       parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
+      parsedBody.select(".ttp-content").isEmpty shouldBe true
     }
 
     "the user has specified a valid penalty ID (parses decimals correctly)" in {

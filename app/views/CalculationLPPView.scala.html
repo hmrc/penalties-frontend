@@ -101,26 +101,23 @@
         </div>
     </dl>
 
-    @if(isTTPActive) {
-        @insetText(InsetText(
-        id = Some("ttp-inset-text"),
-        content = HtmlContent(getMessage("calculation.ttp.insetText"))))
-    }
-
     @if(isPenaltyEstimate){
-        @if(!isTTPActive) {
-            @warningText(Html(getMessage("calculation.estimate.footerNote.warning")))
+        @if(isTTPActive) {
+          @insetText(InsetText(
+            id = Some("ttp-inset-text"),
+            classes = "ttp-content",
+            content = HtmlContent(getMessage("calculation.ttp.insetText"))))
+        } else {
+          @warningText(Html(getMessage("calculation.estimate.footerNote.warning")))
         }
         <h2 class="govuk-heading-s">@messages("calculation.h2.estimates")</h2>
         @if(isTTPActive) {
-            <p class="govuk-body">@getMessage("calculation.p.3.estimates.lpp.ttpActive")</p>
+            <p class="govuk-body ttp-content">@getMessage("calculation.p.3.estimates.lpp.ttpActive")</p>
         } else {
             <p class="govuk-body">@messages("calculation.p.2.estimates.lpp1")</p>
             @bullets(
                 Seq(
-                    Html(
-                            getMessage("calculation.p.2.estimates.b1")
-                    ),
+                    Html(getMessage("calculation.p.2.estimates.b1")),
                     Html(messages("calculation.p.2.estimates.b2"))
                 )
             )
