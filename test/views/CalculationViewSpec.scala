@@ -305,7 +305,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         behave like pageWithExpectedMessages(expectedContent)(docWithOnlyOneCalculation)
 
         "not display TTP information when TTP is not active" in {
-          docWithOnlyOneCalculation.select(".ttp-info").isEmpty shouldBe true
+          docWithOnlyOneCalculation.select(".ttp-content").isEmpty shouldBe true
         }
       }
 
@@ -351,7 +351,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         behave like pageWithExpectedMessages(expectedContent)(docWithOnlyOneCalculation)
 
         "not display TTP information when TTP is not active" in {
-          docWithOnlyOneCalculation.select(".ttp-info").isEmpty shouldBe true
+          docWithOnlyOneCalculation.select(".ttp-content").isEmpty shouldBe true
         }
       }
 
