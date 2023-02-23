@@ -30,7 +30,7 @@ import utils.{CurrencyFormatter, ImplicitDateFormatter, PenaltyPeriodHelper, Vie
 import java.time.LocalDate
 import javax.inject.Inject
 
-class SummaryCardHelper @Inject()(link: views.html.components.link) extends ImplicitDateFormatter with ViewUtils {
+class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils {
 
   def populateLateSubmissionPenaltyCard(penalties: Seq[LSPDetails],
                                         threshold: Int, activePoints: Int)

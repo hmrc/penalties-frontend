@@ -36,33 +36,38 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
   val summaryCardHtml: summaryCardLSP = injector.instanceOf[summaryCardLSP]
 
   val summaryCardModelWithAppealedPoint: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
-    Seq(lSPDetailsAsModelNoFAP.copy(appealInformation = Some(Seq(
-      AppealInformationType(
-        appealStatus = Some(AppealStatusEnum.Under_Appeal),
-        appealLevel = Some(AppealLevelEnum.HMRC)
-      )
-    )))),
+    Seq(lSPDetailsAsModelNoFAP.copy(
+      appealInformation = Some(Seq(
+        AppealInformationType(
+          appealStatus = Some(AppealStatusEnum.Under_Appeal),
+          appealLevel = Some(AppealLevelEnum.HMRC)
+        )
+      )))),
     quarterlyThreshold, 1).head
 
   val summaryCardModelUnappealable: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
-    Seq(lSPDetailsAsModelNoFAP.copy(appealInformation = Some(Seq(
-      AppealInformationType(
-        appealStatus = Some(AppealStatusEnum.Unappealable),
-        appealLevel = Some(AppealLevelEnum.HMRC)
-      )
-    )))),
+    Seq(lSPDetailsAsModelNoFAP.copy(
+      appealInformation = Some(Seq(
+        AppealInformationType(
+          appealStatus = Some(AppealStatusEnum.Unappealable),
+          appealLevel = Some(AppealLevelEnum.HMRC)
+        )
+      )))),
     quarterlyThreshold, 1).head
 
   val summaryCardModelWithAppealedPointAccepted: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(lSPDetailsAsModelNoFAP.copy(
       penaltyStatus = LSPPenaltyStatusEnum.Inactive,
+      expiryReason = Some(ExpiryReasonEnum.Appeal),
+      penaltyCategory = LSPPenaltyCategoryEnum.Point,
+      penaltyOrder = "0",
       appealInformation = Some(Seq(
         AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Upheld),
           appealLevel = Some(AppealLevelEnum.HMRC)
         )
       )))),
-    quarterlyThreshold, 1).head
+    quarterlyThreshold, 0).head
 
   val summaryCardModelWithAppealedPointRejected: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(lSPDetailsAsModelNoFAP.copy(appealInformation = Some(Seq(
@@ -118,6 +123,11 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
 
   val summaryCardModelWithAppealedPointAcceptedByTribunal: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(lSPDetailsAsModelNoFAP.copy(
+      penaltyStatus = LSPPenaltyStatusEnum.Inactive,
+      expiryReason = Some(ExpiryReasonEnum.Appeal),
+      penaltyCategory = LSPPenaltyCategoryEnum.Point,
+      penaltyOrder = "0",
+      FAPIndicator = None,
       appealInformation = Some(Seq(
         AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Upheld),
@@ -125,7 +135,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         )
       ))
     )),
-    quarterlyThreshold, 1).head
+    quarterlyThreshold, 0).head
 
   val summaryCardModelWithAppealedPointTribunalRejected: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(lSPDetailsAsModelNoFAP.copy(
@@ -311,47 +321,16 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       chargeDueDate = Some(LocalDate.parse("2069-10-30"))
     ), quarterlyThreshold)
 
-  val summaryCardModelWithFinancialPointBelowThresholdAndAppealAccepted: User[_] => LateSubmissionPenaltySummaryCard =
-    (user: User[_]) => summaryCardHelper.financialSummaryCard(LSPDetails(
+  val summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected: LateSubmissionPenaltySummaryCard =
+    summaryCardHelper.financialSummaryCard(LSPDetails(
       penaltyNumber = "12345678901234",
       penaltyOrder = "01",
       penaltyCategory = LSPPenaltyCategoryEnum.Point,
       penaltyStatus = LSPPenaltyStatusEnum.Active,
-      FAPIndicator = Some("X"),
+      FAPIndicator = None,
+      expiryReason = None,
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
-      expiryReason = Some(ExpiryReasonEnum.Adjustment),
-      communicationsDate = Some(LocalDate.parse("2069-10-30")),
-      lateSubmissions = Some(Seq(
-        LateSubmission(
-          taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
-          taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
-          taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
-          returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
-          taxReturnStatus = TaxReturnStatusEnum.Fulfilled
-        )
-      )),
-      appealInformation = Some(Seq(
-        AppealInformationType(
-          appealStatus = Some(AppealStatusEnum.Upheld),
-          appealLevel = Some(AppealLevelEnum.HMRC)
-        )
-      )),
-      chargeAmount = Some(200),
-      chargeOutstandingAmount = Some(200),
-      chargeDueDate = Some(LocalDate.parse("2069-10-30"))
-    ), quarterlyThreshold)(implicitly)
-
-  val summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected: User[_] => LateSubmissionPenaltySummaryCard =
-    (user: User[_]) => summaryCardHelper.financialSummaryCard(LSPDetails(
-      penaltyNumber = "12345678901234",
-      penaltyOrder = "01",
-      penaltyCategory = LSPPenaltyCategoryEnum.Point,
-      penaltyStatus = LSPPenaltyStatusEnum.Active,
-      FAPIndicator = Some("X"),
-      penaltyCreationDate = LocalDate.parse("2069-10-30"),
-      penaltyExpiryDate = LocalDate.parse("2069-10-30"),
-      expiryReason = Some(ExpiryReasonEnum.Adjustment),
       communicationsDate = Some(LocalDate.parse("2069-10-30")),
       lateSubmissions = Some(Seq(
         LateSubmission(
@@ -372,37 +351,6 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       chargeOutstandingAmount = Some(200),
       chargeDueDate = Some(LocalDate.parse("2069-10-30"))
     ), quarterlyThreshold)
-
-  val summaryCardModelWithFinancialPointBelowThresholdAndAppealReinstated: User[_] => LateSubmissionPenaltySummaryCard =
-    (user: User[_]) => summaryCardHelper.financialSummaryCard(LSPDetails(
-      penaltyNumber = "12345678901234",
-      penaltyOrder = "01",
-      penaltyCategory = LSPPenaltyCategoryEnum.Point,
-      penaltyStatus = LSPPenaltyStatusEnum.Active,
-      FAPIndicator = Some("X"),
-      penaltyCreationDate = LocalDate.parse("2069-10-30"),
-      penaltyExpiryDate = LocalDate.parse("2069-10-30"),
-      expiryReason = Some(ExpiryReasonEnum.Adjustment),
-      communicationsDate = Some(LocalDate.parse("2069-10-30")),
-      lateSubmissions = Some(Seq(
-        LateSubmission(
-          taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
-          taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
-          taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
-          returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
-          taxReturnStatus = TaxReturnStatusEnum.Fulfilled
-        )
-      )),
-      appealInformation = Some(Seq(
-        AppealInformationType(
-          appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel = Some(AppealLevelEnum.HMRC)
-        )
-      )),
-      chargeAmount = Some(200),
-      chargeOutstandingAmount = Some(200),
-      chargeDueDate = Some(LocalDate.parse("2069-10-30"))
-    ), quarterlyThreshold)(implicitly)
 
   val summaryCardModelWithFinancialPointBelowThresholdAndAppealUnderTribunalReview: LateSubmissionPenaltySummaryCard =
     summaryCardHelper.financialSummaryCard(LSPDetails(
@@ -435,13 +383,13 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       chargeDueDate = Some(LocalDate.parse("2069-10-30"))
     ), quarterlyThreshold)
 
-  val summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected: User[_] => LateSubmissionPenaltySummaryCard =
-    (user: User[_]) => summaryCardHelper.financialSummaryCard(LSPDetails(
+  val summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected: LateSubmissionPenaltySummaryCard =
+    summaryCardHelper.financialSummaryCard(LSPDetails(
       penaltyNumber = "12345678901234",
       penaltyOrder = "01",
       penaltyCategory = LSPPenaltyCategoryEnum.Point,
       penaltyStatus = LSPPenaltyStatusEnum.Active,
-      FAPIndicator = Some("X"),
+      FAPIndicator = None,
       penaltyCreationDate = LocalDate.parse("2069-10-30"),
       penaltyExpiryDate = LocalDate.parse("2069-10-30"),
       expiryReason = Some(ExpiryReasonEnum.Adjustment),
@@ -466,36 +414,6 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       chargeDueDate = Some(LocalDate.parse("2069-10-30"))
     ), quarterlyThreshold)(implicitly)
 
-  val summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalAccepted: User[_] => LateSubmissionPenaltySummaryCard =
-    (user: User[_]) => summaryCardHelper.financialSummaryCard(LSPDetails(
-      penaltyNumber = "12345678901234",
-      penaltyOrder = "01",
-      penaltyCategory = LSPPenaltyCategoryEnum.Charge,
-      penaltyStatus = LSPPenaltyStatusEnum.Inactive,
-      FAPIndicator = Some("X"),
-      penaltyCreationDate = LocalDate.parse("2069-10-30"),
-      penaltyExpiryDate = LocalDate.parse("2069-10-30"),
-      expiryReason = Some(ExpiryReasonEnum.Adjustment),
-      communicationsDate = Some(LocalDate.parse("2069-10-30")),
-      lateSubmissions = Some(Seq(
-        LateSubmission(
-          taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
-          taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
-          taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
-          returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
-          taxReturnStatus = TaxReturnStatusEnum.Fulfilled
-        )
-      )),
-      appealInformation = Some(Seq(
-        AppealInformationType(
-          appealStatus = Some(AppealStatusEnum.Upheld),
-          appealLevel = Some(AppealLevelEnum.Tribunal)
-        )
-      )),
-      chargeAmount = Some(200),
-      chargeOutstandingAmount = Some(200),
-      chargeDueDate = Some(LocalDate.parse("2069-10-30"))
-    ), quarterlyThreshold)(implicitly)
 
   val summaryCardModelWithFinancialLSP: Boolean => LateSubmissionPenaltySummaryCard = (isSubmitted: Boolean) => summaryCardHelper.financialSummaryCard(LSPDetails(
     penaltyNumber = "12345678901234",
@@ -512,8 +430,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
         taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
         taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
-        returnReceiptDate = if(isSubmitted) Some(LocalDate.parse("2069-10-30")) else None,
-        taxReturnStatus = if(isSubmitted) TaxReturnStatusEnum.Fulfilled else TaxReturnStatusEnum.Open
+        returnReceiptDate = if (isSubmitted) Some(LocalDate.parse("2069-10-30")) else None,
+        taxReturnStatus = if (isSubmitted) TaxReturnStatusEnum.Fulfilled else TaxReturnStatusEnum.Open
       )
     )),
     appealInformation = None,
@@ -706,16 +624,12 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialLSP(true)))
       val docWithFinancialPointAppealUnderReview: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealInProgress))
-      val docWithFinancialPointAppealAccepted: Document =
-        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealAccepted(user)))
       val docWithFinancialPointAppealRejected: Document =
-        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected(user)))
+        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected))
       val docWithFinancialPointAppealUnderTribunalReview: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealUnderTribunalReview))
       val docWithFinancialPointAppealTribunalRejected: Document =
-        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected(user)))
-      val docWithFinancialPointAppealTribunalAccepted: Document =
-        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalAccepted(user)))
+        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected))
 
       "shows the financial heading with point number when the point is below/at threshold for filing frequency" in {
         docWithThresholdPenalty.select(".app-summary-card__title").get(0).text shouldBe "Penalty point 1: £200 penalty"
@@ -731,11 +645,6 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         docWithFinancialPointAppealUnderReview.select("dd").get(3).text() shouldBe "Under review by HMRC"
       }
 
-      "have the appeal status for ACCEPTED" in {
-        docWithFinancialPointAppealAccepted.select("dt").get(3).text() shouldBe "Appeal status"
-        docWithFinancialPointAppealAccepted.select("dd").get(3).text() shouldBe "Appeal accepted"
-      }
-
       "have the appeal status for REJECTED" in {
         docWithFinancialPointAppealRejected.select("dt").get(3).text() shouldBe "Appeal status"
         docWithFinancialPointAppealRejected.select("dd").get(3).text() shouldBe "Appeal rejected"
@@ -749,11 +658,6 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       "have the appeal status for TRIBUNAL REJECTED" in {
         docWithFinancialPointAppealTribunalRejected.select("dt").get(3).text() shouldBe "Appeal status"
         docWithFinancialPointAppealTribunalRejected.select("dd").get(3).text() shouldBe "Appeal rejected by tax tribunal"
-      }
-
-      "have the appeal status for ACCEPTED BY TRIBUNAL" in {
-        docWithFinancialPointAppealTribunalAccepted.select("dt").get(3).text() shouldBe "Appeal status"
-        docWithFinancialPointAppealTribunalAccepted.select("dd").get(3).text() shouldBe "Appeal accepted by tax tribunal"
       }
 
       "display check if you can appeal link if the penalty is unappealable" in {
