@@ -40,11 +40,11 @@ class SummaryCardHelper @Inject()(link: views.html.components.link) extends Impl
     val indexedActivePoints = filteredActivePenalties.zipWithIndex
     penalties.map { penalty =>
       val newPenalty = findAndReindexPointIfIsActive(indexedActivePoints, penalty)
-      (newPenalty.penaltyCategory, newPenalty.appealInformation.map(_.head.appealStatus)) match {
+      (newPenalty.penaltyCategory, newPenalty.appealInformation.flatMap(_.head.appealStatus)) match {
         case (LSPPenaltyCategoryEnum.Point, _) if newPenalty.FAPIndicator.contains("X") && newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Active => addedPointCard(newPenalty, thresholdMet) //Added FAP
         case (LSPPenaltyCategoryEnum.Point, _) if newPenalty.FAPIndicator.contains("X") && newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive => removedPointCard(newPenalty) //Removed FAP
+        case (LSPPenaltyCategoryEnum.Point, Some(AppealStatusEnum.Upheld)) if newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive => pointSummaryCard(newPenalty, thresholdMet) //Appealed point
         case (LSPPenaltyCategoryEnum.Point, _) if newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive && newPenalty.expiryReason.isDefined => removedPointCard(newPenalty) //Removed point
-        case (LSPPenaltyCategoryEnum.Point, Some(AppealStatusEnum.Upheld)) if newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive => removedPointCard(newPenalty) //Appealed point
         case (LSPPenaltyCategoryEnum.Point, _) => pointSummaryCard(newPenalty, thresholdMet) // normal points
         case (LSPPenaltyCategoryEnum.Threshold, _) => financialSummaryCard(newPenalty, threshold) //normal threshold
         case (LSPPenaltyCategoryEnum.Charge, _) => financialSummaryCard(newPenalty, threshold)

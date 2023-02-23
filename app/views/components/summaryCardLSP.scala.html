@@ -49,8 +49,10 @@
             @{
               if(summaryCard.isAddedPoint) {
                 messages("summaryCard.header.addedPoint", summaryCard.penaltyPoint)
-              } else if(summaryCard.isAdjustedPoint || summaryCard.appealStatus.contains(AppealStatusEnum.Upheld)) {
+              } else if(summaryCard.isAdjustedPoint) {
                 messages("summaryCard.header.adjustedPoint")
+              } else if(summaryCard.appealStatus.contains(AppealStatusEnum.Upheld)) {
+                  messages("summaryCard.header.appealedPoint")
               } else if(summaryCard.isThresholdPoint) {
                   messages("summaryCard.header.financial", summaryCard.penaltyPoint, CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(summaryCard.totalPenaltyAmount))
               } else if(summaryCard.isFinancialPoint) {
