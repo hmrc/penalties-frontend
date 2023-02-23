@@ -789,14 +789,14 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         docWithAppealedPointAccepted.select("dt").text().contains("Point due to expire") shouldBe false
         docWithAppealedPointAccepted.select("dt").get(3).text() shouldBe "Appeal status"
         docWithAppealedPointAccepted.select("dd").get(3).text() shouldBe "Appeal accepted"
-        docWithAppealedPointAccepted.select("h4").get(0).text() shouldBe "Penalty point"
+        docWithAppealedPointAccepted.select("h4").get(0).text() shouldBe "Penalty"
       }
 
       "have the appeal status for ACCEPTED_BY_TRIBUNAL - removing the point due to expire and point number" in {
         docWithAppealedPointAcceptedByTribunal.select("dt").text().contains("Point due to expire") shouldBe false
         docWithAppealedPointAcceptedByTribunal.select("dt").get(3).text() shouldBe "Appeal status"
         docWithAppealedPointAcceptedByTribunal.select("dd").get(3).text() shouldBe "Appeal accepted by tax tribunal"
-        docWithAppealedPointAcceptedByTribunal.select("h4").get(0).text() shouldBe "Penalty point"
+        docWithAppealedPointAcceptedByTribunal.select("h4").get(0).text() shouldBe "Penalty"
       }
 
       "have the appeal status for REJECTED" in {

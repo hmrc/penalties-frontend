@@ -82,6 +82,7 @@ summaryCard.header.adjustedPoint = Pwynt cosb
 summaryCard.header.financial = Pwynt cosb {0}: Cosb o £{1}
 summaryCard.header.financialNoNumber = Cosb o £{0}
 summaryCard.header.financialAdditionalPenalty = Cosb ychwanegol o £{0}
+summaryCard.header.appealedPoint = Penalty
 
 summaryCard.key1 = Cyfnod TAW
 summaryCard.value1 = {0} i {1}
