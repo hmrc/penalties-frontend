@@ -129,7 +129,7 @@ class IndexPageHelperSpec extends SpecBase {
       " link to external guidance which opens in a new tab for LPP guidance" in new Setup(useRealAppConfig = true) {
       val result = pageHelper.getGuidanceLink(appConfig.lppCalculationGuidanceLink, messages("lpp.penaltiesSummary.howLppCalculated.link"))
       val parsedHtmlResult = Jsoup.parse(result.body)
-      parsedHtmlResult.select("a").text shouldBe externalLPPGuidanceLinkText
+      parsedHtmlResult.select("a").text shouldBe howLppCalculatedLinkText
       parsedHtmlResult.select("a").attr("href") shouldBe appConfig.lppCalculationGuidanceLink
       parsedHtmlResult.select("a").attr("target") shouldBe "_blank"
     }
@@ -425,6 +425,15 @@ class IndexPageHelperSpec extends SpecBase {
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWithNoActivePoints)(implicitly, vatTraderUser, hc, implicitly))
         val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
         parsedHtmlResult.select("p.govuk-body").text() shouldBe noActivePenaltyPoints
+      }
+    }
+
+    "display only the guidance link" when {
+      "the user is in Breathing Space (and has LSPs)" in new Setup {
+        val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith2ActivePoints, isUserInBreathingSpace = true)(implicitly, vatTraderUser, implicitly, implicitly))
+        val parsedHtmlResult = Jsoup.parse(contentAsString(result.getOrElse(Html(""))))
+        parsedHtmlResult.select("a").text() shouldBe externalLSPGuidanceLinkText
+        parsedHtmlResult.childrenSize() shouldBe 1
       }
     }
 
@@ -1210,6 +1219,15 @@ class IndexPageHelperSpec extends SpecBase {
         val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetails)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
         parsedHtmlResult.select("p.govuk-body").text() shouldBe noActivePaymentPenalty
+      }
+    }
+
+    "display only 'how lpp calculated' link" when {
+      "the user has LPPs but is in breathing space" in new Setup {
+        val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(samplePenaltyDetailsModel, isUserInBreathingSpace = true)(implicitly, vatTraderUser)
+        val parsedHtmlResult = Jsoup.parse(result.body)
+        parsedHtmlResult.select("a").text() shouldBe howLppCalculatedLinkText
+        parsedHtmlResult.childrenSize() shouldBe 1
       }
     }
 

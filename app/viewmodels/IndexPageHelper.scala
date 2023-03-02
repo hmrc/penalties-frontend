@@ -16,6 +16,7 @@
 
 package viewmodels
 
+import config.featureSwitches.FeatureSwitching
 import config.{AppConfig, ErrorHandler}
 import models.appealInfo.AppealStatusEnum.Upheld
 import models.compliance.{CompliancePayload, ComplianceStatusEnum}
@@ -42,10 +43,10 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
                                 warningText: views.html.components.warningText,
                                 penaltiesService: PenaltiesService,
                                 complianceService: ComplianceService,
-                                errorHandler: ErrorHandler)(implicit val appConfig: AppConfig) extends ViewUtils with CurrencyFormatter with ImplicitDateFormatter {
+                                errorHandler: ErrorHandler)(implicit val appConfig: AppConfig) extends ViewUtils with CurrencyFormatter with ImplicitDateFormatter with FeatureSwitching {
 
   //scalastyle:off
-  def getContentBasedOnPointsFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_],
+  def getContentBasedOnPointsFromModel(penaltyDetails: GetPenaltyDetails, isUserInBreathingSpace: Boolean = false)(implicit messages: Messages, user: User[_],
                                                                           hc: HeaderCarrier, ec: ExecutionContext): Future[Either[Result, Html]] = {
     val fixedPenaltyAmount: String = appConfig.penaltyChargeAmount
     val lspGuidanceLink: HtmlFormat.Appendable = getGuidanceLink(appConfig.lspGuidanceLink, messages("index.guidance.link"))
@@ -55,10 +56,11 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     val removedPoints: Int = filteredPoints.count(_.expiryReason.nonEmpty)
     val addedPoints: Int = filteredPoints.count(point => point.FAPIndicator.contains("X") && point.penaltyStatus.equals(LSPPenaltyStatusEnum.Active))
     val amountOfLateSubmissions: Int = filteredPoints.count(_.lateSubmissions.flatMap(_.headOption.map(_.taxReturnStatus.equals(TaxReturnStatusEnum.Open))).isDefined)
-    (activePoints, regimeThreshold, addedPoints, removedPoints) match {
-      case (0, _, _, _) =>
+    (isUserInBreathingSpace, activePoints, regimeThreshold, addedPoints, removedPoints) match {
+      case (true, _activePoints, _, _addedPoints, _removedPoints) if _activePoints > 0 || _addedPoints > 0 || _removedPoints > 0 => Future(Right(lspGuidanceLink))
+      case (_, 0, _, _, _) =>
         Future(Right(p(content = stringAsHtml(messages("lsp.pointSummary.noActivePoints")))))
-      case (currentPoints, threshold, _, _) if currentPoints >= threshold =>
+      case (_, currentPoints, threshold, _, _) if currentPoints >= threshold =>
         lazy val optPOCAchievementDate: Option[LocalDate] = penaltyDetails.lateSubmissionPenalty.map(_.summary.PoCAchievementDate)
         lazy val parsedPOCAchievementDate: String = dateToMonthYearString(optPOCAchievementDate.get)
         callObligationAPI(user.vrn)(implicitly, implicitly, implicitly, optPOCAchievementDate).map {
@@ -86,7 +88,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
             }
           )
         }
-      case (currentPoints, threshold, addedPoints, _) if addedPoints > 0 =>
+      case (_, currentPoints, threshold, addedPoints, _) if addedPoints > 0 =>
         val base = Seq(
           p(content = getPluralOrSingular(currentPoints)("lsp.pointSummary.penaltyPoints.adjusted.singular", "lsp.pointSummary.penaltyPoints.adjusted.plural")),
           bullets(Seq(
@@ -106,7 +108,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           Future(Right(html(base: _*)))
         }
 
-      case (currentPoints, threshold, _, removedPoints) if removedPoints > 0 =>
+      case (_, currentPoints, threshold, _, removedPoints) if removedPoints > 0 =>
         val base = Seq(
           p(content = getPluralOrSingular(currentPoints)("lsp.pointSummary.penaltyPoints.adjusted.singular", "lsp.pointSummary.penaltyPoints.adjusted.plural")),
           bullets(
@@ -130,7 +132,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           Future(Right(html(base: _*)))
         }
 
-      case (currentPoints, threshold, _, _) if currentPoints < threshold - 1 =>
+      case (_, currentPoints, threshold, _, _) if currentPoints < threshold - 1 =>
         Future(Right(html(
           renderPointsTotal(currentPoints),
           p(content = getPluralOrSingularContentForOverview(currentPoints, amountOfLateSubmissions)),
@@ -142,7 +144,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           )),
           lspGuidanceLink
         )))
-      case (currentPoints, threshold, _, _) if currentPoints == threshold - 1 =>
+      case (_, currentPoints, threshold, _, _) if currentPoints == threshold - 1 =>
         Future(Right(html(
           renderPointsTotal(currentPoints),
           warningText(stringAsHtml(getMessage("lsp.pointSummary.penaltyPoints.overview.warningText", fixedPenaltyAmount))),
@@ -153,10 +155,12 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     }
   }
 
-  def getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages, user: User[_]): Html = {
+  def getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetails: GetPenaltyDetails, isUserInBreathingSpace: Boolean = false)(implicit messages: Messages, user: User[_]): Html = {
     val lppGuidanceLink: HtmlFormat.Appendable = getGuidanceLink(appConfig.lppCalculationGuidanceLink, messages("lpp.penaltiesSummary.howLppCalculated.link"))
     if (penaltyDetails.latePaymentPenalty.map(_.details).getOrElse(List.empty[LPPDetails]).isEmpty) {
       p(content = stringAsHtml(messages("lpp.penaltiesSummary.noPaymentPenalties")))
+    } else if(isUserInBreathingSpace) {
+      lppGuidanceLink
     } else {
       val isAnyLPPNotPaidAndNotAppealed: Boolean = penaltyDetails.latePaymentPenalty.exists(_.details.exists(
         penalty => {

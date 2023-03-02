@@ -26,7 +26,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
 import utils.SessionKeys._
 import utils.{CurrencyFormatter, EnrolmentKeys, ImplicitDateFormatter}
-import viewmodels.{IndexPageHelper, SummaryCardHelper}
+import viewmodels.{BreathingSpaceHelper, IndexPageHelper, SummaryCardHelper}
 import views.html.IndexView
 
 import javax.inject.Inject
@@ -41,7 +41,7 @@ class IndexController @Inject()(view: IndexView,
                                  authorise: AuthPredicate,
                                  errorHandler: ErrorHandler,
                                  controllerComponents: MessagesControllerComponents)
-  extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter with FeatureSwitching with ImplicitDateFormatter{
+  extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter with FeatureSwitching with ImplicitDateFormatter {
 
   //scalastyle:off
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
@@ -51,13 +51,14 @@ class IndexController @Inject()(view: IndexView,
           logger.error(s"[IndexController][onPageLoad] - Received error with status ${errors.status} and body ${errors.body} rendering ISE.")
           Future(errorHandler.showInternalServerError)
         }, penaltyData => {
-          pageHelper.getContentBasedOnPointsFromModel(penaltyData).map {
+          val isUserInBreathingSpace: Boolean = BreathingSpaceHelper.isUserInBreathingSpace(penaltyData.breathingSpace)(getFeatureDate)
+          pageHelper.getContentBasedOnPointsFromModel(penaltyData, isUserInBreathingSpace).map {
             _.fold(
               identity,
               contentToDisplayAboveCards => {
                 val optPOCAchievementDate: Option[String] = penaltyData.lateSubmissionPenalty.map(_.summary.PoCAchievementDate.toString)
                 val optRegimeThreshold = penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold.toString)
-                val contentLPPToDisplayAboveCards = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyData)
+                val contentLPPToDisplayAboveCards = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyData, isUserInBreathingSpace)
                 val whatYouOweBreakdown = pageHelper.getWhatYouOweBreakdown(penaltyData)
                 val filteredPenalties = pageHelper.filteredExpiredPoints(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
                 val orderedPenalties = pageHelper.sortPointsInDescendingOrder(filteredPenalties)
@@ -74,31 +75,12 @@ class IndexController @Inject()(view: IndexView,
                   currencyFormatAsNonHTMLString(penaltyData.totalisations.flatMap(_.LSPTotalValue).getOrElse(0)),
                   isAnyUnpaidLSP,
                   isAnyUnpaidLSPAndNotSubmittedReturn,
+                  isUserInBreathingSpace,
                   whatYouOweBreakdown))
-                (optPOCAchievementDate.isDefined, optRegimeThreshold.isDefined) match {
-                  case (true, true) =>
-                    result
-                      .removingFromSession(allKeysExcludingAgentVRN: _*)
-                      .addingToSession(
-                        pocAchievementDate -> optPOCAchievementDate.get,
-                        regimeThreshold -> optRegimeThreshold.get
-                      )
-                  case (true, false) =>
-                    result
-                      .removingFromSession(allKeysExcludingAgentVRN: _*)
-                      .addingToSession(
-                        pocAchievementDate -> optPOCAchievementDate.get
-                      )
-                  case(false, true) =>
-                    result
-                      .removingFromSession(allKeysExcludingAgentVRN: _*)
-                      .addingToSession(
-                        regimeThreshold -> optRegimeThreshold.get
-                      )
-                  case (false, false) =>
-                    result
-                      .removingFromSession(allKeysExcludingAgentVRN: _*)
-                }
+                result.removingFromSession(allKeysExcludingAgentVRN: _*).addingToSession(
+                    if (optPOCAchievementDate.isDefined) pocAchievementDate -> optPOCAchievementDate.get else "" -> "",
+                    if (optPOCAchievementDate.isDefined) regimeThreshold -> optRegimeThreshold.get else "" -> ""
+                )
               }
             )
           }
@@ -120,6 +102,6 @@ class IndexController @Inject()(view: IndexView,
   }
 
   def redirectToEstimateAppeal(taxPeriodStartDate: String, taxPeriodEndDate: String): Action[AnyContent] = authorise.async {
-    Future(Redirect( s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal-against-the-obligation-estimated-lpp?taxPeriodStartDate=${taxPeriodStartDate.toString}&taxPeriodEndDate=${taxPeriodEndDate.toString}"))
+    Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal-against-the-obligation-estimated-lpp?taxPeriodStartDate=${taxPeriodStartDate.toString}&taxPeriodEndDate=${taxPeriodEndDate.toString}"))
   }
 }

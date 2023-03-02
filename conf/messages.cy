@@ -72,7 +72,7 @@ lsp.multiple.penaltyPeriod = Roedd y Ffurflen TAW a oedd yn ddyledus ar {0} hefy
 lpp.penaltiesSummary.noPaymentPenalties = Nid oes unrhyw gosbau am dalu’n hwyr.
 lpp.penaltiesSummary.unpaid = Gorau i gyd po gyntaf y byddwch yn talu eich TAW, oherwydd y bydd hyn yn lleihau swm eich cosbau a llog.
 agent.lpp.penaltiesSummary.unpaid = Gorau i gyd po gyntaf y mae’ch cleient yn talu’i TAW, oherwydd y bydd hyn yn lleihau swm ei gosbau a llog.
-lpp.penaltiesSummary.howLppCalculated.link = Dysgwch sut y caiff cosbau am dalu’n hwyr eu cyfrifo
+lpp.penaltiesSummary.howLppCalculated.link = Darllenwch yr arweiniad am sut y cyfrifir cosbau am dalu’n hwyr
 
 # SummaryCard
 # -------------------------------------------
@@ -175,8 +175,8 @@ whatIsOwed.button.checkAmounts = Gwirio’r symiau
 whatIsOwed.ttp.p1 = Mae cynllun talu wedi’i drefnu ar y cyfrif hwn.
 whatIsOwed.ttp.p2 = Mae’n rhaid i chi sicrhau eich bod yn gwneud pob taliad mewn pryd. Os na wnewch hynny, bydd eich cynllun talu yn methu a bydd unrhyw gosbau’n cael eu cyfrifo o adeg eu dyddiad gwreiddiol.
 agent.whatIsOwed.ttp.p2 = Mae’n rhaid i’ch cleient sicrhau ei fod yn gwneud pob taliad mewn pryd. Os na wnaiff hynny, bydd ei gynllun talu’n methu a bydd unrhyw gosbau’n cael eu cyfrifo o adeg eu dyddiad gwreiddiol.
-whatIsOwed.ttp.p3.link = Gwirio’r hyn sydd arnoch
-agent.whatIsOwed.ttp.p3.link = Gwirio’r hyn sydd ar eich cleient
+whatIsOwed.breathing.space.p3.link = Gwirio’r hyn sydd arnoch
+agent.whatIsOwed.breathing.space.p3.link = Gwirio’r hyn sydd ar eich cleient
 whatIsOwed.ttp.p3 = i fwrw golwg dros yr holl gostau sydd heb eu talu.
 whatIsOwed.heading = Trosolwg
 whatIsOwed.p1 = Mae gan eich cyfrif y canlynol:
