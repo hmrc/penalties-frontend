@@ -19,6 +19,7 @@ package controllers
 import config.AppConfig
 import config.featureSwitches.FeatureSwitching
 import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
+import models.breathingSpace.BreathingSpace
 import models.lpp._
 import models.lsp._
 import models.{GetPenaltyDetails, Totalisations}
@@ -394,6 +395,90 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     ))
   )
 
+  val penaltyDetailsWithAdditionalDuePenaltyTTPActiveBreathingSpaceActive: GetPenaltyDetails = samplePenaltyDetails.copy(
+    latePaymentPenalty = Some(LatePaymentPenalty(
+      details = Seq(LPPDetails(
+        principalChargeReference = "65431234567890",
+        penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
+        penaltyStatus = LPPPenaltyStatusEnum.Accruing,
+        penaltyAmountPaid = None,
+        penaltyAmountOutstanding = Some(123.45),
+        LPP1LRDays = Some("15"),
+        LPP1HRDays = Some("31"),
+        LPP2Days = Some("31"),
+        LPP1LRCalculationAmount = Some(61.72),
+        LPP1HRCalculationAmount = Some(61.73),
+        LPP2Percentage = Some(4.00),
+        LPP1LRPercentage = Some(2.00),
+        LPP1HRPercentage = Some(2.00),
+        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
+        communicationsDate = Some(LocalDate.parse("2069-10-30")),
+        penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
+        appealInformation = Some(Seq(AppealInformationType(
+          appealStatus = Some(AppealStatusEnum.Unappealable),
+          appealLevel = Some(AppealLevelEnum.HMRC)
+        ))),
+        principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
+        principalChargeBillingTo = LocalDate.parse("2021-02-01"),
+        principalChargeDueDate = LocalDate.now().minusDays(40),
+        penaltyChargeReference = Some("1234567890"),
+        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+        LPPDetailsMetadata = LPPDetailsMetadata(
+          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+          outstandingAmount = Some(99),
+          timeToPay = Some(
+            Seq(
+              TimeToPay(TTPStartDate = LocalDate.parse("2021-01-01"), TTPEndDate = Some(LocalDate.parse("2021-02-01")))
+            )
+          )
+        )
+      ))
+    )),
+    breathingSpace = Some(Seq(
+      BreathingSpace(LocalDate.parse("2021-01-01"), LocalDate.parse("2021-02-01"))
+    ))
+  )
+
+  val penaltyDetailsWithAdditionalDuePenaltyBreathingSpaceActive: GetPenaltyDetails = samplePenaltyDetails.copy(
+    latePaymentPenalty = Some(LatePaymentPenalty(
+      details = Seq(LPPDetails(
+        principalChargeReference = "65431234567890",
+        penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
+        penaltyStatus = LPPPenaltyStatusEnum.Accruing,
+        penaltyAmountPaid = None,
+        penaltyAmountOutstanding = Some(123.45),
+        LPP1LRDays = Some("15"),
+        LPP1HRDays = Some("31"),
+        LPP2Days = Some("31"),
+        LPP1LRCalculationAmount = Some(61.72),
+        LPP1HRCalculationAmount = Some(61.73),
+        LPP2Percentage = Some(4.00),
+        LPP1LRPercentage = Some(2.00),
+        LPP1HRPercentage = Some(2.00),
+        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
+        communicationsDate = Some(LocalDate.parse("2069-10-30")),
+        penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
+        appealInformation = Some(Seq(AppealInformationType(
+          appealStatus = Some(AppealStatusEnum.Unappealable),
+          appealLevel = Some(AppealLevelEnum.HMRC)
+        ))),
+        principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
+        principalChargeBillingTo = LocalDate.parse("2021-02-01"),
+        principalChargeDueDate = LocalDate.now().minusDays(40),
+        penaltyChargeReference = Some("1234567890"),
+        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+        LPPDetailsMetadata = LPPDetailsMetadata(
+          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+          outstandingAmount = Some(99),
+          timeToPay = None
+        )
+      ))
+    )),
+    breathingSpace = Some(Seq(
+      BreathingSpace(LocalDate.parse("2021-01-01"), LocalDate.parse("2021-02-01"))
+    ))
+  )
+
   val penaltyDetailsWithDay15ChargeTTPActive: GetPenaltyDetails = samplePenaltyDetails.copy(
     latePaymentPenalty = Some(LatePaymentPenalty(
       details = Seq(LPPDetails(
@@ -643,6 +728,57 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#ttp-inset-text").get(0).text() shouldBe "You’ve asked HMRC if you can set up a payment plan. If a payment plan has been agreed, and you keep up with all payments, this penalty will not increase further."
       parsedBody.select("h2").get(0).text() shouldBe "Estimates"
       parsedBody.select("#main-content p").get(4).text() shouldBe "Penalties will show as estimates until you make all payments due under the payment plan."
+      parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
+    }
+
+    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due (TTP Active - user in Breathing Space)" in {
+      setFeatureDate(Some(LocalDate.of(2021, 1, 31)))
+      returnPenaltyDetailsStub(penaltyDetailsWithAdditionalDuePenaltyTTPActiveBreathingSpaceActive)
+      val request = controller.onPageLoad("65431234567890", "LPP2")(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
+      parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
+      parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
+      parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
+      parsedBody.select("#main-content p").get(1).text() shouldBe "This penalty applies from day 31, if any VAT remains unpaid."
+      parsedBody.select("#main-content p").get(2).text() shouldBe "The total builds up daily until you pay your VAT or set up a payment plan. However, when we calculate your penalty we do not count the days you are in Breathing Space."
+      parsedBody.select("#main-content p").get(3).text() shouldBe "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£123.45"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£0.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£123.45"
+      parsedBody.select("#ttp-inset-text").get(0).text() shouldBe "You’ve asked HMRC if you can set up a payment plan. If a payment plan has been agreed, and you keep up with all payments, this penalty will not increase further."
+      parsedBody.select("h2").get(0).text() shouldBe "Estimates"
+      parsedBody.select("#main-content p").get(4).text() shouldBe "Penalties will show as estimates until:"
+      parsedBody.select("#main-content .govuk-list--bullet li").get(0).text() shouldBe "you make all payments due under the payment plan, and"
+      parsedBody.select("#main-content .govuk-list--bullet li").get(1).text() shouldBe "Breathing Space ends"
+      parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
+    }
+
+    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due (User in Breathing Space - TTP not active)" in {
+      returnPenaltyDetailsStub(penaltyDetailsWithAdditionalDuePenaltyBreathingSpaceActive)
+      val request = controller.onPageLoad("65431234567890", "LPP2")(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
+      parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
+      parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
+      parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
+      parsedBody.select("#main-content p").get(1).text() shouldBe "This penalty applies from day 31, if any VAT remains unpaid."
+      parsedBody.select("#main-content p").get(2).text() shouldBe "The total builds up daily until you pay your VAT or set up a payment plan. However, when we calculate your penalty we do not count the days you are in Breathing Space."
+      parsedBody.select("#main-content p").get(3).text() shouldBe "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£123.45"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£0.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£123.45"
+      parsedBody.select(".ttp-content").isEmpty shouldBe true
+      parsedBody.select("h2").get(0).text() shouldBe "Estimates"
+      parsedBody.select("#main-content p").get(4).text() shouldBe "Penalties and interest will show as estimates until:"
+      parsedBody.select("#main-content .govuk-list--bullet li").get(0).text() shouldBe "you pay the charge they relate to, and"
+      parsedBody.select("#main-content .govuk-list--bullet li").get(1).text() shouldBe "Breathing Space ends"
       parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
     }
 

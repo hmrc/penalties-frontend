@@ -16,18 +16,16 @@
 
 package viewmodels
 
-import config.AppConfig
-import config.featureSwitches.FeatureSwitching
 import models.breathingSpace.BreathingSpace
 
-import javax.inject.Inject
+import java.time.LocalDate
 
-class BreathingSpaceHelper @Inject()(val appConfig: AppConfig) extends FeatureSwitching {
-  def isUserInBreathingSpace(optBreathingSpaceDetails: Option[Seq[BreathingSpace]]): Boolean = {
+object BreathingSpaceHelper {
+  def isUserInBreathingSpace(optBreathingSpaceDetails: Option[Seq[BreathingSpace]])(currentDate: LocalDate): Boolean = {
     optBreathingSpaceDetails.exists(_.exists(
       breathingSpaceDetails => {
-        (breathingSpaceDetails.BSStartDate.isEqual(getFeatureDate) || breathingSpaceDetails.BSStartDate.isBefore(getFeatureDate)) &&
-          (breathingSpaceDetails.BSEndDate.isEqual(getFeatureDate) || breathingSpaceDetails.BSEndDate.isAfter(getFeatureDate))
+        (breathingSpaceDetails.BSStartDate.isEqual(currentDate) || breathingSpaceDetails.BSStartDate.isBefore(currentDate)) &&
+          (breathingSpaceDetails.BSEndDate.isEqual(currentDate) || breathingSpaceDetails.BSEndDate.isAfter(currentDate))
       }
     ))
   }

@@ -17,70 +17,65 @@
 package viewmodels
 
 import base.SpecBase
-import config.featureSwitches.FeatureSwitching
 import models.breathingSpace.BreathingSpace
 
 import java.time.LocalDate
 
-class BreathingSpaceHelperSpec extends SpecBase with FeatureSwitching {
-
-  class Setup {
-    val breathingSpaceHelper: BreathingSpaceHelper = new BreathingSpaceHelper(appConfig)
-    sys.props -= TIME_MACHINE_NOW
-  }
+class BreathingSpaceHelperSpec extends SpecBase {
 
   "isUserInBreathingSpace" should {
     "return true" when {
-      "the start date is before the current date and the end date is after the current date" in new Setup {
-        setFeatureDate(Some(LocalDate.of(2023, 1, 20)))
+      "the start date is before the current date and the end date is after the current date" in {
+        val currentDate: LocalDate = LocalDate.of(2023, 1, 20)
         val breathingSpace: Option[Seq[BreathingSpace]] = Some(Seq(BreathingSpace(
           BSStartDate = LocalDate.of(2023, 1, 1), BSEndDate = LocalDate.of(2023, 1, 31)
         )))
-        val result: Boolean = breathingSpaceHelper.isUserInBreathingSpace(breathingSpace)
+        val result: Boolean = BreathingSpaceHelper.isUserInBreathingSpace(breathingSpace)(currentDate)
         result shouldBe true
       }
 
-      "the start date is equal to the current date and the end date is after the current date" in new Setup {
-        setFeatureDate(Some(LocalDate.of(2023, 1, 1)))
+      "the start date is equal to the current date and the end date is after the current date" in {
+        val currentDate: LocalDate = LocalDate.of(2023, 1, 1)
         val breathingSpace: Option[Seq[BreathingSpace]] = Some(Seq(BreathingSpace(
           BSStartDate = LocalDate.of(2023, 1, 1), BSEndDate = LocalDate.of(2023, 1, 31)
         )))
-        val result: Boolean = breathingSpaceHelper.isUserInBreathingSpace(breathingSpace)
+        val result: Boolean = BreathingSpaceHelper.isUserInBreathingSpace(breathingSpace)(currentDate)
         result shouldBe true
       }
 
-      "the start date is before the current date and the end date is equal to the current date" in new Setup {
-        setFeatureDate(Some(LocalDate.of(2023, 1, 31)))
+      "the start date is before the current date and the end date is equal to the current date" in {
+        val currentDate: LocalDate = LocalDate.of(2023, 1, 31)
         val breathingSpace: Option[Seq[BreathingSpace]] = Some(Seq(BreathingSpace(
           BSStartDate = LocalDate.of(2023, 1, 1), BSEndDate = LocalDate.of(2023, 1, 31)
         )))
-        val result: Boolean = breathingSpaceHelper.isUserInBreathingSpace(breathingSpace)
+        val result: Boolean = BreathingSpaceHelper.isUserInBreathingSpace(breathingSpace)(currentDate)
         result shouldBe true
       }
     }
 
     "return false" when {
-      "the start date is after the current date" in new Setup {
-        setFeatureDate(Some(LocalDate.of(2022, 12, 31)))
+      "the start date is after the current date" in {
+        val currentDate: LocalDate = LocalDate.of(2022, 12, 31)
         val breathingSpace: Option[Seq[BreathingSpace]] = Some(Seq(BreathingSpace(
           BSStartDate = LocalDate.of(2023, 1, 1), BSEndDate = LocalDate.of(2023, 1, 31)
         )))
-        val result: Boolean = breathingSpaceHelper.isUserInBreathingSpace(breathingSpace)
+        val result: Boolean = BreathingSpaceHelper.isUserInBreathingSpace(breathingSpace)(currentDate)
         result shouldBe false
       }
 
-      "the end date is before the current date" in new Setup {
-        setFeatureDate(Some(LocalDate.of(2023, 2, 1)))
+      "the end date is before the current date" in {
+        val currentDate: LocalDate = LocalDate.of(2023, 2, 1)
         val breathingSpace: Option[Seq[BreathingSpace]] = Some(Seq(BreathingSpace(
           BSStartDate = LocalDate.of(2023, 1, 1), BSEndDate = LocalDate.of(2023, 1, 31)
         )))
-        val result: Boolean = breathingSpaceHelper.isUserInBreathingSpace(breathingSpace)
+        val result: Boolean = BreathingSpaceHelper.isUserInBreathingSpace(breathingSpace)(currentDate)
         result shouldBe false
       }
 
-      "there is no breathing space object" in new Setup {
+      "there is no breathing space object" in {
+        val currentDate: LocalDate = LocalDate.now
         val breathingSpace: Option[Seq[BreathingSpace]] = None
-        val result: Boolean = breathingSpaceHelper.isUserInBreathingSpace(breathingSpace)
+        val result: Boolean = BreathingSpaceHelper.isUserInBreathingSpace(breathingSpace)(currentDate)
         result shouldBe false
       }
     }
