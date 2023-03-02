@@ -33,14 +33,14 @@ import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import utils.Logger.logger
 import utils.PagerDutyHelper.PagerDutyKeys
 import viewmodels.CalculationPageHelper
-import views.html.{CalculationLPP2View, CalculationLPPView}
+import views.html.{CalculationLPP1View, CalculationLPP2View}
 
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CalculationControllerSpec extends SpecBase with FeatureSwitching with LogCapturing {
-  val calculationView: CalculationLPPView = injector.instanceOf[CalculationLPPView]
+  val calculationView: CalculationLPP1View = injector.instanceOf[CalculationLPP1View]
   val calculationAdditionalView: CalculationLPP2View = injector.instanceOf[CalculationLPP2View]
   val mockPenaltiesService: PenaltiesService = mock(classOf[PenaltiesService])
   val calculationPageHelper: CalculationPageHelper = injector.instanceOf[CalculationPageHelper]

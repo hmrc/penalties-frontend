@@ -23,10 +23,10 @@ import org.jsoup.nodes.Document
 import play.twirl.api.HtmlFormat
 import utils.ViewUtils
 import views.behaviours.ViewBehaviours
-import views.html.{CalculationLPP2View, CalculationLPPView}
+import views.html.{CalculationLPP1View, CalculationLPP2View}
 
 class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
-  val calculationPage: CalculationLPPView = injector.instanceOf[CalculationLPPView]
+  val calculationPage: CalculationLPP1View = injector.instanceOf[CalculationLPP1View]
   val calculationLPP2Page: CalculationLPP2View = injector.instanceOf[CalculationLPP2View]
 
   object Selector extends BaseSelectors {
@@ -443,7 +443,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             startDate = "1 April 2022",
             endDate = "30 June 2022",
             dueDate = Some("7 September 2022"),
-            isTTPActive = false)(implicitly, implicitly, vatTraderUser)
+            isTTPActive = false,
+            isBreathingSpaceActive = false)(implicitly, implicitly, vatTraderUser)
         }
 
         implicit val docWithOnlyOneCalculation: Document =
@@ -514,7 +515,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             startDate = "1 April 2022",
             endDate = "30 June 2022",
             dueDate = Some("7 September 2022"),
-            isTTPActive = true)(implicitly, implicitly, vatTraderUser)
+            isTTPActive = true,
+            isBreathingSpaceActive = false)(implicitly, implicitly, vatTraderUser)
         }
 
         implicit val docWithOnlyOneCalculation: Document =
@@ -558,7 +560,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             startDate = "1 April 2022",
             endDate = "30 June 2022",
             dueDate = None,
-            isTTPActive = false)(implicitly, implicitly, vatTraderUser)
+            isTTPActive = false,
+            isBreathingSpaceActive = false)(implicitly, implicitly, vatTraderUser)
         }
 
         implicit val docWithOnlyOneCalculation: Document =
@@ -604,7 +607,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             startDate = "1 April 2022",
             endDate = "30 June 2022",
             dueDate = None,
-            isTTPActive = true)(implicitly, implicitly, vatTraderUser)
+            isTTPActive = true,
+            isBreathingSpaceActive = false)(implicitly, implicitly, vatTraderUser)
         }
 
         implicit val docWithOnlyOneCalculation: Document =
@@ -633,6 +637,89 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         behave like pageWithExpectedMessages(expectedContent)(docWithOnlyOneCalculation)
       }
 
+      "it is a first penalty and is estimated (TTP active & Breathing Space active)" must{
+        def applyView(calculationRow: Seq[String], isMultipleAmounts: Boolean): HtmlFormat.Appendable = {
+          calculationPage.apply(
+            amountReceived = "100.00",
+            penaltyAmount = "400.00",
+            amountLeftToPay = "300.00",
+            calculationRowSeq = calculationRow,
+            isPenaltyEstimate = true,
+            startDate = "1 April 2022",
+            endDate = "30 June 2022",
+            dueDate = None,
+            isTTPActive = true,
+            isBreathingSpaceActive = true)(implicitly, implicitly, vatTraderUser)
+        }
+
+        implicit val docWithOnlyOneCalculation: Document =
+          asDocument(applyView(Seq("2% of £3,850.00 (the unpaid VAT 15 days after the due date)"), isMultipleAmounts = false))
+
+        val expectedContent = Seq(
+          Selector.title -> titleLPP,
+          Selector.periodHiddenText -> periodHiddenText,
+          Selector.periodWithText -> periodWithText,
+          Selector.h1 -> headingLPP,
+          Selector.howPenaltyIsApplied -> howPenaltyIsApplied15Days,
+          Selector.govukBody(1) -> estimateFooterNoteBillPayment,
+          Selector.fifteenDayCalculation -> onePartCalculation("2% of £3,850.00 (the unpaid VAT 15 days after the due date)"),
+          Selector.summaryListRowKey(1) -> th2LPPAccruing,
+          Selector.summaryListRowValue(1) -> "£400.00",
+          Selector.summaryListRowKey(2) -> th3LPP,
+          Selector.summaryListRowValue(2) -> "£100.00",
+          Selector.summaryListRowKey(3) -> th4LPP,
+          Selector.summaryListRowValue(3) -> "£300.00",
+          Selector.ttpInsetText -> ttpActiveInsetText,
+          Selector.h2 -> h2Estimates,
+          Selector.govukBody(3) -> p2EstimatesLPP1,
+          Selector.bulletNthChild(1) -> b1TTPAndBreathingSpace,
+          Selector.bulletNthChild(2) -> b2TTPAndBreathingSpace,
+          Selector.link -> link
+        )
+
+        behave like pageWithExpectedMessages(expectedContent)(docWithOnlyOneCalculation)
+      }
+
+      "it is a first penalty and is estimated (TTP inactive & Breathing Space active)" must {
+        def applyView(calculationRow: Seq[String], isMultipleAmounts: Boolean): HtmlFormat.Appendable = {
+          calculationPage.apply(
+            amountReceived = "100.00",
+            penaltyAmount = "400.00",
+            amountLeftToPay = "300.00",
+            calculationRowSeq = calculationRow,
+            isPenaltyEstimate = true,
+            startDate = "1 April 2022",
+            endDate = "30 June 2022",
+            dueDate = None,
+            isTTPActive = false,
+            isBreathingSpaceActive = true)(implicitly, implicitly, vatTraderUser)
+        }
+
+        implicit val docWithOnlyOneCalculation: Document =
+          asDocument(applyView(Seq("2% of £3,850.00 (the unpaid VAT 15 days after the due date)"), isMultipleAmounts = false))
+
+        val expectedContent = Seq(
+          Selector.title -> titleLPP,
+          Selector.periodHiddenText -> periodHiddenText,
+          Selector.periodWithText -> periodWithText,
+          Selector.h1 -> headingLPP,
+          Selector.howPenaltyIsApplied -> howPenaltyIsApplied15Days,
+          Selector.govukBody(1) -> estimateFooterNoteBillPayment,
+          Selector.fifteenDayCalculation -> onePartCalculation("2% of £3,850.00 (the unpaid VAT 15 days after the due date)"),
+          Selector.summaryListRowKey(1) -> th2LPPAccruing,
+          Selector.summaryListRowValue(1) -> "£400.00",
+          Selector.summaryListRowKey(2) -> th3LPP,
+          Selector.summaryListRowValue(2) -> "£100.00",
+          Selector.summaryListRowKey(3) -> th4LPP,
+          Selector.summaryListRowValue(3) -> "£300.00",
+          Selector.h2 -> h2Estimates,
+          Selector.govukBody(3) -> p2EstimatesBreathingSpaceActive,
+          Selector.link -> link
+        )
+
+        behave like pageWithExpectedMessages(expectedContent)(docWithOnlyOneCalculation)
+      }
+
       "it is a first penalty and with Penalty Amount and the user is an Agent" must {
         def applyView(calculationRow: Seq[String], isMultipleAmounts: Boolean): HtmlFormat.Appendable = {
           calculationPage.apply(
@@ -644,7 +731,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             startDate = "1 April 2022",
             endDate = "30 June 2022",
             dueDate = None,
-            isTTPActive = false)(implicitly, implicitly, agentUser)
+            isTTPActive = false,
+            isBreathingSpaceActive = false)(implicitly, implicitly, agentUser)
         }
 
         implicit val docWithOnlyOneCalculation: Document =
@@ -685,7 +773,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             startDate = "1 April 2022",
             endDate = "30 June 2022",
             dueDate = None,
-            isTTPActive = false)(implicitly, implicitly, agentUser)
+            isTTPActive = false,
+            isBreathingSpaceActive = false)(implicitly, implicitly, agentUser)
         }
 
         implicit val docWithOnlyOneCalculation: Document =
@@ -727,7 +816,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             startDate = "1 April 2022",
             endDate = "30 June 2022",
             dueDate = None,
-            isTTPActive = true)(implicitly, implicitly, agentUser)
+            isTTPActive = true,
+            isBreathingSpaceActive = false)(implicitly, implicitly, agentUser)
         }
 
         implicit val docWithOnlyOneCalculation: Document =
@@ -749,6 +839,89 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           Selector.ttpInsetText -> ttpActiveAgentInsetText,
           Selector.h2 -> h2Estimates,
           Selector.govukBody(3) -> p2EstimatesAgentTTPActive,
+          Selector.link -> link
+        )
+
+        behave like pageWithExpectedMessages(expectedContent)(docWithOnlyOneCalculation)
+      }
+
+      "it is a first penalty and is estimated and the user is an Agent (TTP active & Breathing Space active)" must {
+        def applyView(calculationRow: Seq[String], isMultipleAmounts: Boolean): HtmlFormat.Appendable = {
+          calculationPage.apply(
+            amountReceived = "100.00",
+            penaltyAmount = "400.00",
+            amountLeftToPay = "300.00",
+            calculationRowSeq = calculationRow,
+            isPenaltyEstimate = true,
+            startDate = "1 April 2022",
+            endDate = "30 June 2022",
+            dueDate = None,
+            isTTPActive = true,
+            isBreathingSpaceActive = true)(implicitly, implicitly, agentUser)
+        }
+
+        implicit val docWithOnlyOneCalculation: Document =
+          asDocument(applyView(Seq("2% of £3,850.00 (the unpaid VAT 15 days after the due date)"), isMultipleAmounts = false))
+
+        val expectedContent = Seq(
+          Selector.title -> agentTitleLPP,
+          Selector.periodHiddenText -> periodHiddenText,
+          Selector.periodWithText -> periodWithText,
+          Selector.h1 -> headingLPP,
+          Selector.howPenaltyIsApplied -> howPenaltyIsApplied15Days,
+          Selector.govukBody(1) -> estimateFooterNoteBillPayment,
+          Selector.fifteenDayCalculation -> onePartCalculation("2% of £3,850.00 (the unpaid VAT 15 days after the due date)"),
+          Selector.summaryListRowKey(1) -> th2LPPAccruing,
+          Selector.summaryListRowValue(1) -> "£400.00",
+          Selector.summaryListRowKey(2) -> th3LPP,
+          Selector.summaryListRowValue(2) -> "£100.00",
+          Selector.summaryListRowKey(3) -> th4LPP,
+          Selector.summaryListRowValue(3) -> "£300.00",
+          Selector.ttpInsetText -> ttpActiveAgentInsetText,
+          Selector.h2 -> h2Estimates,
+          Selector.govukBody(3) -> p2EstimatesLPP1,
+          Selector.bulletNthChild(1) -> b1TTPAndBreathingSpaceAgent,
+          Selector.bulletNthChild(2) -> b2TTPAndBreathingSpace,
+          Selector.link -> link
+        )
+
+        behave like pageWithExpectedMessages(expectedContent)(docWithOnlyOneCalculation)
+      }
+
+      "it is a first penalty and is estimated and the user is an Agent (TTP inactive & Breathing Space active)" must {
+        def applyView(calculationRow: Seq[String], isMultipleAmounts: Boolean): HtmlFormat.Appendable = {
+          calculationPage.apply(
+            amountReceived = "100.00",
+            penaltyAmount = "400.00",
+            amountLeftToPay = "300.00",
+            calculationRowSeq = calculationRow,
+            isPenaltyEstimate = true,
+            startDate = "1 April 2022",
+            endDate = "30 June 2022",
+            dueDate = None,
+            isTTPActive = false,
+            isBreathingSpaceActive = true)(implicitly, implicitly, agentUser)
+        }
+
+        implicit val docWithOnlyOneCalculation: Document =
+          asDocument(applyView(Seq("2% of £3,850.00 (the unpaid VAT 15 days after the due date)"), isMultipleAmounts = false))
+
+        val expectedContent = Seq(
+          Selector.title -> agentTitleLPP,
+          Selector.periodHiddenText -> periodHiddenText,
+          Selector.periodWithText -> periodWithText,
+          Selector.h1 -> headingLPP,
+          Selector.howPenaltyIsApplied -> howPenaltyIsApplied15Days,
+          Selector.govukBody(1) -> estimateFooterNoteBillPayment,
+          Selector.fifteenDayCalculation -> onePartCalculation("2% of £3,850.00 (the unpaid VAT 15 days after the due date)"),
+          Selector.summaryListRowKey(1) -> th2LPPAccruing,
+          Selector.summaryListRowValue(1) -> "£400.00",
+          Selector.summaryListRowKey(2) -> th3LPP,
+          Selector.summaryListRowValue(2) -> "£100.00",
+          Selector.summaryListRowKey(3) -> th4LPP,
+          Selector.summaryListRowValue(3) -> "£300.00",
+          Selector.h2 -> h2Estimates,
+          Selector.govukBody(3) -> p2EstimatesBreathingSpaceActiveAgent,
           Selector.link -> link
         )
 

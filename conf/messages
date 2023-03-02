@@ -239,6 +239,11 @@ calculation.estimate.footerNote.warning = The penalty will increase by a further
 agent.calculation.estimate.footerNote.warning = The penalty will increase by a further 2% if VAT remains unpaid 30 days after the due date and your client has not set up a payment plan.
 calculation.lpp1.15days = the unpaid VAT 15 days after the due date
 calculation.lpp1.30days = the unpaid VAT 30 days after the due date
+calculation.breathingSpace.estimate = Penalties will show as estimates until your Breathing Space ends.
+agent.calculation.breathingSpace.estimate = Penalties will show as estimates until your client’s Breathing Space ends.
+calculation.breathingSpaceAndTTP.estimate.b1 = you make all payments due under the payment plan, and
+agent.calculation.breathingSpaceAndTTP.estimate.b1 = your client makes all payments due under the payment plan, and
+calculation.breathingSpaceAndTTP.estimate.b2 = Breathing Space ends
 
 # Timeout messages
 # --------------------------

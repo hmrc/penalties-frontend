@@ -239,6 +239,11 @@ calculation.estimate.footerNote.warning = Bydd y gosb yn cynyddu 2% pellach os b
 agent.calculation.estimate.footerNote.warning = Bydd y gosb yn cynyddu 2% pellach os bydd TAW yn dal i fod heb ei thalu 30 diwrnod ar ôl y dyddiad dyledus a bod eich cleient heb drefnu cynllun talu.
 calculation.lpp1.15days = y TAW sydd heb ei thalu 15 diwrnod ar ôl y dyddiad dyledus
 calculation.lpp1.30days = y TAW sydd heb ei thalu 30 diwrnod ar ôl y dyddiad dyledus
+calculation.breathingSpace.estimate = Bydd cosbau’n cael eu dangos fel amcangyfrifon nes bod eich trefniant amser i gael eich gwynt atoch yn dod i ben.
+agent.calculation.breathingSpace.estimate = Bydd cosbau’n cael eu dangos fel amcangyfrifon nes bod trefniant amser i’ch cleient gael ei wynt ato yn dod i ben.
+calculation.breathingSpaceAndTTP.estimate.b1 = rydych yn gwneud yr holl daliadau sy’n ddyledus o dan y cynllun talu, ac
+agent.calculation.breathingSpaceAndTTP.estimate.b1 = mae’ch cleient yn gwneud yr holl daliadau sy’n ddyledus o dan y cynllun talu, ac
+calculation.breathingSpaceAndTTP.estimate.b2 = mae’r trefniant amser i gael eich gwynt atoch yn dod i ben
 
 # Timeout messages
 # --------------------------
