@@ -83,7 +83,25 @@ object CalculationMessages {
 
   val twoPartCalculation = s"It is made up of 2 parts:"
 
-  val onePartCalculation = (calculation: String) => s"The calculation we use is: $calculation"
+  val onePartCalculation: String => String = (calculation: String) => s"The calculation we use is: $calculation"
 
   val dueDate = "Due date"
+
+  val lpp2EstimatedBreathingSpace = "The total builds up daily until you pay your VAT or set up a payment plan. However, when we calculate your penalty we do not count the days you are in Breathing Space."
+
+  val lpp2EstimatedBreathingSpaceAgent = "The total builds up daily until your client pays their VAT or sets up a payment plan. However, when we calculate your client’s penalty we do not count the days they are in Breathing Space."
+
+  val p2EstimatesLPP2BreathingSpaceTTPActive = "Penalties will show as estimates until:"
+
+  val p2EstimatesLPP2BreathingSpace = "Penalties and interest will show as estimates until:"
+
+  val lpp2EstimatedBreathingSpaceTTPBullet1 = "you make all payments due under the payment plan, and"
+
+  val lpp2EstimatedBreathingSpaceBullet1 = "you pay the charge they relate to, and"
+
+  val lpp2EstimatedBreathingSpaceTTPBullet1Agent = "your client makes all payments due under the payment plan, and"
+
+  val lpp2EstimatedBreathingSpaceBullet1Agent = "your client pays the charge they relate to, and"
+
+  val lpp2EstimatedBreathingSpaceBullet2 = "Breathing Space ends"
 }

@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.featureSwitches.FeatureSwitching
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
 import models.User
@@ -28,7 +29,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
 import utils.PagerDutyHelper.PagerDutyKeys._
 import utils.{CurrencyFormatter, EnrolmentKeys, PagerDutyHelper}
-import viewmodels.CalculationPageHelper
+import viewmodels.{BreathingSpaceHelper, CalculationPageHelper}
 import views.html.{CalculationLPP2View, CalculationLPPView}
 
 import javax.inject.Inject
@@ -43,7 +44,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
                                        errorHandler: ErrorHandler,
                                        authorise: AuthPredicate,
                                        controllerComponents: MessagesControllerComponents)
-  extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter {
+  extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter with FeatureSwitching {
 
   def onPageLoad(principalChargeReference: String, penaltyCategory: String): Action[AnyContent] = authorise.async { implicit request =>
     val penaltyCategoryEnum = LPPPenaltyCategoryEnum.find(penaltyCategory).get
@@ -86,12 +87,30 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
                 errorHandler.showInternalServerError
               })(
                 rowSeq => {
-                  Ok(viewLPP(amountReceived, parsedPenaltyAmount, amountLeftToPay, rowSeq, isPenaltyEstimate, startDateOfPeriod, endDateOfPeriod,
-                    dueDateOfPenalty, isTTPActive))
+                  Ok(viewLPP(amountReceived = amountReceived,
+                    penaltyAmount = parsedPenaltyAmount,
+                    amountLeftToPay = amountLeftToPay,
+                    calculationRowSeq = rowSeq,
+                    isPenaltyEstimate = isPenaltyEstimate,
+                    startDate = startDateOfPeriod,
+                    endDate = endDateOfPeriod,
+                    dueDate = dueDateOfPenalty,
+                    isTTPActive = isTTPActive
+                  ))
                 })
             } else {
               val isEstimate = penalty.get.penaltyStatus.equals(LPPPenaltyStatusEnum.Accruing)
-              Ok(viewLPP2(isEstimate, startDateOfPeriod, endDateOfPeriod, dueDateOfPenalty, parsedPenaltyAmount, amountReceived, amountLeftToPay, isTTPActive))
+              val isUserInBreathingSpace = BreathingSpaceHelper.isUserInBreathingSpace(payload.breathingSpace)(getFeatureDate)
+              Ok(viewLPP2(isEstimate = isEstimate,
+                startDate = startDateOfPeriod,
+                endDate = endDateOfPeriod,
+                dueDate = dueDateOfPenalty,
+                penaltyAmount = parsedPenaltyAmount,
+                amountReceived = amountReceived,
+                amountLeftToPay = amountLeftToPay,
+                isTTPActive = isTTPActive,
+                isUserInBreathingSpace = isUserInBreathingSpace
+              ))
             }
           }
         }

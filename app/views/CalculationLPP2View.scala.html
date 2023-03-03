@@ -20,9 +20,9 @@
         layout: Layout,
         link: components.link,
         details: GovukDetails,
+        bullets: components.bullets,
         insetText: GovukInsetText
 )
-
 
 @(
         isEstimate: Boolean,
@@ -32,7 +32,8 @@
         penaltyAmount: String,
         amountReceived: String,
         amountLeftToPay: String,
-        isTTPActive: Boolean
+        isTTPActive: Boolean,
+        isUserInBreathingSpace: Boolean
 )(implicit messages: Messages, appConfig: AppConfig, user: User[_])
 
 @layout(pageTitle = messages("calculation.headingAndTitle.lpp"),
@@ -47,7 +48,11 @@
   </header>
 
   <p class="govuk-body" id="how-penalty-is-applied">@messages("calculation.p.1.lpp2")</p>
-  <p class="govuk-body" id="when-it-increases">@{if(isEstimate) getMessage("calculation.p.2.estimates.lpp2") else messages("calculation.p.2.lpp2")}</p>
+  @if(isUserInBreathingSpace && isEstimate) {
+    <p class="govuk-body" id="when-it-increases">@getMessage("calculation.p.2.lpp2.estimate.breathing.space")</p>
+  } else {
+    <p class="govuk-body" id="when-it-increases">@{if(isEstimate) getMessage("calculation.p.2.estimates.lpp2") else messages("calculation.p.2.lpp2")}</p>
+  }
   <p class="govuk-body" id="calculation">
     @messages("calculation.lpp2.text")
     <br>
@@ -95,7 +100,23 @@
             content = HtmlContent(getMessage("calculation.ttp.insetText"))))
     }
     <h2 class="govuk-heading-s">@messages("calculation.h2.estimates")</h2>
-    @if(isTTPActive) {
+    @if(isUserInBreathingSpace && isTTPActive) {
+      <p class="govuk-body breathing-space-content">@messages("calculation.p.2.estimates.lpp2.breathing.space.ttp.active")</p>
+      @bullets(
+        Seq(
+          Html(getMessage("calculation.p.2.estimates.breathing.space.b1.ttp.active")),
+          Html(messages("calculation.p.2.estimates.breathing.space.b2"))
+        )
+      )
+    } else if(isUserInBreathingSpace) {
+      <p class="govuk-body breathing-space-content">@messages("calculation.p.2.estimates.lpp2.breathing.space")</p>
+      @bullets(
+        Seq(
+          Html(getMessage("calculation.p.2.estimates.breathing.space.b1")),
+          Html(messages("calculation.p.2.estimates.breathing.space.b2"))
+        )
+      )
+    } else if(isTTPActive) {
       <p class="govuk-body ttp-content">@getMessage("calculation.p.3.estimates.lpp.ttpActive")</p>
     } else {
       <p class="govuk-body">@getMessage("calculation.p.3.estimates.lpp2")</p>
