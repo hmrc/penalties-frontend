@@ -50,11 +50,9 @@ class BaseSelectors {
 
   val periodSpan = "#main-content > div > div > span"
 
-  val periodWithText = "#main-content > div > div > header > p"
+  val periodWithText = ".penalty-information-caption"
 
-  val periodHiddenText = "#main-content > div > div > header > p > span"
-
-  val HeaderTextNotVisible = "#main-content > div > div > header > p > .govuk-visually-hidden"
+  val headerTextNotVisible = ".penalty-information-caption > .govuk-visually-hidden"
 
   val button = "#main-content .govuk-button"
 }

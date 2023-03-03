@@ -41,11 +41,8 @@
   isUserAgent = user.isAgent,
   extraBreadcrumbs = Some(Seq((messages("index.breadcrumb.index"), controllers.routes.IndexController.onPageLoad.url))),
   optPage = Some(CalculationPage)) {
-  <header class="hmrc-page-heading govuk-!-margin-top-0">
-    <h1 class="govuk-heading-l govuk-!-margin-bottom-5">@messages("calculation.headingAndTitle.lpp")</h1>
-    <p class="govuk-caption-l hmrc-caption-l penalty-information-caption">
-      <span class="govuk-visually-hidden">@messages("calculation.heading.lpp1And2.hiddenText") </span>@messages("calculation.caption", startDate, endDate)</p>
-  </header>
+  <h2 class="govuk-caption-l hmrc-caption-l penalty-information-caption"><span class="govuk-visually-hidden">@messages("calculation.heading.lpp1And2.hiddenText") </span>@messages("calculation.caption", startDate, endDate)</h2>
+  <h1 class="govuk-heading-l govuk-!-margin-bottom-5">@messages("calculation.headingAndTitle.lpp")</h1>
 
   <p class="govuk-body" id="how-penalty-is-applied">@messages("calculation.p.1.lpp2")</p>
   @if(isUserInBreathingSpace && isEstimate) {
