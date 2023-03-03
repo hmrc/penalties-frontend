@@ -216,8 +216,8 @@ calculation.key.2.text = {0}% o £{1} ({2})
 calculation.key.2.text.remove.30.days = {0}% o £{1} ({2}) = £{3}
 calculation.key.3 = Swm a gafwyd
 calculation.key.4 = Yn weddill i’w dalu
-calculation.ttp.insetText = You’ve asked HMRC if you can set up a payment plan. If a payment plan has been agreed, and you keep up with all payments, this penalty will not increase further.
-agent.calculation.ttp.insetText = Your client has asked HMRC if they can set up a payment plan. If a payment plan has been agreed, and they keep up with all payments, this penalty will not increase further.
+calculation.ttp.insetText = Rydych wedi gofyn i CThEF a allwch drefnu cynllun talu. Os cytunwyd ar gynllun talu, a’ch bod yn gwneud pob taliad mewn pryd, ni fydd y gosb hon yn cynyddu ymhellach.
+agent.calculation.ttp.insetText = Mae’ch cleient wedi gofyn i CThEF a all drefnu cynllun talu. Os cytunwyd ar gynllun talu, a’i fod yn gwneud pob taliad mewn pryd, ni fydd y gosb hon yn cynyddu ymhellach.
 calculation.h2.estimates = Amcangyfrifon
 calculation.p.3.estimates.lpp2 = Bydd cosbau a llog yn ymddangos fel amcangyfrifon hyd nes y byddwch yn talu’r tâl cysylltiedig.
 calculation.p.3.estimates.lpp.ttpActive = Bydd cosbau’n dangos fel amcangyfrifon hyd nes y byddwch yn gwneud yr holl daliadau sy’n ddyledus o dan delerau’r cynllun talu.
@@ -239,6 +239,11 @@ calculation.estimate.footerNote.warning = Bydd y gosb yn cynyddu 2% pellach os b
 agent.calculation.estimate.footerNote.warning = Bydd y gosb yn cynyddu 2% pellach os bydd TAW yn dal i fod heb ei thalu 30 diwrnod ar ôl y dyddiad dyledus a bod eich cleient heb drefnu cynllun talu.
 calculation.lpp1.15days = y TAW sydd heb ei thalu 15 diwrnod ar ôl y dyddiad dyledus
 calculation.lpp1.30days = y TAW sydd heb ei thalu 30 diwrnod ar ôl y dyddiad dyledus
+calculation.breathingSpace.estimate = Bydd cosbau’n cael eu dangos fel amcangyfrifon nes bod eich trefniant amser i gael eich gwynt atoch yn dod i ben.
+agent.calculation.breathingSpace.estimate = Bydd cosbau’n cael eu dangos fel amcangyfrifon nes bod trefniant amser i’ch cleient gael ei wynt ato yn dod i ben.
+calculation.breathingSpaceAndTTP.estimate.b1 = rydych yn gwneud yr holl daliadau sy’n ddyledus o dan y cynllun talu, ac
+agent.calculation.breathingSpaceAndTTP.estimate.b1 = mae’ch cleient yn gwneud yr holl daliadau sy’n ddyledus o dan y cynllun talu, ac
+calculation.breathingSpaceAndTTP.estimate.b2 = mae’r trefniant amser i gael eich gwynt atoch yn dod i ben
 
 # Timeout messages
 # --------------------------

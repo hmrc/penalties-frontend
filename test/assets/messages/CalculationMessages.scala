@@ -47,6 +47,10 @@ object CalculationMessages {
 
   val p2EstimatesTTPActive = "Penalties will show as estimates until you make all payments due under the payment plan."
 
+  val p2EstimatesBreathingSpaceActive = "Penalties will show as estimates until your Breathing Space ends."
+
+  val p2EstimatesBreathingSpaceActiveAgent = "Penalties will show as estimates until your client’s Breathing Space ends."
+
   val p2EstimatesLPP2Agent = "Penalties and interest will show as estimates until your client pays the charge they relate to."
 
   val p2EstimatesAgentTTPActive = "Penalties will show as estimates until your client makes all payments due under the payment plan."
@@ -56,6 +60,13 @@ object CalculationMessages {
   val b1Estimates = "you pay the VAT bill, or"
 
   val b1EstimatesAgent = "your client pays the VAT bill, or"
+
+  val b1TTPAndBreathingSpace = "you make all payments due under the payment plan, and"
+
+  val b1TTPAndBreathingSpaceAgent = "your client makes all payments due under the payment plan, and"
+
+  val b2TTPAndBreathingSpace = "Breathing Space ends"
+
 
   val b2Estimates = "30 days have passed since the VAT due date"
 

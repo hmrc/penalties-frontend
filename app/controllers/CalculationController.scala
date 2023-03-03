@@ -30,12 +30,12 @@ import utils.Logger.logger
 import utils.PagerDutyHelper.PagerDutyKeys._
 import utils.{CurrencyFormatter, EnrolmentKeys, PagerDutyHelper}
 import viewmodels.{BreathingSpaceHelper, CalculationPageHelper}
-import views.html.{CalculationLPP2View, CalculationLPPView}
+import views.html.{CalculationLPP1View, CalculationLPP2View}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CalculationController @Inject()(viewLPP: CalculationLPPView,
+class CalculationController @Inject()(viewLPP1: CalculationLPP1View,
                                       viewLPP2: CalculationLPP2View,
                                       penaltiesService: PenaltiesService,
                                       calculationPageHelper: CalculationPageHelper
@@ -77,6 +77,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
             val penaltyAmount = penalty.get.penaltyAmountOutstanding.get + penalty.get.penaltyAmountPaid.getOrElse(BigDecimal(0))
             val parsedPenaltyAmount = CurrencyFormatter.parseBigDecimalToFriendlyValue(penaltyAmount)
             val isTTPActive = calculationPageHelper.isTTPActive(payload)
+            val isBreathingSpaceActive = BreathingSpaceHelper.isUserInBreathingSpace(payload.breathingSpace)(getFeatureDate)
             logger.debug(s"[CalculationController][getPenaltyDetails] - found penalty: ${penalty.get}")
             if (!penaltyCategory.equals(LPP2)) {
               val calculationRow = calculationPageHelper.getCalculationRowForLPP(penalty.get)
@@ -87,7 +88,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
                 errorHandler.showInternalServerError
               })(
                 rowSeq => {
-                  Ok(viewLPP(amountReceived = amountReceived,
+                  Ok(viewLPP1(amountReceived = amountReceived,
                     penaltyAmount = parsedPenaltyAmount,
                     amountLeftToPay = amountLeftToPay,
                     calculationRowSeq = rowSeq,
@@ -95,12 +96,11 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
                     startDate = startDateOfPeriod,
                     endDate = endDateOfPeriod,
                     dueDate = dueDateOfPenalty,
-                    isTTPActive = isTTPActive
-                  ))
+                    isTTPActive = isTTPActive,
+                    isBreathingSpaceActive = isBreathingSpaceActive))
                 })
             } else {
               val isEstimate = penalty.get.penaltyStatus.equals(LPPPenaltyStatusEnum.Accruing)
-              val isUserInBreathingSpace = BreathingSpaceHelper.isUserInBreathingSpace(payload.breathingSpace)(getFeatureDate)
               Ok(viewLPP2(isEstimate = isEstimate,
                 startDate = startDateOfPeriod,
                 endDate = endDateOfPeriod,
@@ -109,7 +109,7 @@ class CalculationController @Inject()(viewLPP: CalculationLPPView,
                 amountReceived = amountReceived,
                 amountLeftToPay = amountLeftToPay,
                 isTTPActive = isTTPActive,
-                isUserInBreathingSpace = isUserInBreathingSpace
+                isUserInBreathingSpace = isBreathingSpaceActive
               ))
             }
           }
