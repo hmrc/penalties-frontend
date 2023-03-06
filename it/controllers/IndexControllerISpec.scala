@@ -18,6 +18,7 @@ package controllers
 
 import config.AppConfig
 import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
+import models.breathingSpace.BreathingSpace
 import models.lpp._
 import models.lsp._
 import models.{GetPenaltyDetails, Totalisations, appealInfo}
@@ -946,6 +947,37 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         summaryCardBody.select("p.govuk-body a").attr("href") shouldBe appConfig.adjustmentLink
         parsedBody.select(".app-summary-card footer div").text shouldBe ""
         parsedBody.select(".app-summary-card footer a").text shouldBe ""
+      }
+
+      "return 200 (OK) and render the view when user is in breathing space" in {
+        AuthStub.authorised()
+        setFeatureDate(Some(sampleDate1))
+        val penaltyDetailsWithBreathingSpace = getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(
+          breathingSpace = Some(Seq(BreathingSpace(sampleDate1, sampleDate1)))
+        )
+        returnPenaltyDetailsStub(penaltyDetailsWithBreathingSpace)
+        val request = controller.onPageLoad()(fakeRequest)
+        await(request).header.status shouldBe Status.OK
+        val parsedBody = Jsoup.parse(contentAsString(request))
+        parsedBody.select("#late-submission-penalties a").get(0).text shouldBe "Read the guidance about late submission penalties (opens in a new tab)"
+        parsedBody.select("#late-payment-penalties a").get(0).text shouldBe "Read the guidance about how late payment penalties are calculated (opens in a new tab)"
+        parsedBody.select("#what-is-owed .govuk-button").get(0).text shouldBe "Check what you owe"
+        setFeatureDate(None)
+      }
+
+      "return 200 (OK) and render the view when user is in breathing space for agents" in {
+        AuthStub.agentAuthorised()
+        setFeatureDate(Some(sampleDate1))
+        val penaltyDetailsWithBreathingSpace = getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(
+          breathingSpace = Some(Seq(BreathingSpace(sampleDate1, sampleDate1)))
+        )
+        returnPenaltyDetailsStubAgent(penaltyDetailsWithBreathingSpace)
+        val request = controller.onPageLoad()(fakeAgentRequest)
+        await(request).header.status shouldBe Status.OK
+        val parsedBody = Jsoup.parse(contentAsString(request))
+        parsedBody.select("#late-submission-penalties a").get(0).text shouldBe "Read the guidance about late submission penalties (opens in a new tab)"
+        parsedBody.select("#late-payment-penalties a").get(0).text shouldBe "Read the guidance about how late payment penalties are calculated (opens in a new tab)"
+        parsedBody.select("#what-is-owed .govuk-button").get(0).text shouldBe "Check what your client owes"
       }
 
       "return 200 (OK) and render the view when removed points are below active points (active points are reindexed)" in {

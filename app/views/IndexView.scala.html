@@ -35,6 +35,7 @@
         totalAmountToPay: String,
         isUnpaidLSPExists: Boolean = false,
         isAnyUnpaidLSPAndNotSubmittedReturn: Boolean = false,
+        isUserInBreathingSpace: Boolean = false,
         whatYouOweContent: Option[Html] = None)(implicit messages: Messages, appConfig: AppConfig, user: User[_])
 
 
@@ -55,9 +56,9 @@
           <p class="govuk-body">@getMessage("whatIsOwed.p1")</p>
           @breakdownContent
           @if(user.isAgent) {
-            @link(appConfig.whatYouOweUrl, "whatIsOwed.button.checkAmounts", button = true, classes = "govuk-button")
+            @link(appConfig.whatYouOweUrl, if(isUserInBreathingSpace) "agent.whatIsOwed.breathing.space.p3.link" else "whatIsOwed.button.checkAmounts", button = true, classes = "govuk-button")
           } else {
-            @link(appConfig.whatYouOweUrl, "whatIsOwed.button.checkAndPay", button = true, classes = "govuk-button")
+            @link(appConfig.whatYouOweUrl, if(isUserInBreathingSpace) "whatIsOwed.breathing.space.p3.link" else "whatIsOwed.button.checkAndPay", button = true, classes = "govuk-button")
           }
         </div>
       }

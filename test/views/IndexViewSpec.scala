@@ -58,9 +58,15 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours {
       breathingSpace = None
     )
 
-    def applyView(isTTPActive: Boolean = false, isUserAgent: Boolean = false, userOwes: Boolean = false): HtmlFormat.Appendable = {
-      indexPage.apply(html(), html(), Seq.empty, None, "",
-        whatYouOweContent = if(!userOwes) None else helper.getWhatYouOweBreakdown(penaltyDetails))(implicitly, implicitly, if(isUserAgent) agentUser else vatTraderUser)
+    def applyView(isUserAgent: Boolean = false, userOwes: Boolean = false, isUserInBreathingSpace: Boolean = false): HtmlFormat.Appendable = {
+      indexPage.apply(
+        contentToDisplayBeforeSummaryCards = html(),
+        contentLPPToDisplayBeforeSummaryCards = html(),
+        lspCards = Seq.empty,
+        lppCards = None,
+        totalAmountToPay = "",
+        whatYouOweContent = if(!userOwes) None else helper.getWhatYouOweBreakdown(penaltyDetails),
+        isUserInBreathingSpace = isUserInBreathingSpace)(implicitly, implicitly, if(isUserAgent) agentUser else vatTraderUser)
     }
 
     implicit val doc: Document = asDocument(applyView())
@@ -107,6 +113,25 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours {
       footerLinks.get(3).text shouldBe "Terms and conditions"
       footerLinks.get(4).text shouldBe "Help using GOV.UK"
       footerLinks.get(5).text shouldBe "Contact"
+    }
+
+    "display the correct WYO text" when {
+      "the trader is in breathing space" in {
+        implicit val doc: Document = asDocument(applyView(
+          userOwes = true,
+          isUserInBreathingSpace = true
+        ))
+        doc.select("#what-is-owed .govuk-button").get(0).text shouldBe "Check what you owe"
+      }
+
+      "the client is in breathing space (agent view)" in {
+        implicit val doc: Document = asDocument(applyView(
+          userOwes = true,
+          isUserInBreathingSpace = true,
+          isUserAgent = true
+        ))
+        doc.select("#what-is-owed .govuk-button").get(0).text shouldBe "Check what your client owes"
+      }
     }
   }
 }

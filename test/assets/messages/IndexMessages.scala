@@ -29,21 +29,7 @@ object IndexMessages {
 
   val heading = "VAT penalties and appeals"
 
-  val ttpText: Seq[String] = Seq(
-    "There is a payment plan set up on this account.",
-    "You must keep up with all payments. If you do not, your payment plan will fail and any penalties will be calculated from their original date.",
-    "Check what you owe to see all unpaid charges."
-  )
-
-  val ttpAgentText: Seq[String] = Seq(
-    "There is a payment plan set up on this account.",
-    "Your client must keep up with all payments. If they do not, their payment plan will fail and any penalties will be calculated from the original date.",
-    "Check what your client owes to see all unpaid charges."
-  )
-
   val externalLSPGuidanceLinkText = "Read the guidance about late submission penalties (opens in a new tab)"
-
-  val externalLPPGuidanceLinkText = "Find out how late payment penalties are calculated (opens in a new tab)"
 
   val singularOverviewText = "You have 1 penalty point for submitting a VAT Return late."
 
@@ -63,7 +49,7 @@ object IndexMessages {
 
   val agentClientUnpaidVATText = "The earlier your client pays their VAT, the lower their penalties and interest will be."
 
-  val howLppCalculatedLinkText = "Find out how late payment penalties are calculated (opens in a new tab)"
+  val howLppCalculatedLinkText = "Read the guidance about how late payment penalties are calculated (opens in a new tab)"
 
   def multiActivePenaltyPoints(amountOfPoints: Int, amountOfLateSubmissions: Int) = s"You have $amountOfPoints penalty points for submitting $amountOfLateSubmissions VAT Returns late."
 
