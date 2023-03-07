@@ -527,8 +527,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         status(request) shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
         parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
-        parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
-        parsedBody.select("#main-content header p span").first.text() shouldBe "The period dates are"
+        parsedBody.select(".penalty-information-caption").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
+        parsedBody.select(".penalty-information-caption span").first.text() shouldBe "The period dates are"
         parsedBody.select("#how-penalty-is-applied").text() shouldBe "This penalty applies if VAT has not been paid for 15 days."
         parsedBody.select("#15-day-calculation").text() shouldBe "The calculation we use is: 2% of £20,000.00 (the unpaid VAT 15 days after the due date)"
         parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount"
@@ -547,8 +547,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         status(request) shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
         parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
-        parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
-        parsedBody.select("#main-content header p span").first.text() shouldBe "The period dates are"
+        parsedBody.select(".penalty-information-caption").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
+        parsedBody.select(".penalty-information-caption span").first.text() shouldBe "The period dates are"
         parsedBody.select("#how-penalty-is-applied").text() shouldBe "This penalty applies if VAT has not been paid for 30 days."
         parsedBody.select("#30-day-calculation").text() shouldBe "It is made up of 2 parts:"
         parsedBody.select("#main-content > div > div > ul > li:nth-child(1)").text() shouldBe "2% of £10,000.00 (the unpaid VAT 15 days after the due date) = £200.00"
@@ -588,8 +588,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
-      parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
-      parsedBody.select("#main-content header p span").first.text() shouldBe "The period dates are"
+      parsedBody.select(".penalty-information-caption").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
+      parsedBody.select(".penalty-information-caption span").first.text() shouldBe "The period dates are"
       parsedBody.select("#how-penalty-is-applied").text() shouldBe "This penalty applies if VAT has not been paid for 15 days."
       parsedBody.select("#15-day-calculation").text() shouldBe "The calculation we use is: 2% of £20,000.00 (the unpaid VAT 15 days after the due date)"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
@@ -609,8 +609,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
-      parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
-      parsedBody.select("#main-content header p span").first.text() shouldBe "The period dates are"
+      parsedBody.select(".penalty-information-caption").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
+      parsedBody.select(".penalty-information-caption span").first.text() shouldBe "The period dates are"
       parsedBody.select("#how-penalty-is-applied").text() shouldBe "This penalty applies if VAT has not been paid for 15 days."
       parsedBody.select("#15-day-calculation").text() shouldBe "The calculation we use is: 2% of £20,000.00 (the unpaid VAT 15 days after the due date)"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
@@ -630,8 +630,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
-      parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
-      parsedBody.select("#main-content header p span").first.text() shouldBe "The period dates are"
+      parsedBody.select(".penalty-information-caption").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
+      parsedBody.select(".penalty-information-caption span").first.text() shouldBe "The period dates are"
       parsedBody.select("#how-penalty-is-applied").text() shouldBe "This penalty applies if VAT has not been paid for 15 days."
       parsedBody.select("#15-day-calculation").text() shouldBe "The calculation we use is: 2% of £20,000.00 (the unpaid VAT 15 days after the due date)"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
@@ -641,8 +641,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£400.00"
       parsedBody.select("#ttp-inset-text").text() shouldBe "You’ve asked HMRC if you can set up a payment plan. If a payment plan has been agreed, and you keep up with all payments, this penalty will not increase further."
-      parsedBody.select("h2").get(0).text() shouldBe "Estimates"
-      parsedBody.select("#main-content p").get(3).text() shouldBe "Penalties will show as estimates until you make all payments due under the payment plan."
+      parsedBody.select("h2").get(1).text() shouldBe "Estimates"
+      parsedBody.select("#main-content p").get(2).text() shouldBe "Penalties will show as estimates until you make all payments due under the payment plan."
       parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
       parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
     }
@@ -669,11 +669,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
-      parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
-      parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
-      parsedBody.select("#main-content p").get(1).text() shouldBe "This penalty applies from day 31, if any VAT remains unpaid."
-      parsedBody.select("#main-content p").get(2).text() shouldBe "The total increases daily based on the amount of unpaid VAT for the period."
-      parsedBody.select("#main-content p").get(3).text() shouldBe "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
+      parsedBody.select(".penalty-information-caption > .govuk-visually-hidden").first.text() shouldBe "The period dates are"
+      parsedBody.select(".penalty-information-caption").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
+      parsedBody.select("#main-content p").get(0).text() shouldBe "This penalty applies from day 31, if any VAT remains unpaid."
+      parsedBody.select("#main-content p").get(1).text() shouldBe "The total increases daily based on the amount of unpaid VAT for the period."
+      parsedBody.select("#main-content p").get(2).text() shouldBe "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Due date"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "8 March 2021"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Penalty amount"
@@ -690,11 +690,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
-      parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
-      parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
-      parsedBody.select("#main-content p").get(1).text() shouldBe "This penalty applies from day 31, if any VAT remains unpaid."
-      parsedBody.select("#main-content p").get(2).text() shouldBe "The total increases daily until you pay your VAT or set up a payment plan."
-      parsedBody.select("#main-content p").get(3).text() shouldBe "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
+      parsedBody.select(".penalty-information-caption > .govuk-visually-hidden").first.text() shouldBe "The period dates are"
+      parsedBody.select(".penalty-information-caption").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
+      parsedBody.select("#main-content p").get(0).text() shouldBe "This penalty applies from day 31, if any VAT remains unpaid."
+      parsedBody.select("#main-content p").get(1).text() shouldBe "The total increases daily until you pay your VAT or set up a payment plan."
+      parsedBody.select("#main-content p").get(2).text() shouldBe "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£123.45"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
@@ -702,8 +702,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£123.45"
       parsedBody.select(".ttp-content").isEmpty shouldBe true
-      parsedBody.select("h2").get(0).text() shouldBe "Estimates"
-      parsedBody.select("#main-content p").get(4).text() shouldBe "Penalties and interest will show as estimates until you pay the charge they relate to."
+      parsedBody.select("h2").get(1).text() shouldBe "Estimates"
+      parsedBody.select("#main-content p").get(3).text() shouldBe "Penalties and interest will show as estimates until you pay the charge they relate to."
       parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
     }
 
@@ -714,11 +714,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
-      parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
-      parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
-      parsedBody.select("#main-content p").get(1).text() shouldBe "This penalty applies from day 31, if any VAT remains unpaid."
-      parsedBody.select("#main-content p").get(2).text() shouldBe "The total increases daily until you pay your VAT or set up a payment plan."
-      parsedBody.select("#main-content p").get(3).text() shouldBe "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
+      parsedBody.select(".penalty-information-caption > .govuk-visually-hidden").first.text() shouldBe "The period dates are"
+      parsedBody.select(".penalty-information-caption").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
+      parsedBody.select("#main-content p").get(0).text() shouldBe "This penalty applies from day 31, if any VAT remains unpaid."
+      parsedBody.select("#main-content p").get(1).text() shouldBe "The total increases daily until you pay your VAT or set up a payment plan."
+      parsedBody.select("#main-content p").get(2).text() shouldBe "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£123.45"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
@@ -726,8 +726,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£123.45"
       parsedBody.select("#ttp-inset-text").get(0).text() shouldBe "You’ve asked HMRC if you can set up a payment plan. If a payment plan has been agreed, and you keep up with all payments, this penalty will not increase further."
-      parsedBody.select("h2").get(0).text() shouldBe "Estimates"
-      parsedBody.select("#main-content p").get(4).text() shouldBe "Penalties will show as estimates until you make all payments due under the payment plan."
+      parsedBody.select("h2").get(1).text() shouldBe "Estimates"
+      parsedBody.select("#main-content p").get(3).text() shouldBe "Penalties will show as estimates until you make all payments due under the payment plan."
       parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
     }
 
@@ -738,11 +738,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
-      parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
-      parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
-      parsedBody.select("#main-content p").get(1).text() shouldBe "This penalty applies from day 31, if any VAT remains unpaid."
-      parsedBody.select("#main-content p").get(2).text() shouldBe "The total builds up daily until you pay your VAT or set up a payment plan. However, when we calculate your penalty we do not count the days you are in Breathing Space."
-      parsedBody.select("#main-content p").get(3).text() shouldBe "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
+      parsedBody.select(".penalty-information-caption > .govuk-visually-hidden").first.text() shouldBe "The period dates are"
+      parsedBody.select(".penalty-information-caption").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
+      parsedBody.select("#main-content p").get(0).text() shouldBe "This penalty applies from day 31, if any VAT remains unpaid."
+      parsedBody.select("#main-content p").get(1).text() shouldBe "The total builds up daily until you pay your VAT or set up a payment plan. However, when we calculate your penalty we do not count the days you are in Breathing Space."
+      parsedBody.select("#main-content p").get(2).text() shouldBe "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£123.45"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
@@ -750,8 +750,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£123.45"
       parsedBody.select("#ttp-inset-text").get(0).text() shouldBe "You’ve asked HMRC if you can set up a payment plan. If a payment plan has been agreed, and you keep up with all payments, this penalty will not increase further."
-      parsedBody.select("h2").get(0).text() shouldBe "Estimates"
-      parsedBody.select("#main-content p").get(4).text() shouldBe "Penalties will show as estimates until:"
+      parsedBody.select("h2").get(1).text() shouldBe "Estimates"
+      parsedBody.select("#main-content p").get(3).text() shouldBe "Penalties will show as estimates until:"
       parsedBody.select("#main-content .govuk-list--bullet li").get(0).text() shouldBe "you make all payments due under the payment plan, and"
       parsedBody.select("#main-content .govuk-list--bullet li").get(1).text() shouldBe "Breathing Space ends"
       parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
@@ -763,11 +763,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
-      parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
-      parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
-      parsedBody.select("#main-content p").get(1).text() shouldBe "This penalty applies from day 31, if any VAT remains unpaid."
-      parsedBody.select("#main-content p").get(2).text() shouldBe "The total builds up daily until you pay your VAT or set up a payment plan. However, when we calculate your penalty we do not count the days you are in Breathing Space."
-      parsedBody.select("#main-content p").get(3).text() shouldBe "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
+      parsedBody.select(".penalty-information-caption > .govuk-visually-hidden").first.text() shouldBe "The period dates are"
+      parsedBody.select(".penalty-information-caption").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
+      parsedBody.select("#main-content p").get(0).text() shouldBe "This penalty applies from day 31, if any VAT remains unpaid."
+      parsedBody.select("#main-content p").get(1).text() shouldBe "The total builds up daily until you pay your VAT or set up a payment plan. However, when we calculate your penalty we do not count the days you are in Breathing Space."
+      parsedBody.select("#main-content p").get(2).text() shouldBe "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£123.45"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
@@ -775,8 +775,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£123.45"
       parsedBody.select(".ttp-content").isEmpty shouldBe true
-      parsedBody.select("h2").get(0).text() shouldBe "Estimates"
-      parsedBody.select("#main-content p").get(4).text() shouldBe "Penalties and interest will show as estimates until:"
+      parsedBody.select("h2").get(1).text() shouldBe "Estimates"
+      parsedBody.select("#main-content p").get(3).text() shouldBe "Penalties and interest will show as estimates until:"
       parsedBody.select("#main-content .govuk-list--bullet li").get(0).text() shouldBe "you pay the charge they relate to, and"
       parsedBody.select("#main-content .govuk-list--bullet li").get(1).text() shouldBe "Breathing Space ends"
       parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
@@ -789,19 +789,19 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
-      parsedBody.select("#main-content header p .govuk-visually-hidden").first.text() shouldBe "The period dates are"
-      parsedBody.select("#main-content header p").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
-      parsedBody.select("#main-content p").get(1).text() shouldBe "This penalty applies from day 31, if any VAT remains unpaid."
-      parsedBody.select("#main-content p").get(2).text() shouldBe "The total increases daily until your client pays their VAT or sets up a payment plan."
-      parsedBody.select("#main-content p").get(3).text() shouldBe "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
+      parsedBody.select(".penalty-information-caption > .govuk-visually-hidden").first.text() shouldBe "The period dates are"
+      parsedBody.select(".penalty-information-caption").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
+      parsedBody.select("#main-content p").get(0).text() shouldBe "This penalty applies from day 31, if any VAT remains unpaid."
+      parsedBody.select("#main-content p").get(1).text() shouldBe "The total increases daily until your client pays their VAT or sets up a payment plan."
+      parsedBody.select("#main-content p").get(2).text() shouldBe "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£123.45"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£0.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£123.45"
-      parsedBody.select("h2").get(0).text() shouldBe "Estimates"
-      parsedBody.select("#main-content p").get(4).text() shouldBe "Penalties and interest will show as estimates until your client pays the charge they relate to."
+      parsedBody.select("h2").get(1).text() shouldBe "Estimates"
+      parsedBody.select("#main-content p").get(3).text() shouldBe "Penalties and interest will show as estimates until your client pays the charge they relate to."
       parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
     }
 

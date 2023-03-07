@@ -56,6 +56,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
     val betaFeedbackBannerText =  "body > div > div.govuk-phase-banner > p > span"
 
     val ttpInsetText = "#ttp-inset-text"
+
+    override val h2 = "h2:nth-of-type(2)"
   }
 
   "CalculationView" should {
@@ -85,7 +87,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           Selector.breadcrumbWithLink(3) -> breadcrumb3,
           Selector.title -> titleLPP,
           Selector.periodWithText -> periodWithText,
-          Selector.HeaderTextNotVisible -> periodHiddenText,
+          Selector.headerTextNotVisible -> periodHiddenText,
           Selector.h1 -> headingLPP,
           Selector.howPenaltyIsApplied -> howPenaltyIsAppliedLPP2,
           Selector.whenPenaltyIncreases -> whenPenaltyIncreasesAccruing,
@@ -137,7 +139,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           Selector.breadcrumbWithLink(3) -> breadcrumb3,
           Selector.title -> titleLPP,
           Selector.periodWithText -> periodWithText,
-          Selector.HeaderTextNotVisible -> periodHiddenText,
+          Selector.headerTextNotVisible -> periodHiddenText,
           Selector.h1 -> headingLPP,
           Selector.howPenaltyIsApplied -> howPenaltyIsAppliedLPP2,
           Selector.whenPenaltyIncreases -> whenPenaltyIncreasesAccruing,
@@ -186,7 +188,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           Selector.breadcrumbWithLink(3) -> breadcrumb3,
           Selector.title -> titleLPP,
           Selector.periodWithText -> periodWithText,
-          Selector.HeaderTextNotVisible -> periodHiddenText,
+          Selector.headerTextNotVisible -> periodHiddenText,
           Selector.h1 -> headingLPP,
           Selector.howPenaltyIsApplied -> howPenaltyIsAppliedLPP2,
           Selector.whenPenaltyIncreases -> lpp2EstimatedBreathingSpace,
@@ -237,7 +239,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           Selector.breadcrumbWithLink(3) -> breadcrumb3,
           Selector.title -> titleLPP,
           Selector.periodWithText -> periodWithText,
-          Selector.HeaderTextNotVisible -> periodHiddenText,
+          Selector.headerTextNotVisible -> periodHiddenText,
           Selector.h1 -> headingLPP,
           Selector.howPenaltyIsApplied -> howPenaltyIsAppliedLPP2,
           Selector.whenPenaltyIncreases -> lpp2EstimatedBreathingSpace,
@@ -284,7 +286,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         val expectedContent = Seq(
           Selector.title -> agentTitleLPP,
           Selector.periodWithText -> periodWithText,
-          Selector.HeaderTextNotVisible -> periodHiddenText,
+          Selector.headerTextNotVisible -> periodHiddenText,
           Selector.h1 -> headingLPP,
           Selector.howPenaltyIsApplied -> howPenaltyIsAppliedLPP2,
           Selector.whenPenaltyIncreases -> lpp2EstimatedBreathingSpaceAgent,
@@ -326,7 +328,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         val expectedContent = Seq(
           Selector.title -> agentTitleLPP,
           Selector.periodWithText -> periodWithText,
-          Selector.HeaderTextNotVisible -> periodHiddenText,
+          Selector.headerTextNotVisible -> periodHiddenText,
           Selector.h1 -> headingLPP,
           Selector.howPenaltyIsApplied -> howPenaltyIsAppliedLPP2,
           Selector.whenPenaltyIncreases -> lpp2EstimatedBreathingSpaceAgent,
@@ -367,7 +369,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         val expectedContent = Seq(
           Selector.title -> titleLPP,
           Selector.periodWithText -> periodWithText,
-          Selector.HeaderTextNotVisible -> periodHiddenText,
+          Selector.headerTextNotVisible -> periodHiddenText,
           Selector.h1 -> headingLPP,
           Selector.howPenaltyIsApplied -> howPenaltyIsAppliedLPP2,
           Selector.whenPenaltyIncreases -> whenPenaltyIncreases,
@@ -409,7 +411,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         val expectedContent = Seq(
           Selector.title -> titleLPP,
           Selector.periodWithText -> periodWithText,
-          Selector.HeaderTextNotVisible -> periodHiddenText,
+          Selector.headerTextNotVisible -> periodHiddenText,
           Selector.h1 -> headingLPP,
           Selector.howPenaltyIsApplied -> howPenaltyIsAppliedLPP2,
           Selector.whenPenaltyIncreases -> whenPenaltyIncreases,
@@ -458,7 +460,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           Selector.breadcrumbWithLink(2) -> breadcrumb2,
           Selector.breadcrumbWithLink(3) -> breadcrumb3,
           Selector.title -> titleLPP,
-          Selector.periodHiddenText -> periodHiddenText,
+          Selector.headerTextNotVisible -> periodHiddenText,
           Selector.periodWithText -> periodWithText,
           Selector.h1 -> headingLPP,
           Selector.howPenaltyIsApplied -> howPenaltyIsApplied15Days,
@@ -483,7 +485,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         "when there is 2 calculations - show both" must {
           val expectedContent = Seq(
             Selector.title -> titleLPP,
-            Selector.periodHiddenText -> periodHiddenText,
+            Selector.headerTextNotVisible -> periodHiddenText,
             Selector.periodWithText -> periodWithText,
             Selector.h1 -> headingLPP,
             Selector.howPenaltyIsApplied -> howPenaltyIsApplied30Days,
@@ -528,7 +530,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           Selector.breadcrumbWithLink(2) -> breadcrumb2,
           Selector.breadcrumbWithLink(3) -> breadcrumb3,
           Selector.title -> titleLPP,
-          Selector.periodHiddenText -> periodHiddenText,
+          Selector.headerTextNotVisible -> periodHiddenText,
           Selector.periodWithText -> periodWithText,
           Selector.h1 -> headingLPP,
           Selector.howPenaltyIsApplied -> howPenaltyIsApplied15Days,
@@ -569,7 +571,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
         val expectedContent = Seq(
           Selector.title -> titleLPP,
-          Selector.periodHiddenText -> periodHiddenText,
+          Selector.headerTextNotVisible -> periodHiddenText,
           Selector.periodWithText -> periodWithText,
           Selector.h1 -> headingLPP,
           Selector.howPenaltyIsApplied -> howPenaltyIsApplied15Days,
@@ -616,7 +618,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
         val expectedContent = Seq(
           Selector.title -> titleLPP,
-          Selector.periodHiddenText -> periodHiddenText,
+          Selector.headerTextNotVisible -> periodHiddenText,
           Selector.periodWithText -> periodWithText,
           Selector.h1 -> headingLPP,
           Selector.howPenaltyIsApplied -> howPenaltyIsApplied15Days,
@@ -657,7 +659,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
         val expectedContent = Seq(
           Selector.title -> titleLPP,
-          Selector.periodHiddenText -> periodHiddenText,
+          Selector.headerTextNotVisible -> periodHiddenText,
           Selector.periodWithText -> periodWithText,
           Selector.h1 -> headingLPP,
           Selector.howPenaltyIsApplied -> howPenaltyIsApplied15Days,
@@ -700,7 +702,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
         val expectedContent = Seq(
           Selector.title -> titleLPP,
-          Selector.periodHiddenText -> periodHiddenText,
+          Selector.headerTextNotVisible -> periodHiddenText,
           Selector.periodWithText -> periodWithText,
           Selector.h1 -> headingLPP,
           Selector.howPenaltyIsApplied -> howPenaltyIsApplied15Days,
@@ -740,7 +742,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
         val expectedContent = Seq(
           Selector.title -> agentTitleLPP,
-          Selector.periodHiddenText -> periodHiddenText,
+          Selector.headerTextNotVisible -> periodHiddenText,
           Selector.periodWithText -> periodWithText,
           Selector.h1 -> headingLPP,
           Selector.govukBody(1) -> estimateFooterNoteBillPayment,
@@ -782,7 +784,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
         val expectedContent = Seq(
           Selector.title -> agentTitleLPP,
-          Selector.periodHiddenText -> periodHiddenText,
+          Selector.headerTextNotVisible -> periodHiddenText,
           Selector.periodWithText -> periodWithText,
           Selector.h1 -> headingLPP,
           Selector.howPenaltyIsApplied -> howPenaltyIsApplied15Days,
@@ -825,7 +827,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
         val expectedContent = Seq(
           Selector.title -> agentTitleLPP,
-          Selector.periodHiddenText -> periodHiddenText,
+          Selector.headerTextNotVisible -> periodHiddenText,
           Selector.periodWithText -> periodWithText,
           Selector.h1 -> headingLPP,
           Selector.govukBody(1) -> estimateFooterNoteBillPayment,
@@ -865,7 +867,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
         val expectedContent = Seq(
           Selector.title -> agentTitleLPP,
-          Selector.periodHiddenText -> periodHiddenText,
+          Selector.headerTextNotVisible -> periodHiddenText,
           Selector.periodWithText -> periodWithText,
           Selector.h1 -> headingLPP,
           Selector.howPenaltyIsApplied -> howPenaltyIsApplied15Days,
@@ -908,7 +910,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
         val expectedContent = Seq(
           Selector.title -> agentTitleLPP,
-          Selector.periodHiddenText -> periodHiddenText,
+          Selector.headerTextNotVisible -> periodHiddenText,
           Selector.periodWithText -> periodWithText,
           Selector.h1 -> headingLPP,
           Selector.howPenaltyIsApplied -> howPenaltyIsApplied15Days,
@@ -947,7 +949,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         val expectedContent = Seq(
           Selector.title -> agentTitleLPP,
           Selector.periodWithText -> periodWithText,
-          Selector.HeaderTextNotVisible -> periodHiddenText,
+          Selector.headerTextNotVisible -> periodHiddenText,
           Selector.h1 -> headingLPP,
           Selector.howPenaltyIsApplied -> howPenaltyIsAppliedLPP2,
           Selector.whenPenaltyIncreases -> whenPenaltyIncreases,
@@ -985,7 +987,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         val expectedContent = Seq(
           Selector.title -> agentTitleLPP,
           Selector.periodWithText -> periodWithText,
-          Selector.HeaderTextNotVisible -> periodHiddenText,
+          Selector.headerTextNotVisible -> periodHiddenText,
           Selector.h1 -> headingLPP,
           Selector.howPenaltyIsApplied -> howPenaltyIsAppliedLPP2,
           Selector.whenPenaltyIncreases -> whenPenaltyIncreasesAccruingAgent,
@@ -1023,7 +1025,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         val expectedContent = Seq(
           Selector.title -> agentTitleLPP,
           Selector.periodWithText -> periodWithText,
-          Selector.HeaderTextNotVisible -> periodHiddenText,
+          Selector.headerTextNotVisible -> periodHiddenText,
           Selector.h1 -> headingLPP,
           Selector.howPenaltyIsApplied -> howPenaltyIsAppliedLPP2,
           Selector.whenPenaltyIncreases -> whenPenaltyIncreasesAccruingAgent,
