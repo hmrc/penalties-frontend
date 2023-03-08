@@ -122,14 +122,14 @@ summaryCard.lpp.key5 = Date paid
 summaryCard.lpp.paymentNotReceived = Payment not yet received
 summaryCard.viewCalculation = View calculation
 
-summaryCard.appealLink.aria.label.lurkingPoint.noReturnSubmitted = Check if you can appeal for penalty on late VAT return due {0}
-summaryCard.appealLink.aria.label.noReturnSubmitted = Check if you can appeal penalty point {0}
-summaryCard.appealLink.aria.label.lurkingPoint.returnSubmitted = Appeal this penalty for late VAT return due on {0}
+summaryCard.appealLink.aria.label.lurkingPoint.noReturnSubmitted = for penalty on late VAT return due {0}
+summaryCard.appealLink.aria.label.noReturnSubmitted = penalty point {0}
+summaryCard.appealLink.aria.label.lurkingPoint.returnSubmitted = for late VAT return due on {0}
 summaryCard.appealLink.aria.label.lpp.vatPaid.LPP1 = first
 summaryCard.appealLink.aria.label.lpp.vatPaid.LPP2 = second
-summaryCard.appealLink.aria.label.lpp.vatPaid = Appeal {0} penalty for late payment of charge due on {1}
-summaryCard.appealLink.aria.label.lpp.checkIfYouCanAppeal = Check if you can appeal {0} penalty for late payment of charge due on {1}
-summaryCard.viewCalculation.aria.label.lpp.change = View calculation of {0} late payment penalty for charge due on {1}
+summaryCard.appealLink.aria.label.lpp.vatPaid = which is the {0} penalty for late payment of charge due on {1}
+summaryCard.appealLink.aria.label.lpp.checkIfYouCanAppeal = {0} penalty for late payment of charge due on {1}
+summaryCard.viewCalculation.aria.label.lpp.change = of {0} late payment penalty for charge due on {1}
 
 status.active = active
 status.due = due

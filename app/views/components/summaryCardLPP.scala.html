@@ -30,7 +30,7 @@
 )(implicit messages: Messages)
 
 
-@ariaLabelText = @{
+@visuallyHiddenText = @{
     if(!summaryCard.isVatPaid) {
         messages(
             "summaryCard.appealLink.aria.label.lpp.checkIfYouCanAppeal", messages(s"summaryCard.appealLink.aria.label.lpp.vatPaid.${summaryCard.penaltyCategory}"), summaryCard.dueDate
@@ -43,33 +43,31 @@
 }
 
 @calculationContent = {
-    <a class="govuk-link" aria-label="@{
-        messages("summaryCard.viewCalculation.aria.label.lpp.change", messages(s"summaryCard.appealLink.aria.label.lpp.vatPaid.${summaryCard.penaltyCategory}"), summaryCard.dueDate
-        )
-    }" href="@{
+    <a class="govuk-link" href="@{
         controllers.routes.CalculationController.onPageLoad(summaryCard.principalChargeReference, summaryCard.penaltyCategory.toString).url
     }">
-    @messages("summaryCard.viewCalculation")
+    @messages("summaryCard.viewCalculation") <span class="govuk-visually-hidden">@messages("summaryCard.viewCalculation.aria.label.lpp.change", messages(s"summaryCard.appealLink.aria.label.lpp.vatPaid.${summaryCard.penaltyCategory}"), summaryCard.dueDate
+        )</span>
     </a>
 }
 @appealContent = {
     @if(!summaryCard.isVatPaid && summaryCard.penaltyChargeReference.isDefined) { @* Penalty is posted but VAT not paid *@
         <a class="govuk-link" href=@{
             controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyChargeReference.get, isLPP = true, isObligation = true, isAdditional = summaryCard.penaltyCategory.equals(LPP2)).url
-        } aria-label="@{ariaLabelText}">
-        @messages("summaryCard.appealCheck")
+        }>
+        @messages("summaryCard.appealCheck") <span class="govuk-visually-hidden">@visuallyHiddenText</span>
         </a>
     } else if(!summaryCard.isVatPaid) { @* Penalty is accruing but VAT not paid *@
       <a class="govuk-link" href=@{
         controllers.routes.IndexController.redirectToEstimateAppeal(summaryCard.taxPeriodStartDate, summaryCard.taxPeriodEndDate).url
-      } aria-label="@{ariaLabelText}">
-      @messages("summaryCard.appealCheck")
+      }>
+      @messages("summaryCard.appealCheck") <span class="govuk-visually-hidden">@visuallyHiddenText</span>
       </a>
     } else {
         <a class="govuk-link" href=@{
             controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyChargeReference.get, isLPP = true, isObligation = false, isAdditional = summaryCard.penaltyCategory.equals(LPP2)).url
-        } aria-label="@{ariaLabelText}">
-        @messages("summaryCard.footerLinkTextNoPointNumber")
+        }>
+        @messages("summaryCard.footerLinkTextNoPointNumber") <span class="govuk-visually-hidden">@visuallyHiddenText</span>
         </a>
     }
 }
