@@ -29,7 +29,7 @@
         summaryCard: LateSubmissionPenaltySummaryCard
 )(implicit messages: Messages, appConfig: AppConfig)
 
-@ariaLabelText = @{
+@visuallyHiddenText = @{
   if(summaryCard.isFinancialPoint && summaryCard.dueDate.isDefined) {
     if(!summaryCard.isReturnSubmitted) {
         Some(messages("summaryCard.appealLink.aria.label.lurkingPoint.noReturnSubmitted", summaryCard.dueDate.get))
@@ -90,26 +90,22 @@
                             {messages("summaryCard.adjustedPoint.cannotAppeal")}
                     } else if(summaryCard.isFinancialPoint && !summaryCard.isAdjustedPoint) {
                             {if(!summaryCard.isReturnSubmitted || summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
-                                    <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}
-                                    aria-label={ariaLabelText.fold(messages("summaryCard.appealCheck"))(identity)}>
-                                    {messages("summaryCard.appealCheck")}
+                                    <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}>
+                                    {messages("summaryCard.appealCheck")} <span class="govuk-visually-hidden">{visuallyHiddenText.getOrElse("")}</span>
                                     </a>
                             } else {
-                                    <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, false, false).url}
-                                    aria-label={ariaLabelText.fold(messages("summaryCard.footerLinkTextNoPointNumber"))(identity)}>
-                                    {messages("summaryCard.footerLinkTextNoPointNumber")}
+                                    <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, false, false).url}>
+                                    {messages("summaryCard.footerLinkTextNoPointNumber")} <span class="govuk-visually-hidden">{visuallyHiddenText.getOrElse("")}</span>
                                     </a>
                             }}
                     } else if(!summaryCard.isAdjustedPoint) {
                         if(!summaryCard.isReturnSubmitted || summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
-                                <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}
-                                aria-label={ariaLabelText.fold(messages("summaryCard.appealCheck"))(identity)}>
-                                {messages("summaryCard.appealCheck")}
+                                <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}>
+                                {messages("summaryCard.appealCheck")} <span class="govuk-visually-hidden">{visuallyHiddenText.getOrElse("")}</span>
                                 </a>
                         } else {
-                                <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, false, false).url}
-                                aria-label={ariaLabelText.fold(messages("summaryCard.footerLinkText", summaryCard.penaltyPoint))(identity)}>
-                                {messages("summaryCard.footerLinkText", summaryCard.penaltyPoint)}
+                                <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, false, false).url}>
+                                {messages("summaryCard.footerLinkText", summaryCard.penaltyPoint)} <span class="govuk-visually-hidden">{visuallyHiddenText.getOrElse("")}</span>
                                 </a>
                         }
                     }

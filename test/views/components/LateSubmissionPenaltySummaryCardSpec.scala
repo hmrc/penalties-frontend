@@ -611,8 +611,9 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       val docWithPoint: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelNoReturnSubmitted))
 
-      "have an aria-label" in {
-        docWithPoint.select(".app-summary-card__footer a").attr("aria-label") shouldBe "Check if you can appeal penalty point 1"
+      "have an hidden span" in {
+        docWithPoint.select(".app-summary-card__footer a").get(0).ownText() shouldBe "Check if you can appeal"
+        docWithPoint.select(".app-summary-card__footer span").text() shouldBe "penalty point 1"
       }
 
     }
@@ -632,12 +633,13 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected))
 
       "shows the financial heading with point number when the point is below/at threshold for filing frequency" in {
-        docWithThresholdPenalty.select(".app-summary-card__title").get(0).text shouldBe "Penalty point 1: £200 penalty"
+        docWithThresholdPenalty.select(".app-summary-card__title").get(0).text() shouldBe "Penalty point 1: £200 penalty"
       }
 
       "shows the financial heading WITHOUT point number when the point is above threshold for filing frequency and a rewording of the appeal text" in {
-        docWithFinancialLSP.select(".app-summary-card__title").get(0).text shouldBe "£200 penalty"
-        docWithFinancialLSP.select(".app-summary-card__footer a").get(0).text shouldBe "Appeal this penalty"
+        docWithFinancialLSP.select(".app-summary-card__title").get(0).text() shouldBe "£200 penalty"
+        docWithFinancialLSP.select(".app-summary-card__footer a").get(0).ownText() shouldBe "Appeal this penalty"
+        docWithFinancialLSP.select(".app-summary-card__footer span").get(0).text() shouldBe "for late VAT return due on 30 October 2069"
       }
 
       "shows the appeal information when the point is being appealed - i.e. under review" in {
@@ -736,12 +738,14 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         doc.select("p.govuk-body").text().isEmpty shouldBe true
       }
 
-      "set the correct aria-label for a lurking point with no return submitted" in {
-        doc.select("a").attr("aria-label") shouldBe "Check if you can appeal for penalty on late VAT return due 30 October 2069"
+      "set the correct hidden span for a lurking point with no return submitted" in {
+        doc.select("a").get(0).ownText() shouldBe "Check if you can appeal"
+        doc.select("span").text() shouldBe "for penalty on late VAT return due 30 October 2069"
       }
 
-      "set the correct aria-label for a lurking point with a return submitted" in {
-        docSubmitted.select("a").attr("aria-label") shouldBe "Appeal this penalty for late VAT return due on 30 October 2069"
+      "set the correct hidden span for a lurking point with a return submitted" in {
+        docSubmitted.select("a").get(0).ownText() shouldBe "Appeal this penalty"
+        docSubmitted.select("span").text() shouldBe "for late VAT return due on 30 October 2069"
       }
     }
 

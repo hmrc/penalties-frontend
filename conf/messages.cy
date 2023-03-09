@@ -122,13 +122,13 @@ summaryCard.lpp.key5 = Dyddiad y’i talwyd
 summaryCard.lpp.paymentNotReceived = Nid yw’r taliad wedi dod i law hyd yn hyn
 summaryCard.viewCalculation = Gweld y cyfrifiad
 
-summaryCard.appealLink.aria.label.lurkingPoint.noReturnSubmitted = Gwirio a allwch apelio cosb ar gyfer taliad hwyr a oedd yn ddyledus ar {0}
-summaryCard.appealLink.aria.label.noReturnSubmitted = Gwirio a allwch apelio pwynt cosb {0}
+summaryCard.appealLink.aria.label.lurkingPoint.noReturnSubmitted = cosb ar gyfer taliad hwyr a oedd yn ddyledus ar {0}
+summaryCard.appealLink.aria.label.noReturnSubmitted = pwynt cosb {0}
 summaryCard.appealLink.aria.label.lurkingPoint.returnSubmitted = Apelio yn erbyn y gosb hon ar gyfer Ffurflen TAW a oedd yn ddyledus ar {0}
 summaryCard.appealLink.aria.label.lpp.vatPaid.LPP1 = cyntaf
 summaryCard.appealLink.aria.label.lpp.vatPaid.LPP2 = ail
-summaryCard.appealLink.aria.label.lpp.vatPaid = Apelio cosb {0} ar gyfer taliad hwyr a oedd yn ddyledus ar {1}
-summaryCard.appealLink.aria.label.lpp.checkIfYouCanAppeal = Gwirio a allwch apelio cosb {0} ar gyfer taliad hwyr a oedd yn ddyledus ar {1}
+summaryCard.appealLink.aria.label.lpp.vatPaid = which is the {0} penalty for late payment of charge due on {1}
+summaryCard.appealLink.aria.label.lpp.checkIfYouCanAppeal = cosb {0} ar gyfer taliad hwyr a oedd yn ddyledus ar {1}
 summaryCard.viewCalculation.aria.label.lpp.change = Bwrw golwg dros gyfrifiad o gosb {0} am dalu’n hwyr ar gyfer tâl a oedd yn ddyledus ar {1}
 
 status.active = gweithredol
