@@ -17,6 +17,7 @@
 @import config.AppConfig
 @import viewmodels.LateSubmissionPenaltySummaryCard
 @import viewmodels.LatePaymentPenaltySummaryCard
+@import viewmodels.WhatYouOweContent
 
 @this(
         layout: Layout,
@@ -36,7 +37,7 @@
         isUnpaidLSPExists: Boolean = false,
         isAnyUnpaidLSPAndNotSubmittedReturn: Boolean = false,
         isUserInBreathingSpace: Boolean = false,
-        whatYouOweContent: Option[Html] = None)(implicit messages: Messages, appConfig: AppConfig, user: User[_])
+        whatYouOwe: Option[WhatYouOweContent] = None)(implicit messages: Messages, appConfig: AppConfig, user: User[_])
 
 
 @layout(pageTitle = messages("index.headingAndTitle"),
@@ -50,15 +51,17 @@
         messages("index.headingAndTitle")
       }</h1>
 
-      @whatYouOweContent.map { breakdownContent =>
+      @whatYouOwe.map { whatYouOweModel =>
         <div id="what-is-owed">
           <h2 class="govuk-heading-l">@messages("whatIsOwed.heading")</h2>
           <p class="govuk-body">@getMessage("whatIsOwed.p1")</p>
-          @breakdownContent
-          @if(user.isAgent) {
-            @link(appConfig.whatYouOweUrl, if(isUserInBreathingSpace) "agent.whatIsOwed.breathing.space.p3.link" else "whatIsOwed.button.checkAmounts", button = true, classes = "govuk-button")
-          } else {
-            @link(appConfig.whatYouOweUrl, if(isUserInBreathingSpace) "whatIsOwed.breathing.space.p3.link" else "whatIsOwed.button.checkAndPay", button = true, classes = "govuk-button")
+          @whatYouOweModel.content
+          @if(whatYouOweModel.isAnyFinancialElements) {
+            @if(user.isAgent) {
+              @link(appConfig.whatYouOweUrl, if(isUserInBreathingSpace) "agent.whatIsOwed.breathing.space.p3.link" else "whatIsOwed.button.checkAmounts", button = true, classes = "govuk-button")
+            } else {
+              @link(appConfig.whatYouOweUrl, if(isUserInBreathingSpace) "whatIsOwed.breathing.space.p3.link" else "whatIsOwed.button.checkAndPay", button = true, classes = "govuk-button")
+            }
           }
         </div>
       }

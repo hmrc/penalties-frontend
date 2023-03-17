@@ -17,7 +17,7 @@
 package views
 
 import assets.messages.IndexMessages._
-import base.{BaseSelectors, SpecBase}
+import base.{BaseSelectors, SpecBase, TestData}
 import models.{GetPenaltyDetails, Totalisations}
 import org.jsoup.nodes.Document
 import play.twirl.api.HtmlFormat
@@ -26,7 +26,7 @@ import viewmodels.IndexPageHelper
 import views.behaviours.ViewBehaviours
 import views.html.IndexView
 
-class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours {
+class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours with TestData {
   val indexPage: IndexView = injector.instanceOf[IndexView]
   val helper: IndexPageHelper = injector.instanceOf[IndexPageHelper]
 
@@ -58,14 +58,17 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours {
       breathingSpace = None
     )
 
-    def applyView(isUserAgent: Boolean = false, userOwes: Boolean = false, isUserInBreathingSpace: Boolean = false): HtmlFormat.Appendable = {
+    val penaltyDetailsWithOnePoint: GetPenaltyDetails = samplePenaltyDetailsModel.copy(totalisations = None, latePaymentPenalty = None)
+
+    def applyView(isUserAgent: Boolean = false, userOwes: Boolean = false, isUserInBreathingSpace: Boolean = false,
+                  penaltyData: GetPenaltyDetails = penaltyDetails): HtmlFormat.Appendable = {
       indexPage.apply(
         contentToDisplayBeforeSummaryCards = html(),
         contentLPPToDisplayBeforeSummaryCards = html(),
         lspCards = Seq.empty,
         lppCards = None,
         totalAmountToPay = "",
-        whatYouOweContent = if(!userOwes) None else helper.getWhatYouOweBreakdown(penaltyDetails),
+        whatYouOwe = if(!userOwes) None else helper.getWhatYouOweBreakdown(penaltyData),
         isUserInBreathingSpace = isUserInBreathingSpace)(implicitly, implicitly, if(isUserAgent) agentUser else vatTraderUser)
     }
 
@@ -101,6 +104,11 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours {
         docWithPenalties.select(Selectors.button).text() shouldBe whatYouOweButtonAgentText
         docWithPenalties.select(Selectors.button).attr("href") shouldBe "http://localhost:9152/vat-through-software/what-you-owe"
       }
+    }
+
+    "not display button when the user does not owe anything" in {
+      val docWithPenalties = asDocument(applyView(userOwes = true, penaltyData = penaltyDetailsWithOnePoint))
+      docWithPenalties.select(Selectors.button).isEmpty shouldBe true
     }
 
     "the footer should have the correct links" in {
