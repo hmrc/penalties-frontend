@@ -105,8 +105,8 @@ object IndexMessages {
   val notSubmitted = "Return not yet received"
   val penaltyType = "Penalty type"
   val overdueCharge = "Overdue charge"
-  val chargeDue = "Charge due"
-  val datePaid = "Date paid"
+  val chargeDue = "VAT due"
+  val datePaid = "VAT paid"
 
   val vatPeriodValue: (String, String) => String = (s1, s2) => s"$s1 to $s2"
   val periodValueLPPOnePeriod: (String, String, String) => String = (reason, s1, s2) => s"$reason for period $s1 to $s2"
