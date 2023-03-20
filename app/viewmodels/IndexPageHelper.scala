@@ -223,7 +223,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     }
   }
 
-  def getWhatYouOweBreakdown(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
+  def getWhatYouOweBreakdown(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages): Option[WhatYouOweContent] = {
     val unpaidVATCharges = penaltiesService.findUnpaidVATCharges(penaltyDetails.totalisations)
     val interestOnAccount = penaltiesService.findInterestOnAccount(penaltyDetails.totalisations)
     val latePaymentPenalties = penaltiesService.findNumberOfLatePaymentPenalties(penaltyDetails.latePaymentPenalty)
@@ -238,7 +238,12 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       if(lateSubmissionPenalties == 1) Some(messages("whatIsOwed.lsp")) else if(lateSubmissionPenalties > 1) Some(messages("whatIsOwed.lsp.multi")) else None,
       lateSubmissionPenaltyOptContent
     ).collect { case Some(x) => x }
-    if(whatYouOweContent.nonEmpty) Some(bullets(whatYouOweContent.map(stringAsHtml))) else None
+    val isAnyFinancialElements: Boolean = isAnyFinancialElementsOwed(unpaidVATCharges, interestOnAccount, latePaymentPenalties, lateSubmissionPenalties)
+    if(whatYouOweContent.nonEmpty) Some(WhatYouOweContent(bullets(whatYouOweContent.map(stringAsHtml)), isAnyFinancialElements)) else None
+  }
+
+  def isAnyFinancialElementsOwed(unpaidVATCharges: BigDecimal, interestOnAccount: BigDecimal, LPPsUnpaid: Int, LSPsUnpaid: Int): Boolean = {
+    unpaidVATCharges > BigDecimal(0) || interestOnAccount > BigDecimal(0) || LPPsUnpaid >= 1 || LSPsUnpaid >= 1
   }
 
   private def getLSPCompliantMonths(pointsThreshold: Int): Int = {

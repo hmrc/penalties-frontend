@@ -1374,7 +1374,8 @@ class IndexPageHelperSpec extends SpecBase {
         )
         val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWithOutstandingVAT)
         result.isDefined shouldBe true
-        result.get.body.contains("unpaid VAT charges") shouldBe true
+        result.get.content.body.contains("unpaid VAT charges") shouldBe true
+        result.get.isAnyFinancialElements shouldBe true
       }
 
       "the user has outstanding interest to pay" in new Setup {
@@ -1396,7 +1397,8 @@ class IndexPageHelperSpec extends SpecBase {
         )
         val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWithOutstandingVAT)
         result.isDefined shouldBe true
-        result.get.body.contains("unpaid interest") shouldBe true
+        result.get.content.body.contains("unpaid interest") shouldBe true
+        result.get.isAnyFinancialElements shouldBe true
       }
 
       val sampleLPP: LPPDetails = LPPDetails(principalChargeReference = "123456789",
@@ -1438,7 +1440,8 @@ class IndexPageHelperSpec extends SpecBase {
         )
         val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWithUnpaidLPP)
         result.isDefined shouldBe true
-        result.get.body.contains("a late payment penalty") shouldBe true
+        result.get.content.body.contains("a late payment penalty") shouldBe true
+        result.get.isAnyFinancialElements shouldBe true
       }
 
       "the user has > 1 unpaid (and not successfully appealed) LPPs" in new Setup {
@@ -1451,7 +1454,8 @@ class IndexPageHelperSpec extends SpecBase {
         )
         val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWithUnpaidLPPs)
         result.isDefined shouldBe true
-        result.get.body.contains("late payment penalties") shouldBe true
+        result.get.content.body.contains("late payment penalties") shouldBe true
+        result.get.isAnyFinancialElements shouldBe true
       }
 
       val sampleLSP: LSPDetails = LSPDetails(
@@ -1496,7 +1500,8 @@ class IndexPageHelperSpec extends SpecBase {
           breathingSpace = None)
         val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWithUnpaidLSP)
         result.isDefined shouldBe true
-        result.get.body.contains("a late submission penalty") shouldBe true
+        result.get.content.body.contains("a late submission penalty") shouldBe true
+        result.get.isAnyFinancialElements shouldBe true
       }
 
       "the user has > 1 unpaid (and not successfully appealed) LSP" in new Setup {
@@ -1509,7 +1514,8 @@ class IndexPageHelperSpec extends SpecBase {
           breathingSpace = None)
         val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWithUnpaidLSP)
         result.isDefined shouldBe true
-        result.get.body.contains("late submission penalties") shouldBe true
+        result.get.content.body.contains("late submission penalties") shouldBe true
+        result.get.isAnyFinancialElements shouldBe true
       }
 
       "the user has 1 LSP" in new Setup {
@@ -1532,7 +1538,8 @@ class IndexPageHelperSpec extends SpecBase {
         )
         val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWith1LSP)
         result.isDefined shouldBe true
-        result.get.body.contains("1 late submission penalty point") shouldBe true
+        result.get.content.body.contains("1 late submission penalty point") shouldBe true
+        result.get.isAnyFinancialElements shouldBe false
       }
 
       "the user has > 1 LSP (but less than threshold)" in new Setup {
@@ -1555,7 +1562,8 @@ class IndexPageHelperSpec extends SpecBase {
         )
         val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWith2LSPs)
         result.isDefined shouldBe true
-        result.get.body.contains("2 late submission penalty points") shouldBe true
+        result.get.content.body.contains("2 late submission penalty points") shouldBe true
+        result.get.isAnyFinancialElements shouldBe false
       }
 
       "the user has reached the threshold" in new Setup {
@@ -1578,7 +1586,8 @@ class IndexPageHelperSpec extends SpecBase {
         )
         val result = pageHelper.getWhatYouOweBreakdown(penaltyDetailsWith2LSPs)
         result.isDefined shouldBe true
-        result.get.body.contains("the maximum number of late submission penalty points") shouldBe true
+        result.get.content.body.contains("the maximum number of late submission penalty points") shouldBe true
+        result.get.isAnyFinancialElements shouldBe false
       }
     }
   }
@@ -1841,6 +1850,37 @@ class IndexPageHelperSpec extends SpecBase {
 
       val result: Seq[LSPDetails] = pageHelper.sortPointsInDescendingOrder(penaltiesOutOfOrder)
       result shouldBe penaltiesInOrder
+    }
+  }
+
+  "isAnyFinancialElementsOwed" should {
+    "return true" when {
+      "there is VAT due" in new Setup {
+        val result: Boolean = pageHelper.isAnyFinancialElementsOwed(100, 0, 0, 0)
+        result shouldBe true
+      }
+
+      "there is interest due" in new Setup {
+        val result: Boolean = pageHelper.isAnyFinancialElementsOwed(0, 100, 0, 0)
+        result shouldBe true
+      }
+
+      "there is an LPP due" in new Setup {
+        val result: Boolean = pageHelper.isAnyFinancialElementsOwed(0, 0, 1, 0)
+        result shouldBe true
+      }
+
+      "there is an LSP (charge) due" in new Setup {
+        val result: Boolean = pageHelper.isAnyFinancialElementsOwed(0, 0, 0, 1)
+        result shouldBe true
+      }
+    }
+
+    "return false" when {
+      "there is no VAT, interest, LPP or LSP (charge) due" in new Setup {
+        val result: Boolean = pageHelper.isAnyFinancialElementsOwed(0, 0, 0, 0)
+        result shouldBe false
+      }
     }
   }
 }
