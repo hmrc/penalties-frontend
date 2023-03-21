@@ -149,7 +149,7 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter with Featur
           val parsedHtmlResult = Jsoup.parse(result.body)
           parsedHtmlResult.select("ol").attr("class") shouldBe "hmrc-timeline"
 
-          parsedHtmlResult.select("h2").get(0).text() shouldBe "VAT period 1 April 2022 to 30 June 2022"
+          parsedHtmlResult.select("h2").get(0).text() shouldBe "VAT period 1&nbsp;April&nbsp;2022 to 30&nbsp;June&nbsp;2022"
           parsedHtmlResult.select("span").get(0).text() shouldBe "Submit VAT Return by 7 August 2022"
 
           parsedHtmlResult.select("h2").get(1).text() shouldBe "VAT period 1 July 2022 to 30 September 2022"
@@ -164,7 +164,7 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter with Featur
           val result = helper.getTimelineContent(compliancePayloadMonthly)
           val parsedHtmlResult = Jsoup.parse(result.body)
           parsedHtmlResult.select("ol").attr("class") shouldBe "hmrc-timeline"
-          parsedHtmlResult.select("h2").get(0).text() shouldBe "VAT period 1 January 2022 to 31 January 2022"
+          parsedHtmlResult.select("h2").get(0).text() shouldBe "VAT period 1&nbsp;January&nbsp;2022 to 31&nbsp;January&nbsp;2022"
           parsedHtmlResult.select("span").get(0).text() shouldBe "Late Submit this missing VAT Return now"
           parsedHtmlResult.select("strong").get(0).text shouldBe "Late"
 
@@ -190,7 +190,7 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter with Featur
           val result = helper.getTimelineContent(compliancePayload)
           val parsedHtmlResult = Jsoup.parse(result.body)
           parsedHtmlResult.select("ol").attr("class") shouldBe "hmrc-timeline"
-          parsedHtmlResult.select("h2").get(0).text() shouldBe "VAT period 1 April 2022 to 30 June 2022"
+          parsedHtmlResult.select("h2").get(0).text() shouldBe "VAT period 1&nbsp;April&nbsp;2022 to 30&nbsp;June&nbsp;2022"
           parsedHtmlResult.select("span").get(0).text() shouldBe "Submit VAT Return by 7 August 2022"
 
           parsedHtmlResult.select("h2").get(1).text() shouldBe "VAT period 1 July 2022 to 30 September 2022"

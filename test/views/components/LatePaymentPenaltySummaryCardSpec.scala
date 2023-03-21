@@ -167,7 +167,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
 
       "display the View calculation link" in {
         doc.select("footer > div a").get(0).ownText() shouldBe "View calculation"
-        doc.select("footer > div span").get(0).text() shouldBe "of first late payment penalty for charge due on 1 February 2020"
+        doc.select("footer > div span").get(0).text() shouldBe "of first late payment penalty for charge due on 1&nbsp;February&nbsp;2020"
         doc.select("a").get(0).attr("href") shouldBe "/penalties/calculation?principalChargeReference=12345678901234&penaltyCategory=LPP1"
       }
 
@@ -208,13 +208,13 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
 
       "display the appeal link and have the correct hidden span (LPP1)" in {
         doc.select(".app-summary-card__footer a").get(1).ownText() shouldBe "Appeal this penalty"
-        doc.select(".app-summary-card__footer span").get(1).text() shouldBe "which is the first penalty for late payment of charge due on 1 February 2020"
+        doc.select(".app-summary-card__footer span").get(1).text() shouldBe "which is the first penalty for late payment of charge due on 1&nbsp;February&nbsp;2020"
       }
 
       "display the 'check if you can appeal' link if the VAT has not been paid and the penalty has no charge reference" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMade))
         doc.select(".app-summary-card__footer a").get(1).ownText() shouldBe "Check if you can appeal"
-        doc.select(".app-summary-card__footer span").get(1).text() shouldBe "first penalty for late payment of charge due on 1 January 2021"
+        doc.select(".app-summary-card__footer span").get(1).text() shouldBe "first penalty for late payment of charge due on 1&nbsp;January&nbsp;2021"
         doc.select(".app-summary-card__footer a").get(1).attr("href").contains(summaryCardModelDueNoPaymentsMade.taxPeriodStartDate) shouldBe true
         doc.select(".app-summary-card__footer a").get(1).attr("href").contains(summaryCardModelDueNoPaymentsMade.taxPeriodEndDate) shouldBe true
         doc.select("dt").eq(4).isEmpty shouldBe true
@@ -223,7 +223,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       "display the 'check if you can appeal' link if the VAT has not been paid (but penalty is posted)" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMadePenaltyPosted))
         doc.select(".app-summary-card__footer a").get(1).ownText() shouldBe "Check if you can appeal"
-        doc.select(".app-summary-card__footer span").get(1).text() shouldBe "first penalty for late payment of charge due on 1 January 2021"
+        doc.select(".app-summary-card__footer span").get(1).text() shouldBe "first penalty for late payment of charge due on 1&nbsp;January&nbsp;2021"
         doc.select(".app-summary-card__footer a").get(1).attr("href").contains(summaryCardModelDueNoPaymentsMadePenaltyPosted.penaltyChargeReference.get) shouldBe true
         doc.select("dt").eq(4).isEmpty shouldBe true
       }
@@ -231,7 +231,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       "display the 'appeal this penalty' link if the VAT has been paid" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModel))
         doc.select(".app-summary-card__footer a").get(1).ownText() shouldBe "Appeal this penalty"
-        doc.select(".app-summary-card__footer span").get(1).text() shouldBe "which is the first penalty for late payment of charge due on 1 February 2020"
+        doc.select(".app-summary-card__footer span").get(1).text() shouldBe "which is the first penalty for late payment of charge due on 1&nbsp;February&nbsp;2020"
         doc.select(".app-summary-card__footer a").get(1).attr("href").contains(summaryCardModel.penaltyChargeReference.get) shouldBe true
         doc.select("dt").eq(4).isEmpty shouldBe true
       }
@@ -251,7 +251,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
 
       "display the View calculation link" in {
         docWithAdditionalPenalty.select("footer > div a").get(0).ownText() shouldBe "View calculation"
-        docWithAdditionalPenalty.select("footer > div span").get(0).text() shouldBe "of second late payment penalty for charge due on 7 March 2020"
+        docWithAdditionalPenalty.select("footer > div span").get(0).text() shouldBe "of second late payment penalty for charge due on 7&nbsp;March&nbsp;2020"
         docWithAdditionalPenalty.select("a").get(0).attr("href") shouldBe "/penalties/calculation?principalChargeReference=12345678901234&penaltyCategory=LPP2"
       }
 
@@ -276,13 +276,13 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
 
       "display the appeal link and have the correct hidden span (LPP2)" in {
         docWithAdditionalPenalty.select(".app-summary-card__footer a").get(1).ownText() shouldBe "Appeal this penalty"
-        docWithAdditionalPenalty.select(".app-summary-card__footer span").get(1).text() shouldBe "which is the second penalty for late payment of charge due on 7 March 2020"
+        docWithAdditionalPenalty.select(".app-summary-card__footer span").get(1).text() shouldBe "which is the second penalty for late payment of charge due on 7&nbsp;March&nbsp;2020"
       }
 
       "display the check if you can appeal link if the penalty is unappealable (VAT has not been paid)" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelForUnappealableLPP2))
         doc.select(".app-summary-card__footer a").get(1).ownText() shouldBe "Check if you can appeal"
-        doc.select(".app-summary-card__footer span").get(1).text() shouldBe "second penalty for late payment of charge due on 7 March 2020"
+        doc.select(".app-summary-card__footer span").get(1).text() shouldBe "second penalty for late payment of charge due on 7&nbsp;March&nbsp;2020"
         doc.select(".app-summary-card__footer a").get(1).attr("href").contains(summaryCardModelForUnappealableLPP2.taxPeriodStartDate) shouldBe true
         doc.select(".app-summary-card__footer a").get(1).attr("href").contains(summaryCardModelForUnappealableLPP2.taxPeriodEndDate) shouldBe true
         doc.select("dt").eq(4).isEmpty shouldBe true
