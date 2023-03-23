@@ -25,37 +25,37 @@ class ImplicitDateFormatterSpec extends SpecBase with ImplicitDateFormatter {
   "ImplicitDateFormatter" must {
     "return a formatted LocalDate" when {
       "dateToString is called" in {
-        dateToString(LocalDate.of(2021, 1, 1)) shouldBe "1 January 2021"
+        dateToString(LocalDate.of(2021, 1, 1)) shouldBe "1\u00A0January\u00A02021"
       }
 
       "dateTimeToString is called" in {
-        dateTimeToString(LocalDateTime.of(2021, 1, 1, 1, 1, 1)) shouldBe "1 January 2021"
+        dateTimeToString(LocalDateTime.of(2021, 1, 1, 1, 1, 1)) shouldBe "1\u00A0January\u00A02021"
       }
 
       "dateTimeToMonthYearString is called" in {
-        dateTimeToMonthYearString(LocalDateTime.of(2021, 1, 1, 1, 1, 1)) shouldBe "January 2021"
+        dateTimeToMonthYearString(LocalDateTime.of(2021, 1, 1, 1, 1, 1)) shouldBe "January\u00A02021"
       }
 
       "dateToMonthYearString is called" in {
-        dateToMonthYearString(LocalDate.of(2021, 1, 1)) shouldBe "January 2021"
+        dateToMonthYearString(LocalDate.of(2021, 1, 1)) shouldBe "January\u00A02021"
       }
     }
 
     "return the formatted Welsh LocalDate" when {
       "dateToString is called" in {
-        dateToString(LocalDate.of(2021, 1, 1))(cyMessages) shouldBe "1 Ionawr 2021"
+        dateToString(LocalDate.of(2021, 1, 1))(cyMessages) shouldBe "1\u00A0Ionawr\u00A02021"
       }
 
       "dateTimeToString is called" in {
-        dateTimeToString(LocalDateTime.of(2021, 1, 1, 1, 1, 1))(cyMessages) shouldBe "1 Ionawr 2021"
+        dateTimeToString(LocalDateTime.of(2021, 1, 1, 1, 1, 1))(cyMessages) shouldBe "1\u00A0Ionawr\u00A02021"
       }
 
       "dateTimeToMonthYearString is called" in {
-        dateTimeToMonthYearString(LocalDateTime.of(2021, 1, 1, 1, 1, 1))(cyMessages) shouldBe "Ionawr 2021"
+        dateTimeToMonthYearString(LocalDateTime.of(2021, 1, 1, 1, 1, 1))(cyMessages) shouldBe "Ionawr\u00A02021"
       }
 
       "dateToMonthYearString is called" in {
-        dateToMonthYearString(LocalDate.of(2021, 1, 1))(cyMessages) shouldBe "Ionawr 2021"
+        dateToMonthYearString(LocalDate.of(2021, 1, 1))(cyMessages) shouldBe "Ionawr\u00A02021"
       }
     }
   }

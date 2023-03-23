@@ -77,7 +77,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       amountDue = 1001.45,
       isPenaltyPaid = true,
       penaltyCategory = LPP1,
-      dueDate = "1 January 2021",
+      dueDate = "1\u00A0January\u00A02021",
       taxPeriodStartDate = sampleDate.toString,
       taxPeriodEndDate = sampleDate.toString
     )
@@ -105,7 +105,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       amountDue = 1001.45,
       isVatPaid = true,
       penaltyCategory = LPP2,
-      dueDate = "1 January 2021",
+      dueDate = "1\u00A0January\u00A02021",
       taxPeriodStartDate = sampleDate.toString,
       taxPeriodEndDate = sampleDate.toString
     )
@@ -466,7 +466,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           isPenaltyPaid = false,
           isVatPaid = true,
           penaltyCategory = LPP1,
-          dueDate = "1 January 2021",
+          dueDate = "1\u00A0January\u00A02021",
           taxPeriodEndDate = sampleDate.toString,
           taxPeriodStartDate = sampleDate.toString
         )

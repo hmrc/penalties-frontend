@@ -187,17 +187,17 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         val request = controller.onPageLoad()(fakeRequest)
         status(request) shouldBe OK
         val parsedBody = Jsoup.parse(contentAsString(request))
-        parsedBody.body().toString.contains("VAT period 1 March 2022 to 31 March 2022") shouldBe true
+        parsedBody.body().toString.contains("VAT period 1&nbsp;March&nbsp;2022 to 31&nbsp;March&nbsp;2022") shouldBe true
         parsedBody.select(".govuk-tag--red").get(0).text() shouldBe "Late"
         parsedBody.body().toString.contains("Submit this missing VAT Return now") shouldBe true
-        parsedBody.body().toString.contains("VAT period 1 April 2022 to 30 April 2022") shouldBe true
-        parsedBody.body().toString.contains("Submit VAT Return by 7 June 2022") shouldBe true
-        parsedBody.body().toString.contains("VAT period 1 May 2022 to 31 May 2022") shouldBe true
-        parsedBody.body().toString.contains("Submit VAT Return by 7 July 2022") shouldBe true
-        parsedBody.body().toString.contains("VAT period 1 June 2022 to 30 June 2022") shouldBe true
-        parsedBody.body().toString.contains("Submit VAT Return by 7 August 2022") shouldBe true
+        parsedBody.body().toString.contains("VAT period 1&nbsp;April&nbsp;2022 to 30&nbsp;April&nbsp;2022") shouldBe true
+        parsedBody.body().toString.contains("Submit VAT Return by 7&nbsp;June&nbsp;2022") shouldBe true
+        parsedBody.body().toString.contains("VAT period 1&nbsp;May&nbsp;2022 to 31&nbsp;May&nbsp;2022") shouldBe true
+        parsedBody.body().toString.contains("Submit VAT Return by 7&nbsp;July&nbsp;2022") shouldBe true
+        parsedBody.body().toString.contains("VAT period 1&nbsp;June&nbsp;2022 to 30&nbsp;June&nbsp;2022") shouldBe true
+        parsedBody.body().toString.contains("Submit VAT Return by 7&nbsp;August&nbsp;2022") shouldBe true
         parsedBody.body().toString.contains("Points to be removed:") shouldBe true
-        parsedBody.body().toString.contains("September 2022") shouldBe true
+        parsedBody.body().toString.contains("September&nbsp;2022") shouldBe true
       }
 
       "there is no missing returns - do not show a late tag" in {
@@ -206,16 +206,16 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         val request = controller.onPageLoad()(fakeRequest)
         status(request) shouldBe OK
         val parsedBody = Jsoup.parse(contentAsString(request))
-        parsedBody.body().toString.contains("VAT period 1 March 2022 to 31 March 2022") shouldBe true
-        parsedBody.body().toString.contains("Submit VAT Return by 7 May 2022") shouldBe true
-        parsedBody.body().toString.contains("VAT period 1 April 2022 to 30 April 2022") shouldBe true
-        parsedBody.body().toString.contains("Submit VAT Return by 7 June 2022") shouldBe true
-        parsedBody.body().toString.contains("VAT period 1 May 2022 to 31 May 2022") shouldBe true
-        parsedBody.body().toString.contains("Submit VAT Return by 7 July 2022") shouldBe true
-        parsedBody.body().toString.contains("VAT period 1 June 2022 to 30 June 2022") shouldBe true
-        parsedBody.body().toString.contains("Submit VAT Return by 7 August 2022") shouldBe true
+        parsedBody.body().toString.contains("VAT period 1&nbsp;March&nbsp;2022 to 31&nbsp;March&nbsp;2022") shouldBe true
+        parsedBody.body().toString.contains("Submit VAT Return by 7&nbsp;May&nbsp;2022") shouldBe true
+        parsedBody.body().toString.contains("VAT period 1&nbsp;April&nbsp;2022 to 30&nbsp;April&nbsp;2022") shouldBe true
+        parsedBody.body().toString.contains("Submit VAT Return by 7&nbsp;June&nbsp;2022") shouldBe true
+        parsedBody.body().toString.contains("VAT period 1&nbsp;May&nbsp;2022 to 31&nbsp;May&nbsp;2022") shouldBe true
+        parsedBody.body().toString.contains("Submit VAT Return by 7&nbsp;July&nbsp;2022") shouldBe true
+        parsedBody.body().toString.contains("VAT period 1&nbsp;June&nbsp;2022 to 30&nbsp;June&nbsp;2022") shouldBe true
+        parsedBody.body().toString.contains("Submit VAT Return by 7&nbsp;August&nbsp;2022") shouldBe true
         parsedBody.body().toString.contains("Points to be removed:") shouldBe true
-        parsedBody.body().toString.contains("September 2022") shouldBe true
+        parsedBody.body().toString.contains("September&nbsp;2022") shouldBe true
       }
 
       "for a monthly filer" in {
@@ -251,7 +251,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         status(request) shouldBe OK
         val parsedBody = Jsoup.parse(contentAsString(request))
         parsedBody.body().toString.contains("Points to be removed:") shouldBe true
-        parsedBody.body().toString.contains("January 2024") shouldBe true
+        parsedBody.body().toString.contains("January&nbsp;2024") shouldBe true
         parsedBody.body().toString.contains("If your client misses a return deadline, they will have to submit 6 more returns on time before we can remove their points.") shouldBe true
       }
     }
