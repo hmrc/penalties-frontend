@@ -1086,7 +1086,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
     "when given a LPP2 - set the relevant fields" in {
       val result = helper.lppSummaryCard(sampleLPP2)
       result.penaltyCategory.equals(LPP2) shouldBe true
-      result.cardRows.exists(_.key.content == Text("Charge due")) shouldBe true
+      result.cardRows.exists(_.key.content == Text("VAT due")) shouldBe true
     }
   }
 

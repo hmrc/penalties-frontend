@@ -195,14 +195,14 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         doc.select("dd").get(1).text() shouldBe "VAT for period 1 January 2020 to 1 February 2020"
       }
 
-      "display principalChargeDueDate in Charge due" in {
-        doc.select("dt").get(2).text() shouldBe "Charge due"
+      "display principalChargeDueDate in VAT due" in {
+        doc.select("dt").get(2).text() shouldBe "VAT due"
         doc.select("dd").get(2).text() shouldBe "1 February 2020"
       }
 
-      "display the date in Charge due" in {
+      "display the date in VAT due" in {
         val docVATPaymentDate: Document = asDocument(summaryCardHtml.apply(summaryCardModelVATPaymentDate))
-        docVATPaymentDate.select("dt").get(2).text() shouldBe "Charge due"
+        docVATPaymentDate.select("dt").get(2).text() shouldBe "VAT due"
         docVATPaymentDate.select("dd").get(2).text() shouldBe "7 March 2020"
       }
 
