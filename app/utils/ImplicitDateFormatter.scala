@@ -16,23 +16,23 @@
 
 package utils
 
-import play.api.i18n.Messages
-
 import java.time.{LocalDate, LocalDateTime}
+
+import play.api.i18n.Messages
 
 trait ImplicitDateFormatter {
 
   implicit def dateToString(date: LocalDate)(implicit messages: Messages): String =
-    s"${date.getDayOfMonth} ${messages(s"month.${date.getMonthValue}")} ${date.getYear}"
+    s"${date.getDayOfMonth}\u00A0${messages(s"month.${date.getMonthValue}")}\u00A0${date.getYear}"
 
   implicit def dateTimeToString(date: LocalDateTime)(implicit messages: Messages): String =
-    s"${date.getDayOfMonth} ${messages(s"month.${date.getMonthValue}")} ${date.getYear}"
+    s"${date.getDayOfMonth}\u00A0${messages(s"month.${date.getMonthValue}")}\u00A0${date.getYear}"
 
   implicit def dateTimeToMonthYearString(date: LocalDateTime)(implicit messages: Messages): String =
-    s"${messages(s"month.${date.getMonthValue}")} ${date.getYear}"
+    s"${messages(s"month.${date.getMonthValue}")}\u00A0${date.getYear}"
 
   implicit def dateToMonthYearString(date: LocalDate)(implicit messages: Messages): String =
-    s"${messages(s"month.${date.getMonthValue}")} ${date.getYear}"
+    s"${messages(s"month.${date.getMonthValue}")}\u00A0${date.getYear}"
 }
 
 object ImplicitDateFormatter extends ImplicitDateFormatter
