@@ -44,7 +44,7 @@
   extraBreadcrumbs = Some(Seq((messages("index.breadcrumb.index"), controllers.routes.IndexController.onPageLoad.url))),
   optPage = Some(CalculationPage)) {
   <h2 class="govuk-caption-l hmrc-caption-l penalty-information-caption"><span class="govuk-visually-hidden">@messages("calculation.heading.lpp1And2.hiddenText") </span>@messages("calculation.caption", startDate, endDate)</h2>
-  <h1 class="govuk-heading-l govuk-!-margin-bottom-5">@messages("calculation.headingAndTitle.lpp")</h1>
+  <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages("calculation.headingAndTitle.lpp")</h1>
   
     @* Haven't reached day 30 yet *@
     @if(calculationRowSeq.size == 1) {
