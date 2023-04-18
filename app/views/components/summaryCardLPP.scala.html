@@ -51,19 +51,7 @@
     </a>
 }
 @appealContent = {
-    @if(!summaryCard.isVatPaid && summaryCard.penaltyChargeReference.isDefined) { @* Penalty is posted but VAT not paid *@
-        <a class="govuk-link" href=@{
-            controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyChargeReference.get, isLPP = true, isObligation = true, isAdditional = summaryCard.penaltyCategory.equals(LPP2)).url
-        }>
-        @messages("summaryCard.appealCheck") <span class="govuk-visually-hidden">@visuallyHiddenText</span>
-        </a>
-    } else if(!summaryCard.isVatPaid) { @* Penalty is accruing but VAT not paid *@
-      <a class="govuk-link" href=@{
-        controllers.routes.IndexController.redirectToEstimateAppeal(summaryCard.taxPeriodStartDate, summaryCard.taxPeriodEndDate).url
-      }>
-      @messages("summaryCard.appealCheck") <span class="govuk-visually-hidden">@visuallyHiddenText</span>
-      </a>
-    } else {
+    @if(summaryCard.isVatPaid) {
         <a class="govuk-link" href=@{
             controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyChargeReference.get, isLPP = true, isObligation = false, isAdditional = summaryCard.penaltyCategory.equals(LPP2)).url
         }>
