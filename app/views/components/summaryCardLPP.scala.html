@@ -23,12 +23,12 @@
 @this(
         govukSummaryList: GovukSummaryList,
         govukTag: GovukTag,
-        link: components.link
+        link: components.link,
+        details: components.details
 )
 @(
         summaryCard: LatePaymentPenaltySummaryCard
-)(implicit messages: Messages)
-
+)(implicit messages: Messages, user: User[_])
 
 @visuallyHiddenText = @{
     if(!summaryCard.isVatPaid) {
@@ -58,6 +58,27 @@
         @messages("summaryCard.footerLinkTextNoPointNumber") <span class="govuk-visually-hidden">@visuallyHiddenText</span>
         </a>
     }
+}
+
+@cannotAppealContents = {
+    <p>
+        @if(summaryCard.isCentralAssessment) {
+            @getMessage("summaryCard.details.text1.ca")
+        } else {
+            @messages("summaryCard.details.text1")
+        }
+    </p>
+    <p>
+        @if(summaryCard.isCentralAssessment) {
+            @getMessage("summaryCard.details.text2.ca")
+        } else {
+            @getMessage("summaryCard.details.text2")
+        }
+    </p>
+}
+
+@cannotAppealDetails = {
+    @details(messages("summaryCard.details.summary"), cannotAppealContents)
 }
 
 
@@ -94,6 +115,9 @@
     </header>
     <div class="app-summary-card__body">
     @govukSummaryList(SummaryList(summaryCard.cardRows))
+    @if(!summaryCard.isVatPaid) {
+        @cannotAppealDetails
+    }
     </div>
     <footer class="app-summary-card__footer">
     @footerDisplayLogic

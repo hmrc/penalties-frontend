@@ -121,6 +121,14 @@ summaryCard.lpp.key4 = VAT due
 summaryCard.lpp.key5 = VAT paid
 summaryCard.lpp.paymentNotReceived = Payment not yet received
 summaryCard.viewCalculation = View calculation
+summaryCard.details.summary = Why you cannot appeal yet
+summaryCard.details.text1 = You cannot appeal until the VAT is paid.
+summaryCard.details.text2 = It can take up to 5 days for the payment to clear and show on your payment history. If you've already paid, keep checking back to see when the payment clears.
+agent.summaryCard.details.text2 = It can take up to 5 days for the payment to clear and show on your client’s payment history. If they have already paid, keep checking back to see when the payment clears.
+summaryCard.details.text1.ca = You cannot appeal until you submit the VAT Return and pay your VAT.
+agent.summaryCard.details.text1.ca = You cannot appeal until the VAT Return is submitted and your client pays the VAT.
+summaryCard.details.text2.ca = If you believe you did not need to submit a VAT Return, appeal the late submission penalty for this VAT period instead.
+agent.summaryCard.details.text2.ca = If you believe a VAT Return was not due, appeal the late submission penalty for this VAT period instead.
 
 summaryCard.appealLink.aria.label.lurkingPoint.noReturnSubmitted = for penalty on late VAT return due {0}
 summaryCard.appealLink.aria.label.noReturnSubmitted = penalty point {0}
