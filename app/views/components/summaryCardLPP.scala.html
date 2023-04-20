@@ -113,7 +113,7 @@
         @govukTag(summaryCard.status)
         </div>
     </header>
-    <div class="app-summary-card__body">
+    <div class="app-summary-card__body govuk-!-padding-bottom-0">
     @govukSummaryList(SummaryList(summaryCard.cardRows))
     @if(!summaryCard.isVatPaid) {
         @cannotAppealDetails

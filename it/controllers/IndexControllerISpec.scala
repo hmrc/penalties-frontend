@@ -866,7 +866,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("dd").get(2).text shouldBe "7 March 2021"
       summaryCardBody.select("dt").get(3).text shouldBe "VAT paid"
       summaryCardBody.select("dd").get(3).text shouldBe "Payment not yet received"
-      parsedBody.select("#late-payment-penalties footer a").get(1).ownText() shouldBe "Check if you can appeal"
+      summaryCardBody.select(".govuk-details__summary-text").get(0).text shouldBe "Why you cannot appeal yet"
+      summaryCardBody.select(".govuk-details__text p:nth-child(1)").get(0).text shouldBe "You cannot appeal until the VAT is paid."
+      summaryCardBody.select(".govuk-details__text p:nth-child(2)").get(0).text shouldBe "It can take up to 5 days for the payment to clear and show on your payment history. If you’ve already paid, keep checking back to see when the payment clears."
     }
 
     "return 200 (OK) and render the view when there are LPPs with VAT unpaid that are retrieved from the backend" in {
