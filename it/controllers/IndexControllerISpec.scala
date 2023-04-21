@@ -1103,52 +1103,12 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     "redirect the user to the obligations appeals service when the penalty is a LSP" in {
       val request = controller.redirectToAppeals(
         penaltyId = "1234",
-        isLPP = false,
-        isObligation = true,
-        isAdditional = false)(FakeRequest("GET", "/").withSession(
+        isObligation = true)(FakeRequest("GET", "/").withSession(
         authToken -> "1234"
       ))
       status(request) shouldBe Status.SEE_OTHER
       headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe
-        "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234&isLPP=false&isAdditional=false"
-    }
-
-    "redirect the user to the obligations appeals service when the penalty is a LPP1" in {
-      val request = controller.redirectToAppeals(
-        penaltyId = "1234",
-        isLPP = true,
-        isObligation = true,
-        isAdditional = false)(FakeRequest("GET", "/").withSession(
-        authToken -> "1234"
-      ))
-      status(request) shouldBe Status.SEE_OTHER
-      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe
-        "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234&isLPP=true&isAdditional=false"
-    }
-
-    "redirect the user to the obligations appeals service when the penalty is a LPP2" in {
-      val request = controller.redirectToAppeals(
-        penaltyId = "1234",
-        isLPP = true,
-        isObligation = true,
-        isAdditional = true)(FakeRequest("GET", "/").withSession(
-        authToken -> "1234"
-      ))
-      status(request) shouldBe Status.SEE_OTHER
-      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe
-        "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234&isLPP=true&isAdditional=true"
-    }
-  }
-
-  "GET /appeal-estimated-penalty" should {
-    "redirect the user to the appeals service" in {
-      val sampleDate = LocalDate.now()
-      val request = controller.redirectToEstimateAppeal(sampleDate.toString, sampleDate.toString)(FakeRequest("GET", "/").withSession(
-        authToken -> "1234"
-      ))
-      status(request) shouldBe Status.SEE_OTHER
-      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe
-        s"http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation-estimated-lpp?taxPeriodStartDate=${sampleDate.toString}&taxPeriodEndDate=${sampleDate.toString}"
+        "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234"
     }
   }
 }
