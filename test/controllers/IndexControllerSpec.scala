@@ -137,6 +137,5 @@ class IndexControllerSpec extends SpecBase with LogCapturing {
           s"/initialise-appeal-against-the-obligation?penaltyId=$penaltyId")
       }
     }
-    }
   }
 }
