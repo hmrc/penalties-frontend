@@ -121,6 +121,14 @@ summaryCard.lpp.key4 = TAW yn ddyledus
 summaryCard.lpp.key5 = TAW a dalwyd
 summaryCard.lpp.paymentNotReceived = Nid yw’r taliad wedi dod i law hyd yn hyn
 summaryCard.viewCalculation = Gweld y cyfrifiad
+summaryCard.details.summary = Why you cannot appeal yet
+summaryCard.details.text1 = You cannot appeal until the VAT is paid.
+summaryCard.details.text2 = It can take up to 5 days for the payment to clear and show on your payment history. If you’ve already paid, keep checking back to see when the payment clears.
+agent.summaryCard.details.text2 = It can take up to 5 days for the payment to clear and show on your client’s payment history. If they have already paid, keep checking back to see when the payment clears.
+summaryCard.details.text1.ca = You cannot appeal until you submit the VAT Return and pay your VAT.
+agent.summaryCard.details.text1.ca = You cannot appeal until the VAT Return is submitted and your client pays the VAT.
+summaryCard.details.text2.ca = If you believe you did not need to submit a VAT Return, appeal the late submission penalty for this VAT period instead.
+agent.summaryCard.details.text2.ca = If you believe a VAT Return was not due, appeal the late submission penalty for this VAT period instead.
 
 summaryCard.appealLink.aria.label.lurkingPoint.noReturnSubmitted = cosb ar gyfer taliad hwyr a oedd yn ddyledus ar {0}
 summaryCard.appealLink.aria.label.noReturnSubmitted = pwynt cosb {0}

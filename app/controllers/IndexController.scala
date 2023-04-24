@@ -95,13 +95,9 @@ class IndexController @Inject()(view: IndexView,
       s"and is obligation appeal: $isObligation and is additional: $isAdditional")
     if (isObligation) {
       Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}" +
-        s"/initialise-appeal-against-the-obligation?penaltyId=$penaltyId&isLPP=$isLPP&isAdditional=$isAdditional"))
+        s"/initialise-appeal-against-the-obligation?penaltyId=$penaltyId"))
     } else {
       Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=$isLPP&isAdditional=$isAdditional"))
     }
-  }
-
-  def redirectToEstimateAppeal(taxPeriodStartDate: String, taxPeriodEndDate: String): Action[AnyContent] = authorise.async {
-    Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal-against-the-obligation-estimated-lpp?taxPeriodStartDate=${taxPeriodStartDate.toString}&taxPeriodEndDate=${taxPeriodEndDate.toString}"))
   }
 }

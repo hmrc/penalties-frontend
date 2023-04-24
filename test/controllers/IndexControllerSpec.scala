@@ -134,26 +134,7 @@ class IndexControllerSpec extends SpecBase with LogCapturing {
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}" +
-          s"/initialise-appeal-against-the-obligation?penaltyId=$penaltyId&isLPP=false&isAdditional=false")
-      }
-
-      "the user wants to appeal an obligation for LPP" in new Setup(AuthTestModels.successfulAuthResult) {
-        val result: Future[Result] = Controller.redirectToAppeals("123456789", isLPP = true, isObligation = true)(fakeRequest)
-
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}" +
-          s"/initialise-appeal-against-the-obligation?penaltyId=$penaltyId&isLPP=true&isAdditional=false")
-      }
-    }
-
-    "redirectToEstimateAppeal" when {
-      "the user wants to appeal the obligation on an estimated LPP" in new Setup(AuthTestModels.successfulAuthResult) {
-        val sampleDate: LocalDate = LocalDate.now()
-        val result: Future[Result] = Controller.redirectToEstimateAppeal(sampleDate.toString, sampleDate.toString)(fakeRequest)
-
-        status(result) shouldBe(SEE_OTHER)
-        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}" +
-          s"/initialise-appeal-against-the-obligation-estimated-lpp?taxPeriodStartDate=${sampleDate.toString}&taxPeriodEndDate=${sampleDate.toString}")
+          s"/initialise-appeal-against-the-obligation?penaltyId=$penaltyId")
       }
     }
   }

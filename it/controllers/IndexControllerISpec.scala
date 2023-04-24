@@ -866,7 +866,9 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("dd").get(2).text shouldBe "7 March 2021"
       summaryCardBody.select("dt").get(3).text shouldBe "VAT paid"
       summaryCardBody.select("dd").get(3).text shouldBe "Payment not yet received"
-      parsedBody.select("#late-payment-penalties footer a").get(1).ownText() shouldBe "Check if you can appeal"
+      summaryCardBody.select(".govuk-details__summary-text").get(0).text shouldBe "Why you cannot appeal yet"
+      summaryCardBody.select(".govuk-details__text p:nth-child(1)").get(0).text shouldBe "You cannot appeal until the VAT is paid."
+      summaryCardBody.select(".govuk-details__text p:nth-child(2)").get(0).text shouldBe "It can take up to 5 days for the payment to clear and show on your payment history. If you’ve already paid, keep checking back to see when the payment clears."
     }
 
     "return 200 (OK) and render the view when there are LPPs with VAT unpaid that are retrieved from the backend" in {
@@ -1101,52 +1103,12 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     "redirect the user to the obligations appeals service when the penalty is a LSP" in {
       val request = controller.redirectToAppeals(
         penaltyId = "1234",
-        isLPP = false,
-        isObligation = true,
-        isAdditional = false)(FakeRequest("GET", "/").withSession(
+        isObligation = true)(FakeRequest("GET", "/").withSession(
         authToken -> "1234"
       ))
       status(request) shouldBe Status.SEE_OTHER
       headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe
-        "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234&isLPP=false&isAdditional=false"
-    }
-
-    "redirect the user to the obligations appeals service when the penalty is a LPP1" in {
-      val request = controller.redirectToAppeals(
-        penaltyId = "1234",
-        isLPP = true,
-        isObligation = true,
-        isAdditional = false)(FakeRequest("GET", "/").withSession(
-        authToken -> "1234"
-      ))
-      status(request) shouldBe Status.SEE_OTHER
-      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe
-        "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234&isLPP=true&isAdditional=false"
-    }
-
-    "redirect the user to the obligations appeals service when the penalty is a LPP2" in {
-      val request = controller.redirectToAppeals(
-        penaltyId = "1234",
-        isLPP = true,
-        isObligation = true,
-        isAdditional = true)(FakeRequest("GET", "/").withSession(
-        authToken -> "1234"
-      ))
-      status(request) shouldBe Status.SEE_OTHER
-      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe
-        "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234&isLPP=true&isAdditional=true"
-    }
-  }
-
-  "GET /appeal-estimated-penalty" should {
-    "redirect the user to the appeals service" in {
-      val sampleDate = LocalDate.now()
-      val request = controller.redirectToEstimateAppeal(sampleDate.toString, sampleDate.toString)(FakeRequest("GET", "/").withSession(
-        authToken -> "1234"
-      ))
-      status(request) shouldBe Status.SEE_OTHER
-      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe
-        s"http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation-estimated-lpp?taxPeriodStartDate=${sampleDate.toString}&taxPeriodEndDate=${sampleDate.toString}"
+        "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234"
     }
   }
 }

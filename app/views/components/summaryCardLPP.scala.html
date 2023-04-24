@@ -23,12 +23,12 @@
 @this(
         govukSummaryList: GovukSummaryList,
         govukTag: GovukTag,
-        link: components.link
+        link: components.link,
+        details: components.details
 )
 @(
         summaryCard: LatePaymentPenaltySummaryCard
-)(implicit messages: Messages)
-
+)(implicit messages: Messages, user: User[_])
 
 @visuallyHiddenText = @{
     if(!summaryCard.isVatPaid) {
@@ -51,25 +51,34 @@
     </a>
 }
 @appealContent = {
-    @if(!summaryCard.isVatPaid && summaryCard.penaltyChargeReference.isDefined) { @* Penalty is posted but VAT not paid *@
-        <a class="govuk-link" href=@{
-            controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyChargeReference.get, isLPP = true, isObligation = true, isAdditional = summaryCard.penaltyCategory.equals(LPP2)).url
-        }>
-        @messages("summaryCard.appealCheck") <span class="govuk-visually-hidden">@visuallyHiddenText</span>
-        </a>
-    } else if(!summaryCard.isVatPaid) { @* Penalty is accruing but VAT not paid *@
-      <a class="govuk-link" href=@{
-        controllers.routes.IndexController.redirectToEstimateAppeal(summaryCard.taxPeriodStartDate, summaryCard.taxPeriodEndDate).url
-      }>
-      @messages("summaryCard.appealCheck") <span class="govuk-visually-hidden">@visuallyHiddenText</span>
-      </a>
-    } else {
+    @if(summaryCard.isVatPaid) {
         <a class="govuk-link" href=@{
             controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyChargeReference.get, isLPP = true, isObligation = false, isAdditional = summaryCard.penaltyCategory.equals(LPP2)).url
         }>
         @messages("summaryCard.footerLinkTextNoPointNumber") <span class="govuk-visually-hidden">@visuallyHiddenText</span>
         </a>
     }
+}
+
+@cannotAppealContents = {
+    <p>
+        @if(summaryCard.isCentralAssessment) {
+            @getMessage("summaryCard.details.text1.ca")
+        } else {
+            @messages("summaryCard.details.text1")
+        }
+    </p>
+    <p>
+        @if(summaryCard.isCentralAssessment) {
+            @getMessage("summaryCard.details.text2.ca")
+        } else {
+            @getMessage("summaryCard.details.text2")
+        }
+    </p>
+}
+
+@cannotAppealDetails = {
+    @details(messages("summaryCard.details.summary"), cannotAppealContents)
 }
 
 
@@ -104,8 +113,11 @@
         @govukTag(summaryCard.status)
         </div>
     </header>
-    <div class="app-summary-card__body">
+    <div class="app-summary-card__body govuk-!-padding-bottom-0">
     @govukSummaryList(SummaryList(summaryCard.cardRows))
+    @if(!summaryCard.isVatPaid) {
+        @cannotAppealDetails
+    }
     </div>
     <footer class="app-summary-card__footer">
     @footerDisplayLogic

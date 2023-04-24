@@ -16,6 +16,10 @@
 
 package viewmodels
 
+import java.time.LocalDate
+
+import javax.inject.Inject
+import models.User
 import models.appealInfo.AppealStatusEnum
 import models.lpp.MainTransactionEnum._
 import models.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum}
@@ -26,9 +30,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 import utils.{CurrencyFormatter, ImplicitDateFormatter, PenaltyPeriodHelper, ViewUtils}
-
-import java.time.LocalDate
-import javax.inject.Inject
 
 class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils {
 
@@ -264,13 +265,13 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
   def pointsThresholdMet(threshold: Int, activePoints: Int): Boolean = activePoints >= threshold
 
   def populateLatePaymentPenaltyCard(lpp: Option[Seq[LPPDetails]])
-                                    (implicit messages: Messages): Option[Seq[LatePaymentPenaltySummaryCard]] = {
+                                    (implicit messages: Messages, user: User[_]): Option[Seq[LatePaymentPenaltySummaryCard]] = {
     lpp.map {
       _.map(penalty => lppSummaryCard(penalty))
     }
   }
 
-  def lppSummaryCard(lpp: LPPDetails)(implicit messages: Messages): LatePaymentPenaltySummaryCard = {
+  def lppSummaryCard(lpp: LPPDetails)(implicit messages: Messages, user: User[_]): LatePaymentPenaltySummaryCard = {
     val cardBody = if (lpp.penaltyCategory == LPPPenaltyCategoryEnum.LPP2) lppAdditionalCardBody(lpp) else lppCardBody(lpp)
     val isPaid = lpp.penaltyAmountOutstanding.contains(BigDecimal(0))
     val isVatPaid = lpp.principalChargeLatestClearing.isDefined
@@ -280,8 +281,12 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
         messages("summaryCard.appeal.status"),
         returnAppealStatusMessageBasedOnPenalty(None, Some(lpp))
       ), lpp, isPaid, isVatPaid)
+    } else if(!isVatPaid) {
+      buildLPPSummaryCard(cardBody :+ SummaryListRow(),
+        lpp, isPaid, isVatPaid)
     } else {
-      buildLPPSummaryCard(cardBody, lpp, isPaid, isVatPaid)
+      buildLPPSummaryCard(cardBody,
+        lpp, isPaid, isVatPaid)
     }
   }
 
@@ -308,10 +313,12 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
 
   private def buildLPPSummaryCard(rows: Seq[SummaryListRow],
                                   lpp: LPPDetails, isPaid: Boolean, isVatPaid: Boolean)
-                                 (implicit messages: Messages): LatePaymentPenaltySummaryCard = {
+                                 (implicit messages: Messages, user: User[_]): LatePaymentPenaltySummaryCard = {
     val amountDue = lpp.penaltyAmountOutstanding.getOrElse(BigDecimal(0)) + lpp.penaltyAmountPaid.getOrElse(BigDecimal(0))
     val appealStatus = lpp.appealInformation.flatMap(_.headOption.flatMap(_.appealStatus))
     val appealLevel = lpp.appealInformation.flatMap(_.headOption.flatMap(_.appealLevel))
+    val isCentralAssessment = lpp.LPPDetailsMetadata.mainTransaction.get.equals(CentralAssessmentFirstLPP) ||
+      lpp.LPPDetailsMetadata.mainTransaction.get.equals(CentralAssessmentSecondLPP) || lpp.LPPDetailsMetadata.mainTransaction.get.equals(CentralAssessment)
     LatePaymentPenaltySummaryCard(
       cardRows = rows,
       status = tagStatus(None, Some(lpp)),
@@ -325,7 +332,9 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
       penaltyCategory = lpp.penaltyCategory,
       dueDate = dateToString(lpp.principalChargeDueDate),
       taxPeriodStartDate = lpp.principalChargeBillingFrom.toString,
-      taxPeriodEndDate = lpp.principalChargeBillingTo.toString
+      taxPeriodEndDate = lpp.principalChargeBillingTo.toString,
+      isAgent = user.isAgent,
+      isCentralAssessment = isCentralAssessment
     )
   }
 

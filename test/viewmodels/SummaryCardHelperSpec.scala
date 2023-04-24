@@ -55,7 +55,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
     dueDate = Some(dateToString(sampleDate))
   )
 
-  def sampleLPPSummaryCardPenaltyPaid(chargeType: String): LatePaymentPenaltySummaryCard = {
+  def sampleLPPSummaryCardPenaltyPaid(chargeType: String, isAgent: Boolean = false, isCentralAssessment: Boolean = false): LatePaymentPenaltySummaryCard = {
     val periodText = getPeriodText(chargeType)
     LatePaymentPenaltySummaryCard(
       Seq(
@@ -79,11 +79,13 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       penaltyCategory = LPP1,
       dueDate = "1\u00A0January\u00A02021",
       taxPeriodStartDate = sampleDate.toString,
-      taxPeriodEndDate = sampleDate.toString
+      taxPeriodEndDate = sampleDate.toString,
+      isAgent = isAgent,
+      isCentralAssessment = isCentralAssessment
     )
   }
 
-  def sampleLPPAdditionalSummaryCardPenaltyPaid(chargeType: String): LatePaymentPenaltySummaryCard = {
+  def sampleLPPAdditionalSummaryCardPenaltyPaid(chargeType: String, isAgent: Boolean = false, isCentralAssessment: Boolean = false): LatePaymentPenaltySummaryCard = {
     val periodText = getPeriodText(chargeType)
     LatePaymentPenaltySummaryCard(
       Seq(
@@ -107,7 +109,9 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       penaltyCategory = LPP2,
       dueDate = "1\u00A0January\u00A02021",
       taxPeriodStartDate = sampleDate.toString,
-      taxPeriodEndDate = sampleDate.toString
+      taxPeriodEndDate = sampleDate.toString,
+      isAgent = isAgent,
+      isCentralAssessment = isCentralAssessment
     )
   }
 
@@ -513,7 +517,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
             val result = helper.populateLatePaymentPenaltyCard(Some(firstLatePaymentPenaltyForCentralAssessment))
-            result shouldBe Some(Seq(sampleLPPSummaryCardPenaltyPaid("Central assessment of VAT")))
+            result shouldBe Some(Seq(sampleLPPSummaryCardPenaltyPaid("Central assessment of VAT", isCentralAssessment = true)))
           }
         }
 
@@ -530,7 +534,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
             val result = helper.populateLatePaymentPenaltyCard(Some(secondLatePaymentPenaltyForCentralAssessment))
-            result shouldBe Some(Seq(sampleLPPAdditionalSummaryCardPenaltyPaid("Central assessment of VAT")))
+            result shouldBe Some(Seq(sampleLPPAdditionalSummaryCardPenaltyPaid("Central assessment of VAT", isCentralAssessment = true)))
           }
         }
 
@@ -758,7 +762,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
                 Html(periodValueLPPOnePeriod("VAT", dateToString(sampleDate), dateToString(sampleDate)))
               ),
               helper.summaryListRow(chargeDue, Html(dateToString(sampleDate))),
-              helper.summaryListRow(datePaid, Html("Payment not yet received"))
+              helper.summaryListRow(datePaid, Html("Payment not yet received")),
+              SummaryListRow()
             ),
             isPenaltyPaid = false,
             isVatPaid = false,
