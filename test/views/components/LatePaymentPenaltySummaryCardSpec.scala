@@ -340,7 +340,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         doc.select("dt").eq(5).isEmpty shouldBe true
       }
 
-      "not display the 'why you cannot appeal yet' drop down if the penalty has unappealable or no appeal status" in {
+      "not display the 'why you cannot appeal yet' drop down if the penalty has an appeal status other than unappealable (e.g. under review)" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelForAdditionalPenaltyDue))
         doc.select(".govuk-details__summary-text").isEmpty shouldBe true
         doc.select(".govuk-details__text p:nth-child(1)").isEmpty shouldBe true
