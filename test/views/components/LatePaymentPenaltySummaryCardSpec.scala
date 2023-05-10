@@ -140,7 +140,8 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
     Some(Seq(sampleLPP1.copy(penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
       penaltyAmountPaid = Some(0.00),
       penaltyAmountOutstanding = Some(23.45),
-      penaltyStatus = LPPPenaltyStatusEnum.Posted)))
+      penaltyStatus = LPPPenaltyStatusEnum.Posted,
+      appealInformation = Some(Seq(AppealInformationType(Some(AppealStatusEnum.Under_Appeal), Some(AppealLevelEnum.HMRC)))))))
   ).get.head
 
   val summaryCardModelForAdditionalPenaltyDuePartiallyPaid: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
@@ -339,6 +340,13 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         doc.select("dt").eq(5).isEmpty shouldBe true
       }
 
+      "not display the 'why you cannot appeal yet' drop down if the penalty has unappealable or no appeal status" in {
+        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelForAdditionalPenaltyDue))
+        doc.select(".govuk-details__summary-text").isEmpty shouldBe true
+        doc.select(".govuk-details__text p:nth-child(1)").isEmpty shouldBe true
+        doc.select(".govuk-details__text p:nth-child(2)").isEmpty shouldBe true
+      }
+
       "display the 'why you cannot appeal yet' drop down if the penalty is unappealable (VAT has not been paid) and the user is an Agent" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelForUnappealableLPP2)(messages, agentUser))
         doc.select(".govuk-details__summary-text").get(0).ownText() shouldBe "Why you cannot appeal yet"
@@ -347,7 +355,8 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         doc.select("dt").eq(5).isEmpty shouldBe true
       }
 
-      "display the 'why you cannot appeal yet' drop down with Central Assessment content if the VAT has not been paid and the Main Transaction is Central Assessment" in {
+      "display the 'why you cannot appeal yet' drop down with Central Assessment content if the VAT has not been paid and " +
+        "the Main Transaction is Central Assessment" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMadeLPP2CentralAssessment))
         doc.select(".govuk-details__summary-text").get(0).ownText() shouldBe "Why you cannot appeal yet"
         doc.select(".govuk-details__text p:nth-child(1)").get(0).text() shouldBe "You cannot appeal until you submit the VAT Return and pay your VAT."
@@ -355,7 +364,8 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         doc.select("dt").eq(5).isEmpty shouldBe true
       }
 
-      "display the 'why you cannot appeal yet' drop down with Central Assessment content if the VAT has not been paid and the Main Transaction is Central Assessment and the user is an Agent" in {
+      "display the 'why you cannot appeal yet' drop down with Central Assessment content if the VAT has not been paid and the " +
+        "Main Transaction is Central Assessment and the user is an Agent" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMadeLPP2CentralAssessment)(messages, agentUser))
         doc.select(".govuk-details__summary-text").get(0).ownText() shouldBe "Why you cannot appeal yet"
         doc.select(".govuk-details__text p:nth-child(1)").get(0).text() shouldBe "You cannot appeal until the VAT Return is submitted and your client pays the VAT."
@@ -372,19 +382,22 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       val docWithAppealedPenalty: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenalty))
 
-      "have the appeal status for ACCEPTED" in {
+      "have the appeal status for ACCEPTED and not have the calculation link" in {
         docWithAppealedPenaltyAccepted.select("dt").get(4).text() shouldBe "Appeal status"
         docWithAppealedPenaltyAccepted.select("dd").get(4).text() shouldBe "Appeal accepted"
+        docWithAppealedPenaltyAccepted.select(".calculation-link").isEmpty shouldBe true
       }
 
       "have the appeal status for REJECTED" in {
         docWithAppealedPenaltyRejected.select("dt").get(4).text() shouldBe "Appeal status"
         docWithAppealedPenaltyRejected.select("dd").get(4).text() shouldBe "Appeal rejected"
+        docWithAppealedPenaltyRejected.select(".calculation-link").isEmpty shouldBe false
       }
 
       "have the appeal status for UNDER_REVIEW" in {
         docWithAppealedPenalty.select("dt").get(4).text() shouldBe "Appeal status"
         docWithAppealedPenalty.select("dd").get(4).text() shouldBe "Under review by HMRC"
+        docWithAppealedPenalty.select(".calculation-link").isEmpty shouldBe false
       }
     }
   }
