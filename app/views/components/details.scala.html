@@ -16,11 +16,12 @@
 
 @this(govukDetails: GovukDetails)
 
-@(summary: String, content: Html)
+@(summary: String, content: Html, detailsClasses: Option[String] = None)
 
 @govukDetails(
     Details(
-        summary = HtmlContent(summary),
-        content = HtmlContent(content)
+      summary = HtmlContent(summary),
+      content = HtmlContent(content),
+      classes = detailsClasses.getOrElse("")
     )
 )
