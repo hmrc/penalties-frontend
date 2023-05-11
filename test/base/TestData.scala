@@ -106,6 +106,8 @@ trait TestData {
     penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
     penaltyStatus = LPPPenaltyStatusEnum.Accruing,
     penaltyAmountPaid = Some(1001.45),
+    penaltyAmountPosted = 1001.45,
+    penaltyAmountAccruing = 0,
     penaltyAmountOutstanding = Some(99.99),
     LPP1LRDays = Some("15"),
     LPP1HRDays = Some("31"),

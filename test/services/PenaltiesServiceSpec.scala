@@ -504,6 +504,8 @@ class PenaltiesServiceSpec extends SpecBase {
       penaltyStatus = LPPPenaltyStatusEnum.Posted,
       penaltyAmountPaid = Some(BigDecimal(400)),
       penaltyAmountOutstanding = Some(BigDecimal(10)),
+      penaltyAmountPosted = 400,
+      penaltyAmountAccruing = 0,
       LPP1LRDays = Some("15"),
       LPP1HRDays = Some("30"),
       LPP2Days = None,

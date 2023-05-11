@@ -21,6 +21,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 import models.User
 import models.appealInfo.AppealStatusEnum
+import models.lpp.LPPPenaltyStatusEnum.Posted
 import models.lpp.MainTransactionEnum._
 import models.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum}
 import models.lsp._
@@ -314,7 +315,7 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
   private def buildLPPSummaryCard(rows: Seq[SummaryListRow],
                                   lpp: LPPDetails, isPaid: Boolean, isVatPaid: Boolean)
                                  (implicit messages: Messages, user: User[_]): LatePaymentPenaltySummaryCard = {
-    val amountDue = lpp.penaltyAmountOutstanding.getOrElse(BigDecimal(0)) + lpp.penaltyAmountPaid.getOrElse(BigDecimal(0))
+    val amountDue = if(lpp.penaltyStatus == Posted) lpp.penaltyAmountPosted else lpp.penaltyAmountAccruing
     val appealStatus = lpp.appealInformation.flatMap(_.headOption.flatMap(_.appealStatus))
     val appealLevel = lpp.appealInformation.flatMap(_.headOption.flatMap(_.appealLevel))
     val isCentralAssessment = lpp.LPPDetailsMetadata.mainTransaction.get.equals(CentralAssessmentFirstLPP) ||

@@ -773,8 +773,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
             Some(
               Seq(sampleLPP1.copy(
                 appealInformation = None,
-                penaltyAmountOutstanding = Some(400),
-                penaltyAmountPaid = Some(0)
+                penaltyAmountOutstanding = None,
+                penaltyAmountAccruing = 400,
+                penaltyAmountPosted = 0,
+                penaltyAmountPaid = None
               ))
             )
           )
