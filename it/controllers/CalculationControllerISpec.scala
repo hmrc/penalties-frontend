@@ -222,7 +222,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         penaltyStatus = LPPPenaltyStatusEnum.Posted,
         penaltyAmountPaid = Some(277.00),
         penaltyAmountOutstanding = Some(123.00),
-        penaltyAmountPosted = 277,
+        penaltyAmountPosted = 400,
         penaltyAmountAccruing = 0,
         LPP1LRDays = Some("15"),
         LPP1HRDays = Some("31"),
