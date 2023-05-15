@@ -389,7 +389,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         penaltyStatus = LPPPenaltyStatusEnum.Posted,
         penaltyAmountPaid = Some(BigDecimal(200)),
         penaltyAmountOutstanding = Some(BigDecimal(200)),
-        penaltyAmountPosted = 200,
+        penaltyAmountPosted = 400,
         penaltyAmountAccruing = 0,
         LPP1LRDays = Some("15"),
         LPP1HRDays = None,
@@ -427,7 +427,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         penaltyStatus = LPPPenaltyStatusEnum.Posted,
         penaltyAmountPaid = Some(BigDecimal(200)),
         penaltyAmountOutstanding = Some(BigDecimal(200)),
-        penaltyAmountPosted = 200,
+        penaltyAmountPosted = 400,
         penaltyAmountAccruing = 0,
         LPP1LRDays = Some("15"),
         LPP1HRDays = None,
@@ -867,7 +867,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#late-payment-penalties section header h4").text shouldBe "£200 penalty"
+      parsedBody.select("#late-payment-penalties section header h4").text shouldBe "£400 penalty"
       parsedBody.select("#late-payment-penalties section header strong").text shouldBe "£200 due"
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
       summaryCardBody.select("dt").get(0).text shouldBe "Penalty type"
