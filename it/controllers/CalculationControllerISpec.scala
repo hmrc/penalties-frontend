@@ -821,7 +821,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£0.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£0.00git a"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£0.00"
       parsedBody.select("h2").get(1).text() shouldBe "Estimates"
       parsedBody.select("#main-content p").get(3).text() shouldBe "Penalties and interest will show as estimates until your client pays the charge they relate to."
       parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"
