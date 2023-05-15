@@ -41,7 +41,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       principalChargeDueDate = LocalDate.of(2020, 2, 1),
       penaltyAmountPosted = 400,
       penaltyAmountPaid = Some(400),
-      penaltyAmountOutstanding = Some(0),
+      penaltyAmountOutstanding = None,
       penaltyChargeReference = Some("CHRG1234"))))
   ).get.head
 
@@ -62,7 +62,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
     Some(Seq(sampleLPP1Paid.copy(penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
       penaltyAmountPaid = Some(123.4),
       penaltyAmountPosted = 123.4,
-      penaltyAmountOutstanding = Some(00.0),
+      penaltyAmountOutstanding = None,
       penaltyStatus = LPPPenaltyStatusEnum.Posted,
       penaltyChargeDueDate = Some(LocalDate.of(2020, 2, 1)),
       principalChargeBillingFrom = LocalDate.of(2020, 1, 1),
@@ -73,7 +73,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
   val summaryCardModelVATPaymentDate: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
     Some(Seq(sampleLPP1Paid.copy(penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
       penaltyAmountPaid = Some(123.45),
-      penaltyAmountOutstanding = Some(00.0),
+      penaltyAmountOutstanding = None,
       principalChargeBillingFrom = LocalDate.parse("2020-01-01"),
       principalChargeBillingTo = LocalDate.parse("2020-01-31"),
       principalChargeDueDate = LocalDate.parse("2020-03-07"))))
@@ -83,8 +83,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
     Some(Seq(sampleLPP1Paid.copy(penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
       penaltyAmountPosted = 123.45,
       penaltyAmountPaid = Some(123.45),
-
-      penaltyAmountOutstanding = Some(0.00),
+      penaltyAmountOutstanding = None,
       penaltyStatus = LPPPenaltyStatusEnum.Posted,
       penaltyChargeDueDate = Some(LocalDate.of(2020, 2, 1)),
       principalChargeBillingFrom = LocalDate.of(2020, 1, 1),
@@ -96,8 +95,9 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
   val summaryCardModelForUnappealableLPP2: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
     Some(Seq(sampleLPP1Paid.copy(penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
       penaltyChargeReference = None,
-      penaltyAmountPaid = Some(123.45),
-      penaltyAmountOutstanding = Some(0.00),
+      penaltyAmountPaid = None,
+      penaltyAmountOutstanding = None,
+      penaltyAmountAccruing = 123.45,
       penaltyStatus = LPPPenaltyStatusEnum.Accruing,
       penaltyChargeDueDate = Some(LocalDate.of(2020, 2, 1)),
       principalChargeBillingFrom = LocalDate.of(2020, 1, 1),
@@ -114,8 +114,9 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
   val summaryCardModelDueNoPaymentsMadeLPP2CentralAssessment: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
     Some(Seq(sampleLPP1Paid.copy(penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
       penaltyChargeReference = None,
-      penaltyAmountPaid = Some(123.45),
-      penaltyAmountOutstanding = Some(0.00),
+      penaltyAmountPaid = None,
+      penaltyAmountAccruing = 123.45,
+      penaltyAmountOutstanding = None,
       penaltyStatus = LPPPenaltyStatusEnum.Accruing,
       penaltyChargeDueDate = Some(LocalDate.of(2020, 2, 1)),
       principalChargeBillingFrom = LocalDate.of(2020, 1, 1),
@@ -136,16 +137,17 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
 
   val summaryCardModelForAdditionalPenaltyPaidWithTenths: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
     Some(Seq(sampleLPP1Paid.copy(penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
-      penaltyAmountPaid = Some(00.00),
+      penaltyAmountPaid = None,
       penaltyAmountPosted = 123.40,
       penaltyAmountOutstanding = Some(123.40))))
   ).get.head
 
   val summaryCardModelForAdditionalPenaltyDue: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
     Some(Seq(sampleLPP1.copy(penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
-      penaltyAmountPaid = Some(0.00),
+      penaltyAmountPaid = None,
       penaltyAmountOutstanding = Some(23.45),
       penaltyStatus = LPPPenaltyStatusEnum.Posted,
+      penaltyAmountPosted = 23.45,
       appealInformation = Some(Seq(AppealInformationType(Some(AppealStatusEnum.Under_Appeal), Some(AppealLevelEnum.HMRC)))))))
   ).get.head
 
@@ -153,6 +155,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
     Some(Seq(sampleLPP1.copy(penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
       penaltyAmountPaid = Some(100.00),
       penaltyAmountOutstanding = Some(60.22),
+      penaltyAmountPosted = 160.22,
       penaltyStatus = LPPPenaltyStatusEnum.Posted)))
   ).get.head
 
@@ -161,18 +164,18 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
   ).get.head
 
   val summaryCardModelDueNoPaymentsMade: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLPP1Paid.copy(principalChargeLatestClearing = None, penaltyAmountOutstanding = Some(400), penaltyAmountPaid = Some(0),
+    Some(Seq(sampleLPP1Paid.copy(principalChargeLatestClearing = None, penaltyAmountOutstanding = Some(400), penaltyAmountPaid = None,
       penaltyStatus = LPPPenaltyStatusEnum.Accruing, penaltyChargeReference = None)))
   ).get.head
 
   val summaryCardModelDueNoPaymentsMadeCentralAssessment: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLPP1Paid.copy(principalChargeLatestClearing = None, penaltyAmountOutstanding = Some(400), penaltyAmountPaid = Some(0),
+    Some(Seq(sampleLPP1Paid.copy(principalChargeLatestClearing = None, penaltyAmountOutstanding = Some(400), penaltyAmountPaid = None,
       penaltyStatus = LPPPenaltyStatusEnum.Accruing, penaltyChargeReference = None,
       LPPDetailsMetadata = LPPDetailsMetadata(mainTransaction = Some(CentralAssessmentFirstLPP), None, None))))
   ).get.head
 
   val summaryCardModelDueNoPaymentsMadePenaltyPosted: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
-    Some(Seq(sampleLPP1Paid.copy(principalChargeLatestClearing = None, penaltyAmountOutstanding = Some(400), penaltyAmountPaid = Some(0),
+    Some(Seq(sampleLPP1Paid.copy(principalChargeLatestClearing = None, penaltyAmountOutstanding = Some(400), penaltyAmountPaid = None,
       penaltyStatus = LPPPenaltyStatusEnum.Posted, penaltyChargeReference = Some("CHRG1234"))))
   ).get.head
 

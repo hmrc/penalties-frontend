@@ -108,7 +108,7 @@ trait TestData {
     penaltyAmountPaid = None,
     penaltyAmountPosted = 0,
     penaltyAmountAccruing = 1001.45,
-    penaltyAmountOutstanding = Some(99.99),
+    penaltyAmountOutstanding = None,
     LPP1LRDays = Some("15"),
     LPP1HRDays = Some("31"),
     LPP2Days = Some("31"),
@@ -138,8 +138,11 @@ trait TestData {
 
   val sampleLPP1Paid: LPPDetails = sampleLPP1.copy(
     principalChargeLatestClearing = Some(sampleDate),
-    penaltyAmountOutstanding = Some(0),
     penaltyStatus = LPPPenaltyStatusEnum.Posted,
+    penaltyAmountPosted = 1001.45,
+    penaltyAmountPaid = Some(1001.45),
+    penaltyAmountOutstanding = None,
+    penaltyAmountAccruing = 0,
     appealInformation = None
   )
 
@@ -195,7 +198,10 @@ trait TestData {
       )
     ),
     principalChargeLatestClearing = Some(sampleDate),
-    penaltyAmountOutstanding = Some(0),
+    penaltyAmountOutstanding = None,
+    penaltyAmountPaid = Some(1001.45),
+    penaltyAmountPosted = 1001.45,
+    penaltyAmountAccruing = 0,
     penaltyStatus = LPPPenaltyStatusEnum.Posted
   )
 

@@ -74,6 +74,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       penaltyChargeReference = Some("PEN1234567"),
       principalChargeReference = "12345678901234",
       isVatPaid = true,
+      amountDue = 1001.45,
       isPenaltyPaid = true,
       penaltyCategory = LPP1,
       dueDate = "1\u00A0January\u00A02021",
@@ -104,6 +105,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       principalChargeReference = "12345678901234",
       isPenaltyPaid = true,
       isVatPaid = true,
+      amountDue = 1001.45,
       penaltyCategory = LPP2,
       dueDate = "1\u00A0January\u00A02021",
       taxPeriodStartDate = sampleDate.toString,
@@ -492,8 +494,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
                 mainTransaction = Some(VATReturnSecondLPP), outstandingAmount = Some(0), timeToPay = None
               ),
               appealInformation = None,
-              penaltyAmountOutstanding = Some(0),
+              penaltyAmountOutstanding = None,
               penaltyAmountPaid = Some(1001.45),
+              penaltyAmountPosted = 1001.45,
+              penaltyAmountAccruing = 0,
               principalChargeLatestClearing = Some(sampleDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
@@ -509,8 +513,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
                 mainTransaction = Some(CentralAssessmentFirstLPP), outstandingAmount = Some(1), timeToPay = None
               ),
               appealInformation = None,
-              penaltyAmountOutstanding = Some(0),
+              penaltyAmountOutstanding = None,
               penaltyAmountPaid = Some(1001.45),
+              penaltyAmountPosted = 1001.45,
+              penaltyAmountAccruing = 0,
               principalChargeLatestClearing = Some(sampleDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
@@ -526,8 +532,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
                 mainTransaction = Some(CentralAssessmentSecondLPP), outstandingAmount = Some(1), timeToPay = None
               ),
               appealInformation = None,
-              penaltyAmountOutstanding = Some(0),
+              penaltyAmountOutstanding = None,
               penaltyAmountPaid = Some(1001.45),
+              penaltyAmountPosted = 1001.45,
+              penaltyAmountAccruing = 0,
               principalChargeLatestClearing = Some(sampleDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
@@ -543,8 +551,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
                 mainTransaction = Some(ErrorCorrectionFirstLPP), outstandingAmount = Some(1), timeToPay = None
               ),
               appealInformation = None,
-              penaltyAmountOutstanding = Some(0),
+              penaltyAmountOutstanding = None,
               penaltyAmountPaid = Some(1001.45),
+              penaltyAmountPosted = 1001.45,
+              penaltyAmountAccruing = 0,
               principalChargeLatestClearing = Some(sampleDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
@@ -560,8 +570,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
                 mainTransaction = Some(ErrorCorrectionSecondLPP), outstandingAmount = Some(1), timeToPay = None
               ),
               appealInformation = None,
-              penaltyAmountOutstanding = Some(0),
+              penaltyAmountOutstanding = None,
               penaltyAmountPaid = Some(1001.45),
+              penaltyAmountPosted = 1001.45,
+              penaltyAmountAccruing = 0,
               principalChargeLatestClearing = Some(sampleDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
@@ -589,8 +601,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
                 mainTransaction = Some(OfficersAssessmentSecondLPP), outstandingAmount = Some(1), timeToPay = None
               ),
               appealInformation = None,
-              penaltyAmountOutstanding = Some(0),
+              penaltyAmountOutstanding = None,
               penaltyAmountPaid = Some(1001.45),
+              penaltyAmountPosted = 1001.45,
+              penaltyAmountAccruing = 0,
               principalChargeLatestClearing = Some(sampleDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
@@ -606,8 +620,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
                 mainTransaction = Some(AdditionalAssessmentFirstLPP), outstandingAmount = Some(1), timeToPay = None
               ),
               appealInformation = None,
-              penaltyAmountOutstanding = Some(0),
+              penaltyAmountOutstanding = None,
               penaltyAmountPaid = Some(1001.45),
+              penaltyAmountPosted = 1001.45,
+              penaltyAmountAccruing = 0,
               principalChargeLatestClearing = Some(sampleDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
@@ -623,8 +639,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
                 mainTransaction = Some(AdditionalAssessmentSecondLPP), outstandingAmount = Some(1), timeToPay = None
               ),
               appealInformation = None,
-              penaltyAmountOutstanding = Some(0),
+              penaltyAmountOutstanding = None,
               penaltyAmountPaid = Some(1001.45),
+              penaltyAmountPosted = 1001.45,
+              penaltyAmountAccruing = 0,
               principalChargeLatestClearing = Some(sampleDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
@@ -640,8 +658,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
                 mainTransaction = Some(ProtectiveAssessmentFirstLPP), outstandingAmount = Some(1), timeToPay = None
               ),
               appealInformation = None,
-              penaltyAmountOutstanding = Some(0),
+              penaltyAmountOutstanding = None,
               penaltyAmountPaid = Some(1001.45),
+              penaltyAmountPosted = 1001.45,
+              penaltyAmountAccruing = 0,
               principalChargeLatestClearing = Some(sampleDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
@@ -657,8 +677,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
                 mainTransaction = Some(ProtectiveAssessmentSecondLPP), outstandingAmount = Some(1), timeToPay = None
               ),
               appealInformation = None,
-              penaltyAmountOutstanding = Some(0),
+              penaltyAmountOutstanding = None,
               penaltyAmountPaid = Some(1001.45),
+              penaltyAmountPosted = 1001.45,
+              penaltyAmountAccruing = 0,
               principalChargeLatestClearing = Some(sampleDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
@@ -674,8 +696,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
                 mainTransaction = Some(POAReturnChargeFirstLPP), outstandingAmount = Some(1), timeToPay = None
               ),
               appealInformation = None,
-              penaltyAmountOutstanding = Some(0),
+              penaltyAmountOutstanding = None,
               penaltyAmountPaid = Some(1001.45),
+              penaltyAmountPosted = 1001.45,
+              penaltyAmountAccruing = 0,
               principalChargeLatestClearing = Some(sampleDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
@@ -692,8 +716,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
                 mainTransaction = Some(POAReturnChargeSecondLPP), outstandingAmount = Some(1), timeToPay = None
               ),
               appealInformation = None,
-              penaltyAmountOutstanding = Some(0),
+              penaltyAmountOutstanding = None,
               penaltyAmountPaid = Some(1001.45),
+              penaltyAmountPosted = 1001.45,
+              penaltyAmountAccruing = 0,
               principalChargeLatestClearing = Some(sampleDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
@@ -709,8 +735,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
                 mainTransaction = Some(AAReturnChargeFirstLPP), outstandingAmount = Some(1), timeToPay = None
               ),
               appealInformation = None,
-              penaltyAmountOutstanding = Some(0),
+              penaltyAmountOutstanding = None,
               penaltyAmountPaid = Some(1001.45),
+              penaltyAmountPosted = 1001.45,
+              penaltyAmountAccruing = 0,
               principalChargeLatestClearing = Some(sampleDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
@@ -727,8 +755,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
                 mainTransaction = Some(AAReturnChargeSecondLPP), outstandingAmount = Some(1), timeToPay = None
               ),
               appealInformation = None,
-              penaltyAmountOutstanding = Some(0),
+              penaltyAmountOutstanding = None,
               penaltyAmountPaid = Some(1001.45),
+              penaltyAmountPosted = 1001.45,
+              penaltyAmountAccruing = 0,
               principalChargeLatestClearing = Some(sampleDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))

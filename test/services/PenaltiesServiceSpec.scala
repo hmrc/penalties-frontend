@@ -539,7 +539,7 @@ class PenaltiesServiceSpec extends SpecBase {
 
       "all the penalties have been paid" in new Setup {
         val allLPPsPaid: LatePaymentPenalty = LatePaymentPenalty(
-          Seq(sampleLPP.copy(penaltyAmountOutstanding = Some(0)))
+          Seq(sampleLPP.copy(penaltyAmountOutstanding = None))
         )
         val result: Int = service.findNumberOfLatePaymentPenalties(Some(allLPPsPaid))
         result shouldBe 0

@@ -106,7 +106,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         penaltyStatus = LPPPenaltyStatusEnum.Posted,
         penaltyAmountPaid = Some(277.00),
         penaltyAmountOutstanding = Some(123.00),
-        penaltyAmountPosted = 277,
+        penaltyAmountPosted = 400,
         penaltyAmountAccruing = 0,
         LPP1LRDays = Some("15"),
         LPP1HRDays = Some("31"),
@@ -145,7 +145,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
         penaltyStatus = LPPPenaltyStatusEnum.Accruing,
         penaltyAmountPaid = None,
-        penaltyAmountOutstanding = Some(0),
+        penaltyAmountOutstanding = None,
         penaltyAmountPosted = 0,
         penaltyAmountAccruing = 400.00,
         LPP1LRDays = Some("15"),
@@ -259,7 +259,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
         penaltyStatus = LPPPenaltyStatusEnum.Accruing,
         penaltyAmountPaid = None,
-        penaltyAmountOutstanding = Some(0),
+        penaltyAmountOutstanding = None,
         penaltyAmountPosted = 0,
         penaltyAmountAccruing = 400.00,
         LPP1LRDays = Some("15"),
@@ -336,9 +336,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
         penaltyStatus = LPPPenaltyStatusEnum.Accruing,
         penaltyAmountPaid = None,
-        penaltyAmountOutstanding = Some(0),
+        penaltyAmountOutstanding = None,
         penaltyAmountPosted = 0,
-        penaltyAmountAccruing = 123.45,
+        penaltyAmountAccruing = 400,
         LPP1LRDays = Some("15"),
         LPP1HRDays = Some("31"),
         LPP2Days = Some("31"),
@@ -375,9 +375,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
         penaltyStatus = LPPPenaltyStatusEnum.Accruing,
         penaltyAmountPaid = None,
-        penaltyAmountOutstanding = Some(0),
+        penaltyAmountOutstanding = None,
         penaltyAmountPosted = 0,
-        penaltyAmountAccruing = 123.45,
+        penaltyAmountAccruing = 400,
         LPP1LRDays = Some("15"),
         LPP1HRDays = Some("31"),
         LPP2Days = Some("31"),
@@ -418,9 +418,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
         penaltyStatus = LPPPenaltyStatusEnum.Accruing,
         penaltyAmountPaid = None,
-        penaltyAmountOutstanding = Some(0),
+        penaltyAmountOutstanding = None,
         penaltyAmountPosted = 0,
-        penaltyAmountAccruing = 123.45,
+        penaltyAmountAccruing = 400,
         LPP1LRDays = Some("15"),
         LPP1HRDays = Some("31"),
         LPP2Days = Some("31"),
@@ -464,9 +464,9 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
         penaltyStatus = LPPPenaltyStatusEnum.Accruing,
         penaltyAmountPaid = None,
-        penaltyAmountOutstanding = Some(0),
+        penaltyAmountOutstanding = None,
         penaltyAmountPosted = 0,
-        penaltyAmountAccruing = 123.45,
+        penaltyAmountAccruing = 400,
         LPP1LRDays = Some("15"),
         LPP1HRDays = Some("31"),
         LPP2Days = Some("31"),
@@ -506,7 +506,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
         penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
         penaltyStatus = LPPPenaltyStatusEnum.Accruing,
         penaltyAmountPaid = None,
-        penaltyAmountOutstanding = Some(0),
+        penaltyAmountOutstanding = None,
         penaltyAmountPosted = 0,
         penaltyAmountAccruing = 400.00,
         LPP1LRDays = Some("15"),
@@ -615,11 +615,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#how-penalty-is-applied").text() shouldBe "This penalty applies if VAT has not been paid for 15 days."
       parsedBody.select("#15-day-calculation").text() shouldBe "The calculation we use is: 2% of £20,000.00 (the unpaid VAT 15 days after the due date)"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£0.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£400.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£0.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£0.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£400.00"
       parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
       parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
       parsedBody.select(".ttp-content").isEmpty shouldBe true
@@ -636,11 +636,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#how-penalty-is-applied").text() shouldBe "This penalty applies if VAT has not been paid for 15 days."
       parsedBody.select("#15-day-calculation").text() shouldBe "The calculation we use is: 2% of £20,000.00 (the unpaid VAT 15 days after the due date)"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£0.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£400.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£0.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£0.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£400.00"
       parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
       parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
     }
@@ -657,11 +657,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#how-penalty-is-applied").text() shouldBe "This penalty applies if VAT has not been paid for 15 days."
       parsedBody.select("#15-day-calculation").text() shouldBe "The calculation we use is: 2% of £20,000.00 (the unpaid VAT 15 days after the due date)"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£0.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£400.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£0.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£0.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£400.00"
       parsedBody.select("#ttp-inset-text").text() shouldBe "You’ve asked HMRC if you can set up a payment plan. If a payment plan has been agreed, and you keep up with all payments, this penalty will not increase further."
       parsedBody.select("h2").get(1).text() shouldBe "Estimates"
       parsedBody.select("#main-content p").get(2).text() shouldBe "Penalties will show as estimates until you make all payments due under the payment plan."
@@ -718,11 +718,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content p").get(1).text() shouldBe "The total increases daily until you pay your VAT or set up a payment plan."
       parsedBody.select("#main-content p").get(2).text() shouldBe "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£0.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£400.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£0.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£0.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£400.00"
       parsedBody.select(".ttp-content").isEmpty shouldBe true
       parsedBody.select("h2").get(1).text() shouldBe "Estimates"
       parsedBody.select("#main-content p").get(3).text() shouldBe "Penalties and interest will show as estimates until you pay the charge they relate to."
@@ -742,11 +742,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content p").get(1).text() shouldBe "The total increases daily until you pay your VAT or set up a payment plan."
       parsedBody.select("#main-content p").get(2).text() shouldBe "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£0.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£400.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£0.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£0.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£400.00"
       parsedBody.select("#ttp-inset-text").get(0).text() shouldBe "You’ve asked HMRC if you can set up a payment plan. If a payment plan has been agreed, and you keep up with all payments, this penalty will not increase further."
       parsedBody.select("h2").get(1).text() shouldBe "Estimates"
       parsedBody.select("#main-content p").get(3).text() shouldBe "Penalties will show as estimates until you make all payments due under the payment plan."
@@ -766,11 +766,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content p").get(1).text() shouldBe "The total builds up daily until you pay your VAT or set up a payment plan. However, when we calculate your penalty we do not count the days you are in Breathing Space."
       parsedBody.select("#main-content p").get(2).text() shouldBe "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£0.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£400.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£0.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£0.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£400.00"
       parsedBody.select("#ttp-inset-text").get(0).text() shouldBe "You’ve asked HMRC if you can set up a payment plan. If a payment plan has been agreed, and you keep up with all payments, this penalty will not increase further."
       parsedBody.select("h2").get(1).text() shouldBe "Estimates"
       parsedBody.select("#main-content p").get(3).text() shouldBe "Penalties will show as estimates until:"
@@ -791,11 +791,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content p").get(1).text() shouldBe "The total builds up daily until you pay your VAT or set up a payment plan. However, when we calculate your penalty we do not count the days you are in Breathing Space."
       parsedBody.select("#main-content p").get(2).text() shouldBe "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£0.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£400.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£0.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£0.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£400.00"
       parsedBody.select(".ttp-content").isEmpty shouldBe true
       parsedBody.select("h2").get(1).text() shouldBe "Estimates"
       parsedBody.select("#main-content p").get(3).text() shouldBe "Penalties and interest will show as estimates until:"
@@ -817,11 +817,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
       parsedBody.select("#main-content p").get(1).text() shouldBe "The total increases daily until your client pays their VAT or sets up a payment plan."
       parsedBody.select("#main-content p").get(2).text() shouldBe "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
       parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount (estimate)"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£0.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£400.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
       parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£0.00"
       parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
-      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£0.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£400.00"
       parsedBody.select("h2").get(1).text() shouldBe "Estimates"
       parsedBody.select("#main-content p").get(3).text() shouldBe "Penalties and interest will show as estimates until your client pays the charge they relate to."
       parsedBody.select("#main-content a").attr("href") shouldBe "/penalties"

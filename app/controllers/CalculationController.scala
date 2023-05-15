@@ -73,8 +73,8 @@ class CalculationController @Inject()(viewLPP1: CalculationLPP1View,
             val dueDateOfPenalty = penalty.get.penaltyChargeDueDate.map(calculationPageHelper.getDateAsDayMonthYear(_))
             val isPenaltyEstimate = penalty.get.penaltyStatus.equals(LPPPenaltyStatusEnum.Accruing)
             val amountReceived = if(isPenaltyEstimate) CurrencyFormatter.parseBigDecimalToFriendlyValue(0) else CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.penaltyAmountPaid.getOrElse(0))
-            val amountLeftToPay = CurrencyFormatter.parseBigDecimalToFriendlyValue(penalty.get.penaltyAmountOutstanding.get)
-            val penaltyAmount = penalty.get.penaltyAmountOutstanding.get + penalty.get.penaltyAmountPaid.getOrElse(BigDecimal(0))
+            val amountLeftToPay = CurrencyFormatter.parseBigDecimalToFriendlyValue(if(isPenaltyEstimate) penalty.get.penaltyAmountAccruing else penalty.get.penaltyAmountOutstanding.getOrElse(BigDecimal(0)))
+            val penaltyAmount = if(isPenaltyEstimate) penalty.get.penaltyAmountAccruing else penalty.get.penaltyAmountPosted
             val parsedPenaltyAmount = CurrencyFormatter.parseBigDecimalToFriendlyValue(penaltyAmount)
             val isTTPActive = calculationPageHelper.isTTPActive(payload)
             val isBreathingSpaceActive = BreathingSpaceHelper.isUserInBreathingSpace(payload.breathingSpace)(getFeatureDate)
