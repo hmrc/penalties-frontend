@@ -28,6 +28,8 @@ case class LPPDetails(
                        penaltyChargeCreationDate: Option[LocalDate],
                        penaltyStatus: LPPPenaltyStatusEnum.Value,
                        penaltyAmountPaid: Option[BigDecimal],
+                       penaltyAmountPosted: BigDecimal,
+                       penaltyAmountAccruing: BigDecimal,
                        penaltyAmountOutstanding: Option[BigDecimal],
                        LPP1LRDays: Option[String],
                        LPP1HRDays: Option[String],
@@ -57,6 +59,8 @@ object LPPDetails extends JsonUtils {
         penaltyChargeCreationDate <- (json \ "penaltyChargeCreationDate").validateOpt[LocalDate]
         penaltyStatus <- (json \ "penaltyStatus").validate[LPPPenaltyStatusEnum.Value]
         penaltyAmountPaid <- (json \ "penaltyAmountPaid").validateOpt[BigDecimal]
+        penaltyAmountPosted <- (json \ "penaltyAmountPosted").validate[BigDecimal]
+        penaltyAmountAccruing <- (json \ "penaltyAmountAccruing").validate[BigDecimal]
         penaltyAmountOutstanding <- (json \ "penaltyAmountOutstanding").validateOpt[BigDecimal]
         lPP1LRDays <- (json \ "LPP1LRDays").validateOpt[String]
         lPP1HRDays <- (json \ "LPP1HRDays").validateOpt[String]
@@ -78,8 +82,8 @@ object LPPDetails extends JsonUtils {
       }
       yield {
         LPPDetails(principalChargeReference, penaltyCategory, penaltyChargeCreationDate, penaltyStatus, penaltyAmountPaid,
-          penaltyAmountOutstanding, lPP1LRDays, lPP1HRDays, lPP2Days, lPP1LRCalculationAmount, lPP1HRCalculationAmount,
-          lPP1LRPercentage, lPP1HRPercentage, lPP2Percentage, communicationsDate, penaltyChargeDueDate, appealInformation,
+          penaltyAmountPosted, penaltyAmountAccruing, penaltyAmountOutstanding, lPP1LRDays, lPP1HRDays, lPP2Days, lPP1LRCalculationAmount,
+          lPP1HRCalculationAmount, lPP1LRPercentage, lPP1HRPercentage, lPP2Percentage, communicationsDate, penaltyChargeDueDate, appealInformation,
           principalChargeBillingFrom, principalChargeBillingTo, principalChargeDueDate, penaltyChargeReference,
           principalChargeLatestClearing, metadata)
       }
@@ -92,6 +96,8 @@ object LPPDetails extends JsonUtils {
         "penaltyChargeCreationDate" -> o.penaltyChargeCreationDate,
         "penaltyStatus" -> o.penaltyStatus,
         "penaltyAmountPaid" -> o.penaltyAmountPaid,
+        "penaltyAmountPosted" -> o.penaltyAmountPosted,
+        "penaltyAmountAccruing" -> o.penaltyAmountAccruing,
         "penaltyAmountOutstanding" -> o.penaltyAmountOutstanding,
         "LPP1LRDays" -> o.LPP1LRDays,
         "LPP1HRDays" -> o.LPP1HRDays,

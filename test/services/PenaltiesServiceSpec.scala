@@ -504,6 +504,8 @@ class PenaltiesServiceSpec extends SpecBase {
       penaltyStatus = LPPPenaltyStatusEnum.Posted,
       penaltyAmountPaid = Some(BigDecimal(400)),
       penaltyAmountOutstanding = Some(BigDecimal(10)),
+      penaltyAmountPosted = 410,
+      penaltyAmountAccruing = 0,
       LPP1LRDays = Some("15"),
       LPP1HRDays = Some("30"),
       LPP2Days = None,
@@ -537,7 +539,7 @@ class PenaltiesServiceSpec extends SpecBase {
 
       "all the penalties have been paid" in new Setup {
         val allLPPsPaid: LatePaymentPenalty = LatePaymentPenalty(
-          Seq(sampleLPP.copy(penaltyAmountOutstanding = Some(0)))
+          Seq(sampleLPP.copy(penaltyAmountOutstanding = None))
         )
         val result: Int = service.findNumberOfLatePaymentPenalties(Some(allLPPsPaid))
         result shouldBe 0

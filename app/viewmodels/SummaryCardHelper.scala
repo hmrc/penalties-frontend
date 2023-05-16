@@ -21,6 +21,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 import models.User
 import models.appealInfo.AppealStatusEnum
+import models.lpp.LPPPenaltyStatusEnum.Posted
 import models.lpp.MainTransactionEnum._
 import models.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum}
 import models.lsp._
@@ -273,7 +274,7 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
 
   def lppSummaryCard(lpp: LPPDetails)(implicit messages: Messages, user: User[_]): LatePaymentPenaltySummaryCard = {
     val cardBody = if (lpp.penaltyCategory == LPPPenaltyCategoryEnum.LPP2) lppAdditionalCardBody(lpp) else lppCardBody(lpp)
-    val isPaid = lpp.penaltyAmountOutstanding.contains(BigDecimal(0))
+    val isPaid = isPenaltyPaid(lpp)
     val isVatPaid = lpp.principalChargeLatestClearing.isDefined
     val appealInformationWithoutUnappealableStatus = lpp.appealInformation.map(_.filterNot(_.appealStatus.contains(AppealStatusEnum.Unappealable))).getOrElse(Seq.empty)
     if (appealInformationWithoutUnappealableStatus.nonEmpty) {
@@ -289,6 +290,8 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
         lpp, isPaid, isVatPaid)
     }
   }
+
+  private def isPenaltyPaid(lpp: LPPDetails) = if(lpp.penaltyAmountPaid.isDefined) lpp.penaltyAmountPaid.get == lpp.penaltyAmountPosted else false
 
   private def returnAppealStatusMessageBasedOnPenalty(penaltyPoint: Option[LSPDetails], lpp: Option[LPPDetails])
                                                      (implicit messages: Messages): Html = {
@@ -314,7 +317,7 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
   private def buildLPPSummaryCard(rows: Seq[SummaryListRow],
                                   lpp: LPPDetails, isPaid: Boolean, isVatPaid: Boolean)
                                  (implicit messages: Messages, user: User[_]): LatePaymentPenaltySummaryCard = {
-    val amountDue = lpp.penaltyAmountOutstanding.getOrElse(BigDecimal(0)) + lpp.penaltyAmountPaid.getOrElse(BigDecimal(0))
+    val amountDue = if(lpp.penaltyStatus == Posted) lpp.penaltyAmountPosted else lpp.penaltyAmountAccruing
     val appealStatus = lpp.appealInformation.flatMap(_.headOption.flatMap(_.appealStatus))
     val appealLevel = lpp.appealInformation.flatMap(_.headOption.flatMap(_.appealLevel))
     val isCentralAssessment = lpp.LPPDetailsMetadata.mainTransaction.get.equals(CentralAssessmentFirstLPP) ||
@@ -411,7 +414,7 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
     (latePaymentPenaltyAppealStatus, latePaymentPenaltyStatus) match {
       case (Some(AppealStatusEnum.Upheld), _) => renderTag(messages("status.cancelled"))
       case (_, LPPPenaltyStatusEnum.Accruing) => renderTag(messages("status.estimate"))
-      case (_, LPPPenaltyStatusEnum.Posted) if penalty.penaltyAmountOutstanding.contains(BigDecimal(0)) => renderTag(messages("status.paid"))
+      case (_, LPPPenaltyStatusEnum.Posted) if isPenaltyPaid(penalty) => renderTag(messages("status.paid"))
       case (_, _) => showDueOrPartiallyPaidDueTag(penalty.penaltyAmountOutstanding, penalty.penaltyAmountPaid.getOrElse(BigDecimal(0)))
     }
   }
