@@ -55,7 +55,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     val regimeThreshold: Int = penaltiesService.getRegimeThreshold(penaltyDetails)
     val removedPoints: Int = filteredPoints.count(_.expiryReason.nonEmpty)
     val addedPoints: Int = filteredPoints.count(point => point.FAPIndicator.contains("X") && point.penaltyStatus.equals(LSPPenaltyStatusEnum.Active))
-    val amountOfLateSubmissions: Int = filteredPoints.count(_.lateSubmissions.flatMap(_.headOption.map(_.taxReturnStatus.equals(TaxReturnStatusEnum.Open))).isDefined)
+    val amountOfLateSubmissions: Int = filteredPoints.flatMap(point => point.lateSubmissions.map(_.filterNot(lateSubmission => lateSubmission.taxReturnStatus.equals(TaxReturnStatusEnum.AddedFAP)))).flatten.size
     (isUserInBreathingSpace, activePoints, regimeThreshold, addedPoints, removedPoints) match {
       case (true, _activePoints, _, _addedPoints, _removedPoints) if _activePoints > 0 || _addedPoints > 0 || _removedPoints > 0 => Future(Right(lspGuidanceLink))
       case (_, 0, _, _, _) =>
