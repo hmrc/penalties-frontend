@@ -761,7 +761,13 @@ class IndexPageHelperSpec extends SpecBase {
                 penaltyExpiryDate = LocalDate.of(2022, 1, 1),
                 expiryReason = None,
                 communicationsDate = Some(LocalDate.of(2022, 1, 1)),
-                lateSubmissions = None,
+                lateSubmissions = Some(Seq(LateSubmission(
+                  taxPeriodStartDate = Some(LocalDate.of(2022, 1, 1)),
+                  taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
+                  taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
+                  returnReceiptDate = None,
+                  taxReturnStatus = TaxReturnStatusEnum.AddedFAP
+                ))),
                 appealInformation = None,
                 chargeAmount = None,
                 chargeOutstandingAmount = None,
