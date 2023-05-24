@@ -29,16 +29,9 @@ class FeatureSwitchSpec extends SpecBase {
     }
   }
 
-  "FeatureSwitch listOfAllFeatureSwitches" should {
+  "listOfAllFeatureSwitches" should {
     "be all the featureswitches in the app" in {
-      FeatureSwitch.listOfAllFeatureSwitches shouldBe List()
-    }
-  }
-
-  "FeatureSwitching constants" should {
-    "be true and false" in new Setup {
-      featureSwitching.FEATURE_SWITCH_ON shouldBe "true"
-      featureSwitching.FEATURE_SWITCH_OFF shouldBe "false"
+      FeatureSwitch.listOfAllFeatureSwitches shouldBe List(ShowURBanner)
     }
   }
 }

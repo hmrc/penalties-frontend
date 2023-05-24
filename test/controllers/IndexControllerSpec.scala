@@ -31,7 +31,6 @@ import utils.SessionKeys
 import viewmodels.{IndexPageHelper, SummaryCardHelper}
 import views.html.IndexView
 
-import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

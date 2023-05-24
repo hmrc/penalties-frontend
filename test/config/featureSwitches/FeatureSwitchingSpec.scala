@@ -25,6 +25,7 @@ import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import java.time.LocalDate
+import scala.language.postfixOps
 
 class FeatureSwitchingSpec extends SpecBase with BeforeAndAfterAll with FeatureSwitching {
   val mockConfig = mock(classOf[Configuration])
@@ -50,6 +51,48 @@ class FeatureSwitchingSpec extends SpecBase with BeforeAndAfterAll with FeatureS
       featureSwitching.FEATURE_SWITCH_ON shouldBe "true"
       featureSwitching.FEATURE_SWITCH_OFF shouldBe "false"
     }
+  }
+
+  "isEnabled" should {
+    FeatureSwitch.listOfAllFeatureSwitches.foreach(
+      featureSwitch => {
+        s"return true if ${featureSwitch.name} is enabled" in new Setup {
+          featureSwitching.enableFeatureSwitch(featureSwitch)
+          featureSwitching.isEnabled(featureSwitch) shouldBe true
+        }
+
+        s"return false if ${featureSwitch.name} is disabled" in new Setup {
+          featureSwitching.disableFeatureSwitch(featureSwitch)
+          featureSwitching.isEnabled(featureSwitch) shouldBe false
+        }
+
+        s"return false if ${featureSwitch.name} does not exist" in new Setup {
+          featureSwitching.isEnabled(featureSwitch) shouldBe false
+        }
+      }
+    )
+  }
+
+  "enableFeatureSwitch" should {
+    FeatureSwitch.listOfAllFeatureSwitches.foreach(
+      featureSwitch => {
+        s"set ${featureSwitch.name} property to true" in new Setup {
+          featureSwitching.enableFeatureSwitch(featureSwitch)
+          (sys.props get featureSwitch.name get) shouldBe "true"
+        }
+      }
+    )
+  }
+
+  "disableFeatureSwitch" should {
+    FeatureSwitch.listOfAllFeatureSwitches.foreach(
+      featureSwitch => {
+        s"set ${featureSwitch.name} property to false" in new Setup {
+          featureSwitching.disableFeatureSwitch(featureSwitch)
+          (sys.props get featureSwitch.name get) shouldBe "false"
+        }
+      }
+    )
   }
 
   "FeatureSwitching setFeatureDate" should {
