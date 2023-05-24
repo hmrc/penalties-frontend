@@ -14,19 +14,24 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.{Header => compHeader, HmrcHeader}
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.{Header => headerComponent, HmrcHeader}
 @import utils.SessionKeys
 @import config.AppConfig
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.userresearchbanner.UserResearchBanner
+@import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
+@import config.featureSwitches.ShowURBanner
 
-@this(hmrcHeader: HmrcHeader)
+@this(hmrcHeader: HmrcHeader, betaBanner: StandardBetaBanner)
 
-@(appConfig: AppConfig, showSignOut: Boolean = true)(implicit messages: Messages, request: Request[_])
+@(appConfig: AppConfig, showSignOut: Boolean = true, showURBannerIfEnabled: Boolean)(implicit messages: Messages, request: Request[_])
 
-@hmrcHeader(compHeader(
+@hmrcHeader(headerComponent(
     homepageUrl = "https://www.gov.uk/",
     serviceUrl = if(request.session.get(SessionKeys.agentSessionVrn).isDefined) {appConfig.vatOverviewUrlAgent} else {appConfig.vatOverviewUrl},
     serviceName = Some(if(request.session.get(SessionKeys.agentSessionVrn).isDefined) { messages("agent.service.name")} else { messages("service.name") }),
+    phaseBanner = Some(betaBanner(url = appConfig.feedbackUrl(request.uri))),
+    userResearchBanner = if(showURBannerIfEnabled && appConfig.isFeatureSwitchEnabled(ShowURBanner)) Some(UserResearchBanner(url = appConfig.userResearchBannerUrl)) else None,
     containerClasses = "govuk-width-container",
     navigation = None,
     signOutHref = if(showSignOut) Some(controllers.routes.SignOutController.signOut.url) else None,
