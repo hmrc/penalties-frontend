@@ -109,6 +109,7 @@
         @{
             messages("summaryCard.header.financialNoNumber", CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(summaryCard.amountDue))
         }
+            <span class="govuk-visually-hidden">@messages("summaryCard.header.lpp.hiddenText", summaryCard.dueDate)</span>
         </h4>
         <div class="app-summary-card__tag">
         @govukTag(summaryCard.status)

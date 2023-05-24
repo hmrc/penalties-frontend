@@ -194,13 +194,13 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
     "given a LPP1" should {
       implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModel))
 
-      "display the penalty amount" in {
-        doc.select("h4").text() shouldBe "£400 penalty"
+      "display the penalty amount and the date the VAT was due" in {
+        doc.select("h4").text() shouldBe "£400 penalty for late payment of charge due on 1 February 2020"
       }
 
-      "display the penalty amount (with padded zero if whole tenths)" in {
+      "display the penalty amount  and the date the VAT was due (with padded zero if whole tenths)" in {
         implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithTenths))
-        doc.select("h4").text() shouldBe "£123.40 penalty"
+        doc.select("h4").text() shouldBe "£123.40 penalty for late payment of charge due on 7 March 2020"
       }
 
       "display the View calculation link" in {
@@ -302,12 +302,12 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       implicit val docWithAdditionalPenalty: Document = asDocument(summaryCardHtml.apply(summaryCardModelForAdditionalPenaltyPaid))
       implicit val docWithAdditionalPenaltyTenthsOfPence: Document = asDocument(summaryCardHtml.apply(summaryCardModelForAdditionalPenaltyPaidWithTenths))
 
-      "display the penalty amount" in {
-        docWithAdditionalPenalty.select("h4").text() shouldBe "£123.45 penalty"
+      "display the penalty amount and the date the VAT was due" in {
+        docWithAdditionalPenalty.select("h4").text() shouldBe "£123.45 penalty for late payment of charge due on 7 March 2020"
       }
 
-      "display the penalty amount (with padded zero for whole tenths)" in {
-        docWithAdditionalPenaltyTenthsOfPence.select("h4").text() shouldBe "£123.40 penalty"
+      "display the penalty amount and the date the VAT was due (with padded zero for whole tenths)" in {
+        docWithAdditionalPenaltyTenthsOfPence.select("h4").text() shouldBe "£123.40 penalty for late payment of charge due on 1 January 2021"
       }
 
       "display the View calculation link" in {
