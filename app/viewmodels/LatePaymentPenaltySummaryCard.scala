@@ -17,7 +17,7 @@
 package viewmodels
 
 import models.appealInfo.{AppealLevelEnum, AppealStatusEnum}
-import models.lpp.{LPPPenaltyCategoryEnum, MainTransactionEnum}
+import models.lpp.LPPPenaltyCategoryEnum
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 
