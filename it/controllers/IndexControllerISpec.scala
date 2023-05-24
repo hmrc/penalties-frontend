@@ -96,6 +96,45 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     breathingSpace = None
   )
 
+  val getPenaltyDetailsPayloadWithOverThreshold = GetPenaltyDetails(
+    totalisations = None,
+    lateSubmissionPenalty = Some(LateSubmissionPenalty(
+      summary = LSPSummary(
+        activePenaltyPoints = 1,
+        regimeThreshold = 4,
+        inactivePenaltyPoints = 0,
+        penaltyChargeAmount = 0,
+        PoCAchievementDate = LocalDate.of(2022, 1, 1)
+      ),
+      details = Seq(
+        LSPDetails(
+          penaltyNumber = "1234567890",
+          penaltyOrder = "01",
+          penaltyCategory = LSPPenaltyCategoryEnum.Charge,
+          penaltyStatus = LSPPenaltyStatusEnum.Active,
+          FAPIndicator = Some("X"),
+          penaltyCreationDate = sampleDate1,
+          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
+          expiryReason = None,
+          communicationsDate = Some(sampleDate1),
+          lateSubmissions = Some(Seq(LateSubmission(
+            taxPeriodStartDate = Some(sampleDate1),
+            taxPeriodEndDate = Some(sampleDate1),
+            taxPeriodDueDate = Some(sampleDate1),
+            returnReceiptDate = Some(sampleDate1),
+            taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
+          appealInformation = Some(Seq(AppealInformationType(Some(AppealStatusEnum.Unappealable), None))),
+          chargeAmount = Some(200.00),
+          chargeOutstandingAmount = Some(200.00),
+          chargeDueDate = None
+        )
+      )
+    )
+    ),
+    latePaymentPenalty = None,
+    breathingSpace = None
+  )
+
   val getPenaltyDetailsPayloadWithRemovedPoints = GetPenaltyDetails(
     totalisations = None,
     lateSubmissionPenalty = Some(LateSubmissionPenalty(
@@ -806,6 +845,14 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("main section .govuk-summary-list").get(0).select(".govuk-summary-list__value").get(0).text shouldBe "1 December 2020 to 31 December 2020"
       parsedBody.select("main section .govuk-summary-list").get(1).select(".govuk-summary-list__value").get(0).text shouldBe "1 November 2020 to 30 November 2020"
       parsedBody.select("main section .govuk-summary-list").get(2).select(".govuk-summary-list__value").get(0).text shouldBe "1 October 2020 to 31 October 2020"
+    }
+
+    "return 200 (OK) and render the view when there is a LSP with a penalty over the threshold with correct hidden text in header" in {
+      returnPenaltyDetailsStub(getPenaltyDetailsPayloadWithOverThreshold)
+      val request = controller.onPageLoad()(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
+      parsedBody.select("header h4").get(0).text shouldBe "£200 penalty for late submission of VAT due on 1 January 2021"
     }
 
     "return 200 (OK) and render the view when there are LPPs paid that are retrieved from the backend" in {
