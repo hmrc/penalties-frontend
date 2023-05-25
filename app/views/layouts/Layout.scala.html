@@ -38,11 +38,11 @@
         isTimeout: Boolean = false,
         isError: Boolean = false,
         isCustomLayout: Boolean = false,
-        optPage: Option[Page] = None
+        optPage: Option[Page] = None,
+        showURBannerIfEnabled: Boolean = false
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @beforeContentBlock = {
-@phaseBanner("beta")
 @if(appConfig.welshLanguageSupportEnabled) {@languageSelect()}
 
 @if(!isTimeout && !isError){
@@ -115,10 +115,11 @@
 @titleMessage = @{
   if(isUserAgent) "agent.service.name" else "service.name"
 }
+
 @govukLayout(
     pageTitle = Some(messages("common.pageTitle", pageTitle, messages(titleMessage))),
     headBlock = Some(headBlock),
-    headerBlock = Some(header(appConfig, !isTimeout)),
+    headerBlock = Some(header(appConfig, !isTimeout, showURBannerIfEnabled)),
     scriptsBlock = Some(scripts),
     beforeContentBlock = Some(beforeContentBlock),
     footerBlock = Some(hmrcStandardFooter()),

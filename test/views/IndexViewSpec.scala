@@ -32,7 +32,13 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours with Tes
 
 
   object Selectors extends BaseSelectors {
-    val betaFeedbackBannerText =  "body > div > div.govuk-phase-banner > p > span"
+    val betaFeedbackBannerText =  ".govuk-phase-banner__text"
+
+    val urBannerHeader = ".hmrc-user-research-banner__title"
+
+    val urBannerLink = ".hmrc-user-research-banner__link"
+
+    val hideURBannerButton = ".hmrc-user-research-banner__close > span"
 
     val timeToPayParagraph: Int => String = (index: Int) => s"#time-to-pay > p:nth-child($index)"
 
@@ -86,9 +92,16 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours with Tes
 
       behave like pageWithExpectedMessages(expectedContent)
 
-      "have a beta banner with the feedback correct content and a link with the 'backUrl' queryParam" in {
+      "have a UR banner with the correct content" in {
+        doc.select(Selectors.urBannerHeader).text() shouldBe urBannerHeader
+        doc.select(Selectors.urBannerLink).text() shouldBe urBannerLinkText
+        doc.select(Selectors.urBannerLink).attr("href") shouldBe "https://signup.take-part-in-research.service.gov.uk/?utm_campaign=VAT_penalty&utm_source=Other&utm_medium=other&t=HMRC&id=535"
+        doc.select(Selectors.hideURBannerButton).get(0).text() shouldBe urBannerHideMessageButtonText
+      }
+
+      "have a beta banner with the feedback link and correct content and a link with the 'backUrl' queryParam" in {
         doc.select(Selectors.betaFeedbackBannerText).text() shouldBe betaFeedbackContent
-        doc.select("#beta-feedback-link").attr("href").contains("http://localhost:9250/contact/beta-feedback?service=vat-penalties&backUrl=") shouldBe true
+        doc.select(".govuk-phase-banner__text > .govuk-link").attr("href").contains("http://localhost:9250/contact/beta-feedback?service=vat-penalties&backUrl=") shouldBe true
       }
     }
 

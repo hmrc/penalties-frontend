@@ -53,7 +53,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
     val calculation = "#calculation"
 
-    val betaFeedbackBannerText =  "body > div > div.govuk-phase-banner > p > span"
+    val betaFeedbackBannerText =  ".govuk-phase-banner__text"
 
     val ttpInsetText = "#ttp-inset-text"
 
@@ -1047,7 +1047,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
     }
   }
 
-  "have a beta banner with the feedback correct content and a link with the 'backURL' queryParam" in {
+  "have a beta banner with the feedback link and correct content and a link with the 'backUrl' queryParam" in {
     def applyView(): HtmlFormat.Appendable = calculationLPP2Page.apply(
       isEstimate = true,
       startDate = "1 April 2022",
@@ -1061,7 +1061,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
     )(implicitly, implicitly, vatTraderUser)
     val doc: Document = asDocument(applyView())
 
-    doc.select(Selector.betaFeedbackBannerText).text() shouldBe "This is a new service - your feedback will help us to improve it."
-    doc.select("#beta-feedback-link").attr("href").contains("http://localhost:9250/contact/beta-feedback?service=vat-penalties&backUrl=") shouldBe true
+    doc.select(Selector.betaFeedbackBannerText).text() shouldBe "This is a new service – your feedback will help us to improve it."
+    doc.select(".govuk-phase-banner__text > .govuk-link").attr("href").contains("http://localhost:9250/contact/beta-feedback?service=vat-penalties&backUrl=") shouldBe true
   }
 }
