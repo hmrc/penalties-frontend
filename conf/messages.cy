@@ -82,7 +82,7 @@ summaryCard.header.adjustedPoint = Pwynt cosb
 summaryCard.header.financial = Pwynt cosb {0}: Cosb o £{1}
 summaryCard.header.financialNoNumber = Cosb o £{0}
 summaryCard.header.financialAdditionalPenalty = Cosb ychwanegol o £{0}
-summaryCard.header.lpp.hiddenText = for late payment of charge due on {0}
+summaryCard.header.lpp.hiddenText = am wneud taliad hwyr a oedd yn ddyledus ar {0}
 summaryCard.header.appealedPoint = Penalty
 
 summaryCard.key1 = Cyfnod TAW
