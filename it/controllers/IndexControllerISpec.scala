@@ -27,14 +27,15 @@ import play.api.http.{HeaderNames, Status}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import stubs.AuthStub
+import stubs.{AuthStub, ComplianceStub}
 import stubs.ComplianceStub.complianceDataStub
 import stubs.PenaltiesStub._
 import testUtils.IntegrationSpecCommonBase
 import uk.gov.hmrc.http.SessionKeys.authToken
 import utils.SessionKeys
-
 import java.time.LocalDate
+
+import models.compliance.{CompliancePayload, ComplianceStatusEnum, ObligationDetail, ObligationIdentification}
 
 class IndexControllerISpec extends IntegrationSpecCommonBase {
 
@@ -100,10 +101,10 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     totalisations = None,
     lateSubmissionPenalty = Some(LateSubmissionPenalty(
       summary = LSPSummary(
-        activePenaltyPoints = 1,
-        regimeThreshold = 4,
+        activePenaltyPoints = 3,
+        regimeThreshold = 2,
         inactivePenaltyPoints = 0,
-        penaltyChargeAmount = 0,
+        penaltyChargeAmount = 200.00,
         PoCAchievementDate = LocalDate.of(2022, 1, 1)
       ),
       details = Seq(
@@ -112,7 +113,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           penaltyOrder = "01",
           penaltyCategory = LSPPenaltyCategoryEnum.Charge,
           penaltyStatus = LSPPenaltyStatusEnum.Active,
-          FAPIndicator = Some("X"),
+          FAPIndicator = None,
           penaltyCreationDate = sampleDate1,
           penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
           expiryReason = None,
@@ -127,12 +128,72 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
           chargeAmount = Some(200.00),
           chargeOutstandingAmount = Some(200.00),
           chargeDueDate = None
+        ),
+        LSPDetails(
+          penaltyNumber = "1234567891",
+          penaltyOrder = "02",
+          penaltyCategory = LSPPenaltyCategoryEnum.Point,
+          penaltyStatus = LSPPenaltyStatusEnum.Inactive,
+          FAPIndicator = Some("X"),
+          penaltyCreationDate = sampleDate1,
+          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
+          expiryReason = None,
+          communicationsDate = Some(sampleDate1),
+          lateSubmissions = Some(Seq(LateSubmission(
+            taxPeriodStartDate = Some(sampleDate1),
+            taxPeriodEndDate = Some(sampleDate1.plusMonths(1)),
+            taxPeriodDueDate = Some(sampleDate1),
+            returnReceiptDate = Some(sampleDate1),
+            taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
+          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
+          chargeAmount = None,
+          chargeOutstandingAmount = None,
+          chargeDueDate = None
+        ),
+        LSPDetails(
+          penaltyNumber = "1234567892",
+          penaltyOrder = "03",
+          penaltyCategory = LSPPenaltyCategoryEnum.Point,
+          penaltyStatus = LSPPenaltyStatusEnum.Inactive,
+          FAPIndicator = Some("X"),
+          penaltyCreationDate = sampleDate1,
+          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
+          expiryReason = None,
+          communicationsDate = Some(sampleDate1),
+          lateSubmissions = Some(Seq(LateSubmission(
+            taxPeriodStartDate = Some(sampleDate1),
+            taxPeriodEndDate = Some(sampleDate1.plusMonths(1)),
+            taxPeriodDueDate = Some(sampleDate1),
+            returnReceiptDate = Some(sampleDate1),
+            taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
+          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
+          chargeAmount = None,
+          chargeOutstandingAmount = None,
+          chargeDueDate = None
         )
       )
     )
     ),
     latePaymentPenalty = None,
     breathingSpace = None
+  )
+
+  val compliancePayload = CompliancePayload(
+    identification = Some(ObligationIdentification(
+      incomeSourceType = None,
+      referenceNumber = "123456789",
+      referenceType = "VRN"
+    )),
+    obligationDetails = Seq(
+      ObligationDetail(
+        status = ComplianceStatusEnum.open,
+        inboundCorrespondenceFromDate = LocalDate.of(2021, 12, 1),
+        inboundCorrespondenceToDate = LocalDate.of(2021, 12, 31),
+        inboundCorrespondenceDateReceived = None,
+        inboundCorrespondenceDueDate = LocalDate.of(2022, 2, 7),
+        periodKey = "#001"
+      )
+    )
   )
 
   val getPenaltyDetailsPayloadWithRemovedPoints = GetPenaltyDetails(
@@ -848,11 +909,12 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     }
 
     "return 200 (OK) and render the view when there is a LSP with a penalty over the threshold with correct hidden text in header" in {
+      ComplianceStub.complianceDataStub(Some(compliancePayload))
       returnPenaltyDetailsStub(getPenaltyDetailsPayloadWithOverThreshold)
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("header h4").get(0).text shouldBe "£200 penalty for late submission of VAT due on 1 January 2021"
+      parsedBody.select("header h4").get(2).text shouldBe "£200 penalty for late submission of VAT due on 1 January 2021"
     }
 
     "return 200 (OK) and render the view when there are LPPs paid that are retrieved from the backend" in {

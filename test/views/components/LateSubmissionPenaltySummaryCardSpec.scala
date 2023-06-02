@@ -637,7 +637,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       }
 
       "shows the financial heading WITHOUT point number when the point is above threshold for filing frequency and a rewording of the appeal text" in {
-        docWithFinancialLSP.select(".app-summary-card__title").get(0).text() shouldBe "£200 penalty for late submission of VAT due on 30 October 2069"
+        docWithFinancialLSP.select(".app-summary-card__title").get(0).ownText() shouldBe "£200 penalty"
+        docWithFinancialLSP.select(".app-summary-card__title span").get(0).ownText() shouldBe "for late submission of VAT due on 30 October 2069"
         docWithFinancialLSP.select(".app-summary-card__footer a").get(0).ownText() shouldBe "Appeal this penalty"
         docWithFinancialLSP.select(".app-summary-card__footer span").get(0).text() shouldBe "for late VAT return due on 30 October 2069"
       }
@@ -740,12 +741,12 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
 
       "set the correct hidden span for a lurking point with no return submitted" in {
         doc.select("a").get(0).ownText() shouldBe "Check if you can appeal"
-        doc.select("span").get(1).text() shouldBe "for penalty on late VAT return due 30 October 2069"
+        doc.select("a span").get(0).text() shouldBe "for penalty on late VAT return due 30 October 2069"
       }
 
       "set the correct hidden span for a lurking point with a return submitted" in {
         docSubmitted.select("a").get(0).ownText() shouldBe "Appeal this penalty"
-        docSubmitted.select("span").get(1).text() shouldBe "for late VAT return due on 30 October 2069"
+        docSubmitted.select("a span").get(0).text() shouldBe "for late VAT return due on 30 October 2069"
       }
     }
 
