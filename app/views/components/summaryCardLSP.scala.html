@@ -61,6 +61,9 @@
                   messages("summaryCard.header", summaryCard.penaltyPoint)
               }
             }
+            @if(summaryCard.isFinancialPoint){
+                <span class="govuk-visually-hidden">@messages("summaryCard.header.financialNoNumber.hiddenText", summaryCard.dueDate.get)</span>
+            }
         </h4>
         <div class="app-summary-card__tag">
             @govukTag(summaryCard.status)
