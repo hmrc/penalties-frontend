@@ -194,105 +194,107 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
     "given a LPP1" should {
       implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModel))
 
-      "display the penalty amount" in {
-        doc.select("h4").text() shouldBe "£400 penalty"
+      "display the penalty amount and the date the VAT was due" in {
+        doc.select("h4").get(0).ownText shouldBe "£400 penalty"
+        doc.select("h4 span").text shouldBe "for late payment of charge due on 1 February 2020"
       }
 
-      "display the penalty amount (with padded zero if whole tenths)" in {
+      "display the penalty amount  and the date the VAT was due (with padded zero if whole tenths)" in {
         implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithTenths))
-        doc.select("h4").text() shouldBe "£123.40 penalty"
+        doc.select("h4").get(0).ownText shouldBe "£123.40 penalty"
+        doc.select("h4 span").text shouldBe "for late payment of charge due on 7 March 2020"
       }
 
       "display the View calculation link" in {
-        doc.select("footer > div a").get(0).ownText() shouldBe "View calculation"
-        doc.select("footer > div span").get(0).text() shouldBe "of first late payment penalty for charge due on 1 February 2020"
+        doc.select("footer > div a").get(0).ownText shouldBe "View calculation"
+        doc.select("footer > div span").get(0).text shouldBe "of first late payment penalty for charge due on 1 February 2020"
         doc.select("a").get(0).attr("href") shouldBe "/penalties/calculation?principalChargeReference=12345678901234&penaltyCategory=LPP1"
       }
 
       "display the 'PAID' status" in {
-        doc.select("strong").text() shouldBe "paid"
+        doc.select("strong").text shouldBe "paid"
       }
 
       "display the 'DUE' status" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMadePenaltyPosted))
-        doc.select("strong").text() shouldBe "due"
+        doc.select("strong").text shouldBe "due"
       }
 
       "display the '£200 DUE' status" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDue))
-        doc.select("strong").text() shouldBe "£200 due"
+        doc.select("strong").text shouldBe "£200 due"
       }
 
       "display the Penalty type" in {
-        doc.select("dt").get(0).text() shouldBe "Penalty type"
-        doc.select("dd").get(0).text() shouldBe "First penalty for late payment"
+        doc.select("dt").get(0).text shouldBe "Penalty type"
+        doc.select("dd").get(0).text shouldBe "First penalty for late payment"
       }
 
       "display the 'Overdue charge' row" in {
-        doc.select("dt").get(1).text() shouldBe "Overdue charge"
-        doc.select("dd").get(1).text() shouldBe "VAT for period 1 January 2020 to 1 February 2020"
+        doc.select("dt").get(1).text shouldBe "Overdue charge"
+        doc.select("dd").get(1).text shouldBe "VAT for period 1 January 2020 to 1 February 2020"
       }
 
       "display principalChargeDueDate in VAT due" in {
-        doc.select("dt").get(2).text() shouldBe "VAT due"
-        doc.select("dd").get(2).text() shouldBe "1 February 2020"
+        doc.select("dt").get(2).text shouldBe "VAT due"
+        doc.select("dd").get(2).text shouldBe "1 February 2020"
       }
 
       "display the date in VAT due" in {
         val docVATPaymentDate: Document = asDocument(summaryCardHtml.apply(summaryCardModelVATPaymentDate))
-        docVATPaymentDate.select("dt").get(2).text() shouldBe "VAT due"
-        docVATPaymentDate.select("dd").get(2).text() shouldBe "7 March 2020"
+        docVATPaymentDate.select("dt").get(2).text shouldBe "VAT due"
+        docVATPaymentDate.select("dd").get(2).text shouldBe "7 March 2020"
       }
 
       "display the appeal link and have the correct hidden span (LPP1)" in {
-        doc.select(".app-summary-card__footer a").get(1).ownText() shouldBe "Appeal this penalty"
-        doc.select(".app-summary-card__footer span").get(1).text() shouldBe "which is the first penalty for late payment of charge due on 1 February 2020"
+        doc.select(".app-summary-card__footer a").get(1).ownText shouldBe "Appeal this penalty"
+        doc.select(".app-summary-card__footer span").get(1).text shouldBe "which is the first penalty for late payment of charge due on 1 February 2020"
       }
 
       "display the 'why you cannot appeal yet' drop down if the VAT has not been paid and the penalty has no charge reference" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMade))
-        doc.select(".govuk-details__summary-text").get(0).ownText() shouldBe "Why you cannot appeal yet"
-        doc.select(".govuk-details__text p:nth-child(1)").get(0).text() shouldBe "You cannot appeal until the VAT is paid."
-        doc.select(".govuk-details__text p:nth-child(2)").get(0).text() shouldBe "It can take up to 5 days for the payment to clear and show on your payment history. If you’ve already paid, keep checking back to see when the payment clears."
+        doc.select(".govuk-details__summary-text").get(0).ownText shouldBe "Why you cannot appeal yet"
+        doc.select(".govuk-details__text p:nth-child(1)").get(0).text shouldBe "You cannot appeal until the VAT is paid."
+        doc.select(".govuk-details__text p:nth-child(2)").get(0).text shouldBe "It can take up to 5 days for the payment to clear and show on your payment history. If you’ve already paid, keep checking back to see when the payment clears."
         doc.select("dt").eq(5).isEmpty shouldBe true
       }
 
       "display the 'why you cannot appeal yet' drop down if the VAT has not been paid (but penalty is posted)" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMadePenaltyPosted))
-        doc.select(".govuk-details__summary-text").get(0).ownText() shouldBe "Why you cannot appeal yet"
-        doc.select(".govuk-details__text p:nth-child(1)").get(0).text() shouldBe "You cannot appeal until the VAT is paid."
-        doc.select(".govuk-details__text p:nth-child(2)").get(0).text() shouldBe "It can take up to 5 days for the payment to clear and show on your payment history. If you’ve already paid, keep checking back to see when the payment clears."
+        doc.select(".govuk-details__summary-text").get(0).ownText shouldBe "Why you cannot appeal yet"
+        doc.select(".govuk-details__text p:nth-child(1)").get(0).text shouldBe "You cannot appeal until the VAT is paid."
+        doc.select(".govuk-details__text p:nth-child(2)").get(0).text shouldBe "It can take up to 5 days for the payment to clear and show on your payment history. If you’ve already paid, keep checking back to see when the payment clears."
         doc.select("dt").eq(5).isEmpty shouldBe true
       }
 
       "display the 'why you cannot appeal yet' drop down with Central Assessment content if the VAT has not been paid and the Main Transaction is Central Assessment" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMadeCentralAssessment))
-        doc.select(".govuk-details__summary-text").get(0).ownText() shouldBe "Why you cannot appeal yet"
-        doc.select(".govuk-details__text p:nth-child(1)").get(0).text() shouldBe "You cannot appeal until you submit the VAT Return and pay your VAT."
-        doc.select(".govuk-details__text p:nth-child(2)").get(0).text() shouldBe "If you believe you did not need to submit a VAT Return, appeal the late submission penalty for this VAT period instead."
+        doc.select(".govuk-details__summary-text").get(0).ownText shouldBe "Why you cannot appeal yet"
+        doc.select(".govuk-details__text p:nth-child(1)").get(0).text shouldBe "You cannot appeal until you submit the VAT Return and pay your VAT."
+        doc.select(".govuk-details__text p:nth-child(2)").get(0).text shouldBe "If you believe you did not need to submit a VAT Return, appeal the late submission penalty for this VAT period instead."
         doc.select("dt").eq(5).isEmpty shouldBe true
       }
 
       "display the 'why you cannot appeal yet' drop down if the VAT has not been paid and the penalty has no charge reference when the use is an Agent" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMade)(messages, agentUser))
-        doc.select(".govuk-details__summary-text").get(0).ownText() shouldBe "Why you cannot appeal yet"
-        doc.select(".govuk-details__text p:nth-child(1)").get(0).text() shouldBe "You cannot appeal until the VAT is paid."
-        doc.select(".govuk-details__text p:nth-child(2)").get(0).text() shouldBe "It can take up to 5 days for the payment to clear and show on your client’s payment history. If they have already paid, keep checking back to see when the payment clears."
+        doc.select(".govuk-details__summary-text").get(0).ownText shouldBe "Why you cannot appeal yet"
+        doc.select(".govuk-details__text p:nth-child(1)").get(0).text shouldBe "You cannot appeal until the VAT is paid."
+        doc.select(".govuk-details__text p:nth-child(2)").get(0).text shouldBe "It can take up to 5 days for the payment to clear and show on your client’s payment history. If they have already paid, keep checking back to see when the payment clears."
         doc.select("dt").eq(5).isEmpty shouldBe true
       }
 
       "display the 'why you cannot appeal yet' drop down with Central Assessment content if the VAT has not been paid and the Main Transaction is Central Assessment when the user is an Agent" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMadeCentralAssessment)(messages, agentUser))
-        doc.select(".govuk-details__summary-text").get(0).ownText() shouldBe "Why you cannot appeal yet"
-        doc.select(".govuk-details__text p:nth-child(1)").get(0).text() shouldBe "You cannot appeal until the VAT Return is submitted and your client pays the VAT."
-        doc.select(".govuk-details__text p:nth-child(2)").get(0).text() shouldBe "If you believe a VAT Return was not due, appeal the late submission penalty for this VAT period instead."
+        doc.select(".govuk-details__summary-text").get(0).ownText shouldBe "Why you cannot appeal yet"
+        doc.select(".govuk-details__text p:nth-child(1)").get(0).text shouldBe "You cannot appeal until the VAT Return is submitted and your client pays the VAT."
+        doc.select(".govuk-details__text p:nth-child(2)").get(0).text shouldBe "If you believe a VAT Return was not due, appeal the late submission penalty for this VAT period instead."
         doc.select("dt").eq(5).isEmpty shouldBe true
       }
 
       "display the 'appeal this penalty' link if the VAT has been paid" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModel))
-        doc.select(".app-summary-card__footer a").get(1).ownText() shouldBe "Appeal this penalty"
-        doc.select(".app-summary-card__footer span").get(1).text() shouldBe "which is the first penalty for late payment of charge due on 1 February 2020"
+        doc.select(".app-summary-card__footer a").get(1).ownText shouldBe "Appeal this penalty"
+        doc.select(".app-summary-card__footer span").get(1).text shouldBe "which is the first penalty for late payment of charge due on 1 February 2020"
         doc.select(".app-summary-card__footer a").get(1).attr("href").contains(summaryCardModel.penaltyChargeReference.get) shouldBe true
         doc.select("dt").eq(4).isEmpty shouldBe true
       }
@@ -302,49 +304,52 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       implicit val docWithAdditionalPenalty: Document = asDocument(summaryCardHtml.apply(summaryCardModelForAdditionalPenaltyPaid))
       implicit val docWithAdditionalPenaltyTenthsOfPence: Document = asDocument(summaryCardHtml.apply(summaryCardModelForAdditionalPenaltyPaidWithTenths))
 
-      "display the penalty amount" in {
-        docWithAdditionalPenalty.select("h4").text() shouldBe "£123.45 penalty"
+      "display the penalty amount and the date the VAT was due" in {
+        docWithAdditionalPenalty.select("h4").get(0).ownText shouldBe "£123.45 penalty"
+        docWithAdditionalPenalty.select("h4 span").text shouldBe "for late payment of charge due on 7 March 2020"
       }
 
-      "display the penalty amount (with padded zero for whole tenths)" in {
-        docWithAdditionalPenaltyTenthsOfPence.select("h4").text() shouldBe "£123.40 penalty"
+      "display the penalty amount and the date the VAT was due (with padded zero for whole tenths)" in {
+        docWithAdditionalPenaltyTenthsOfPence.select("h4").get(0).ownText shouldBe "£123.40 penalty"
+        docWithAdditionalPenaltyTenthsOfPence.select("h4 span").text shouldBe "for late payment of charge due on 1 January 2021"
+
       }
 
       "display the View calculation link" in {
-        docWithAdditionalPenalty.select("footer > div a").get(0).ownText() shouldBe "View calculation"
-        docWithAdditionalPenalty.select("footer > div span").get(0).text() shouldBe "of second late payment penalty for charge due on 7 March 2020"
+        docWithAdditionalPenalty.select("footer > div a").get(0).ownText shouldBe "View calculation"
+        docWithAdditionalPenalty.select("footer > div span").get(0).text shouldBe "of second late payment penalty for charge due on 7 March 2020"
         docWithAdditionalPenalty.select("a").get(0).attr("href") shouldBe "/penalties/calculation?principalChargeReference=12345678901234&penaltyCategory=LPP2"
       }
 
       "display the 'PAID' status" in {
-        docWithAdditionalPenalty.select("strong").text() shouldBe "paid"
+        docWithAdditionalPenalty.select("strong").text shouldBe "paid"
       }
 
       "display the 'DUE' status" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelForAdditionalPenaltyDue))
-        doc.select("strong").text() shouldBe "due"
+        doc.select("strong").text shouldBe "due"
       }
 
       "display the '£60.22 DUE' status" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelForAdditionalPenaltyDuePartiallyPaid))
-        doc.select("strong").text() shouldBe "£60.22 due"
+        doc.select("strong").text shouldBe "£60.22 due"
       }
 
       "display the Penalty type" in {
-        docWithAdditionalPenalty.select("dt").get(0).text() shouldBe "Penalty type"
-        docWithAdditionalPenalty.select("dd").get(0).text() shouldBe "Second penalty for late payment"
+        docWithAdditionalPenalty.select("dt").get(0).text shouldBe "Penalty type"
+        docWithAdditionalPenalty.select("dd").get(0).text shouldBe "Second penalty for late payment"
       }
 
       "display the appeal link and have the correct hidden span (LPP2)" in {
-        docWithAdditionalPenalty.select(".app-summary-card__footer a").get(1).ownText() shouldBe "Appeal this penalty"
-        docWithAdditionalPenalty.select(".app-summary-card__footer span").get(1).text() shouldBe "which is the second penalty for late payment of charge due on 7 March 2020"
+        docWithAdditionalPenalty.select(".app-summary-card__footer a").get(1).ownText shouldBe "Appeal this penalty"
+        docWithAdditionalPenalty.select(".app-summary-card__footer span").get(1).text shouldBe "which is the second penalty for late payment of charge due on 7 March 2020"
       }
 
       "display the 'why you cannot appeal yet' drop down if the penalty is unappealable (VAT has not been paid)" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelForUnappealableLPP2))
-        doc.select(".govuk-details__summary-text").get(0).ownText() shouldBe "Why you cannot appeal yet"
-        doc.select(".govuk-details__text p:nth-child(1)").get(0).text() shouldBe "You cannot appeal until the VAT is paid."
-        doc.select(".govuk-details__text p:nth-child(2)").get(0).text() shouldBe "It can take up to 5 days for the payment to clear and show on your payment history. If you’ve already paid, keep checking back to see when the payment clears."
+        doc.select(".govuk-details__summary-text").get(0).ownText shouldBe "Why you cannot appeal yet"
+        doc.select(".govuk-details__text p:nth-child(1)").get(0).text shouldBe "You cannot appeal until the VAT is paid."
+        doc.select(".govuk-details__text p:nth-child(2)").get(0).text shouldBe "It can take up to 5 days for the payment to clear and show on your payment history. If you’ve already paid, keep checking back to see when the payment clears."
         doc.select("dt").eq(5).isEmpty shouldBe true
       }
 
@@ -357,27 +362,27 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
 
       "display the 'why you cannot appeal yet' drop down if the penalty is unappealable (VAT has not been paid) and the user is an Agent" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelForUnappealableLPP2)(messages, agentUser))
-        doc.select(".govuk-details__summary-text").get(0).ownText() shouldBe "Why you cannot appeal yet"
-        doc.select(".govuk-details__text p:nth-child(1)").get(0).text() shouldBe "You cannot appeal until the VAT is paid."
-        doc.select(".govuk-details__text p:nth-child(2)").get(0).text() shouldBe "It can take up to 5 days for the payment to clear and show on your client’s payment history. If they have already paid, keep checking back to see when the payment clears."
+        doc.select(".govuk-details__summary-text").get(0).ownText shouldBe "Why you cannot appeal yet"
+        doc.select(".govuk-details__text p:nth-child(1)").get(0).text shouldBe "You cannot appeal until the VAT is paid."
+        doc.select(".govuk-details__text p:nth-child(2)").get(0).text shouldBe "It can take up to 5 days for the payment to clear and show on your client’s payment history. If they have already paid, keep checking back to see when the payment clears."
         doc.select("dt").eq(5).isEmpty shouldBe true
       }
 
       "display the 'why you cannot appeal yet' drop down with Central Assessment content if the VAT has not been paid and " +
         "the Main Transaction is Central Assessment" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMadeLPP2CentralAssessment))
-        doc.select(".govuk-details__summary-text").get(0).ownText() shouldBe "Why you cannot appeal yet"
-        doc.select(".govuk-details__text p:nth-child(1)").get(0).text() shouldBe "You cannot appeal until you submit the VAT Return and pay your VAT."
-        doc.select(".govuk-details__text p:nth-child(2)").get(0).text() shouldBe "If you believe you did not need to submit a VAT Return, appeal the late submission penalty for this VAT period instead."
+        doc.select(".govuk-details__summary-text").get(0).ownText shouldBe "Why you cannot appeal yet"
+        doc.select(".govuk-details__text p:nth-child(1)").get(0).text shouldBe "You cannot appeal until you submit the VAT Return and pay your VAT."
+        doc.select(".govuk-details__text p:nth-child(2)").get(0).text shouldBe "If you believe you did not need to submit a VAT Return, appeal the late submission penalty for this VAT period instead."
         doc.select("dt").eq(5).isEmpty shouldBe true
       }
 
       "display the 'why you cannot appeal yet' drop down with Central Assessment content if the VAT has not been paid and the " +
         "Main Transaction is Central Assessment and the user is an Agent" in {
         val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMadeLPP2CentralAssessment)(messages, agentUser))
-        doc.select(".govuk-details__summary-text").get(0).ownText() shouldBe "Why you cannot appeal yet"
-        doc.select(".govuk-details__text p:nth-child(1)").get(0).text() shouldBe "You cannot appeal until the VAT Return is submitted and your client pays the VAT."
-        doc.select(".govuk-details__text p:nth-child(2)").get(0).text() shouldBe "If you believe a VAT Return was not due, appeal the late submission penalty for this VAT period instead."
+        doc.select(".govuk-details__summary-text").get(0).ownText shouldBe "Why you cannot appeal yet"
+        doc.select(".govuk-details__text p:nth-child(1)").get(0).text shouldBe "You cannot appeal until the VAT Return is submitted and your client pays the VAT."
+        doc.select(".govuk-details__text p:nth-child(2)").get(0).text shouldBe "If you believe a VAT Return was not due, appeal the late submission penalty for this VAT period instead."
         doc.select("dt").eq(5).isEmpty shouldBe true
       }
     }
@@ -391,20 +396,20 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPenalty))
 
       "have the appeal status for ACCEPTED and not have the calculation link" in {
-        docWithAppealedPenaltyAccepted.select("dt").get(4).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyAccepted.select("dd").get(4).text() shouldBe "Appeal accepted"
+        docWithAppealedPenaltyAccepted.select("dt").get(4).text shouldBe "Appeal status"
+        docWithAppealedPenaltyAccepted.select("dd").get(4).text shouldBe "Appeal accepted"
         docWithAppealedPenaltyAccepted.select(".calculation-link").isEmpty shouldBe true
       }
 
       "have the appeal status for REJECTED" in {
-        docWithAppealedPenaltyRejected.select("dt").get(4).text() shouldBe "Appeal status"
-        docWithAppealedPenaltyRejected.select("dd").get(4).text() shouldBe "Appeal rejected"
+        docWithAppealedPenaltyRejected.select("dt").get(4).text shouldBe "Appeal status"
+        docWithAppealedPenaltyRejected.select("dd").get(4).text shouldBe "Appeal rejected"
         docWithAppealedPenaltyRejected.select(".calculation-link").isEmpty shouldBe false
       }
 
       "have the appeal status for UNDER_REVIEW" in {
-        docWithAppealedPenalty.select("dt").get(4).text() shouldBe "Appeal status"
-        docWithAppealedPenalty.select("dd").get(4).text() shouldBe "Under review by HMRC"
+        docWithAppealedPenalty.select("dt").get(4).text shouldBe "Appeal status"
+        docWithAppealedPenalty.select("dd").get(4).text shouldBe "Under review by HMRC"
         docWithAppealedPenalty.select(".calculation-link").isEmpty shouldBe false
       }
     }

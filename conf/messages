@@ -82,6 +82,7 @@ summaryCard.header.adjustedPoint = Penalty point
 summaryCard.header.financial = Penalty point {0}: £{1} penalty
 summaryCard.header.financialNoNumber = £{0} penalty
 summaryCard.header.financialAdditionalPenalty = £{0} additional penalty
+summaryCard.header.lpp.hiddenText = for late payment of charge due on {0}
 summaryCard.header.appealedPoint = Penalty
 
 summaryCard.key1 = VAT period
