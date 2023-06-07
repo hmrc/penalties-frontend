@@ -435,7 +435,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               "",
               "12345678901234",
               isReturnSubmitted = true,
-              isAdjustedPoint = true,
+              isAddedOrRemovedPoint = true,
               dueDate = Some(dateToString(sampleDate))
             ))
 

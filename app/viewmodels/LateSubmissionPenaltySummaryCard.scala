@@ -34,7 +34,8 @@ case class LateSubmissionPenaltySummaryCard(
                                              isAppealedPoint: Boolean = false,
                                              appealStatus: Option[AppealStatusEnum.Value] = None,
                                              appealLevel: Option[AppealLevelEnum.Value] = None,
-                                             isAdjustedPoint: Boolean = false,
+                                             isAddedOrRemovedPoint: Boolean = false,
+                                             isManuallyRemovedPoint: Boolean = false,
                                              multiplePenaltyPeriod: Option[Html] = None,
                                              dueDate: Option[String]
                                            )

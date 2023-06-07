@@ -73,11 +73,11 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
       case Some(x) => x
     }
 
-    buildLSPSummaryCard(rows, penalty, isAnAddedPoint = true, isAnAdjustedPoint = true)
+    buildLSPSummaryCard(rows, penalty, isAnAddedPoint = true, isAnAddedOrRemovedPoint = true)
   }
 
   private def buildLSPSummaryCard(rows: Seq[SummaryListRow], penalty: LSPDetails, isAnAddedPoint: Boolean = false,
-                                  isAnAdjustedPoint: Boolean = false)(implicit messages: Messages): LateSubmissionPenaltySummaryCard = {
+                                  isAnAddedOrRemovedPoint: Boolean = false, isManuallyRemovedPoint:Boolean = false)(implicit messages: Messages): LateSubmissionPenaltySummaryCard = {
     val isReturnSubmitted = penalty.lateSubmissions.map(penaltyPeriod =>
       PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head)
       .fold(false)(_.taxReturnStatus.equals(TaxReturnStatusEnum.Fulfilled))
@@ -87,14 +87,15 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
     LateSubmissionPenaltySummaryCard(
       rows,
       tagStatus(Some(penalty), None),
-      if (!isAnAdjustedPoint || isAnAddedPoint) penalty.penaltyOrder.toInt.toString else "",
+      if (!isAnAddedOrRemovedPoint || isAnAddedPoint) penalty.penaltyOrder.toInt.toString else "",
       penalty.penaltyNumber,
       isReturnSubmitted,
       isAddedPoint = isAnAddedPoint,
       isAppealedPoint = appealStatus.getOrElse(AppealStatusEnum.Unappealable) != AppealStatusEnum.Unappealable,
       appealStatus = appealStatus,
       appealLevel = appealLevel,
-      isAdjustedPoint = isAnAdjustedPoint,
+      isAddedOrRemovedPoint = isAnAddedOrRemovedPoint,
+      isManuallyRemovedPoint = isManuallyRemovedPoint,
       multiplePenaltyPeriod = getMultiplePenaltyPeriodMessage(penalty),
       dueDate = dueDate.map(dateToString(_))
     )
@@ -233,6 +234,7 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
   )
 
   private def removedPointCard(penalty: LSPDetails)(implicit messages: Messages): LateSubmissionPenaltySummaryCard = {
+    val isFAP: Option[Boolean] = penalty.expiryReason.map(_.equals(ExpiryReasonEnum.Adjustment))
     val rows = Seq(
       Some(summaryListRow(
         messages("summaryCard.key1"),
@@ -251,7 +253,7 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
       case Some(x) => x
     }
 
-    buildLSPSummaryCard(rows, penalty, isAnAdjustedPoint = true)
+    buildLSPSummaryCard(rows, penalty, isAnAddedOrRemovedPoint = true, isManuallyRemovedPoint = !isFAP.getOrElse(false))
   }
 
   def findAndReindexPointIfIsActive(indexedActivePoints: Seq[(LSPDetails, Int)], penaltyPoint: LSPDetails): LSPDetails = {
