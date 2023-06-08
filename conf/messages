@@ -105,6 +105,7 @@ summaryCard.adjustedPoint.cannotAppeal = You cannot appeal this point
 summaryCard.addedOnKey = Added on
 summaryCard.removedReason = Reason
 summaryCard.removalReason.FAP = Change to VAT return deadlines
+summaryCard.removalReason.MAN = Removed by HMRC
 summaryCard.infoOnAdjustmentPointsLinkText = Read the guidance about adjustment points
 summaryCard.appealCheck = Check if you can appeal
 summaryCard.lpp.key2 = Penalty type

@@ -49,7 +49,7 @@
             @{
               if(summaryCard.isAddedPoint) {
                 messages("summaryCard.header.addedPoint", summaryCard.penaltyPoint)
-              } else if(summaryCard.isAdjustedPoint) {
+              } else if(summaryCard.isAddedOrRemovedPoint) {
                 messages("summaryCard.header.adjustedPoint")
               } else if(summaryCard.appealStatus.contains(AppealStatusEnum.Upheld)) {
                   messages("summaryCard.header.appealedPoint")
@@ -74,15 +74,18 @@
         @if(summaryCard.multiplePenaltyPeriod.isDefined) {
           <p class="govuk-body">@summaryCard.multiplePenaltyPeriod</p>
         }
-        @if(summaryCard.isAdjustedPoint) {
+        @if(summaryCard.isAddedOrRemovedPoint) {
+            @if(!summaryCard.isManuallyRemovedPoint) {
             <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-3">
-            <p class="govuk-body">
+                <p class="govuk-body">
                 @link(
                     link = appConfig.adjustmentLink,
                     messageKey = messages("summaryCard.infoOnAdjustmentPointsLinkText"),
                     isExternal = true
                 )
-            </p>
+                </p>
+            }
+
         }
     </div>
     <footer class="app-summary-card__footer">
@@ -91,7 +94,7 @@
                 if(!summaryCard.isAppealedPoint) {
                     if(summaryCard.isAddedPoint) {
                             {messages("summaryCard.adjustedPoint.cannotAppeal")}
-                    } else if(summaryCard.isFinancialPoint && !summaryCard.isAdjustedPoint) {
+                    } else if(summaryCard.isFinancialPoint && !summaryCard.isAddedOrRemovedPoint) {
                             {if(!summaryCard.isReturnSubmitted || summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
                                     <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}>
                                     {messages("summaryCard.appealCheck")} <span class="govuk-visually-hidden">{visuallyHiddenText.getOrElse("")}</span>
@@ -101,7 +104,7 @@
                                     {messages("summaryCard.footerLinkTextNoPointNumber")} <span class="govuk-visually-hidden">{visuallyHiddenText.getOrElse("")}</span>
                                     </a>
                             }}
-                    } else if(!summaryCard.isAdjustedPoint) {
+                    } else if(!summaryCard.isAddedOrRemovedPoint) {
                         if(!summaryCard.isReturnSubmitted || summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
                                 <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}>
                                 {messages("summaryCard.appealCheck")} <span class="govuk-visually-hidden">{visuallyHiddenText.getOrElse("")}</span>

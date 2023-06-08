@@ -105,6 +105,7 @@ summaryCard.adjustedPoint.cannotAppeal = Ni allwch apelio yn erbyn y pwynt hwn
 summaryCard.addedOnKey = Ychwanegwyd ar
 summaryCard.removedReason = Rheswm
 summaryCard.removalReason.FAP = Newid i ddyddiadau cau ar gyfer Ffurflenni TAW
+summaryCard.removalReason.MAN = Wedi’i ddileu gan CThEF
 summaryCard.infoOnAdjustmentPointsLinkText = Darllenwch yr arweiniad ynghylch pwyntiau addasu
 summaryCard.appealCheck = Gwirio a allwch apelio
 summaryCard.lpp.key2 = Math o gosb
