@@ -43,6 +43,9 @@ class PenaltiesConnector @Inject()(httpClient: HttpClient,
     s"/etmp/penalties/$enrolmentKey$urlQueryParams"
   }
 
+  private def getDESObligationsDataUrl(vrn: String, fromDate: String, toDate: String): String =
+    s"/compliance/des/compliance-data?vrn=$vrn&fromDate=$fromDate&toDate=$toDate"
+
   def getPenaltyDetails(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[GetPenaltyDetailsResponse] = {
     logger.info(s"[PenaltiesConnector][getPenaltyDetails] - Requesting penalties details from backend for VRN $enrolmentKey.")
     httpClient.GET[GetPenaltyDetailsResponse](s"$penaltiesBaseUrl${getPenaltiesDataUrl(enrolmentKey)}")(GetPenaltyDetailsResponseReads, hc, ec).recover{
@@ -57,9 +60,6 @@ class PenaltiesConnector @Inject()(httpClient: HttpClient,
         Left(UnexpectedFailure(INTERNAL_SERVER_ERROR, e.getMessage))
     }
   }
-
-  private def getDESObligationsDataUrl(vrn: String, fromDate: String, toDate: String): String =
-    s"/compliance/des/compliance-data?vrn=$vrn&fromDate=$fromDate&toDate=$toDate"
 
   def getObligationData(vrn: String, fromDate: LocalDate, toDate: LocalDate)(implicit hc: HeaderCarrier): Future[CompliancePayloadResponse] = {
     logger.info(s"[PenaltiesConnector][getObligationData] - Requesting obligation data from backend for VRN $vrn.")

@@ -17,34 +17,23 @@
 package controllers
 
 import config.AppConfig
-import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import models.breathingSpace.BreathingSpace
-import models.lpp._
-import models.lsp._
-import models.{GetPenaltyDetails, Totalisations, appealInfo}
 import org.jsoup.Jsoup
 import play.api.http.{HeaderNames, Status}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import stubs.{AuthStub, ComplianceStub}
 import stubs.ComplianceStub.complianceDataStub
 import stubs.PenaltiesStub._
-import testUtils.IntegrationSpecCommonBase
+import stubs.{AuthStub, ComplianceStub}
+import testUtils.{IntegrationSpecCommonBase, TestData}
 import uk.gov.hmrc.http.SessionKeys.authToken
 import utils.SessionKeys
-import java.time.LocalDate
 
-import models.compliance.{CompliancePayload, ComplianceStatusEnum, ObligationDetail, ObligationIdentification}
-
-class IndexControllerISpec extends IntegrationSpecCommonBase {
+class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
 
   val appConfig: AppConfig = injector.instanceOf[AppConfig]
 
-  val sampleDate1: LocalDate = LocalDate.of(2021, 1, 1)
-  val sampleDate2: LocalDate = LocalDate.of(2021, 2, 1)
-  val sampleDate3: LocalDate = LocalDate.of(2021, 3, 1)
-  val sampleDate4: LocalDate = LocalDate.of(2021, 4, 1)
   val controller: IndexController = injector.instanceOf[IndexController]
   val fakeAgentRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
     SessionKeys.agentSessionVrn -> "123456789",
@@ -56,784 +45,6 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     authToken -> "12345",
     SessionKeys.pocAchievementDate -> "2022-01-01",
     SessionKeys.regimeThreshold -> "5"
-  )
-
-  val getPenaltyDetailsPayloadWithAddedPoint = GetPenaltyDetails(
-    totalisations = None,
-    lateSubmissionPenalty = Some(LateSubmissionPenalty(
-      summary = LSPSummary(
-        activePenaltyPoints = 1,
-        regimeThreshold = 4,
-        inactivePenaltyPoints = 0,
-        penaltyChargeAmount = 0,
-        PoCAchievementDate = LocalDate.of(2022, 1, 1)
-      ),
-      details = Seq(
-        LSPDetails(
-          penaltyNumber = "1234567890",
-          penaltyOrder = "01",
-          penaltyCategory = LSPPenaltyCategoryEnum.Point,
-          penaltyStatus = LSPPenaltyStatusEnum.Active,
-          FAPIndicator = Some("X"),
-          penaltyCreationDate = sampleDate1,
-          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
-          expiryReason = None,
-          communicationsDate = Some(sampleDate1),
-          lateSubmissions = Some(Seq(LateSubmission(
-            taxPeriodStartDate = Some(sampleDate1),
-            taxPeriodEndDate = Some(sampleDate1),
-            taxPeriodDueDate = Some(sampleDate1),
-            returnReceiptDate = Some(sampleDate1),
-            taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(AppealStatusEnum.Unappealable), None))),
-          chargeAmount = None,
-          chargeOutstandingAmount = None,
-          chargeDueDate = None
-        )
-      )
-    )
-    ),
-    latePaymentPenalty = None,
-    breathingSpace = None
-  )
-
-  val getPenaltyDetailsPayloadWithOverThreshold = GetPenaltyDetails(
-    totalisations = None,
-    lateSubmissionPenalty = Some(LateSubmissionPenalty(
-      summary = LSPSummary(
-        activePenaltyPoints = 3,
-        regimeThreshold = 2,
-        inactivePenaltyPoints = 0,
-        penaltyChargeAmount = 200.00,
-        PoCAchievementDate = LocalDate.of(2022, 1, 1)
-      ),
-      details = Seq(
-        LSPDetails(
-          penaltyNumber = "1234567890",
-          penaltyOrder = "01",
-          penaltyCategory = LSPPenaltyCategoryEnum.Charge,
-          penaltyStatus = LSPPenaltyStatusEnum.Active,
-          FAPIndicator = None,
-          penaltyCreationDate = sampleDate1,
-          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
-          expiryReason = None,
-          communicationsDate = Some(sampleDate1),
-          lateSubmissions = Some(Seq(LateSubmission(
-            taxPeriodStartDate = Some(sampleDate1),
-            taxPeriodEndDate = Some(sampleDate1),
-            taxPeriodDueDate = Some(sampleDate1),
-            returnReceiptDate = Some(sampleDate1),
-            taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(AppealStatusEnum.Unappealable), None))),
-          chargeAmount = Some(200.00),
-          chargeOutstandingAmount = Some(200.00),
-          chargeDueDate = None
-        ),
-        LSPDetails(
-          penaltyNumber = "1234567891",
-          penaltyOrder = "02",
-          penaltyCategory = LSPPenaltyCategoryEnum.Point,
-          penaltyStatus = LSPPenaltyStatusEnum.Inactive,
-          FAPIndicator = Some("X"),
-          penaltyCreationDate = sampleDate1,
-          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
-          expiryReason = None,
-          communicationsDate = Some(sampleDate1),
-          lateSubmissions = Some(Seq(LateSubmission(
-            taxPeriodStartDate = Some(sampleDate1),
-            taxPeriodEndDate = Some(sampleDate1.plusMonths(1)),
-            taxPeriodDueDate = Some(sampleDate1),
-            returnReceiptDate = Some(sampleDate1),
-            taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
-          chargeAmount = None,
-          chargeOutstandingAmount = None,
-          chargeDueDate = None
-        ),
-        LSPDetails(
-          penaltyNumber = "1234567892",
-          penaltyOrder = "03",
-          penaltyCategory = LSPPenaltyCategoryEnum.Point,
-          penaltyStatus = LSPPenaltyStatusEnum.Inactive,
-          FAPIndicator = Some("X"),
-          penaltyCreationDate = sampleDate1,
-          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
-          expiryReason = None,
-          communicationsDate = Some(sampleDate1),
-          lateSubmissions = Some(Seq(LateSubmission(
-            taxPeriodStartDate = Some(sampleDate1),
-            taxPeriodEndDate = Some(sampleDate1.plusMonths(1)),
-            taxPeriodDueDate = Some(sampleDate1),
-            returnReceiptDate = Some(sampleDate1),
-            taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
-          chargeAmount = None,
-          chargeOutstandingAmount = None,
-          chargeDueDate = None
-        )
-      )
-    )
-    ),
-    latePaymentPenalty = None,
-    breathingSpace = None
-  )
-
-  val compliancePayload = CompliancePayload(
-    identification = Some(ObligationIdentification(
-      incomeSourceType = None,
-      referenceNumber = "123456789",
-      referenceType = "VRN"
-    )),
-    obligationDetails = Seq(
-      ObligationDetail(
-        status = ComplianceStatusEnum.open,
-        inboundCorrespondenceFromDate = LocalDate.of(2021, 12, 1),
-        inboundCorrespondenceToDate = LocalDate.of(2021, 12, 31),
-        inboundCorrespondenceDateReceived = None,
-        inboundCorrespondenceDueDate = LocalDate.of(2022, 2, 7),
-        periodKey = "#001"
-      )
-    )
-  )
-
-  val getPenaltyDetailsPayloadWithRemovedPoints = GetPenaltyDetails(
-    totalisations = None,
-    lateSubmissionPenalty = Some(LateSubmissionPenalty(
-      summary = LSPSummary(
-        activePenaltyPoints = 1,
-        regimeThreshold = 4,
-        inactivePenaltyPoints = 1,
-        penaltyChargeAmount = 0,
-        PoCAchievementDate = LocalDate.of(2022, 1, 1)
-      ),
-      details = Seq(
-        LSPDetails(
-          penaltyNumber = "1234567890",
-          penaltyOrder = "01",
-          penaltyCategory = LSPPenaltyCategoryEnum.Point,
-          penaltyStatus = LSPPenaltyStatusEnum.Inactive,
-          FAPIndicator = Some("X"),
-          penaltyCreationDate = sampleDate1,
-          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
-          expiryReason = Some(ExpiryReasonEnum.Adjustment),
-          communicationsDate = Some(sampleDate1),
-          lateSubmissions = Some(Seq(LateSubmission(
-            taxPeriodStartDate = Some(sampleDate1),
-            taxPeriodEndDate = Some(sampleDate1.plusMonths(1)),
-            taxPeriodDueDate = Some(sampleDate1),
-            returnReceiptDate = Some(sampleDate1),
-            taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
-          chargeAmount = None,
-          chargeOutstandingAmount = None,
-          chargeDueDate = None
-        ),
-        LSPDetails(
-          penaltyNumber = "1234567891",
-          penaltyOrder = "02",
-          penaltyCategory = LSPPenaltyCategoryEnum.Point,
-          penaltyStatus = LSPPenaltyStatusEnum.Inactive,
-          FAPIndicator = Some("X"),
-          penaltyCreationDate = sampleDate1,
-          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
-          expiryReason = Some(ExpiryReasonEnum.Adjustment),
-          communicationsDate = Some(sampleDate1),
-          lateSubmissions = Some(Seq(LateSubmission(
-            taxPeriodStartDate = Some(sampleDate1),
-            taxPeriodEndDate = Some(sampleDate1.plusMonths(1)),
-            taxPeriodDueDate = Some(sampleDate1),
-            returnReceiptDate = Some(sampleDate1),
-            taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
-          chargeAmount = None,
-          chargeOutstandingAmount = None,
-          chargeDueDate = None
-        )
-      )
-    )),
-    latePaymentPenalty = None,
-    breathingSpace = None
-  )
-
-  val getPenaltiesDataPayloadWith2PointsAndOneRemovedPoint: GetPenaltyDetails = GetPenaltyDetails(
-    totalisations = None,
-    lateSubmissionPenalty = Some(LateSubmissionPenalty(
-      summary = LSPSummary(
-        activePenaltyPoints = 2,
-        regimeThreshold = 4,
-        inactivePenaltyPoints = 1,
-        penaltyChargeAmount = 0,
-        PoCAchievementDate = LocalDate.of(2022, 1, 1)
-      ),
-      details = Seq(
-        LSPDetails(
-          penaltyNumber = "1234567893",
-          penaltyOrder = "03",
-          penaltyCategory = LSPPenaltyCategoryEnum.Point,
-          penaltyStatus = LSPPenaltyStatusEnum.Active,
-          FAPIndicator = None,
-          penaltyCreationDate = sampleDate1,
-          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
-          expiryReason = None,
-          communicationsDate = Some(sampleDate1),
-          lateSubmissions = Some(Seq(LateSubmission(
-            taxPeriodStartDate = Some(sampleDate1),
-            taxPeriodEndDate = Some(sampleDate1),
-            taxPeriodDueDate = Some(sampleDate1),
-            returnReceiptDate = Some(sampleDate1),
-            taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
-          chargeAmount = None,
-          chargeOutstandingAmount = None,
-          chargeDueDate = None
-        ),
-        LSPDetails(
-          penaltyNumber = "1234567893",
-          penaltyOrder = "02",
-          penaltyCategory = LSPPenaltyCategoryEnum.Point,
-          penaltyStatus = LSPPenaltyStatusEnum.Active,
-          FAPIndicator = None,
-          penaltyCreationDate = sampleDate1,
-          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
-          expiryReason = None,
-          communicationsDate = Some(sampleDate1),
-          lateSubmissions = Some(Seq(LateSubmission(
-            taxPeriodStartDate = Some(sampleDate1),
-            taxPeriodEndDate = Some(sampleDate1),
-            taxPeriodDueDate = Some(sampleDate1),
-            returnReceiptDate = Some(sampleDate1),
-            taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
-          chargeAmount = None,
-          chargeOutstandingAmount = None,
-          chargeDueDate = None
-        ),
-        LSPDetails(
-          penaltyNumber = "1234567891",
-          penaltyOrder = "01",
-          penaltyCategory = LSPPenaltyCategoryEnum.Point,
-          penaltyStatus = LSPPenaltyStatusEnum.Inactive,
-          FAPIndicator = Some("X"),
-          penaltyCreationDate = sampleDate1,
-          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
-          expiryReason = Some(ExpiryReasonEnum.Adjustment),
-          communicationsDate = Some(sampleDate1),
-          lateSubmissions = Some(Seq(LateSubmission(
-            taxPeriodStartDate = Some(sampleDate1),
-            taxPeriodEndDate = Some(sampleDate1),
-            taxPeriodDueDate = Some(sampleDate1),
-            returnReceiptDate = Some(sampleDate1),
-            taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
-          chargeAmount = None,
-          chargeOutstandingAmount = None,
-          chargeDueDate = None
-        )
-      ))
-    ),
-    latePaymentPenalty = None,
-    breathingSpace = None
-  )
-
-  val getPenaltiesDataPayloadOutOfOrder: GetPenaltyDetails = GetPenaltyDetails(
-    totalisations = None,
-    lateSubmissionPenalty = Some(LateSubmissionPenalty(
-      summary = LSPSummary(
-        activePenaltyPoints = 3,
-        regimeThreshold = 4,
-        inactivePenaltyPoints = 0,
-        penaltyChargeAmount = 0,
-        PoCAchievementDate = LocalDate.of(2022, 1, 1)
-      ),
-      details = Seq(
-        LSPDetails(
-          penaltyNumber = "1234567893",
-          penaltyOrder = "01",
-          penaltyCategory = LSPPenaltyCategoryEnum.Point,
-          penaltyStatus = LSPPenaltyStatusEnum.Active,
-          FAPIndicator = None,
-          penaltyCreationDate = sampleDate1,
-          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
-          expiryReason = None,
-          communicationsDate = Some(sampleDate1),
-          lateSubmissions = Some(Seq(LateSubmission(
-            taxPeriodStartDate = Some(sampleDate1.minusMonths(3)),
-            taxPeriodEndDate = Some(sampleDate1.minusMonths(3).plusDays(30)),
-            taxPeriodDueDate = Some(sampleDate1),
-            returnReceiptDate = Some(sampleDate1),
-            taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
-          chargeAmount = None,
-          chargeOutstandingAmount = None,
-          chargeDueDate = None
-        ),
-        LSPDetails(
-          penaltyNumber = "1234567893",
-          penaltyOrder = "02",
-          penaltyCategory = LSPPenaltyCategoryEnum.Point,
-          penaltyStatus = LSPPenaltyStatusEnum.Active,
-          FAPIndicator = None,
-          penaltyCreationDate = sampleDate1,
-          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
-          expiryReason = None,
-          communicationsDate = Some(sampleDate1),
-          lateSubmissions = Some(Seq(LateSubmission(
-            taxPeriodStartDate = Some(sampleDate1.minusMonths(2)),
-            taxPeriodEndDate = Some(sampleDate1.minusMonths(2).plusDays(29)),
-            taxPeriodDueDate = Some(sampleDate1),
-            returnReceiptDate = Some(sampleDate1),
-            taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = None,
-          chargeAmount = None,
-          chargeOutstandingAmount = None,
-          chargeDueDate = None
-        ),
-        LSPDetails(
-          penaltyNumber = "1234567891",
-          penaltyOrder = "03",
-          penaltyCategory = LSPPenaltyCategoryEnum.Point,
-          penaltyStatus = LSPPenaltyStatusEnum.Active,
-          FAPIndicator = None,
-          penaltyCreationDate = sampleDate1,
-          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
-          expiryReason = None,
-          communicationsDate = Some(sampleDate1),
-          lateSubmissions = Some(Seq(LateSubmission(
-            taxPeriodStartDate = Some(sampleDate1.minusMonths(1)),
-            taxPeriodEndDate = Some(sampleDate1.minusMonths(1).plusDays(30)),
-            taxPeriodDueDate = Some(sampleDate1),
-            returnReceiptDate = Some(sampleDate1),
-            taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = None,
-          chargeAmount = None,
-          chargeOutstandingAmount = None,
-          chargeDueDate = None
-        )
-      ))
-    ),
-    latePaymentPenalty = None,
-    breathingSpace = None
-  )
-
-  val paidLatePaymentPenalty: LatePaymentPenalty = LatePaymentPenalty(
-    details = Seq(
-      LPPDetails(principalChargeReference = "123456789",
-        penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-        penaltyChargeCreationDate = Some(sampleDate1),
-        penaltyStatus = LPPPenaltyStatusEnum.Posted,
-        penaltyAmountPaid = Some(BigDecimal(400)),
-        penaltyAmountOutstanding = Some(BigDecimal(0)),
-        penaltyAmountPosted = 400,
-        penaltyAmountAccruing = 0,
-        LPP1LRDays = Some("15"),
-        LPP1HRDays = Some("30"),
-        LPP2Days = None,
-        LPP1LRCalculationAmount = None,
-        LPP1HRCalculationAmount = None,
-        LPP1LRPercentage = Some(BigDecimal(0.02)),
-        LPP1HRPercentage = Some(BigDecimal(0.02)),
-        LPP2Percentage = None,
-        communicationsDate = Some(sampleDate1),
-        penaltyChargeDueDate = Some(sampleDate1),
-        appealInformation = None,
-        principalChargeBillingFrom = sampleDate1,
-        principalChargeBillingTo = sampleDate1.plusMonths(1),
-        principalChargeDueDate = sampleDate1.plusMonths(2).plusDays(6),
-        penaltyChargeReference = Some("123456789"),
-        principalChargeLatestClearing = Some(sampleDate1.plusMonths(2).plusDays(7)),
-        LPPDetailsMetadata = LPPDetailsMetadata(
-          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99),
-          timeToPay = None
-        )
-      ))
-  )
-
-  val latePaymentPenaltyWithAdditionalPenalty: LatePaymentPenalty = LatePaymentPenalty(
-    details = Seq(
-      LPPDetails(
-        principalChargeReference = "123456789",
-        penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
-        penaltyChargeCreationDate = Some(sampleDate1),
-        penaltyStatus = LPPPenaltyStatusEnum.Posted,
-        penaltyAmountPaid = Some(BigDecimal(123.45)),
-        penaltyAmountOutstanding = Some(BigDecimal(0)),
-        penaltyAmountPosted = 123.45,
-        penaltyAmountAccruing = 0,
-        LPP1LRDays = None,
-        LPP1HRDays = None,
-        LPP2Days = Some("30"),
-        LPP1LRCalculationAmount = None,
-        LPP1HRCalculationAmount = None,
-        LPP1LRPercentage = None,
-        LPP1HRPercentage = None,
-        LPP2Percentage = Some(BigDecimal(0.02)),
-        communicationsDate = Some(sampleDate1),
-        penaltyChargeDueDate = Some(sampleDate1),
-        appealInformation = None,
-        principalChargeBillingFrom = sampleDate1,
-        principalChargeBillingTo = sampleDate1.plusMonths(1),
-        principalChargeDueDate = sampleDate1.plusMonths(2).plusDays(6),
-        penaltyChargeReference = Some("123456789"),
-        principalChargeLatestClearing = Some(sampleDate1.plusMonths(2).plusDays(7)),
-        LPPDetailsMetadata = LPPDetailsMetadata(
-          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99),
-          timeToPay = None
-        )
-      ),
-      LPPDetails(
-        principalChargeReference = "123456789",
-        penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-        penaltyChargeCreationDate = Some(sampleDate1),
-        penaltyStatus = LPPPenaltyStatusEnum.Posted,
-        penaltyAmountPaid = Some(BigDecimal(200)),
-        penaltyAmountOutstanding = Some(BigDecimal(200)),
-        penaltyAmountPosted = 400,
-        penaltyAmountAccruing = 0,
-        LPP1LRDays = Some("15"),
-        LPP1HRDays = None,
-        LPP2Days = None,
-        LPP1LRCalculationAmount = None,
-        LPP1HRCalculationAmount = None,
-        LPP1LRPercentage = Some(BigDecimal(0.02)),
-        LPP1HRPercentage = None,
-        LPP2Percentage = None,
-        communicationsDate = Some(sampleDate1),
-        penaltyChargeDueDate = Some(sampleDate1),
-        appealInformation = Some(Seq(AppealInformationType(
-          appealStatus = Some(appealInfo.AppealStatusEnum.Unappealable),
-          appealLevel = None
-        ))),
-        principalChargeBillingFrom = sampleDate1,
-        principalChargeBillingTo = sampleDate1.plusMonths(1),
-        principalChargeDueDate = sampleDate1.plusMonths(2).plusDays(6),
-        penaltyChargeReference = Some("123456789"),
-        principalChargeLatestClearing = None,
-        LPPDetailsMetadata = LPPDetailsMetadata(
-          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99),
-          timeToPay = None
-        )
-      )
-    )
-  )
-
-  val latePaymentPenaltyVATUnpaid: LatePaymentPenalty = LatePaymentPenalty(
-    details = Seq(
-      LPPDetails(principalChargeReference = "123456789",
-        penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-        penaltyChargeCreationDate = Some(sampleDate1),
-        penaltyStatus = LPPPenaltyStatusEnum.Posted,
-        penaltyAmountPaid = Some(BigDecimal(200)),
-        penaltyAmountOutstanding = Some(BigDecimal(200)),
-        penaltyAmountPosted = 400,
-        penaltyAmountAccruing = 0,
-        LPP1LRDays = Some("15"),
-        LPP1HRDays = None,
-        LPP2Days = None,
-        LPP1LRCalculationAmount = None,
-        LPP1HRCalculationAmount = None,
-        LPP1LRPercentage = Some(BigDecimal(0.02)),
-        LPP1HRPercentage = None,
-        LPP2Percentage = None,
-        communicationsDate = Some(sampleDate1),
-        penaltyChargeDueDate = Some(sampleDate1),
-        appealInformation = Some(Seq(AppealInformationType(
-          appealStatus = Some(appealInfo.AppealStatusEnum.Unappealable),
-          appealLevel = None
-        ))),
-        principalChargeBillingFrom = sampleDate1,
-        principalChargeBillingTo = sampleDate1.plusMonths(1),
-        principalChargeDueDate = sampleDate1.plusMonths(2).plusDays(6),
-        penaltyChargeReference = Some("123456789"),
-        principalChargeLatestClearing = None,
-        LPPDetailsMetadata = LPPDetailsMetadata(
-          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99),
-          timeToPay = None
-        )
-      ))
-  )
-
-  val latePaymentPenaltyWithAppeal = Some(
-    LatePaymentPenalty(
-      details = Seq(LPPDetails(principalChargeReference = "123456789",
-        penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-        penaltyChargeCreationDate = Some(sampleDate1),
-        penaltyStatus = LPPPenaltyStatusEnum.Posted,
-        penaltyAmountPaid = Some(BigDecimal(400)),
-        penaltyAmountOutstanding = Some(BigDecimal(0)),
-        penaltyAmountPosted = 400,
-        penaltyAmountAccruing = 0,
-        LPP1LRDays = Some("15"),
-        LPP1HRDays = Some("30"),
-        LPP2Days = None,
-        LPP1LRCalculationAmount = None,
-        LPP1HRCalculationAmount = None,
-        LPP1LRPercentage = Some(BigDecimal(0.02)),
-        LPP1HRPercentage = Some(BigDecimal(0.02)),
-        LPP2Percentage = None,
-        communicationsDate = Some(sampleDate1),
-        penaltyChargeDueDate = Some(sampleDate1),
-        appealInformation = Some(Seq(AppealInformationType(
-          appealStatus = Some(appealInfo.AppealStatusEnum.Under_Appeal),
-          appealLevel = Some(AppealLevelEnum.HMRC)))),
-        principalChargeBillingFrom = sampleDate1,
-        principalChargeBillingTo = sampleDate1.plusMonths(1),
-        principalChargeDueDate = sampleDate1.plusMonths(2).plusDays(6),
-        penaltyChargeReference = Some("123456789"),
-        principalChargeLatestClearing = Some(sampleDate1.plusMonths(2).plusDays(7)),
-        LPPDetailsMetadata = LPPDetailsMetadata(
-          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99),
-          timeToPay = None
-        )
-      )))
-  )
-
-  val getPenaltiesDataPayloadWithPaidLPP: GetPenaltyDetails = getPenaltyDetailsPayloadWithAddedPoint.copy(
-    latePaymentPenalty = Some(paidLatePaymentPenalty),
-  )
-
-  val getPenaltiesDataPayloadWithLPPAndAdditionalPenalty: GetPenaltyDetails = getPenaltyDetailsPayloadWithAddedPoint.copy(
-    latePaymentPenalty = Some(latePaymentPenaltyWithAdditionalPenalty)
-  )
-
-  val getPenaltiesDataPayloadWithLPPVATUnpaid: GetPenaltyDetails = getPenaltyDetailsPayloadWithAddedPoint.copy(
-    latePaymentPenalty = Some(latePaymentPenaltyVATUnpaid)
-  )
-
-  val getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue: GetPenaltyDetails = getPenaltyDetailsPayloadWithAddedPoint.copy(
-    totalisations = Some(Totalisations(
-      LSPTotalValue = Some(400),
-      penalisedPrincipalTotal = Some(121.40),
-      LPPPostedTotal = Some(165.25),
-      LPPEstimatedTotal = Some(46.55),
-      totalAccountOverdue = Some(10432.21),
-      totalAccountPostedInterest = Some(4.32),
-      totalAccountAccruingInterest = Some(1.23)
-    )),
-
-    lateSubmissionPenalty = Some(LateSubmissionPenalty(
-      summary = LSPSummary(
-        activePenaltyPoints = 2,
-        regimeThreshold = 4,
-        inactivePenaltyPoints = 0,
-        penaltyChargeAmount = 0,
-        PoCAchievementDate = LocalDate.of(2022, 1, 1)
-      ),
-      details = Seq(
-        LSPDetails(
-          penaltyNumber = "1234567890",
-          penaltyOrder = "01",
-          penaltyCategory = LSPPenaltyCategoryEnum.Point,
-          penaltyStatus = LSPPenaltyStatusEnum.Active,
-          FAPIndicator = None,
-          penaltyCreationDate = sampleDate1,
-          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
-          expiryReason = None,
-          communicationsDate = Some(sampleDate1),
-          lateSubmissions = Some(Seq(LateSubmission(
-            taxPeriodStartDate = Some(sampleDate1),
-            taxPeriodEndDate = Some(sampleDate1),
-            taxPeriodDueDate = Some(sampleDate1),
-            returnReceiptDate = Some(sampleDate1),
-            taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
-          chargeAmount = None,
-          chargeOutstandingAmount = Some(BigDecimal(100)),
-          chargeDueDate = None
-        ),
-        LSPDetails(
-          penaltyNumber = "1234567890",
-          penaltyOrder = "01",
-          penaltyCategory = LSPPenaltyCategoryEnum.Point,
-          penaltyStatus = LSPPenaltyStatusEnum.Active,
-          FAPIndicator = None,
-          penaltyCreationDate = sampleDate1,
-          penaltyExpiryDate = sampleDate1.plusMonths(1).plusYears(2),
-          expiryReason = None,
-          communicationsDate = Some(sampleDate1),
-          lateSubmissions = Some(Seq(LateSubmission(
-            taxPeriodStartDate = Some(sampleDate1),
-            taxPeriodEndDate = Some(sampleDate1),
-            taxPeriodDueDate = Some(sampleDate1),
-            returnReceiptDate = Some(sampleDate1),
-            taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-          appealInformation = Some(Seq(AppealInformationType(Some(appealInfo.AppealStatusEnum.Unappealable), None))),
-          chargeAmount = None,
-          chargeOutstandingAmount = Some(BigDecimal(100)),
-          chargeDueDate = None
-        )
-      )
-    )
-    ),
-    latePaymentPenalty = Some(latePaymentPenaltyVATUnpaid)
-  )
-
-  val getPenaltyPayloadWithLPPAppeal: GetPenaltyDetails = getPenaltiesDataPayloadWithPaidLPP.copy(
-    latePaymentPenalty = latePaymentPenaltyWithAppeal
-  )
-
-  val unpaidLatePaymentPenalty: LatePaymentPenalty = LatePaymentPenalty(
-    details = Seq(LPPDetails(principalChargeReference = "123456789",
-      penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-      penaltyChargeCreationDate = Some(sampleDate1),
-      penaltyStatus = LPPPenaltyStatusEnum.Posted,
-      penaltyAmountPaid = Some(BigDecimal(0)),
-      penaltyAmountOutstanding = Some(BigDecimal(400)),
-      penaltyAmountPosted = 400,
-      penaltyAmountAccruing = 0,
-      LPP1LRDays = Some("15"),
-      LPP1HRDays = None,
-      LPP2Days = None,
-      LPP1LRCalculationAmount = None,
-      LPP1HRCalculationAmount = None,
-      LPP1LRPercentage = Some(BigDecimal(0.02)),
-      LPP1HRPercentage = None,
-      LPP2Percentage = None,
-      communicationsDate = Some(sampleDate1),
-      penaltyChargeDueDate = Some(sampleDate1),
-      appealInformation = None,
-      principalChargeBillingFrom = sampleDate1,
-      principalChargeBillingTo = sampleDate1.plusMonths(1),
-      principalChargeDueDate = sampleDate1.plusMonths(2).plusDays(6),
-      penaltyChargeReference = Some("123456789"),
-      principalChargeLatestClearing = None,
-      LPPDetailsMetadata = LPPDetailsMetadata(
-        mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-        outstandingAmount = Some(99),
-        timeToPay = None
-      )
-    ))
-  )
-
-  val getPenaltiesDetailsPayloadWithMultiplePenaltyPeriodInLSP: GetPenaltyDetails = GetPenaltyDetails(
-    totalisations = None,
-    lateSubmissionPenalty = Some(
-      LateSubmissionPenalty(
-        summary = LSPSummary(
-          activePenaltyPoints = 1,
-          inactivePenaltyPoints = 0,
-          regimeThreshold = 4,
-          penaltyChargeAmount = 200,
-          PoCAchievementDate = LocalDate.of(2022, 1, 1)
-        ),
-        details = Seq(
-          LSPDetails(
-            penaltyNumber = "12345678901235",
-            penaltyOrder = "01",
-            penaltyCategory = LSPPenaltyCategoryEnum.Point,
-            penaltyStatus = LSPPenaltyStatusEnum.Active,
-            FAPIndicator = None,
-            penaltyCreationDate = LocalDate.parse("2069-10-30"),
-            penaltyExpiryDate = LocalDate.parse("2069-10-30"),
-            expiryReason = None,
-            communicationsDate = Some(LocalDate.parse("2069-10-30")),
-            lateSubmissions = Some(Seq(
-              LateSubmission(
-                taxPeriodStartDate = Some(sampleDate1),
-                taxPeriodEndDate = Some(sampleDate1.plusDays(14)),
-                taxPeriodDueDate = Some(sampleDate1.plusMonths(4).plusDays(7)),
-                returnReceiptDate = Some(sampleDate1.plusMonths(4).plusDays(12)),
-                taxReturnStatus = TaxReturnStatusEnum.Fulfilled
-              ),
-              LateSubmission(
-                taxPeriodStartDate = Some(sampleDate1.plusDays(16)),
-                taxPeriodEndDate = Some(sampleDate1.plusDays(31)),
-                taxPeriodDueDate = Some(sampleDate1.plusMonths(4).plusDays(23)),
-                returnReceiptDate = Some(sampleDate1.plusMonths(4).plusDays(25)),
-                taxReturnStatus = TaxReturnStatusEnum.Fulfilled
-              )
-            )),
-            appealInformation = None,
-            chargeAmount = None,
-            chargeOutstandingAmount = None,
-            chargeDueDate = None
-          )
-        )
-      )
-    ),
-    latePaymentPenalty = None,
-    breathingSpace = None
-  )
-
-  val getPenaltiesDetailsPayloadWithExpiredPoints: GetPenaltyDetails = GetPenaltyDetails(
-    totalisations = None,
-    lateSubmissionPenalty = Some(
-      LateSubmissionPenalty(
-        summary = LSPSummary(
-          activePenaltyPoints = 2,
-          inactivePenaltyPoints = 0,
-          regimeThreshold = 4,
-          penaltyChargeAmount = 200,
-          PoCAchievementDate = LocalDate.of(2022, 1, 1)
-        ),
-        details = Seq(
-          LSPDetails(
-            penaltyNumber = "12345678",
-            penaltyOrder = "3",
-            penaltyCategory = LSPPenaltyCategoryEnum.Threshold,
-            penaltyStatus = LSPPenaltyStatusEnum.Active,
-            FAPIndicator = None,
-            penaltyCreationDate = LocalDate.of(2022, 1, 1),
-            penaltyExpiryDate = LocalDate.of(2022, 1, 1),
-            expiryReason = None,
-            communicationsDate = Some(LocalDate.of(2022, 1, 1)),
-            lateSubmissions = Some(Seq(LateSubmission(
-              taxPeriodStartDate = Some(sampleDate2),
-              taxPeriodEndDate = Some(sampleDate2.plusDays(27)),
-              taxPeriodDueDate = Some(sampleDate2),
-              returnReceiptDate = Some(sampleDate2),
-              taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-            appealInformation = None,
-            chargeAmount = Some(200),
-            chargeOutstandingAmount = Some(200),
-            chargeDueDate = Some(LocalDate.of(2022, 1, 1))
-          ),
-          LSPDetails(
-            penaltyNumber = "12345677",
-            penaltyOrder = "2",
-            penaltyCategory = LSPPenaltyCategoryEnum.Threshold,
-            penaltyStatus = LSPPenaltyStatusEnum.Inactive,
-            FAPIndicator = None,
-            penaltyCreationDate = LocalDate.of(2022, 1, 1),
-            penaltyExpiryDate = LocalDate.of(2022, 1, 1),
-            expiryReason = Some(ExpiryReasonEnum.Reversal),
-            communicationsDate = Some(LocalDate.of(2022, 1, 1)),
-            lateSubmissions = None,
-            appealInformation = None,
-            chargeAmount = Some(200),
-            chargeOutstandingAmount = Some(200),
-            chargeDueDate = Some(LocalDate.of(2022, 1, 1))
-          ),
-          LSPDetails(
-            penaltyNumber = "12345676",
-            penaltyOrder = "1",
-            penaltyCategory = LSPPenaltyCategoryEnum.Point,
-            penaltyStatus = LSPPenaltyStatusEnum.Active,
-            FAPIndicator = None,
-            penaltyCreationDate = LocalDate.of(2022, 1, 1),
-            penaltyExpiryDate = LocalDate.of(2022, 1, 1),
-            expiryReason = None,
-            communicationsDate = Some(LocalDate.of(2022, 1, 1)),
-            lateSubmissions = Some(Seq(LateSubmission(
-              taxPeriodStartDate = Some(sampleDate1),
-              taxPeriodEndDate = Some(sampleDate1.plusDays(30)),
-              taxPeriodDueDate = Some(sampleDate1),
-              returnReceiptDate = Some(sampleDate1),
-              taxReturnStatus = TaxReturnStatusEnum.Fulfilled))),
-            appealInformation = None,
-            chargeAmount = None,
-            chargeOutstandingAmount = None,
-            chargeDueDate = None
-          )
-        )
-      )
-    ),
-    latePaymentPenalty = None,
-    breathingSpace = None
   )
 
   "GET /" should {
@@ -871,17 +82,17 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#late-submission-penalties p.govuk-body").get(0).text shouldBe "You have 1 penalty point. This is because:"
       parsedBody.select("#late-submission-penalties ul li").get(0).text shouldBe "you have submitted 2 VAT Returns late"
+      parsedBody.select("#late-submission-penalties ul li").get(1).text shouldBe "we removed 1 point and sent you a letter explaining why"
       parsedBody.select("header h4").get(0).text shouldBe "Penalty point"
       parsedBody.select("main strong").get(0).text shouldBe "removed"
-      val summaryCardBody = parsedBody.select(".app-summary-card__body").get(1)
+      val summaryCardBody = parsedBody.select(".app-summary-card__body").get(0)
       summaryCardBody.select("dt").get(0).text shouldBe "VAT period"
-      summaryCardBody.select("dd").get(0).text() shouldBe "1 January 2021 to 1 February 2021"
+      summaryCardBody.select("dd").get(0).text() shouldBe "1 January 2021 to 31 January 2021"
       summaryCardBody.select("dt").get(1).text() shouldBe "Reason"
       summaryCardBody.select("dd").get(1).text() shouldBe "Change to VAT return deadlines"
       summaryCardBody.select("p.govuk-body a").get(0).text() shouldBe "Read the guidance about adjustment points (opens in a new tab)"
       summaryCardBody.select("p.govuk-body a").attr("href") shouldBe appConfig.adjustmentLink
-      parsedBody.select(".app-summary-card footer div").text shouldBe ""
-      parsedBody.select(".app-summary-card footer a").text shouldBe ""
+      parsedBody.select(".app-summary-card footer div").get(0).childrenSize() shouldBe 0 //No child nodes are within this div
     }
 
     "return 200 (OK) and render the view when removed points are below active points (active points are reindexed)" in {
@@ -914,7 +125,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("header h4").get(2).text shouldBe "£200 penalty for late submission of VAT due on 1 January 2021"
+      parsedBody.select("header h4").get(0).text shouldBe "£200 penalty for late submission of VAT due on 7 March 2021"
     }
 
     "return 200 (OK) and render the view when there are LPPs paid that are retrieved from the backend" in {
@@ -929,7 +140,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("dt").get(0).text shouldBe "Penalty type"
       summaryCardBody.select("dd").get(0).text shouldBe "First penalty for late payment"
       summaryCardBody.select("dt").get(1).text shouldBe "Overdue charge"
-      summaryCardBody.select("dd").get(1).text shouldBe "VAT for period 1 January 2021 to 1 February 2021"
+      summaryCardBody.select("dd").get(1).text shouldBe "VAT for period 1 January 2021 to 31 January 2021"
       summaryCardBody.select("dt").get(2).text shouldBe "VAT due"
       summaryCardBody.select("dd").get(2).text shouldBe "7 March 2021"
       summaryCardBody.select("dt").get(3).text shouldBe "VAT paid"
@@ -938,6 +149,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     }
 
     "return 200 (OK) and render the what you owe section when relevant fields are present" in {
+      complianceDataStub()
       returnPenaltyDetailsStub(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue)
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
@@ -948,7 +160,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "unpaid interest"
       parsedBody.select("#what-is-owed > ul > li").get(2).text shouldBe "a late payment penalty"
       parsedBody.select("#what-is-owed > ul > li").get(3).text shouldBe "late submission penalties"
-      parsedBody.select("#what-is-owed > ul > li").get(4).text shouldBe "2 late submission penalty points"
+      parsedBody.select("#what-is-owed > ul > li").get(4).text shouldBe "the maximum number of late submission penalty points"
       parsedBody.select("#what-is-owed > a").text shouldBe "Check amounts and pay"
       parsedBody.select("#main-content > h2").text shouldBe "Penalty and appeal details"
     }
@@ -965,7 +177,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("dt").get(0).text shouldBe "Penalty type"
       summaryCardBody.select("dd").get(0).text shouldBe "Second penalty for late payment"
       summaryCardBody.select("dt").get(1).text shouldBe "Overdue charge"
-      summaryCardBody.select("dd").get(1).text shouldBe "VAT for period 1 January 2021 to 1 February 2021"
+      summaryCardBody.select("dd").get(1).text shouldBe "VAT for period 1 January 2021 to 31 January 2021"
       summaryCardBody.select("dt").get(2).text shouldBe "VAT due"
       summaryCardBody.select("dd").get(2).text shouldBe "7 March 2021"
       summaryCardBody.select("dt").get(3).text shouldBe "VAT paid"
@@ -985,7 +197,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("dt").get(0).text shouldBe "Penalty type"
       summaryCardBody.select("dd").get(0).text shouldBe "First penalty for late payment"
       summaryCardBody.select("dt").get(1).text shouldBe "Overdue charge"
-      summaryCardBody.select("dd").get(1).text shouldBe "VAT for period 1 January 2021 to 1 February 2021"
+      summaryCardBody.select("dd").get(1).text shouldBe "VAT for period 1 January 2021 to 31 January 2021"
       summaryCardBody.select("dt").get(2).text shouldBe "VAT due"
       summaryCardBody.select("dd").get(2).text shouldBe "7 March 2021"
       summaryCardBody.select("dt").get(3).text shouldBe "VAT paid"
@@ -996,6 +208,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     }
 
     "return 200 (OK) and render the view when there are LPPs with VAT unpaid that are retrieved from the backend" in {
+      complianceDataStub()
       returnPenaltyDetailsStub(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalty = Some(unpaidLatePaymentPenalty)))
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
@@ -1018,7 +231,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       summaryCardBody.select("dt").get(0).text shouldBe "Penalty type"
       summaryCardBody.select("dd").get(0).text shouldBe "First penalty for late payment"
       summaryCardBody.select("dt").get(1).text shouldBe "Overdue charge"
-      summaryCardBody.select("dd").get(1).text shouldBe "VAT for period 1 January 2021 to 1 February 2021"
+      summaryCardBody.select("dd").get(1).text shouldBe "VAT for period 1 January 2021 to 31 January 2021"
       summaryCardBody.select("dt").get(2).text shouldBe "VAT due"
       summaryCardBody.select("dd").get(2).text shouldBe "7 March 2021"
       summaryCardBody.select("dt").get(3).text shouldBe "VAT paid"
@@ -1028,6 +241,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
     }
 
     "return 200 (OK) and add the latest lsp creation date and penalty threshold to the session" in {
+      complianceDataStub()
       returnPenaltyDetailsStub(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalty = Some(paidLatePaymentPenalty)))
       val request = controller.onPageLoad()(fakeRequest)
       await(request).header.status shouldBe Status.OK
@@ -1067,15 +281,14 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.select("#late-submission-penalties ul li").get(0).text shouldBe "they have submitted 2 VAT Returns late"
         parsedBody.select("header h4").get(0).text shouldBe "Penalty point"
         parsedBody.select("main strong").get(0).text shouldBe "removed"
-        val summaryCardBody = parsedBody.select(".app-summary-card__body")
+        val summaryCardBody = parsedBody.select(".app-summary-card__body").get(0)
         summaryCardBody.select("dt").get(0).text shouldBe "VAT period"
-        summaryCardBody.select("dd").get(0).text() shouldBe "1 January 2021 to 1 February 2021"
+        summaryCardBody.select("dd").get(0).text() shouldBe "1 January 2021 to 31 January 2021"
         summaryCardBody.select("dt").get(1).text() shouldBe "Reason"
         summaryCardBody.select("dd").get(1).text() shouldBe "Change to VAT return deadlines"
         summaryCardBody.select("p.govuk-body a").get(0).text() shouldBe "Read the guidance about adjustment points (opens in a new tab)"
         summaryCardBody.select("p.govuk-body a").attr("href") shouldBe appConfig.adjustmentLink
-        parsedBody.select(".app-summary-card footer div").text shouldBe ""
-        parsedBody.select(".app-summary-card footer a").text shouldBe ""
+        parsedBody.select(".app-summary-card footer div").get(0).childrenSize() shouldBe 0 //No child nodes are within this div
       }
 
       "return 200 (OK) and render the view when user is in breathing space" in {
@@ -1125,6 +338,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
       }
 
       "return 200 (OK) and render the view when there is outstanding payments for the client" in {
+        complianceDataStub()
         AuthStub.agentAuthorised()
         returnPenaltyDetailsStubAgent(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue)
         val request = controller.onPageLoad()(fakeAgentRequest)
@@ -1136,12 +350,13 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         parsedBody.select("#what-is-owed > ul > li").get(1).text shouldBe "unpaid interest"
         parsedBody.select("#what-is-owed > ul > li").get(2).text shouldBe "a late payment penalty"
         parsedBody.select("#what-is-owed > ul > li").get(3).text shouldBe "late submission penalties"
-        parsedBody.select("#what-is-owed > ul > li").get(4).text shouldBe "2 late submission penalty points"
+        parsedBody.select("#what-is-owed > ul > li").get(4).text shouldBe "the maximum number of late submission penalty points"
         parsedBody.select("#what-is-owed > a").text shouldBe "Check amounts"
         parsedBody.select("#main-content > h2").text shouldBe "Penalty and appeal details"
       }
 
       "return 200 (OK) and add the latest lsp creation date and the penalty threshold to the session" in {
+        complianceDataStub()
         AuthStub.agentAuthorised()
         returnPenaltyDetailsStubAgent(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue
           .copy(latePaymentPenalty = Some(paidLatePaymentPenalty)))
@@ -1197,8 +412,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         authToken -> "1234"
       ))
       status(request) shouldBe Status.SEE_OTHER
-      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe
-        "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=false&isAdditional=false"
+      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=false&isAdditional=false"
     }
 
     "redirect the user to the appeals service when the penalty is a LPP1" in {
@@ -1210,8 +424,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         authToken -> "1234"
       ))
       status(request) shouldBe Status.SEE_OTHER
-      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe
-        "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=true&isAdditional=false"
+      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=true&isAdditional=false"
     }
 
     "redirect the user to the appeals service when the penalty is a LPP2" in {
@@ -1223,8 +436,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         authToken -> "1234"
       ))
       status(request) shouldBe Status.SEE_OTHER
-      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe
-        "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=true&isAdditional=true"
+      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=true&isAdditional=true"
     }
 
     "redirect the user to the obligations appeals service when the penalty is a LSP" in {
@@ -1234,8 +446,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase {
         authToken -> "1234"
       ))
       status(request) shouldBe Status.SEE_OTHER
-      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe
-        "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234"
+      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal-against-the-obligation?penaltyId=1234"
     }
   }
 }

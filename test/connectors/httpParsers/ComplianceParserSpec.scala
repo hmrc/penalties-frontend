@@ -65,7 +65,7 @@ class ComplianceParserSpec extends AnyWordSpec with Matchers with LogCapturing {
     )),
     obligationDetails = Seq(
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(1920, 2, 29),
         inboundCorrespondenceToDate = LocalDate.of(1920, 2, 29),
         inboundCorrespondenceDateReceived = None,
@@ -73,7 +73,7 @@ class ComplianceParserSpec extends AnyWordSpec with Matchers with LogCapturing {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.fulfilled,
+        status = ComplianceStatusEnum.Fulfilled,
         inboundCorrespondenceFromDate = LocalDate.of(1920, 2, 29),
         inboundCorrespondenceToDate = LocalDate.of(1920, 2, 29),
         inboundCorrespondenceDateReceived = Some(LocalDate.of(1920, 2, 29)),

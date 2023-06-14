@@ -18,11 +18,9 @@ package controllers
 
 import config.AppConfig
 import config.featureSwitches.FeatureSwitching
-import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
+import models.GetPenaltyDetails
 import models.breathingSpace.BreathingSpace
 import models.lpp._
-import models.lsp._
-import models.{GetPenaltyDetails, Totalisations}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.AnyContentAsEmpty
@@ -30,17 +28,16 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.AuthStub
 import stubs.PenaltiesStub.{returnPenaltyDetailsStub, returnPenaltyDetailsStubAgent}
-import testUtils.IntegrationSpecCommonBase
+import testUtils.{IntegrationSpecCommonBase, TestData}
 import uk.gov.hmrc.http.SessionKeys.authToken
 import utils.SessionKeys
 
-import java.time.{LocalDate, LocalDateTime}
+import java.time.LocalDate
 
-class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureSwitching {
+class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureSwitching with TestData {
 
   val appConfig: AppConfig = injector.instanceOf[AppConfig]
   val controller: CalculationController = injector.instanceOf[CalculationController]
-  val sampleDate1: LocalDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
   val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
     authToken -> "1234"
   )
@@ -48,409 +45,209 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     SessionKeys.agentSessionVrn -> "123456789",
     authToken -> "1234"
   )
-  
-  val samplePenaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-    totalisations = Some(Totalisations(
-      LSPTotalValue = Some(BigDecimal(200)),
-      penalisedPrincipalTotal = Some(BigDecimal(2000)),
-      LPPPostedTotal = Some(BigDecimal(165.25)),
-      LPPEstimatedTotal = Some(BigDecimal(15.26)),
-      totalAccountOverdue = Some(10432.21),
-      totalAccountPostedInterest = Some(4.32),
-      totalAccountAccruingInterest = Some(1.23)
-    )),
-    lateSubmissionPenalty = Some(
-      LateSubmissionPenalty(
-        summary = LSPSummary(
-          activePenaltyPoints = 10,
-          inactivePenaltyPoints = 12,
-          regimeThreshold = 10,
-          penaltyChargeAmount = 684.25,
-          PoCAchievementDate = LocalDate.of(2022, 1, 1)
-        ),
-        details = Seq(LSPDetails(
-          penaltyNumber = "12345678901234",
-          penaltyOrder = "01",
-          penaltyCategory = LSPPenaltyCategoryEnum.Point,
-          penaltyStatus = LSPPenaltyStatusEnum.Active,
-          FAPIndicator = Some("X"),
-          penaltyCreationDate = LocalDate.parse("2069-10-30"),
-          penaltyExpiryDate = LocalDate.parse("2069-10-30"),
-          expiryReason = Some(ExpiryReasonEnum.Adjustment),
-          communicationsDate = Some(LocalDate.parse("2069-10-30")),
-          lateSubmissions = Some(Seq(
-            LateSubmission(
-              taxPeriodStartDate = Some(LocalDate.parse("2069-10-30")),
-              taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
-              taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
-              returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
-              taxReturnStatus = TaxReturnStatusEnum.Fulfilled
-            )
-          )),
-          appealInformation = Some(Seq(
-            AppealInformationType(
-              appealStatus = Some(AppealStatusEnum.Unappealable),
-              appealLevel = Some(AppealLevelEnum.HMRC)
-            )
-          )),
-          chargeAmount = Some(200),
-          chargeOutstandingAmount = Some(200),
-          chargeDueDate = Some(LocalDate.parse("2069-10-30"))
-        ))
-      )
-    ),
-    latePaymentPenalty = Some(LatePaymentPenalty(
-      details = Seq(LPPDetails(
-        principalChargeReference = "12345678901234",
-        penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-        penaltyStatus = LPPPenaltyStatusEnum.Posted,
-        penaltyAmountPaid = Some(277.00),
-        penaltyAmountOutstanding = Some(123.00),
-        penaltyAmountPosted = 400,
-        penaltyAmountAccruing = 0,
-        LPP1LRDays = Some("15"),
-        LPP1HRDays = Some("31"),
-        LPP2Days = Some("31"),
-        LPP1LRCalculationAmount = Some(10000.00),
-        LPP1HRCalculationAmount = Some(10000.00),
-        LPP2Percentage = Some(4.00),
-        LPP1LRPercentage = Some(2.00),
-        LPP1HRPercentage = Some(2.00),
-        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
-        communicationsDate = Some(LocalDate.parse("2069-10-30")),
-        penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
-        appealInformation = Some(Seq(AppealInformationType(
-          appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel =  Some(AppealLevelEnum.HMRC)
-        ))),
-        principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
-        principalChargeBillingTo = LocalDate.parse("2021-02-01"),
-        principalChargeDueDate = LocalDate.parse("2021-03-08"),
-        penaltyChargeReference = Some("1234567890"),
-        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
-        LPPDetailsMetadata = LPPDetailsMetadata(
-          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99),
-          timeToPay = None
-        )
-      ))
-    )),
-    breathingSpace = None
-  )
 
   val penaltyDetailsWithDay15Charge: GetPenaltyDetails = samplePenaltyDetails.copy(
     latePaymentPenalty = Some(LatePaymentPenalty(
-      details = Seq(LPPDetails(
-        principalChargeReference = "12345678901234",
-        penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-        penaltyStatus = LPPPenaltyStatusEnum.Accruing,
-        penaltyAmountPaid = None,
-        penaltyAmountOutstanding = None,
-        penaltyAmountPosted = 0,
-        penaltyAmountAccruing = 400.00,
-        LPP1LRDays = Some("15"),
-        LPP1HRDays = None,
-        LPP2Days = None,
-        LPP1LRCalculationAmount = Some(20000.00),
-        LPP1HRCalculationAmount = None,
-        LPP2Percentage = None,
-        LPP1LRPercentage = Some(2.00),
-        LPP1HRPercentage = None,
-        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
-        communicationsDate = Some(LocalDate.parse("2069-10-30")),
-        penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
-        appealInformation = Some(Seq(AppealInformationType(
-          appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel = Some(AppealLevelEnum.HMRC)
-        ))),
-        principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
-        principalChargeBillingTo = LocalDate.parse("2021-02-01"),
-        principalChargeDueDate = LocalDate.parse("2021-03-08"),
-        penaltyChargeReference = Some("1234567890"),
-        principalChargeLatestClearing = None,
-        LPPDetailsMetadata = LPPDetailsMetadata(
-          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99),
-          timeToPay = None
+      details = Seq(
+        sampleLPPPosted.copy(
+          penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
+          penaltyStatus = LPPPenaltyStatusEnum.Accruing,
+          penaltyAmountPaid = None,
+          penaltyAmountOutstanding = None,
+          penaltyAmountPosted = 0,
+          penaltyAmountAccruing = 400.00,
+          LPP1LRDays = Some("15"),
+          LPP1HRDays = None,
+          LPP2Days = None,
+          LPP1LRCalculationAmount = Some(20000.00),
+          LPP1HRCalculationAmount = None,
+          LPP2Percentage = None,
+          LPP1LRPercentage = Some(2.00),
+          LPP1HRPercentage = None,
+          principalChargeLatestClearing = None,
+          penaltyChargeReference = None
         )
-      ))
-    )))
+      ))))
 
   val penaltyDetailsWithDay15ChargePosted: GetPenaltyDetails = samplePenaltyDetails.copy(
     latePaymentPenalty = Some(LatePaymentPenalty(
-      details = Seq(LPPDetails(
-        principalChargeReference = "12345678901234",
-        penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-        penaltyStatus = LPPPenaltyStatusEnum.Posted,
-        penaltyAmountPaid = Some(277.00),
-        penaltyAmountOutstanding = Some(123.00),
-        penaltyAmountPosted = 400,
-        penaltyAmountAccruing = 0,
-        LPP1LRDays = Some("15"),
-        LPP1HRDays = None,
-        LPP2Days = None,
-        LPP1LRCalculationAmount = Some(20000.00),
-        LPP1HRCalculationAmount = None,
-        LPP2Percentage = None,
-        LPP1LRPercentage = Some(2.00),
-        LPP1HRPercentage = None,
-        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
-        communicationsDate = Some(LocalDate.parse("2069-10-30")),
-        penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
-        appealInformation = Some(Seq(AppealInformationType(
-          appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel = Some(AppealLevelEnum.HMRC)
-        ))),
-        principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
-        principalChargeBillingTo = LocalDate.parse("2021-02-01"),
-        principalChargeDueDate = LocalDate.parse("2021-03-08"),
-        penaltyChargeReference = Some("1234567890"),
-        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
-        LPPDetailsMetadata = LPPDetailsMetadata(
-          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99),
-          timeToPay = None
+      details = Seq(
+        sampleLPPPosted.copy(
+          LPP1LRDays = Some("15"),
+          LPP1HRDays = None,
+          LPP2Days = None,
+          LPP1LRCalculationAmount = Some(20000.00),
+          LPP1HRCalculationAmount = None,
+          LPP2Percentage = None,
+          LPP1LRPercentage = Some(2.00),
+          LPP1HRPercentage = None,
+          principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+          penaltyChargeReference = Some("1234567890")
         )
-      ))
-    )))
+      ))))
 
   val penaltyDetailsWithDueDateMoreThan30days: GetPenaltyDetails = samplePenaltyDetails.copy(
     latePaymentPenalty = Some(LatePaymentPenalty(
-      details = Seq(LPPDetails(
-        principalChargeReference = "12345678901234",
-        penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-        penaltyStatus = LPPPenaltyStatusEnum.Posted,
-        penaltyAmountPaid = Some(277.00),
-        penaltyAmountOutstanding = Some(123.00),
-        penaltyAmountPosted = 400,
-        penaltyAmountAccruing = 0,
-        LPP1LRDays = Some("15"),
-        LPP1HRDays = Some("31"),
-        LPP2Days = None,
-        LPP1LRCalculationAmount = Some(10000.00),
-        LPP1HRCalculationAmount = Some(10000.00),
-        LPP2Percentage = None,
-        LPP1LRPercentage = Some(2.00),
-        LPP1HRPercentage = Some(2.00),
-        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
-        communicationsDate = Some(LocalDate.parse("2069-10-30")),
-        penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
-        appealInformation = Some(Seq(AppealInformationType(
-          appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel = Some(AppealLevelEnum.HMRC)
-        ))),
-        principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
-        principalChargeBillingTo = LocalDate.parse("2021-02-01"),
-        principalChargeDueDate = LocalDate.parse("2021-03-08"),
-        penaltyChargeReference = Some("1234567890"),
-        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
-        LPPDetailsMetadata = LPPDetailsMetadata(
-          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99),
-          timeToPay = None
+      details = Seq(
+        sampleLPPPosted.copy(
+          LPP1LRDays = Some("15"),
+          LPP1HRDays = Some("31"),
+          LPP2Days = None,
+          LPP1LRCalculationAmount = Some(10000.00),
+          LPP1HRCalculationAmount = Some(10000.00),
+          LPP2Percentage = None,
+          LPP1LRPercentage = Some(2.00),
+          LPP1HRPercentage = Some(2.00),
+          principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+          penaltyChargeReference = Some("1234567890"),
+          principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
+          principalChargeBillingTo = LocalDate.parse("2021-02-01"),
+          principalChargeDueDate = LocalDate.parse("2021-03-08")
         )
-      ))
-    )))
+      ))))
 
   val penaltyDetailsWithDueDateMoreThan30daysAccruing: GetPenaltyDetails = samplePenaltyDetails.copy(
     latePaymentPenalty = Some(LatePaymentPenalty(
-      details = Seq(LPPDetails(
-        principalChargeReference = "12345678901234",
-        penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-        penaltyStatus = LPPPenaltyStatusEnum.Accruing,
-        penaltyAmountPaid = None,
-        penaltyAmountOutstanding = None,
-        penaltyAmountPosted = 0,
-        penaltyAmountAccruing = 400.00,
-        LPP1LRDays = Some("15"),
-        LPP1HRDays = Some("31"),
-        LPP2Days = None,
-        LPP1LRCalculationAmount = Some(10000.00),
-        LPP1HRCalculationAmount = Some(10000.00),
-        LPP2Percentage = None,
-        LPP1LRPercentage = Some(2.00),
-        LPP1HRPercentage = Some(2.00),
-        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
-        communicationsDate = Some(LocalDate.parse("2069-10-30")),
-        penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
-        appealInformation = Some(Seq(AppealInformationType(
-          appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel = Some(AppealLevelEnum.HMRC)
-        ))),
-        principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
-        principalChargeBillingTo = LocalDate.parse("2021-02-01"),
-        principalChargeDueDate = LocalDate.parse("2021-03-08"),
-        penaltyChargeReference = Some("1234567890"),
-        principalChargeLatestClearing = None,
-        LPPDetailsMetadata = LPPDetailsMetadata(
-          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99),
-          timeToPay = None
+      details = Seq(
+        sampleLPPPosted.copy(
+          penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
+          penaltyStatus = LPPPenaltyStatusEnum.Accruing,
+          penaltyAmountPaid = None,
+          penaltyAmountOutstanding = None,
+          penaltyAmountPosted = 0,
+          penaltyAmountAccruing = 400.00,
+          LPP1LRDays = Some("15"),
+          LPP1HRDays = Some("31"),
+          LPP2Days = None,
+          LPP1LRCalculationAmount = Some(10000.00),
+          LPP1HRCalculationAmount = Some(10000.00),
+          LPP2Percentage = None,
+          LPP1LRPercentage = Some(2.00),
+          LPP1HRPercentage = Some(2.00),
+          principalChargeLatestClearing = None,
+          penaltyChargeReference = None
         )
-      ))
-    )))
+      ))))
 
   val penaltyDetailsWithAdditionalPenalty: GetPenaltyDetails = samplePenaltyDetails.copy(
     latePaymentPenalty = Some(LatePaymentPenalty(
-      details = Seq(LPPDetails(
-        principalChargeReference = "54312345678901",
-        penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
-        penaltyStatus = LPPPenaltyStatusEnum.Posted,
-        penaltyAmountPaid = Some(113.45),
-        penaltyAmountOutstanding = Some(10.00),
-        penaltyAmountPosted = 123.45,
-        penaltyAmountAccruing = 0,
-        LPP1LRDays = Some("15"),
-        LPP1HRDays = Some("31"),
-        LPP2Days = Some("31"),
-        LPP1LRCalculationAmount = Some(61.72),
-        LPP1HRCalculationAmount = Some(61.73),
-        LPP2Percentage = Some(4.00),
-        LPP1LRPercentage = Some(2.00),
-        LPP1HRPercentage = Some(2.00),
-        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
-        communicationsDate = Some(LocalDate.parse("2069-10-30")),
-        penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
-        appealInformation = Some(Seq(AppealInformationType(
-          appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel = Some(AppealLevelEnum.HMRC)
-        ))),
-        principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
-        principalChargeBillingTo = LocalDate.parse("2021-02-01"),
-        principalChargeDueDate = LocalDate.now().minusDays(40),
-        penaltyChargeReference = Some("1234567890"),
-        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
-        LPPDetailsMetadata = LPPDetailsMetadata(
-          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99),
-          timeToPay = None
+      details = Seq(
+        sampleLPPPosted.copy(
+          penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
+          penaltyAmountPaid = Some(113.45),
+          penaltyAmountOutstanding = Some(10.00),
+          penaltyAmountPosted = 123.45,
+          penaltyAmountAccruing = 0,
+          LPP1LRDays = Some("15"),
+          LPP1HRDays = Some("30"),
+          LPP2Days = Some("31"),
+          LPP1LRCalculationAmount = Some(3086.25),
+          LPP1HRCalculationAmount = Some(3086.25),
+          LPP2Percentage = Some(4.00),
+          LPP1LRPercentage = Some(2.00),
+          LPP1HRPercentage = Some(2.00),
+          principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+          penaltyChargeReference = Some("1234567890"),
+          principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
+          principalChargeBillingTo = LocalDate.parse("2021-02-01"),
+          principalChargeDueDate = LocalDate.now().minusDays(40)
         )
-      ))
-    ))
-  )
+      ))))
 
   val penaltyDetailsWithAdditionalDuePenalty: GetPenaltyDetails = samplePenaltyDetails.copy(
     latePaymentPenalty = Some(LatePaymentPenalty(
-      details = Seq(LPPDetails(
-        principalChargeReference = "65431234567890",
-        penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
-        penaltyStatus = LPPPenaltyStatusEnum.Accruing,
-        penaltyAmountPaid = None,
-        penaltyAmountOutstanding = None,
-        penaltyAmountPosted = 0,
-        penaltyAmountAccruing = 400,
-        LPP1LRDays = Some("15"),
-        LPP1HRDays = Some("31"),
-        LPP2Days = Some("31"),
-        LPP1LRCalculationAmount = Some(61.72),
-        LPP1HRCalculationAmount = Some(61.73),
-        LPP2Percentage = Some(4.00),
-        LPP1LRPercentage = Some(2.00),
-        LPP1HRPercentage = Some(2.00),
-        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
-        communicationsDate = Some(LocalDate.parse("2069-10-30")),
-        penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
-        appealInformation = Some(Seq(AppealInformationType(
-          appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel = Some(AppealLevelEnum.HMRC)
-        ))),
-        principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
-        principalChargeBillingTo = LocalDate.parse("2021-02-01"),
-        principalChargeDueDate = LocalDate.now().minusDays(40),
-        penaltyChargeReference = Some("1234567890"),
-        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
-        LPPDetailsMetadata = LPPDetailsMetadata(
-          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99),
-          timeToPay = None
+      details = Seq(
+        sampleLPPPosted.copy(
+          penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
+          penaltyStatus = LPPPenaltyStatusEnum.Accruing,
+          penaltyAmountPaid = None,
+          penaltyAmountOutstanding = None,
+          penaltyAmountPosted = 0,
+          penaltyAmountAccruing = 400,
+          LPP1LRDays = Some("15"),
+          LPP1HRDays = Some("30"),
+          LPP2Days = Some("31"),
+          LPP1LRCalculationAmount = Some(3086.25),
+          LPP1HRCalculationAmount = Some(3086.25),
+          LPP2Percentage = Some(4.00),
+          LPP1LRPercentage = Some(2.00),
+          LPP1HRPercentage = Some(2.00),
+          principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+          penaltyChargeReference = Some("1234567890"),
+          principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
+          principalChargeBillingTo = LocalDate.parse("2021-02-01"),
+          principalChargeDueDate = LocalDate.now().minusDays(40)
         )
-      ))
-    ))
-  )
+  ))))
 
   val penaltyDetailsWithAdditionalDuePenaltyTTPActive: GetPenaltyDetails = samplePenaltyDetails.copy(
     latePaymentPenalty = Some(LatePaymentPenalty(
-      details = Seq(LPPDetails(
-        principalChargeReference = "65431234567890",
-        penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
-        penaltyStatus = LPPPenaltyStatusEnum.Accruing,
-        penaltyAmountPaid = None,
-        penaltyAmountOutstanding = None,
-        penaltyAmountPosted = 0,
-        penaltyAmountAccruing = 400,
-        LPP1LRDays = Some("15"),
-        LPP1HRDays = Some("31"),
-        LPP2Days = Some("31"),
-        LPP1LRCalculationAmount = Some(61.72),
-        LPP1HRCalculationAmount = Some(61.73),
-        LPP2Percentage = Some(4.00),
-        LPP1LRPercentage = Some(2.00),
-        LPP1HRPercentage = Some(2.00),
-        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
-        communicationsDate = Some(LocalDate.parse("2069-10-30")),
-        penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
-        appealInformation = Some(Seq(AppealInformationType(
-          appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel = Some(AppealLevelEnum.HMRC)
-        ))),
-        principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
-        principalChargeBillingTo = LocalDate.parse("2021-02-01"),
-        principalChargeDueDate = LocalDate.now().minusDays(40),
-        penaltyChargeReference = Some("1234567890"),
-        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
-        LPPDetailsMetadata = LPPDetailsMetadata(
-          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99),
-          timeToPay = Some(
-            Seq(
-              TimeToPay(TTPStartDate = LocalDate.parse("2021-01-01"), TTPEndDate = Some(LocalDate.parse("2021-02-01")))
+      details = Seq(
+        sampleLPPPosted.copy(
+          penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
+          penaltyStatus = LPPPenaltyStatusEnum.Accruing,
+          penaltyAmountPaid = None,
+          penaltyAmountOutstanding = None,
+          penaltyAmountPosted = 0,
+          penaltyAmountAccruing = 400,
+          LPP1LRDays = Some("15"),
+          LPP1HRDays = Some("30"),
+          LPP2Days = Some("31"),
+          LPP1LRCalculationAmount = Some(3086.25),
+          LPP1HRCalculationAmount = Some(3086.25),
+          LPP2Percentage = Some(4.00),
+          LPP1LRPercentage = Some(2.00),
+          LPP1HRPercentage = Some(2.00),
+          principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+          penaltyChargeReference = Some("1234567890"),
+          principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
+          principalChargeBillingTo = LocalDate.parse("2021-02-01"),
+          principalChargeDueDate = LocalDate.now().minusDays(40),
+          LPPDetailsMetadata = LPPDetailsMetadata(
+            mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+            outstandingAmount = Some(99),
+            timeToPay = Some(
+              Seq(
+                TimeToPay(TTPStartDate = LocalDate.parse("2021-01-01"), TTPEndDate = Some(LocalDate.parse("2021-02-01")))
+              )
             )
           )
         )
-      ))
-    ))
-  )
+    ))))
 
   val penaltyDetailsWithAdditionalDuePenaltyTTPActiveBreathingSpaceActive: GetPenaltyDetails = samplePenaltyDetails.copy(
     latePaymentPenalty = Some(LatePaymentPenalty(
-      details = Seq(LPPDetails(
-        principalChargeReference = "65431234567890",
-        penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
-        penaltyStatus = LPPPenaltyStatusEnum.Accruing,
-        penaltyAmountPaid = None,
-        penaltyAmountOutstanding = None,
-        penaltyAmountPosted = 0,
-        penaltyAmountAccruing = 400,
-        LPP1LRDays = Some("15"),
-        LPP1HRDays = Some("31"),
-        LPP2Days = Some("31"),
-        LPP1LRCalculationAmount = Some(61.72),
-        LPP1HRCalculationAmount = Some(61.73),
-        LPP2Percentage = Some(4.00),
-        LPP1LRPercentage = Some(2.00),
-        LPP1HRPercentage = Some(2.00),
-        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
-        communicationsDate = Some(LocalDate.parse("2069-10-30")),
-        penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
-        appealInformation = Some(Seq(AppealInformationType(
-          appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel = Some(AppealLevelEnum.HMRC)
-        ))),
-        principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
-        principalChargeBillingTo = LocalDate.parse("2021-02-01"),
-        principalChargeDueDate = LocalDate.now().minusDays(40),
-        penaltyChargeReference = Some("1234567890"),
-        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
-        LPPDetailsMetadata = LPPDetailsMetadata(
-          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99),
-          timeToPay = Some(
-            Seq(
-              TimeToPay(TTPStartDate = LocalDate.parse("2021-01-01"), TTPEndDate = Some(LocalDate.parse("2021-02-01")))
+      details = Seq(
+        sampleLPPPosted.copy(
+          penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
+          penaltyStatus = LPPPenaltyStatusEnum.Accruing,
+          penaltyAmountPaid = None,
+          penaltyAmountOutstanding = None,
+          penaltyAmountPosted = 0,
+          penaltyAmountAccruing = 400,
+          LPP1LRDays = Some("15"),
+          LPP1HRDays = Some("30"),
+          LPP2Days = Some("31"),
+          LPP1LRCalculationAmount = Some(3086.25),
+          LPP1HRCalculationAmount = Some(3086.25),
+          LPP2Percentage = Some(4.00),
+          LPP1LRPercentage = Some(2.00),
+          LPP1HRPercentage = Some(2.00),
+          principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+          penaltyChargeReference = Some("1234567890"),
+          principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
+          principalChargeBillingTo = LocalDate.parse("2021-02-01"),
+          principalChargeDueDate = LocalDate.now().minusDays(40),
+          LPPDetailsMetadata = LPPDetailsMetadata(
+            mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+            outstandingAmount = Some(99),
+            timeToPay = Some(
+              Seq(
+                TimeToPay(TTPStartDate = LocalDate.parse("2021-01-01"), TTPEndDate = Some(LocalDate.parse("2021-02-01")))
+              )
             )
           )
-        )
-      ))
+        ))
     )),
     breathingSpace = Some(Seq(
       BreathingSpace(LocalDate.parse("2021-01-01"), LocalDate.parse("2021-02-01"))
@@ -459,40 +256,33 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
 
   val penaltyDetailsWithAdditionalDuePenaltyBreathingSpaceActive: GetPenaltyDetails = samplePenaltyDetails.copy(
     latePaymentPenalty = Some(LatePaymentPenalty(
-      details = Seq(LPPDetails(
-        principalChargeReference = "65431234567890",
-        penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
-        penaltyStatus = LPPPenaltyStatusEnum.Accruing,
-        penaltyAmountPaid = None,
-        penaltyAmountOutstanding = None,
-        penaltyAmountPosted = 0,
-        penaltyAmountAccruing = 400,
-        LPP1LRDays = Some("15"),
-        LPP1HRDays = Some("31"),
-        LPP2Days = Some("31"),
-        LPP1LRCalculationAmount = Some(61.72),
-        LPP1HRCalculationAmount = Some(61.73),
-        LPP2Percentage = Some(4.00),
-        LPP1LRPercentage = Some(2.00),
-        LPP1HRPercentage = Some(2.00),
-        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
-        communicationsDate = Some(LocalDate.parse("2069-10-30")),
-        penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
-        appealInformation = Some(Seq(AppealInformationType(
-          appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel = Some(AppealLevelEnum.HMRC)
-        ))),
-        principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
-        principalChargeBillingTo = LocalDate.parse("2021-02-01"),
-        principalChargeDueDate = LocalDate.now().minusDays(40),
-        penaltyChargeReference = Some("1234567890"),
-        principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
-        LPPDetailsMetadata = LPPDetailsMetadata(
-          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99),
-          timeToPay = None
-        )
-      ))
+      details = Seq(
+        sampleLPPPosted.copy(
+          penaltyCategory = LPPPenaltyCategoryEnum.LPP2,
+          penaltyStatus = LPPPenaltyStatusEnum.Accruing,
+          penaltyAmountPaid = None,
+          penaltyAmountOutstanding = None,
+          penaltyAmountPosted = 0,
+          penaltyAmountAccruing = 400,
+          LPP1LRDays = Some("15"),
+          LPP1HRDays = Some("30"),
+          LPP2Days = Some("31"),
+          LPP1LRCalculationAmount = Some(3086.25),
+          LPP1HRCalculationAmount = Some(3086.25),
+          LPP2Percentage = Some(4.00),
+          LPP1LRPercentage = Some(2.00),
+          LPP1HRPercentage = Some(2.00),
+          principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+          penaltyChargeReference = Some("1234567890"),
+          principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
+          principalChargeBillingTo = LocalDate.parse("2021-02-01"),
+          principalChargeDueDate = LocalDate.now().minusDays(40),
+          LPPDetailsMetadata = LPPDetailsMetadata(
+            mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+            outstandingAmount = Some(99),
+            timeToPay = None
+          )
+        ))
     )),
     breathingSpace = Some(Seq(
       BreathingSpace(LocalDate.parse("2021-01-01"), LocalDate.parse("2021-02-01"))
@@ -501,105 +291,95 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
 
   val penaltyDetailsWithDay15ChargeTTPActive: GetPenaltyDetails = samplePenaltyDetails.copy(
     latePaymentPenalty = Some(LatePaymentPenalty(
-      details = Seq(LPPDetails(
-        principalChargeReference = "12345678901239",
-        penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
-        penaltyStatus = LPPPenaltyStatusEnum.Accruing,
-        penaltyAmountPaid = None,
-        penaltyAmountOutstanding = None,
-        penaltyAmountPosted = 0,
-        penaltyAmountAccruing = 400.00,
-        LPP1LRDays = Some("15"),
-        LPP1HRDays = None,
-        LPP2Days = None,
-        LPP1LRCalculationAmount = Some(20000.00),
-        LPP1HRCalculationAmount = None,
-        LPP2Percentage = None,
-        LPP1LRPercentage = Some(2.00),
-        LPP1HRPercentage = None,
-        penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
-        communicationsDate = Some(LocalDate.parse("2069-10-30")),
-        penaltyChargeDueDate = Some(LocalDate.parse("2021-03-08")),
-        appealInformation = Some(Seq(AppealInformationType(
-          appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel = Some(AppealLevelEnum.HMRC)
-        ))),
-        principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
-        principalChargeBillingTo = LocalDate.parse("2021-02-01"),
-        principalChargeDueDate = LocalDate.parse("2021-03-08"),
-        penaltyChargeReference = Some("1234567890"),
-        principalChargeLatestClearing = None,
-        LPPDetailsMetadata = LPPDetailsMetadata(
-          mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
-          outstandingAmount = Some(99),
-          timeToPay = Some(
-            Seq(
-              TimeToPay(TTPStartDate = LocalDate.parse("2021-01-01"), TTPEndDate = Some(LocalDate.parse("2021-02-01")))
+      details = Seq(
+        sampleLPPPosted.copy(
+          penaltyCategory = LPPPenaltyCategoryEnum.LPP1,
+          penaltyStatus = LPPPenaltyStatusEnum.Accruing,
+          penaltyAmountPaid = None,
+          penaltyAmountOutstanding = None,
+          penaltyAmountPosted = 0,
+          penaltyAmountAccruing = 400.00,
+          LPP1LRDays = Some("15"),
+          LPP1HRDays = None,
+          LPP2Days = None,
+          LPP1LRCalculationAmount = Some(20000.00),
+          LPP1HRCalculationAmount = None,
+          LPP2Percentage = None,
+          LPP1LRPercentage = Some(2.00),
+          LPP1HRPercentage = None,
+          principalChargeLatestClearing = None,
+          penaltyChargeReference = None,
+          LPPDetailsMetadata = LPPDetailsMetadata(
+            mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
+            outstandingAmount = Some(99),
+            timeToPay = Some(
+              Seq(
+                TimeToPay(TTPStartDate = LocalDate.parse("2021-01-01"), TTPEndDate = Some(LocalDate.parse("2021-02-01")))
+              )
             )
           )
         )
-      ))
-    )))
+    ))))
 
   "GET /calculation when it is not an additional penalty" should {
-      "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in {
-        returnPenaltyDetailsStub(penaltyDetailsWithDay15ChargePosted)
-        val request = controller.onPageLoad(
-          "12345678901234", "LPP1")(fakeRequest)
-        status(request) shouldBe Status.OK
-        val parsedBody = Jsoup.parse(contentAsString(request))
-        parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
-        parsedBody.select(".penalty-information-caption").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
-        parsedBody.select(".penalty-information-caption span").first.text() shouldBe "The period dates are"
-        parsedBody.select("#how-penalty-is-applied").text() shouldBe "This penalty applies if VAT has not been paid for 15 days."
-        parsedBody.select("#15-day-calculation").text() shouldBe "The calculation we use is: 2% of £20,000.00 (the unpaid VAT 15 days after the due date)"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£400.00"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£277.00"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£123.00"
-        parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
-        parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
-      }
+    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in {
+      returnPenaltyDetailsStub(penaltyDetailsWithDay15ChargePosted)
+      val request = controller.onPageLoad(
+        "12345678901234", "LPP1")(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
+      parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
+      parsedBody.select(".penalty-information-caption").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
+      parsedBody.select(".penalty-information-caption span").first.text() shouldBe "The period dates are"
+      parsedBody.select("#how-penalty-is-applied").text() shouldBe "This penalty applies if VAT has not been paid for 15 days."
+      parsedBody.select("#15-day-calculation").text() shouldBe "The calculation we use is: 2% of £20,000.00 (the unpaid VAT 15 days after the due date)"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Penalty amount"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "£400.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Amount received"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£277.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Left to pay"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£123.00"
+      parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
+      parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
+    }
 
-      "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID (after 30 days)" in {
-        returnPenaltyDetailsStub(penaltyDetailsWithDueDateMoreThan30days)
-        val request = controller.onPageLoad("12345678901234", "LPP1")(fakeRequest)
-        status(request) shouldBe Status.OK
-        val parsedBody = Jsoup.parse(contentAsString(request))
-        parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
-        parsedBody.select(".penalty-information-caption").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
-        parsedBody.select(".penalty-information-caption span").first.text() shouldBe "The period dates are"
-        parsedBody.select("#how-penalty-is-applied").text() shouldBe "This penalty applies if VAT has not been paid for 30 days."
-        parsedBody.select("#30-day-calculation").text() shouldBe "It is made up of 2 parts:"
-        parsedBody.select("#main-content > div > div > ul > li:nth-child(1)").text() shouldBe "2% of £10,000.00 (the unpaid VAT 15 days after the due date) = £200.00"
-        parsedBody.select("#main-content > div > div > ul > li:nth-child(2)").text() shouldBe "2% of £10,000.00 (the unpaid VAT 30 days after the due date) = £200.00"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Due date"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "8 March 2021"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Penalty amount"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£400.00"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Amount received"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£277.00"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dt").text() shouldBe "Left to pay"
-        parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dd").text() shouldBe "£123.00"
-        parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
-        parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
-      }
+    "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID (after 30 days)" in {
+      returnPenaltyDetailsStub(penaltyDetailsWithDueDateMoreThan30days)
+      val request = controller.onPageLoad("12345678901234", "LPP1")(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
+      parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
+      parsedBody.select(".penalty-information-caption").first.text() shouldBe "The period dates are 1 January 2021 to 1 February 2021"
+      parsedBody.select(".penalty-information-caption span").first.text() shouldBe "The period dates are"
+      parsedBody.select("#how-penalty-is-applied").text() shouldBe "This penalty applies if VAT has not been paid for 30 days."
+      parsedBody.select("#30-day-calculation").text() shouldBe "It is made up of 2 parts:"
+      parsedBody.select("#main-content > div > div > ul > li:nth-child(1)").text() shouldBe "2% of £10,000.00 (the unpaid VAT 15 days after the due date) = £200.00"
+      parsedBody.select("#main-content > div > div > ul > li:nth-child(2)").text() shouldBe "2% of £10,000.00 (the unpaid VAT 30 days after the due date) = £200.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dt").text() shouldBe "Due date"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(0).select("dd").text() shouldBe "8 March 2021"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dt").text() shouldBe "Penalty amount"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(1).select("dd").text() shouldBe "£400.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dt").text() shouldBe "Amount received"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(2).select("dd").text() shouldBe "£277.00"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dt").text() shouldBe "Left to pay"
+      parsedBody.select("#main-content .govuk-summary-list__row").get(3).select("dd").text() shouldBe "£123.00"
+      parsedBody.select("#main-content a").get(0).text() shouldBe "Return to VAT penalties and appeals"
+      parsedBody.select("#main-content a").get(0).attr("href") shouldBe "/penalties"
+    }
 
-      "return 500 (ISE) when the user specifies a penalty not within their data" in {
-        returnPenaltyDetailsStub(samplePenaltyDetails)
+    "return 500 (ISE) when the user specifies a penalty not within their data" in {
+      returnPenaltyDetailsStub(samplePenaltyDetails)
 
-        val request = controller.onPageLoad("1234567890", "LPP1")(fakeRequest)
-        status(request) shouldBe Status.INTERNAL_SERVER_ERROR
-      }
+      val request = controller.onPageLoad("1234567890", "LPP1")(fakeRequest)
+      status(request) shouldBe Status.INTERNAL_SERVER_ERROR
+    }
 
-      "return 303 (SEE_OTHER) when the user is not authorised" in {
-        AuthStub.unauthorised()
+    "return 303 (SEE_OTHER) when the user is not authorised" in {
+      AuthStub.unauthorised()
 
-        val request = controller.onPageLoad("12345", "LPP1")(fakeRequest)
-        status(request) shouldBe Status.SEE_OTHER
-      }
+      val request = controller.onPageLoad("12345", "LPP1")(fakeRequest)
+      status(request) shouldBe Status.SEE_OTHER
+    }
   }
 
   "GET /calculation when it is not an additional penalty and is estimated" should {
@@ -648,7 +428,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due (TTP Active)" in {
       setFeatureDate(Some(LocalDate.of(2021, 1, 31)))
       returnPenaltyDetailsStub(penaltyDetailsWithDay15ChargeTTPActive)
-      val request = controller.onPageLoad("12345678901239", "LPP1")(fakeRequest)
+      val request = controller.onPageLoad("12345678901234", "LPP1")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
@@ -687,7 +467,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
   "GET /calculation when it is an additional penalty" should {
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in {
       returnPenaltyDetailsStub(penaltyDetailsWithAdditionalPenalty)
-      val request = controller.onPageLoad("54312345678901", "LPP2")(fakeRequest)
+      val request = controller.onPageLoad("12345678901234", "LPP2")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
@@ -708,7 +488,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
 
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due" in {
       returnPenaltyDetailsStub(penaltyDetailsWithAdditionalDuePenalty)
-      val request = controller.onPageLoad("65431234567890", "LPP2")(fakeRequest)
+      val request = controller.onPageLoad("12345678901234", "LPP2")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
@@ -732,7 +512,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due (TTP Active)" in {
       setFeatureDate(Some(LocalDate.of(2021, 1, 31)))
       returnPenaltyDetailsStub(penaltyDetailsWithAdditionalDuePenaltyTTPActive)
-      val request = controller.onPageLoad("65431234567890", "LPP2")(fakeRequest)
+      val request = controller.onPageLoad("12345678901234", "LPP2")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
@@ -756,7 +536,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due (TTP Active - user in Breathing Space)" in {
       setFeatureDate(Some(LocalDate.of(2021, 1, 31)))
       returnPenaltyDetailsStub(penaltyDetailsWithAdditionalDuePenaltyTTPActiveBreathingSpaceActive)
-      val request = controller.onPageLoad("65431234567890", "LPP2")(fakeRequest)
+      val request = controller.onPageLoad("12345678901234", "LPP2")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
@@ -781,7 +561,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
 
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due (User in Breathing Space - TTP not active)" in {
       returnPenaltyDetailsStub(penaltyDetailsWithAdditionalDuePenaltyBreathingSpaceActive)
-      val request = controller.onPageLoad("65431234567890", "LPP2")(fakeRequest)
+      val request = controller.onPageLoad("12345678901234", "LPP2")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"
@@ -807,7 +587,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due (user is agent)" in {
       AuthStub.agentAuthorised()
       returnPenaltyDetailsStubAgent(penaltyDetailsWithAdditionalDuePenalty)
-      val request = controller.onPageLoad("65431234567890", "LPP2")(fakeAgentRequest)
+      val request = controller.onPageLoad("12345678901234", "LPP2")(fakeAgentRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#main-content h1").first().ownText() shouldBe "Late payment penalty"

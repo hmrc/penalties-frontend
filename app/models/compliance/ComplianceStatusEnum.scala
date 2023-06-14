@@ -19,8 +19,8 @@ package models.compliance
 import play.api.libs.json._
 
 object ComplianceStatusEnum extends Enumeration {
-  val open: ComplianceStatusEnum.Value = Value("O")
-  val fulfilled: ComplianceStatusEnum.Value = Value("F")
+  val Open: ComplianceStatusEnum.Value = Value("O")
+  val Fulfilled: ComplianceStatusEnum.Value = Value("F")
 
   implicit val format: Format[ComplianceStatusEnum.Value] = new Format[ComplianceStatusEnum.Value] {
     override def writes(o: ComplianceStatusEnum.Value): JsValue = {
@@ -29,8 +29,8 @@ object ComplianceStatusEnum extends Enumeration {
 
     override def reads(json: JsValue): JsResult[ComplianceStatusEnum.Value] = {
       json.as[String] match {
-        case "O" => JsSuccess(open)
-        case "F" => JsSuccess(fulfilled)
+        case "O" => JsSuccess(Open)
+        case "F" => JsSuccess(Fulfilled)
         case e => JsError(s"$e not recognised")
       }
     }

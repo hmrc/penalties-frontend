@@ -40,7 +40,7 @@ object ComplianceStub {
     )),
     obligationDetails = Seq(
       ObligationDetail(
-        status = ComplianceStatusEnum.fulfilled,
+        status = ComplianceStatusEnum.Fulfilled,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 1, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 1, 31),
         inboundCorrespondenceDateReceived = None,
@@ -48,7 +48,7 @@ object ComplianceStub {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.fulfilled,
+        status = ComplianceStatusEnum.Fulfilled,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 2, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 2, 28),
         inboundCorrespondenceDateReceived = Some(LocalDate.of(1920, 3, 29)),
@@ -56,7 +56,7 @@ object ComplianceStub {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 3, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 3, 31),
         inboundCorrespondenceDateReceived = None,
@@ -64,7 +64,7 @@ object ComplianceStub {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 4, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 4, 30),
         inboundCorrespondenceDateReceived = None,

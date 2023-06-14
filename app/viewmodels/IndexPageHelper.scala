@@ -67,7 +67,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
           _.fold(
             Left(_),
             data => {
-              val numberOfOpenObligations = data.obligationDetails.filter(_.status.equals(ComplianceStatusEnum.open))
+              val numberOfOpenObligations = data.obligationDetails.filter(_.status.equals(ComplianceStatusEnum.Open))
               if (numberOfOpenObligations.isEmpty) {
                 Right(html(
                   p(content = html(stringAsHtml(getMessage("lsp.onThreshold.compliant.p1", parsedPOCAchievementDate)))),

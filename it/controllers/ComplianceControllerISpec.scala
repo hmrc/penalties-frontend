@@ -56,7 +56,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
     )),
     obligationDetails = Seq(
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2021, 12, 1),
         inboundCorrespondenceToDate = LocalDate.of(2021, 12, 31),
         inboundCorrespondenceDateReceived = None,
@@ -64,7 +64,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.fulfilled,
+        status = ComplianceStatusEnum.Fulfilled,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 1, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 1, 31),
         inboundCorrespondenceDateReceived = Some(LocalDate.of(2022, 2, 2)),
@@ -72,7 +72,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.fulfilled,
+        status = ComplianceStatusEnum.Fulfilled,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 2, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 2, 28),
         inboundCorrespondenceDateReceived = Some(LocalDate.of(2022, 3, 29)),
@@ -80,7 +80,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 3, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 3, 31),
         inboundCorrespondenceDateReceived = None,
@@ -88,7 +88,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 4, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 4, 30),
         inboundCorrespondenceDateReceived = None,
@@ -96,7 +96,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 5, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 5, 31),
         inboundCorrespondenceDateReceived = None,
@@ -104,7 +104,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 6, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 6, 30),
         inboundCorrespondenceDateReceived = None,
@@ -122,7 +122,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
     )),
     obligationDetails = Seq(
       ObligationDetail(
-        status = ComplianceStatusEnum.fulfilled,
+        status = ComplianceStatusEnum.Fulfilled,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 1, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 1, 31),
         inboundCorrespondenceDateReceived = Some(LocalDate.of(2022, 3, 2)),
@@ -130,7 +130,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.fulfilled,
+        status = ComplianceStatusEnum.Fulfilled,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 2, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 2, 28),
         inboundCorrespondenceDateReceived = Some(LocalDate.of(2022, 4, 5)),
@@ -138,7 +138,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 3, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 3, 31),
         inboundCorrespondenceDateReceived = None,
@@ -146,7 +146,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 4, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 4, 30),
         inboundCorrespondenceDateReceived = None,
@@ -154,7 +154,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 5, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 5, 31),
         inboundCorrespondenceDateReceived = None,
@@ -162,7 +162,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 6, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 6, 30),
         inboundCorrespondenceDateReceived = None,
