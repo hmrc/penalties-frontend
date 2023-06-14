@@ -25,7 +25,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.ComplianceStub
 import stubs.ComplianceStub._
-import stubs.PenaltiesStub
 import stubs.PenaltiesStub._
 import testUtils.IntegrationSpecCommonBase
 import uk.gov.hmrc.http.HeaderCarrier
@@ -40,20 +39,20 @@ class PenaltiesConnectorISpec extends IntegrationSpecCommonBase {
 
   "getPenaltyDetails" should {
     "generate a valid PenaltyDetails model when valid JSON is returned" in {
-      PenaltiesStub.getPenaltyDetailsStub
+      getPenaltyDetailsStub()
       val result = await(connector.getPenaltyDetails(vrn))
       result shouldBe Right(samplePenaltyDetails)
     }
 
     s"return $BAD_REQUEST (Bad Request) when invalid JSON is returned" in {
-      wireMockServer.editStubMapping(invalidPenaltyDetailsStub)
+      getPenaltyDetailsStub(sampleInvalidPenaltyDetailsJson)
       val result = await(connector.getPenaltyDetails(vrn))
       result.isLeft shouldBe true
       result shouldBe Left(InvalidJson)
     }
 
     "throw an exception when an upstream error is returned from penalties" in {
-      wireMockServer.editStubMapping(penaltyDetailsUpstreamErrorStub)
+      penaltyDetailsUpstreamErrorStub()
       val result = await(connector.getPenaltyDetails(vrn))
       result.isLeft shouldBe true
       result shouldBe Left(UnexpectedFailure(INTERNAL_SERVER_ERROR, s"Unexpected response, status $INTERNAL_SERVER_ERROR returned"))
@@ -69,7 +68,7 @@ class PenaltiesConnectorISpec extends IntegrationSpecCommonBase {
     }
 
     s"return a $CompliancePayloadMalformed when the data is malformed" in {
-      ComplianceStub.complianceDataStub("not valid")
+      ComplianceStub.invalidComplianceDataStub()
       val result: CompliancePayloadResponse = await(connector.getObligationData("123456789", startDate, endDate))
       result.isLeft shouldBe true
       result.left.getOrElse(false) shouldBe CompliancePayloadMalformed

@@ -85,16 +85,6 @@ object ComplianceStub {
     )
   )
 
-  def complianceDataStub(compliancePayload: String): StubMapping = stubFor(get(urlPathEqualTo(getComplianceDataUrl))
-    .willReturn(
-      aResponse()
-        .withStatus(Status.OK)
-        .withBody(
-          Json.toJson(compliancePayload).toString()
-        )
-    )
-  )
-
   def invalidComplianceDataStub(): StubMapping = stubFor(get(urlPathEqualTo(getComplianceDataUrl))
   .willReturn(
     aResponse()
@@ -109,10 +99,4 @@ object ComplianceStub {
         .withStatus(status)
     )
   )
-
-  def upstreamErrorStub(): StubMapping = stubFor(get(urlPathEqualTo(getComplianceDataUrl))
-  .willReturn(
-    aResponse()
-      .withStatus(Status.INTERNAL_SERVER_ERROR).withBody("Upstream Error")
-  ))
 }

@@ -27,7 +27,7 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import stubs.AuthStub
-import stubs.PenaltiesStub.{returnPenaltyDetailsStub, returnPenaltyDetailsStubAgent}
+import stubs.PenaltiesStub.getPenaltyDetailsStub
 import testUtils.{IntegrationSpecCommonBase, TestData}
 import uk.gov.hmrc.http.SessionKeys.authToken
 import utils.SessionKeys
@@ -323,7 +323,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
 
   "GET /calculation when it is not an additional penalty" should {
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in {
-      returnPenaltyDetailsStub(penaltyDetailsWithDay15ChargePosted)
+      getPenaltyDetailsStub(Some(penaltyDetailsWithDay15ChargePosted))
       val request = controller.onPageLoad(
         "12345678901234", "LPP1")(fakeRequest)
       status(request) shouldBe Status.OK
@@ -344,7 +344,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     }
 
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID (after 30 days)" in {
-      returnPenaltyDetailsStub(penaltyDetailsWithDueDateMoreThan30days)
+      getPenaltyDetailsStub(Some(penaltyDetailsWithDueDateMoreThan30days))
       val request = controller.onPageLoad("12345678901234", "LPP1")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -368,8 +368,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     }
 
     "return 500 (ISE) when the user specifies a penalty not within their data" in {
-      returnPenaltyDetailsStub(samplePenaltyDetails)
-
+      getPenaltyDetailsStub(Some(samplePenaltyDetails))
       val request = controller.onPageLoad("1234567890", "LPP1")(fakeRequest)
       status(request) shouldBe Status.INTERNAL_SERVER_ERROR
     }
@@ -384,7 +383,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
 
   "GET /calculation when it is not an additional penalty and is estimated" should {
     "return 200 (OK) and render the view correctly when the use has specified a valid penalty ID" in {
-      returnPenaltyDetailsStub(penaltyDetailsWithDay15Charge)
+      getPenaltyDetailsStub(Some(penaltyDetailsWithDay15Charge))
       val request = controller.onPageLoad(
         "12345678901234", "LPP1")(fakeRequest)
       status(request) shouldBe Status.OK
@@ -406,7 +405,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     }
 
     "the user has specified a valid penalty ID (parses decimals correctly)" in {
-      returnPenaltyDetailsStub(penaltyDetailsWithDay15Charge)
+      getPenaltyDetailsStub(Some(penaltyDetailsWithDay15Charge))
       val request = controller.onPageLoad("12345678901234", "LPP1")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -427,7 +426,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
 
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due (TTP Active)" in {
       setFeatureDate(Some(LocalDate.of(2021, 1, 31)))
-      returnPenaltyDetailsStub(penaltyDetailsWithDay15ChargeTTPActive)
+      getPenaltyDetailsStub(Some(penaltyDetailsWithDay15ChargeTTPActive))
       val request = controller.onPageLoad("12345678901234", "LPP1")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -450,15 +449,13 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     }
 
     "return 500 (ISE) when the user specifies a penalty not within their data" in {
-      returnPenaltyDetailsStub(samplePenaltyDetails)
-
+      getPenaltyDetailsStub(Some(samplePenaltyDetails))
       val request = controller.onPageLoad("1234567890", "LPP1")(fakeRequest)
       status(request) shouldBe Status.INTERNAL_SERVER_ERROR
     }
 
     "return 303 (SEE_OTHER) when the user is not authorised" in {
       AuthStub.unauthorised()
-
       val request = controller.onPageLoad("12345", "LPP1")(fakeRequest)
       status(request) shouldBe Status.SEE_OTHER
     }
@@ -466,7 +463,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
 
   "GET /calculation when it is an additional penalty" should {
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID" in {
-      returnPenaltyDetailsStub(penaltyDetailsWithAdditionalPenalty)
+      getPenaltyDetailsStub(Some(penaltyDetailsWithAdditionalPenalty))
       val request = controller.onPageLoad("12345678901234", "LPP2")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -487,7 +484,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     }
 
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due" in {
-      returnPenaltyDetailsStub(penaltyDetailsWithAdditionalDuePenalty)
+      getPenaltyDetailsStub(Some(penaltyDetailsWithAdditionalDuePenalty))
       val request = controller.onPageLoad("12345678901234", "LPP2")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -511,7 +508,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
 
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due (TTP Active)" in {
       setFeatureDate(Some(LocalDate.of(2021, 1, 31)))
-      returnPenaltyDetailsStub(penaltyDetailsWithAdditionalDuePenaltyTTPActive)
+      getPenaltyDetailsStub(Some(penaltyDetailsWithAdditionalDuePenaltyTTPActive))
       val request = controller.onPageLoad("12345678901234", "LPP2")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -535,7 +532,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
 
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due (TTP Active - user in Breathing Space)" in {
       setFeatureDate(Some(LocalDate.of(2021, 1, 31)))
-      returnPenaltyDetailsStub(penaltyDetailsWithAdditionalDuePenaltyTTPActiveBreathingSpaceActive)
+      getPenaltyDetailsStub(Some(penaltyDetailsWithAdditionalDuePenaltyTTPActiveBreathingSpaceActive))
       val request = controller.onPageLoad("12345678901234", "LPP2")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -560,7 +557,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     }
 
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due (User in Breathing Space - TTP not active)" in {
-      returnPenaltyDetailsStub(penaltyDetailsWithAdditionalDuePenaltyBreathingSpaceActive)
+      getPenaltyDetailsStub(Some(penaltyDetailsWithAdditionalDuePenaltyBreathingSpaceActive))
       val request = controller.onPageLoad("12345678901234", "LPP2")(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -586,7 +583,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
 
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due (user is agent)" in {
       AuthStub.agentAuthorised()
-      returnPenaltyDetailsStubAgent(penaltyDetailsWithAdditionalDuePenalty)
+      getPenaltyDetailsStub(Some(penaltyDetailsWithAdditionalDuePenalty), isAgent = true)
       val request = controller.onPageLoad("12345678901234", "LPP2")(fakeAgentRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -608,8 +605,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     }
 
     "return 500 (ISE) when the user specifies a penalty not within their data" in {
-      returnPenaltyDetailsStub(samplePenaltyDetails)
-
+      getPenaltyDetailsStub(Some(samplePenaltyDetails))
       val request = controller.onPageLoad("123456800", "LPP2")(fakeRequest)
       status(request) shouldBe Status.INTERNAL_SERVER_ERROR
     }

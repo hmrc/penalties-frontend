@@ -49,14 +49,14 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
 
   "GET /" should {
     "return 200 (OK) when the user is authorised" in {
-      getPenaltyDetailsStub
+      getPenaltyDetailsStub()
       complianceDataStub()
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
     }
 
     "return 200 (OK) and render the view when there are added points that are retrieved from the backend" in {
-      returnPenaltyDetailsStub(getPenaltyDetailsPayloadWithAddedPoint)
+      getPenaltyDetailsStub(Some(getPenaltyDetailsPayloadWithAddedPoint))
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -76,7 +76,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
     }
 
     "return 200 (OK) and render the view when there are removed points that are retrieved from the backend" in {
-      returnPenaltyDetailsStub(getPenaltyDetailsPayloadWithRemovedPoints)
+      getPenaltyDetailsStub(Some(getPenaltyDetailsPayloadWithRemovedPoints))
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -96,7 +96,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
     }
 
     "return 200 (OK) and render the view when removed points are below active points (active points are reindexed)" in {
-      returnPenaltyDetailsStub(getPenaltiesDataPayloadWith2PointsAndOneRemovedPoint)
+      getPenaltyDetailsStub(Some(getPenaltiesDataPayloadWith2PointsAndOneRemovedPoint))
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -110,7 +110,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
     }
 
     "return 200 (OK) and render the view correctly when active points retrieved out of order" in {
-      returnPenaltyDetailsStub(getPenaltiesDataPayloadOutOfOrder)
+      getPenaltyDetailsStub(Some(getPenaltiesDataPayloadOutOfOrder))
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -121,7 +121,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
 
     "return 200 (OK) and render the view when there is a LSP with a penalty over the threshold with correct hidden text in header" in {
       ComplianceStub.complianceDataStub(Some(compliancePayload))
-      returnPenaltyDetailsStub(getPenaltyDetailsPayloadWithOverThreshold)
+      getPenaltyDetailsStub(Some(getPenaltyDetailsPayloadWithOverThreshold))
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -129,7 +129,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
     }
 
     "return 200 (OK) and render the view when there are LPPs paid that are retrieved from the backend" in {
-      returnPenaltyDetailsStub(getPenaltiesDataPayloadWithPaidLPP)
+      getPenaltyDetailsStub(Some(getPenaltiesDataPayloadWithPaidLPP))
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -150,7 +150,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
 
     "return 200 (OK) and render the what you owe section when relevant fields are present" in {
       complianceDataStub()
-      returnPenaltyDetailsStub(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue)
+      getPenaltyDetailsStub(Some(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue))
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -166,7 +166,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
     }
 
     "return 200 (OK) and render the view when there are LPPs and additional penalties paid that are retrieved from the backend" in {
-      returnPenaltyDetailsStub(getPenaltiesDataPayloadWithLPPAndAdditionalPenalty)
+      getPenaltyDetailsStub(Some(getPenaltiesDataPayloadWithLPPAndAdditionalPenalty))
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -186,7 +186,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
     }
 
     "return 200 (OK) and render the view when there are LPPs with VAT partially unpaid that are retrieved from the backend" in {
-      returnPenaltyDetailsStub(getPenaltiesDataPayloadWithLPPVATUnpaid)
+      getPenaltyDetailsStub(Some(getPenaltiesDataPayloadWithLPPVATUnpaid))
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -209,7 +209,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
 
     "return 200 (OK) and render the view when there are LPPs with VAT unpaid that are retrieved from the backend" in {
       complianceDataStub()
-      returnPenaltyDetailsStub(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalty = Some(unpaidLatePaymentPenalty)))
+      getPenaltyDetailsStub(Some(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalty = Some(unpaidLatePaymentPenalty))))
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -219,13 +219,12 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
     }
 
     "return 200 (OK) and render the view when there are appealed LPPs that are retrieved from the backend" in {
-      returnPenaltyDetailsStub(getPenaltyPayloadWithLPPAppeal)
+      getPenaltyDetailsStub(Some(getPenaltyPayloadWithLPPAppeal))
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
       parsedBody.select("#late-payment-penalties section header h4").get(0).ownText() shouldBe "£400 penalty"
       parsedBody.select("#late-payment-penalties section header h4 span").text shouldBe "for late payment of charge due on 7 March 2021"
-
       parsedBody.select("#late-payment-penalties section header strong").text shouldBe "paid"
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
       summaryCardBody.select("dt").get(0).text shouldBe "Penalty type"
@@ -242,7 +241,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
 
     "return 200 (OK) and add the latest lsp creation date and penalty threshold to the session" in {
       complianceDataStub()
-      returnPenaltyDetailsStub(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalty = Some(paidLatePaymentPenalty)))
+      getPenaltyDetailsStub(Some(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalty = Some(paidLatePaymentPenalty))))
       val request = controller.onPageLoad()(fakeRequest)
       await(request).header.status shouldBe Status.OK
       await(request).session(fakeRequest).get(SessionKeys.pocAchievementDate).isDefined shouldBe true
@@ -252,7 +251,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
     "agent view" must {
       "return 200 (OK) and render the view when there are added points that are retrieved from the backend" in {
         AuthStub.agentAuthorised()
-        returnPenaltyDetailsStubAgent(getPenaltyDetailsPayloadWithAddedPoint)
+        getPenaltyDetailsStub(Some(getPenaltyDetailsPayloadWithAddedPoint), isAgent = true)
         val request = controller.onPageLoad()(fakeAgentRequest)
         await(request).header.status shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
@@ -273,7 +272,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
 
       "return 200 (OK) and render the view when there are removed points that are retrieved from the backend" in {
         AuthStub.agentAuthorised()
-        returnPenaltyDetailsStubAgent(getPenaltyDetailsPayloadWithRemovedPoints)
+        getPenaltyDetailsStub(Some(getPenaltyDetailsPayloadWithRemovedPoints), isAgent = true)
         val request = controller.onPageLoad()(fakeAgentRequest)
         await(request).header.status shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
@@ -297,7 +296,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
         val penaltyDetailsWithBreathingSpace = getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(
           breathingSpace = Some(Seq(BreathingSpace(sampleDate1, sampleDate1)))
         )
-        returnPenaltyDetailsStub(penaltyDetailsWithBreathingSpace)
+        getPenaltyDetailsStub(Some(penaltyDetailsWithBreathingSpace))
         val request = controller.onPageLoad()(fakeRequest)
         await(request).header.status shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
@@ -313,7 +312,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
         val penaltyDetailsWithBreathingSpace = getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(
           breathingSpace = Some(Seq(BreathingSpace(sampleDate1, sampleDate1)))
         )
-        returnPenaltyDetailsStubAgent(penaltyDetailsWithBreathingSpace)
+        getPenaltyDetailsStub(Some(penaltyDetailsWithBreathingSpace), isAgent = true)
         val request = controller.onPageLoad()(fakeAgentRequest)
         await(request).header.status shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
@@ -324,7 +323,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
 
       "return 200 (OK) and render the view when removed points are below active points (active points are reindexed)" in {
         AuthStub.agentAuthorised()
-        returnPenaltyDetailsStubAgent(getPenaltiesDataPayloadWith2PointsAndOneRemovedPoint)
+        getPenaltyDetailsStub(Some(getPenaltiesDataPayloadWith2PointsAndOneRemovedPoint), isAgent = true)
         val request = controller.onPageLoad()(fakeAgentRequest)
         await(request).header.status shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
@@ -340,7 +339,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
       "return 200 (OK) and render the view when there is outstanding payments for the client" in {
         complianceDataStub()
         AuthStub.agentAuthorised()
-        returnPenaltyDetailsStubAgent(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue)
+        getPenaltyDetailsStub(Some(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue), isAgent = true)
         val request = controller.onPageLoad()(fakeAgentRequest)
         await(request).header.status shouldBe Status.OK
         val parsedBody = Jsoup.parse(contentAsString(request))
@@ -358,8 +357,8 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
       "return 200 (OK) and add the latest lsp creation date and the penalty threshold to the session" in {
         complianceDataStub()
         AuthStub.agentAuthorised()
-        returnPenaltyDetailsStubAgent(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue
-          .copy(latePaymentPenalty = Some(paidLatePaymentPenalty)))
+        getPenaltyDetailsStub(Some(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue
+          .copy(latePaymentPenalty = Some(paidLatePaymentPenalty))), isAgent = true)
         val request = controller.onPageLoad()(fakeAgentRequest)
         await(request).header.status shouldBe Status.OK
         await(request).session(fakeAgentRequest).get(SessionKeys.pocAchievementDate).isDefined shouldBe true
@@ -368,7 +367,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
     }
 
     "return 200 (OK) and render the view when there are LSPs with multiple penalty period" in {
-      returnPenaltyDetailsStub(getPenaltiesDetailsPayloadWithMultiplePenaltyPeriodInLSP)
+      getPenaltyDetailsStub(Some(getPenaltiesDetailsPayloadWithMultiplePenaltyPeriodInLSP))
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
@@ -383,7 +382,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
     }
 
     "return 200 (OK) and render the view removing an LSP if it is an applicable expiryReason" in {
-      returnPenaltyDetailsStub(getPenaltiesDetailsPayloadWithExpiredPoints)
+      getPenaltyDetailsStub(Some(getPenaltiesDetailsPayloadWithExpiredPoints))
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
