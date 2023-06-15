@@ -23,7 +23,6 @@ import models.User
 import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import stubs.ComplianceStub
 import stubs.ComplianceStub._
 import stubs.PenaltiesStub._
 import testUtils.IntegrationSpecCommonBase
@@ -61,14 +60,14 @@ class PenaltiesConnectorISpec extends IntegrationSpecCommonBase {
 
   "getObligationData" should {
     "generate a CompliancePayload when valid JSON is returned from penalties" in {
-      ComplianceStub.complianceDataStub()
+      complianceDataStub()
       val result: CompliancePayloadResponse = await(connector.getObligationData("123456789", startDate, endDate))
       result.isRight shouldBe true
       result.toOption.get.model shouldBe sampleCompliancePayload
     }
 
     s"return a $CompliancePayloadMalformed when the data is malformed" in {
-      ComplianceStub.invalidComplianceDataStub()
+      invalidComplianceDataStub()
       val result: CompliancePayloadResponse = await(connector.getObligationData("123456789", startDate, endDate))
       result.isLeft shouldBe true
       result.left.getOrElse(false) shouldBe CompliancePayloadMalformed

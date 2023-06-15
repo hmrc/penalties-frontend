@@ -26,7 +26,7 @@ import play.api.http.Status
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import stubs.AuthStub
+import stubs.AuthStub.{agentAuthorised, unauthorised}
 import stubs.PenaltiesStub.getPenaltyDetailsStub
 import testUtils.{IntegrationSpecCommonBase, TestData}
 import uk.gov.hmrc.http.SessionKeys.authToken
@@ -374,7 +374,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     }
 
     "return 303 (SEE_OTHER) when the user is not authorised" in {
-      AuthStub.unauthorised()
+      unauthorised()
 
       val request = controller.onPageLoad("12345", "LPP1")(fakeRequest)
       status(request) shouldBe Status.SEE_OTHER
@@ -455,7 +455,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     }
 
     "return 303 (SEE_OTHER) when the user is not authorised" in {
-      AuthStub.unauthorised()
+      unauthorised()
       val request = controller.onPageLoad("12345", "LPP1")(fakeRequest)
       status(request) shouldBe Status.SEE_OTHER
     }
@@ -582,7 +582,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     }
 
     "return 200 (OK) and render the view correctly when the user has specified a valid penalty ID and the VAT is due (user is agent)" in {
-      AuthStub.agentAuthorised()
+      agentAuthorised()
       getPenaltyDetailsStub(Some(penaltyDetailsWithAdditionalDuePenalty), isAgent = true)
       val request = controller.onPageLoad("12345678901234", "LPP2")(fakeAgentRequest)
       status(request) shouldBe Status.OK
@@ -611,7 +611,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
     }
 
     "return 303 (SEE_OTHER) when the user is not authorised" in {
-      AuthStub.unauthorised()
+      unauthorised()
       val request = controller.onPageLoad("123456800", "LPP2")(fakeRequest)
       status(request) shouldBe Status.SEE_OTHER
     }

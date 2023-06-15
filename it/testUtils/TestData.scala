@@ -16,11 +16,11 @@
 
 package testUtils
 
-import models.{GetPenaltyDetails, Totalisations, appealInfo}
 import models.appealInfo._
 import models.compliance._
 import models.lpp._
 import models.lsp._
+import models.{GetPenaltyDetails, Totalisations, appealInfo}
 
 import java.time.LocalDate
 

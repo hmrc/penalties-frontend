@@ -23,9 +23,9 @@ import play.api.http.{HeaderNames, Status}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import stubs.AuthStub.{agentAuthorised, authorised, unauthorised}
 import stubs.ComplianceStub.complianceDataStub
 import stubs.PenaltiesStub._
-import stubs.{AuthStub, ComplianceStub}
 import testUtils.{IntegrationSpecCommonBase, TestData}
 import uk.gov.hmrc.http.SessionKeys.authToken
 import utils.SessionKeys
@@ -120,7 +120,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
     }
 
     "return 200 (OK) and render the view when there is a LSP with a penalty over the threshold with correct hidden text in header" in {
-      ComplianceStub.complianceDataStub(Some(compliancePayload))
+      complianceDataStub(Some(compliancePayload))
       getPenaltyDetailsStub(Some(getPenaltyDetailsPayloadWithOverThreshold))
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
@@ -250,7 +250,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
 
     "agent view" must {
       "return 200 (OK) and render the view when there are added points that are retrieved from the backend" in {
-        AuthStub.agentAuthorised()
+        agentAuthorised()
         getPenaltyDetailsStub(Some(getPenaltyDetailsPayloadWithAddedPoint), isAgent = true)
         val request = controller.onPageLoad()(fakeAgentRequest)
         await(request).header.status shouldBe Status.OK
@@ -271,7 +271,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
       }
 
       "return 200 (OK) and render the view when there are removed points that are retrieved from the backend" in {
-        AuthStub.agentAuthorised()
+        agentAuthorised()
         getPenaltyDetailsStub(Some(getPenaltyDetailsPayloadWithRemovedPoints), isAgent = true)
         val request = controller.onPageLoad()(fakeAgentRequest)
         await(request).header.status shouldBe Status.OK
@@ -291,7 +291,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
       }
 
       "return 200 (OK) and render the view when user is in breathing space" in {
-        AuthStub.authorised()
+        authorised()
         setFeatureDate(Some(sampleDate1))
         val penaltyDetailsWithBreathingSpace = getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(
           breathingSpace = Some(Seq(BreathingSpace(sampleDate1, sampleDate1)))
@@ -307,7 +307,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
       }
 
       "return 200 (OK) and render the view when user is in breathing space for agents" in {
-        AuthStub.agentAuthorised()
+        agentAuthorised()
         setFeatureDate(Some(sampleDate1))
         val penaltyDetailsWithBreathingSpace = getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(
           breathingSpace = Some(Seq(BreathingSpace(sampleDate1, sampleDate1)))
@@ -322,7 +322,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
       }
 
       "return 200 (OK) and render the view when removed points are below active points (active points are reindexed)" in {
-        AuthStub.agentAuthorised()
+        agentAuthorised()
         getPenaltyDetailsStub(Some(getPenaltiesDataPayloadWith2PointsAndOneRemovedPoint), isAgent = true)
         val request = controller.onPageLoad()(fakeAgentRequest)
         await(request).header.status shouldBe Status.OK
@@ -338,7 +338,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
 
       "return 200 (OK) and render the view when there is outstanding payments for the client" in {
         complianceDataStub()
-        AuthStub.agentAuthorised()
+        agentAuthorised()
         getPenaltyDetailsStub(Some(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue), isAgent = true)
         val request = controller.onPageLoad()(fakeAgentRequest)
         await(request).header.status shouldBe Status.OK
@@ -356,7 +356,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
 
       "return 200 (OK) and add the latest lsp creation date and the penalty threshold to the session" in {
         complianceDataStub()
-        AuthStub.agentAuthorised()
+        agentAuthorised()
         getPenaltyDetailsStub(Some(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue
           .copy(latePaymentPenalty = Some(paidLatePaymentPenalty))), isAgent = true)
         val request = controller.onPageLoad()(fakeAgentRequest)
@@ -395,7 +395,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
     }
 
     "return 303 (SEE_OTHER) when the user is not authorised" in {
-      AuthStub.unauthorised()
+      unauthorised()
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.SEE_OTHER
     }

@@ -23,7 +23,8 @@ import play.api.http.Status
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import stubs.{AuthStub, ComplianceStub}
+import stubs.AuthStub.{agentAuthorised, unauthorised}
+import stubs.ComplianceStub.complianceDataStub
 import testUtils.IntegrationSpecCommonBase
 import uk.gov.hmrc.http.SessionKeys.authToken
 import utils.SessionKeys
@@ -176,14 +177,14 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
 
     "return 200" when {
       "the service call succeeds to get compliance data" in {
-        ComplianceStub.complianceDataStub()
+        complianceDataStub()
         val request = controller.onPageLoad()(fakeRequest)
         status(request) shouldBe OK
       }
 
       "there is missing returns - show a late tag next to those that are missing" in {
         setFeatureDate(Some(LocalDate.of(2022, 5, 8)))
-        ComplianceStub.complianceDataStub(Some(compliancePayloadWithMissingReturns))
+        complianceDataStub(Some(compliancePayloadWithMissingReturns))
         val request = controller.onPageLoad()(fakeRequest)
         status(request) shouldBe OK
         val parsedBody = Jsoup.parse(contentAsString(request))
@@ -202,7 +203,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
 
       "there is no missing returns - do not show a late tag" in {
         setFeatureDate(Some(LocalDate.of(2022, 3, 6)))
-        ComplianceStub.complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
+        complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
         val request = controller.onPageLoad()(fakeRequest)
         status(request) shouldBe OK
         val parsedBody = Jsoup.parse(contentAsString(request))
@@ -219,7 +220,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
       }
 
       "for a monthly filer" in {
-        ComplianceStub.complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
+        complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
         val request = controller.onPageLoad()(fakeRequest)
         status(request) shouldBe OK
         val parsedBody = Jsoup.parse(contentAsString(request))
@@ -227,7 +228,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
       }
 
       "for a quarterly filer" in {
-        ComplianceStub.complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
+        complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
         val quarterlyFilerFakeRequest = fakeRequest.withSession(SessionKeys.regimeThreshold -> "4")
         val request = controller.onPageLoad()(quarterlyFilerFakeRequest)
         status(request) shouldBe OK
@@ -236,7 +237,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
       }
 
       "for a annual filer" in {
-        ComplianceStub.complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
+        complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
         val annualFilerFakeRequest = fakeRequest.withSession(SessionKeys.regimeThreshold -> "2")
         val request = controller.onPageLoad()(annualFilerFakeRequest)
         status(request) shouldBe OK
@@ -245,8 +246,8 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
       }
 
       "an agent is present" in {
-        AuthStub.agentAuthorised()
-        ComplianceStub.complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
+        agentAuthorised()
+        complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
         val request = controller.onPageLoad()(fakeAgentRequest)
         status(request) shouldBe OK
         val parsedBody = Jsoup.parse(contentAsString(request))
@@ -257,7 +258,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
     }
 
     "return 303 (SEE_OTHER) when the user is not authorised" in {
-      AuthStub.unauthorised()
+      unauthorised()
       val request = await(buildClientForRequestToApp(uri = "/compliance").get())
       request.status shouldBe Status.SEE_OTHER
     }
