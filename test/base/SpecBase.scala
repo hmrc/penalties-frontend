@@ -94,7 +94,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with T
     )),
     obligationDetails = Seq(
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(1920, 2, 29),
         inboundCorrespondenceToDate = LocalDate.of(1920, 2, 29),
         inboundCorrespondenceDateReceived = None,
@@ -102,7 +102,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with T
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.fulfilled,
+        status = ComplianceStatusEnum.Fulfilled,
         inboundCorrespondenceFromDate = LocalDate.of(1920, 2, 29),
         inboundCorrespondenceToDate = LocalDate.of(1920, 2, 29),
         inboundCorrespondenceDateReceived = Some(LocalDate.of(1920, 2, 29)),
@@ -115,7 +115,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with T
   val compliancePayloadObligationsFulfilled: CompliancePayload = sampleCompliancePayload.copy(
     obligationDetails = Seq(
       ObligationDetail(
-        status = ComplianceStatusEnum.fulfilled,
+        status = ComplianceStatusEnum.Fulfilled,
         inboundCorrespondenceFromDate = LocalDate.of(1920, 2, 29),
         inboundCorrespondenceToDate = LocalDate.of(1920, 2, 29),
         inboundCorrespondenceDateReceived = Some(LocalDate.of(1920, 2, 29)),
@@ -123,7 +123,7 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with T
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.fulfilled,
+        status = ComplianceStatusEnum.Fulfilled,
         inboundCorrespondenceFromDate = LocalDate.of(1920, 2, 29),
         inboundCorrespondenceToDate = LocalDate.of(1920, 2, 29),
         inboundCorrespondenceDateReceived = Some(LocalDate.of(1920, 2, 29)),

@@ -29,7 +29,7 @@ class TimelineHelper @Inject()(timeline: views.html.components.timeline)
                               (implicit val appConfig: AppConfig) extends ImplicitDateFormatter with ViewUtils with FeatureSwitching {
 
   def getTimelineContent(complianceData: CompliancePayload)(implicit messages: Messages): Html = {
-    val unfulfilledReturnsAfterLSPCreationDate: Seq[ObligationDetail] = complianceData.obligationDetails.filter(_.status.equals(ComplianceStatusEnum.open))
+    val unfulfilledReturnsAfterLSPCreationDate: Seq[ObligationDetail] = complianceData.obligationDetails.filter(_.status.equals(ComplianceStatusEnum.Open))
     if (unfulfilledReturnsAfterLSPCreationDate.nonEmpty) {
       val events: Seq[TimelineEvent] = unfulfilledReturnsAfterLSPCreationDate.map { compReturn =>
         val isReturnLate = compReturn.inboundCorrespondenceDueDate.isBefore(getFeatureDate)

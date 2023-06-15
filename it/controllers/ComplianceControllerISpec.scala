@@ -23,7 +23,8 @@ import play.api.http.Status
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import stubs.{AuthStub, ComplianceStub}
+import stubs.AuthStub.{agentAuthorised, unauthorised}
+import stubs.ComplianceStub.complianceDataStub
 import testUtils.IntegrationSpecCommonBase
 import uk.gov.hmrc.http.SessionKeys.authToken
 import utils.SessionKeys
@@ -56,7 +57,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
     )),
     obligationDetails = Seq(
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2021, 12, 1),
         inboundCorrespondenceToDate = LocalDate.of(2021, 12, 31),
         inboundCorrespondenceDateReceived = None,
@@ -64,7 +65,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.fulfilled,
+        status = ComplianceStatusEnum.Fulfilled,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 1, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 1, 31),
         inboundCorrespondenceDateReceived = Some(LocalDate.of(2022, 2, 2)),
@@ -72,7 +73,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.fulfilled,
+        status = ComplianceStatusEnum.Fulfilled,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 2, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 2, 28),
         inboundCorrespondenceDateReceived = Some(LocalDate.of(2022, 3, 29)),
@@ -80,7 +81,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 3, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 3, 31),
         inboundCorrespondenceDateReceived = None,
@@ -88,7 +89,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 4, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 4, 30),
         inboundCorrespondenceDateReceived = None,
@@ -96,7 +97,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 5, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 5, 31),
         inboundCorrespondenceDateReceived = None,
@@ -104,7 +105,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 6, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 6, 30),
         inboundCorrespondenceDateReceived = None,
@@ -122,7 +123,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
     )),
     obligationDetails = Seq(
       ObligationDetail(
-        status = ComplianceStatusEnum.fulfilled,
+        status = ComplianceStatusEnum.Fulfilled,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 1, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 1, 31),
         inboundCorrespondenceDateReceived = Some(LocalDate.of(2022, 3, 2)),
@@ -130,7 +131,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.fulfilled,
+        status = ComplianceStatusEnum.Fulfilled,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 2, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 2, 28),
         inboundCorrespondenceDateReceived = Some(LocalDate.of(2022, 4, 5)),
@@ -138,7 +139,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 3, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 3, 31),
         inboundCorrespondenceDateReceived = None,
@@ -146,7 +147,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 4, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 4, 30),
         inboundCorrespondenceDateReceived = None,
@@ -154,7 +155,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 5, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 5, 31),
         inboundCorrespondenceDateReceived = None,
@@ -162,7 +163,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 6, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 6, 30),
         inboundCorrespondenceDateReceived = None,
@@ -176,14 +177,14 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
 
     "return 200" when {
       "the service call succeeds to get compliance data" in {
-        ComplianceStub.complianceDataStub()
+        complianceDataStub()
         val request = controller.onPageLoad()(fakeRequest)
         status(request) shouldBe OK
       }
 
       "there is missing returns - show a late tag next to those that are missing" in {
         setFeatureDate(Some(LocalDate.of(2022, 5, 8)))
-        ComplianceStub.complianceDataStub(Some(compliancePayloadWithMissingReturns))
+        complianceDataStub(Some(compliancePayloadWithMissingReturns))
         val request = controller.onPageLoad()(fakeRequest)
         status(request) shouldBe OK
         val parsedBody = Jsoup.parse(contentAsString(request))
@@ -202,7 +203,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
 
       "there is no missing returns - do not show a late tag" in {
         setFeatureDate(Some(LocalDate.of(2022, 3, 6)))
-        ComplianceStub.complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
+        complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
         val request = controller.onPageLoad()(fakeRequest)
         status(request) shouldBe OK
         val parsedBody = Jsoup.parse(contentAsString(request))
@@ -219,7 +220,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
       }
 
       "for a monthly filer" in {
-        ComplianceStub.complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
+        complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
         val request = controller.onPageLoad()(fakeRequest)
         status(request) shouldBe OK
         val parsedBody = Jsoup.parse(contentAsString(request))
@@ -227,7 +228,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
       }
 
       "for a quarterly filer" in {
-        ComplianceStub.complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
+        complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
         val quarterlyFilerFakeRequest = fakeRequest.withSession(SessionKeys.regimeThreshold -> "4")
         val request = controller.onPageLoad()(quarterlyFilerFakeRequest)
         status(request) shouldBe OK
@@ -236,7 +237,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
       }
 
       "for a annual filer" in {
-        ComplianceStub.complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
+        complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
         val annualFilerFakeRequest = fakeRequest.withSession(SessionKeys.regimeThreshold -> "2")
         val request = controller.onPageLoad()(annualFilerFakeRequest)
         status(request) shouldBe OK
@@ -245,8 +246,8 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
       }
 
       "an agent is present" in {
-        AuthStub.agentAuthorised()
-        ComplianceStub.complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
+        agentAuthorised()
+        complianceDataStub(Some(compliancePayloadWithNoMissingReturns))
         val request = controller.onPageLoad()(fakeAgentRequest)
         status(request) shouldBe OK
         val parsedBody = Jsoup.parse(contentAsString(request))
@@ -257,7 +258,7 @@ class ComplianceControllerISpec extends IntegrationSpecCommonBase {
     }
 
     "return 303 (SEE_OTHER) when the user is not authorised" in {
-      AuthStub.unauthorised()
+      unauthorised()
       val request = await(buildClientForRequestToApp(uri = "/compliance").get())
       request.status shouldBe Status.SEE_OTHER
     }

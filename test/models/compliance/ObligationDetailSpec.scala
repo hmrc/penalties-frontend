@@ -47,7 +47,7 @@ class ObligationDetailSpec extends AnyWordSpec with Matchers {
       |""".stripMargin)
 
   val obligationDetailNoDateReceivedAsModel: ObligationDetail = ObligationDetail(
-    status = ComplianceStatusEnum.open,
+    status = ComplianceStatusEnum.Open,
     inboundCorrespondenceFromDate = LocalDate.of(2020, 1, 1),
     inboundCorrespondenceToDate = LocalDate.of(2020, 1, 31),
     inboundCorrespondenceDateReceived = None,
@@ -56,7 +56,7 @@ class ObligationDetailSpec extends AnyWordSpec with Matchers {
   )
 
   val obligationDetailReceivedAsModel: ObligationDetail = ObligationDetail(
-    status = ComplianceStatusEnum.fulfilled,
+    status = ComplianceStatusEnum.Fulfilled,
     inboundCorrespondenceFromDate = LocalDate.of(2020, 1, 1),
     inboundCorrespondenceToDate = LocalDate.of(2020, 1, 31),
     inboundCorrespondenceDateReceived = Some(LocalDate.of(2020, 3, 5)),

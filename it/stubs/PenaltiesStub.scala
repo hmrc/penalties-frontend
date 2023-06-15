@@ -24,7 +24,7 @@ import models.lpp._
 import models.lsp._
 import models.{GetPenaltyDetails, Totalisations}
 import play.api.http.Status
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -219,55 +219,35 @@ object PenaltiesStub {
   val sampleInvalidPenaltyDetailsJson = Json.obj(
     "totalisations" -> {
       "LSPTotalValue" -> 200
-    }).toString()
+    })
 
-  def getPenaltyDetailsStub: StubMapping =
-    stubFor(get(urlMatching(getPenaltyDetailsUrlVATTrader))
+  def getPenaltyDetailsStub(penaltyDetailsToReturn: Option[GetPenaltyDetails] = None, isAgent: Boolean = false): StubMapping =
+    stubFor(get(urlMatching(if(isAgent) getPenaltyDetailsUrlAgent else getPenaltyDetailsUrlVATTrader))
     .willReturn(
       aResponse()
         .withStatus(Status.OK)
         .withBody(
-          Json.toJson(samplePenaltyDetails).toString()
+          Json.toJson(penaltyDetailsToReturn.fold(samplePenaltyDetails)(identity)).toString()
         )
     )
   )
 
-  def returnPenaltyDetailsStub(penaltyDetailsToReturn: GetPenaltyDetails): StubMapping =
-    stubFor(get(urlMatching(getPenaltyDetailsUrlVATTrader))
-    .willReturn(
-      aResponse()
-        .withStatus(Status.OK)
-        .withBody(
-          Json.toJson(penaltyDetailsToReturn).toString
-        )
-    )
-  )
-
-  def returnPenaltyDetailsStubAgent(penaltyDetailsToReturn: GetPenaltyDetails): StubMapping =
-    stubFor(get(urlMatching(getPenaltyDetailsUrlAgent))
-    .willReturn(
-      aResponse()
-        .withStatus(Status.OK)
-        .withBody(
-          Json.toJson(penaltyDetailsToReturn).toString
-        )
-    )
-  )
-
-  def penaltyDetailsUpstreamErrorStub: StubMapping =
+  def getPenaltyDetailsStub(penaltyDetailsToReturn: JsValue): StubMapping =
     stubFor(get(urlMatching(getPenaltyDetailsUrlVATTrader))
       .willReturn(
         aResponse()
-          .withStatus(Status.INTERNAL_SERVER_ERROR).withBody("Upstream Error")
+          .withStatus(Status.OK)
+          .withBody(
+            penaltyDetailsToReturn.toString()
+          )
       )
-  )
-
-  def invalidPenaltyDetailsStub: StubMapping =
-    stubFor(get(urlMatching(getPenaltyDetailsUrlVATTrader))
-    .willReturn(
-      aResponse()
-        .withStatus(Status.OK)
-        .withBody(sampleInvalidPenaltyDetailsJson)
     )
+
+  def penaltyDetailsUpstreamErrorStub(status: Int = Status.INTERNAL_SERVER_ERROR): StubMapping =
+    stubFor(get(urlMatching(getPenaltyDetailsUrlVATTrader))
+      .willReturn(
+        aResponse()
+          .withStatus(status).withBody("Upstream Error")
+      )
   )
 }

@@ -24,25 +24,25 @@ class ComplianceStatusEnumSpec extends AnyWordSpec with Matchers {
 
   "CommunicationTypeEnum" should {
     "be writable to JSON for 'O'" in {
-      val result = Json.toJson(ComplianceStatusEnum.open)
+      val result = Json.toJson(ComplianceStatusEnum.Open)
       result shouldBe JsString("O")
     }
 
     "be writable to JSON for 'F'" in {
-      val result = Json.toJson(ComplianceStatusEnum.fulfilled)
+      val result = Json.toJson(ComplianceStatusEnum.Fulfilled)
       result shouldBe JsString("F")
     }
 
     "be readable from JSON for 'O'" in {
       val result = Json.fromJson(JsString("O"))(ComplianceStatusEnum.format)
       result.isSuccess shouldBe true
-      result.get shouldBe ComplianceStatusEnum.open
+      result.get shouldBe ComplianceStatusEnum.Open
     }
 
     "be readable from JSON for 'F'" in {
       val result = Json.fromJson(JsString("F"))(ComplianceStatusEnum.format)
       result.isSuccess shouldBe true
-      result.get shouldBe ComplianceStatusEnum.fulfilled
+      result.get shouldBe ComplianceStatusEnum.Fulfilled
     }
 
     "return a JSError when there is no matches for the specified value" in {

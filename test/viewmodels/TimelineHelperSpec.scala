@@ -48,7 +48,7 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter with Featur
     )),
     obligationDetails = Seq(
       ObligationDetail(
-        status = ComplianceStatusEnum.fulfilled,
+        status = ComplianceStatusEnum.Fulfilled,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 1, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 3, 31),
         inboundCorrespondenceDateReceived = Some(LocalDate.of(2022, 4, 3)),
@@ -56,7 +56,7 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter with Featur
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 4, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 6, 30),
         inboundCorrespondenceDateReceived = None,
@@ -64,7 +64,7 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter with Featur
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 7, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 9, 30),
         inboundCorrespondenceDateReceived = None,
@@ -72,7 +72,7 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter with Featur
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 10, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 12, 31),
         inboundCorrespondenceDateReceived = None,
@@ -90,7 +90,7 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter with Featur
     )),
     obligationDetails = Seq(
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 1, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 1, 31),
         inboundCorrespondenceDateReceived = None,
@@ -98,7 +98,7 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter with Featur
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 2, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 2, 28),
         inboundCorrespondenceDateReceived = None,
@@ -106,7 +106,7 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter with Featur
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 3, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 3, 31),
         inboundCorrespondenceDateReceived = None,
@@ -114,7 +114,7 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter with Featur
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 4, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 4, 30),
         inboundCorrespondenceDateReceived = None,
@@ -122,7 +122,7 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter with Featur
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 5, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 5, 31),
         inboundCorrespondenceDateReceived = None,
@@ -130,7 +130,7 @@ class TimelineHelperSpec extends SpecBase with ImplicitDateFormatter with Featur
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(2022, 6, 1),
         inboundCorrespondenceToDate = LocalDate.of(2022, 6, 30),
         inboundCorrespondenceDateReceived = None,

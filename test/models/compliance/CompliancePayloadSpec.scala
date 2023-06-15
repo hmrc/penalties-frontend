@@ -81,7 +81,7 @@ class CompliancePayloadSpec extends AnyWordSpec with Matchers {
     )),
     obligationDetails = Seq(
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(1920, 2, 29),
         inboundCorrespondenceToDate = LocalDate.of(1920, 2, 29),
         inboundCorrespondenceDateReceived = None,
@@ -89,7 +89,7 @@ class CompliancePayloadSpec extends AnyWordSpec with Matchers {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.fulfilled,
+        status = ComplianceStatusEnum.Fulfilled,
         inboundCorrespondenceFromDate = LocalDate.of(1920, 2, 29),
         inboundCorrespondenceToDate = LocalDate.of(1920, 2, 29),
         inboundCorrespondenceDateReceived = Some(LocalDate.of(1920, 2, 29)),
@@ -103,7 +103,7 @@ class CompliancePayloadSpec extends AnyWordSpec with Matchers {
     identification = None,
     obligationDetails = Seq(
       ObligationDetail(
-        status = ComplianceStatusEnum.open,
+        status = ComplianceStatusEnum.Open,
         inboundCorrespondenceFromDate = LocalDate.of(1920, 2, 29),
         inboundCorrespondenceToDate = LocalDate.of(1920, 2, 29),
         inboundCorrespondenceDateReceived = None,
@@ -111,7 +111,7 @@ class CompliancePayloadSpec extends AnyWordSpec with Matchers {
         periodKey = "#001"
       ),
       ObligationDetail(
-        status = ComplianceStatusEnum.fulfilled,
+        status = ComplianceStatusEnum.Fulfilled,
         inboundCorrespondenceFromDate = LocalDate.of(1920, 2, 29),
         inboundCorrespondenceToDate = LocalDate.of(1920, 2, 29),
         inboundCorrespondenceDateReceived = Some(LocalDate.of(1920, 2, 29)),
