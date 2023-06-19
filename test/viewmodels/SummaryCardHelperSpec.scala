@@ -30,8 +30,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListR
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 import utils.ImplicitDateFormatter
 
-import java.time.LocalDateTime
-
 class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
   val helper: SummaryCardHelper = injector.instanceOf[SummaryCardHelper]
@@ -77,7 +75,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       amountDue = 1001.45,
       isPenaltyPaid = true,
       penaltyCategory = LPP1,
-      dueDate = "8\u00A0June\u00A02021",
+      dueDate = "7\u00A0June\u00A02021",
       taxPeriodStartDate = principleChargeBillingStartDate.toString,
       taxPeriodEndDate = principleChargeBillingEndDate.toString,
       isAgent = isAgent,
@@ -107,7 +105,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       isVatPaid = true,
       amountDue = 1001.45,
       penaltyCategory = LPP2,
-      dueDate = "8\u00A0June\u00A02021",
+      dueDate = "7\u00A0June\u00A02021",
       taxPeriodStartDate = principleChargeBillingStartDate.toString,
       taxPeriodEndDate = principleChargeBillingEndDate.toString,
       isAgent = isAgent,
@@ -326,9 +324,9 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           Seq(
             helper.summaryListRow(
               period,
-              Html(vatPeriodValue(dateToString(sampleDateLSP), dateToString(sampleDateLSP)))
+              Html(vatPeriodValue(dateToString(taxPeriodStart), dateToString(taxPeriodEnd)))
             ),
-            helper.summaryListRow(returnDue, Html(dateToString(sampleDateLSP))),
+            helper.summaryListRow(returnDue, Html(dateToString(taxPeriodDue))),
             helper.summaryListRow(returnSubmitted, Html(notSubmitted))
           ),
           Tag(content = Text("due"), classes = "penalty-due-tag"),
@@ -337,16 +335,16 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           isReturnSubmitted = false,
           isThresholdPoint = true,
           totalPenaltyAmount = 200,
-          dueDate = Some(dateToString(sampleDateLSP))
+          dueDate = Some(dateToString(taxPeriodDue))
         )
 
         val pointToPassIn: LSPDetails = sampleLateSubmissionPenaltyCharge.copy(penaltyOrder = "1", penaltyCategory = LSPPenaltyCategoryEnum.Threshold,
           lateSubmissions = Some(
             Seq(
               LateSubmission(
-                taxPeriodStartDate = Some(sampleDateLSP),
-                taxPeriodEndDate = Some(sampleDateLSP),
-                taxPeriodDueDate = Some(sampleDateLSP),
+                taxPeriodStartDate = Some(taxPeriodStart),
+                taxPeriodEndDate = Some(taxPeriodEnd),
+                taxPeriodDueDate = Some(taxPeriodDue),
                 returnReceiptDate = None,
                 taxReturnStatus = TaxReturnStatusEnum.Open
               )
@@ -376,55 +374,55 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
             Seq(
               helper.summaryListRow(
                 period,
-                Html(vatPeriodValue(dateToString(sampleDateLSP), dateToString(sampleDateLSP)))
+                Html(vatPeriodValue(dateToString(taxPeriodStart), dateToString(taxPeriodEnd)))
               ),
-              helper.summaryListRow(returnDue, Html(dateToString(sampleDateLSP))),
-              helper.summaryListRow(returnSubmitted, Html(dateToString(sampleDateLSP))),
-              helper.summaryListRow(pointExpiration, Html(dateTimeToMonthYearString(LocalDateTime.now)))
+              helper.summaryListRow(returnDue, Html(dateToString(taxPeriodDue))),
+              helper.summaryListRow(returnSubmitted, Html(dateToString(receiptDate))),
+              helper.summaryListRow(pointExpiration, Html(dateToString(expiryDate)))
             ),
             Tag(content = Text("active")),
             "3",
             "12345678901234",
             isReturnSubmitted = true,
-            dueDate = Some(dateToString(sampleDateLSP))
+            dueDate = Some(dateToString(taxPeriodDue))
           ),
             LateSubmissionPenaltySummaryCard(
               Seq(
                 helper.summaryListRow(
                   period,
-                  Html(vatPeriodValue(dateToString(sampleDateLSP), dateToString(sampleDateLSP)))
+                  Html(vatPeriodValue(dateToString(taxPeriodStart.plusMonths(1)), dateToString(taxPeriodEnd.plusMonths(1))))
                 ),
-                helper.summaryListRow(returnDue, Html(dateToString(sampleDateLSP))),
-                helper.summaryListRow(returnSubmitted, Html(dateToString(sampleDateLSP))),
-                helper.summaryListRow(pointExpiration, Html(dateTimeToMonthYearString(LocalDateTime.now)))
+                helper.summaryListRow(returnDue, Html(dateToString(taxPeriodDue.plusMonths(1)))),
+                helper.summaryListRow(returnSubmitted, Html(dateToString(receiptDate.plusMonths(1)))),
+                helper.summaryListRow(pointExpiration, Html(dateToString(expiryDate.plusMonths(1))))
               ),
               Tag(content = Text("active")),
               "2",
               "12345678901234",
               isReturnSubmitted = true,
-              dueDate = Some(dateToString(sampleDateLSP))
+              dueDate = Some(dateToString(taxPeriodDue.plusMonths(1)))
             ),
             LateSubmissionPenaltySummaryCard(
               Seq(
                 helper.summaryListRow(
                   period,
-                  Html(vatPeriodValue(dateToString(sampleDateLSP), dateToString(sampleDateLSP)))
+                  Html(vatPeriodValue(dateToString(taxPeriodStart.plusMonths(2)), dateToString(taxPeriodStart.plusMonths(2))))
                 ),
-                helper.summaryListRow(returnDue, Html(dateToString(sampleDateLSP))),
-                helper.summaryListRow(returnSubmitted, Html(dateToString(sampleDateLSP))),
-                helper.summaryListRow(pointExpiration, Html(dateTimeToMonthYearString(LocalDateTime.now)))
+                helper.summaryListRow(returnDue, Html(dateToString(taxPeriodDue.plusMonths(2)))),
+                helper.summaryListRow(returnSubmitted, Html(dateToString(receiptDate.plusMonths(2)))),
+                helper.summaryListRow(pointExpiration, Html(dateToString(expiryDate.plusMonths(2))))
               ),
               Tag(content = Text("active")),
               "1",
               "12345678901234",
               isReturnSubmitted = true,
-              dueDate = Some(dateToString(sampleDateLSP))
+              dueDate = Some(dateToString(taxPeriodDue.plusMonths(2)))
             ),
             LateSubmissionPenaltySummaryCard(
               Seq(
                 helper.summaryListRow(
                   period,
-                  Html(vatPeriodValue(dateToString(sampleDateLSP), dateToString(sampleDateLSP)))
+                  Html(vatPeriodValue(dateToString(taxPeriodStart.minusMonths(1)), dateToString(taxPeriodEnd.minusMonths(1))))
                 ),
                 helper.summaryListRow(reason, Html("reason"))
               ),
@@ -433,7 +431,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               "12345678901234",
               isReturnSubmitted = true,
               isAddedOrRemovedPoint = true,
-              dueDate = Some(dateToString(sampleDateLSP))
+              dueDate = Some(dateToString(taxPeriodDue.minusMonths(1)))
             ))
 
 

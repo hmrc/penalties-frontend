@@ -22,13 +22,12 @@ import models.lpp._
 import java.time.LocalDate
 
 trait LPPDetailsTestData {
-  val sampleDateLPP: LocalDate = LocalDate.of(2021, 1, 1)
-  val penaltyChargeCreationDate: LocalDate = LocalDate.of(2021, 1, 6)
-  val comsDate: LocalDate = penaltyChargeCreationDate
-  val penaltyDueDate: LocalDate = penaltyChargeCreationDate.plusDays(31)
   val principleChargeBillingStartDate: LocalDate = LocalDate.of(2021, 5, 1)
   val principleChargeBillingEndDate: LocalDate = principleChargeBillingStartDate.plusMonths(1)
-  val principleChargeBillingDueDate: LocalDate = principleChargeBillingEndDate.plusDays(7)
+  val principleChargeBillingDueDate: LocalDate = principleChargeBillingEndDate.plusDays(6)
+  val penaltyChargeCreationDate: LocalDate = principleChargeBillingEndDate.plusDays(6)
+  val communicationDate: LocalDate = penaltyChargeCreationDate
+  val penaltyDueDate: LocalDate = penaltyChargeCreationDate.plusDays(31)
   val lpp1PrincipleChargePaidDate: LocalDate = penaltyDueDate.plusDays(30)
   val lpp2PrincipleChargePaidDate: LocalDate = penaltyDueDate.plusDays(45)
 
@@ -49,7 +48,7 @@ trait LPPDetailsTestData {
     LPP1LRPercentage = Some(2.00),
     LPP1HRPercentage = Some(BigDecimal(2.00).setScale(2)),
     penaltyChargeCreationDate = Some(penaltyChargeCreationDate),
-    communicationsDate = Some(comsDate),
+    communicationsDate = Some(communicationDate),
     penaltyChargeDueDate = Some(penaltyDueDate),
     appealInformation = None,
     principalChargeBillingFrom = principleChargeBillingStartDate,

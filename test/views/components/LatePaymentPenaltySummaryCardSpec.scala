@@ -311,7 +311,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
 
       "display the penalty amount and the date the VAT was due (with padded zero for whole tenths)" in {
         docWithAdditionalPenaltyTenthsOfPence.select("h4").get(0).ownText shouldBe "£123.40 penalty"
-        docWithAdditionalPenaltyTenthsOfPence.select("h4 span").text shouldBe "for late payment of charge due on 8 June 2021"
+        docWithAdditionalPenaltyTenthsOfPence.select("h4 span").text shouldBe "for late payment of charge due on 7 June 2021"
 
       }
 

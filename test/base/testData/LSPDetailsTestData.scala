@@ -22,11 +22,9 @@ import models.lsp._
 import java.time.LocalDate
 
 trait LSPDetailsTestData {
-
-  val sampleDateLSP: LocalDate = LocalDate.of(2021, 1, 1)
   val taxPeriodStart: LocalDate = LocalDate.of(2021, 1, 6)
   val taxPeriodEnd: LocalDate = LocalDate.of(2021, 2, 5)
-  val taxPeriodDue: LocalDate = LocalDate.of(2021, 3, 6)
+  val taxPeriodDue: LocalDate = taxPeriodEnd.plusMonths(1).plusDays(7)
   val receiptDate: LocalDate = taxPeriodDue.plusDays(7)
   val creationDate: LocalDate = LocalDate.of(2021, 3, 7)
   val expiryDate: LocalDate = creationDate.plusYears(2)
@@ -98,6 +96,7 @@ trait LSPDetailsTestData {
 
   val sampleRemovedPenaltyPoint: LSPDetails = sampleLateSubmissionPoint.copy(
     penaltyStatus = LSPPenaltyStatusEnum.Inactive,
+    FAPIndicator = Some("X"),
     expiryReason = Some(ExpiryReasonEnum.Adjustment)
   )
 
