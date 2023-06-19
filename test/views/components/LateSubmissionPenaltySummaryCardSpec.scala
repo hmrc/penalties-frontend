@@ -321,11 +321,11 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       chargeDueDate = Some(LocalDate.parse("2069-10-30"))
     ), quarterlyThreshold)
 
-  val summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected: LateSubmissionPenaltySummaryCard =
+  val summaryCardModelForFinancialPenaltyWithAndAppealRejected: LateSubmissionPenaltySummaryCard =
     summaryCardHelper.financialSummaryCard(LSPDetails(
       penaltyNumber = "12345678901234",
       penaltyOrder = "01",
-      penaltyCategory = LSPPenaltyCategoryEnum.Point,
+      penaltyCategory = LSPPenaltyCategoryEnum.Charge,
       penaltyStatus = LSPPenaltyStatusEnum.Active,
       FAPIndicator = None,
       expiryReason = None,
@@ -626,7 +626,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       val docWithFinancialPointAppealUnderReview: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealInProgress))
       val docWithFinancialPointAppealRejected: Document =
-        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected))
+        asDocument(summaryCardHtml.apply(summaryCardModelForFinancialPenaltyWithAndAppealRejected))
       val docWithFinancialPointAppealUnderTribunalReview: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealUnderTribunalReview))
       val docWithFinancialPointAppealTribunalRejected: Document =
