@@ -16,9 +16,9 @@
 
 package base
 
+import base.testData.{ComplianceDataTestData, PenaltiesDetailsTestData}
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
-import models.compliance._
 import models.User
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -42,7 +42,7 @@ import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with TestData {
+trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with PenaltiesDetailsTestData with ComplianceDataTestData {
   implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -84,53 +84,6 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with T
     mockAuthService,
     errorHandler,
     unauthorised
-  )
-
-  val sampleCompliancePayload: CompliancePayload = CompliancePayload(
-    identification = Some(ObligationIdentification(
-      incomeSourceType = None,
-      referenceNumber = "123456789",
-      referenceType = "VRN"
-    )),
-    obligationDetails = Seq(
-      ObligationDetail(
-        status = ComplianceStatusEnum.Open,
-        inboundCorrespondenceFromDate = LocalDate.of(1920, 2, 29),
-        inboundCorrespondenceToDate = LocalDate.of(1920, 2, 29),
-        inboundCorrespondenceDateReceived = None,
-        inboundCorrespondenceDueDate = LocalDate.of(1920, 2, 29),
-        periodKey = "#001"
-      ),
-      ObligationDetail(
-        status = ComplianceStatusEnum.Fulfilled,
-        inboundCorrespondenceFromDate = LocalDate.of(1920, 2, 29),
-        inboundCorrespondenceToDate = LocalDate.of(1920, 2, 29),
-        inboundCorrespondenceDateReceived = Some(LocalDate.of(1920, 2, 29)),
-        inboundCorrespondenceDueDate = LocalDate.of(1920, 2, 29),
-        periodKey = "#001"
-      )
-    )
-  )
-
-  val compliancePayloadObligationsFulfilled: CompliancePayload = sampleCompliancePayload.copy(
-    obligationDetails = Seq(
-      ObligationDetail(
-        status = ComplianceStatusEnum.Fulfilled,
-        inboundCorrespondenceFromDate = LocalDate.of(1920, 2, 29),
-        inboundCorrespondenceToDate = LocalDate.of(1920, 2, 29),
-        inboundCorrespondenceDateReceived = Some(LocalDate.of(1920, 2, 29)),
-        inboundCorrespondenceDueDate = LocalDate.of(1920, 2, 29),
-        periodKey = "#001"
-      ),
-      ObligationDetail(
-        status = ComplianceStatusEnum.Fulfilled,
-        inboundCorrespondenceFromDate = LocalDate.of(1920, 2, 29),
-        inboundCorrespondenceToDate = LocalDate.of(1920, 2, 29),
-        inboundCorrespondenceDateReceived = Some(LocalDate.of(1920, 2, 29)),
-        inboundCorrespondenceDueDate = LocalDate.of(1920, 2, 29),
-        periodKey = "#001"
-      ),
-    )
   )
 
   val quarterlyThreshold: Int = 4

@@ -42,17 +42,17 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
     Seq(
       helper.summaryListRow(
         period,
-        Html(vatPeriodValue(dateToString(sampleDate), dateToString(sampleDate)))
+        Html(vatPeriodValue(dateToString(taxPeriodStart), dateToString(taxPeriodEnd)))
       ),
-      helper.summaryListRow(returnDue, Html(dateToString(sampleDate))),
-      helper.summaryListRow(returnSubmitted, Html(dateToString(sampleDate))),
-      helper.summaryListRow(pointExpiration, Html(dateToMonthYearString(sampleDate)))
+      helper.summaryListRow(returnDue, Html(dateToString(taxPeriodDue))),
+      helper.summaryListRow(returnSubmitted, Html(dateToString(receiptDate))),
+      helper.summaryListRow(pointExpiration, Html(dateToMonthYearString(expiryDate)))
     ),
     Tag(content = Text("active")),
     "1",
     "12345678901234",
     isReturnSubmitted = true,
-    dueDate = Some(dateToString(sampleDate))
+    dueDate = Some(dateToString(taxPeriodDue))
   )
 
   def sampleLPPSummaryCardPenaltyPaid(chargeType: String, isAgent: Boolean = false, isCentralAssessment: Boolean = false): LatePaymentPenaltySummaryCard = {
@@ -65,10 +65,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         ),
         helper.summaryListRow(
           overdueCharge,
-          Html(periodText(chargeType, dateToString(sampleDate), dateToString(sampleDate)))
+          Html(periodText(chargeType, dateToString(principleChargeBillingStartDate), dateToString(principleChargeBillingEndDate)))
         ),
-        helper.summaryListRow(chargeDue, Html(dateToString(sampleDate))),
-        helper.summaryListRow(datePaid, Html(dateToString(sampleDate)))
+        helper.summaryListRow(chargeDue, Html(dateToString(principleChargeBillingDueDate))),
+        helper.summaryListRow(datePaid, Html(dateToString(lpp1PrincipleChargePaidDate)))
       ),
       Tag(content = Text("paid")),
       penaltyChargeReference = Some("PEN1234567"),
@@ -77,9 +77,9 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       amountDue = 1001.45,
       isPenaltyPaid = true,
       penaltyCategory = LPP1,
-      dueDate = "1\u00A0January\u00A02021",
-      taxPeriodStartDate = sampleDate.toString,
-      taxPeriodEndDate = sampleDate.toString,
+      dueDate = "8\u00A0June\u00A02021",
+      taxPeriodStartDate = principleChargeBillingStartDate.toString,
+      taxPeriodEndDate = principleChargeBillingEndDate.toString,
       isAgent = isAgent,
       isCentralAssessment = isCentralAssessment
     )
@@ -95,10 +95,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         ),
         helper.summaryListRow(
           overdueCharge,
-          Html(periodText(chargeType, dateToString(sampleDate), dateToString(sampleDate)))
+          Html(periodText(chargeType, dateToString(principleChargeBillingStartDate), dateToString(principleChargeBillingEndDate)))
         ),
-        helper.summaryListRow(chargeDue, Html(dateToString(sampleDate))),
-        helper.summaryListRow(datePaid, Html(dateToString(sampleDate)))
+        helper.summaryListRow(chargeDue, Html(dateToString(principleChargeBillingDueDate))),
+        helper.summaryListRow(datePaid, Html(dateToString(lpp2PrincipleChargePaidDate)))
       ),
       Tag(content = Text("paid")),
       penaltyChargeReference = Some("PEN1234567"),
@@ -107,9 +107,9 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       isVatPaid = true,
       amountDue = 1001.45,
       penaltyCategory = LPP2,
-      dueDate = "1\u00A0January\u00A02021",
-      taxPeriodStartDate = sampleDate.toString,
-      taxPeriodEndDate = sampleDate.toString,
+      dueDate = "8\u00A0June\u00A02021",
+      taxPeriodStartDate = principleChargeBillingStartDate.toString,
+      taxPeriodEndDate = principleChargeBillingEndDate.toString,
       isAgent = isAgent,
       isCentralAssessment = isCentralAssessment
     )
@@ -122,16 +122,14 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
     }
   }
 
-  val sampleLPPSummaryCardPenaltyUnpaidVAT: LatePaymentPenaltySummaryCard = sampleLPPSummaryCardPenaltyPaid("VAT").copy(isPenaltyPaid = false, isVatPaid = false,
-    status = Tag(content = Text("£200 due"), classes = "penalty-due-tag"))
 
   "SummaryCardHelper" should {
     "findAndReindexPointIfIsActive" should {
       "reindex the point with the associated index + 1 when the point is in the indexed list of active points" in {
-        val pointToPassIn: LSPDetails = samplePenaltyPoint.copy(penaltyOrder = "2")
+        val pointToPassIn: LSPDetails = sampleLateSubmissionPoint.copy(penaltyOrder = "2")
         val indexedPoints: Seq[(LSPDetails, Int)] = Seq(
           (pointToPassIn, 0),
-          (sampleFinancialPenalty, 1)
+          (sampleLateSubmissionPenaltyCharge, 1)
         )
         val actualResult = helper.findAndReindexPointIfIsActive(indexedPoints, pointToPassIn)
         val expectedResult = pointToPassIn.copy(penaltyOrder = "1")
@@ -139,10 +137,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "NOT reindex when the point is not in the indexed list" in {
-        val pointToPassIn: LSPDetails = samplePenaltyPoint.copy(penaltyOrder = "2")
+        val pointToPassIn: LSPDetails = sampleLateSubmissionPoint.copy(penaltyOrder = "2")
         val indexedPoints: Seq[(LSPDetails, Int)] = Seq(
-          (sampleFinancialPenalty, 0),
-          (samplePenaltyPoint, 1)
+          (sampleLateSubmissionPenaltyCharge, 0),
+          (sampleLateSubmissionPoint, 1)
         )
         val actualResult = helper.findAndReindexPointIfIsActive(indexedPoints, pointToPassIn)
         val expectedResult = pointToPassIn
@@ -171,15 +169,15 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
     }
 
     "financialSummaryCard" should {
-      "have an empty string when the penalty number exceeds the threshold" in {
-        val sampleSummaryCardReturnSubmitted: LateSubmissionPenaltySummaryCard = LateSubmissionPenaltySummaryCard(
+      "hide the penalty number when the active penalty number exceeds the threshold" in {
+        val expectedResult: LateSubmissionPenaltySummaryCard = LateSubmissionPenaltySummaryCard(
           Seq(
             helper.summaryListRow(
               period,
-              Html(vatPeriodValue(dateToString(sampleDate), dateToString(sampleDate)))
+              Html(vatPeriodValue(dateToString(taxPeriodStart), dateToString(taxPeriodEnd)))
             ),
-            helper.summaryListRow(returnDue, Html(dateToString(sampleDate))),
-            helper.summaryListRow(returnSubmitted, Html(dateToString(sampleDate)))
+            helper.summaryListRow(returnDue, Html(dateToString(taxPeriodDue))),
+            helper.summaryListRow(returnSubmitted, Html(dateToString(receiptDate)))
           ),
           Tag(content = Text("due"), classes = "penalty-due-tag"),
           "",
@@ -188,12 +186,11 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           isFinancialPoint = true,
           totalPenaltyAmount = 200,
           multiplePenaltyPeriod = None,
-          dueDate = Some(dateToString(sampleDate))
+          dueDate = Some(dateToString(taxPeriodDue))
         )
 
-        val pointToPassIn: LSPDetails = sampleFinancialPenalty.copy(penaltyOrder = "5")
+        val pointToPassIn: LSPDetails = sampleLateSubmissionPenaltyCharge.copy(penaltyOrder = "5")
         val actualResult = helper.financialSummaryCard(pointToPassIn, quarterlyThreshold)
-        val expectedResult = sampleSummaryCardReturnSubmitted
         actualResult shouldBe expectedResult
       }
 
@@ -202,10 +199,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           Seq(
             helper.summaryListRow(
               period,
-              Html(vatPeriodValue(dateToString(sampleDate), dateToString(sampleDate)))
+              Html(vatPeriodValue(dateToString(taxPeriodStart), dateToString(taxPeriodEnd)))
             ),
-            helper.summaryListRow(returnDue, Html(dateToString(sampleDate))),
-            helper.summaryListRow(returnSubmitted, Html(dateToString(sampleDate)))
+            helper.summaryListRow(returnDue, Html(dateToString(taxPeriodDue))),
+            helper.summaryListRow(returnSubmitted, Html(dateToString(receiptDate)))
           ),
           Tag(content = Text("due"), classes = "penalty-due-tag"),
           "1",
@@ -213,17 +210,17 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           isReturnSubmitted = true,
           isThresholdPoint = true,
           totalPenaltyAmount = 200,
-          dueDate = Some(dateToString(sampleDate))
+          dueDate = Some(dateToString(taxPeriodDue))
         )
 
-        val pointToPassIn: LSPDetails = sampleFinancialPenalty.copy(penaltyOrder = "1", penaltyCategory = LSPPenaltyCategoryEnum.Threshold)
+        val pointToPassIn: LSPDetails = sampleLateSubmissionPenaltyCharge.copy(penaltyOrder = "1", penaltyCategory = LSPPenaltyCategoryEnum.Threshold)
         val actualResult = helper.financialSummaryCard(pointToPassIn, quarterlyThreshold)
         val expectedResult = sampleSummaryCardReturnSubmitted
         actualResult shouldBe expectedResult
       }
 
       "show the appeal status when the point has been appealed - for under review" in {
-        val result = helper.financialSummaryCard(sampleFinancialPenalty.copy(appealInformation = Some(Seq(
+        val result = helper.financialSummaryCard(sampleLateSubmissionPenaltyCharge.copy(appealInformation = Some(Seq(
           AppealInformationType(
             appealStatus = Some(AppealStatusEnum.Under_Appeal),
             appealLevel = Some(AppealLevelEnum.HMRC)
@@ -236,7 +233,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "show the appeal status when the point has been appealed - for under tribunal review" in {
-        val result = helper.financialSummaryCard(sampleFinancialPenalty.copy(appealInformation = Some(Seq(
+        val result = helper.financialSummaryCard(sampleLateSubmissionPenaltyCharge.copy(appealInformation = Some(Seq(
           AppealInformationType(
             appealStatus = Some(AppealStatusEnum.Under_Appeal),
             appealLevel = Some(AppealLevelEnum.Tribunal)
@@ -249,7 +246,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "show the appeal status when the point has been appealed - for accepted" in {
-        val result = helper.financialSummaryCard(sampleFinancialPenalty.copy(appealInformation = Some(Seq(
+        val result = helper.financialSummaryCard(sampleLateSubmissionPenaltyCharge.copy(appealInformation = Some(Seq(
           AppealInformationType(
             appealStatus = Some(AppealStatusEnum.Upheld),
             appealLevel = Some(AppealLevelEnum.HMRC)
@@ -261,7 +258,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "show the appeal status when the point has been appealed - for accepted by tribunal" in {
-        val result = helper.financialSummaryCard(sampleFinancialPenalty.copy(appealInformation = Some(Seq(
+        val result = helper.financialSummaryCard(sampleLateSubmissionPenaltyCharge.copy(appealInformation = Some(Seq(
           AppealInformationType(
             appealStatus = Some(AppealStatusEnum.Upheld),
             appealLevel = Some(AppealLevelEnum.Tribunal)
@@ -274,7 +271,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "show the appeal status when the point has been appealed - for rejected" in {
-        val result = helper.financialSummaryCard(sampleFinancialPenalty.copy(appealInformation = Some(Seq(
+        val result = helper.financialSummaryCard(sampleLateSubmissionPenaltyCharge.copy(appealInformation = Some(Seq(
           AppealInformationType(
             appealStatus = Some(AppealStatusEnum.Rejected),
             appealLevel = Some(AppealLevelEnum.HMRC)
@@ -287,7 +284,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "show the appeal status when the point has been appealed - for tribunal rejected" in {
-        val result = helper.financialSummaryCard(sampleFinancialPenalty.copy(appealInformation = Some(Seq(
+        val result = helper.financialSummaryCard(sampleLateSubmissionPenaltyCharge.copy(appealInformation = Some(Seq(
           AppealInformationType(
             appealStatus = Some(AppealStatusEnum.Rejected),
             appealLevel = Some(AppealLevelEnum.Tribunal)
@@ -304,10 +301,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           Seq(
             helper.summaryListRow(
               period,
-              Html(vatPeriodValue(dateToString(sampleOldestDate), dateToString(sampleOldestDate.plusDays(15))))
+              Html(vatPeriodValue(dateToString(taxPeriodStart), dateToString(taxPeriodEnd)))
             ),
-            helper.summaryListRow(returnDue, Html(dateToString(sampleOldestDate.plusMonths(4).plusDays(7)))),
-            helper.summaryListRow(returnSubmitted, Html(dateToString(sampleOldestDate.plusMonths(4).plusDays(12))))
+            helper.summaryListRow(returnDue, Html(dateToString(taxPeriodDue))),
+            helper.summaryListRow(returnSubmitted, Html(dateToString(receiptDate)))
           ),
           Tag(content = Text("due"),
             classes = "penalty-due-tag"),
@@ -316,11 +313,11 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           isReturnSubmitted = true,
           isFinancialPoint = true,
           totalPenaltyAmount = 200,
-          multiplePenaltyPeriod = Some(Html(lspMultiplePenaltyPeriodMessage(dateToString(sampleOldestDate.plusMonths(4).plusDays(23))))),
-          dueDate = Some(dateToString(sampleOldestDate.plusMonths(4).plusDays(7)))
+          multiplePenaltyPeriod = Some(Html(lspMultiplePenaltyPeriodMessage(dateToString(taxPeriodDue.plusMonths(1))))),
+          dueDate = Some(dateToString(taxPeriodDue))
         )
 
-        val actualResult = helper.financialSummaryCard(sampleFinancialPenaltyWithMultiplePeriods, quarterlyThreshold)
+        val actualResult = helper.financialSummaryCard(sampleLateSubmissionPenaltyChargeWithMultiplePeriods, monthlyThreshold)
         actualResult shouldBe expectedResult
       }
 
@@ -329,9 +326,9 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           Seq(
             helper.summaryListRow(
               period,
-              Html(vatPeriodValue(dateToString(sampleDate), dateToString(sampleDate)))
+              Html(vatPeriodValue(dateToString(sampleDateLSP), dateToString(sampleDateLSP)))
             ),
-            helper.summaryListRow(returnDue, Html(dateToString(sampleDate))),
+            helper.summaryListRow(returnDue, Html(dateToString(sampleDateLSP))),
             helper.summaryListRow(returnSubmitted, Html(notSubmitted))
           ),
           Tag(content = Text("due"), classes = "penalty-due-tag"),
@@ -340,16 +337,16 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           isReturnSubmitted = false,
           isThresholdPoint = true,
           totalPenaltyAmount = 200,
-          dueDate = Some(dateToString(sampleDate))
+          dueDate = Some(dateToString(sampleDateLSP))
         )
 
-        val pointToPassIn: LSPDetails = sampleFinancialPenalty.copy(penaltyOrder = "1", penaltyCategory = LSPPenaltyCategoryEnum.Threshold,
+        val pointToPassIn: LSPDetails = sampleLateSubmissionPenaltyCharge.copy(penaltyOrder = "1", penaltyCategory = LSPPenaltyCategoryEnum.Threshold,
           lateSubmissions = Some(
             Seq(
               LateSubmission(
-                taxPeriodStartDate = Some(sampleDate),
-                taxPeriodEndDate = Some(sampleDate),
-                taxPeriodDueDate = Some(sampleDate),
+                taxPeriodStartDate = Some(sampleDateLSP),
+                taxPeriodEndDate = Some(sampleDateLSP),
+                taxPeriodDueDate = Some(sampleDateLSP),
                 returnReceiptDate = None,
                 taxReturnStatus = TaxReturnStatusEnum.Open
               )
@@ -364,70 +361,70 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
     "return SummaryCards" when {
       "given a Penalty point" when {
         "populateLateSubmissionPenaltyCard is called" in {
-          val result = helper.populateLateSubmissionPenaltyCard(Seq(sampleReturnSubmittedPenaltyPoint), quarterlyThreshold, quarterlyThreshold - 1)
+          val result = helper.populateLateSubmissionPenaltyCard(Seq(sampleLateSubmissionPointReturnSubmitted), quarterlyThreshold, quarterlyThreshold - 1)
           result shouldBe Seq(sampleLSPSummaryCardReturnSubmitted)
         }
 
         "user has removed points below active points - active points should be reindexed so that the points are logically numbered correctly" in {
           val sample3ReturnsSubmittedPenaltyPointDataAndOneRemovedPointv2: Seq[LSPDetails] = Seq(
-            samplePenaltyPoint.copy(penaltyOrder = "4"),
-            samplePenaltyPoint.copy(penaltyOrder = "3"),
-            samplePenaltyPoint.copy(penaltyOrder = "2"),
+            sampleLateSubmissionPoint.copy(penaltyOrder = "4"),
+            sampleLateSubmissionPoint.copy(penaltyOrder = "3"),
+            sampleLateSubmissionPoint.copy(penaltyOrder = "2"),
             sampleRemovedPenaltyPoint
           )
           val expectedResult: Seq[LateSubmissionPenaltySummaryCard] = Seq(LateSubmissionPenaltySummaryCard(
             Seq(
               helper.summaryListRow(
                 period,
-                Html(vatPeriodValue(dateToString(sampleDate), dateToString(sampleDate)))
+                Html(vatPeriodValue(dateToString(sampleDateLSP), dateToString(sampleDateLSP)))
               ),
-              helper.summaryListRow(returnDue, Html(dateToString(sampleDate))),
-              helper.summaryListRow(returnSubmitted, Html(dateToString(sampleDate))),
+              helper.summaryListRow(returnDue, Html(dateToString(sampleDateLSP))),
+              helper.summaryListRow(returnSubmitted, Html(dateToString(sampleDateLSP))),
               helper.summaryListRow(pointExpiration, Html(dateTimeToMonthYearString(LocalDateTime.now)))
             ),
             Tag(content = Text("active")),
             "3",
             "12345678901234",
             isReturnSubmitted = true,
-            dueDate = Some(dateToString(sampleDate))
+            dueDate = Some(dateToString(sampleDateLSP))
           ),
             LateSubmissionPenaltySummaryCard(
               Seq(
                 helper.summaryListRow(
                   period,
-                  Html(vatPeriodValue(dateToString(sampleDate), dateToString(sampleDate)))
+                  Html(vatPeriodValue(dateToString(sampleDateLSP), dateToString(sampleDateLSP)))
                 ),
-                helper.summaryListRow(returnDue, Html(dateToString(sampleDate))),
-                helper.summaryListRow(returnSubmitted, Html(dateToString(sampleDate))),
+                helper.summaryListRow(returnDue, Html(dateToString(sampleDateLSP))),
+                helper.summaryListRow(returnSubmitted, Html(dateToString(sampleDateLSP))),
                 helper.summaryListRow(pointExpiration, Html(dateTimeToMonthYearString(LocalDateTime.now)))
               ),
               Tag(content = Text("active")),
               "2",
               "12345678901234",
               isReturnSubmitted = true,
-              dueDate = Some(dateToString(sampleDate))
+              dueDate = Some(dateToString(sampleDateLSP))
             ),
             LateSubmissionPenaltySummaryCard(
               Seq(
                 helper.summaryListRow(
                   period,
-                  Html(vatPeriodValue(dateToString(sampleDate), dateToString(sampleDate)))
+                  Html(vatPeriodValue(dateToString(sampleDateLSP), dateToString(sampleDateLSP)))
                 ),
-                helper.summaryListRow(returnDue, Html(dateToString(sampleDate))),
-                helper.summaryListRow(returnSubmitted, Html(dateToString(sampleDate))),
+                helper.summaryListRow(returnDue, Html(dateToString(sampleDateLSP))),
+                helper.summaryListRow(returnSubmitted, Html(dateToString(sampleDateLSP))),
                 helper.summaryListRow(pointExpiration, Html(dateTimeToMonthYearString(LocalDateTime.now)))
               ),
               Tag(content = Text("active")),
               "1",
               "12345678901234",
               isReturnSubmitted = true,
-              dueDate = Some(dateToString(sampleDate))
+              dueDate = Some(dateToString(sampleDateLSP))
             ),
             LateSubmissionPenaltySummaryCard(
               Seq(
                 helper.summaryListRow(
                   period,
-                  Html(vatPeriodValue(dateToString(sampleDate), dateToString(sampleDate)))
+                  Html(vatPeriodValue(dateToString(sampleDateLSP), dateToString(sampleDateLSP)))
                 ),
                 helper.summaryListRow(reason, Html("reason"))
               ),
@@ -436,7 +433,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               "12345678901234",
               isReturnSubmitted = true,
               isAddedOrRemovedPoint = true,
-              dueDate = Some(dateToString(sampleDate))
+              dueDate = Some(dateToString(sampleDateLSP))
             ))
 
 
@@ -450,34 +447,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "given a Late Payment penalty" when {
-        val sampleLPPSummaryCardPenaltyDue: LatePaymentPenaltySummaryCard = LatePaymentPenaltySummaryCard(
-          Seq(
-            helper.summaryListRow(
-              penaltyType,
-              Html("First penalty for late payment")
-            ),
-            helper.summaryListRow(
-              overdueCharge,
-              Html(periodValueLPPOnePeriod("VAT", dateToString(sampleDate), dateToString(sampleDate)))
-            ),
-            helper.summaryListRow(chargeDue, Html(dateToString(sampleDate))),
-            helper.summaryListRow(datePaid, Html(dateToString(sampleDate)))
-          ),
-          Tag(content = Text("£200 due"), classes = "penalty-due-tag"),
-          penaltyChargeReference = Some("PEN1234567"),
-          principalChargeReference = "12345678901234",
-          amountDue = 400.0,
-          isPenaltyPaid = false,
-          isVatPaid = true,
-          penaltyCategory = LPP1,
-          dueDate = "1\u00A0January\u00A02021",
-          taxPeriodEndDate = sampleDate.toString,
-          taxPeriodStartDate = sampleDate.toString
-        )
 
         "return SummaryCards when given First Late Payment penalty and chargeType is VAT Return 1st LPP (4703)" when {
           "populateLatePaymentPenaltyCard is called" in {
-            val firstLatePaymentPenaltyForVAT = Seq(sampleLPP1Paid.copy(
+            val firstLatePaymentPenaltyForVAT = Seq(samplePaidLPP1.copy(
               LPPDetailsMetadata = LPPDetailsMetadata(
                 mainTransaction = Some(VATReturnFirstLPP), outstandingAmount = Some(0), timeToPay = None
               )
@@ -498,7 +471,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               penaltyAmountPaid = Some(1001.45),
               penaltyAmountPosted = 1001.45,
               penaltyAmountAccruing = 0,
-              principalChargeLatestClearing = Some(sampleDate),
+              principalChargeLatestClearing = Some(lpp2PrincipleChargePaidDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
             val result = helper.populateLatePaymentPenaltyCard(Some(secondLatePaymentPenaltyForVAT))
@@ -508,7 +481,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
         "return SummaryCards when given First Late Payment penalty and chargeType is VAT Central assessment 1st LPP (4723)" when {
           "populateLatePaymentPenaltyCard is called" in {
-            val firstLatePaymentPenaltyForCentralAssessment = Seq(sampleLPP1Paid.copy(
+            val firstLatePaymentPenaltyForCentralAssessment = Seq(samplePaidLPP1.copy(
               LPPDetailsMetadata = LPPDetailsMetadata(
                 mainTransaction = Some(CentralAssessmentFirstLPP), outstandingAmount = Some(1), timeToPay = None
               ),
@@ -517,7 +490,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               penaltyAmountPaid = Some(1001.45),
               penaltyAmountPosted = 1001.45,
               penaltyAmountAccruing = 0,
-              principalChargeLatestClearing = Some(sampleDate),
+              principalChargeLatestClearing = Some(lpp1PrincipleChargePaidDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
             val result = helper.populateLatePaymentPenaltyCard(Some(firstLatePaymentPenaltyForCentralAssessment))
@@ -536,7 +509,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               penaltyAmountPaid = Some(1001.45),
               penaltyAmountPosted = 1001.45,
               penaltyAmountAccruing = 0,
-              principalChargeLatestClearing = Some(sampleDate),
+              principalChargeLatestClearing = Some(lpp2PrincipleChargePaidDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
             val result = helper.populateLatePaymentPenaltyCard(Some(secondLatePaymentPenaltyForCentralAssessment))
@@ -546,7 +519,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
         "return SummaryCards when given First Late Payment penalty and chargeType is VAT Error correction 1st LPP (4743)" when {
           "populateLatePaymentPenaltyCard is called" in {
-            val firstLatePaymentPenaltyForErrorCorrectionNotice = Seq(sampleLPP1Paid.copy(
+            val firstLatePaymentPenaltyForErrorCorrectionNotice = Seq(samplePaidLPP1.copy(
               LPPDetailsMetadata = LPPDetailsMetadata(
                 mainTransaction = Some(ErrorCorrectionFirstLPP), outstandingAmount = Some(1), timeToPay = None
               ),
@@ -555,7 +528,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               penaltyAmountPaid = Some(1001.45),
               penaltyAmountPosted = 1001.45,
               penaltyAmountAccruing = 0,
-              principalChargeLatestClearing = Some(sampleDate),
+              principalChargeLatestClearing = Some(lpp1PrincipleChargePaidDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
             val result = helper.populateLatePaymentPenaltyCard(Some(firstLatePaymentPenaltyForErrorCorrectionNotice))
@@ -574,7 +547,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               penaltyAmountPaid = Some(1001.45),
               penaltyAmountPosted = 1001.45,
               penaltyAmountAccruing = 0,
-              principalChargeLatestClearing = Some(sampleDate),
+              principalChargeLatestClearing = Some(lpp2PrincipleChargePaidDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
             val result = helper.populateLatePaymentPenaltyCard(Some(secondLatePaymentPenaltyForErrorCorrectionNotice))
@@ -584,7 +557,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
         "return SummaryCards when given First Late Payment penalty and chargeType is VAT Officer's assessment 1st LPP (4741)" when {
           "populateLatePaymentPenaltyCard is called" in {
-            val firstLatePaymentPenaltyForOfficersAssessment = Seq(sampleLPP1Paid.copy(
+            val firstLatePaymentPenaltyForOfficersAssessment = Seq(samplePaidLPP1.copy(
               LPPDetailsMetadata = LPPDetailsMetadata(
                 mainTransaction = Some(OfficersAssessmentFirstLPP), outstandingAmount = Some(1), timeToPay = None
               )
@@ -605,7 +578,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               penaltyAmountPaid = Some(1001.45),
               penaltyAmountPosted = 1001.45,
               penaltyAmountAccruing = 0,
-              principalChargeLatestClearing = Some(sampleDate),
+              principalChargeLatestClearing = Some(lpp2PrincipleChargePaidDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
             val result = helper.populateLatePaymentPenaltyCard(Some(secondLatePaymentPenaltyForOfficersAssessment))
@@ -615,7 +588,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
         "return SummaryCards when given First Late Payment penalty and chargeType is Additional assessment 1st LPP (4758)" when {
           "populateLatePaymentPenaltyCard is called" in {
-            val firstLatePaymentPenaltyForAdditionalAssessment = Seq(sampleLPP1Paid.copy(
+            val firstLatePaymentPenaltyForAdditionalAssessment = Seq(samplePaidLPP1.copy(
               LPPDetailsMetadata = LPPDetailsMetadata(
                 mainTransaction = Some(AdditionalAssessmentFirstLPP), outstandingAmount = Some(1), timeToPay = None
               ),
@@ -624,7 +597,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               penaltyAmountPaid = Some(1001.45),
               penaltyAmountPosted = 1001.45,
               penaltyAmountAccruing = 0,
-              principalChargeLatestClearing = Some(sampleDate),
+              principalChargeLatestClearing = Some(lpp1PrincipleChargePaidDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
             val result = helper.populateLatePaymentPenaltyCard(Some(firstLatePaymentPenaltyForAdditionalAssessment))
@@ -643,7 +616,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               penaltyAmountPaid = Some(1001.45),
               penaltyAmountPosted = 1001.45,
               penaltyAmountAccruing = 0,
-              principalChargeLatestClearing = Some(sampleDate),
+              principalChargeLatestClearing = Some(lpp2PrincipleChargePaidDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
             val result = helper.populateLatePaymentPenaltyCard(Some(secondLatePaymentPenaltyForAdditionalAssessment))
@@ -653,7 +626,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
         "return SummaryCards when given First Late Payment penalty and chargeType is Protective assessment 1st LPP (4761)" when {
           "populateLatePaymentPenaltyCard is called" in {
-            val firstLatePaymentPenaltyForProtectiveAssessment = Seq(sampleLPP1Paid.copy(
+            val firstLatePaymentPenaltyForProtectiveAssessment = Seq(samplePaidLPP1.copy(
               LPPDetailsMetadata = LPPDetailsMetadata(
                 mainTransaction = Some(ProtectiveAssessmentFirstLPP), outstandingAmount = Some(1), timeToPay = None
               ),
@@ -662,7 +635,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               penaltyAmountPaid = Some(1001.45),
               penaltyAmountPosted = 1001.45,
               penaltyAmountAccruing = 0,
-              principalChargeLatestClearing = Some(sampleDate),
+              principalChargeLatestClearing = Some(lpp1PrincipleChargePaidDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
             val result = helper.populateLatePaymentPenaltyCard(Some(firstLatePaymentPenaltyForProtectiveAssessment))
@@ -681,7 +654,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               penaltyAmountPaid = Some(1001.45),
               penaltyAmountPosted = 1001.45,
               penaltyAmountAccruing = 0,
-              principalChargeLatestClearing = Some(sampleDate),
+              principalChargeLatestClearing = Some(lpp2PrincipleChargePaidDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
             val result = helper.populateLatePaymentPenaltyCard(Some(secondLatePaymentPenaltyForProtectiveAssessment))
@@ -691,7 +664,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
         "return SummaryCards when given First Late Payment penalty and chargeType is a POA Return Charge 1st LPP (4716)" when {
           "populateLatePaymentPenaltyCard is called" in {
-            val firstLatePaymentPenaltyForPOAReturnCharge = Seq(sampleLPP1Paid.copy(
+            val firstLatePaymentPenaltyForPOAReturnCharge = Seq(samplePaidLPP1.copy(
               LPPDetailsMetadata = LPPDetailsMetadata(
                 mainTransaction = Some(POAReturnChargeFirstLPP), outstandingAmount = Some(1), timeToPay = None
               ),
@@ -700,7 +673,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               penaltyAmountPaid = Some(1001.45),
               penaltyAmountPosted = 1001.45,
               penaltyAmountAccruing = 0,
-              principalChargeLatestClearing = Some(sampleDate),
+              principalChargeLatestClearing = Some(lpp1PrincipleChargePaidDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
             val result = helper.populateLatePaymentPenaltyCard(Some(firstLatePaymentPenaltyForPOAReturnCharge))
@@ -720,7 +693,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               penaltyAmountPaid = Some(1001.45),
               penaltyAmountPosted = 1001.45,
               penaltyAmountAccruing = 0,
-              principalChargeLatestClearing = Some(sampleDate),
+              principalChargeLatestClearing = Some(lpp2PrincipleChargePaidDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
             val result = helper.populateLatePaymentPenaltyCard(Some(secondLatePaymentPenaltyForPOAReturnCharge))
@@ -730,7 +703,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
         "return SummaryCards when given First Late Payment penalty and chargeType is AA Return charge 1st LPP (4718)" when {
           "populateLatePaymentPenaltyCard is called" in {
-            val firstLatePaymentPenaltyForAAReturnCharge = Seq(sampleLPP1Paid.copy(
+            val firstLatePaymentPenaltyForAAReturnCharge = Seq(samplePaidLPP1.copy(
               LPPDetailsMetadata = LPPDetailsMetadata(
                 mainTransaction = Some(AAReturnChargeFirstLPP), outstandingAmount = Some(1), timeToPay = None
               ),
@@ -739,7 +712,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               penaltyAmountPaid = Some(1001.45),
               penaltyAmountPosted = 1001.45,
               penaltyAmountAccruing = 0,
-              principalChargeLatestClearing = Some(sampleDate),
+              principalChargeLatestClearing = Some(lpp1PrincipleChargePaidDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
             val result = helper.populateLatePaymentPenaltyCard(Some(firstLatePaymentPenaltyForAAReturnCharge))
@@ -759,7 +732,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               penaltyAmountPaid = Some(1001.45),
               penaltyAmountPosted = 1001.45,
               penaltyAmountAccruing = 0,
-              principalChargeLatestClearing = Some(sampleDate),
+              principalChargeLatestClearing = Some(lpp2PrincipleChargePaidDate),
               penaltyStatus = LPPPenaltyStatusEnum.Posted
             ))
             val result = helper.populateLatePaymentPenaltyCard(Some(secondLatePaymentPenaltyForAAReturnCharge))
@@ -769,7 +742,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
         "return SummaryCards with VAT payment date in LPP " when {
           "populateLatePaymentPenalty for is called" in {
-            val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleLPP1Paid.copy(
+            val result = helper.populateLatePaymentPenaltyCard(Some(Seq(samplePaidLPP1.copy(
               LPPDetailsMetadata = LPPDetailsMetadata(
                 mainTransaction = Some(VATReturnFirstLPP), outstandingAmount = Some(1), timeToPay = None
               )
@@ -779,30 +752,32 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         }
 
         "set the isVatPaid boolean to false when the VAT is unpaid" in {
-          val sampleLPPSummaryCardPenaltyUnpaidVAT: LatePaymentPenaltySummaryCard = sampleLPPSummaryCardPenaltyDue.copy(
-            cardRows = Seq(
+          val periodText = getPeriodText("VAT")
+          val sampleLPPSummaryCardPenaltyUnpaidVAT: LatePaymentPenaltySummaryCard = sampleLPPSummaryCardPenaltyPaid("VAT").copy(
+            cardRows =
+            Seq(
               helper.summaryListRow(
                 penaltyType,
                 Html("First penalty for late payment")
               ),
               helper.summaryListRow(
                 overdueCharge,
-                Html(periodValueLPPOnePeriod("VAT", dateToString(sampleDate), dateToString(sampleDate)))
+                Html(periodText("VAT", dateToString(principleChargeBillingStartDate), dateToString(principleChargeBillingEndDate)))
               ),
-              helper.summaryListRow(chargeDue, Html(dateToString(sampleDate))),
-              helper.summaryListRow(datePaid, Html("Payment not yet received")),
+              helper.summaryListRow(chargeDue, Html(dateToString(principleChargeBillingDueDate))),
+              helper.summaryListRow(datePaid, Html(paymentNotReceived)),
               SummaryListRow()
             ),
             isPenaltyPaid = false,
             isVatPaid = false,
-            status = Tag(content = Text("estimate")))
+            status = Tag(Text(estimate)))
 
           val result = helper.populateLatePaymentPenaltyCard(
             Some(
-              Seq(sampleLPP1.copy(
+              Seq(sampleUnpaidLPP1.copy(
                 appealInformation = None,
                 penaltyAmountOutstanding = None,
-                penaltyAmountAccruing = 400,
+                penaltyAmountAccruing = 1001.45,
                 penaltyAmountPosted = 0,
                 penaltyAmountPaid = None
               ))
@@ -817,27 +792,27 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
   "return Seq[SummaryListRow] when give a PenaltyPoint" when {
     "returnSubmittedCardBody is called" when {
       "given a PenaltyPoint and the threshold has not been met" in {
-        val result = helper.returnSubmittedCardBody(samplePenaltyPoint, thresholdMet = false)
+        val result = helper.returnSubmittedCardBody(sampleLateSubmissionPoint, thresholdMet = false)
         result shouldBe Seq(
           helper.summaryListRow(
             period,
-            Html(vatPeriodValue(dateToString(sampleDate), dateToString(sampleDate)))
+            Html(vatPeriodValue(dateToString(taxPeriodStart), dateToString(taxPeriodEnd)))
           ),
-          helper.summaryListRow(returnDue, Html(dateToString(sampleDate))),
-          helper.summaryListRow(returnSubmitted, Html(dateToString(sampleDate))),
-          helper.summaryListRow(pointExpiration, Html(dateToMonthYearString(sampleDate)))
+          helper.summaryListRow(returnDue, Html(dateToString(taxPeriodDue))),
+          helper.summaryListRow(returnSubmitted, Html(dateToString(receiptDate))),
+          helper.summaryListRow(pointExpiration, Html(dateToMonthYearString(expiryDate)))
         )
       }
 
       "given a PenaltyPoint and the threshold has been met" in {
-        val result = helper.returnSubmittedCardBody(samplePenaltyPoint, thresholdMet = true)
+        val result = helper.returnSubmittedCardBody(sampleLateSubmissionPoint, thresholdMet = true)
         result shouldBe Seq(
           helper.summaryListRow(
             period,
-            Html(vatPeriodValue(dateToString(sampleDate), dateToString(sampleDate)))
+            Html(vatPeriodValue(dateToString(taxPeriodStart), dateToString(taxPeriodEnd)))
           ),
-          helper.summaryListRow(returnDue, Html(dateToString(sampleDate))),
-          helper.summaryListRow(returnSubmitted, Html(dateToString(sampleDate)))
+          helper.summaryListRow(returnDue, Html(dateToString(taxPeriodDue))),
+          helper.summaryListRow(returnSubmitted, Html(dateToString(receiptDate)))
         )
       }
     }
@@ -847,9 +822,9 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       result shouldBe Seq(
         helper.summaryListRow(
           period,
-          Html(vatPeriodValue(dateToString(sampleDate), dateToString(sampleDate)))
+          Html(vatPeriodValue(dateToString(taxPeriodStart), dateToString(taxPeriodEnd)))
         ),
-        helper.summaryListRow(returnDue, Html(dateToString(sampleDate))),
+        helper.summaryListRow(returnDue, Html(dateToString(taxPeriodDue))),
         helper.summaryListRow(returnSubmitted, Html(notSubmitted))
       )
     }
@@ -918,7 +893,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "an overdue penaltyPointSubmission is provided" in {
-        val result = helper.tagStatus(Some(sampleFinancialPenalty), None)
+        val result = helper.tagStatus(Some(sampleLateSubmissionPenaltyCharge), None)
         result shouldBe Tag(
           content = Text(overdueTag),
           classes = "penalty-due-tag"
@@ -926,14 +901,14 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "an active penalty point is provided" in {
-        val result = helper.tagStatus(Some(samplePenaltyPoint.copy(chargeAmount = None)), None)
+        val result = helper.tagStatus(Some(sampleLateSubmissionPoint.copy(chargeAmount = None)), None)
         result shouldBe Tag(
           content = Text(activeTag)
         )
       }
 
       "a penalty is submitted but the appeal is rejected - return the appropriate tag" in {
-        val result = helper.tagStatus(Some(samplePenaltyPoint.copy(penaltyStatus = LSPPenaltyStatusEnum.Active,
+        val result = helper.tagStatus(Some(sampleLateSubmissionPoint.copy(penaltyStatus = LSPPenaltyStatusEnum.Active,
           chargeAmount = None,
           appealInformation = Some(Seq(
             AppealInformationType(
@@ -947,7 +922,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "a financial penalty has been added and the user has paid" in {
-        val result = helper.tagStatus(Some(sampleFinancialPenalty.copy(chargeOutstandingAmount = Some(0))), None)
+        val result = helper.tagStatus(Some(sampleLateSubmissionPenaltyCharge.copy(chargeOutstandingAmount = Some(0))), None)
         result shouldBe Tag(
           content = Text(paidTag)
         )
@@ -976,7 +951,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "a financial penalty has been added and the user has estimated penalty" in {
-        val result = helper.tagStatus(None, Some(sampleLPP1))
+        val result = helper.tagStatus(None, Some(sampleUnpaidLPP1))
         result shouldBe Tag(
           content = Text(estimate)
         )
@@ -1072,7 +1047,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
   "lppSummaryCard" should {
     "when given a LPP where VAT has not been paid - set the correct field" in {
-      val result = helper.lppSummaryCard(sampleLPP1)
+      val result = helper.lppSummaryCard(sampleUnpaidLPP1)
       result.isVatPaid shouldBe false
     }
 
