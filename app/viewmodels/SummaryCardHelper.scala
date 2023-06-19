@@ -172,8 +172,8 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
     )
   }
 
-  def getPenaltyNumberBasedOnThreshold(penaltyNumberAsString: String, threshold: Int): String = {
-    if (penaltyNumberAsString.toInt > threshold) "" else penaltyNumberAsString.toInt.toString
+  def getPenaltyNumberBasedOnThreshold(penaltyOrderNumberAsString: String, threshold: Int): String = {
+    if (penaltyOrderNumberAsString.toInt > threshold) "" else penaltyOrderNumberAsString.toInt.toString
   }
 
   def pointSummaryCard(penalty: LSPDetails, thresholdMet: Boolean)(implicit messages: Messages): LateSubmissionPenaltySummaryCard = {

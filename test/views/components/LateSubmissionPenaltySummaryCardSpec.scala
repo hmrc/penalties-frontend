@@ -36,17 +36,17 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
   val summaryCardHtml: summaryCardLSP = injector.instanceOf[summaryCardLSP]
 
   val summaryCardModelWithAppealedPoint: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
-    Seq(lSPDetailsAsModelNoFAP.copy(
+    Seq(sampleLateSubmissionPenaltyCharge.copy(
       appealInformation = Some(Seq(
         AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Under_Appeal),
           appealLevel = Some(AppealLevelEnum.HMRC)
         )
       )))),
-    quarterlyThreshold, 1).head
+    monthlyThreshold, 1).head
 
   val summaryCardModelUnappealable: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
-    Seq(lSPDetailsAsModelNoFAP.copy(
+    Seq(sampleLateSubmissionPenaltyCharge.copy(
       appealInformation = Some(Seq(
         AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
@@ -56,7 +56,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     quarterlyThreshold, 1).head
 
   val summaryCardModelWithAppealedPointAccepted: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
-    Seq(lSPDetailsAsModelNoFAP.copy(
+    Seq(sampleLateSubmissionPenaltyCharge.copy(
       penaltyStatus = LSPPenaltyStatusEnum.Inactive,
       expiryReason = Some(ExpiryReasonEnum.Appeal),
       penaltyCategory = LSPPenaltyCategoryEnum.Point,
@@ -70,7 +70,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     quarterlyThreshold, 0).head
 
   val summaryCardModelWithAppealedPointRejected: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
-    Seq(lSPDetailsAsModelNoFAP.copy(appealInformation = Some(Seq(
+    Seq(sampleLateSubmissionPenaltyCharge.copy(appealInformation = Some(Seq(
       AppealInformationType(
         appealStatus = Some(AppealStatusEnum.Rejected),
         appealLevel = Some(AppealLevelEnum.HMRC)
@@ -111,7 +111,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     ), quarterlyThreshold, 1).head
 
   val summaryCardModelWithAppealedPointUnderTribunalReview: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
-    Seq(lSPDetailsAsModelNoFAP.copy(
+    Seq(sampleLateSubmissionPenaltyCharge.copy(
       appealInformation = Some(Seq(
         AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Under_Appeal),
@@ -122,7 +122,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     quarterlyThreshold, 1).head
 
   val summaryCardModelWithAppealedPointAcceptedByTribunal: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
-    Seq(lSPDetailsAsModelNoFAP.copy(
+    Seq(sampleLateSubmissionPenaltyCharge.copy(
       penaltyStatus = LSPPenaltyStatusEnum.Inactive,
       expiryReason = Some(ExpiryReasonEnum.Appeal),
       penaltyCategory = LSPPenaltyCategoryEnum.Point,
@@ -138,7 +138,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     quarterlyThreshold, 0).head
 
   val summaryCardModelWithAppealedPointTribunalRejected: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
-    Seq(lSPDetailsAsModelNoFAP.copy(
+    Seq(sampleLateSubmissionPenaltyCharge.copy(
       appealInformation = Some(Seq(
         AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Rejected),
@@ -321,11 +321,11 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       chargeDueDate = Some(LocalDate.parse("2069-10-30"))
     ), quarterlyThreshold)
 
-  val summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected: LateSubmissionPenaltySummaryCard =
+  val summaryCardModelForFinancialPenaltyWithAndAppealRejected: LateSubmissionPenaltySummaryCard =
     summaryCardHelper.financialSummaryCard(LSPDetails(
       penaltyNumber = "12345678901234",
       penaltyOrder = "01",
-      penaltyCategory = LSPPenaltyCategoryEnum.Point,
+      penaltyCategory = LSPPenaltyCategoryEnum.Charge,
       penaltyStatus = LSPPenaltyStatusEnum.Active,
       FAPIndicator = None,
       expiryReason = None,
@@ -626,7 +626,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       val docWithFinancialPointAppealUnderReview: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealInProgress))
       val docWithFinancialPointAppealRejected: Document =
-        asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealRejected))
+        asDocument(summaryCardHtml.apply(summaryCardModelForFinancialPenaltyWithAndAppealRejected))
       val docWithFinancialPointAppealUnderTribunalReview: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealUnderTribunalReview))
       val docWithFinancialPointAppealTribunalRejected: Document =
@@ -683,13 +683,13 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       }
 
       "have the appeal status for UNDER_REVIEW" in {
-        docWithAppealedPoint.select("dt").get(4).text() shouldBe "Appeal status"
-        docWithAppealedPoint.select("dd").get(4).text() shouldBe "Under review by HMRC"
+        docWithAppealedPoint.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithAppealedPoint.select("dd").get(3).text() shouldBe "Under review by HMRC"
       }
 
       "have the appeal status for UNDER_TRIBUNAL_REVIEW" in {
-        docWithAppealedPointUnderTribunalReview.select("dt").get(4).text() shouldBe "Appeal status"
-        docWithAppealedPointUnderTribunalReview.select("dd").get(4).text() shouldBe "Under review by the tax tribunal"
+        docWithAppealedPointUnderTribunalReview.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithAppealedPointUnderTribunalReview.select("dd").get(3).text() shouldBe "Under review by the tax tribunal"
       }
 
       "have the appeal status for ACCEPTED - removing the point due to expire and point number" in {
@@ -707,14 +707,13 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       }
 
       "have the appeal status for REJECTED" in {
-        docWithAppealedPointRejected.select("dt").text().contains("Point due to expire") shouldBe true
-        docWithAppealedPointRejected.select("dt").get(4).text() shouldBe "Appeal status"
-        docWithAppealedPointRejected.select("dd").get(4).text() shouldBe "Appeal rejected"
+        docWithAppealedPointRejected.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithAppealedPointRejected.select("dd").get(3).text() shouldBe "Appeal rejected"
       }
 
       "have the appeal status for TRIBUNAL REJECTED" in {
-        docWithAppealedPointUnderTribunalRejected.select("dt").get(4).text() shouldBe "Appeal status"
-        docWithAppealedPointUnderTribunalRejected.select("dd").get(4).text() shouldBe "Appeal rejected by tax tribunal"
+        docWithAppealedPointUnderTribunalRejected.select("dt").get(3).text() shouldBe "Appeal status"
+        docWithAppealedPointUnderTribunalRejected.select("dd").get(3).text() shouldBe "Appeal rejected by tax tribunal"
       }
     }
 
@@ -753,7 +752,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     "given a non-appealed point and it is unappealable" should {
       implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelUnappealable))
       "not show the appeal status row and have the check if you can appeal link" in {
-        doc.select(".app-summary-card__footer a").text() shouldBe "Check if you can appeal"
+        doc.select(".app-summary-card__footer a").get(0).ownText() shouldBe "Check if you can appeal"
+        doc.select(".app-summary-card__footer a span").text() shouldBe "for late VAT return due on 12 March 2021"
         doc.select("dt").eq(4).isEmpty shouldBe true
       }
     }

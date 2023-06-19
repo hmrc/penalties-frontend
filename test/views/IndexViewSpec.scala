@@ -17,7 +17,8 @@
 package views
 
 import assets.messages.IndexMessages._
-import base.{BaseSelectors, SpecBase, TestData}
+import base.testData.LSPDetailsTestData
+import base.{BaseSelectors, SpecBase}
 import models.{GetPenaltyDetails, Totalisations}
 import org.jsoup.nodes.Document
 import play.twirl.api.HtmlFormat
@@ -26,7 +27,7 @@ import viewmodels.IndexPageHelper
 import views.behaviours.ViewBehaviours
 import views.html.IndexView
 
-class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours with TestData {
+class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours with LSPDetailsTestData {
   val indexPage: IndexView = injector.instanceOf[IndexView]
   val helper: IndexPageHelper = injector.instanceOf[IndexPageHelper]
 
