@@ -38,7 +38,7 @@ class MessagesSpec extends SpecBase {
       }
     }
 
-    "the value for each English key must be different to the corresponding value of the Welsh key" ignore {
+    "the value for each English key must be different to the corresponding value of the Welsh key" in {
       val englishMessagesWithoutExcludedKeys= englishMessages.filterNot(kV => excludedKeys.contains(kV._1))
       val welshMessagesWithoutExcludedKeys = welshMessages.filterNot(kV => excludedKeys.contains(kV._1))
       withClue(describeValueMismatch(englishMessagesWithoutExcludedKeys, welshMessagesWithoutExcludedKeys)) {
