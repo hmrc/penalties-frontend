@@ -84,7 +84,7 @@ summaryCard.header.financialNoNumber = Cosb o £{0}
 summaryCard.header.financialNoNumber.hiddenText = am gyflwyno Ffurflen TAW yn hwyr a oedd yn ddyledus ar {0}
 summaryCard.header.financialAdditionalPenalty = Cosb ychwanegol o £{0}
 summaryCard.header.lpp.hiddenText = am wneud taliad hwyr a oedd yn ddyledus ar {0}
-summaryCard.header.appealedPoint = Penalty
+summaryCard.header.appealedPoint = Cosb
 
 summaryCard.key1 = Cyfnod TAW
 summaryCard.value1 = {0} i {1}
