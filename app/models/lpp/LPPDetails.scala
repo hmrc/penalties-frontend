@@ -131,7 +131,7 @@ object LPPDetailsMetadata {
 }
 
 case class TimeToPay(
-                       TTPStartDate: LocalDate,
+                       TTPStartDate: Option[LocalDate],
                        TTPEndDate: Option[LocalDate]
                      )
 

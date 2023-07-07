@@ -55,14 +55,17 @@ class CalculationPageHelper @Inject()(implicit val appConfig: AppConfig) extends
   }
 
   def isTTPActive(penaltyDetails: GetPenaltyDetails): Boolean = {
+    val currentDate = getFeatureDate
     penaltyDetails.latePaymentPenalty.exists {
       _.details.exists { //Current understanding is that TTP values are replicated across every LPP
         _.LPPDetailsMetadata.timeToPay.exists {
           _.exists(ttp => {
-            if (ttp.TTPEndDate.isDefined) {
-              (ttp.TTPStartDate.isEqual(getFeatureDate) || ttp.TTPStartDate.isBefore(getFeatureDate)) && (ttp.TTPEndDate.get.isEqual(getFeatureDate) || ttp.TTPEndDate.get.isAfter(getFeatureDate))
-            } else {
-              ttp.TTPStartDate.isEqual(getFeatureDate) || ttp.TTPStartDate.isBefore(getFeatureDate)
+            (ttp.TTPStartDate, ttp.TTPEndDate) match {
+              case (Some(startDate), Some(endDate)) =>
+                (startDate.isEqual(currentDate) || startDate.isBefore(currentDate)) && (endDate.isEqual(currentDate) || endDate.isAfter(currentDate))
+              case (None, Some(endDate)) => endDate.isEqual(currentDate) || endDate.isAfter(currentDate)
+              case (Some(startDate), None) => startDate.isEqual(currentDate) || startDate.isBefore(currentDate)
+              case _ => false
             }
           })
         }

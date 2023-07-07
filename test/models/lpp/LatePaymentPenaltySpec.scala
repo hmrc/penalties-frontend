@@ -130,7 +130,7 @@ class LatePaymentPenaltySpec extends SpecBase {
           timeToPay = Some(
             Seq(
               TimeToPay(
-                TTPStartDate = LocalDate.parse("2069-10-30"),
+                TTPStartDate = Some(LocalDate.parse("2069-10-30")),
                 TTPEndDate = Some(LocalDate.parse("2069-10-30"))
               )
             )

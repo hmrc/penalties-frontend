@@ -169,7 +169,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching {
                   timeToPay = Some(
                     Seq(
                       TimeToPay(
-                        TTPStartDate = LocalDate.of(2022, 1, 1),
+                        TTPStartDate = Some(LocalDate.of(2022, 1, 1)),
                         TTPEndDate = Some(LocalDate.of(2022, 7, 2))
                       )
                     )
@@ -198,7 +198,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching {
                   timeToPay = Some(
                     Seq(
                       TimeToPay(
-                        TTPStartDate = LocalDate.of(2022, 1, 1),
+                        TTPStartDate = Some(LocalDate.of(2022, 1, 1)),
                         TTPEndDate = Some(LocalDate.of(2022, 7, 2))
                       )
                     )
@@ -227,12 +227,70 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching {
                   timeToPay = Some(
                     Seq(
                       TimeToPay(
-                        TTPStartDate = LocalDate.of(2022, 1, 1),
+                        TTPStartDate = Some(LocalDate.of(2022, 1, 1)),
                         TTPEndDate = Some(LocalDate.of(2022, 6, 20))
                       ),
                       TimeToPay(
-                        TTPStartDate = LocalDate.of(2022, 6, 24),
+                        TTPStartDate = Some(LocalDate.of(2022, 6, 24)),
                         TTPEndDate = Some(LocalDate.of(2022, 7, 2))
+                      )
+                    )
+                  )
+                ))
+              )
+            )
+          ),
+          lateSubmissionPenalty = None,
+          breathingSpace = None
+        )
+        setFeatureDate(Some(LocalDate.of(2022, 6, 25)))
+        val result = calculationPageHelper.isTTPActive(penaltyDetails)
+        result shouldBe true
+      }
+
+      "a TTP has no start date (only an end date) - when the end date is today" in {
+        val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
+          totalisations = None,
+          latePaymentPenalty = Some(
+            LatePaymentPenalty(
+              Seq(
+                sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+                  mainTransaction = None,
+                  outstandingAmount = None,
+                  timeToPay = Some(
+                    Seq(
+                      TimeToPay(
+                        TTPStartDate = None,
+                        TTPEndDate = Some(LocalDate.of(2022, 6, 25))
+                      )
+                    )
+                  )
+                ))
+              )
+            )
+          ),
+          lateSubmissionPenalty = None,
+          breathingSpace = None
+        )
+        setFeatureDate(Some(LocalDate.of(2022, 6, 25)))
+        val result = calculationPageHelper.isTTPActive(penaltyDetails)
+        result shouldBe true
+      }
+
+      "a TTP has no start date (only an end date) - when the end date is after today" in {
+        val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
+          totalisations = None,
+          latePaymentPenalty = Some(
+            LatePaymentPenalty(
+              Seq(
+                sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+                  mainTransaction = None,
+                  outstandingAmount = None,
+                  timeToPay = Some(
+                    Seq(
+                      TimeToPay(
+                        TTPStartDate = None,
+                        TTPEndDate = Some(LocalDate.of(2022, 6, 26))
                       )
                     )
                   )
@@ -260,7 +318,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching {
                   timeToPay = Some(
                     Seq(
                       TimeToPay(
-                        TTPStartDate = LocalDate.of(2022, 1, 1),
+                        TTPStartDate = Some(LocalDate.of(2022, 1, 1)),
                         TTPEndDate = None
                       )
                     )
@@ -300,6 +358,35 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching {
         result shouldBe false
       }
 
+      "a TTP has no start date (only an end date) - when the end date is before today" in {
+        val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
+          totalisations = None,
+          latePaymentPenalty = Some(
+            LatePaymentPenalty(
+              Seq(
+                sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+                  mainTransaction = None,
+                  outstandingAmount = None,
+                  timeToPay = Some(
+                    Seq(
+                      TimeToPay(
+                        TTPStartDate = None,
+                        TTPEndDate = Some(LocalDate.of(2022, 7, 2))
+                      )
+                    )
+                  )
+                ))
+              )
+            )
+          ),
+          lateSubmissionPenalty = None,
+          breathingSpace = None
+        )
+        setFeatureDate(Some(LocalDate.of(2022, 7, 3)))
+        val result = calculationPageHelper.isTTPActive(penaltyDetails)
+        result shouldBe false
+      }
+
       "a TTP was active but has since expired" in {
         val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = None,
@@ -312,7 +399,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching {
                   timeToPay = Some(
                     Seq(
                       TimeToPay(
-                        TTPStartDate = LocalDate.of(2022, 1, 1),
+                        TTPStartDate = Some(LocalDate.of(2022, 1, 1)),
                         TTPEndDate = Some(LocalDate.of(2022, 7, 2))
                       )
                     )
@@ -341,7 +428,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching {
                   timeToPay = Some(
                     Seq(
                       TimeToPay(
-                        TTPStartDate = LocalDate.of(2022, 8, 1),
+                        TTPStartDate = Some(LocalDate.of(2022, 8, 1)),
                         TTPEndDate = Some(LocalDate.of(2022, 9, 2))
                       )
                     )

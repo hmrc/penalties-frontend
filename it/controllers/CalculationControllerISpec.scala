@@ -208,7 +208,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
             outstandingAmount = Some(99),
             timeToPay = Some(
               Seq(
-                TimeToPay(TTPStartDate = LocalDate.parse("2021-01-01"), TTPEndDate = Some(LocalDate.parse("2021-02-01")))
+                TimeToPay(TTPStartDate = Some(LocalDate.parse("2021-01-01")), TTPEndDate = Some(LocalDate.parse("2021-02-01")))
               )
             )
           )
@@ -243,7 +243,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
             outstandingAmount = Some(99),
             timeToPay = Some(
               Seq(
-                TimeToPay(TTPStartDate = LocalDate.parse("2021-01-01"), TTPEndDate = Some(LocalDate.parse("2021-02-01")))
+                TimeToPay(TTPStartDate = Some(LocalDate.parse("2021-01-01")), TTPEndDate = Some(LocalDate.parse("2021-02-01")))
               )
             )
           )
@@ -314,7 +314,7 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
             outstandingAmount = Some(99),
             timeToPay = Some(
               Seq(
-                TimeToPay(TTPStartDate = LocalDate.parse("2021-01-01"), TTPEndDate = Some(LocalDate.parse("2021-02-01")))
+                TimeToPay(TTPStartDate = Some(LocalDate.parse("2021-01-01")), TTPEndDate = Some(LocalDate.parse("2021-02-01")))
               )
             )
           )
