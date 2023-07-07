@@ -21,7 +21,9 @@ import config.featureSwitches.FeatureSwitching
 import models.GetPenaltyDetails
 import models.lpp.LPPDetails
 import play.api.i18n.Messages
-import utils.{CurrencyFormatter, ImplicitDateFormatter, ViewUtils}
+import utils.Logger.logger
+import utils.PagerDutyHelper.PagerDutyKeys
+import utils.{CurrencyFormatter, ImplicitDateFormatter, PagerDutyHelper, ViewUtils}
 
 import java.time.LocalDate
 import javax.inject.Inject
@@ -54,7 +56,7 @@ class CalculationPageHelper @Inject()(implicit val appConfig: AppConfig) extends
     dateToString(date)
   }
 
-  def isTTPActive(penaltyDetails: GetPenaltyDetails): Boolean = {
+  def isTTPActive(penaltyDetails: GetPenaltyDetails, vrn: String): Boolean = {
     val currentDate = getFeatureDate
     penaltyDetails.latePaymentPenalty.exists {
       _.details.exists { //Current understanding is that TTP values are replicated across every LPP
@@ -64,7 +66,11 @@ class CalculationPageHelper @Inject()(implicit val appConfig: AppConfig) extends
               case (Some(startDate), Some(endDate)) =>
                 (startDate.isEqual(currentDate) || startDate.isBefore(currentDate)) && (endDate.isEqual(currentDate) || endDate.isAfter(currentDate))
               case (None, Some(endDate)) => endDate.isEqual(currentDate) || endDate.isAfter(currentDate)
-              case (Some(startDate), None) => startDate.isEqual(currentDate) || startDate.isBefore(currentDate)
+              case (Some(_), None) => {
+                PagerDutyHelper.log("[CalculationPageHelper][isTTPActive]", PagerDutyKeys.TTP_END_DATE_MISSING)
+                logger.warn(s"[CalculationPageHelper][isTTPActive] - User with missing TTP end date, treating as if user does not have TTP, VRN: $vrn")
+                false
+              }
               case _ => false
             }
           })

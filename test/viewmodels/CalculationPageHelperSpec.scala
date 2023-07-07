@@ -16,15 +16,17 @@
 
 package viewmodels
 
-import base.SpecBase
+import base.{LogCapturing, SpecBase}
 import config.featureSwitches.FeatureSwitching
 import models.GetPenaltyDetails
 import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import models.lpp._
+import utils.Logger.logger
+import utils.PagerDutyHelper.PagerDutyKeys
 
 import java.time.LocalDate
 
-class CalculationPageHelperSpec extends SpecBase with FeatureSwitching {
+class CalculationPageHelperSpec extends SpecBase with FeatureSwitching with LogCapturing {
   val calculationPageHelper: CalculationPageHelper = injector.instanceOf[CalculationPageHelper]
 
   "getCalculationRowForLPP" should {
@@ -182,7 +184,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching {
           breathingSpace = None
         )
         setFeatureDate(Some(LocalDate.of(2022, 7, 2)))
-        val result = calculationPageHelper.isTTPActive(penaltyDetails)
+        val result = calculationPageHelper.isTTPActive(penaltyDetails, "123456789")
         result shouldBe true
       }
 
@@ -211,7 +213,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching {
           breathingSpace = None
         )
         setFeatureDate(Some(LocalDate.of(2022, 7, 1)))
-        val result = calculationPageHelper.isTTPActive(penaltyDetails)
+        val result = calculationPageHelper.isTTPActive(penaltyDetails, "123456789")
         result shouldBe true
       }
 
@@ -244,7 +246,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching {
           breathingSpace = None
         )
         setFeatureDate(Some(LocalDate.of(2022, 6, 25)))
-        val result = calculationPageHelper.isTTPActive(penaltyDetails)
+        val result = calculationPageHelper.isTTPActive(penaltyDetails, "123456789")
         result shouldBe true
       }
 
@@ -273,7 +275,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching {
           breathingSpace = None
         )
         setFeatureDate(Some(LocalDate.of(2022, 6, 25)))
-        val result = calculationPageHelper.isTTPActive(penaltyDetails)
+        val result = calculationPageHelper.isTTPActive(penaltyDetails, "123456789")
         result shouldBe true
       }
 
@@ -302,11 +304,34 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching {
           breathingSpace = None
         )
         setFeatureDate(Some(LocalDate.of(2022, 6, 25)))
-        val result = calculationPageHelper.isTTPActive(penaltyDetails)
+        val result = calculationPageHelper.isTTPActive(penaltyDetails, "123456789")
         result shouldBe true
       }
+    }
 
-      "a TTP is active and has no end date (start date is before today's date)" in {
+    "return false" when {
+      "no TTP field is present" in {
+        val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
+          totalisations = None,
+          latePaymentPenalty = Some(
+            LatePaymentPenalty(
+              Seq(
+                sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+                  mainTransaction = None,
+                  outstandingAmount = None,
+                  timeToPay = None
+                ))
+              )
+            )
+          ),
+          lateSubmissionPenalty = None,
+          breathingSpace = None
+        )
+        val result = calculationPageHelper.isTTPActive(penaltyDetails, "123456789")
+        result shouldBe false
+      }
+
+      "a TTP is active and has no end date" in {
         val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
           totalisations = None,
           latePaymentPenalty = Some(
@@ -331,31 +356,14 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching {
           breathingSpace = None
         )
         setFeatureDate(Some(LocalDate.of(2022, 7, 2)))
-        val result = calculationPageHelper.isTTPActive(penaltyDetails)
-        result shouldBe true
-      }
-    }
+        withCaptureOfLoggingFrom(logger) {
+          logs => {
+            val result = calculationPageHelper.isTTPActive(penaltyDetails, "123456789")
+            result shouldBe false
+            logs.exists(_.getMessage.contains(PagerDutyKeys.TTP_END_DATE_MISSING.toString)) shouldBe true
+          }
+        }
 
-    "return false" when {
-      "no TTP field is present" in {
-        val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-          totalisations = None,
-          latePaymentPenalty = Some(
-            LatePaymentPenalty(
-              Seq(
-                sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
-                  mainTransaction = None,
-                  outstandingAmount = None,
-                  timeToPay = None
-                ))
-              )
-            )
-          ),
-          lateSubmissionPenalty = None,
-          breathingSpace = None
-        )
-        val result = calculationPageHelper.isTTPActive(penaltyDetails)
-        result shouldBe false
       }
 
       "a TTP has no start date (only an end date) - when the end date is before today" in {
@@ -383,7 +391,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching {
           breathingSpace = None
         )
         setFeatureDate(Some(LocalDate.of(2022, 7, 3)))
-        val result = calculationPageHelper.isTTPActive(penaltyDetails)
+        val result = calculationPageHelper.isTTPActive(penaltyDetails, "123456789")
         result shouldBe false
       }
 
@@ -412,7 +420,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching {
           breathingSpace = None
         )
         setFeatureDate(Some(LocalDate.of(2022, 7, 3)))
-        val result = calculationPageHelper.isTTPActive(penaltyDetails)
+        val result = calculationPageHelper.isTTPActive(penaltyDetails, "123456789")
         result shouldBe false
       }
 
@@ -441,7 +449,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching {
           breathingSpace = None
         )
         setFeatureDate(Some(LocalDate.of(2022, 7, 3)))
-        val result = calculationPageHelper.isTTPActive(penaltyDetails)
+        val result = calculationPageHelper.isTTPActive(penaltyDetails, "123456789")
         result shouldBe false
       }
 

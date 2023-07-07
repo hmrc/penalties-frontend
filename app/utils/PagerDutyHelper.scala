@@ -29,6 +29,7 @@ object PagerDutyHelper {
     final val NO_DATA_RETURNED_FROM_COMPLIANCE = Value
     final val POC_ACHIEVEMENT_DATE_NOT_FOUND = Value
     final val UNEXPECTED_ERROR_FROM_PENALTIES_BACKEND = Value
+    final val TTP_END_DATE_MISSING = Value
   }
 
   def log(fileAndMethodName: String, pagerDutyKey: PagerDutyKeys.Value): Unit = {
