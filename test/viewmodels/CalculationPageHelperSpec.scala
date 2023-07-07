@@ -169,7 +169,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching {
                   timeToPay = Some(
                     Seq(
                       TimeToPay(
-                        TTPStartDate = LocalDate.of(2022, 1, 1),
+                        TTPStartDate = Some(LocalDate.of(2022, 1, 1)),
                         TTPEndDate = Some(LocalDate.of(2022, 7, 2))
                       )
                     )
@@ -198,7 +198,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching {
                   timeToPay = Some(
                     Seq(
                       TimeToPay(
-                        TTPStartDate = LocalDate.of(2022, 1, 1),
+                        TTPStartDate = Some(LocalDate.of(2022, 1, 1)),
                         TTPEndDate = Some(LocalDate.of(2022, 7, 2))
                       )
                     )
@@ -227,11 +227,11 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching {
                   timeToPay = Some(
                     Seq(
                       TimeToPay(
-                        TTPStartDate = LocalDate.of(2022, 1, 1),
+                        TTPStartDate = Some(LocalDate.of(2022, 1, 1)),
                         TTPEndDate = Some(LocalDate.of(2022, 6, 20))
                       ),
                       TimeToPay(
-                        TTPStartDate = LocalDate.of(2022, 6, 24),
+                        TTPStartDate = Some(LocalDate.of(2022, 6, 24)),
                         TTPEndDate = Some(LocalDate.of(2022, 7, 2))
                       )
                     )
@@ -260,7 +260,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching {
                   timeToPay = Some(
                     Seq(
                       TimeToPay(
-                        TTPStartDate = LocalDate.of(2022, 1, 1),
+                        TTPStartDate = Some(LocalDate.of(2022, 1, 1)),
                         TTPEndDate = None
                       )
                     )
@@ -312,7 +312,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching {
                   timeToPay = Some(
                     Seq(
                       TimeToPay(
-                        TTPStartDate = LocalDate.of(2022, 1, 1),
+                        TTPStartDate = Some(LocalDate.of(2022, 1, 1)),
                         TTPEndDate = Some(LocalDate.of(2022, 7, 2))
                       )
                     )
@@ -341,7 +341,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching {
                   timeToPay = Some(
                     Seq(
                       TimeToPay(
-                        TTPStartDate = LocalDate.of(2022, 8, 1),
+                        TTPStartDate = Some(LocalDate.of(2022, 8, 1)),
                         TTPEndDate = Some(LocalDate.of(2022, 9, 2))
                       )
                     )

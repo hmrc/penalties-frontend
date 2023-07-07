@@ -60,9 +60,9 @@ class CalculationPageHelper @Inject()(implicit val appConfig: AppConfig) extends
         _.LPPDetailsMetadata.timeToPay.exists {
           _.exists(ttp => {
             if (ttp.TTPEndDate.isDefined) {
-              (ttp.TTPStartDate.isEqual(getFeatureDate) || ttp.TTPStartDate.isBefore(getFeatureDate)) && (ttp.TTPEndDate.get.isEqual(getFeatureDate) || ttp.TTPEndDate.get.isAfter(getFeatureDate))
+              (ttp.TTPStartDate.get.isEqual(getFeatureDate) || ttp.TTPStartDate.get.isBefore(getFeatureDate)) && (ttp.TTPEndDate.get.isEqual(getFeatureDate) || ttp.TTPEndDate.get.isAfter(getFeatureDate))
             } else {
-              ttp.TTPStartDate.isEqual(getFeatureDate) || ttp.TTPStartDate.isBefore(getFeatureDate)
+              ttp.TTPStartDate.get.isEqual(getFeatureDate) || ttp.TTPStartDate.get.isBefore(getFeatureDate)
             }
           })
         }
