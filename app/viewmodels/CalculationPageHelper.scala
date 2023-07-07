@@ -21,7 +21,9 @@ import config.featureSwitches.FeatureSwitching
 import models.GetPenaltyDetails
 import models.lpp.LPPDetails
 import play.api.i18n.Messages
-import utils.{CurrencyFormatter, ImplicitDateFormatter, ViewUtils}
+import utils.Logger.logger
+import utils.PagerDutyHelper.PagerDutyKeys
+import utils.{CurrencyFormatter, ImplicitDateFormatter, PagerDutyHelper, ViewUtils}
 
 import java.time.LocalDate
 import javax.inject.Inject
@@ -59,10 +61,13 @@ class CalculationPageHelper @Inject()(implicit val appConfig: AppConfig) extends
       _.details.exists { //Current understanding is that TTP values are replicated across every LPP
         _.LPPDetailsMetadata.timeToPay.exists {
           _.exists(ttp => {
-            if (ttp.TTPEndDate.isDefined) {
-              (ttp.TTPStartDate.get.isEqual(getFeatureDate) || ttp.TTPStartDate.get.isBefore(getFeatureDate)) && (ttp.TTPEndDate.get.isEqual(getFeatureDate) || ttp.TTPEndDate.get.isAfter(getFeatureDate))
-            } else {
-              ttp.TTPStartDate.get.isEqual(getFeatureDate) || ttp.TTPStartDate.get.isBefore(getFeatureDate)
+            (ttp.TTPStartDate, ttp.TTPEndDate) match {
+              case (_, None) =>
+                PagerDutyHelper.log("[CalculationPageHelper][isTTPActive]", PagerDutyKeys.TTP_END_DATE_MISSING)
+                logger.warn(s"[CalculationPageHelper][isTTPActive] - User with missing TTP end date, treating as if user does not have TTP, VRN")
+                false
+              case (None, Some(endDate)) => ??? //Handle missing start date PRM-2722
+              case (Some(startDate), Some(endDate))=> (startDate.isEqual(getFeatureDate) || startDate.isBefore(getFeatureDate)) && (endDate.isEqual(getFeatureDate) || endDate.isAfter(getFeatureDate))
             }
           })
         }
