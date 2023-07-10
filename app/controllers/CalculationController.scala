@@ -76,7 +76,7 @@ class CalculationController @Inject()(viewLPP1: CalculationLPP1View,
             val amountLeftToPay = CurrencyFormatter.parseBigDecimalToFriendlyValue(if(isPenaltyEstimate) penalty.get.penaltyAmountAccruing else penalty.get.penaltyAmountOutstanding.getOrElse(BigDecimal(0)))
             val penaltyAmount = if(isPenaltyEstimate) penalty.get.penaltyAmountAccruing else penalty.get.penaltyAmountPosted
             val parsedPenaltyAmount = CurrencyFormatter.parseBigDecimalToFriendlyValue(penaltyAmount)
-            val isTTPActive = calculationPageHelper.isTTPActive(payload)
+            val isTTPActive = calculationPageHelper.isTTPActive(payload, request.vrn)
             val isBreathingSpaceActive = BreathingSpaceHelper.isUserInBreathingSpace(payload.breathingSpace)(getFeatureDate)
             logger.debug(s"[CalculationController][getPenaltyDetails] - found penalty: ${penalty.get}")
             if (!penaltyCategory.equals(LPP2)) {

@@ -18,7 +18,7 @@ package controllers.testOnly
 
 import base.SpecBase
 import config.AppConfig
-import config.featureSwitches.{FeatureSwitch, FeatureSwitching}
+import config.featureSwitches.{FeatureSwitch, FeatureSwitching, ShowURBanner}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{mock, reset, when}
 import play.api.Configuration
@@ -40,12 +40,27 @@ class FeatureSwitchControllerSpec extends SpecBase with FeatureSwitching {
     val controller = new FeatureSwitchController(mcc)(config)
     FeatureSwitch.listOfAllFeatureSwitches.foreach(sys.props -= _.name)
     sys.props -= TIME_MACHINE_NOW
+    sys.props -= ShowURBanner.name
   }
 
   "enableOrDisableFeature" should {
     "return NOT FOUND when the feature switch is not defined" in {
-      val result = controller.enableOrDisableFeature("fake", true)(FakeRequest())
+      val result = controller.enableOrDisableFeature("fake", enable = true)(FakeRequest())
       status(result) shouldBe NOT_FOUND
+    }
+
+    "return OK" when {
+      "the feature switch is enabled" in {
+        val result = controller.enableOrDisableFeature(ShowURBanner.name, enable = true)(FakeRequest())
+        status(result) shouldBe OK
+        (sys.props get ShowURBanner.name).get shouldBe "true"
+      }
+
+      "the feature switch is disabled" in {
+        val result = controller.enableOrDisableFeature(ShowURBanner.name, enable = false)(FakeRequest())
+        status(result) shouldBe OK
+        (sys.props get ShowURBanner.name).get shouldBe "false"
+      }
     }
   }
 
