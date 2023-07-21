@@ -165,15 +165,15 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
       parsedBody.select("#main-content > h2").text shouldBe "Penalty and appeal details"
     }
 
-    "return 200 (OK) and render the view when there are LPPs and additional penalties paid that are retrieved from the backend" in {
+    "return 200 (OK) and render the view when there are LPP1s and LPP2s paid that are retrieved from the backend" in {
       getPenaltyDetailsStub(Some(getPenaltiesDataPayloadWithLPPAndAdditionalPenalty))
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
       val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#late-payment-penalties section header h4").get(0).ownText shouldBe "£123.45 penalty"
-      parsedBody.select("#late-payment-penalties section header h4 span").get(0).text shouldBe "for late payment of charge due on 7 March 2021"
-      parsedBody.select("#late-payment-penalties section header strong").get(0).text shouldBe "paid"
-      val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body").first()
+      parsedBody.select("#late-payment-penalties section header h4").get(1).ownText shouldBe "£123.45 penalty"
+      parsedBody.select("#late-payment-penalties section header h4 span").get(1).text shouldBe "for late payment of charge due on 7 March 2021"
+      parsedBody.select("#late-payment-penalties section header strong").get(1).text shouldBe "paid"
+      val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body").get(1)
       summaryCardBody.select("dt").get(0).text shouldBe "Penalty type"
       summaryCardBody.select("dd").get(0).text shouldBe "Second penalty for late payment"
       summaryCardBody.select("dt").get(1).text shouldBe "Overdue charge"

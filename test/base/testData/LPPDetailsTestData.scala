@@ -22,14 +22,16 @@ import models.lpp._
 import java.time.LocalDate
 
 trait LPPDetailsTestData {
-  val principleChargeBillingStartDate: LocalDate = LocalDate.of(2021, 5, 1)
-  val principleChargeBillingEndDate: LocalDate = principleChargeBillingStartDate.plusMonths(1)
-  val principleChargeBillingDueDate: LocalDate = principleChargeBillingEndDate.plusDays(6)
-  val penaltyChargeCreationDate: LocalDate = principleChargeBillingEndDate.plusDays(6)
-  val communicationDate: LocalDate = penaltyChargeCreationDate
-  val penaltyDueDate: LocalDate = penaltyChargeCreationDate.plusDays(31)
-  val lpp1PrincipleChargePaidDate: LocalDate = penaltyDueDate.plusDays(30)
-  val lpp2PrincipleChargePaidDate: LocalDate = penaltyDueDate.plusDays(45)
+  val principleChargeBillingStartDate: LocalDate = LocalDate.of(2021, 5, 1) ////2021-05-01 All other dates based off this date
+  val principleChargeBillingEndDate: LocalDate = principleChargeBillingStartDate.plusMonths(1) //2021-06-01
+  val principleChargeBillingDueDate: LocalDate = principleChargeBillingEndDate.plusDays(6) //2021-06-07
+  val penaltyChargeCreationDate: LocalDate = principleChargeBillingEndDate.plusDays(6) //2021-06-07
+  val communicationDate: LocalDate = penaltyChargeCreationDate //2021-06-07
+  val penaltyDueDate: LocalDate = penaltyChargeCreationDate.plusDays(31) //2021-07-08
+  val lpp1PrincipleChargePaidDate: LocalDate = penaltyDueDate.plusDays(30) //2021-08-07
+  val lpp2PrincipleChargePaidDate: LocalDate = penaltyDueDate.plusDays(45) //2021-08-22
+  val timeToPayPeriodStart: LocalDate = principleChargeBillingStartDate.plusMonths(1) //2021-06-01
+  val timeToPayPeriodEnd: LocalDate = timeToPayPeriodStart.plusMonths(1) //2021-07-01
 
   val sampleUnpaidLPP1: LPPDetails = LPPDetails(
     principalChargeReference = "12345678901234",
