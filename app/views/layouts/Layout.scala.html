@@ -39,7 +39,8 @@
         isError: Boolean = false,
         isCustomLayout: Boolean = false,
         optPage: Option[Page] = None,
-        showURBannerIfEnabled: Boolean = false
+        showURBannerIfEnabled: Boolean = false,
+        isAuthorised: Boolean = true
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @beforeContentBlock = {
@@ -93,7 +94,7 @@
           language = Some(messages.lang.code),
           timeout = Some(appConfig.timeoutPeriod),
           countdown = Some(appConfig.timeoutCountdown),
-          signOutUrl = Some(routes.SignOutController.signOut.url),
+          signOutUrl = Some(routes.SignOutController.signOut(isAuthorised).url),
           timeoutUrl = Some(routes.TimeoutController.onPageLoad.url),
           keepAliveUrl = Some("#"),
           signOutButtonText = Some(messages("base.signOut"))
@@ -119,7 +120,7 @@
 @govukLayout(
     pageTitle = Some(messages("common.pageTitle", pageTitle, messages(titleMessage))),
     headBlock = Some(headBlock),
-    headerBlock = Some(header(appConfig, !isTimeout, showURBannerIfEnabled)),
+    headerBlock = Some(header(appConfig, !isTimeout, showURBannerIfEnabled, isAuthorised)),
     scriptsBlock = Some(scripts),
     beforeContentBlock = Some(beforeContentBlock),
     footerBlock = Some(hmrcStandardFooter()),

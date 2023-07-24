@@ -36,7 +36,7 @@ class HeaderSpec extends SpecBase with ViewBehaviours {
       "the show UR banner feature is enabled and the 'showURBannerIfEnabled' parameter is true" in {
         when(mockAppConfig.isFeatureSwitchEnabled(Matchers.eq(ShowURBanner))).thenReturn(true)
         when(mockAppConfig.userResearchBannerUrl).thenReturn("http://user-research.com")
-        val html = headerHtml.apply(mockAppConfig, showURBannerIfEnabled = true)
+        val html = headerHtml.apply(mockAppConfig, showURBannerIfEnabled = true, isAuthorised = true)
         val htmlDocument = asDocument(html)
         htmlDocument.select(".hmrc-user-research-banner__title").text() shouldBe "Help make GOV.UK better"
         htmlDocument.select(".hmrc-user-research-banner__link").text() shouldBe "Sign up to take part in research (opens in new tab)"
@@ -46,7 +46,7 @@ class HeaderSpec extends SpecBase with ViewBehaviours {
     "not display the UR banner" when {
       "the show UR banner feature is disabled" in {
         when(mockAppConfig.isFeatureSwitchEnabled(Matchers.eq(ShowURBanner))).thenReturn(false)
-        val html = headerHtml.apply(mockAppConfig, showURBannerIfEnabled = true)
+        val html = headerHtml.apply(mockAppConfig, showURBannerIfEnabled = true, isAuthorised = true)
         val htmlDocument = asDocument(html)
         htmlDocument.select(".hmrc-user-research-banner__title").isEmpty shouldBe true
         htmlDocument.select(".hmrc-user-research-banner__link").isEmpty shouldBe true
@@ -54,7 +54,7 @@ class HeaderSpec extends SpecBase with ViewBehaviours {
 
       "the 'showURBannerIfEnabled' parameter is false" in {
         when(mockAppConfig.isFeatureSwitchEnabled(Matchers.eq(ShowURBanner))).thenReturn(true)
-        val html = headerHtml.apply(mockAppConfig, showURBannerIfEnabled = false)
+        val html = headerHtml.apply(mockAppConfig, showURBannerIfEnabled = false, isAuthorised = true)
         val htmlDocument = asDocument(html)
         htmlDocument.select(".hmrc-user-research-banner__title").isEmpty shouldBe true
         htmlDocument.select(".hmrc-user-research-banner__link").isEmpty shouldBe true
@@ -62,11 +62,24 @@ class HeaderSpec extends SpecBase with ViewBehaviours {
 
       "both feature and parameter return false" in {
         when(mockAppConfig.isFeatureSwitchEnabled(Matchers.eq(ShowURBanner))).thenReturn(false)
-        val html = headerHtml.apply(mockAppConfig, showURBannerIfEnabled = false)
+        val html = headerHtml.apply(mockAppConfig, showURBannerIfEnabled = false, isAuthorised = true)
         val htmlDocument = asDocument(html)
         htmlDocument.select(".hmrc-user-research-banner__title").isEmpty shouldBe true
         htmlDocument.select(".hmrc-user-research-banner__link").isEmpty shouldBe true
+      }
+    }
 
+    "have the correct sign out link" when {
+      "the user is authorised" in {
+        val html = headerHtml.apply(mockAppConfig, showURBannerIfEnabled = false, isAuthorised = true)
+        val htmlDocument = asDocument(html)
+        htmlDocument.select(".hmrc-sign-out-nav__link").attr("href") shouldBe controllers.routes.SignOutController.signOut(true).url
+      }
+
+      "the user is not authorised" in {
+        val html = headerHtml.apply(mockAppConfig, showURBannerIfEnabled = false, isAuthorised = false)
+        val htmlDocument = asDocument(html)
+        htmlDocument.select(".hmrc-sign-out-nav__link").attr("href") shouldBe controllers.routes.SignOutController.signOut(false).url
       }
     }
   }

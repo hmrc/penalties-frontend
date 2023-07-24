@@ -45,7 +45,11 @@ class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesCon
 
   lazy val signInContinueUrl: String = SafeRedirectUrl(signInContinueBaseUrl + controllers.routes.IndexController.onPageLoad.url).encodedUrl
 
-  lazy val signOutUrl: String = config.get[String]("signOut.url") + signInContinueUrl
+  lazy val signOutUrlUnauthorised: String = config.get[String]("signOut.url") + signInContinueUrl
+
+  lazy val feedbackUrl: String = servicesConfig.baseUrl("feedback-frontend") + "/feedback/penalties-frontend"
+
+  lazy val signOutUrl: String = config.get[String]("signOut.url") + feedbackUrl
 
   lazy val timeoutPeriod: Int = config.get[Int]("timeout.period")
 

@@ -25,7 +25,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class SignOutController @Inject()(val mcc: MessagesControllerComponents,
                                   appConfig: AppConfig) extends FrontendController(mcc) {
-  def signOut: Action[AnyContent] = Action {
-    Redirect(appConfig.signOutUrl)
+  def signOut(isAuthorised: Boolean): Action[AnyContent] = Action {
+    Redirect(if(isAuthorised) appConfig.signOutUrl else appConfig.signOutUrlUnauthorised)
   }
 }
