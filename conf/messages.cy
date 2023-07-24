@@ -2,6 +2,8 @@ service.name = Rheoli’ch cyfrif TAW
 agent.service.name = Manylion TAW eich cleient
 service.homePageUrl = /penalties
 common.pageTitle = {0} - {1} - GOV.UK
+common.feedbackLink.1 = Beth oedd eich barn am y gwasanaeth hwn?
+common.feedbackLink.2 = (mae’n cymryd 30 eiliad)
 
 # Index
 # -------------------------------------------

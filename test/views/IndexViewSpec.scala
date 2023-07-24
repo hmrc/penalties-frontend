@@ -155,5 +155,10 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours with LSP
         doc.select("#what-is-owed .govuk-button").get(0).text shouldBe "Check what your client owes"
       }
     }
+
+    "have a feedback link at the bottom of the page" in {
+      implicit val doc: Document = asDocument(applyView())
+      doc.select("#feedback-link").get(0).text shouldBe "What did you think of this service? (takes 30 seconds)"
+    }
   }
 }

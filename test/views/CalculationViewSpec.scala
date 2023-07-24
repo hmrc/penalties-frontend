@@ -1064,4 +1064,20 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
     doc.select(Selector.betaFeedbackBannerText).text() shouldBe "This is a new service – your feedback will help us to improve it."
     doc.select(".govuk-phase-banner__text > .govuk-link").attr("href").contains("http://localhost:9250/contact/beta-feedback?service=vat-penalties&backUrl=") shouldBe true
   }
+
+  "have a feedback link at the bottom of the page" in {
+    def applyView(): HtmlFormat.Appendable = calculationLPP2Page.apply(
+      isEstimate = true,
+      startDate = "1 April 2022",
+      endDate = "30 June 2022",
+      dueDate = None,
+      penaltyAmount = "50.50",
+      amountReceived = "10.10",
+      amountLeftToPay = "40.40",
+      isTTPActive = false,
+      isUserInBreathingSpace = false
+    )(implicitly, implicitly, vatTraderUser)
+    implicit val doc: Document = asDocument(applyView())
+    doc.select("#feedback-link").get(0).text shouldBe "What did you think of this service? (takes 30 seconds)"
+  }
 }
