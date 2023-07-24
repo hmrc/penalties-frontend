@@ -147,5 +147,10 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       doc.select(".govuk-phase-banner__text > .govuk-link").attr("href").contains("http://localhost:9250/contact/beta-feedback?service=vat-penalties&backUrl=") shouldBe true
     }
 
+    "have a feedback link at the bottom of the page" in {
+      def applyView(): HtmlFormat.Appendable = compliancePage.apply(html(), "", "")(implicitly, implicitly, vatTraderUser)
+      implicit val doc: Document = asDocument(applyView())
+      doc.select("#feedback-link").get(0).text shouldBe "What did you think of this service? (takes 30 seconds)"
+    }
   }
 }
