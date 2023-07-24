@@ -22,7 +22,7 @@ import models.lpp._
 import java.time.LocalDate
 
 trait LPPDetailsTestData {
-  val principleChargeBillingStartDate: LocalDate = LocalDate.of(2021, 5, 1) ////2021-05-01 All other dates based off this date
+  val principleChargeBillingStartDate: LocalDate = LocalDate.of(2021, 5, 1) //2021-05-01 All other dates based off this date
   val principleChargeBillingEndDate: LocalDate = principleChargeBillingStartDate.plusMonths(1) //2021-06-01
   val principleChargeBillingDueDate: LocalDate = principleChargeBillingEndDate.plusDays(6) //2021-06-07
   val penaltyChargeCreationDate: LocalDate = principleChargeBillingEndDate.plusDays(6) //2021-06-07
