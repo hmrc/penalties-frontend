@@ -47,7 +47,7 @@ class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesCon
 
   lazy val signOutUrlUnauthorised: String = config.get[String]("signOut.url") + signInContinueUrl
 
-  lazy val feedbackUrl: String = servicesConfig.baseUrl("feedback-frontend") + "/feedback/penalties-frontend"
+  lazy val feedbackUrl: String = config.get[String]("urls.feedback")
 
   lazy val signOutUrl: String = config.get[String]("signOut.url") + feedbackUrl
 
