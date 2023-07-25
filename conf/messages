@@ -2,7 +2,7 @@ service.name = Manage your VAT account
 agent.service.name = Your client’s VAT details
 service.homePageUrl = /penalties
 common.pageTitle = {0} - {1} - GOV.UK
-common.feedbackLink.1 = What did you think of this service?
+common.feedbackLink.1 = What do you think of this service?
 common.feedbackLink.2 = (takes 30 seconds)
 
 # Index

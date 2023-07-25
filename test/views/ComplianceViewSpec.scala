@@ -150,7 +150,7 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
     "have a feedback link at the bottom of the page" in {
       def applyView(): HtmlFormat.Appendable = compliancePage.apply(html(), "", "")(implicitly, implicitly, vatTraderUser)
       implicit val doc: Document = asDocument(applyView())
-      doc.select("#feedback-link").get(0).text shouldBe "What did you think of this service? (takes 30 seconds)"
+      doc.select("#feedback-link").get(0).text shouldBe "What do you think of this service? (takes 30 seconds)"
     }
   }
 }
