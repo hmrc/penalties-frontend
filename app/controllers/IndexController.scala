@@ -65,7 +65,7 @@ class IndexController @Inject()(view: IndexView,
                 val lspSummaryCards = cardHelper.populateLateSubmissionPenaltyCard(orderedPenalties,
                   penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0),
                   penaltyData.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0))
-                val lppSummaryCards = cardHelper.populateLatePaymentPenaltyCard(penaltyData.latePaymentPenalty.map(_.details))
+                val lppSummaryCards = cardHelper.populateLatePaymentPenaltyCard(penaltyData.latePaymentPenalty.map(_.details).map(_.sorted))
                 val isAnyUnpaidLSPAndNotSubmittedReturn = penaltiesService.isAnyLSPUnpaidAndSubmissionIsDue(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
                 val isAnyUnpaidLSP = penaltiesService.isAnyLSPUnpaid(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
                 lazy val result = Ok(view(contentToDisplayAboveCards,

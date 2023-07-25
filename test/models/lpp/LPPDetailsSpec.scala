@@ -39,26 +39,26 @@ class LPPDetailsSpec extends SpecBase {
       |       "LPP1HRPercentage": 2.00,
       |       "LPP2Days": "31",
       |       "LPP2Percentage": 4.00,
-      |       "penaltyChargeCreationDate": "2069-10-30",
-      |       "communicationsDate": "2069-10-30",
-      |       "penaltyChargeDueDate": "2069-10-30",
+      |       "penaltyChargeCreationDate": "2021-06-07",
+      |       "communicationsDate": "2021-06-07",
+      |       "penaltyChargeDueDate": "2021-07-08",
       |       "principalChargeReference": "12345678901234",
       |       "appealInformation":
       |       [{
       |         "appealStatus": "99",
       |         "appealLevel": "01"
       |       }],
-      |       "principalChargeBillingFrom": "2069-10-30",
-      |       "principalChargeBillingTo": "2069-10-30",
-      |       "principalChargeDueDate": "2069-10-30",
+      |       "principalChargeBillingFrom": "2021-05-01",
+      |       "principalChargeBillingTo": "2021-06-01",
+      |       "principalChargeDueDate": "2021-06-07",
       |       "penaltyChargeReference": "PEN1234567",
-      |       "principalChargeLatestClearing": "2069-10-30",
+      |       "principalChargeLatestClearing": "2021-08-07",
       |       "mainTransaction": "4700",
       |       "outstandingAmount": 99,
       |       "timeToPay":
       |       [{
-      |         "TTPStartDate": "2069-10-30",
-      |         "TTPEndDate": "2069-10-30"
+      |         "TTPStartDate": "2021-06-01",
+      |         "TTPEndDate": "2021-07-01"
       |       }]
       |   }
       |""".stripMargin)
@@ -79,26 +79,26 @@ class LPPDetailsSpec extends SpecBase {
     LPP2Percentage = Some(4.00),
     LPP1LRPercentage = Some(2.00),
     LPP1HRPercentage = Some(BigDecimal(2.00).setScale(2)),
-    penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
-    communicationsDate = Some(LocalDate.parse("2069-10-30")),
-    penaltyChargeDueDate = Some(LocalDate.parse("2069-10-30")),
+    penaltyChargeCreationDate = Some(penaltyChargeCreationDate),
+    communicationsDate = Some(communicationDate),
+    penaltyChargeDueDate = Some(penaltyDueDate),
     appealInformation = Some(Seq(AppealInformationType(
       appealStatus = Some(AppealStatusEnum.Unappealable),
       appealLevel = Some(AppealLevelEnum.HMRC)
     ))),
-    principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
-    principalChargeBillingTo = LocalDate.parse("2069-10-30"),
-    principalChargeDueDate = LocalDate.parse("2069-10-30"),
+    principalChargeBillingFrom = principleChargeBillingStartDate,
+    principalChargeBillingTo = principleChargeBillingEndDate,
+    principalChargeDueDate = principleChargeBillingDueDate,
     penaltyChargeReference = Some("PEN1234567"),
-    principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+    principalChargeLatestClearing = Some(lpp1PrincipleChargePaidDate),
     LPPDetailsMetadata = LPPDetailsMetadata(
       mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
       outstandingAmount = Some(99),
       timeToPay = Some(
         Seq(
           TimeToPay(
-            TTPStartDate = Some(LocalDate.parse("2069-10-30")),
-            TTPEndDate = Some(LocalDate.parse("2069-10-30"))
+            TTPStartDate = Some(timeToPayPeriodStart),
+            TTPEndDate = Some(timeToPayPeriodEnd)
           )
         )
       )
@@ -116,6 +116,55 @@ class LPPDetailsSpec extends SpecBase {
       val result = Json.toJson(lppDetailsAsModel)(LPPDetails.format)
       result shouldBe lppDetailsAsJson
     }
-  }
 
+    "be sortable" when {
+      "by PenaltyCategory (LPP2 first)" in {
+        val lppList = Seq(lppDetailsAsModel, lppDetailsAsModel.copy(penaltyCategory = LPPPenaltyCategoryEnum.LPP2))
+        val expectedResult = Seq(lppDetailsAsModel.copy(penaltyCategory = LPPPenaltyCategoryEnum.LPP2), lppDetailsAsModel)
+        val resultA = lppList.sorted
+        val resultB = resultA.sorted
+
+        resultA shouldBe expectedResult
+        resultB shouldBe expectedResult
+      }
+
+      "by MainTransaction" in {
+        val metadata = LPPDetailsMetadata(mainTransaction = Some(MainTransactionEnum.AAReturnChargeFirstLPP), outstandingAmount = None, timeToPay = None)
+        val lppList = Seq(lppDetailsAsModel, lppDetailsAsModel.copy(LPPDetailsMetadata = metadata))
+        val expectedResult = Seq(lppDetailsAsModel.copy(LPPDetailsMetadata = metadata), lppDetailsAsModel)
+        val resultA = lppList.sorted
+        val resultB = resultA.sorted
+
+        resultA shouldBe expectedResult
+        resultB shouldBe expectedResult
+      }
+
+      "by TaxPeriodEndDate (Newest First)" in {
+        val lppList = Seq(lppDetailsAsModel, lppDetailsAsModel.copy(principalChargeBillingTo = principleChargeBillingEndDate.plusDays(1) ))
+        val expectedResult = Seq(lppDetailsAsModel.copy(principalChargeBillingTo = principleChargeBillingEndDate.plusDays(1)), lppDetailsAsModel)
+        val resultA = lppList.sorted
+        val resultB = resultA.sorted
+
+        resultA shouldBe expectedResult
+        resultB shouldBe expectedResult
+      }
+
+      "by TaxPeriodStartDate (Newest First)" in {
+        val lppList = Seq(lppDetailsAsModel, lppDetailsAsModel.copy(principalChargeBillingFrom = principleChargeBillingStartDate.plusDays(1)))
+        val expectedResult = Seq(lppDetailsAsModel.copy(principalChargeBillingFrom = principleChargeBillingStartDate.plusDays(1)), lppDetailsAsModel)
+        val resultA = lppList.sorted
+        val resultB = resultA.sorted
+
+        resultA shouldBe expectedResult
+        resultB shouldBe expectedResult
+      }
+    }
+
+    "not be sorted" in {
+      val lppList = Seq(lppDetailsAsModel, lppDetailsAsModel.copy(penaltyAmountOutstanding = Some(0)))
+      val result = lppList.sorted
+
+      result shouldBe lppList
+    }
+  }
 }

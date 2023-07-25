@@ -48,7 +48,34 @@ case class LPPDetails(
                        penaltyChargeReference: Option[String],
                        principalChargeLatestClearing: Option[LocalDate],
                        LPPDetailsMetadata: LPPDetailsMetadata
-                     )
+                     ) extends Ordered[LPPDetails] {
+  override def compare(that: LPPDetails): Int = {
+    (this.principalChargeBillingFrom, that.principalChargeBillingFrom,
+      this.principalChargeBillingTo, that.principalChargeBillingTo,
+      this.LPPDetailsMetadata.mainTransaction, that.LPPDetailsMetadata.mainTransaction,
+      this.penaltyCategory, that.penaltyCategory)
+    match {
+      //Compare tax period start dates
+      case (startDateA, startDateB, _, _, _, _, _, _) if startDateA.isBefore(startDateB) => 1
+      case (startDateA, startDateB, _, _, _, _, _, _) if startDateA.isAfter(startDateB) => -1
+
+      //Compare tax period end dates
+      case (_, _, endDateA, endDateB, _, _, _, _) if endDateA.isBefore(endDateB) => 1
+      case (_, _, endDateA, endDateB, _, _, _, _) if endDateA.isAfter(endDateB) => -1
+
+      //Compare mainTransactions
+      case (_, _, _, _, Some(mainTransA), Some(mainTransB), _, _) if mainTransA < mainTransB => 1
+      case (_, _, _, _, Some(mainTransA), Some(mainTransB), _, _) if mainTransA > mainTransB => -1
+
+      //Compare penaltyCategory
+      case (_, _, _, _, _, _, categoryA, categoryB) if categoryA < categoryB => 1
+      case (_, _, _, _, _, _, categoryA, categoryB) if categoryA > categoryB => -1
+
+      //No difference found between this and that (will use ETMP order)
+      case _ => 0
+    }
+  }
+}
 
 object LPPDetails extends JsonUtils {
   implicit val format: Format[LPPDetails] = new Format[LPPDetails] {
@@ -131,9 +158,9 @@ object LPPDetailsMetadata {
 }
 
 case class TimeToPay(
-                       TTPStartDate: Option[LocalDate],
-                       TTPEndDate: Option[LocalDate]
-                     )
+                      TTPStartDate: Option[LocalDate],
+                      TTPEndDate: Option[LocalDate]
+                    )
 
 object TimeToPay {
   implicit val format: OFormat[TimeToPay] = Json.format[TimeToPay]
