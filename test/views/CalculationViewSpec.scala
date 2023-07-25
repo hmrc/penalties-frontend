@@ -1078,6 +1078,6 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       isUserInBreathingSpace = false
     )(implicitly, implicitly, vatTraderUser)
     implicit val doc: Document = asDocument(applyView())
-    doc.select("#feedback-link").get(0).text shouldBe "What did you think of this service? (takes 30 seconds)"
+    doc.select("#feedback-link").get(0).text shouldBe "What do you think of this service? (takes 30 seconds)"
   }
 }

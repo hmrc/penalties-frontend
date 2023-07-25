@@ -23,7 +23,7 @@ import play.api.i18n.Messages.MessageSource
 import scala.io.Source
 
 class MessagesSpec extends SpecBase {
-  private val excludedKeys = Seq("service.homePageUrl", "common.pageTitle", "calculation.key.3.additional.text", "calculation.value.amount")
+  private val excludedKeys = Seq("service.homePageUrl", "common.pageTitle", "calculation.key.3.additional.text", "calculation.value.amount", "common.feedbackLink.1")
   private val MatchIncorrectTwoSingleQuotes = """\w+'{2}\w+""".r
   private val MatchIncorrectSingleQuote = """\w+'{1}\w+""".r
   private val MatchBacktickQuoteOnly = """`+""".r
