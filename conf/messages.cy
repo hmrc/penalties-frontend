@@ -277,3 +277,11 @@ month.9 = Medi
 month.10 = Hydref
 month.11 = Tachwedd
 month.12 = Rhagfyr
+
+# ISE Error page
+# --------------------------
+ise.title = Mae’n ddrwg gennym - rydym yn profi anawsterau technegol – 500
+ise.heading = Mae’n ddrwg gennym - rydym yn profi anawsterau technegol
+ise.message = Rhowch gynnig arall arni mewn ychydig o funudau.
+error.link = Bwrw golwg dros eich cyfrif TAW
+agent.error.link = Bwrw golwg ar gyfrif TAW eich cleient

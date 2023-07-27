@@ -16,21 +16,29 @@
 
 package config
 
+import javax.inject.{Inject, Singleton}
+import models.User
 import play.api.i18n.MessagesApi
 import play.api.mvc.Results.InternalServerError
 import play.api.mvc.{Request, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.html.ErrorTemplate
-
-import javax.inject.{Inject, Singleton}
+import views.html.errors.InternalServerErrorCustom
 
 @Singleton
-class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, val messagesApi: MessagesApi)(implicit appConfig: AppConfig)
+class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, iseCustom: InternalServerErrorCustom, val messagesApi: MessagesApi)(implicit appConfig: AppConfig)
     extends FrontendErrorHandler {
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
     errorTemplate(pageTitle, heading, message)
 
-  def showInternalServerError(implicit request: Request[_]): Result = InternalServerError(internalServerErrorTemplate)
+  def showInternalServerError(userOptional: Option[User[_]] = None)(implicit request: Request[_]): Result = {
+    if(userOptional.isDefined) {
+      implicit val user: User[_] = userOptional.get
+      InternalServerError(iseCustom())
+    } else {
+      InternalServerError(internalServerErrorTemplate)
+    }
+  }
 }

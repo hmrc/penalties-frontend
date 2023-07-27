@@ -277,3 +277,11 @@ month.9 = September
 month.10 = October
 month.11 = November
 month.12 = December
+
+# ISE Error page
+# --------------------------
+ise.title = Sorry, we are experiencing technical difficulties - 500
+ise.heading = Sorry, we’re experiencing technical difficulties
+ise.message = Please try again in a few minutes.
+error.link = View your VAT account
+agent.error.link = View your client’s VAT details
