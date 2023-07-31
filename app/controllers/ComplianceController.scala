@@ -47,7 +47,7 @@ class ComplianceController @Inject()(view: ComplianceView,
       _.fold({
         logger.error("[ComplianceController][onPageLoad] - Received None from compliance service, rendering ISE.")
         PagerDutyHelper.log("ComplianceController: onPageLoad", NO_DATA_RETURNED_FROM_COMPLIANCE)
-        errorHandler.showInternalServerError
+        errorHandler.showInternalServerError(Some(request))
       })(
         complianceData => {
           val pocAchievementDate: LocalDate = LocalDate.parse(request.session.get(SessionKeys.pocAchievementDate).get)

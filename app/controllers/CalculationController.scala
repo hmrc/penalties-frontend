@@ -57,7 +57,7 @@ class CalculationController @Inject()(viewLPP1: CalculationLPP1View,
       _.fold(
         errors => {
           logger.error(s"[CalculationController][getPenaltyDetails] - Received status ${errors.status} and body ${errors.body}, rendering ISE.")
-          errorHandler.showInternalServerError
+          errorHandler.showInternalServerError(Some(request))
         },
         payload => {
           val penalty: Option[LPPDetails] = payload.latePaymentPenalty.flatMap(_.details.find(penalty => {
@@ -66,7 +66,7 @@ class CalculationController @Inject()(viewLPP1: CalculationLPP1View,
           if (penalty.isEmpty) {
             logger.error("[CalculationController][getPenaltyDetails] - Tried to render calculation page with new model but could not find penalty specified.")
             PagerDutyHelper.log("CalculationController: getPenaltyDetails", EMPTY_PENALTY_BODY)
-            errorHandler.showInternalServerError
+            errorHandler.showInternalServerError(Some(request))
           } else {
             val startDateOfPeriod = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeBillingFrom)
             val endDateOfPeriod = calculationPageHelper.getDateAsDayMonthYear(penalty.get.principalChargeBillingTo)
@@ -85,7 +85,7 @@ class CalculationController @Inject()(viewLPP1: CalculationLPP1View,
                 logger.error("[CalculationController][getPenaltyDetails] - " +
                   "Calculation row returned None - this could be because the user did not have a defined amount after 15 and/or 30 days of due date")
                 PagerDutyHelper.log("CalculationController: getPenaltyDetails", INVALID_DATA_RETURNED_FOR_CALCULATION_ROW)
-                errorHandler.showInternalServerError
+                errorHandler.showInternalServerError(Some(request))
               })(
                 rowSeq => {
                   Ok(viewLPP1(amountReceived = amountReceived,

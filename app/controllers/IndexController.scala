@@ -49,7 +49,7 @@ class IndexController @Inject()(view: IndexView,
       _.fold(
         errors => {
           logger.error(s"[IndexController][onPageLoad] - Received error with status ${errors.status} and body ${errors.body} rendering ISE.")
-          Future(errorHandler.showInternalServerError)
+          Future(errorHandler.showInternalServerError(Some(request)))
         }, penaltyData => {
           val isUserInBreathingSpace: Boolean = BreathingSpaceHelper.isUserInBreathingSpace(penaltyData.breathingSpace)(getFeatureDate)
           pageHelper.getContentBasedOnPointsFromModel(penaltyData, isUserInBreathingSpace).map {
