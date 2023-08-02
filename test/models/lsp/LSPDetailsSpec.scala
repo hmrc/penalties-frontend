@@ -60,7 +60,7 @@ class LSPDetailsSpec extends SpecBase {
   val LSPDetailsAsModel = LSPDetails(
       penaltyNumber = "12345678901234",
       penaltyOrder = "01",
-      penaltyCategory = LSPPenaltyCategoryEnum.Point,
+      penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
       penaltyStatus = LSPPenaltyStatusEnum.Active,
       FAPIndicator = Some("X"),
       penaltyCreationDate = LocalDate.parse("2069-10-30"),

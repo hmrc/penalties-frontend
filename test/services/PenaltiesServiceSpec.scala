@@ -231,7 +231,7 @@ class PenaltiesServiceSpec extends SpecBase {
         val lspDetailsUnpaid: LSPDetails = LSPDetails(
           penaltyNumber = "123456789",
           penaltyOrder = "1",
-          penaltyCategory = LSPPenaltyCategoryEnum.Point,
+          penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
@@ -262,7 +262,7 @@ class PenaltiesServiceSpec extends SpecBase {
         val lspDetailsUnsubmitted: LSPDetails = LSPDetails(
           penaltyNumber = "123456789",
           penaltyOrder = "1",
-          penaltyCategory = LSPPenaltyCategoryEnum.Charge,
+          penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
@@ -293,7 +293,7 @@ class PenaltiesServiceSpec extends SpecBase {
         val lspDetailsAppealed: LSPDetails = LSPDetails(
           penaltyNumber = "123456789",
           penaltyOrder = "1",
-          penaltyCategory = LSPPenaltyCategoryEnum.Charge,
+          penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
@@ -332,7 +332,7 @@ class PenaltiesServiceSpec extends SpecBase {
         val lspDetails: LSPDetails = LSPDetails(
           penaltyNumber = "123456789",
           penaltyOrder = "1",
-          penaltyCategory = LSPPenaltyCategoryEnum.Charge,
+          penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
@@ -367,7 +367,7 @@ class PenaltiesServiceSpec extends SpecBase {
         val lspDetailsPaid: LSPDetails = LSPDetails(
           penaltyNumber = "123456789",
           penaltyOrder = "1",
-          penaltyCategory = LSPPenaltyCategoryEnum.Charge,
+          penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
@@ -399,7 +399,7 @@ class PenaltiesServiceSpec extends SpecBase {
         val lspDetailsAppealed: LSPDetails = LSPDetails(
           penaltyNumber = "123456789",
           penaltyOrder = "1",
-          penaltyCategory = LSPPenaltyCategoryEnum.Charge,
+          penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
@@ -438,7 +438,7 @@ class PenaltiesServiceSpec extends SpecBase {
         val lspDetailsAppealed: LSPDetails = LSPDetails(
           penaltyNumber = "123456789",
           penaltyOrder = "1",
-          penaltyCategory = LSPPenaltyCategoryEnum.Charge,
+          penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
@@ -566,7 +566,7 @@ class PenaltiesServiceSpec extends SpecBase {
     val sampleLSP: LSPDetails = LSPDetails(
       penaltyNumber = "123456789",
       penaltyOrder = "1",
-      penaltyCategory = LSPPenaltyCategoryEnum.Charge,
+      penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
       penaltyStatus = LSPPenaltyStatusEnum.Active,
       FAPIndicator = None,
       penaltyCreationDate = LocalDate.of(2022, 1, 1),

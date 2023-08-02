@@ -211,7 +211,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           dueDate = Some(dateToString(taxPeriodDue))
         )
 
-        val pointToPassIn: LSPDetails = sampleLateSubmissionPenaltyCharge.copy(penaltyOrder = "1", penaltyCategory = LSPPenaltyCategoryEnum.Threshold)
+        val pointToPassIn: LSPDetails = sampleLateSubmissionPenaltyCharge.copy(penaltyOrder = "1", penaltyCategory = Some(LSPPenaltyCategoryEnum.Threshold))
         val actualResult = helper.financialSummaryCard(pointToPassIn, quarterlyThreshold)
         val expectedResult = sampleSummaryCardReturnSubmitted
         actualResult shouldBe expectedResult
@@ -338,7 +338,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           dueDate = Some(dateToString(taxPeriodDue))
         )
 
-        val pointToPassIn: LSPDetails = sampleLateSubmissionPenaltyCharge.copy(penaltyOrder = "1", penaltyCategory = LSPPenaltyCategoryEnum.Threshold,
+        val pointToPassIn: LSPDetails = sampleLateSubmissionPenaltyCharge.copy(penaltyOrder = "1", penaltyCategory = Some(LSPPenaltyCategoryEnum.Threshold),
           lateSubmissions = Some(
             Seq(
               LateSubmission(

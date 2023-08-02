@@ -43,13 +43,13 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
     penalties.map { penalty =>
       val newPenalty = findAndReindexPointIfIsActive(indexedActivePoints, penalty)
       (newPenalty.penaltyCategory, newPenalty.appealInformation.flatMap(_.head.appealStatus)) match {
-        case (LSPPenaltyCategoryEnum.Point, _) if newPenalty.FAPIndicator.contains("X") && newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Active => addedPointCard(newPenalty, thresholdMet) //Added FAP
-        case (LSPPenaltyCategoryEnum.Point, _) if newPenalty.FAPIndicator.contains("X") && newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive => removedPointCard(newPenalty) //Removed FAP
-        case (LSPPenaltyCategoryEnum.Point, Some(AppealStatusEnum.Upheld)) if newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive => pointSummaryCard(newPenalty, thresholdMet) //Appealed point
-        case (LSPPenaltyCategoryEnum.Point, _) if newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive && newPenalty.expiryReason.isDefined => removedPointCard(newPenalty) //Removed point
-        case (LSPPenaltyCategoryEnum.Point, _) => pointSummaryCard(newPenalty, thresholdMet) // normal points
-        case (LSPPenaltyCategoryEnum.Threshold, _) => financialSummaryCard(newPenalty, threshold) //normal threshold
-        case (LSPPenaltyCategoryEnum.Charge, _) => financialSummaryCard(newPenalty, threshold)
+        case (Some(LSPPenaltyCategoryEnum.Point), _) if newPenalty.FAPIndicator.contains("X") && newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Active => addedPointCard(newPenalty, thresholdMet) //Added FAP
+        case (Some(LSPPenaltyCategoryEnum.Point), _) if newPenalty.FAPIndicator.contains("X") && newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive => removedPointCard(newPenalty) //Removed FAP
+        case (Some(LSPPenaltyCategoryEnum.Point), Some(AppealStatusEnum.Upheld)) if newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive => pointSummaryCard(newPenalty, thresholdMet) //Appealed point
+        case (Some(LSPPenaltyCategoryEnum.Point), _) if newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive && newPenalty.expiryReason.isDefined => removedPointCard(newPenalty) //Removed point
+        case (Some(LSPPenaltyCategoryEnum.Point), _) => pointSummaryCard(newPenalty, thresholdMet) // normal points
+        case (Some(LSPPenaltyCategoryEnum.Threshold), _) => financialSummaryCard(newPenalty, threshold) //normal threshold
+        case (Some(LSPPenaltyCategoryEnum.Charge), _) => financialSummaryCard(newPenalty, threshold)
         case _ => throw new Exception("[SummaryCardHelper][populateLateSubmissionPenaltyCard] Incorrect values provided")
       }
     }
@@ -161,8 +161,8 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
       getPenaltyNumberBasedOnThreshold(penalty.penaltyOrder, threshold),
       penalty.penaltyNumber,
       penalty.lateSubmissions.map(penaltyPeriod => PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head).fold(false)(_.returnReceiptDate.isDefined),
-      isFinancialPoint = penalty.penaltyCategory == LSPPenaltyCategoryEnum.Charge,
-      isThresholdPoint = penalty.penaltyCategory == LSPPenaltyCategoryEnum.Threshold,
+      isFinancialPoint = penalty.penaltyCategory.contains(LSPPenaltyCategoryEnum.Charge),
+      isThresholdPoint = penalty.penaltyCategory.contains(LSPPenaltyCategoryEnum.Threshold),
       isAppealedPoint = appealInformationWithoutUnappealableStatus.nonEmpty,
       appealStatus = appealStatus,
       appealLevel = appealLevel,
