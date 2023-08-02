@@ -16,12 +16,15 @@
 
 package viewmodels
 
+import java.time.LocalDate
+
 import config.featureSwitches.FeatureSwitching
 import config.{AppConfig, ErrorHandler}
+import javax.inject.Inject
 import models.appealInfo.AppealStatusEnum.Upheld
 import models.compliance.{CompliancePayload, ComplianceStatusEnum}
 import models.lpp.LPPDetails
-import models.lsp.{ExpiryReasonEnum, LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum, TaxReturnStatusEnum}
+import models.lsp.{ExpiryReasonEnum, LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum}
 import models.{GetPenaltyDetails, User}
 import play.api.i18n.Messages
 import play.api.mvc.Result
@@ -32,8 +35,6 @@ import utils.Logger.logger
 import utils.MessageRenderer.getMessage
 import utils.{CurrencyFormatter, ImplicitDateFormatter, ViewUtils}
 
-import java.time.LocalDate
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndexPageHelper @Inject()(p: views.html.components.p,
@@ -55,7 +56,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     val regimeThreshold: Int = penaltiesService.getRegimeThreshold(penaltyDetails)
     val removedPoints: Int = filteredPoints.count(_.expiryReason.nonEmpty)
     val addedPoints: Int = filteredPoints.count(point => point.FAPIndicator.contains("X") && point.penaltyStatus.equals(LSPPenaltyStatusEnum.Active))
-    val amountOfLateSubmissions: Int = filteredPoints.flatMap(point => point.lateSubmissions.map(_.filterNot(lateSubmission => lateSubmission.taxReturnStatus.equals(TaxReturnStatusEnum.AddedFAP)))).flatten.size
+    val amountOfLateSubmissions: Int = filteredPoints.flatMap(point => point.lateSubmissions.map(_.filterNot(lateSubmission => lateSubmission.taxReturnStatus.isEmpty))).flatten.size
     (isUserInBreathingSpace, activePoints, regimeThreshold, addedPoints, removedPoints) match {
       case (true, _activePoints, _, _addedPoints, _removedPoints) if _activePoints > 0 || _addedPoints > 0 || _removedPoints > 0 => Future(Right(lspGuidanceLink))
       case (_, 0, _, _, _) =>

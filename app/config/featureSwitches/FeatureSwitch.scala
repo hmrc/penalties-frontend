@@ -22,11 +22,15 @@ sealed trait FeatureSwitch {
 
 object FeatureSwitch {
   val prefix: String = "feature.switch"
-  val listOfAllFeatureSwitches: List[FeatureSwitch] = List(ShowURBanner)
+  val listOfAllFeatureSwitches: List[FeatureSwitch] = List(ShowURBanner, AddedFAPIsNone)
 }
 
 case object ShowURBanner extends FeatureSwitch {
   override val name: String = s"${FeatureSwitch.prefix}.show-ur-banner"
+}
+
+case object AddedFAPIsNone extends FeatureSwitch {
+  override val name = s"${FeatureSwitch.prefix}.added-fap-is-none"
 }
 
 

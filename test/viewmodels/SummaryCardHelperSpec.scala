@@ -346,7 +346,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
                 taxPeriodEndDate = Some(taxPeriodEnd),
                 taxPeriodDueDate = Some(taxPeriodDue),
                 returnReceiptDate = None,
-                taxReturnStatus = TaxReturnStatusEnum.Open
+                taxReturnStatus = Some(TaxReturnStatusEnum.Open)
               )
             )
           ))

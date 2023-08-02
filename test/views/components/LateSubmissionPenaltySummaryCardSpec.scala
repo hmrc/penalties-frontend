@@ -95,7 +95,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
           taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
           taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
           returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
-          taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+          taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
         )
       )),
       appealInformation = Some(Seq(
@@ -165,7 +165,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
           taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
           taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
           returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
-          taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+          taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
         )
       )),
       appealInformation = None,
@@ -192,7 +192,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
           taxPeriodEndDate = Some(LocalDate.parse("2020-02-01")),
           taxPeriodDueDate = Some(LocalDate.parse("2020-03-07")),
           returnReceiptDate = Some(LocalDate.parse("2020-03-11")),
-          taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+          taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
         )
       )),
       appealInformation = None,
@@ -219,7 +219,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
           taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
           taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
           returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
-          taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+          taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
         )
       )),
       appealInformation = Some(Seq(
@@ -250,7 +250,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
           taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
           taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
           returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
-          taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+          taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
         )
       )),
       appealInformation = Some(Seq(
@@ -281,7 +281,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
           taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
           taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
           returnReceiptDate = None,
-          taxReturnStatus = TaxReturnStatusEnum.Open
+          taxReturnStatus = Some(TaxReturnStatusEnum.Open)
         )
       )),
       appealInformation = None,
@@ -307,7 +307,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
           taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
           taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
           returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
-          taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+          taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
         )
       )),
       appealInformation = Some(Seq(
@@ -338,7 +338,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
           taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
           taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
           returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
-          taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+          taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
         )
       )),
       appealInformation = Some(Seq(
@@ -369,7 +369,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
           taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
           taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
           returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
-          taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+          taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
         )
       )),
       appealInformation = Some(Seq(
@@ -400,7 +400,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
           taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
           taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
           returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
-          taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+          taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
         )
       )),
       appealInformation = Some(Seq(
@@ -431,7 +431,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
         taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
         returnReceiptDate = if (isSubmitted) Some(LocalDate.parse("2069-10-30")) else None,
-        taxReturnStatus = if (isSubmitted) TaxReturnStatusEnum.Fulfilled else TaxReturnStatusEnum.Open
+        taxReturnStatus = if (isSubmitted) Some(TaxReturnStatusEnum.Fulfilled) else Some(TaxReturnStatusEnum.Open)
       )
     )),
     appealInformation = None,
@@ -456,14 +456,14 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         taxPeriodEndDate = Some(sampleOldestDate.plusDays(15)),
         taxPeriodDueDate = Some(sampleOldestDate.plusMonths(4).plusDays(7)),
         returnReceiptDate = Some(sampleOldestDate.plusMonths(4).plusDays(12)),
-        taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+        taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
       ),
       LateSubmission(
         taxPeriodStartDate = Some(sampleOldestDate.plusDays(15)),
         taxPeriodEndDate = Some(sampleOldestDate.plusDays(31)),
         taxPeriodDueDate = Some(sampleOldestDate.plusMonths(4).plusDays(23)),
         returnReceiptDate = Some(sampleOldestDate.plusMonths(4).plusDays(24)),
-        taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+        taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
       )
     )),
     appealInformation = Some(Seq(
@@ -494,14 +494,14 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
           taxPeriodEndDate = Some(sampleOldestDate.plusDays(15)),
           taxPeriodDueDate = Some(sampleOldestDate.plusMonths(4).plusDays(7)),
           returnReceiptDate = Some(sampleOldestDate.plusMonths(4).plusDays(12)),
-          taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+          taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
         ),
         LateSubmission(
           taxPeriodStartDate = Some(sampleOldestDate.plusDays(15)),
           taxPeriodEndDate = Some(sampleOldestDate.plusDays(31)),
           taxPeriodDueDate = Some(sampleOldestDate.plusMonths(4).plusDays(23)),
           returnReceiptDate = Some(sampleOldestDate.plusMonths(4).plusDays(23)),
-          taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+          taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
         )
       )),
       appealInformation = Some(Seq(
