@@ -94,6 +94,11 @@ trait LSPDetailsTestData {
     ))
   )
 
+  val sampleLateSubmissionPointReturnWithNoPenaltyCategory: LSPDetails = sampleLateSubmissionPoint.copy(
+    penaltyNumber = "0987654321",
+    penaltyCategory = None
+  )
+
   val sampleRemovedPenaltyPoint: LSPDetails = sampleLateSubmissionPoint.copy(
     penaltyStatus = LSPPenaltyStatusEnum.Inactive,
     FAPIndicator = Some("X"),
