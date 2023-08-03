@@ -31,7 +31,7 @@ class FeatureSwitchSpec extends SpecBase {
 
   "listOfAllFeatureSwitches" should {
     "be all the featureswitches in the app" in {
-      FeatureSwitch.listOfAllFeatureSwitches shouldBe List(ShowURBanner, TaxReturnStatusEnumIsOptional)
+      FeatureSwitch.listOfAllFeatureSwitches shouldBe List(ShowURBanner, EnableR5BProcessing)
     }
   }
 }
