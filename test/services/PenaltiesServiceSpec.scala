@@ -245,7 +245,7 @@ class PenaltiesServiceSpec extends SpecBase {
                 taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                 taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
                 returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
-                taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+                taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
               )
             )
           ),
@@ -276,7 +276,7 @@ class PenaltiesServiceSpec extends SpecBase {
                 taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                 taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
                 returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
-                taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+                taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
               )
             )
           ),
@@ -307,7 +307,7 @@ class PenaltiesServiceSpec extends SpecBase {
                 taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                 taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
                 returnReceiptDate = Some(LocalDate.of(2022, 1, 1)),
-                taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+                taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
               )
             )
           ),
@@ -346,7 +346,7 @@ class PenaltiesServiceSpec extends SpecBase {
                 taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                 taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
                 returnReceiptDate = None,
-                taxReturnStatus = TaxReturnStatusEnum.Open
+                taxReturnStatus = Some(TaxReturnStatusEnum.Open)
               )
             )
           ),
@@ -381,7 +381,7 @@ class PenaltiesServiceSpec extends SpecBase {
                 taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                 taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
                 returnReceiptDate = None,
-                taxReturnStatus = TaxReturnStatusEnum.Open
+                taxReturnStatus = Some(TaxReturnStatusEnum.Open)
               )
             )
           ),
@@ -413,7 +413,7 @@ class PenaltiesServiceSpec extends SpecBase {
                 taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                 taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
                 returnReceiptDate = None,
-                taxReturnStatus = TaxReturnStatusEnum.Open
+                taxReturnStatus = Some(TaxReturnStatusEnum.Open)
               )
             )
           ),
@@ -452,7 +452,7 @@ class PenaltiesServiceSpec extends SpecBase {
                 taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
                 taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
                 returnReceiptDate = None,
-                taxReturnStatus = TaxReturnStatusEnum.Open
+                taxReturnStatus = Some(TaxReturnStatusEnum.Open)
               )
             )
           ),
@@ -580,7 +580,7 @@ class PenaltiesServiceSpec extends SpecBase {
             taxPeriodEndDate = Some(LocalDate.of(2022, 1, 1)),
             taxPeriodDueDate = Some(LocalDate.of(2022, 1, 1)),
             returnReceiptDate = None,
-            taxReturnStatus = TaxReturnStatusEnum.Open
+            taxReturnStatus = Some(TaxReturnStatusEnum.Open)
           )
         )
       ),

@@ -80,7 +80,7 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
                                   isAnAddedOrRemovedPoint: Boolean = false, isManuallyRemovedPoint:Boolean = false)(implicit messages: Messages): LateSubmissionPenaltySummaryCard = {
     val isReturnSubmitted = penalty.lateSubmissions.map(penaltyPeriod =>
       PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head)
-      .fold(false)(_.taxReturnStatus.equals(TaxReturnStatusEnum.Fulfilled))
+      .fold(false)(_.taxReturnStatus.contains(TaxReturnStatusEnum.Fulfilled))
     val appealStatus = penalty.appealInformation.flatMap(_.headOption.flatMap(_.appealStatus))
     val appealLevel = penalty.appealInformation.flatMap(_.headOption.flatMap(_.appealLevel))
     val dueDate = penalty.lateSubmissions.map(lateSubmissions => PenaltyPeriodHelper.sortedPenaltyPeriod(lateSubmissions)).map(_.head.taxPeriodDueDate.get)

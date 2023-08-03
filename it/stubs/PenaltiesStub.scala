@@ -70,7 +70,7 @@ object PenaltiesStub {
               taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
               taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
               returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
-              taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+              taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
             )
           )),
           appealInformation = Some(Seq(
@@ -162,7 +162,7 @@ object PenaltiesStub {
               taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
               taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
               returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
-              taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+              taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
             )
           )),
           appealInformation = Some(Seq(

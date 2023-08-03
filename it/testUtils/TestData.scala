@@ -47,7 +47,7 @@ trait TestData {
         taxPeriodEndDate = Some(LocalDate.parse("2069-10-30")),
         taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
         returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
-        taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+        taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
       )
     )),
     appealInformation = None,
@@ -168,7 +168,7 @@ trait TestData {
               taxPeriodEndDate = Some(LocalDate.parse("2021-01-31")),
               taxPeriodDueDate = Some(LocalDate.parse("2021-03-07")),
               returnReceiptDate = Some(LocalDate.parse("2021-03-25")),
-              taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+              taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
             )
           ))
         ),
@@ -232,7 +232,7 @@ trait TestData {
               taxPeriodEndDate = Some(LocalDate.parse("2021-01-31")),
               taxPeriodDueDate = Some(LocalDate.parse("2021-03-07")),
               returnReceiptDate = Some(LocalDate.parse("2021-03-25")),
-              taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+              taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
             )
           ))
         ),
@@ -297,7 +297,7 @@ trait TestData {
             taxPeriodEndDate = Some(sampleDate1.minusMonths(3).plusDays(30)),
             taxPeriodDueDate = Some(sampleDate1),
             returnReceiptDate = Some(sampleDate1),
-            taxReturnStatus = TaxReturnStatusEnum.Fulfilled))
+            taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)))
           )
         ),
         sampleLSP.copy(
@@ -309,7 +309,7 @@ trait TestData {
             taxPeriodEndDate = Some(sampleDate1.minusMonths(2).plusDays(29)),
             taxPeriodDueDate = Some(sampleDate1),
             returnReceiptDate = Some(sampleDate1),
-            taxReturnStatus = TaxReturnStatusEnum.Fulfilled))
+            taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)))
           )
         ),
         sampleLSP.copy(
@@ -321,7 +321,7 @@ trait TestData {
             taxPeriodEndDate = Some(sampleDate1.minusMonths(1).plusDays(30)),
             taxPeriodDueDate = Some(sampleDate1),
             returnReceiptDate = Some(sampleDate1),
-            taxReturnStatus = TaxReturnStatusEnum.Fulfilled))
+            taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)))
           )
         )
       ))
@@ -492,14 +492,14 @@ trait TestData {
                 taxPeriodEndDate = Some(sampleDate1.plusDays(14)),
                 taxPeriodDueDate = Some(sampleDate1.plusMonths(4).plusDays(7)),
                 returnReceiptDate = Some(sampleDate1.plusMonths(4).plusDays(12)),
-                taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+                taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
               ),
               LateSubmission(
                 taxPeriodStartDate = Some(sampleDate1.plusDays(16)),
                 taxPeriodEndDate = Some(sampleDate1.plusDays(31)),
                 taxPeriodDueDate = Some(sampleDate1.plusMonths(4).plusDays(23)),
                 returnReceiptDate = Some(sampleDate1.plusMonths(4).plusDays(25)),
-                taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+                taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
               )
             ))
           )
@@ -532,7 +532,7 @@ trait TestData {
                 taxPeriodEndDate = Some(sampleDate2.plusDays(27)),
                 taxPeriodDueDate = Some(sampleDate2.plusMonths(2).plusDays(7)),
                 returnReceiptDate = Some(sampleDate2.plusMonths(2).plusDays(12)),
-                taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+                taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
               )
             ))
           ),
@@ -552,7 +552,7 @@ trait TestData {
                 taxPeriodEndDate = Some(sampleDate1.plusDays(30)),
                 taxPeriodDueDate = Some(sampleDate1.plusMonths(2).plusDays(7)),
                 returnReceiptDate = Some(sampleDate1.plusMonths(2).plusDays(12)),
-                taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+                taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
               )
             ))
           )

@@ -41,7 +41,8 @@ class PenaltiesService @Inject()(connector: PenaltiesConnector) {
 
   def isAnyLSPUnpaidAndSubmissionIsDue(penaltyPoints: Seq[LSPDetails]): Boolean = {
     filterOutAppealedPenalties(penaltyPoints).exists(details => {
-      details.chargeOutstandingAmount.exists(_ > BigDecimal(0)) && details.lateSubmissions.exists(_.exists(_.taxReturnStatus == TaxReturnStatusEnum.Open))
+      details.chargeOutstandingAmount.exists(_ > BigDecimal(0)) && details.lateSubmissions.exists(_.exists(
+        _.taxReturnStatus.contains(TaxReturnStatusEnum.Open)))
     })
   }
 

@@ -22,11 +22,15 @@ sealed trait FeatureSwitch {
 
 object FeatureSwitch {
   val prefix: String = "feature.switch"
-  val listOfAllFeatureSwitches: List[FeatureSwitch] = List(ShowURBanner)
+  val listOfAllFeatureSwitches: List[FeatureSwitch] = List(ShowURBanner, EnableR5BProcessing)
 }
 
 case object ShowURBanner extends FeatureSwitch {
   override val name: String = s"${FeatureSwitch.prefix}.show-ur-banner"
+}
+
+case object EnableR5BProcessing extends FeatureSwitch {
+  override val name: String = s"${FeatureSwitch.prefix}.enable-r5b-processing"
 }
 
 

@@ -29,14 +29,14 @@ class PenaltyPeriodHelperSpec extends SpecBase {
       taxPeriodEndDate = Some(LocalDate.parse("2069-10-15")),
       taxPeriodDueDate = Some(LocalDate.parse("2069-10-30")),
       returnReceiptDate = Some(LocalDate.parse("2069-10-30")),
-      taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+      taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
     ),
     LateSubmission(
       taxPeriodStartDate = Some(LocalDate.parse("2069-12-15")),
       taxPeriodEndDate = Some(LocalDate.parse("2069-12-15")),
       taxPeriodDueDate = Some(LocalDate.parse("2069-12-15")),
       returnReceiptDate = Some(LocalDate.parse("2069-12-15")),
-      taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+      taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
     )
   )
 

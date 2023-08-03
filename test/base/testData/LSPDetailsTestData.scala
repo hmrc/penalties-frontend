@@ -46,7 +46,7 @@ trait LSPDetailsTestData {
         taxPeriodEndDate = Some(taxPeriodEnd),
         taxPeriodDueDate = Some(taxPeriodDue),
         returnReceiptDate = Some(receiptDate),
-        taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+        taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
       )
     )),
     appealInformation = None,
@@ -70,14 +70,14 @@ trait LSPDetailsTestData {
         taxPeriodEndDate = Some(taxPeriodEnd),
         taxPeriodDueDate = Some(taxPeriodDue),
         returnReceiptDate = Some(receiptDate),
-        taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+        taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
       ),
       LateSubmission(
         taxPeriodStartDate = Some(taxPeriodStart.plusMonths(1)),
         taxPeriodEndDate = Some(taxPeriodEnd.plusMonths(1)),
         taxPeriodDueDate = Some(taxPeriodDue.plusMonths(1)),
         returnReceiptDate = Some(receiptDate.plusMonths(1)),
-        taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+        taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
       )
     ))
   )
@@ -89,7 +89,7 @@ trait LSPDetailsTestData {
         taxPeriodEndDate = Some(taxPeriodEnd),
         taxPeriodDueDate = Some(taxPeriodDue),
         returnReceiptDate = Some(receiptDate),
-        taxReturnStatus = TaxReturnStatusEnum.Fulfilled
+        taxReturnStatus = Some(TaxReturnStatusEnum.Fulfilled)
       )
     ))
   )
@@ -108,7 +108,7 @@ trait LSPDetailsTestData {
           taxPeriodEndDate = Some(taxPeriodEnd),
           taxPeriodDueDate = Some(taxPeriodDue),
           returnReceiptDate = None,
-          taxReturnStatus = TaxReturnStatusEnum.Open
+          taxReturnStatus = Some(TaxReturnStatusEnum.Open)
         )
       )
     )
