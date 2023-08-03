@@ -50,10 +50,7 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
         case (Some(LSPPenaltyCategoryEnum.Point), _) => pointSummaryCard(newPenalty, thresholdMet) // normal points
         case (Some(LSPPenaltyCategoryEnum.Threshold), _) => financialSummaryCard(newPenalty, threshold) //normal threshold
         case (Some(LSPPenaltyCategoryEnum.Charge), _) => financialSummaryCard(newPenalty, threshold)
-        case (None, _) => {
-          println(Console.CYAN + "hello" + Console.RESET)
-          removedPointCard(newPenalty)
-        } //Removed point}
+        case (None, _) => removedPointCard(newPenalty) //Removed point}
         case _ => throw new Exception("[SummaryCardHelper][populateLateSubmissionPenaltyCard] Incorrect values provided")
       }
     }
