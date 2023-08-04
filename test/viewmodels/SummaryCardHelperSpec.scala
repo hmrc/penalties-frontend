@@ -445,47 +445,26 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           result(3).penaltyPoint shouldBe expectedResult(3).penaltyPoint
         }
 
-        "do not display point when LSPPenaltyCategoryEnum is not defined" in {
-          val sample2ReturnsWith1PenaltyPointWithNoCategory = Seq(
-            sampleLateSubmissionPoint.copy(penaltyOrder = "1"),
-            sampleLateSubmissionPointReturnWithNoPenaltyCategory
-          )
-
+        "treat a undefined LSPPenaltyCategoryEnum as a Point" in {
           val expectedResult = Seq(
             LateSubmissionPenaltySummaryCard(
               Seq(
                 helper.summaryListRow(
                   period,
-                  Html(vatPeriodValue(dateToString(taxPeriodStart.plusMonths(1)), dateToString(taxPeriodEnd.plusMonths(1))))
+                  Html(vatPeriodValue(dateToString(taxPeriodStart), dateToString(taxPeriodEnd)))
                 ),
-                helper.summaryListRow(returnDue, Html(dateToString(taxPeriodDue.plusMonths(1)))),
-                helper.summaryListRow(returnSubmitted, Html(dateToString(receiptDate.plusMonths(1)))),
-                helper.summaryListRow(pointExpiration, Html(dateToString(expiryDate.plusMonths(1))))
+                helper.summaryListRow(returnDue, Html(dateToString(taxPeriodDue))),
+                helper.summaryListRow(returnSubmitted, Html(dateToString(receiptDate))),
+                helper.summaryListRow(pointExpiration, Html(dateToMonthYearString(expiryDate)))
               ),
               Tag(content = Text("active")),
               "1",
-              "12345678901234",
-              isReturnSubmitted = true,
-              dueDate = Some(dateToString(taxPeriodDue.plusMonths(1)))
-            ),
-            LateSubmissionPenaltySummaryCard(
-              Seq(
-                helper.summaryListRow(
-                  period,
-                  Html(vatPeriodValue(dateToString(LocalDate.of(2021, 1, 6)), dateToString(LocalDate.of(2021, 2, 5))))
-                )
-              ),
-              Tag(content = Text("active")),
-              "",
               "0987654321",
               isReturnSubmitted = true,
-              isAddedOrRemovedPoint = true,
-              isManuallyRemovedPoint = true,
-              dueDate = Some(dateToString(LocalDate.of(2021, 3,12)))
+              dueDate = Some(dateToString(taxPeriodDue))
             ))
-
-          val result = helper.populateLateSubmissionPenaltyCard(sample2ReturnsWith1PenaltyPointWithNoCategory, quarterlyThreshold, quarterlyThreshold -1)
-          result.last shouldBe expectedResult.last
+          val result = helper.populateLateSubmissionPenaltyCard(Seq(sampleLateSubmissionPointReturnWithNoPenaltyCategory), quarterlyThreshold, quarterlyThreshold -1)
+          result.head shouldBe expectedResult.head
         }
       }
 

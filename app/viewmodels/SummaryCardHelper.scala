@@ -43,14 +43,14 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
     penalties.map { penalty =>
       val newPenalty = findAndReindexPointIfIsActive(indexedActivePoints, penalty)
       (newPenalty.penaltyCategory, newPenalty.appealInformation.flatMap(_.head.appealStatus)) match {
-        case (Some(LSPPenaltyCategoryEnum.Point), _) if newPenalty.FAPIndicator.contains("X") && newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Active => addedPointCard(newPenalty, thresholdMet) //Added FAP
-        case (Some(LSPPenaltyCategoryEnum.Point), _) if newPenalty.FAPIndicator.contains("X") && newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive => removedPointCard(newPenalty) //Removed FAP
-        case (Some(LSPPenaltyCategoryEnum.Point), Some(AppealStatusEnum.Upheld)) if newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive => pointSummaryCard(newPenalty, thresholdMet) //Appealed point
-        case (Some(LSPPenaltyCategoryEnum.Point), _) if newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive && newPenalty.expiryReason.isDefined => removedPointCard(newPenalty) //Removed point
-        case (Some(LSPPenaltyCategoryEnum.Point), _) => pointSummaryCard(newPenalty, thresholdMet) // normal points
+          //TODO: More robust handling of missing information
+        case (Some(LSPPenaltyCategoryEnum.Point) | None, _) if newPenalty.FAPIndicator.contains("X") && newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Active => addedPointCard(newPenalty, thresholdMet) //Added FAP
+        case (Some(LSPPenaltyCategoryEnum.Point) | None, _) if newPenalty.FAPIndicator.contains("X") && newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive => removedPointCard(newPenalty) //Removed FAP
+        case (Some(LSPPenaltyCategoryEnum.Point) | None, Some(AppealStatusEnum.Upheld)) if newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive => pointSummaryCard(newPenalty, thresholdMet) //Appealed point
+        case (Some(LSPPenaltyCategoryEnum.Point) | None, _) if newPenalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive && newPenalty.expiryReason.isDefined => removedPointCard(newPenalty) //Removed point
+        case (Some(LSPPenaltyCategoryEnum.Point) | None, _) => pointSummaryCard(newPenalty, thresholdMet) // normal points
         case (Some(LSPPenaltyCategoryEnum.Threshold), _) => financialSummaryCard(newPenalty, threshold) //normal threshold
         case (Some(LSPPenaltyCategoryEnum.Charge), _) => financialSummaryCard(newPenalty, threshold)
-        case (None, _) => removedPointCard(newPenalty) //Removed point}
         case _ => throw new Exception("[SummaryCardHelper][populateLateSubmissionPenaltyCard] Incorrect values provided")
       }
     }
