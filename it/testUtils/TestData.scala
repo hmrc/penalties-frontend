@@ -34,7 +34,7 @@ trait TestData {
   val sampleLSP: LSPDetails = LSPDetails(
     penaltyNumber = "12345678901234",
     penaltyOrder = "01",
-    penaltyCategory = LSPPenaltyCategoryEnum.Point,
+    penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
     penaltyStatus = LSPPenaltyStatusEnum.Active,
     FAPIndicator = None,
     penaltyCreationDate = LocalDate.parse("2069-10-30"),
@@ -156,7 +156,7 @@ trait TestData {
       ),
       details = Seq(
         sampleLSP.copy(
-          penaltyCategory = LSPPenaltyCategoryEnum.Charge,
+          penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
           penaltyNumber = "1234567890",
           penaltyOrder = "03",
           chargeAmount = Some(200.00),
@@ -173,7 +173,7 @@ trait TestData {
           ))
         ),
         sampleLSP.copy(
-          penaltyCategory = LSPPenaltyCategoryEnum.Threshold,
+          penaltyCategory = Some(LSPPenaltyCategoryEnum.Threshold),
           penaltyNumber = "1234567891",
           penaltyOrder = "02",
           chargeAmount = Some(200.00),
@@ -431,7 +431,7 @@ trait TestData {
       ),
       details = Seq(
         sampleLSP.copy(
-          penaltyCategory = LSPPenaltyCategoryEnum.Charge,
+          penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
           penaltyNumber = "1234567892",
           penaltyOrder = "03",
           chargeAmount = Some(200.00),
@@ -439,7 +439,7 @@ trait TestData {
           chargeDueDate = Some(sampleDate1)
         ),
         sampleLSP.copy(
-          penaltyCategory = LSPPenaltyCategoryEnum.Threshold,
+          penaltyCategory = Some(LSPPenaltyCategoryEnum.Threshold),
           penaltyNumber = "1234567891",
           penaltyOrder = "02",
           chargeAmount = Some(200.00),
@@ -523,7 +523,7 @@ trait TestData {
         ),
         details = Seq(
           sampleLSP.copy(
-            penaltyCategory = LSPPenaltyCategoryEnum.Point,
+            penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
             penaltyNumber = "1234567892",
             penaltyOrder = "03",
             lateSubmissions = Some(Seq(
@@ -537,7 +537,7 @@ trait TestData {
             ))
           ),
           sampleLSP.copy(
-            penaltyCategory = LSPPenaltyCategoryEnum.Point,
+            penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
             penaltyStatus = LSPPenaltyStatusEnum.Inactive,
             expiryReason = Some(ExpiryReasonEnum.Reversal),
             penaltyNumber = "1234567891",

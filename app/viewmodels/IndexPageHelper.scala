@@ -267,7 +267,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
 
   private def filterNAT(points: Seq[LSPDetails]): Seq[LSPDetails] = {
     points.filterNot(
-      penalty => penalty.penaltyCategory.equals(LSPPenaltyCategoryEnum.Point) &&
+      penalty => penalty.penaltyCategory.contains(LSPPenaltyCategoryEnum.Point) &&
         penalty.penaltyStatus.equals(LSPPenaltyStatusEnum.Inactive) &&
         penalty.FAPIndicator.isEmpty &&
         !penalty.lateSubmissions.exists(_.exists(_.returnReceiptDate.exists(_.plusMonths(24)isAfter (LocalDate.now())))))

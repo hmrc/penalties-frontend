@@ -16,6 +16,8 @@
 
 package viewmodels
 
+import java.time.LocalDate
+
 import assets.messages.IndexMessages._
 import base.SpecBase
 import models.User
@@ -211,7 +213,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           dueDate = Some(dateToString(taxPeriodDue))
         )
 
-        val pointToPassIn: LSPDetails = sampleLateSubmissionPenaltyCharge.copy(penaltyOrder = "1", penaltyCategory = LSPPenaltyCategoryEnum.Threshold)
+        val pointToPassIn: LSPDetails = sampleLateSubmissionPenaltyCharge.copy(penaltyOrder = "1", penaltyCategory = Some(LSPPenaltyCategoryEnum.Threshold))
         val actualResult = helper.financialSummaryCard(pointToPassIn, quarterlyThreshold)
         val expectedResult = sampleSummaryCardReturnSubmitted
         actualResult shouldBe expectedResult
@@ -338,7 +340,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           dueDate = Some(dateToString(taxPeriodDue))
         )
 
-        val pointToPassIn: LSPDetails = sampleLateSubmissionPenaltyCharge.copy(penaltyOrder = "1", penaltyCategory = LSPPenaltyCategoryEnum.Threshold,
+        val pointToPassIn: LSPDetails = sampleLateSubmissionPenaltyCharge.copy(penaltyOrder = "1", penaltyCategory = Some(LSPPenaltyCategoryEnum.Threshold),
           lateSubmissions = Some(
             Seq(
               LateSubmission(
@@ -441,6 +443,28 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           result(1).penaltyPoint shouldBe expectedResult(1).penaltyPoint
           result(2).penaltyPoint shouldBe expectedResult(2).penaltyPoint
           result(3).penaltyPoint shouldBe expectedResult(3).penaltyPoint
+        }
+
+        "treat a undefined LSPPenaltyCategoryEnum as a Point" in {
+          val expectedResult = Seq(
+            LateSubmissionPenaltySummaryCard(
+              Seq(
+                helper.summaryListRow(
+                  period,
+                  Html(vatPeriodValue(dateToString(taxPeriodStart), dateToString(taxPeriodEnd)))
+                ),
+                helper.summaryListRow(returnDue, Html(dateToString(taxPeriodDue))),
+                helper.summaryListRow(returnSubmitted, Html(dateToString(receiptDate))),
+                helper.summaryListRow(pointExpiration, Html(dateToMonthYearString(expiryDate)))
+              ),
+              Tag(content = Text("active")),
+              "1",
+              "0987654321",
+              isReturnSubmitted = true,
+              dueDate = Some(dateToString(taxPeriodDue))
+            ))
+          val result = helper.populateLateSubmissionPenaltyCard(Seq(sampleLateSubmissionPointReturnWithNoPenaltyCategory), quarterlyThreshold, quarterlyThreshold -1)
+          result.head shouldBe expectedResult.head
         }
       }
 
