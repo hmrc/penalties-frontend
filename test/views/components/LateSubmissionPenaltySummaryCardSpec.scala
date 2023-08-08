@@ -757,6 +757,15 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         doc.select("dt").eq(4).isEmpty shouldBe true
       }
     }
+
+    "given a non-appealed point and it is unappealable, with an empty appeal level" should {
+      implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelUnappealable.copy(appealLevel = None)))
+      "not show the appeal status row and have the check if you can appeal link" in {
+        doc.select(".app-summary-card__footer a").get(0).ownText() shouldBe "Check if you can appeal"
+        doc.select(".app-summary-card__footer a span").text() shouldBe "for late VAT return due on 12 March 2021"
+        doc.select("dt").eq(4).isEmpty shouldBe true
+      }
+    }
   }
 
 }

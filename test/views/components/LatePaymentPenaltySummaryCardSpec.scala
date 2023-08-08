@@ -45,7 +45,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       penaltyChargeReference = Some("CHRG1234"))))
   ).get.head
 
-  val summaryCardModelWithUnappealableStatus: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
+  val summaryCardModelWithUnappealableStatusAndEmptyAppealLevel: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
     Some(Seq(samplePaidLPP1.copy(
       principalChargeBillingFrom = LocalDate.of(2020, 1, 1),
       principalChargeBillingTo = LocalDate.of(2020, 2, 1),
@@ -53,7 +53,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       appealInformation = Some(Seq(
         AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Unappealable),
-          appealLevel = Some(AppealLevelEnum.HMRC)
+          appealLevel = None
         )
       )))))
   ).get.head
@@ -297,6 +297,12 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         doc.select(".app-summary-card__footer span").get(1).text shouldBe "which is the first penalty for late payment of charge due on 1 February 2020"
         doc.select(".app-summary-card__footer a").get(1).attr("href").contains(summaryCardModel.penaltyChargeReference.get) shouldBe true
         doc.select("dt").eq(4).isEmpty shouldBe true
+      }
+
+      "display 'view calculation' correctly when appeal level is empty" in {
+        val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithUnappealableStatusAndEmptyAppealLevel))
+        doc.select(".app-summary-card__footer div a").get(0).ownText shouldBe "View calculation"
+        doc.select(".app-summary-card__footer span").get(0).text shouldBe "of first late payment penalty for charge due on 1 February 2020"
       }
     }
 
