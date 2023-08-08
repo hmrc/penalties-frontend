@@ -159,7 +159,7 @@ class IndexPageHelperSpec extends SpecBase {
           details = Seq(
             LSPDetails(
               penaltyNumber = "12345679",
-              penaltyOrder = "3",
+              penaltyOrder = Some("03"),
               penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
               penaltyStatus = LSPPenaltyStatusEnum.Active,
               FAPIndicator = None,
@@ -185,7 +185,7 @@ class IndexPageHelperSpec extends SpecBase {
             ),
             LSPDetails(
               penaltyNumber = "12345678",
-              penaltyOrder = "2",
+              penaltyOrder = Some("02"),
               penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
               penaltyStatus = LSPPenaltyStatusEnum.Active,
               FAPIndicator = None,
@@ -211,7 +211,7 @@ class IndexPageHelperSpec extends SpecBase {
             ),
             LSPDetails(
               penaltyNumber = "12345677",
-              penaltyOrder = "1",
+              penaltyOrder = Some("01"),
               penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
               penaltyStatus = LSPPenaltyStatusEnum.Active,
               FAPIndicator = None,
@@ -256,7 +256,7 @@ class IndexPageHelperSpec extends SpecBase {
           details = Seq(
             LSPDetails(
               penaltyNumber = "12345678",
-              penaltyOrder = "2",
+              penaltyOrder = Some("02"),
               penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
               penaltyStatus = LSPPenaltyStatusEnum.Active,
               FAPIndicator = None,
@@ -282,7 +282,7 @@ class IndexPageHelperSpec extends SpecBase {
             ),
             LSPDetails(
               penaltyNumber = "12345677",
-              penaltyOrder = "1",
+              penaltyOrder = Some("01"),
               penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
               penaltyStatus = LSPPenaltyStatusEnum.Active,
               FAPIndicator = None,
@@ -327,7 +327,7 @@ class IndexPageHelperSpec extends SpecBase {
           details = Seq(
             LSPDetails(
               penaltyNumber = "12345678",
-              penaltyOrder = "1",
+              penaltyOrder = Some("01"),
               penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
               penaltyStatus = LSPPenaltyStatusEnum.Active,
               FAPIndicator = None,
@@ -372,7 +372,7 @@ class IndexPageHelperSpec extends SpecBase {
           details = Seq(
             LSPDetails(
               penaltyNumber = "12345678",
-              penaltyOrder = "1",
+              penaltyOrder = Some("01"),
               penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
               penaltyStatus = LSPPenaltyStatusEnum.Active,
               FAPIndicator = None,
@@ -568,7 +568,7 @@ class IndexPageHelperSpec extends SpecBase {
             details = Seq(
               LSPDetails(
                 penaltyNumber = "12345680",
-                penaltyOrder = "4",
+                penaltyOrder = Some("04"),
                 penaltyCategory = Some(LSPPenaltyCategoryEnum.Threshold),
                 penaltyStatus = LSPPenaltyStatusEnum.Active,
                 FAPIndicator = None,
@@ -594,7 +594,7 @@ class IndexPageHelperSpec extends SpecBase {
               ),
               LSPDetails(
                 penaltyNumber = "12345679",
-                penaltyOrder = "3",
+                penaltyOrder = Some("03"),
                 penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
                 penaltyStatus = LSPPenaltyStatusEnum.Active,
                 FAPIndicator = None,
@@ -620,7 +620,7 @@ class IndexPageHelperSpec extends SpecBase {
               ),
               LSPDetails(
                 penaltyNumber = "12345678",
-                penaltyOrder = "2",
+                penaltyOrder = Some("02"),
                 penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
                 penaltyStatus = LSPPenaltyStatusEnum.Active,
                 FAPIndicator = None,
@@ -646,7 +646,7 @@ class IndexPageHelperSpec extends SpecBase {
               ),
               LSPDetails(
                 penaltyNumber = "12345677",
-                penaltyOrder = "1",
+                penaltyOrder = Some("01"),
                 penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
                 penaltyStatus = LSPPenaltyStatusEnum.Active,
                 FAPIndicator = None,
@@ -753,7 +753,7 @@ class IndexPageHelperSpec extends SpecBase {
             details = Seq(
               LSPDetails(
                 penaltyNumber = "12345678",
-                penaltyOrder = "2",
+                penaltyOrder = Some("02"),
                 penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
                 penaltyStatus = LSPPenaltyStatusEnum.Active,
                 FAPIndicator = Some("X"),
@@ -775,7 +775,7 @@ class IndexPageHelperSpec extends SpecBase {
               ),
               LSPDetails(
                 penaltyNumber = "12345677",
-                penaltyOrder = "1",
+                penaltyOrder = Some("01"),
                 penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
                 penaltyStatus = LSPPenaltyStatusEnum.Active,
                 FAPIndicator = None,
@@ -820,7 +820,7 @@ class IndexPageHelperSpec extends SpecBase {
             details = Seq(
               LSPDetails(
                 penaltyNumber = "12345679",
-                penaltyOrder = "3",
+                penaltyOrder = Some("03"),
                 penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
                 penaltyStatus = LSPPenaltyStatusEnum.Active,
                 FAPIndicator = Some("X"),
@@ -836,7 +836,7 @@ class IndexPageHelperSpec extends SpecBase {
               ),
               LSPDetails(
                 penaltyNumber = "12345677",
-                penaltyOrder = "2",
+                penaltyOrder = Some("02"),
                 penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
                 penaltyStatus = LSPPenaltyStatusEnum.Active,
                 FAPIndicator = None,
@@ -862,7 +862,7 @@ class IndexPageHelperSpec extends SpecBase {
               ),
               LSPDetails(
                 penaltyNumber = "12345677",
-                penaltyOrder = "1",
+                penaltyOrder = Some("01"),
                 penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
                 penaltyStatus = LSPPenaltyStatusEnum.Active,
                 FAPIndicator = None,
@@ -956,7 +956,7 @@ class IndexPageHelperSpec extends SpecBase {
               LSPDetails(
                 penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
                 penaltyNumber = "123456789",
-                penaltyOrder = "3",
+                penaltyOrder = Some("03"),
                 penaltyStatus = LSPPenaltyStatusEnum.Inactive,
                 FAPIndicator = Some("X"),
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
@@ -982,7 +982,7 @@ class IndexPageHelperSpec extends SpecBase {
               LSPDetails(
                 penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
                 penaltyNumber = "123456788",
-                penaltyOrder = "2",
+                penaltyOrder = Some("02"),
                 penaltyStatus = LSPPenaltyStatusEnum.Inactive,
                 FAPIndicator = None,
                 penaltyCreationDate = LocalDate.of(2022, 1, 1),
@@ -1007,7 +1007,7 @@ class IndexPageHelperSpec extends SpecBase {
               ),
               LSPDetails(
                 penaltyNumber = "123456787",
-                penaltyOrder = "1",
+                penaltyOrder = Some("01"),
                 penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
                 penaltyStatus = LSPPenaltyStatusEnum.Active,
                 FAPIndicator = None,
@@ -1052,7 +1052,7 @@ class IndexPageHelperSpec extends SpecBase {
             details = Seq(
               LSPDetails(
                 penaltyNumber = "12345679",
-                penaltyOrder = "4",
+                penaltyOrder = Some("04"),
                 penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
                 penaltyStatus = LSPPenaltyStatusEnum.Inactive,
                 FAPIndicator = Some("X"),
@@ -1078,7 +1078,7 @@ class IndexPageHelperSpec extends SpecBase {
               ),
               LSPDetails(
                 penaltyNumber = "12345678",
-                penaltyOrder = "3",
+                penaltyOrder = Some("03"),
                 penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
                 penaltyStatus = LSPPenaltyStatusEnum.Active,
                 FAPIndicator = None,
@@ -1104,7 +1104,7 @@ class IndexPageHelperSpec extends SpecBase {
               ),
               LSPDetails(
                 penaltyNumber = "12345677",
-                penaltyOrder = "2",
+                penaltyOrder = Some("02"),
                 penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
                 penaltyStatus = LSPPenaltyStatusEnum.Active,
                 FAPIndicator = None,
@@ -1130,7 +1130,7 @@ class IndexPageHelperSpec extends SpecBase {
               ),
               LSPDetails(
                 penaltyNumber = "12345676",
-                penaltyOrder = "1",
+                penaltyOrder = Some("01"),
                 penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
                 penaltyStatus = LSPPenaltyStatusEnum.Active,
                 FAPIndicator = None,
@@ -1472,7 +1472,7 @@ class IndexPageHelperSpec extends SpecBase {
 
       val sampleLSP: LSPDetails = LSPDetails(
         penaltyNumber = "123456789",
-        penaltyOrder = "1",
+        penaltyOrder = Some("01"),
         penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
         penaltyStatus = LSPPenaltyStatusEnum.Active,
         FAPIndicator = None,
@@ -1608,7 +1608,7 @@ class IndexPageHelperSpec extends SpecBase {
     def penaltyDetailsWithReason(expiryReason: ExpiryReasonEnum.Value): Seq[LSPDetails] = Seq(
       LSPDetails(
         penaltyNumber = "12345678",
-        penaltyOrder = "3",
+        penaltyOrder = Some("03"),
         penaltyCategory = Some(LSPPenaltyCategoryEnum.Threshold),
         penaltyStatus = LSPPenaltyStatusEnum.Active,
         FAPIndicator = None,
@@ -1624,7 +1624,7 @@ class IndexPageHelperSpec extends SpecBase {
       ),
       LSPDetails(
         penaltyNumber = "12345677",
-        penaltyOrder = "2",
+        penaltyOrder = Some("02"),
         penaltyCategory = Some(LSPPenaltyCategoryEnum.Threshold),
         penaltyStatus = LSPPenaltyStatusEnum.Inactive,
         FAPIndicator = None,
@@ -1640,7 +1640,7 @@ class IndexPageHelperSpec extends SpecBase {
       ),
       LSPDetails(
         penaltyNumber = "12345676",
-        penaltyOrder = "1",
+        penaltyOrder = Some("01"),
         penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
         penaltyStatus = LSPPenaltyStatusEnum.Active,
         FAPIndicator = None,
@@ -1660,7 +1660,7 @@ class IndexPageHelperSpec extends SpecBase {
       def expectedResult(expiryReason: ExpiryReasonEnum.Value): Seq[LSPDetails] = Seq(
         LSPDetails(
           penaltyNumber = "12345678",
-          penaltyOrder = "3",
+          penaltyOrder = Some("03"),
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Threshold),
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
@@ -1676,7 +1676,7 @@ class IndexPageHelperSpec extends SpecBase {
         ),
         LSPDetails(
           penaltyNumber = "12345677",
-          penaltyOrder = "2",
+          penaltyOrder = Some("02"),
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Threshold),
           penaltyStatus = LSPPenaltyStatusEnum.Inactive,
           FAPIndicator = None,
@@ -1692,7 +1692,7 @@ class IndexPageHelperSpec extends SpecBase {
         ),
         LSPDetails(
           penaltyNumber = "12345676",
-          penaltyOrder = "1",
+          penaltyOrder = Some("01"),
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
@@ -1718,7 +1718,7 @@ class IndexPageHelperSpec extends SpecBase {
       val expectedResult: Seq[LSPDetails] = Seq(
         LSPDetails(
           penaltyNumber = "12345678",
-          penaltyOrder = "3",
+          penaltyOrder = Some("03"),
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Threshold),
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
@@ -1734,7 +1734,7 @@ class IndexPageHelperSpec extends SpecBase {
         ),
         LSPDetails(
           penaltyNumber = "12345676",
-          penaltyOrder = "1",
+          penaltyOrder = Some("01"),
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
@@ -1761,7 +1761,7 @@ class IndexPageHelperSpec extends SpecBase {
       val penaltiesOutOfOrder: Seq[LSPDetails] = Seq(
         LSPDetails(
           penaltyNumber = "12345678",
-          penaltyOrder = "1",
+          penaltyOrder = Some("01"),
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
@@ -1777,7 +1777,7 @@ class IndexPageHelperSpec extends SpecBase {
         ),
         LSPDetails(
           penaltyNumber = "12345677",
-          penaltyOrder = "2",
+          penaltyOrder = Some("02"),
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
@@ -1793,26 +1793,7 @@ class IndexPageHelperSpec extends SpecBase {
         ),
         LSPDetails(
           penaltyNumber = "12345676",
-          penaltyOrder = "3",
-          penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
-          penaltyStatus = LSPPenaltyStatusEnum.Active,
-          FAPIndicator = None,
-          penaltyCreationDate = LocalDate.of(2022, 1, 1),
-          penaltyExpiryDate = LocalDate.of(2022, 1, 1),
-          expiryReason = None,
-          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
-          lateSubmissions = None,
-          appealInformation = None,
-          chargeAmount = Some(200),
-          chargeOutstandingAmount = Some(200),
-          chargeDueDate = Some(LocalDate.of(2022, 1, 1))
-        )
-      )
-
-      val penaltiesInOrder: Seq[LSPDetails] = Seq(
-        LSPDetails(
-          penaltyNumber = "12345676",
-          penaltyOrder = "3",
+          penaltyOrder = Some("03"),
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
@@ -1828,7 +1809,58 @@ class IndexPageHelperSpec extends SpecBase {
         ),
         LSPDetails(
           penaltyNumber = "12345677",
-          penaltyOrder = "2",
+          penaltyOrder = None,
+          penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
+          penaltyStatus = LSPPenaltyStatusEnum.Inactive,
+          FAPIndicator = None,
+          penaltyCreationDate = LocalDate.of(2022, 1, 1),
+          penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+          expiryReason = Some(ExpiryReasonEnum.Appeal),
+          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
+          lateSubmissions = None,
+          appealInformation = None,
+          chargeAmount = None,
+          chargeOutstandingAmount = None,
+          chargeDueDate = None
+        ),
+        LSPDetails(
+          penaltyNumber = "12345676",
+          penaltyOrder = Some(" "),
+          penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
+          penaltyStatus = LSPPenaltyStatusEnum.Inactive,
+          FAPIndicator = None,
+          penaltyCreationDate = LocalDate.of(2022, 1, 1),
+          penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+          expiryReason = Some(ExpiryReasonEnum.Appeal),
+          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
+          lateSubmissions = None,
+          appealInformation = None,
+          chargeAmount = None,
+          chargeOutstandingAmount = None,
+          chargeDueDate = None
+        )
+      )
+
+      val penaltiesInOrder: Seq[LSPDetails] = Seq(
+        LSPDetails(
+          penaltyNumber = "12345676",
+          penaltyOrder = Some("03"),
+          penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
+          penaltyStatus = LSPPenaltyStatusEnum.Active,
+          FAPIndicator = None,
+          penaltyCreationDate = LocalDate.of(2022, 1, 1),
+          penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+          expiryReason = None,
+          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
+          lateSubmissions = None,
+          appealInformation = None,
+          chargeAmount = Some(200),
+          chargeOutstandingAmount = Some(200),
+          chargeDueDate = Some(LocalDate.of(2022, 1, 1))
+        ),
+        LSPDetails(
+          penaltyNumber = "12345677",
+          penaltyOrder = Some("02"),
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
@@ -1844,13 +1876,45 @@ class IndexPageHelperSpec extends SpecBase {
         ),
         LSPDetails(
           penaltyNumber = "12345678",
-          penaltyOrder = "1",
+          penaltyOrder = Some("01"),
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
           penaltyCreationDate = LocalDate.of(2022, 1, 1),
           penaltyExpiryDate = LocalDate.of(2022, 1, 1),
           expiryReason = None,
+          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
+          lateSubmissions = None,
+          appealInformation = None,
+          chargeAmount = None,
+          chargeOutstandingAmount = None,
+          chargeDueDate = None
+        ),
+        LSPDetails(
+          penaltyNumber = "12345677",
+          penaltyOrder = Some("0"),
+          penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
+          penaltyStatus = LSPPenaltyStatusEnum.Inactive,
+          FAPIndicator = None,
+          penaltyCreationDate = LocalDate.of(2022, 1, 1),
+          penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+          expiryReason = Some(ExpiryReasonEnum.Appeal),
+          communicationsDate = Some(LocalDate.of(2022, 1, 1)),
+          lateSubmissions = None,
+          appealInformation = None,
+          chargeAmount = None,
+          chargeOutstandingAmount = None,
+          chargeDueDate = None
+        ),
+        LSPDetails(
+          penaltyNumber = "12345676",
+          penaltyOrder = Some("0"),
+          penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
+          penaltyStatus = LSPPenaltyStatusEnum.Inactive,
+          FAPIndicator = None,
+          penaltyCreationDate = LocalDate.of(2022, 1, 1),
+          penaltyExpiryDate = LocalDate.of(2022, 1, 1),
+          expiryReason = Some(ExpiryReasonEnum.Appeal),
           communicationsDate = Some(LocalDate.of(2022, 1, 1)),
           lateSubmissions = None,
           appealInformation = None,

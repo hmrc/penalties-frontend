@@ -60,7 +60,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       penaltyStatus = LSPPenaltyStatusEnum.Inactive,
       expiryReason = Some(ExpiryReasonEnum.Appeal),
       penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
-      penaltyOrder = "0",
+      penaltyOrder = None,
       appealInformation = Some(Seq(
         AppealInformationType(
           appealStatus = Some(AppealStatusEnum.Upheld),
@@ -81,7 +81,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
   val summaryCardModelWithAddedPoint: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(LSPDetails(
       penaltyNumber = "12345678901234",
-      penaltyOrder = "01",
+      penaltyOrder = Some("01"),
       penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
       penaltyStatus = LSPPenaltyStatusEnum.Active,
       FAPIndicator = Some("X"),
@@ -126,7 +126,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       penaltyStatus = LSPPenaltyStatusEnum.Inactive,
       expiryReason = Some(ExpiryReasonEnum.Appeal),
       penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
-      penaltyOrder = "0",
+      penaltyOrder = None,
       FAPIndicator = None,
       appealInformation = Some(Seq(
         AppealInformationType(
@@ -151,7 +151,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
   val summaryCardModelWithAddedPointAtThreshold: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(LSPDetails(
       penaltyNumber = "12345678901234",
-      penaltyOrder = "01",
+      penaltyOrder = Some("01"),
       penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
       penaltyStatus = LSPPenaltyStatusEnum.Active,
       FAPIndicator = Some("X"),
@@ -178,7 +178,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
   val summaryCardModelWithRemovedPoint: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(LSPDetails(
       penaltyNumber = "12345678901234",
-      penaltyOrder = "01",
+      penaltyOrder = Some("01"),
       penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
       penaltyStatus = LSPPenaltyStatusEnum.Inactive,
       FAPIndicator = None,
@@ -205,7 +205,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
   val summaryCardModelWithRemovedPointFilingFrequencyChange: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
     Seq(LSPDetails(
       penaltyNumber = "12345678901234",
-      penaltyOrder = "01",
+      penaltyOrder = Some("01"),
       penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
       penaltyStatus = LSPPenaltyStatusEnum.Inactive,
       FAPIndicator = Some("X"),
@@ -236,7 +236,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
   val summaryCardModelWithThresholdPenalty: LateSubmissionPenaltySummaryCard = summaryCardHelper.financialSummaryCard(
     LSPDetails(
       penaltyNumber = "12345678901238",
-      penaltyOrder = "01",
+      penaltyOrder = Some("01"),
       penaltyCategory = Some(LSPPenaltyCategoryEnum.Threshold),
       penaltyStatus = LSPPenaltyStatusEnum.Active,
       FAPIndicator = None,
@@ -267,7 +267,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
   val summaryCardModelNoReturnSubmitted: LateSubmissionPenaltySummaryCard = summaryCardHelper.financialSummaryCard(
     LSPDetails(
       penaltyNumber = "12345678901238",
-      penaltyOrder = "01",
+      penaltyOrder = Some("01"),
       penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
       penaltyStatus = LSPPenaltyStatusEnum.Active,
       FAPIndicator = None,
@@ -293,7 +293,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
   val summaryCardModelWithFinancialPointBelowThresholdAndAppealInProgress: LateSubmissionPenaltySummaryCard =
     summaryCardHelper.financialSummaryCard(LSPDetails(
       penaltyNumber = "12345678901234",
-      penaltyOrder = "01",
+      penaltyOrder = Some("01"),
       penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
       penaltyStatus = LSPPenaltyStatusEnum.Active,
       FAPIndicator = Some("X"),
@@ -324,7 +324,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
   val summaryCardModelForFinancialPenaltyWithAndAppealRejected: LateSubmissionPenaltySummaryCard =
     summaryCardHelper.financialSummaryCard(LSPDetails(
       penaltyNumber = "12345678901234",
-      penaltyOrder = "01",
+      penaltyOrder = Some("01"),
       penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
       penaltyStatus = LSPPenaltyStatusEnum.Active,
       FAPIndicator = None,
@@ -355,7 +355,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
   val summaryCardModelWithFinancialPointBelowThresholdAndAppealUnderTribunalReview: LateSubmissionPenaltySummaryCard =
     summaryCardHelper.financialSummaryCard(LSPDetails(
       penaltyNumber = "12345678901234",
-      penaltyOrder = "01",
+      penaltyOrder = Some("01"),
       penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
       penaltyStatus = LSPPenaltyStatusEnum.Active,
       FAPIndicator = Some("X"),
@@ -386,7 +386,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
   val summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected: LateSubmissionPenaltySummaryCard =
     summaryCardHelper.financialSummaryCard(LSPDetails(
       penaltyNumber = "12345678901234",
-      penaltyOrder = "01",
+      penaltyOrder = Some("01"),
       penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
       penaltyStatus = LSPPenaltyStatusEnum.Active,
       FAPIndicator = None,
@@ -417,7 +417,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
 
   val summaryCardModelWithFinancialLSP: Boolean => LateSubmissionPenaltySummaryCard = (isSubmitted: Boolean) => summaryCardHelper.financialSummaryCard(LSPDetails(
     penaltyNumber = "12345678901234",
-    penaltyOrder = "01",
+    penaltyOrder = Some("01"),
     penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
     penaltyStatus = LSPPenaltyStatusEnum.Active,
     FAPIndicator = None,
@@ -442,7 +442,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
 
   val summaryCardModelWithMultiplePenaltyPeriodLSP: LateSubmissionPenaltySummaryCard = summaryCardHelper.financialSummaryCard(LSPDetails(
     penaltyNumber = "12345678901234",
-    penaltyOrder = "01",
+    penaltyOrder = Some("01"),
     penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
     penaltyStatus = LSPPenaltyStatusEnum.Active,
     FAPIndicator = Some("X"),
@@ -480,7 +480,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
   val summaryCardModelWithMultiplePenaltyPeriodLSPP: LateSubmissionPenaltySummaryCard = summaryCardHelper.pointSummaryCard(
     LSPDetails(
       penaltyNumber = "12345678901234",
-      penaltyOrder = "01",
+      penaltyOrder = Some("01"),
       penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
       penaltyStatus = LSPPenaltyStatusEnum.Active,
       FAPIndicator = Some("X"),

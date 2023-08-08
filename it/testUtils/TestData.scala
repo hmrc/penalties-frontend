@@ -33,7 +33,7 @@ trait TestData {
 
   val sampleLSP: LSPDetails = LSPDetails(
     penaltyNumber = "12345678901234",
-    penaltyOrder = "01",
+    penaltyOrder = Some("01"),
     penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
     penaltyStatus = LSPPenaltyStatusEnum.Active,
     FAPIndicator = None,
@@ -132,7 +132,7 @@ trait TestData {
       details = Seq(
         sampleLSP.copy(
           penaltyNumber = "1234567890",
-          penaltyOrder = "01",
+          penaltyOrder = Some("01"),
           FAPIndicator = Some("X"),
           penaltyExpiryDate = LocalDate.of(2023, 2, 1),
           penaltyCreationDate = LocalDate.of(2021, 1, 1)
@@ -158,7 +158,7 @@ trait TestData {
         sampleLSP.copy(
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
           penaltyNumber = "1234567890",
-          penaltyOrder = "03",
+          penaltyOrder = Some("03"),
           chargeAmount = Some(200.00),
           chargeOutstandingAmount = Some(200.00),
           chargeDueDate = Some(sampleDate1),
@@ -175,14 +175,14 @@ trait TestData {
         sampleLSP.copy(
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Threshold),
           penaltyNumber = "1234567891",
-          penaltyOrder = "02",
+          penaltyOrder = Some("02"),
           chargeAmount = Some(200.00),
           chargeOutstandingAmount = Some(200.00),
           chargeDueDate = Some(sampleDate1)
         ),
         sampleLSP.copy(
           penaltyNumber = "1234567892",
-          penaltyOrder = "01"
+          penaltyOrder = Some("01")
         )
       )
     )
@@ -223,7 +223,7 @@ trait TestData {
         sampleLSP.copy(
           penaltyStatus = LSPPenaltyStatusEnum.Inactive,
           penaltyNumber = "1234567891",
-          penaltyOrder = "02",
+          penaltyOrder = Some("02"),
           FAPIndicator = Some("X"),
           expiryReason = Some(ExpiryReasonEnum.Adjustment),
           lateSubmissions = Some(Seq(
@@ -257,17 +257,17 @@ trait TestData {
         sampleLSP.copy(
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           penaltyNumber = "1234567893",
-          penaltyOrder = "03"
+          penaltyOrder = Some("03")
         ),
         sampleLSP.copy(
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           penaltyNumber = "1234567892",
-          penaltyOrder = "02"
+          penaltyOrder = Some("02")
         ),
         sampleLSP.copy(
           penaltyStatus = LSPPenaltyStatusEnum.Inactive,
           penaltyNumber = "1234567891",
-          penaltyOrder = "01",
+          penaltyOrder = Some("01"),
           FAPIndicator = Some("X"),
           expiryReason = Some(ExpiryReasonEnum.Adjustment)
         )
@@ -291,7 +291,7 @@ trait TestData {
         sampleLSP.copy(
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           penaltyNumber = "1234567893",
-          penaltyOrder = "01",
+          penaltyOrder = Some("01"),
           lateSubmissions = Some(Seq(LateSubmission(
             taxPeriodStartDate = Some(sampleDate1.minusMonths(3)),
             taxPeriodEndDate = Some(sampleDate1.minusMonths(3).plusDays(30)),
@@ -303,7 +303,7 @@ trait TestData {
         sampleLSP.copy(
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           penaltyNumber = "1234567892",
-          penaltyOrder = "02",
+          penaltyOrder = Some("02"),
           lateSubmissions = Some(Seq(LateSubmission(
             taxPeriodStartDate = Some(sampleDate1.minusMonths(2)),
             taxPeriodEndDate = Some(sampleDate1.minusMonths(2).plusDays(29)),
@@ -315,7 +315,7 @@ trait TestData {
         sampleLSP.copy(
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           penaltyNumber = "1234567893",
-          penaltyOrder = "03",
+          penaltyOrder = Some("03"),
           lateSubmissions = Some(Seq(LateSubmission(
             taxPeriodStartDate = Some(sampleDate1.minusMonths(1)),
             taxPeriodEndDate = Some(sampleDate1.minusMonths(1).plusDays(30)),
@@ -433,7 +433,7 @@ trait TestData {
         sampleLSP.copy(
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
           penaltyNumber = "1234567892",
-          penaltyOrder = "03",
+          penaltyOrder = Some("03"),
           chargeAmount = Some(200.00),
           chargeOutstandingAmount = Some(200.00),
           chargeDueDate = Some(sampleDate1)
@@ -441,14 +441,14 @@ trait TestData {
         sampleLSP.copy(
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Threshold),
           penaltyNumber = "1234567891",
-          penaltyOrder = "02",
+          penaltyOrder = Some("02"),
           chargeAmount = Some(200.00),
           chargeOutstandingAmount = Some(200.00),
           chargeDueDate = Some(sampleDate1)
         ),
         sampleLSP.copy(
           penaltyNumber = "1234567890",
-          penaltyOrder = "01"
+          penaltyOrder = Some("01")
         )
       )
     )
@@ -485,7 +485,7 @@ trait TestData {
         details = Seq(
           sampleLSP.copy(
             penaltyNumber = "1234567890",
-            penaltyOrder = "01",
+            penaltyOrder = Some("01"),
             lateSubmissions = Some(Seq(
               LateSubmission(
                 taxPeriodStartDate = Some(sampleDate1),
@@ -525,7 +525,7 @@ trait TestData {
           sampleLSP.copy(
             penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
             penaltyNumber = "1234567892",
-            penaltyOrder = "03",
+            penaltyOrder = Some("03"),
             lateSubmissions = Some(Seq(
               LateSubmission(
                 taxPeriodStartDate = Some(sampleDate2),
@@ -541,11 +541,11 @@ trait TestData {
             penaltyStatus = LSPPenaltyStatusEnum.Inactive,
             expiryReason = Some(ExpiryReasonEnum.Reversal),
             penaltyNumber = "1234567891",
-            penaltyOrder = "02"
+            penaltyOrder = Some("02")
           ),
           sampleLSP.copy(
             penaltyNumber = "1234567890",
-            penaltyOrder = "01",
+            penaltyOrder = Some("01"),
             lateSubmissions = Some(Seq(
               LateSubmission(
                 taxPeriodStartDate = Some(sampleDate1),

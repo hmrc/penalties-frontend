@@ -88,7 +88,7 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
     LateSubmissionPenaltySummaryCard(
       rows,
       tagStatus(Some(penalty), None),
-      if (!isAnAddedOrRemovedPoint || isAnAddedPoint) penalty.penaltyOrder.toInt.toString else "",
+      penalty.penaltyOrder.map(_.toInt.toString).getOrElse(""),
       penalty.penaltyNumber,
       isReturnSubmitted,
       isAddedPoint = isAnAddedPoint,
@@ -173,8 +173,12 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
     )
   }
 
-  def getPenaltyNumberBasedOnThreshold(penaltyOrderNumberAsString: String, threshold: Int): String = {
-    if (penaltyOrderNumberAsString.toInt > threshold) "" else penaltyOrderNumberAsString.toInt.toString
+  def getPenaltyNumberBasedOnThreshold(penaltyOrderNumberAsString: Option[String], threshold: Int): String = {
+    penaltyOrderNumberAsString match {
+      case None | Some(" ") => ""
+      case Some(penaltyNumber) if penaltyNumber.toInt > threshold => ""
+      case Some(penaltyNumber) => penaltyNumber.toInt.toString
+    }
   }
 
   def pointSummaryCard(penalty: LSPDetails, thresholdMet: Boolean)(implicit messages: Messages): LateSubmissionPenaltySummaryCard = {
@@ -260,7 +264,7 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
   def findAndReindexPointIfIsActive(indexedActivePoints: Seq[(LSPDetails, Int)], penaltyPoint: LSPDetails): LSPDetails = {
     if (indexedActivePoints.map(_._1).contains(penaltyPoint)) {
       val numberOfPoint = indexedActivePoints.find(_._1 == penaltyPoint).get._2 + 1
-      penaltyPoint.copy(penaltyOrder = s"$numberOfPoint")
+      penaltyPoint.copy(penaltyOrder = Some(s"$numberOfPoint"))
     } else {
       penaltyPoint
     }

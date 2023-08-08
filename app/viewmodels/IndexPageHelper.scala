@@ -278,13 +278,13 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       val point = pointAndIndex._1
       val idx = pointAndIndex._2
       val newPenaltyOrder = (point.penaltyOrder, point.penaltyStatus) match {
-        case (" ", LSPPenaltyStatusEnum.Inactive) => "0"
-        case (" ", LSPPenaltyStatusEnum.Active) => (idx + 1).toString
+        case (None | Some(" "), LSPPenaltyStatusEnum.Inactive) => Some("0")
+        case (None | Some(" "), LSPPenaltyStatusEnum.Active) => Some((idx + 1).toString)
         case _ => point.penaltyOrder
       }
       point.copy(penaltyOrder = newPenaltyOrder)
     })
 
-    pointsWithOrder.sortWith((thisElement, nextElement) => thisElement.penaltyOrder.toInt > nextElement.penaltyOrder.toInt)
+    pointsWithOrder.sortWith((thisElement, nextElement) => thisElement.penaltyOrder.getOrElse("0").toInt > nextElement.penaltyOrder.getOrElse("0").toInt)
   }
 }
