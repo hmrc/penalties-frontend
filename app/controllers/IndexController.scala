@@ -56,7 +56,10 @@ class IndexController @Inject()(view: IndexView,
             _.fold(
               identity,
               contentToDisplayAboveCards => {
-                val optPOCAchievementDate: Option[String] = penaltyData.lateSubmissionPenalty.map(_.summary.PoCAchievementDate.toString)
+                val optPOCAchievementDate: Option[String] = {
+                  val pocAchievementDateExists = penaltyData.lateSubmissionPenalty.map(_.summary.PoCAchievementDate.isDefined)
+                  if (pocAchievementDateExists.isDefined && pocAchievementDateExists.get) penaltyData.lateSubmissionPenalty.map(_.summary.PoCAchievementDate.get.toString) else None
+                }
                 val optRegimeThreshold = penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold.toString)
                 val contentLPPToDisplayAboveCards = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyData, isUserInBreathingSpace)
                 val whatYouOweBreakdown = pageHelper.getWhatYouOweBreakdown(penaltyData)

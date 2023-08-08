@@ -62,7 +62,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       case (_, 0, _, _, _) =>
         Future(Right(p(content = stringAsHtml(messages("lsp.pointSummary.noActivePoints")))))
       case (_, currentPoints, threshold, _, _) if currentPoints >= threshold =>
-        lazy val optPOCAchievementDate: Option[LocalDate] = penaltyDetails.lateSubmissionPenalty.map(_.summary.PoCAchievementDate)
+        lazy val optPOCAchievementDate: Option[LocalDate] = penaltyDetails.lateSubmissionPenalty.map(_.summary.PoCAchievementDate.get)
         lazy val parsedPOCAchievementDate: String = dateToMonthYearString(optPOCAchievementDate.get)
         callObligationAPI(user.vrn)(implicitly, implicitly, implicitly, optPOCAchievementDate).map {
           _.fold(

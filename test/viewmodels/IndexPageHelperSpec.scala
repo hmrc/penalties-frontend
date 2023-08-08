@@ -154,7 +154,7 @@ class IndexPageHelperSpec extends SpecBase {
             inactivePenaltyPoints = 0,
             regimeThreshold = 4,
             penaltyChargeAmount = 200,
-            PoCAchievementDate = LocalDate.of(2022, 1, 1)
+            PoCAchievementDate = Some(LocalDate.of(2022, 1, 1))
           ),
           details = Seq(
             LSPDetails(
@@ -251,7 +251,7 @@ class IndexPageHelperSpec extends SpecBase {
             inactivePenaltyPoints = 0,
             regimeThreshold = 4,
             penaltyChargeAmount = 200,
-            PoCAchievementDate = LocalDate.of(2022, 1, 1)
+            PoCAchievementDate = Some(LocalDate.of(2022, 1, 1))
           ),
           details = Seq(
             LSPDetails(
@@ -322,7 +322,7 @@ class IndexPageHelperSpec extends SpecBase {
             inactivePenaltyPoints = 0,
             regimeThreshold = 4,
             penaltyChargeAmount = 200,
-            PoCAchievementDate = LocalDate.of(2022, 1, 1)
+            PoCAchievementDate = Some(LocalDate.of(2022, 1, 1))
           ),
           details = Seq(
             LSPDetails(
@@ -367,7 +367,7 @@ class IndexPageHelperSpec extends SpecBase {
             inactivePenaltyPoints = 0,
             regimeThreshold = 2,
             penaltyChargeAmount = 200,
-            PoCAchievementDate = LocalDate.of(2022, 1, 1)
+            PoCAchievementDate = Some(LocalDate.of(2022, 1, 1))
           ),
           details = Seq(
             LSPDetails(
@@ -414,7 +414,7 @@ class IndexPageHelperSpec extends SpecBase {
                 inactivePenaltyPoints = 0,
                 regimeThreshold = 5,
                 penaltyChargeAmount = 200,
-                PoCAchievementDate = LocalDate.of(2022, 1, 1)
+                PoCAchievementDate = None
               ),
               details = Seq.empty
             )
@@ -563,7 +563,7 @@ class IndexPageHelperSpec extends SpecBase {
               inactivePenaltyPoints = 0,
               regimeThreshold = 4,
               penaltyChargeAmount = 200,
-              PoCAchievementDate = LocalDate.of(2022, 1, 1)
+              PoCAchievementDate = Some(LocalDate.of(2022, 1, 1))
             ),
             details = Seq(
               LSPDetails(
@@ -748,7 +748,7 @@ class IndexPageHelperSpec extends SpecBase {
               inactivePenaltyPoints = 0,
               regimeThreshold = 4,
               penaltyChargeAmount = 200,
-              PoCAchievementDate = LocalDate.of(2022, 1, 1)
+              PoCAchievementDate = Some(LocalDate.of(2022, 1, 1))
             ),
             details = Seq(
               LSPDetails(
@@ -815,7 +815,7 @@ class IndexPageHelperSpec extends SpecBase {
               inactivePenaltyPoints = 0,
               regimeThreshold = 4,
               penaltyChargeAmount = 200,
-              PoCAchievementDate = LocalDate.of(2022, 1, 1)
+              PoCAchievementDate = Some(LocalDate.of(2022, 1, 1))
             ),
             details = Seq(
               LSPDetails(
@@ -950,7 +950,7 @@ class IndexPageHelperSpec extends SpecBase {
               inactivePenaltyPoints = 2,
               regimeThreshold = 4,
               penaltyChargeAmount = 200,
-              PoCAchievementDate = LocalDate.of(2022, 1, 1)
+              PoCAchievementDate = Some(LocalDate.of(2022, 1, 1))
             ),
             details = Seq(
               LSPDetails(
@@ -1047,7 +1047,7 @@ class IndexPageHelperSpec extends SpecBase {
               inactivePenaltyPoints = 1,
               regimeThreshold = 4,
               penaltyChargeAmount = 200,
-              PoCAchievementDate = LocalDate.of(2022, 1, 1)
+              PoCAchievementDate = Some(LocalDate.of(2022, 1, 1))
             ),
             details = Seq(
               LSPDetails(
@@ -1500,7 +1500,7 @@ class IndexPageHelperSpec extends SpecBase {
         inactivePenaltyPoints = 0,
         regimeThreshold = 4,
         penaltyChargeAmount = 200,
-        PoCAchievementDate = LocalDate.of(2022, 1, 1))
+        PoCAchievementDate = Some(LocalDate.of(2022, 1, 1)))
 
       "the user has 1 unpaid (and not successfully appealed) LSP" in new Setup {
         val penaltyDetailsWithUnpaidLSP: GetPenaltyDetails = GetPenaltyDetails(
@@ -1541,7 +1541,7 @@ class IndexPageHelperSpec extends SpecBase {
                 inactivePenaltyPoints = 0,
                 regimeThreshold = 4,
                 penaltyChargeAmount = 200,
-                PoCAchievementDate = LocalDate.of(2022, 1, 1)
+                PoCAchievementDate = Some(LocalDate.of(2022, 1, 1))
               ),
               details = Seq()
             )
@@ -1565,7 +1565,7 @@ class IndexPageHelperSpec extends SpecBase {
                 inactivePenaltyPoints = 0,
                 regimeThreshold = 4,
                 penaltyChargeAmount = 200,
-                PoCAchievementDate = LocalDate.of(2022, 1, 1)
+                PoCAchievementDate = Some(LocalDate.of(2022, 1, 1))
               ),
               details = Seq()
             )
@@ -1589,7 +1589,7 @@ class IndexPageHelperSpec extends SpecBase {
                 inactivePenaltyPoints = 0,
                 regimeThreshold = 4,
                 penaltyChargeAmount = 200,
-                PoCAchievementDate = LocalDate.of(2022, 1, 1)
+                PoCAchievementDate = Some(LocalDate.of(2022, 1, 1))
               ),
               details = Seq()
             )

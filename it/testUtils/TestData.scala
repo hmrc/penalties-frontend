@@ -110,7 +110,7 @@ trait TestData {
           inactivePenaltyPoints = 0,
           regimeThreshold = 4,
           penaltyChargeAmount = 0,
-          PoCAchievementDate = LocalDate.of(2022, 1, 1)
+          PoCAchievementDate = Some(LocalDate.of(2022, 1, 1))
         ),
         details = Seq(sampleLSP)
       )
@@ -127,7 +127,7 @@ trait TestData {
         regimeThreshold = 4,
         inactivePenaltyPoints = 0,
         penaltyChargeAmount = 0,
-        PoCAchievementDate = LocalDate.of(2022, 1, 1)
+        PoCAchievementDate = Some(LocalDate.of(2022, 1, 1))
       ),
       details = Seq(
         sampleLSP.copy(
@@ -152,7 +152,7 @@ trait TestData {
         regimeThreshold = 2,
         inactivePenaltyPoints = 0,
         penaltyChargeAmount = 200.00,
-        PoCAchievementDate = LocalDate.of(2022, 1, 1)
+        PoCAchievementDate = Some(LocalDate.of(2022, 1, 1))
       ),
       details = Seq(
         sampleLSP.copy(
@@ -217,7 +217,7 @@ trait TestData {
         regimeThreshold = 4,
         inactivePenaltyPoints = 1,
         penaltyChargeAmount = 0,
-        PoCAchievementDate = LocalDate.of(2022, 1, 1)
+        PoCAchievementDate = Some(LocalDate.of(2022, 1, 1))
       ),
       details = Seq(
         sampleLSP.copy(
@@ -251,7 +251,7 @@ trait TestData {
         regimeThreshold = 4,
         inactivePenaltyPoints = 1,
         penaltyChargeAmount = 0,
-        PoCAchievementDate = LocalDate.of(2022, 1, 1)
+        PoCAchievementDate = Some(LocalDate.of(2022, 1, 1))
       ),
       details = Seq(
         sampleLSP.copy(
@@ -285,7 +285,7 @@ trait TestData {
         regimeThreshold = 4,
         inactivePenaltyPoints = 0,
         penaltyChargeAmount = 0,
-        PoCAchievementDate = LocalDate.of(2022, 1, 1)
+        PoCAchievementDate = Some(LocalDate.of(2022, 1, 1))
       ),
       details = Seq(
         sampleLSP.copy(
@@ -427,7 +427,7 @@ trait TestData {
         regimeThreshold = 2,
         inactivePenaltyPoints = 0,
         penaltyChargeAmount = 0,
-        PoCAchievementDate = LocalDate.of(2022, 1, 1)
+        PoCAchievementDate = Some(LocalDate.of(2022, 1, 1))
       ),
       details = Seq(
         sampleLSP.copy(
@@ -480,7 +480,7 @@ trait TestData {
           inactivePenaltyPoints = 0,
           regimeThreshold = 4,
           penaltyChargeAmount = 200,
-          PoCAchievementDate = LocalDate.of(2022, 1, 1)
+          PoCAchievementDate = Some(LocalDate.of(2022, 1, 1))
         ),
         details = Seq(
           sampleLSP.copy(
@@ -519,7 +519,7 @@ trait TestData {
           inactivePenaltyPoints = 1,
           regimeThreshold = 4,
           penaltyChargeAmount = 200,
-          PoCAchievementDate = LocalDate.of(2022, 1, 1)
+          PoCAchievementDate = Some(LocalDate.of(2022, 1, 1))
         ),
         details = Seq(
           sampleLSP.copy(
