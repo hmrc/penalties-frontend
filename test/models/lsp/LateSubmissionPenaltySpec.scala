@@ -77,7 +77,7 @@ class LateSubmissionPenaltySpec extends SpecBase {
     ),
     details = Seq(LSPDetails(
       penaltyNumber = "12345678901234",
-      penaltyOrder = "01",
+      penaltyOrder = Some("01"),
       penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
       penaltyStatus = LSPPenaltyStatusEnum.Active,
       FAPIndicator = Some("X"),

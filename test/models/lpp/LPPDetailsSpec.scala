@@ -20,8 +20,6 @@ import base.SpecBase
 import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import play.api.libs.json.Json
 
-import java.time.LocalDate
-
 class LPPDetailsSpec extends SpecBase {
 
   val lppDetailsAsJson = Json.parse(

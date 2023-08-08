@@ -32,7 +32,7 @@ trait LSPDetailsTestData {
 
   val sampleLateSubmissionPoint: LSPDetails = LSPDetails(
     penaltyNumber = "12345678901234",
-    penaltyOrder = "01",
+    penaltyOrder = Some("01"),
     penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
     penaltyStatus = LSPPenaltyStatusEnum.Active,
     FAPIndicator = None,
@@ -57,7 +57,7 @@ trait LSPDetailsTestData {
 
   val sampleLateSubmissionPenaltyCharge: LSPDetails = sampleLateSubmissionPoint.copy(
     penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
-    penaltyOrder = "1",
+    penaltyOrder = Some("01"),
     chargeAmount = Some(200),
     chargeOutstandingAmount = Some(200),
     chargeDueDate = Some(chargeDueDate)
@@ -101,6 +101,7 @@ trait LSPDetailsTestData {
 
   val sampleRemovedPenaltyPoint: LSPDetails = sampleLateSubmissionPoint.copy(
     penaltyStatus = LSPPenaltyStatusEnum.Inactive,
+    penaltyOrder = None,
     FAPIndicator = Some("X"),
     expiryReason = Some(ExpiryReasonEnum.Adjustment)
   )

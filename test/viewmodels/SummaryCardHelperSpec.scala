@@ -16,8 +16,6 @@
 
 package viewmodels
 
-import java.time.LocalDate
-
 import assets.messages.IndexMessages._
 import base.SpecBase
 import models.User
@@ -126,18 +124,18 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
   "SummaryCardHelper" should {
     "findAndReindexPointIfIsActive" should {
       "reindex the point with the associated index + 1 when the point is in the indexed list of active points" in {
-        val pointToPassIn: LSPDetails = sampleLateSubmissionPoint.copy(penaltyOrder = "2")
+        val pointToPassIn: LSPDetails = sampleLateSubmissionPoint.copy(penaltyOrder = Some("02"))
         val indexedPoints: Seq[(LSPDetails, Int)] = Seq(
           (pointToPassIn, 0),
           (sampleLateSubmissionPenaltyCharge, 1)
         )
         val actualResult = helper.findAndReindexPointIfIsActive(indexedPoints, pointToPassIn)
-        val expectedResult = pointToPassIn.copy(penaltyOrder = "1")
+        val expectedResult = pointToPassIn.copy(penaltyOrder = Some("1"))
         actualResult shouldBe expectedResult
       }
 
       "NOT reindex when the point is not in the indexed list" in {
-        val pointToPassIn: LSPDetails = sampleLateSubmissionPoint.copy(penaltyOrder = "2")
+        val pointToPassIn: LSPDetails = sampleLateSubmissionPoint.copy(penaltyOrder = Some("02"))
         val indexedPoints: Seq[(LSPDetails, Int)] = Seq(
           (sampleLateSubmissionPenaltyCharge, 0),
           (sampleLateSubmissionPoint, 1)
@@ -151,19 +149,29 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
     "getPenaltyNumberBasedOnThreshold" should {
       "when given a penalty number greater than the threshold - return an empty string" in {
         val penaltyNumber = "5"
-        val result = helper.getPenaltyNumberBasedOnThreshold(penaltyNumber, quarterlyThreshold)
+        val result = helper.getPenaltyNumberBasedOnThreshold(Some(penaltyNumber), quarterlyThreshold)
+        result shouldBe ""
+      }
+
+      "when given a penalty number that is not defined - return an empty string" in {
+        val result = helper.getPenaltyNumberBasedOnThreshold(None, quarterlyThreshold)
+        result shouldBe ""
+      }
+
+      "when given a penalty number that is a blank value i.e. ' ' - return an empty string" in {
+        val result = helper.getPenaltyNumberBasedOnThreshold(Some(" "), quarterlyThreshold)
         result shouldBe ""
       }
 
       "when given a penalty number at the threshold - return the penalty number" in {
         val penaltyNumber = "4"
-        val result = helper.getPenaltyNumberBasedOnThreshold(penaltyNumber, quarterlyThreshold)
+        val result = helper.getPenaltyNumberBasedOnThreshold(Some(penaltyNumber), quarterlyThreshold)
         result shouldBe penaltyNumber
       }
 
       "when given a penalty number below the threshold - return the penalty number" in {
         val penaltyNumber = "3"
-        val result = helper.getPenaltyNumberBasedOnThreshold(penaltyNumber, quarterlyThreshold)
+        val result = helper.getPenaltyNumberBasedOnThreshold(Some(penaltyNumber), quarterlyThreshold)
         result shouldBe penaltyNumber
       }
     }
@@ -189,7 +197,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           dueDate = Some(dateToString(taxPeriodDue))
         )
 
-        val pointToPassIn: LSPDetails = sampleLateSubmissionPenaltyCharge.copy(penaltyOrder = "5")
+        val pointToPassIn: LSPDetails = sampleLateSubmissionPenaltyCharge.copy(penaltyOrder = Some("05"))
         val actualResult = helper.financialSummaryCard(pointToPassIn, quarterlyThreshold)
         actualResult shouldBe expectedResult
       }
@@ -213,7 +221,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           dueDate = Some(dateToString(taxPeriodDue))
         )
 
-        val pointToPassIn: LSPDetails = sampleLateSubmissionPenaltyCharge.copy(penaltyOrder = "1", penaltyCategory = Some(LSPPenaltyCategoryEnum.Threshold))
+        val pointToPassIn: LSPDetails = sampleLateSubmissionPenaltyCharge.copy(penaltyOrder = Some("01"), penaltyCategory = Some(LSPPenaltyCategoryEnum.Threshold))
         val actualResult = helper.financialSummaryCard(pointToPassIn, quarterlyThreshold)
         val expectedResult = sampleSummaryCardReturnSubmitted
         actualResult shouldBe expectedResult
@@ -340,7 +348,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           dueDate = Some(dateToString(taxPeriodDue))
         )
 
-        val pointToPassIn: LSPDetails = sampleLateSubmissionPenaltyCharge.copy(penaltyOrder = "1", penaltyCategory = Some(LSPPenaltyCategoryEnum.Threshold),
+        val pointToPassIn: LSPDetails = sampleLateSubmissionPenaltyCharge.copy(penaltyOrder = Some("01"), penaltyCategory = Some(LSPPenaltyCategoryEnum.Threshold),
           lateSubmissions = Some(
             Seq(
               LateSubmission(
@@ -367,9 +375,9 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
 
         "user has removed points below active points - active points should be reindexed so that the points are logically numbered correctly" in {
           val sample3ReturnsSubmittedPenaltyPointDataAndOneRemovedPointv2: Seq[LSPDetails] = Seq(
-            sampleLateSubmissionPoint.copy(penaltyOrder = "4"),
-            sampleLateSubmissionPoint.copy(penaltyOrder = "3"),
-            sampleLateSubmissionPoint.copy(penaltyOrder = "2"),
+            sampleLateSubmissionPoint.copy(penaltyOrder = Some("4")),
+            sampleLateSubmissionPoint.copy(penaltyOrder = Some("3")),
+            sampleLateSubmissionPoint.copy(penaltyOrder = Some("2")),
             sampleRemovedPenaltyPoint
           )
           val expectedResult: Seq[LateSubmissionPenaltySummaryCard] = Seq(LateSubmissionPenaltySummaryCard(

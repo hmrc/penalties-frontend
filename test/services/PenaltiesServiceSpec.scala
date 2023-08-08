@@ -230,7 +230,7 @@ class PenaltiesServiceSpec extends SpecBase {
       "there is no LSPs unpaid" in new Setup {
         val lspDetailsUnpaid: LSPDetails = LSPDetails(
           penaltyNumber = "123456789",
-          penaltyOrder = "1",
+          penaltyOrder = Some("01"),
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
@@ -261,7 +261,7 @@ class PenaltiesServiceSpec extends SpecBase {
       "there is no LSPs where the VAT has not been submitted" in new Setup {
         val lspDetailsUnsubmitted: LSPDetails = LSPDetails(
           penaltyNumber = "123456789",
-          penaltyOrder = "1",
+          penaltyOrder = Some("01"),
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
@@ -292,7 +292,7 @@ class PenaltiesServiceSpec extends SpecBase {
       "there is LSPs that meet the condition but have been appealed successfully" in new Setup {
         val lspDetailsAppealed: LSPDetails = LSPDetails(
           penaltyNumber = "123456789",
-          penaltyOrder = "1",
+          penaltyOrder = Some("01"),
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
@@ -331,7 +331,7 @@ class PenaltiesServiceSpec extends SpecBase {
       "there is an LSP that is unpaid and the submission is due and has not been appealed successfully" in new Setup {
         val lspDetails: LSPDetails = LSPDetails(
           penaltyNumber = "123456789",
-          penaltyOrder = "1",
+          penaltyOrder = Some("01"),
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
@@ -366,7 +366,7 @@ class PenaltiesServiceSpec extends SpecBase {
       "the LSP is paid" in new Setup {
         val lspDetailsPaid: LSPDetails = LSPDetails(
           penaltyNumber = "123456789",
-          penaltyOrder = "1",
+          penaltyOrder = Some("01"),
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
@@ -398,7 +398,7 @@ class PenaltiesServiceSpec extends SpecBase {
       "the LSP is unpaid but has been appealed successfully" in new Setup {
         val lspDetailsAppealed: LSPDetails = LSPDetails(
           penaltyNumber = "123456789",
-          penaltyOrder = "1",
+          penaltyOrder = Some("01"),
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
@@ -437,7 +437,7 @@ class PenaltiesServiceSpec extends SpecBase {
       "the LSP is unpaid and not appealed" in new Setup {
         val lspDetailsAppealed: LSPDetails = LSPDetails(
           penaltyNumber = "123456789",
-          penaltyOrder = "1",
+          penaltyOrder = Some("01"),
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
           penaltyStatus = LSPPenaltyStatusEnum.Active,
           FAPIndicator = None,
@@ -565,7 +565,7 @@ class PenaltiesServiceSpec extends SpecBase {
   "findNumberOfLateSubmissionPenalties" should {
     val sampleLSP: LSPDetails = LSPDetails(
       penaltyNumber = "123456789",
-      penaltyOrder = "1",
+      penaltyOrder = Some("01"),
       penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
       penaltyStatus = LSPPenaltyStatusEnum.Active,
       FAPIndicator = None,
