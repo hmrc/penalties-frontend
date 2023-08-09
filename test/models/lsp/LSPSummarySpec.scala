@@ -28,7 +28,7 @@ class LSPSummarySpec extends SpecBase {
     inactivePenaltyPoints = 12,
     regimeThreshold = 10,
     penaltyChargeAmount = 684.25,
-    PoCAchievementDate = LocalDate.of(2022, 1, 1)
+    PoCAchievementDate = Some(LocalDate.of(2022, 1, 1))
   )
 
   val LSPSummaryAsJson = Json.parse(

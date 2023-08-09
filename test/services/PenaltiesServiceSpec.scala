@@ -593,7 +593,7 @@ class PenaltiesServiceSpec extends SpecBase {
       inactivePenaltyPoints = 0,
       regimeThreshold = 4,
       penaltyChargeAmount = 200,
-      PoCAchievementDate = LocalDate.of(2022, 1, 1))
+      PoCAchievementDate = Some(LocalDate.of(2022, 1, 1)))
     "return 0" when {
       "all the penalties have been appealed successfully" in new Setup {
         val allLSPsAppealedSuccessfully: LateSubmissionPenalty = LateSubmissionPenalty(
@@ -635,7 +635,7 @@ class PenaltiesServiceSpec extends SpecBase {
       "the payload has an entry for active penalty points" in new Setup {
         val lateSubmissionPenalty: LateSubmissionPenalty = LateSubmissionPenalty(
           summary = LSPSummary(
-            activePenaltyPoints = 1, inactivePenaltyPoints = 0, regimeThreshold = 4, penaltyChargeAmount = 0, PoCAchievementDate = LocalDate.of(9999, 1, 1)
+            activePenaltyPoints = 1, inactivePenaltyPoints = 0, regimeThreshold = 4, penaltyChargeAmount = 0, PoCAchievementDate = Some(LocalDate.of(9999, 1, 1))
           ), details = Seq.empty
         )
         val result: Option[Int] = service.findActiveLateSubmissionPenaltyPoints(Some(lateSubmissionPenalty))
@@ -657,7 +657,7 @@ class PenaltiesServiceSpec extends SpecBase {
       "the payload has an entry for regime threshold" in new Setup {
         val lateSubmissionPenalty: LateSubmissionPenalty = LateSubmissionPenalty(
           summary = LSPSummary(
-            activePenaltyPoints = 0, inactivePenaltyPoints = 0, regimeThreshold = 4, penaltyChargeAmount = 0, PoCAchievementDate = LocalDate.of(9999, 1, 1)
+            activePenaltyPoints = 0, inactivePenaltyPoints = 0, regimeThreshold = 4, penaltyChargeAmount = 0, PoCAchievementDate = None
           ), details = Seq.empty
         )
         val result: Option[Int] = service.getRegimeThreshold(Some(lateSubmissionPenalty))
