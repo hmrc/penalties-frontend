@@ -262,16 +262,9 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       ExpiryReasonEnum.SubmissionOnTime,
       ExpiryReasonEnum.Compliance
     )
-    filterNAT(points.filterNot(point => point.expiryReason.exists(expiredReasonsToFilterOut.contains(_))))
+    points.filterNot(point => point.expiryReason.exists(expiredReasonsToFilterOut.contains(_)))
   }
 
-  private def filterNAT(points: Seq[LSPDetails]): Seq[LSPDetails] = {
-    points.filterNot(
-      penalty => penalty.penaltyCategory.contains(LSPPenaltyCategoryEnum.Point) &&
-        penalty.penaltyStatus.equals(LSPPenaltyStatusEnum.Inactive) &&
-        penalty.FAPIndicator.isEmpty &&
-        !penalty.lateSubmissions.exists(_.exists(_.returnReceiptDate.exists(_.plusMonths(24)isAfter (LocalDate.now())))))
-  }
 
   def sortPointsInDescendingOrder(points: Seq[LSPDetails]): Seq[LSPDetails] = {
     val pointsWithOrder = points.zipWithIndex.map(pointAndIndex => {
