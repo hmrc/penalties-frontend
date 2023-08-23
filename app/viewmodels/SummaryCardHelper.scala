@@ -21,6 +21,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 import models.User
 import models.appealInfo.AppealStatusEnum
+import models.lpp.LPPPenaltyCategoryEnum.MANUAL
 import models.lpp.LPPPenaltyStatusEnum.Posted
 import models.lpp.MainTransactionEnum._
 import models.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum}
@@ -280,7 +281,13 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
   }
 
   def lppSummaryCard(lpp: LPPDetails)(implicit messages: Messages, user: User[_]): LatePaymentPenaltySummaryCard = {
-    val cardBody = if (lpp.penaltyCategory == LPPPenaltyCategoryEnum.LPP2) lppAdditionalCardBody(lpp) else lppCardBody(lpp)
+    val cardBody = {
+      lpp.penaltyCategory match {
+        case LPPPenaltyCategoryEnum.MANUAL => lppManual(lpp)
+        case LPPPenaltyCategoryEnum.LPP2 => lppAdditionalCardBody(lpp)
+        case _ => lppCardBody(lpp)
+      }
+    }
     val isPaid = isPenaltyPaid(lpp)
     val isVatPaid = lpp.principalChargeLatestClearing.isDefined
     val appealInformationWithoutUnappealableStatus = lpp.appealInformation.map(_.filterNot(_.appealStatus.contains(AppealStatusEnum.Unappealable))).getOrElse(Seq.empty)
@@ -289,7 +296,7 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
         messages("summaryCard.appeal.status"),
         returnAppealStatusMessageBasedOnPenalty(None, Some(lpp))
       ), lpp, isPaid, isVatPaid)
-    } else if(!isVatPaid) {
+    } else if(!isVatPaid && !lpp.penaltyCategory.equals(LPPPenaltyCategoryEnum.MANUAL)) {
       buildLPPSummaryCard(cardBody :+ SummaryListRow(),
         lpp, isPaid, isVatPaid)
     } else {
@@ -369,6 +376,13 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
       ),
       summaryListRow(messages("summaryCard.lpp.key4"), Html(dateToString(lpp.principalChargeDueDate))),
       summaryListRow(messages("summaryCard.lpp.key5"), Html(messages(getVATPaymentDate(lpp))))
+    )
+  }
+
+  private def lppManual(lpp: LPPDetails)(implicit messages: Messages): Seq[SummaryListRow] = {
+    Seq(
+      summaryListRow(messages("summaryCard.lpp.key2"), Html(messages("summaryCard.lpp.key2.value.manual"))),
+      summaryListRow(messages("summaryCard.addedOnKey"), Html(dateToString(lpp.penaltyChargeCreationDate.get)))
     )
   }
 

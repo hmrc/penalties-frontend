@@ -18,7 +18,7 @@
 @import viewmodels.LatePaymentPenaltySummaryCard
 @import utils.CurrencyFormatter
 @import models.appealInfo.AppealStatusEnum
-@import models.lpp.LPPPenaltyCategoryEnum.LPP2
+@import models.lpp.LPPPenaltyCategoryEnum._
 
 @this(
         govukSummaryList: GovukSummaryList,
@@ -84,7 +84,9 @@
 
 
 @footerDisplayLogic = {
-    @if(summaryCard.appealStatus.isEmpty || summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
+    @if(summaryCard.penaltyCategory.equals(MANUAL)) {
+        <p class="govuk-body">@messages("summaryCard.manual.cannotAppeal")</p>
+    } else if(summaryCard.appealStatus.isEmpty || summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
         <div class="app-summary-card__actions">
             <ul class="app-summary-card__actions-list">
                 <li class="app-summary-card__actions-list-item">
@@ -117,8 +119,10 @@
     </header>
     <div class="app-summary-card__body">
     @govukSummaryList(SummaryList(summaryCard.cardRows))
-    @if(!summaryCard.isVatPaid && summaryCard.appealStatus.getOrElse(AppealStatusEnum.Unappealable) == AppealStatusEnum.Unappealable) {
-        @cannotAppealDetails
+    @if(!summaryCard.penaltyCategory.equals(MANUAL)) {
+        @if(!summaryCard.isVatPaid && summaryCard.appealStatus.getOrElse(AppealStatusEnum.Unappealable) == AppealStatusEnum.Unappealable) {
+            @cannotAppealDetails
+        }
     }
     </div>
     <footer class="app-summary-card__footer">
