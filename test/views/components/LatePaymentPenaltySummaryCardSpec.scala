@@ -190,6 +190,10 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
     Some(Seq(sampleLPP1AppealPaid(AppealStatusEnum.Under_Appeal, AppealLevelEnum.HMRC)))
   ).get.head
 
+  val summaryCardWithManualLPP: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
+    Some(Seq(sampleManualLPP))
+  ).get.head
+
   "summaryCard" when {
     "given a LPP1" should {
       implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModel))
@@ -417,6 +421,24 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
         docWithAppealedPenalty.select("dt").get(4).text shouldBe "Appeal status"
         docWithAppealedPenalty.select("dd").get(4).text shouldBe "Under review by HMRC"
         docWithAppealedPenalty.select(".calculation-link").isEmpty shouldBe false
+      }
+    }
+
+    "given a manual LPP" should {
+      implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardWithManualLPP))
+
+      "display the correct penalty type" in {
+        doc.select("dt").get(0).text shouldBe "Penalty type"
+        doc.select("dd").get(0).text shouldBe "Penalty for late payment - details are in the letter we sent you"
+      }
+
+      "display when it was added correctly" in {
+        doc.select("dt").get(1).text shouldBe "Added on"
+        doc.select("dd").get(1).text shouldBe "7 June 2021"
+      }
+
+      "display that the user is unable to appeal" in {
+        doc.select("footer > div a").get(0).text shouldBe "You cannot appeal this penalty online"
       }
     }
   }

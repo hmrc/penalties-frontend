@@ -563,4 +563,45 @@ trait TestData {
     breathingSpace = None
   )
 
+  val getPenaltyDataPayloadWithManualLPP = GetPenaltyDetails(
+    totalisations = None,
+    lateSubmissionPenalty = None,
+    latePaymentPenalty = Some(
+      LatePaymentPenalty(
+        details = Seq(LPPDetails(
+          principalChargeReference = "1234567890",
+          penaltyCategory = LPPPenaltyCategoryEnum.MANUAL,
+          penaltyChargeCreationDate = Some(LocalDate.parse("2069-10-30")),
+          penaltyStatus = LPPPenaltyStatusEnum.Posted,
+          penaltyAmountPaid = None,
+          penaltyAmountPosted = 100.00,
+          penaltyAmountAccruing = 0,
+          penaltyAmountOutstanding = Some(100.00),
+          LPP1LRDays = None,
+          LPP1HRDays = None,
+          LPP2Days = None,
+          LPP1LRCalculationAmount = None,
+          LPP1HRCalculationAmount = None,
+          LPP1LRPercentage = None,
+          LPP1HRPercentage = None,
+          LPP2Percentage = None,
+          communicationsDate = None,
+          penaltyChargeDueDate = None,
+          appealInformation = None,
+          principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
+          principalChargeBillingTo = LocalDate.parse("2021-02-01"),
+          principalChargeDueDate = LocalDate.parse("2021-03-07"),
+          penaltyChargeReference = None,
+          principalChargeLatestClearing = None,
+          LPPDetailsMetadata = LPPDetailsMetadata(
+            mainTransaction = Some(MainTransactionEnum.ManualCharge),
+            outstandingAmount = None,
+            timeToPay = None
+          )
+        ))
+      )
+    ),
+    breathingSpace = None
+  )
+
 }

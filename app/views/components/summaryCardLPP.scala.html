@@ -85,7 +85,8 @@
 
 @footerDisplayLogic = {
     @if(summaryCard.penaltyCategory.equals(MANUAL)) {
-        <p class="govuk-body">@messages("summaryCard.manual.cannotAppeal")</p>
+<div class="app-summary-card__actions">
+    <a class="govuk-body">@messages("summaryCard.manual.cannotAppeal")</a></div>
     } else if(summaryCard.appealStatus.isEmpty || summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
         <div class="app-summary-card__actions">
             <ul class="app-summary-card__actions-list">

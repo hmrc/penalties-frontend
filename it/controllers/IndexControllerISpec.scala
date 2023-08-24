@@ -394,6 +394,21 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
       summaryCardBody.get(0).select("dd").get(0).text shouldBe "1 February 2021 to 28 February 2021"
     }
 
+    "return 200 (OK) and render the view when a Manual LPP" in {
+      getPenaltyDetailsStub(Some(getPenaltyDataPayloadWithManualLPP))
+      val request = controller.onPageLoad()(fakeRequest)
+      status(request) shouldBe Status.OK
+      val parsedBody = Jsoup.parse(contentAsString(request))
+      parsedBody.select("#late-payment-penalties section header h4").get(0).ownText() shouldBe "£100 penalty"
+      parsedBody.select("#late-payment-penalties section header strong").text shouldBe "due"
+      val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
+      summaryCardBody.select("dt").get(0).text shouldBe "Penalty type"
+      summaryCardBody.select("dd").get(0).text shouldBe "Penalty for late payment - details are in the letter we sent you"
+      summaryCardBody.select("dt").get(1).text shouldBe "Added on"
+      summaryCardBody.select("dd").get(1).text shouldBe "30 October 2069"
+      parsedBody.select(".app-summary-card footer div").text shouldBe "You cannot appeal this penalty online"
+    }
+
     "return 303 (SEE_OTHER) when the user is not authorised" in {
       unauthorised()
       val request = controller.onPageLoad()(fakeRequest)
