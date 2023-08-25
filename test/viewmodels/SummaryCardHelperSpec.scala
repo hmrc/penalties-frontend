@@ -22,7 +22,7 @@ import models.User
 import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import models.lpp.LPPPenaltyCategoryEnum._
 import models.lpp.MainTransactionEnum._
-import models.lpp.{LPPDetailsMetadata, LPPPenaltyStatusEnum}
+import models.lpp.{LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum}
 import models.lsp._
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
@@ -110,6 +110,31 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       taxPeriodEndDate = principleChargeBillingEndDate.toString,
       isAgent = isAgent,
       isCentralAssessment = isCentralAssessment
+    )
+  }
+  
+  def sampleManualLPPSummaryCard: LatePaymentPenaltySummaryCard = {
+    LatePaymentPenaltySummaryCard(
+      cardRows = Seq(
+        helper.summaryListRow(
+          penaltyType,
+          Html("Penalty for late payment - details are in the letter we sent you")
+        ),
+        helper.summaryListRow(
+          "Added on",
+          Html(dateToString(penaltyChargeCreationDate)))
+      ),
+      status = Tag(content = Text("due"), classes = "penalty-due-tag"),
+      penaltyChargeReference = None,
+      principalChargeReference = "09876543210987",
+      isPenaltyPaid = false,
+      amountDue = 999.99,
+      appealStatus = None,
+      appealLevel = None,
+      penaltyCategory = LPPPenaltyCategoryEnum.MANUAL,
+      dueDate = "7\u00A0June\u00A02021",
+      taxPeriodStartDate = principleChargeBillingStartDate.toString,
+      taxPeriodEndDate = principleChargeBillingEndDate.toString
     )
   }
 
@@ -770,6 +795,13 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           }
         }
 
+        "return SummaryCards when given a Manual LPP (4787)" when {
+          "populateLatePaymentPenaltyCard is called" in {
+            val result = helper.populateLatePaymentPenaltyCard(Some(Seq(sampleManualLPP)))
+            result shouldBe Some(Seq(sampleManualLPPSummaryCard))
+          }
+        }
+
         "return SummaryCards with VAT payment date in LPP " when {
           "populateLatePaymentPenalty for is called" in {
             val result = helper.populateLatePaymentPenaltyCard(Some(Seq(samplePaidLPP1.copy(
@@ -1127,6 +1159,12 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       val result = helper.lppSummaryCard(sampleLPP2)
       result.penaltyCategory.equals(LPP2) shouldBe true
       result.cardRows.exists(_.key.content == Text("VAT due")) shouldBe true
+    }
+
+    "when given a Manual LPP - set the relevant fields" in {
+      val result = helper.lppSummaryCard(sampleManualLPP)
+      result.penaltyCategory.equals(MANUAL) shouldBe true
+      result.cardRows.exists(_.key.content == Text("Added on")) shouldBe true
     }
   }
 

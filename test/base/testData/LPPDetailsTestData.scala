@@ -108,4 +108,36 @@ trait LPPDetailsTestData {
   val sampleLPP2: LPPDetails = sampleUnpaidLPP1.copy(
     penaltyCategory = LPPPenaltyCategoryEnum.LPP2
   )
+
+  val sampleManualLPP: LPPDetails = LPPDetails(
+    principalChargeReference = "09876543210987",
+    penaltyCategory = LPPPenaltyCategoryEnum.MANUAL,
+    penaltyChargeCreationDate = Some(penaltyChargeCreationDate),
+    penaltyStatus = LPPPenaltyStatusEnum.Posted,
+    penaltyAmountPaid = None,
+    penaltyAmountPosted = 999.99,
+    penaltyAmountAccruing = 0,
+    penaltyAmountOutstanding = Some(999.99),
+    LPP1LRDays = None,
+    LPP1HRDays = None,
+    LPP2Days = None,
+    LPP1LRCalculationAmount = None,
+    LPP1HRCalculationAmount = None,
+    LPP1LRPercentage = None,
+    LPP1HRPercentage = None,
+    LPP2Percentage = None,
+    communicationsDate = None,
+    penaltyChargeDueDate = None,
+    appealInformation = None,
+    principalChargeBillingFrom = principleChargeBillingStartDate,
+    principalChargeBillingTo = principleChargeBillingEndDate,
+    principalChargeDueDate = principleChargeBillingDueDate,
+    penaltyChargeReference = None,
+    principalChargeLatestClearing = None,
+    LPPDetailsMetadata = LPPDetailsMetadata(
+      mainTransaction = Some(MainTransactionEnum.ManualCharge),
+      None,
+      None
+    )
+  )
 }

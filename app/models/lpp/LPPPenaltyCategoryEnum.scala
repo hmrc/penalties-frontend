@@ -22,6 +22,7 @@ object LPPPenaltyCategoryEnum extends Enumeration {
 
   val LPP1: LPPPenaltyCategoryEnum.Value = Value("LPP1")
   val LPP2: LPPPenaltyCategoryEnum.Value = Value("LPP2")
+  val MANUAL: LPPPenaltyCategoryEnum.Value = Value("MANUAL")
 
   private val categories: Seq[LPPPenaltyCategoryEnum.Value] = Seq(LPP1, LPP2)
 
@@ -33,6 +34,7 @@ object LPPPenaltyCategoryEnum extends Enumeration {
     override def reads(json: JsValue): JsResult[LPPPenaltyCategoryEnum.Value] = json.as[String].toUpperCase match {
       case "LPP1" => JsSuccess(LPP1)
       case "LPP2" => JsSuccess(LPP2)
+      case "MANUAL" => JsSuccess(MANUAL)
       case e => JsError(s"$e not recognised")
     }
   }
