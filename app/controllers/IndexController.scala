@@ -65,7 +65,8 @@ class IndexController @Inject()(view: IndexView,
                 val whatYouOweBreakdown = pageHelper.getWhatYouOweBreakdown(penaltyData)
                 val filteredPenalties = pageHelper.filteredExpiredPoints(penaltyData.lateSubmissionPenalty.map(_.details).getOrElse(Seq.empty))
                 val orderedPenalties = pageHelper.sortPointsInDescendingOrder(filteredPenalties)
-                val lspSummaryCards = cardHelper.populateLateSubmissionPenaltyCard(orderedPenalties,
+                val lspWithPenaltyTypes = pageHelper.setLSPType(orderedPenalties)
+                val lspSummaryCards = cardHelper.populateLateSubmissionPenaltyCard(lspWithPenaltyTypes,
                   penaltyData.lateSubmissionPenalty.map(_.summary.regimeThreshold).getOrElse(0),
                   penaltyData.lateSubmissionPenalty.map(_.summary.activePenaltyPoints).getOrElse(0))
                 val lppSummaryCards = cardHelper.populateLatePaymentPenaltyCard(penaltyData.latePaymentPenalty.map(_.details).map(_.sorted))
