@@ -52,7 +52,8 @@ trait LSPDetailsTestData {
     appealInformation = None,
     chargeAmount = None,
     chargeOutstandingAmount = None,
-    chargeDueDate = None
+    chargeDueDate = None,
+    lspTypeEnum = Some(LSPTypeEnum.Point)
   )
 
   val sampleLateSubmissionPenaltyCharge: LSPDetails = sampleLateSubmissionPoint.copy(
@@ -60,7 +61,8 @@ trait LSPDetailsTestData {
     penaltyOrder = Some("01"),
     chargeAmount = Some(200),
     chargeOutstandingAmount = Some(200),
-    chargeDueDate = Some(chargeDueDate)
+    chargeDueDate = Some(chargeDueDate),
+    lspTypeEnum = Some(LSPTypeEnum.Financial)
   )
 
   val sampleLateSubmissionPenaltyChargeWithMultiplePeriods: LSPDetails = sampleLateSubmissionPenaltyCharge.copy(
@@ -103,7 +105,8 @@ trait LSPDetailsTestData {
     penaltyStatus = LSPPenaltyStatusEnum.Inactive,
     penaltyOrder = None,
     FAPIndicator = Some("X"),
-    expiryReason = Some(ExpiryReasonEnum.Adjustment)
+    expiryReason = Some(ExpiryReasonEnum.Adjustment),
+    lspTypeEnum = Some(LSPTypeEnum.RemovedFAP)
   )
 
   val samplePenaltyPointNotSubmitted: LSPDetails = sampleLateSubmissionPoint.copy(

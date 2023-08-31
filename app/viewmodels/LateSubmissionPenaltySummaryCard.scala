@@ -17,6 +17,7 @@
 package viewmodels
 
 import models.appealInfo.{AppealLevelEnum, AppealStatusEnum}
+import models.lsp.LSPPenaltyCategoryEnum
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
@@ -27,8 +28,7 @@ case class LateSubmissionPenaltySummaryCard(
                                              penaltyPoint: String,
                                              penaltyId: String,
                                              isReturnSubmitted: Boolean,
-                                             isFinancialPoint: Boolean = false,
-                                             isThresholdPoint: Boolean = false,
+                                             penaltyCategory: Option[LSPPenaltyCategoryEnum.Value],
                                              totalPenaltyAmount: BigDecimal = 0,
                                              isAddedPoint: Boolean = false,
                                              isAppealedPoint: Boolean = false,

@@ -16,10 +16,10 @@
 
 package models.lsp
 
+import java.time.LocalDate
+
 import models.appealInfo.AppealInformationType
 import play.api.libs.json.{Json, OFormat}
-
-import java.time.LocalDate
 
 case class LSPDetails(
                        penaltyNumber: String,
@@ -35,7 +35,8 @@ case class LSPDetails(
                        appealInformation: Option[Seq[AppealInformationType]],
                        chargeAmount: Option[BigDecimal],
                        chargeOutstandingAmount: Option[BigDecimal],
-                       chargeDueDate: Option[LocalDate]
+                       chargeDueDate: Option[LocalDate],
+                       lspTypeEnum: Option[LSPTypeEnum.Value] = None
                      )
 
 object LSPDetails {

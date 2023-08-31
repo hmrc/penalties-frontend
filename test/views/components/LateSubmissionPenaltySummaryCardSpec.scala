@@ -42,7 +42,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
           appealStatus = Some(AppealStatusEnum.Under_Appeal),
           appealLevel = Some(AppealLevelEnum.HMRC)
         )
-      )))),
+      )), lspTypeEnum = Some(LSPTypeEnum.Financial))),
     monthlyThreshold, 1).head
 
   val summaryCardModelUnappealable: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
@@ -52,7 +52,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
           appealStatus = Some(AppealStatusEnum.Unappealable),
           appealLevel = Some(AppealLevelEnum.HMRC)
         )
-      )))),
+      )), lspTypeEnum = Some(LSPTypeEnum.Financial))),
     quarterlyThreshold, 1).head
 
   val summaryCardModelWithAppealedPointAccepted: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
@@ -66,7 +66,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
           appealStatus = Some(AppealStatusEnum.Upheld),
           appealLevel = Some(AppealLevelEnum.HMRC)
         )
-      )))),
+      )), lspTypeEnum = Some(LSPTypeEnum.AppealedPoint))),
     quarterlyThreshold, 0).head
 
   val summaryCardModelWithAppealedPointRejected: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
@@ -75,7 +75,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
         appealStatus = Some(AppealStatusEnum.Rejected),
         appealLevel = Some(AppealLevelEnum.HMRC)
       )
-    )))),
+    )), lspTypeEnum = Some(LSPTypeEnum.Financial))),
     quarterlyThreshold, 1).head
 
   val summaryCardModelWithAddedPoint: LateSubmissionPenaltySummaryCard = summaryCardHelper.populateLateSubmissionPenaltyCard(
@@ -106,7 +106,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       )),
       chargeAmount = None,
       chargeOutstandingAmount = None,
-      chargeDueDate = None
+      chargeDueDate = None,
+      lspTypeEnum = Some(LSPTypeEnum.AddedFAP)
     )
     ), quarterlyThreshold, 1).head
 
@@ -117,7 +118,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
           appealStatus = Some(AppealStatusEnum.Under_Appeal),
           appealLevel = Some(AppealLevelEnum.Tribunal)
         )
-      ))
+      )), lspTypeEnum = Some(LSPTypeEnum.Financial)
     )),
     quarterlyThreshold, 1).head
 
@@ -133,7 +134,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
           appealStatus = Some(AppealStatusEnum.Upheld),
           appealLevel = Some(AppealLevelEnum.Tribunal)
         )
-      ))
+      )), lspTypeEnum = Some(LSPTypeEnum.Point)
     )),
     quarterlyThreshold, 0).head
 
@@ -144,7 +145,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
           appealStatus = Some(AppealStatusEnum.Rejected),
           appealLevel = Some(AppealLevelEnum.Tribunal)
         )
-      ))
+      )), lspTypeEnum = Some(LSPTypeEnum.Financial)
     )),
     quarterlyThreshold, 1).head
 
@@ -171,7 +172,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       appealInformation = None,
       chargeAmount = None,
       chargeOutstandingAmount = None,
-      chargeDueDate = None
+      chargeDueDate = None,
+      lspTypeEnum = Some(LSPTypeEnum.AddedFAP)
     )
     ), quarterlyThreshold, 4).head
 
@@ -198,7 +200,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       appealInformation = None,
       chargeAmount = None,
       chargeOutstandingAmount = None,
-      chargeDueDate = None
+      chargeDueDate = None,
+      lspTypeEnum = Some(LSPTypeEnum.RemovedPoint)
     )
     ), quarterlyThreshold, 1).head
 
@@ -230,7 +233,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       )),
       chargeAmount = None,
       chargeOutstandingAmount = None,
-      chargeDueDate = None
+      chargeDueDate = None,
+      lspTypeEnum = Some(LSPTypeEnum.RemovedFAP)
     )), quarterlyThreshold, 1).head
 
   val summaryCardModelWithThresholdPenalty: LateSubmissionPenaltySummaryCard = summaryCardHelper.financialSummaryCard(
@@ -261,7 +265,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       )),
       chargeAmount = Some(200),
       chargeOutstandingAmount = Some(200),
-      chargeDueDate = Some(LocalDate.parse("2069-10-30"))
+      chargeDueDate = Some(LocalDate.parse("2069-10-30")),
+      lspTypeEnum = Some(LSPTypeEnum.Point)
     ), quarterlyThreshold)
 
   val summaryCardModelNoReturnSubmitted: LateSubmissionPenaltySummaryCard = summaryCardHelper.financialSummaryCard(
@@ -287,7 +292,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       appealInformation = None,
       chargeAmount = None,
       chargeOutstandingAmount = None,
-      chargeDueDate = None
+      chargeDueDate = None,
+      lspTypeEnum = Some(LSPTypeEnum.Point)
     ), quarterlyThreshold)
 
   val summaryCardModelWithFinancialPointBelowThresholdAndAppealInProgress: LateSubmissionPenaltySummaryCard =
@@ -318,7 +324,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       )),
       chargeAmount = Some(200),
       chargeOutstandingAmount = Some(200),
-      chargeDueDate = Some(LocalDate.parse("2069-10-30"))
+      chargeDueDate = Some(LocalDate.parse("2069-10-30")),
+      lspTypeEnum = Some(LSPTypeEnum.AddedFAP)
     ), quarterlyThreshold)
 
   val summaryCardModelForFinancialPenaltyWithAndAppealRejected: LateSubmissionPenaltySummaryCard =
@@ -349,7 +356,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       )),
       chargeAmount = Some(200),
       chargeOutstandingAmount = Some(200),
-      chargeDueDate = Some(LocalDate.parse("2069-10-30"))
+      chargeDueDate = Some(LocalDate.parse("2069-10-30")),
+      lspTypeEnum = Some(LSPTypeEnum.Financial)
     ), quarterlyThreshold)
 
   val summaryCardModelWithFinancialPointBelowThresholdAndAppealUnderTribunalReview: LateSubmissionPenaltySummaryCard =
@@ -380,7 +388,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       )),
       chargeAmount = Some(200),
       chargeOutstandingAmount = Some(200),
-      chargeDueDate = Some(LocalDate.parse("2069-10-30"))
+      chargeDueDate = Some(LocalDate.parse("2069-10-30")),
+      lspTypeEnum = Some(LSPTypeEnum.AddedFAP)
     ), quarterlyThreshold)
 
   val summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected: LateSubmissionPenaltySummaryCard =
@@ -411,7 +420,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       )),
       chargeAmount = Some(200),
       chargeOutstandingAmount = Some(200),
-      chargeDueDate = Some(LocalDate.parse("2069-10-30"))
+      chargeDueDate = Some(LocalDate.parse("2069-10-30")),
+      lspTypeEnum = Some(LSPTypeEnum.Point)
     ), quarterlyThreshold)(implicitly)
 
 
@@ -437,7 +447,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     appealInformation = None,
     chargeAmount = Some(200),
     chargeOutstandingAmount = Some(200),
-    chargeDueDate = Some(LocalDate.parse("2069-10-30"))
+    chargeDueDate = Some(LocalDate.parse("2069-10-30")),
+    lspTypeEnum = Some(LSPTypeEnum.Financial)
   ), annualThreshold)(implicitly)
 
   val summaryCardModelWithMultiplePenaltyPeriodLSP: LateSubmissionPenaltySummaryCard = summaryCardHelper.financialSummaryCard(LSPDetails(
@@ -474,7 +485,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     )),
     chargeAmount = Some(200),
     chargeOutstandingAmount = Some(200),
-    chargeDueDate = Some(LocalDate.parse("2069-10-30"))
+    chargeDueDate = Some(LocalDate.parse("2069-10-30")),
+    lspTypeEnum = Some(LSPTypeEnum.AddedFAP)
   ), annualThreshold)(implicitly)
 
   val summaryCardModelWithMultiplePenaltyPeriodLSPP: LateSubmissionPenaltySummaryCard = summaryCardHelper.pointSummaryCard(
@@ -512,7 +524,8 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       )),
       chargeAmount = Some(200),
       chargeOutstandingAmount = Some(200),
-      chargeDueDate = Some(LocalDate.parse("2069-10-30"))
+      chargeDueDate = Some(LocalDate.parse("2069-10-30")),
+      lspTypeEnum = Some(LSPTypeEnum.AddedFAP)
     ), true)(implicitly)
 
 

@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import utils.CurrencyFormatter
 @import viewmodels.LateSubmissionPenaltySummaryCard
+@import models.lsp.LSPPenaltyCategoryEnum
 
 @this(
         govukSummaryList: GovukSummaryList,
@@ -30,13 +31,13 @@
 )(implicit messages: Messages, appConfig: AppConfig)
 
 @visuallyHiddenText = @{
-  if(summaryCard.isFinancialPoint && summaryCard.dueDate.isDefined) {
+  if(summaryCard.penaltyCategory.contains(LSPPenaltyCategoryEnum.Charge) && summaryCard.dueDate.isDefined) {
     if(!summaryCard.isReturnSubmitted) {
         Some(messages("summaryCard.appealLink.aria.label.lurkingPoint.noReturnSubmitted", summaryCard.dueDate.get))
     } else {
         Some(messages("summaryCard.appealLink.aria.label.lurkingPoint.returnSubmitted", summaryCard.dueDate.get))
     }
-  } else if(!summaryCard.isFinancialPoint && !summaryCard.isReturnSubmitted) {
+  } else if(!summaryCard.penaltyCategory.contains(LSPPenaltyCategoryEnum.Charge) && !summaryCard.isReturnSubmitted) {
     Some(messages("summaryCard.appealLink.aria.label.noReturnSubmitted", summaryCard.penaltyPoint))
   } else {
     None
@@ -53,15 +54,15 @@
                 messages("summaryCard.header.adjustedPoint")
               } else if(summaryCard.appealStatus.contains(AppealStatusEnum.Upheld)) {
                   messages("summaryCard.header.appealedPoint")
-              } else if(summaryCard.isThresholdPoint) {
+              } else if(summaryCard.penaltyCategory.contains(LSPPenaltyCategoryEnum.Threshold)) {
                   messages("summaryCard.header.financial", summaryCard.penaltyPoint, CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(summaryCard.totalPenaltyAmount))
-              } else if(summaryCard.isFinancialPoint) {
+              } else if(summaryCard.penaltyCategory.contains(LSPPenaltyCategoryEnum.Charge)) {
                   messages("summaryCard.header.financialNoNumber", CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(summaryCard.totalPenaltyAmount))
               } else {
                   messages("summaryCard.header", summaryCard.penaltyPoint)
               }
             }
-            @if(summaryCard.isFinancialPoint){
+            @if(summaryCard.penaltyCategory.contains(LSPPenaltyCategoryEnum.Charge)){
                 <span class="govuk-visually-hidden">@messages("summaryCard.header.financialNoNumber.hiddenText", summaryCard.dueDate.get)</span>
             }
         </h4>
@@ -94,7 +95,7 @@
                 if(!summaryCard.isAppealedPoint) {
                     if(summaryCard.isAddedPoint) {
                             {messages("summaryCard.adjustedPoint.cannotAppeal")}
-                    } else if(summaryCard.isFinancialPoint && !summaryCard.isAddedOrRemovedPoint) {
+                    } else if(summaryCard.penaltyCategory.contains(LSPPenaltyCategoryEnum.Charge) && !summaryCard.isAddedOrRemovedPoint) {
                             {if(!summaryCard.isReturnSubmitted || summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
                                     <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}>
                                     {messages("summaryCard.appealCheck")} <span class="govuk-visually-hidden">{visuallyHiddenText.getOrElse("")}</span>

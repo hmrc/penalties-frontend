@@ -33,7 +33,7 @@ import services.{ComplianceService, PenaltiesService}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logger.logger
 import utils.MessageRenderer.getMessage
-import utils.{CurrencyFormatter, ImplicitDateFormatter, ViewUtils}
+import utils.{CurrencyFormatter, ImplicitDateFormatter, LSPTypeHelper, ViewUtils}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -280,5 +280,12 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     })
 
     pointsWithOrder.sortWith((thisElement, nextElement) => thisElement.penaltyOrder.getOrElse("0").toInt > nextElement.penaltyOrder.getOrElse("0").toInt)
+  }
+
+  def setLSPType(points: Seq[LSPDetails]): Seq[LSPDetails] = {
+    val penaltyWithType = points.map(point => {
+      point.copy(lspTypeEnum = LSPTypeHelper.determineLSPType(point))
+    })
+    penaltyWithType
   }
 }
