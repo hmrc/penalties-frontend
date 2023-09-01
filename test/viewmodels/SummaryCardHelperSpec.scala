@@ -119,7 +119,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       cardRows = Seq(
         helper.summaryListRow(
           penaltyType,
-          Html("Penalty for late payment - details are in the letter we sent you")
+          Html("Penalty for late payment – details are in the letter we sent you")
         ),
         helper.summaryListRow(
           "Added on",

@@ -403,7 +403,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
       parsedBody.select("#late-payment-penalties section header strong").text shouldBe "due"
       val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
       summaryCardBody.select("dt").get(0).text shouldBe "Penalty type"
-      summaryCardBody.select("dd").get(0).text shouldBe "Penalty for late payment - details are in the letter we sent you"
+      summaryCardBody.select("dd").get(0).text shouldBe "Penalty for late payment – details are in the letter we sent you"
       summaryCardBody.select("dt").get(1).text shouldBe "Added on"
       summaryCardBody.select("dd").get(1).text shouldBe "30 October 2069"
       parsedBody.select(".app-summary-card footer div").text shouldBe "You cannot appeal this penalty online"
