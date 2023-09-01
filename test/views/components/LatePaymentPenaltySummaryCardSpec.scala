@@ -429,7 +429,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
 
       "display the correct penalty type" in {
         doc.select("dt").get(0).text shouldBe "Penalty type"
-        doc.select("dd").get(0).text shouldBe "Penalty for late payment - details are in the letter we sent you"
+        doc.select("dd").get(0).text shouldBe "Penalty for late payment – details are in the letter we sent you"
       }
 
       "display when it was added correctly" in {

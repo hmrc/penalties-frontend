@@ -23,7 +23,7 @@ import play.api.i18n.Messages.MessageSource
 import scala.io.Source
 
 class MessagesSpec extends SpecBase {
-  private val excludedKeys = Seq("service.homePageUrl", "common.pageTitle", "calculation.key.3.additional.text", "calculation.value.amount")
+  private val excludedKeys = Seq("service.homePageUrl", "common.pageTitle", "calculation.key.3.additional.text", "calculation.value.amount", "summaryCard.appealLink.aria.label.lpp.vatPaid") //TODO: remove "summaryCard.appealLink.aria.label.lpp.vatPaid" when translation is received
   private val MatchIncorrectTwoSingleQuotes = """\w+'{2}\w+""".r
   private val MatchIncorrectSingleQuote = """\w+'{1}\w+""".r
   private val MatchBacktickQuoteOnly = """`+""".r
@@ -38,7 +38,7 @@ class MessagesSpec extends SpecBase {
       }
     }
 
-    "the value for each English key must be different to the corresponding value of the Welsh key" ignore {
+    "the value for each English key must be different to the corresponding value of the Welsh key" in {
       val englishMessagesWithoutExcludedKeys= englishMessages.filterNot(kV => excludedKeys.contains(kV._1))
       val welshMessagesWithoutExcludedKeys = welshMessages.filterNot(kV => excludedKeys.contains(kV._1))
       withClue(describeValueMismatch(englishMessagesWithoutExcludedKeys, welshMessagesWithoutExcludedKeys)) {
