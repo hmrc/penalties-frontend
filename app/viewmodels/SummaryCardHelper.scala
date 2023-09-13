@@ -21,7 +21,6 @@ import java.time.LocalDate
 import javax.inject.Inject
 import models.User
 import models.appealInfo.AppealStatusEnum
-import models.lpp.LPPPenaltyCategoryEnum.MANUAL
 import models.lpp.LPPPenaltyStatusEnum.Posted
 import models.lpp.MainTransactionEnum._
 import models.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum}
@@ -104,7 +103,13 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
 
   private def getMultiplePenaltyPeriodMessage(penalty: LSPDetails)(implicit messages: Messages): Option[Html] = {
     if (penalty.lateSubmissions.getOrElse(Seq.empty).size > 1)
-      Some(Html(messages("lsp.multiple.penaltyPeriod", dateToString(PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.lateSubmissions.get).last.taxPeriodDueDate.get))))
+      Some(Html(
+        s"""
+          |${messages("lsp.multiple.penaltyPeriod.1", dateToString(PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.lateSubmissions.get).last.taxPeriodDueDate.get))}
+          |<br>
+          |${messages("lsp.multiple.penaltyPeriod.2")}
+          |""".stripMargin
+      ))
     else None
   }
 

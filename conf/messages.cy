@@ -67,7 +67,8 @@ agent.lsp.onThreshold.compliant.p2 = bod hanes Ffurflenni TAW eich cleient yn gy
 lsp.onThreshold.compliant.p3 = eich bod wedi cyflwyno mewn pryd am y {0} o fisoedd diwethaf
 agent.lsp.onThreshold.compliant.p3 = bod eich cleient wedi cyflwyno mewn pryd am y {0} o fisoedd diwethaf
 
-lsp.multiple.penaltyPeriod = Roedd y Ffurflen TAW a oedd yn ddyledus ar {0} hefyd wedi’i chyflwyno’n hwyr. <br> Dim ond 1 cosb am gyflwyno’n hwyr y mae CThEF yn ei roi bob mis.
+lsp.multiple.penaltyPeriod.1 = Roedd y Ffurflen TAW a oedd yn ddyledus ar {0} hefyd wedi’i chyflwyno’n hwyr.
+lsp.multiple.penaltyPeriod.2 = Dim ond 1 cosb am gyflwyno’n hwyr y mae CThEF yn ei roi bob mis.
 
 # LPP Content
 # -------------------------------------------
