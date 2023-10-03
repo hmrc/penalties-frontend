@@ -1272,7 +1272,7 @@ class IndexPageHelperSpec extends SpecBase {
                 LPPDetailsMetadata = LPPDetailsMetadata(
                   mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
                   outstandingAmount = Some(99),
-                  timeToPay = None //TODO Create case for user with TTP (PRM-1720)
+                  timeToPay = None
                 )
               )
             )
@@ -1280,6 +1280,7 @@ class IndexPageHelperSpec extends SpecBase {
         ),
         breathingSpace = None
       )
+
       "user has outstanding vat to pay" in new Setup(useRealAppConfig = true) {
         val result = pageHelper.getContentBasedOnLatePaymentPenaltiesFromModel(penaltyDetailsUnpaidVAT)(implicitly, vatTraderUser)
         val parsedHtmlResult = Jsoup.parse(result.body)
