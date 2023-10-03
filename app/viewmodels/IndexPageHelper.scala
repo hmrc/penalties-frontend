@@ -24,7 +24,7 @@ import javax.inject.Inject
 import models.appealInfo.AppealStatusEnum.Upheld
 import models.compliance.{CompliancePayload, ComplianceStatusEnum}
 import models.lpp.LPPDetails
-import models.lsp.{ExpiryReasonEnum, LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum}
+import models.lsp.{ExpiryReasonEnum, LSPDetails, LSPPenaltyStatusEnum}
 import models.{GetPenaltyDetails, User}
 import play.api.i18n.Messages
 import play.api.mvc.Result
