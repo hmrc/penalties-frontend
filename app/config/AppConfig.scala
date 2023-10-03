@@ -19,9 +19,10 @@ package config
 import config.featureSwitches.FeatureSwitch
 import play.api.Configuration
 import play.api.i18n.Lang
-import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}
 
 @Singleton
@@ -43,7 +44,7 @@ class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesCon
 
   lazy val signInContinueBaseUrl: String = config.get[String]("signIn.continueBaseUrl")
 
-  lazy val signInContinueUrl: String = SafeRedirectUrl(signInContinueBaseUrl + controllers.routes.IndexController.onPageLoad.url).encodedUrl
+  lazy val signInContinueUrl: String = URLEncoder.encode(RedirectUrl(signInContinueBaseUrl + controllers.routes.IndexController.onPageLoad.url).unsafeValue, "UTF-8")
 
   lazy val signOutUrlUnauthorised: String = config.get[String]("signOut.url") + signInContinueUrl
 
@@ -59,7 +60,7 @@ class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesCon
 
   lazy val contactFrontendServiceId: String = config.get[String]("contact-frontend.serviceId")
 
-  def backUrl(url: String): String =  SafeRedirectUrl(platformHost ++ url).encodedUrl
+  def backUrl(url: String): String =  URLEncoder.encode(RedirectUrl(platformHost ++ url).unsafeValue, "UTF-8")
 
   def feedbackUrl(redirectUrl: String): String = s"$contactFrontendUrl?service=$contactFrontendServiceId&backUrl=${backUrl(redirectUrl)}"
 
@@ -72,7 +73,7 @@ class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesCon
 
   private lazy val platformHost = servicesConfig.getString("host")
 
-  private lazy val agentClientLookupRedirectUrl: String => String = uri => SafeRedirectUrl(platformHost + uri).encodedUrl
+  private lazy val agentClientLookupRedirectUrl: String => String = uri => URLEncoder.encode(RedirectUrl(platformHost + uri).unsafeValue, "UTF-8")
 
   lazy val agentClientLookupStartUrl: String => String = (uri: String) =>
     agentClientLookupHost +

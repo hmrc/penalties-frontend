@@ -603,7 +603,6 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
 
       "display the reason why the point was removed" in {
         doc.select("dt").get(1).text() shouldBe "Reason"
-        //TODO: need to add content for removal reasons
         doc.select("dd").get(1).text() shouldBe "Removed by HMRC"
       }
 
