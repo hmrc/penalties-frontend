@@ -179,7 +179,7 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
 
   def getPenaltyNumberBasedOnThreshold(penaltyOrderNumberAsString: Option[String], threshold: Int): String = {
     penaltyOrderNumberAsString match {
-      case None | Some(" ") => ""
+      case None => ""
       case Some(penaltyNumber) if penaltyNumber.toInt > threshold => ""
       case Some(penaltyNumber) => penaltyNumber.toInt.toString
     }

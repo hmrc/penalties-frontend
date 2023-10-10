@@ -184,11 +184,6 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         result shouldBe ""
       }
 
-      "when given a penalty number that is a blank value i.e. ' ' - return an empty string" in {
-        val result = helper.getPenaltyNumberBasedOnThreshold(Some(" "), quarterlyThreshold)
-        result shouldBe ""
-      }
-
       "when given a penalty number at the threshold - return the penalty number" in {
         val penaltyNumber = "4"
         val result = helper.getPenaltyNumberBasedOnThreshold(Some(penaltyNumber), quarterlyThreshold)

@@ -1826,7 +1826,7 @@ class IndexPageHelperSpec extends SpecBase {
         ),
         LSPDetails(
           penaltyNumber = "12345676",
-          penaltyOrder = Some(" "),
+          penaltyOrder = None,
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
           penaltyStatus = LSPPenaltyStatusEnum.Inactive,
           FAPIndicator = None,
