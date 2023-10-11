@@ -272,8 +272,8 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
       val point = pointAndIndex._1
       val idx = pointAndIndex._2
       val newPenaltyOrder = (point.penaltyOrder, point.penaltyStatus) match {
-        case (None | Some(" "), LSPPenaltyStatusEnum.Inactive) => Some("0")
-        case (None | Some(" "), LSPPenaltyStatusEnum.Active) => Some((idx + 1).toString)
+        case (None, LSPPenaltyStatusEnum.Inactive) => Some("0")
+        case (None, LSPPenaltyStatusEnum.Active) => Some((idx + 1).toString)
         case _ => point.penaltyOrder
       }
       point.copy(penaltyOrder = newPenaltyOrder)

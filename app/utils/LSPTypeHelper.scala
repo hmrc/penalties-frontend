@@ -22,14 +22,14 @@ import models.lsp.{LSPDetails, LSPPenaltyCategoryEnum, LSPPenaltyStatusEnum, LSP
 object LSPTypeHelper {
 
   def determineLSPType(penalty: LSPDetails): Option[LSPTypeEnum.Value] = {
-        (penalty.penaltyCategory, penalty.appealInformation.flatMap(_.head.appealStatus)) match {
-          case (Some(LSPPenaltyCategoryEnum.Threshold), _) => Some(LSPTypeEnum.Financial)
-          case (Some(LSPPenaltyCategoryEnum.Charge), _) => Some(LSPTypeEnum.Financial)
-          case (_, Some(AppealStatusEnum.Upheld)) if penalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive => Some(LSPTypeEnum.AppealedPoint)
-          case (_, _) if penalty.FAPIndicator.contains("X") => if(penalty.penaltyStatus == LSPPenaltyStatusEnum.Active) Some(LSPTypeEnum.AddedFAP) else Some(LSPTypeEnum.RemovedFAP)
-          case (_, _) if penalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive && penalty.expiryReason.isDefined => Some(LSPTypeEnum.RemovedPoint)
-          case (_, _) => Some(LSPTypeEnum.Point)
-          case _ => None
-        }
-      }
+    (penalty.penaltyCategory, penalty.appealInformation.flatMap(_.head.appealStatus)) match {
+      case (Some(LSPPenaltyCategoryEnum.Threshold), _) => Some(LSPTypeEnum.Financial)
+      case (Some(LSPPenaltyCategoryEnum.Charge), _) => Some(LSPTypeEnum.Financial)
+      case (_, Some(AppealStatusEnum.Upheld)) if penalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive => Some(LSPTypeEnum.AppealedPoint)
+      case (_, _) if penalty.FAPIndicator.contains("X") => if (penalty.penaltyStatus == LSPPenaltyStatusEnum.Active) Some(LSPTypeEnum.AddedFAP) else Some(LSPTypeEnum.RemovedFAP)
+      case (_, _) if penalty.penaltyStatus == LSPPenaltyStatusEnum.Inactive && penalty.expiryReason.isDefined => Some(LSPTypeEnum.RemovedPoint)
+      case (_, _) => Some(LSPTypeEnum.Point)
+      case _ => None
+    }
+  }
 }
