@@ -21,7 +21,7 @@ import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
 import models.User
 import models.lpp.LPPPenaltyCategoryEnum.LPP2
-import models.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum}
+import models.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.PenaltiesService
@@ -31,8 +31,8 @@ import utils.PagerDutyHelper.PagerDutyKeys._
 import utils.{CurrencyFormatter, EnrolmentKeys, PagerDutyHelper}
 import viewmodels.{BreathingSpaceHelper, CalculationPageHelper}
 import views.html.{CalculationLPP1View, CalculationLPP2View}
-
 import javax.inject.Inject
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class CalculationController @Inject()(viewLPP1: CalculationLPP1View,
@@ -109,7 +109,8 @@ class CalculationController @Inject()(viewLPP1: CalculationLPP1View,
                 amountReceived = amountReceived,
                 amountLeftToPay = amountLeftToPay,
                 isTTPActive = isTTPActive,
-                isUserInBreathingSpace = isBreathingSpaceActive
+                isUserInBreathingSpace = isBreathingSpaceActive,
+                isVATOverpayment = penalty.get.LPPDetailsMetadata.mainTransaction.contains(MainTransactionEnum.VATOverpaymentForTax)
               ))
             }
           }

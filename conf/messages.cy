@@ -216,6 +216,7 @@ calculation.heading.lpp1And2.hiddenText = Dyddiadau’r cyfnod yw
 calculation.p.1.15.days = Mae’r gosb hon yn berthnasol os nad yw TAW wedi’i thalu am 15 diwrnod.
 calculation.p.1.30.days = Mae’r gosb hon yn berthnasol os nad yw TAW wedi’i thalu am 30 diwrnod.
 calculation.p.1.lpp2 = Mae’r gosb hon yn berthnasol o ddiwrnod 31 ymlaen, os oes TAW sydd heb ei thalu o hyd.
+calculation.p.1.lpp2.overpay = This penalty starts to apply if a VAT correction charge is unpaid for 31 days.
 calculation.p.2.lpp2 = Mae’r cyfanswm yn cynyddu’n ddyddiol ar sail swm y TAW sydd heb ei thalu ar gyfer y cyfnod.
 calculation.p.2.lpp2.estimate.breathing.space = Mae’r cyfanswm yn cynyddu’n ddyddiol hyd nes eich bod yn talu’ch TAW neu’n trefnu cynllun talu. Fodd bynnag, pan fyddwn yn cyfrifo’ch cosb, ni fyddwn yn cyfri’r diwrnodau pan fydd gennych drefniant amser i gael eich gwynt atoch.
 agent.calculation.p.2.lpp2.estimate.breathing.space = Mae’r cyfanswm yn cynyddu’n ddyddiol hyd nes bod eich cleient yn talu ei TAW neu’n trefnu cynllun talu. Fodd bynnag, pan fyddwn yn cyfrifo cosb eich cleient, ni fyddwn yn cyfri’r diwrnodau pan fydd ganddo drefniant amser i gael ei wynt ato.
