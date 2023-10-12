@@ -407,6 +407,7 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
       case ProtectiveAssessmentFirstLPP | ProtectiveAssessmentSecondLPP | ProtectiveAssessment => "summaryCard.lpp.key3.value.protectiveAssessment"
       case POAReturnChargeFirstLPP | POAReturnChargeSecondLPP | POAReturnCharge => "summaryCard.lpp.key3.value.poaReturnCharge"
       case AAReturnChargeFirstLPP | AAReturnChargeSecondLPP | AAReturnCharge => "summaryCard.lpp.key3.value.aaReturnCharge"
+      case VATOverpaymentForTax => ""
       case _ => "summaryCard.lpp.key3.value.vat" //Should be unreachable
     }
   }
