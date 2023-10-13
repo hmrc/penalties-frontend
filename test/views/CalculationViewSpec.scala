@@ -442,7 +442,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         }
       }
 
-      "it is a second penalty and it is a VAT correction" must {
+      "it is a second penalty and it is a VAT correction" in {
         def applyView(): HtmlFormat.Appendable = {
           calculationLPP2Page.apply(
             isEstimate = false,
@@ -459,11 +459,7 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
         implicit val doc: Document = asDocument(applyView())
 
-        val expectedContent = Seq(
-          Selector.howPenaltyIsApplied -> howPenaltyIsAppliedLPP2Correction
-        )
-
-        behave like pageWithExpectedMessages(expectedContent)
+        doc.select(Selector.howPenaltyIsApplied).text() shouldBe howPenaltyIsAppliedLPP2Correction
       }
 
       "it is a first penalty" must {

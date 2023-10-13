@@ -45,7 +45,7 @@
   <h2 class="govuk-caption-l hmrc-caption-l penalty-information-caption"><span class="govuk-visually-hidden">@messages("calculation.heading.lpp1And2.hiddenText") </span>@messages("calculation.caption", startDate, endDate)</h2>
   <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages("calculation.headingAndTitle.lpp")</h1>
 
-  <p class="govuk-body" id="how-penalty-is-applied">@{if(isVATOverpayment) messages("calculation.p.1.lpp2.overpay") else messages("calculation.p.1.lpp2")}</p>
+  <p class="govuk-body" id="how-penalty-is-applied">@{if(isVATOverpayment) messages("calculation.p.1.lpp2.vatCorrectionCharge") else messages("calculation.p.1.lpp2")}</p>
   @if(isUserInBreathingSpace && isEstimate) {
     <p class="govuk-body" id="when-it-increases">@getMessage("calculation.p.2.lpp2.estimate.breathing.space")</p>
   } else {
