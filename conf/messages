@@ -125,6 +125,7 @@ summaryCard.lpp.key3.value.additionalAssessment = Additional assessment of VAT f
 summaryCard.lpp.key3.value.protectiveAssessment = Protective assessment of VAT for {0} to {1}
 summaryCard.lpp.key3.value.poaReturnCharge = Payment on account instalment for {0} to {1}
 summaryCard.lpp.key3.value.aaReturnCharge = Annual accounting balance for {0} to {1}
+summaryCard.lpp.key3.value.vatOverpaymentCharge = VAT correction for period {0} to {1}
 summaryCard.lpp.key4 = VAT due
 summaryCard.lpp.key5 = VAT paid
 summaryCard.lpp.paymentNotReceived = Payment not yet received

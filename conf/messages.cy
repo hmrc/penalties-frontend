@@ -125,6 +125,7 @@ summaryCard.lpp.key3.value.additionalAssessment = Asesiad ychwanegol o TAW ar gy
 summaryCard.lpp.key3.value.protectiveAssessment = Asesiad i ddiogelu o ran TAW ar gyfer {0} i {1}
 summaryCard.lpp.key3.value.poaReturnCharge = Rhandaliad taliad ar gyfrif ar gyfer {0} i {1}
 summaryCard.lpp.key3.value.aaReturnCharge = Balans cyfrifyddu blynyddol ar gyfer {0} i {1}
+summaryCard.lpp.key3.value.vatOverpaymentCharge = VAT correction for period {0} to {1}
 summaryCard.lpp.key4 = TAW yn ddyledus
 summaryCard.lpp.key5 = TAW a dalwyd
 summaryCard.lpp.paymentNotReceived = Nid yw’r taliad wedi dod i law hyd yn hyn
