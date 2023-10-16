@@ -97,7 +97,9 @@ class CalculationController @Inject()(viewLPP1: CalculationLPP1View,
                     endDate = endDateOfPeriod,
                     dueDate = dueDateOfPenalty,
                     isTTPActive = isTTPActive,
-                    isBreathingSpaceActive = isBreathingSpaceActive))
+                    isBreathingSpaceActive = isBreathingSpaceActive,
+                    isVATOverpayment = penalty.get.LPPDetailsMetadata.mainTransaction.contains(MainTransactionEnum.VATOverpaymentForTax)
+                  ))
                 })
             } else {
               val isEstimate = penalty.get.penaltyStatus.equals(LPPPenaltyStatusEnum.Accruing)
