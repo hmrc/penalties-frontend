@@ -474,7 +474,10 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             endDate = "30 June 2022",
             dueDate = Some("7 September 2022"),
             isTTPActive = false,
-            isBreathingSpaceActive = false)(implicitly, implicitly, vatTraderUser)
+            isBreathingSpaceActive = false,
+            isVATOverpayment = false
+          )(implicitly, implicitly, vatTraderUser)
+
         }
 
         implicit val docWithOnlyOneCalculation: Document =
@@ -546,7 +549,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             endDate = "30 June 2022",
             dueDate = Some("7 September 2022"),
             isTTPActive = true,
-            isBreathingSpaceActive = false)(implicitly, implicitly, vatTraderUser)
+            isBreathingSpaceActive = false,
+            isVATOverpayment = false
+          )(implicitly, implicitly, vatTraderUser)
         }
 
         implicit val docWithOnlyOneCalculation: Document =
@@ -591,7 +596,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             endDate = "30 June 2022",
             dueDate = None,
             isTTPActive = false,
-            isBreathingSpaceActive = false)(implicitly, implicitly, vatTraderUser)
+            isBreathingSpaceActive = false,
+            isVATOverpayment = false
+          )(implicitly, implicitly, vatTraderUser)
         }
 
         implicit val docWithOnlyOneCalculation: Document =
@@ -638,7 +645,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             endDate = "30 June 2022",
             dueDate = None,
             isTTPActive = true,
-            isBreathingSpaceActive = false)(implicitly, implicitly, vatTraderUser)
+            isBreathingSpaceActive = false,
+            isVATOverpayment = false
+          )(implicitly, implicitly, vatTraderUser)
         }
 
         implicit val docWithOnlyOneCalculation: Document =
@@ -679,7 +688,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             endDate = "30 June 2022",
             dueDate = None,
             isTTPActive = true,
-            isBreathingSpaceActive = true)(implicitly, implicitly, vatTraderUser)
+            isBreathingSpaceActive = true,
+            isVATOverpayment = false
+          )(implicitly, implicitly, vatTraderUser)
         }
 
         implicit val docWithOnlyOneCalculation: Document =
@@ -722,7 +733,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             endDate = "30 June 2022",
             dueDate = None,
             isTTPActive = false,
-            isBreathingSpaceActive = true)(implicitly, implicitly, vatTraderUser)
+            isBreathingSpaceActive = true,
+            isVATOverpayment = false
+          )(implicitly, implicitly, vatTraderUser)
         }
 
         implicit val docWithOnlyOneCalculation: Document =
@@ -762,7 +775,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             endDate = "30 June 2022",
             dueDate = None,
             isTTPActive = false,
-            isBreathingSpaceActive = false)(implicitly, implicitly, agentUser)
+            isBreathingSpaceActive = false,
+            isVATOverpayment = false
+          )(implicitly, implicitly, agentUser)
         }
 
         implicit val docWithOnlyOneCalculation: Document =
@@ -804,7 +819,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             endDate = "30 June 2022",
             dueDate = None,
             isTTPActive = false,
-            isBreathingSpaceActive = false)(implicitly, implicitly, agentUser)
+            isBreathingSpaceActive = false,
+            isVATOverpayment = false
+          )(implicitly, implicitly, agentUser)
         }
 
         implicit val docWithOnlyOneCalculation: Document =
@@ -847,7 +864,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             endDate = "30 June 2022",
             dueDate = None,
             isTTPActive = true,
-            isBreathingSpaceActive = false)(implicitly, implicitly, agentUser)
+            isBreathingSpaceActive = false,
+            isVATOverpayment = false
+          )(implicitly, implicitly, agentUser)
         }
 
         implicit val docWithOnlyOneCalculation: Document =
@@ -887,7 +906,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             endDate = "30 June 2022",
             dueDate = None,
             isTTPActive = true,
-            isBreathingSpaceActive = true)(implicitly, implicitly, agentUser)
+            isBreathingSpaceActive = true,
+            isVATOverpayment = false
+          )(implicitly, implicitly, agentUser)
         }
 
         implicit val docWithOnlyOneCalculation: Document =
@@ -930,7 +951,9 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             endDate = "30 June 2022",
             dueDate = None,
             isTTPActive = false,
-            isBreathingSpaceActive = true)(implicitly, implicitly, agentUser)
+            isBreathingSpaceActive = true,
+            isVATOverpayment = false
+          )(implicitly, implicitly, agentUser)
         }
 
         implicit val docWithOnlyOneCalculation: Document =
