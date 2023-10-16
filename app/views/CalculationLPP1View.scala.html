@@ -49,14 +49,14 @@
   
     @* Haven't reached day 30 yet *@
     @if(calculationRowSeq.size == 1) {
-      <p class="govuk-body" id="how-penalty-is-applied">@messages("calculation.p.1.15.days")</p>
+      <p class="govuk-body" id="how-penalty-is-applied">@{if(isVATOverpayment) messages("calculation.p.1.30.days.lpp1", startDate, endDate) else messages("calculation.p.1.15.days")}</p>
       <p class="govuk-body" id="15-day-calculation">
         @messages("calculation.singular.part.text")
         <br>
         @calculationRowSeq.head
       </p>
     } else {
-      <p class="govuk-body" id="how-penalty-is-applied">@{if(isVATOverpayment) messages("calculation.p.1.30.days.lpp1") else messages("calculation.p.1.30.days")</p>
+      <p class="govuk-body" id="how-penalty-is-applied">@messages("calculation.p.1.30.days")</p>
       <p class="govuk-body" id="30-day-calculation">@messages("calculation.multiple.parts.text")</p>
       @bullets(
         Seq(

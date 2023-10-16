@@ -24,7 +24,7 @@ object CalculationMessages {
   val periodHiddenText = "The period dates are"
 
   val periodWithText = "The period dates are 1 April 2022 to 30 June 2022"
-  val LPP1VatCorrection = "This penalty applies if the VAT correction charge for {0} to {1} has not been paid for 31 days."
+  val LPP1VatCorrection = "This penalty applies if the VAT correction charge for 1 April 2022 to 30 June 2022 has not been paid for 31 days."
 
   val headingLPP = "Late payment penalty"
 

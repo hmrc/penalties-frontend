@@ -46,7 +46,7 @@
     <a class="govuk-link calculation-link" href="@{
         controllers.routes.CalculationController.onPageLoad(summaryCard.principalChargeReference, summaryCard.penaltyCategory.toString).url
     }">
-    @messages("summaryCard.viewCalculation") <span class="govuk-visually-hidden">@messages("summaryCard.viewCalculation.aria.label.lpp.change", messages(s"summaryCard.appealLink.aria.label.lpp.vatPaid.${summaryCard.penaltyCategory}"), summaryCard.dueDate
+    @messages("summaryCard.viewCalculation") <span class="govuk-visually-hiddengovuk-visually-hidden">@messages("summaryCard.viewCalculation.aria.label.lpp.change", messages(s"summaryCard.appealLink.aria.label.lpp.vatPaid.${summaryCard.penaltyCategory}"), summaryCard.dueDate
         )</span>
     </a>
 }

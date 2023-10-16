@@ -535,6 +535,27 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           )
           behave like pageWithExpectedMessages(expectedContent)(docWith2Calculations)
         }
+
+        "it is a first penalty and it is a VAT correction" in {
+          def applyView(calculationRow: Seq[String]): HtmlFormat.Appendable = {
+            calculationPage.apply(
+              amountReceived = "100.00",
+              penaltyAmount = "400.00",
+              amountLeftToPay = "300.00",
+              calculationRowSeq = calculationRow,
+              isPenaltyEstimate = false,
+              startDate = "1 April 2022",
+              endDate = "30 June 2022",
+              dueDate = Some("7 September 2022"),
+              isTTPActive = false,
+              isBreathingSpaceActive = false,
+              isVATOverpayment = true
+            )(implicitly, implicitly, vatTraderUser)
+          }
+          implicit val docWithOnlyOneCalculation: Document =
+            asDocument(applyView(Seq("2% of £3,850.00 (the unpaid VAT 15 days after the due date)")))
+           docWithOnlyOneCalculation.select(Selector.howPenaltyIsApplied).text() shouldBe LPP1VatCorrection
+        }
       }
 
       "it is a first penalty and TTP is active (penalty is not estimated)" must {
