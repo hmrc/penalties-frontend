@@ -216,6 +216,7 @@ calculation.heading.lpp1And2.hiddenText = The period dates are
 calculation.p.1.15.days = This penalty applies if VAT has not been paid for 15 days.
 calculation.p.1.30.days = This penalty applies if VAT has not been paid for 30 days.
 calculation.p.1.lpp2 = This penalty applies from day 31, if any VAT remains unpaid.
+calculation.p.1.lpp2.vatCorrectionCharge = This penalty starts to apply if a VAT correction charge is unpaid for 31 days.
 calculation.p.2.lpp2 = The total increases daily based on the amount of unpaid VAT for the period.
 calculation.p.2.lpp2.estimate.breathing.space = The total builds up daily until you pay your VAT or set up a payment plan. However, when we calculate your penalty we do not count the days you are in Breathing Space.
 agent.calculation.p.2.lpp2.estimate.breathing.space = The total builds up daily until your client pays their VAT or sets up a payment plan. However, when we calculate your client’s penalty we do not count the days they are in Breathing Space.

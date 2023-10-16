@@ -25,7 +25,8 @@ import scala.io.Source
 class MessagesSpec extends SpecBase {
   //TODO: remove "summaryCard.appealLink.aria.label.lpp.vatPaid" when translation is received
   //TODO: remove "summaryCard.lpp.key3.value.vatOverpaymentCharge" when translation is received
-  private val excludedKeys = Seq("service.homePageUrl", "common.pageTitle", "calculation.key.3.additional.text", "calculation.value.amount", "summaryCard.appealLink.aria.label.lpp.vatPaid", "summaryCard.lpp.key3.value.vatOverpaymentCharge")
+  //TODO: remove "calculation.p.1.lpp2.vatCorrectionCharge" when translation is received
+  private val excludedKeys = Seq("service.homePageUrl", "common.pageTitle", "calculation.key.3.additional.text", "calculation.value.amount", "summaryCard.appealLink.aria.label.lpp.vatPaid", "summaryCard.lpp.key3.value.vatOverpaymentCharge", "calculation.p.1.lpp2.vatCorrectionCharge")
   private val MatchIncorrectTwoSingleQuotes = """\w+'{2}\w+""".r
   private val MatchIncorrectSingleQuote = """\w+'{1}\w+""".r
   private val MatchBacktickQuoteOnly = """`+""".r

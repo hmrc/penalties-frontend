@@ -75,7 +75,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             amountReceived = "10.10",
             amountLeftToPay = "40.40",
             isTTPActive = false,
-            isUserInBreathingSpace = false
+            isUserInBreathingSpace = false,
+            isVATOverpayment = false
           )(implicitly, implicitly, vatTraderUser)
         }
 
@@ -127,7 +128,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             amountReceived = "10.10",
             amountLeftToPay = "40.40",
             isTTPActive = true,
-            isUserInBreathingSpace = false
+            isUserInBreathingSpace = false,
+            isVATOverpayment = false
           )(implicitly, implicitly, vatTraderUser)
         }
 
@@ -176,7 +178,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             amountReceived = "10.10",
             amountLeftToPay = "40.40",
             isTTPActive = true,
-            isUserInBreathingSpace = true
+            isUserInBreathingSpace = true,
+            isVATOverpayment = false
           )(implicitly, implicitly, vatTraderUser)
         }
 
@@ -227,7 +230,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             amountReceived = "10.10",
             amountLeftToPay = "40.40",
             isTTPActive = false,
-            isUserInBreathingSpace = true
+            isUserInBreathingSpace = true,
+            isVATOverpayment = false
           )(implicitly, implicitly, vatTraderUser)
         }
 
@@ -277,7 +281,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             amountReceived = "10.10",
             amountLeftToPay = "40.40",
             isTTPActive = true,
-            isUserInBreathingSpace = true
+            isUserInBreathingSpace = true,
+            isVATOverpayment = false
           )(implicitly, implicitly, agentUser)
         }
 
@@ -319,7 +324,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             amountReceived = "10.10",
             amountLeftToPay = "40.40",
             isTTPActive = false,
-            isUserInBreathingSpace = true
+            isUserInBreathingSpace = true,
+            isVATOverpayment = false
           )(implicitly, implicitly, agentUser)
         }
 
@@ -361,7 +367,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             amountReceived = "40.10",
             amountLeftToPay = "10.40",
             isTTPActive = false,
-            isUserInBreathingSpace = false)(implicitly, implicitly, vatTraderUser)
+            isUserInBreathingSpace = false,
+            isVATOverpayment = false)(implicitly, implicitly, vatTraderUser)
         }
 
         implicit val doc: Document = asDocument(applyView())
@@ -403,7 +410,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             amountReceived = "40.10",
             amountLeftToPay = "10.40",
             isTTPActive = true,
-            isUserInBreathingSpace = false)(implicitly, implicitly, vatTraderUser)
+            isUserInBreathingSpace = false,
+            isVATOverpayment = false)(implicitly, implicitly, vatTraderUser)
         }
 
         implicit val doc: Document = asDocument(applyView())
@@ -432,6 +440,26 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         "not display TTP content" in {
           doc.select(".ttp-content").isEmpty shouldBe true
         }
+      }
+
+      "it is a second penalty and it is a VAT correction" in {
+        def applyView(): HtmlFormat.Appendable = {
+          calculationLPP2Page.apply(
+            isEstimate = false,
+            startDate = "1 April 2022",
+            endDate = "30 June 2022",
+            dueDate = Some("17 October 2022"),
+            penaltyAmount = "50.50",
+            amountReceived = "40.10",
+            amountLeftToPay = "10.40",
+            isTTPActive = true,
+            isUserInBreathingSpace = false,
+            isVATOverpayment = true)(implicitly, implicitly, vatTraderUser)
+        }
+
+        implicit val doc: Document = asDocument(applyView())
+
+        doc.select(Selector.howPenaltyIsApplied).text() shouldBe howPenaltyIsAppliedLPP2Correction
       }
 
       "it is a first penalty" must {
@@ -941,7 +969,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             amountReceived = "40.10",
             amountLeftToPay = "10.40",
             isTTPActive = false,
-            isUserInBreathingSpace = false)(implicitly, implicitly, agentUser)
+            isUserInBreathingSpace = false,
+            isVATOverpayment = false)(implicitly, implicitly, agentUser)
         }
 
         implicit val doc: Document = asDocument(applyView())
@@ -979,7 +1008,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             amountReceived = "40.10",
             amountLeftToPay = "10.40",
             isTTPActive = false,
-            isUserInBreathingSpace = false)(implicitly, implicitly, agentUser)
+            isUserInBreathingSpace = false,
+            isVATOverpayment = false)(implicitly, implicitly, agentUser)
         }
 
         implicit val doc: Document = asDocument(applyView())
@@ -1017,7 +1047,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
             amountReceived = "40.10",
             amountLeftToPay = "10.40",
             isTTPActive = true,
-            isUserInBreathingSpace = false)(implicitly, implicitly, agentUser)
+            isUserInBreathingSpace = false,
+            isVATOverpayment = false)(implicitly, implicitly, agentUser)
         }
 
         implicit val doc: Document = asDocument(applyView())
@@ -1057,7 +1088,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       amountReceived = "10.10",
       amountLeftToPay = "40.40",
       isTTPActive = false,
-      isUserInBreathingSpace = false
+      isUserInBreathingSpace = false,
+      isVATOverpayment = false
     )(implicitly, implicitly, vatTraderUser)
     val doc: Document = asDocument(applyView())
 
@@ -1075,7 +1107,8 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
       amountReceived = "10.10",
       amountLeftToPay = "40.40",
       isTTPActive = false,
-      isUserInBreathingSpace = false
+      isUserInBreathingSpace = false,
+      isVATOverpayment = false
     )(implicitly, implicitly, vatTraderUser)
     implicit val doc: Document = asDocument(applyView())
     doc.select("#feedback-link").get(0).text shouldBe "What do you think of this service? (takes 30 seconds)"

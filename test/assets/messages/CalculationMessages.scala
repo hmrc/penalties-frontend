@@ -80,6 +80,8 @@ object CalculationMessages {
 
   val howPenaltyIsAppliedLPP2 = "This penalty applies from day 31, if any VAT remains unpaid."
 
+  val howPenaltyIsAppliedLPP2Correction = "This penalty starts to apply if a VAT correction charge is unpaid for 31 days."
+
   val howPenaltyIsApplied15Days = "This penalty applies if VAT has not been paid for 15 days."
 
   val howPenaltyIsApplied30Days = "This penalty applies if VAT has not been paid for 30 days."
