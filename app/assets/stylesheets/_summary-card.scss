@@ -122,3 +122,17 @@
     display: none;
   }
 }
+
+  .tab-heading{
+             font-family: "GDS Transport",
+             arial, sans-serif;
+             font-size: 1.5rem;
+             -webkit-font-smoothing: antialiased;
+              -moz-osx-font-smoothing: grayscale;}
+
+@media screen and (max-width:640px) {
+   .tab-heading{
+    margin-top: 40px;
+    font-size: 1.5rem;
+    }
+}
