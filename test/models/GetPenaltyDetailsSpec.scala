@@ -111,7 +111,8 @@ class GetPenaltyDetailsSpec extends AnyWordSpec with Matchers {
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
           outstandingAmount = Some(99),
-          timeToPay = None
+          timeToPay = None,
+          vatOutstandingAmount = Some(BigDecimal(123.45))
         )
       ))
     )),
@@ -200,7 +201,9 @@ class GetPenaltyDetailsSpec extends AnyWordSpec with Matchers {
            "penaltyChargeReference": "PEN1234567",
            "principalChargeLatestClearing": "2069-10-30",
            "mainTransaction": "4700",
-           "outstandingAmount": 99
+           "outstandingAmount": 99,
+           "vatOutstandingAmount": 123.45
+
        }]
      },
      "breathingSpace": [{

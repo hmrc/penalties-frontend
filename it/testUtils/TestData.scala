@@ -87,7 +87,8 @@ trait TestData {
     LPPDetailsMetadata = LPPDetailsMetadata(
       mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
       outstandingAmount = None,
-      timeToPay = None
+      timeToPay = None,
+      vatOutstandingAmount = Some(BigDecimal(123.45))
     )
   )
 
@@ -596,7 +597,9 @@ trait TestData {
           LPPDetailsMetadata = LPPDetailsMetadata(
             mainTransaction = Some(MainTransactionEnum.ManualCharge),
             outstandingAmount = None,
-            timeToPay = None
+            timeToPay = None,
+            vatOutstandingAmount = None
+
           )
         ))
       )

@@ -525,7 +525,8 @@ class PenaltiesServiceSpec extends SpecBase {
       LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
         outstandingAmount = Some(99),
-        timeToPay = None
+        timeToPay = None,
+        vatOutstandingAmount = Some(BigDecimal(123.45))
       )
     )
     "return 0" when {

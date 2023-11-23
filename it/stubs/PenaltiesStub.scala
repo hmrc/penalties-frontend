@@ -117,7 +117,8 @@ object PenaltiesStub {
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
           outstandingAmount = Some(99),
-          timeToPay = None
+          timeToPay = None,
+          vatOutstandingAmount = Some(BigDecimal(123.45))
         )
       ))
     )),
@@ -209,7 +210,9 @@ object PenaltiesStub {
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = None,
           outstandingAmount = None,
-          timeToPay = None
+          timeToPay = None,
+          vatOutstandingAmount = None
+
         )
       ))
     )),

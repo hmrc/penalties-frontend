@@ -1272,7 +1272,8 @@ class IndexPageHelperSpec extends SpecBase {
                 LPPDetailsMetadata = LPPDetailsMetadata(
                   mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
                   outstandingAmount = Some(99),
-                  timeToPay = None
+                  timeToPay = None,
+                  vatOutstandingAmount = Some(BigDecimal(123.45))
                 )
               )
             )
@@ -1333,7 +1334,8 @@ class IndexPageHelperSpec extends SpecBase {
                 LPPDetailsMetadata = LPPDetailsMetadata(
                   mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
                   outstandingAmount = Some(99),
-                  timeToPay = None
+                  timeToPay = None,
+                  vatOutstandingAmount = Some(BigDecimal(123.45))
                 )
               )
             )
@@ -1439,7 +1441,8 @@ class IndexPageHelperSpec extends SpecBase {
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
           outstandingAmount = Some(99),
-          timeToPay = None
+          timeToPay = None,
+          vatOutstandingAmount = Some(BigDecimal(123.45))
         )
       )
 

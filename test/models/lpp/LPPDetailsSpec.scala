@@ -57,7 +57,8 @@ class LPPDetailsSpec extends SpecBase {
       |       [{
       |         "TTPStartDate": "2021-06-01",
       |         "TTPEndDate": "2021-07-01"
-      |       }]
+      |       }],
+      |       "vatOutstandingAmount": 123.45
       |   }
       |""".stripMargin)
 
@@ -99,7 +100,8 @@ class LPPDetailsSpec extends SpecBase {
             TTPEndDate = Some(timeToPayPeriodEnd)
           )
         )
-      )
+      ),
+      vatOutstandingAmount = Some(BigDecimal(123.45))
     )
   )
 
@@ -127,7 +129,7 @@ class LPPDetailsSpec extends SpecBase {
       }
 
       "by MainTransaction" in {
-        val metadata = LPPDetailsMetadata(mainTransaction = Some(MainTransactionEnum.AAReturnChargeFirstLPP), outstandingAmount = None, timeToPay = None)
+        val metadata = LPPDetailsMetadata(mainTransaction = Some(MainTransactionEnum.AAReturnChargeFirstLPP), outstandingAmount = None, timeToPay = None, None)
         val lppList = Seq(lppDetailsAsModel, lppDetailsAsModel.copy(LPPDetailsMetadata = metadata))
         val expectedResult = Seq(lppDetailsAsModel.copy(LPPDetailsMetadata = metadata), lppDetailsAsModel)
         val resultA = lppList.sorted

@@ -130,7 +130,8 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(CentralAssessmentSecondLPP),
         None,
-        None
+        None,
+        Some(BigDecimal(123.45))
       )
     )))
   ).get.head
@@ -171,7 +172,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
   val summaryCardModelDueNoPaymentsMadeCentralAssessment: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
     Some(Seq(samplePaidLPP1.copy(principalChargeLatestClearing = None, penaltyAmountOutstanding = Some(400), penaltyAmountPaid = None,
       penaltyStatus = LPPPenaltyStatusEnum.Accruing, penaltyChargeReference = None,
-      LPPDetailsMetadata = LPPDetailsMetadata(mainTransaction = Some(CentralAssessmentFirstLPP), None, None))))
+      LPPDetailsMetadata = LPPDetailsMetadata(mainTransaction = Some(CentralAssessmentFirstLPP), None, None, Some(BigDecimal(123.45))))))
   ).get.head
 
   val summaryCardModelDueNoPaymentsMadePenaltyPosted: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
