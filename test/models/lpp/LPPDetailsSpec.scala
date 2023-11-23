@@ -90,7 +90,8 @@ class LPPDetailsSpec extends SpecBase {
     principalChargeDueDate = principleChargeBillingDueDate,
     penaltyChargeReference = Some("PEN1234567"),
     principalChargeLatestClearing = Some(lpp1PrincipleChargePaidDate),
-    LPPDetailsMetadata = LPPDetailsMetadata(
+    vatOutstandingAmount = Some(BigDecimal(123.45)),
+      LPPDetailsMetadata = LPPDetailsMetadata(
       mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
       outstandingAmount = Some(99),
       timeToPay = Some(
@@ -100,8 +101,7 @@ class LPPDetailsSpec extends SpecBase {
             TTPEndDate = Some(timeToPayPeriodEnd)
           )
         )
-      ),
-      vatOutstandingAmount = Some(BigDecimal(123.45))
+      )
     )
   )
 
@@ -129,7 +129,7 @@ class LPPDetailsSpec extends SpecBase {
       }
 
       "by MainTransaction" in {
-        val metadata = LPPDetailsMetadata(mainTransaction = Some(MainTransactionEnum.AAReturnChargeFirstLPP), outstandingAmount = None, timeToPay = None, None)
+        val metadata = LPPDetailsMetadata(mainTransaction = Some(MainTransactionEnum.AAReturnChargeFirstLPP), outstandingAmount = None, timeToPay = None)
         val lppList = Seq(lppDetailsAsModel, lppDetailsAsModel.copy(LPPDetailsMetadata = metadata))
         val expectedResult = Seq(lppDetailsAsModel.copy(LPPDetailsMetadata = metadata), lppDetailsAsModel)
         val resultA = lppList.sorted

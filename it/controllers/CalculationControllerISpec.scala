@@ -203,7 +203,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
           principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
           principalChargeBillingTo = LocalDate.parse("2021-02-01"),
           principalChargeDueDate = LocalDate.now().minusDays(40),
-          LPPDetailsMetadata = LPPDetailsMetadata(
+          vatOutstandingAmount = Some(BigDecimal(123.45)),
+            LPPDetailsMetadata = LPPDetailsMetadata(
             mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
             outstandingAmount = Some(99),
             timeToPay = Some(
@@ -211,7 +212,6 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
                 TimeToPay(TTPStartDate = Some(LocalDate.parse("2021-01-01")), TTPEndDate = Some(LocalDate.parse("2021-02-01")))
               )
             ),
-            vatOutstandingAmount = Some(BigDecimal(123.45))
           )
         )
     ))))
@@ -239,7 +239,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
           principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
           principalChargeBillingTo = LocalDate.parse("2021-02-01"),
           principalChargeDueDate = LocalDate.now().minusDays(40),
-          LPPDetailsMetadata = LPPDetailsMetadata(
+          vatOutstandingAmount = Some(BigDecimal(123.45)),
+            LPPDetailsMetadata = LPPDetailsMetadata(
             mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
             outstandingAmount = Some(99),
             timeToPay = Some(
@@ -247,7 +248,6 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
                 TimeToPay(TTPStartDate = Some(LocalDate.parse("2021-01-01")), TTPEndDate = Some(LocalDate.parse("2021-02-01")))
               )
             ),
-            vatOutstandingAmount = Some(BigDecimal(123.45))
           )
         ))
     )),
@@ -279,11 +279,11 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
           principalChargeBillingFrom = LocalDate.parse("2021-01-01"),
           principalChargeBillingTo = LocalDate.parse("2021-02-01"),
           principalChargeDueDate = LocalDate.now().minusDays(40),
-          LPPDetailsMetadata = LPPDetailsMetadata(
+          vatOutstandingAmount = Some(BigDecimal(123.45)),
+            LPPDetailsMetadata = LPPDetailsMetadata(
             mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
             outstandingAmount = Some(99),
-            timeToPay = None,
-            vatOutstandingAmount = Some(BigDecimal(123.45))
+            timeToPay = None
           )
         ))
     )),
@@ -312,7 +312,8 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
           LPP1HRPercentage = None,
           principalChargeLatestClearing = None,
           penaltyChargeReference = None,
-          LPPDetailsMetadata = LPPDetailsMetadata(
+          vatOutstandingAmount = Some(BigDecimal(123.45)),
+            LPPDetailsMetadata = LPPDetailsMetadata(
             mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
             outstandingAmount = Some(99),
             timeToPay = Some(
@@ -320,7 +321,6 @@ class CalculationControllerISpec extends IntegrationSpecCommonBase with FeatureS
                 TimeToPay(TTPStartDate = Some(LocalDate.parse("2021-01-01")), TTPEndDate = Some(LocalDate.parse("2021-02-01")))
               )
             ),
-            vatOutstandingAmount = Some(BigDecimal(123.45))
           )
         )
     ))))

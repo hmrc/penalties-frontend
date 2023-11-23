@@ -126,11 +126,11 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching with LogC
         principalChargeDueDate = LocalDate.parse("2069-10-30"),
         penaltyChargeReference = Some("1234567890"),
         principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
-        LPPDetailsMetadata = LPPDetailsMetadata(
+        vatOutstandingAmount = Some(BigDecimal(123.45)),
+          LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
           outstandingAmount = Some(99),
-          timeToPay = None,
-          vatOutstandingAmount = Some(BigDecimal(123.45))
+          timeToPay = None
         )
       ))
     )),
@@ -216,11 +216,11 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching with LogC
         principalChargeDueDate = LocalDate.parse("2069-10-30"),
         penaltyChargeReference = Some("1234567890"),
         principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+        vatOutstandingAmount = Some(BigDecimal(123.45)),
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
           outstandingAmount = Some(99),
-          timeToPay = None,
-          vatOutstandingAmount = Some(BigDecimal(123.45))
+          timeToPay = None
         )
       ))
     )),

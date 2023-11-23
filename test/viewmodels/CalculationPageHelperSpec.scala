@@ -52,18 +52,18 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching with LogC
       penaltyChargeDueDate = Some(LocalDate.parse("2069-10-30")),
       appealInformation = Some(Seq(AppealInformationType(
         appealStatus = Some(AppealStatusEnum.Unappealable),
-        appealLevel =  Some(AppealLevelEnum.HMRC)
+        appealLevel = Some(AppealLevelEnum.HMRC)
       ))),
       principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
       principalChargeBillingTo = LocalDate.parse("2069-10-30"),
       principalChargeDueDate = LocalDate.parse("2069-10-30"),
       penaltyChargeReference = Some("1234567890"),
       principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
-      LPPDetailsMetadata = LPPDetailsMetadata(
+      vatOutstandingAmount = Some(BigDecimal(123.45)),
+        LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
         outstandingAmount = Some(99),
-        timeToPay = None,
-        vatOutstandingAmount = Some(BigDecimal(123.45))
+        timeToPay = None
       )
     )
 
@@ -88,18 +88,18 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching with LogC
       penaltyChargeDueDate = Some(LocalDate.parse("2069-10-30")),
       appealInformation = Some(Seq(AppealInformationType(
         appealStatus = Some(AppealStatusEnum.Unappealable),
-        appealLevel =  Some(AppealLevelEnum.HMRC)
+        appealLevel = Some(AppealLevelEnum.HMRC)
       ))),
       principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
       principalChargeBillingTo = LocalDate.parse("2069-10-30"),
       principalChargeDueDate = LocalDate.parse("2069-10-30"),
       penaltyChargeReference = Some("1234567890"),
       principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
-      LPPDetailsMetadata = LPPDetailsMetadata(
+      vatOutstandingAmount = Some(BigDecimal(123.45)),
+        LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
         outstandingAmount = Some(99),
-        timeToPay = None,
-        vatOutstandingAmount = Some(BigDecimal(123.45))
+        timeToPay = None
       )
     )
 
@@ -124,18 +124,18 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching with LogC
       penaltyChargeDueDate = Some(LocalDate.parse("2069-10-30")),
       appealInformation = Some(Seq(AppealInformationType(
         appealStatus = Some(AppealStatusEnum.Unappealable),
-        appealLevel =  Some(AppealLevelEnum.HMRC)
+        appealLevel = Some(AppealLevelEnum.HMRC)
       ))),
       principalChargeBillingFrom = LocalDate.parse("2069-10-30"),
       principalChargeBillingTo = LocalDate.parse("2069-10-30"),
       principalChargeDueDate = LocalDate.parse("2069-10-30"),
       penaltyChargeReference = Some("1234567890"),
       principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
-      LPPDetailsMetadata = LPPDetailsMetadata(
+      vatOutstandingAmount = Some(BigDecimal(123.45)),
+        LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
         outstandingAmount = Some(99),
-        timeToPay = None,
-        vatOutstandingAmount = Some(BigDecimal(123.45))
+        timeToPay = None
       )
     )
 
@@ -178,9 +178,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching with LogC
                         TTPEndDate = Some(LocalDate.of(2022, 7, 2))
                       )
                     )
-                  ),
-                  vatOutstandingAmount = Some(BigDecimal(123.45))
-                ))
+                  )))
               )
             )
           ),
@@ -208,9 +206,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching with LogC
                         TTPEndDate = Some(LocalDate.of(2022, 7, 2))
                       )
                     )
-                  ),
-                  vatOutstandingAmount = Some(BigDecimal(123.45))
-                ))
+                  )))
               )
             )
           ),
@@ -242,9 +238,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching with LogC
                         TTPEndDate = Some(LocalDate.of(2022, 7, 2))
                       )
                     )
-                  ),
-                  vatOutstandingAmount = Some(BigDecimal(123.45))
-                ))
+                  )))
               )
             )
           ),
@@ -272,9 +266,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching with LogC
                         TTPEndDate = Some(LocalDate.of(2022, 6, 25))
                       )
                     )
-                  ),
-                  vatOutstandingAmount = Some(BigDecimal(123.45))
-                ))
+                  )))
               )
             )
           ),
@@ -302,9 +294,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching with LogC
                         TTPEndDate = Some(LocalDate.of(2022, 6, 26))
                       )
                     )
-                  ),
-                  vatOutstandingAmount = Some(BigDecimal(123.45))
-                ))
+                  )))
               )
             )
           ),
@@ -327,9 +317,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching with LogC
                 sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
                   mainTransaction = None,
                   outstandingAmount = None,
-                  timeToPay = None,
-                  vatOutstandingAmount = Some(BigDecimal(123.45))
-                ))
+                  timeToPay = None))
               )
             )
           ),
@@ -356,9 +344,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching with LogC
                         TTPEndDate = None
                       )
                     )
-                  ),
-                  vatOutstandingAmount = Some(BigDecimal(123.45))
-                ))
+                  )))
               )
             )
           ),
@@ -392,9 +378,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching with LogC
                         TTPEndDate = Some(LocalDate.of(2022, 7, 2))
                       )
                     )
-                  ),
-                  vatOutstandingAmount = Some(BigDecimal(123.45))
-                ))
+                  )))
               )
             )
           ),
@@ -422,9 +406,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching with LogC
                         TTPEndDate = Some(LocalDate.of(2022, 7, 2))
                       )
                     )
-                  ),
-                  vatOutstandingAmount = Some(BigDecimal(123.45))
-                ))
+                  )))
               )
             )
           ),
@@ -453,7 +435,6 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching with LogC
                       )
                     )
                   ),
-                  vatOutstandingAmount = Some(BigDecimal(123.45))
                 ))
               )
             )

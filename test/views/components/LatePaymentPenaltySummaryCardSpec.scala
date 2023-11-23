@@ -123,16 +123,14 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       principalChargeBillingTo = LocalDate.of(2020, 2, 1),
       principalChargeDueDate = LocalDate.of(2020, 3, 7),
       principalChargeLatestClearing = None,
-      appealInformation = Some(Seq(AppealInformationType(
+        appealInformation = Some(Seq(AppealInformationType(
         appealStatus = Some(AppealStatusEnum.Unappealable),
         appealLevel = Some(AppealLevelEnum.HMRC)
       ))),
       LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(CentralAssessmentSecondLPP),
         None,
-        None,
-        Some(BigDecimal(123.45))
-      )
+        None)
     )))
   ).get.head
 
@@ -172,7 +170,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
   val summaryCardModelDueNoPaymentsMadeCentralAssessment: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
     Some(Seq(samplePaidLPP1.copy(principalChargeLatestClearing = None, penaltyAmountOutstanding = Some(400), penaltyAmountPaid = None,
       penaltyStatus = LPPPenaltyStatusEnum.Accruing, penaltyChargeReference = None,
-      LPPDetailsMetadata = LPPDetailsMetadata(mainTransaction = Some(CentralAssessmentFirstLPP), None, None, Some(BigDecimal(123.45))))))
+      LPPDetailsMetadata = LPPDetailsMetadata(mainTransaction = Some(CentralAssessmentFirstLPP), None, None))))
   ).get.head
 
   val summaryCardModelDueNoPaymentsMadePenaltyPosted: LatePaymentPenaltySummaryCard = summaryCardHelper.populateLatePaymentPenaltyCard(
