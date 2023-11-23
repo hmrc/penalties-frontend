@@ -106,7 +106,7 @@ object LPPDetails extends JsonUtils {
         principalChargeDueDate <- (json \ "principalChargeDueDate").validate[LocalDate]
         penaltyChargeReference <- (json \ "penaltyChargeReference").validateOpt[String]
         principalChargeLatestClearing <- (json \ "principalChargeLatestClearing").validateOpt[LocalDate]
-        vatOutstandingAmount <-  (json \ "vatOutstandingAmount").validateOpt[BigDecimal]
+        vatOutstandingAmount <- (json \ "vatOutstandingAmount").validateOpt[BigDecimal]
         metadata <- Json.fromJson(json)(LPPDetailsMetadata.format)
       }
       yield {
@@ -144,7 +144,7 @@ object LPPDetails extends JsonUtils {
         "principalChargeDueDate" -> o.principalChargeDueDate,
         "penaltyChargeReference" -> o.penaltyChargeReference,
         "principalChargeLatestClearing" -> o.principalChargeLatestClearing,
-        "vatOutstandingAmount" -> o.vatOutstandingAmount,
+        "vatOutstandingAmount" -> o.vatOutstandingAmount
       ).deepMerge(Json.toJsObject(o.LPPDetailsMetadata)(LPPDetailsMetadata.format))
     }
   }
