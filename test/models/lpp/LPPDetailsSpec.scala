@@ -57,7 +57,8 @@ class LPPDetailsSpec extends SpecBase {
       |       [{
       |         "TTPStartDate": "2021-06-01",
       |         "TTPEndDate": "2021-07-01"
-      |       }]
+      |       }],
+      |       "vatOutstandingAmount": 123.45
       |   }
       |""".stripMargin)
 
@@ -89,7 +90,8 @@ class LPPDetailsSpec extends SpecBase {
     principalChargeDueDate = principleChargeBillingDueDate,
     penaltyChargeReference = Some("PEN1234567"),
     principalChargeLatestClearing = Some(lpp1PrincipleChargePaidDate),
-    LPPDetailsMetadata = LPPDetailsMetadata(
+    vatOutstandingAmount = Some(BigDecimal(123.45)),
+      LPPDetailsMetadata = LPPDetailsMetadata(
       mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
       outstandingAmount = Some(99),
       timeToPay = Some(

@@ -114,7 +114,8 @@ object PenaltiesStub {
         principalChargeDueDate = LocalDate.parse("2069-10-30"),
         principalChargeLatestClearing = None,
         penaltyChargeReference = Some("PEN1234567"),
-        LPPDetailsMetadata = LPPDetailsMetadata(
+        vatOutstandingAmount = Some(BigDecimal(123.45)),
+          LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
           outstandingAmount = Some(99),
           timeToPay = None
@@ -206,6 +207,7 @@ object PenaltiesStub {
         principalChargeDueDate = LocalDate.parse("2069-10-30"),
         principalChargeLatestClearing = None,
         penaltyChargeReference = Some("PEN1234567"),
+        vatOutstandingAmount = None,
         LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = None,
           outstandingAmount = None,

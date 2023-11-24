@@ -84,6 +84,7 @@ trait TestData {
     principalChargeDueDate = LocalDate.parse("2021-03-07"),
     penaltyChargeReference = Some("1234567890"),
     principalChargeLatestClearing = Some(LocalDate.parse("2069-10-30")),
+    vatOutstandingAmount = Some(BigDecimal(123.45)),
     LPPDetailsMetadata = LPPDetailsMetadata(
       mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
       outstandingAmount = None,
@@ -593,6 +594,7 @@ trait TestData {
           principalChargeDueDate = LocalDate.parse("2021-03-07"),
           penaltyChargeReference = None,
           principalChargeLatestClearing = None,
+          vatOutstandingAmount = None,
           LPPDetailsMetadata = LPPDetailsMetadata(
             mainTransaction = Some(MainTransactionEnum.ManualCharge),
             outstandingAmount = None,

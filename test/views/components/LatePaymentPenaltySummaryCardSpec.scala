@@ -123,15 +123,14 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours {
       principalChargeBillingTo = LocalDate.of(2020, 2, 1),
       principalChargeDueDate = LocalDate.of(2020, 3, 7),
       principalChargeLatestClearing = None,
-      appealInformation = Some(Seq(AppealInformationType(
+        appealInformation = Some(Seq(AppealInformationType(
         appealStatus = Some(AppealStatusEnum.Unappealable),
         appealLevel = Some(AppealLevelEnum.HMRC)
       ))),
       LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(CentralAssessmentSecondLPP),
         None,
-        None
-      )
+        None)
     )))
   ).get.head
 

@@ -1269,7 +1269,8 @@ class IndexPageHelperSpec extends SpecBase {
                 principalChargeDueDate = LocalDate.of(2022, 1, 1),
                 principalChargeLatestClearing = None,
                 penaltyChargeReference = Some("PEN1234567"),
-                LPPDetailsMetadata = LPPDetailsMetadata(
+                vatOutstandingAmount = Some(BigDecimal(123.45)),
+                  LPPDetailsMetadata = LPPDetailsMetadata(
                   mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
                   outstandingAmount = Some(99),
                   timeToPay = None
@@ -1330,7 +1331,8 @@ class IndexPageHelperSpec extends SpecBase {
                 principalChargeDueDate = LocalDate.of(2022, 1, 1),
                 principalChargeLatestClearing = Some(LocalDate.of(2022, 1, 1)),
                 penaltyChargeReference = Some("PEN1234567"),
-                LPPDetailsMetadata = LPPDetailsMetadata(
+                vatOutstandingAmount = Some(BigDecimal(123.45)),
+                  LPPDetailsMetadata = LPPDetailsMetadata(
                   mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
                   outstandingAmount = Some(99),
                   timeToPay = None
@@ -1436,7 +1438,8 @@ class IndexPageHelperSpec extends SpecBase {
         principalChargeDueDate = LocalDate.of(2022, 1, 1).plusMonths(2).plusDays(6),
         penaltyChargeReference = Some("123456789"),
         principalChargeLatestClearing = Some(LocalDate.of(2022, 1, 1).plusMonths(2).plusDays(7)),
-        LPPDetailsMetadata = LPPDetailsMetadata(
+        vatOutstandingAmount = Some(BigDecimal(123.45)),
+          LPPDetailsMetadata = LPPDetailsMetadata(
           mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
           outstandingAmount = Some(99),
           timeToPay = None

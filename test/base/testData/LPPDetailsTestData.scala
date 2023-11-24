@@ -58,7 +58,8 @@ trait LPPDetailsTestData {
     principalChargeDueDate = principleChargeBillingDueDate,
     penaltyChargeReference = Some("PEN1234567"),
     principalChargeLatestClearing = None,
-    LPPDetailsMetadata = LPPDetailsMetadata(
+    vatOutstandingAmount = Some(BigDecimal(123.45)),
+      LPPDetailsMetadata = LPPDetailsMetadata(
       mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
       outstandingAmount = Some(99),
       timeToPay = None
@@ -134,10 +135,11 @@ trait LPPDetailsTestData {
     principalChargeDueDate = principleChargeBillingDueDate,
     penaltyChargeReference = None,
     principalChargeLatestClearing = None,
-    LPPDetailsMetadata = LPPDetailsMetadata(
+    vatOutstandingAmount = Some(BigDecimal(123.45)),
+      LPPDetailsMetadata = LPPDetailsMetadata(
       mainTransaction = Some(MainTransactionEnum.ManualCharge),
       None,
-      None
+      None,
     )
   )
 }

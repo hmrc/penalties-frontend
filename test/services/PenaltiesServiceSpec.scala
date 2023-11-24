@@ -522,11 +522,11 @@ class PenaltiesServiceSpec extends SpecBase {
       principalChargeDueDate = LocalDate.of(2022, 1, 1).plusMonths(2).plusDays(6),
       penaltyChargeReference = Some("123456789"),
       principalChargeLatestClearing = Some(LocalDate.of(2022, 1, 1).plusMonths(2).plusDays(7)),
-      LPPDetailsMetadata = LPPDetailsMetadata(
+      vatOutstandingAmount = Some(BigDecimal(123.45)),
+        LPPDetailsMetadata = LPPDetailsMetadata(
         mainTransaction = Some(MainTransactionEnum.VATReturnCharge),
         outstandingAmount = Some(99),
-        timeToPay = None
-      )
+        timeToPay = None)
     )
     "return 0" when {
       "all the penalties have been appealed successfully" in new Setup {

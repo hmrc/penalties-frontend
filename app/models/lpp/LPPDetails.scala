@@ -47,6 +47,7 @@ case class LPPDetails(
                        principalChargeDueDate: LocalDate,
                        penaltyChargeReference: Option[String],
                        principalChargeLatestClearing: Option[LocalDate],
+                       vatOutstandingAmount: Option[BigDecimal],
                        LPPDetailsMetadata: LPPDetailsMetadata
                      ) extends Ordered[LPPDetails] {
   override def compare(that: LPPDetails): Int = {
@@ -105,6 +106,7 @@ object LPPDetails extends JsonUtils {
         principalChargeDueDate <- (json \ "principalChargeDueDate").validate[LocalDate]
         penaltyChargeReference <- (json \ "penaltyChargeReference").validateOpt[String]
         principalChargeLatestClearing <- (json \ "principalChargeLatestClearing").validateOpt[LocalDate]
+        vatOutstandingAmount <- (json \ "vatOutstandingAmount").validateOpt[BigDecimal]
         metadata <- Json.fromJson(json)(LPPDetailsMetadata.format)
       }
       yield {
@@ -112,7 +114,7 @@ object LPPDetails extends JsonUtils {
           penaltyAmountPosted, penaltyAmountAccruing, penaltyAmountOutstanding, lPP1LRDays, lPP1HRDays, lPP2Days, lPP1LRCalculationAmount,
           lPP1HRCalculationAmount, lPP1LRPercentage, lPP1HRPercentage, lPP2Percentage, communicationsDate, penaltyChargeDueDate, appealInformation,
           principalChargeBillingFrom, principalChargeBillingTo, principalChargeDueDate, penaltyChargeReference,
-          principalChargeLatestClearing, metadata)
+          principalChargeLatestClearing, vatOutstandingAmount, metadata)
       }
     }
 
@@ -141,7 +143,8 @@ object LPPDetails extends JsonUtils {
         "principalChargeBillingTo" -> o.principalChargeBillingTo,
         "principalChargeDueDate" -> o.principalChargeDueDate,
         "penaltyChargeReference" -> o.penaltyChargeReference,
-        "principalChargeLatestClearing" -> o.principalChargeLatestClearing
+        "principalChargeLatestClearing" -> o.principalChargeLatestClearing,
+        "vatOutstandingAmount" -> o.vatOutstandingAmount
       ).deepMerge(Json.toJsObject(o.LPPDetailsMetadata)(LPPDetailsMetadata.format))
     }
   }
