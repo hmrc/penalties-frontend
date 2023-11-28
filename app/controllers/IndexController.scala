@@ -104,4 +104,11 @@ class IndexController @Inject()(view: IndexView,
       Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=$isLPP&isAdditional=$isAdditional"))
     }
   }
+
+  def redirectToFindOutHowToAppeal(penaltyNumber: String, principalChargeReference: String, vatAmountInPence: Int,
+                        isCa: Boolean = false): Action[AnyContent] = authorise.async {
+    logger.debug(s"[IndexController][redirectToFindOutHowToAppeal] - Redirect to appeals frontend with penaltyNumber $penaltyNumber and is principleChargeReference: $principalChargeReference " +
+      s"and has vatAmountInPence: $vatAmountInPence and is Ca: $isCa")
+    Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal-find-out-how-to-appeal?penaltyNumber=$penaltyNumber&principalChargeReference=$principalChargeReference&vatAmountInPence=$vatAmountInPence&isCa=$isCa"))
+  }
 }

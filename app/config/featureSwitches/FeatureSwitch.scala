@@ -34,5 +34,9 @@ case object ShowAppealAgainstObligationChanges extends FeatureSwitch {
   override val name: String = s"${FeatureSwitch.prefix}.show-appeal-against-obligation-changes"
 }
 
+case object ShowFindOutHowToAppealJourney extends FeatureSwitch {
+  override val name: String = s"${FeatureSwitch.prefix}.show-find-out-how-to-appeal-journey"
+}
+
 
 

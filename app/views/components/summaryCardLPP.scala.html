@@ -61,6 +61,16 @@
     }
 }
 
+@howToAppealContent = {
+@if(summaryCard.isVatPaid) {
+<a class="govuk-link" href=@{
+   controllers.routes.IndexController.redirectToFindOutHowToAppeal(summaryCard.penaltyChargeReference.get, summaryCard.principalChargeReference, summaryCard.vatOutstandingAmount.get.toInt, isCa=summaryCard.isCentralAssessment).url
+   }>
+    @messages("summaryCard.footerLinkTextHowToAppeal") <span class="govuk-visually-hidden">@visuallyHiddenText</span>
+</a>
+}
+}
+
 @cannotAppealContents = {
     <p>
         @if(summaryCard.isCentralAssessment) {
@@ -94,7 +104,7 @@
                 @calculationContent
                 </li>
                 <li class="app-summary-card__actions-list-item">
-                @appealContent
+                @howToAppealContent
                 </li>
             </ul>
         </div>

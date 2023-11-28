@@ -104,6 +104,7 @@ summaryCard.appeal.C.01 = Appeal rejected
 summaryCard.appeal.C.02 = Appeal rejected by tax tribunal
 summaryCard.footerLinkText = Appeal penalty point {0}
 summaryCard.footerLinkTextNoPointNumber = Appeal this penalty
+summaryCard.footerLinkTextHowToAppeal = Find out how to appeal
 summaryCard.adjustedPoint.cannotAppeal = You cannot appeal this point
 summaryCard.manual.cannotAppeal = You cannot appeal this penalty online
 summaryCard.addedOnKey = Added on

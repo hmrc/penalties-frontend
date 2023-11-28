@@ -358,7 +358,8 @@ class SummaryCardHelper @Inject()(val appConfig: AppConfig) extends ImplicitDate
       taxPeriodStartDate = lpp.principalChargeBillingFrom.toString,
       taxPeriodEndDate = lpp.principalChargeBillingTo.toString,
       isAgent = user.isAgent,
-      isCentralAssessment = isCentralAssessment
+      isCentralAssessment = isCentralAssessment,
+      vatOutstandingAmount = lpp.vatOutstandingAmount
     )
   }
 
