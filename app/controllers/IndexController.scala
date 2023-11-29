@@ -109,6 +109,6 @@ class IndexController @Inject()(view: IndexView,
                         isCa: Boolean = false): Action[AnyContent] = authorise.async {
     logger.debug(s"[IndexController][redirectToFindOutHowToAppeal] - Redirect to appeals frontend with principleChargeReference: $principalChargeReference " +
       s"and has vatPeriodStartDate: $vatPeriodStartDate and has vatPeriodEndDate: $vatPeriodEndDate and has vatAmountInPence: $vatAmountInPence and is Ca: $isCa")
-    Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal-find-out-how-to-appeal?principalChargeReference=$principalChargeReference&vatAmountInPence=$vatAmountInPence&vatPerodStartDate=$vatPeriodStartDate&vatPeriodEndDate=$vatPeriodEndDate&isCa=$isCa"))
+    Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal-find-out-how-to-appeal?principalChargeReference=$principalChargeReference&vatAmountInPence=$vatAmountInPence&vatPeriodStartDate=$vatPeriodStartDate&vatPeriodEndDate=$vatPeriodEndDate&isCa=$isCa"))
   }
 }

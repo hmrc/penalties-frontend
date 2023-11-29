@@ -63,13 +63,11 @@
 }
 
 @howToAppealContent = {
-@if(!summaryCard.isVatPaid) {
 <a class="govuk-link" href=@{
    controllers.routes.IndexController.redirectToFindOutHowToAppeal(summaryCard.principalChargeReference, summaryCard.vatOutstandingAmountInPence.get,summaryCard.taxPeriodStartDate, summaryCard.taxPeriodEndDate, isCa=summaryCard.isCentralAssessment).url
    }>
     @messages("summaryCard.footerLinkTextHowToAppeal") <span class="govuk-visually-hidden">@visuallyHiddenText</span>
 </a>
-}
 }
 
 @cannotAppealContents = {
@@ -93,13 +91,12 @@
 @details(messages("summaryCard.details.summary"), cannotAppealContents, detailsClasses = Some("govuk-!-margin-bottom-0"))
 }
 
-
 @footerDisplayLogic = {
     @if(summaryCard.penaltyCategory.equals(MANUAL)) {
 <div class="app-summary-card__actions">
     <a class="govuk-body">@messages("summaryCard.manual.cannotAppeal")</a></div>
-    }  else if(appConfig.isFeatureSwitchEnabled(ShowFindOutHowToAppealJourney) && !summaryCard.isCentralAssessment) {
-@if(!summaryCard.isVatPaid && summaryCard.appealStatus.getOrElse(AppealStatusEnum.Unappealable) == AppealStatusEnum.Unappealable){
+    }  else if(appConfig.isFeatureSwitchEnabled(ShowFindOutHowToAppealJourney) && !summaryCard.isCentralAssessment && !summaryCard.isVatPaid) {
+@if(summaryCard.appealStatus.getOrElse(AppealStatusEnum.Unappealable) == AppealStatusEnum.Unappealable){
 <div class="app-summary-card__actions">
     <ul class="app-summary-card__actions-list">
         <li class="app-summary-card__actions-list-item">
