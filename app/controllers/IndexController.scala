@@ -105,10 +105,10 @@ class IndexController @Inject()(view: IndexView,
     }
   }
 
-  def redirectToFindOutHowToAppeal(penaltyNumber: String, principalChargeReference: String, vatAmountInPence: Int,
+  def redirectToFindOutHowToAppeal(principalChargeReference: String, vatAmountInPence: Int, vatPeriodStartDate: String, vatPeriodEndDate:String,
                         isCa: Boolean = false): Action[AnyContent] = authorise.async {
-    logger.debug(s"[IndexController][redirectToFindOutHowToAppeal] - Redirect to appeals frontend with penaltyNumber $penaltyNumber and is principleChargeReference: $principalChargeReference " +
-      s"and has vatAmountInPence: $vatAmountInPence and is Ca: $isCa")
-    Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal-find-out-how-to-appeal?penaltyNumber=$penaltyNumber&principalChargeReference=$principalChargeReference&vatAmountInPence=$vatAmountInPence&isCa=$isCa"))
+    logger.debug(s"[IndexController][redirectToFindOutHowToAppeal] - Redirect to appeals frontend with principleChargeReference: $principalChargeReference " +
+      s"and has vatPeriodStartDate: $vatPeriodStartDate and has vatPeriodEndDate: $vatPeriodEndDate and has vatAmountInPence: $vatAmountInPence and is Ca: $isCa")
+    Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal-find-out-how-to-appeal?principalChargeReference=$principalChargeReference&vatAmountInPence=$vatAmountInPence&vatPerodStartDate=$vatPeriodStartDate&vatPeriodEndDate=$vatPeriodEndDate&isCa=$isCa"))
   }
 }

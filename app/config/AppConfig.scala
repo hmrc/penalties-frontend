@@ -89,6 +89,9 @@ class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesCon
   lazy val lspGuidanceLink: String = config.get[String]("urls.lspGuidanceUrl")
 
   lazy val lppCalculationGuidanceLink: String = config.get[String]("urls.lppCalculationGuidance")
+
+
+
 }
 
 
