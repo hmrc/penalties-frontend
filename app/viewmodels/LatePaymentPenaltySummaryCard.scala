@@ -38,4 +38,5 @@ case class LatePaymentPenaltySummaryCard(
                                           isAgent: Boolean = false,
                                           isCentralAssessment: Boolean = false,
                                           vatOutstandingAmountInPence: Option[Int],
+                                          showFindOutHowToAppeal: Boolean
                                         )

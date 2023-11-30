@@ -32,6 +32,7 @@ class FeatureSwitchSpec extends SpecBase {
   "listOfAllFeatureSwitches" should {
     "be all the featureswitches in the app" in {
       FeatureSwitch.listOfAllFeatureSwitches shouldBe List(ShowURBanner, ShowAppealAgainstObligationChanges)
+      FeatureSwitch.listOfAllFeatureSwitches shouldBe List(ShowURBanner, ShowFindOutHowToAppealJourney)
     }
   }
 }

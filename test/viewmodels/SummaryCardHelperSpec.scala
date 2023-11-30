@@ -81,7 +81,9 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       taxPeriodStartDate = principleChargeBillingStartDate.toString,
       taxPeriodEndDate = principleChargeBillingEndDate.toString,
       isAgent = isAgent,
-      isCentralAssessment = isCentralAssessment
+      isCentralAssessment = isCentralAssessment,
+      vatOutstandingAmountInPence= Some(12345),
+      showFindOutHowToAppeal = true
     )
   }
 
@@ -111,7 +113,11 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       taxPeriodStartDate = principleChargeBillingStartDate.toString,
       taxPeriodEndDate = principleChargeBillingEndDate.toString,
       isAgent = isAgent,
-      isCentralAssessment = isCentralAssessment
+      isCentralAssessment = isCentralAssessment,
+      vatOutstandingAmountInPence= Some(12345),
+      showFindOutHowToAppeal = true
+
+
     )
   }
   
@@ -136,7 +142,10 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       penaltyCategory = LPPPenaltyCategoryEnum.MANUAL,
       dueDate = "7\u00A0June\u00A02021",
       taxPeriodStartDate = principleChargeBillingStartDate.toString,
-      taxPeriodEndDate = principleChargeBillingEndDate.toString
+      taxPeriodEndDate = principleChargeBillingEndDate.toString,
+      vatOutstandingAmountInPence= Some(12345),
+      showFindOutHowToAppeal = true
+
     )
   }
 
