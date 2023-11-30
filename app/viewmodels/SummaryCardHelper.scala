@@ -16,13 +16,9 @@
 
 package viewmodels
 
-import config.AppConfig
-import config.featureSwitches.{FeatureSwitching, ShowAppealAgainstObligationChanges}
-
 import java.time.LocalDate
-
 import config.AppConfig
-import config.featureSwitches.{FeatureSwitching, ShowFindOutHowToAppealJourney}
+import config.featureSwitches.{FeatureSwitching, ShowFindOutHowToAppealJourney, ShowAppealAgainstObligationChanges}
 import javax.inject.Inject
 import models.User
 import models.appealInfo.AppealStatusEnum

@@ -22,8 +22,8 @@ sealed trait FeatureSwitch {
 
 object FeatureSwitch {
   val prefix: String = "feature.switch"
-  val listOfAllFeatureSwitches: List[FeatureSwitch] = List(ShowURBanner, ShowAppealAgainstObligationChanges)
-  val listOfAllFeatureSwitches: List[FeatureSwitch] = List(ShowURBanner,ShowFindOutHowToAppealJourney)
+  val listOfAllFeatureSwitches: List[FeatureSwitch] = List(ShowURBanner, ShowAppealAgainstObligationChanges, ShowFindOutHowToAppealJourney)
+
 }
 
 case object ShowURBanner extends FeatureSwitch {
@@ -35,6 +35,7 @@ case object ShowAppealAgainstObligationChanges extends FeatureSwitch {
   override val name: String = s"${FeatureSwitch.prefix}.show-appeal-against-obligation-changes"
 }
 
+//TODO: remove once the new show find out how to appeal changes are ready
 case object ShowFindOutHowToAppealJourney extends FeatureSwitch {
   override val name: String = s"${FeatureSwitch.prefix}.show-find-out-how-to-appeal-journey"
 }
