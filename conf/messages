@@ -112,6 +112,7 @@ summaryCard.removalReason.FAP = Change to VAT return deadlines
 summaryCard.removalReason.MAN = Removed by HMRC
 summaryCard.infoOnAdjustmentPointsLinkText = Read the guidance about adjustment points
 summaryCard.appealCheck = Check if you can appeal
+summaryCard.findOutHowToAppeal = Find out how to appeal
 summaryCard.lpp.key2 = Penalty type
 summaryCard.lpp.key2.value.lpp1 = First penalty for late payment
 summaryCard.lpp.key2.value.lpp2 = Second penalty for late payment

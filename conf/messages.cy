@@ -112,6 +112,7 @@ summaryCard.removalReason.FAP = Newid i ddyddiadau cau ar gyfer Ffurflenni TAW
 summaryCard.removalReason.MAN = Wedi’i ddileu gan CThEF
 summaryCard.infoOnAdjustmentPointsLinkText = Darllenwch yr arweiniad ynghylch pwyntiau addasu
 summaryCard.appealCheck = Gwirio a allwch apelio
+summaryCard.findOutHowToAppeal = Dysgwch sut i apelio
 summaryCard.lpp.key2 = Math o gosb
 summaryCard.lpp.key2.value.lpp1 = Cosb gyntaf am dalu’n hwyr
 summaryCard.lpp.key2.value.lpp2 = Ail gosb am dalu’n hwyr

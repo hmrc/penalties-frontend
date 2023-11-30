@@ -16,8 +16,10 @@
 
 package viewmodels
 
-import java.time.LocalDate
+import config.AppConfig
+import config.featureSwitches.{FeatureSwitching, ShowAppealAgainstObligationChanges}
 
+import java.time.LocalDate
 import javax.inject.Inject
 import models.User
 import models.appealInfo.AppealStatusEnum
@@ -32,7 +34,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListR
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 import utils.{CurrencyFormatter, ImplicitDateFormatter, PenaltyPeriodHelper, ViewUtils}
 
-class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils {
+class SummaryCardHelper @Inject()(val appConfig: AppConfig) extends ImplicitDateFormatter with ViewUtils with FeatureSwitching {
 
   def populateLateSubmissionPenaltyCard(penalties: Seq[LSPDetails],
                                         threshold: Int, activePoints: Int)
@@ -97,7 +99,8 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
       isManuallyRemovedPoint = isManuallyRemovedPoint,
       multiplePenaltyPeriod = getMultiplePenaltyPeriodMessage(penalty),
       dueDate = dueDate.map(dateToString(_)),
-      penaltyCategory = penalty.penaltyCategory
+      penaltyCategory = penalty.penaltyCategory,
+      showFindOutHowToAppealText = isEnabled(ShowAppealAgainstObligationChanges)
     )
   }
 
@@ -173,7 +176,8 @@ class SummaryCardHelper @Inject()() extends ImplicitDateFormatter with ViewUtils
       appealLevel = appealLevel,
       totalPenaltyAmount = penalty.chargeAmount.getOrElse(BigDecimal(0)),
       multiplePenaltyPeriod = getMultiplePenaltyPeriodMessage(penalty),
-      dueDate = dueDate.map(dateToString(_))
+      dueDate = dueDate.map(dateToString(_)),
+      showFindOutHowToAppealText = isEnabled(ShowAppealAgainstObligationChanges)
     )
   }
 
