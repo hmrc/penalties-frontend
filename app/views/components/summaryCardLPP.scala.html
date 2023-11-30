@@ -19,8 +19,7 @@
 @import utils.CurrencyFormatter
 @import models.appealInfo.AppealStatusEnum
 @import models.lpp.LPPPenaltyCategoryEnum._
-@import config.AppConfig
-@import config.featureSwitches.ShowFindOutHowToAppealJourney
+
 
 @this(
         govukSummaryList: GovukSummaryList,
@@ -28,7 +27,7 @@
         link: components.link,
         details: components.details
 )
-@(summaryCard: LatePaymentPenaltySummaryCard)(implicit messages: Messages, user: User[_], appConfig: AppConfig)
+@(summaryCard: LatePaymentPenaltySummaryCard)(implicit messages: Messages, user: User[_])
 
 
 @visuallyHiddenText = @{

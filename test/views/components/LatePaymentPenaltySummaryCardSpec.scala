@@ -331,7 +331,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours wit
       }
 
       "display the 'why you cannot appeal yet' drop down if the VAT has not been paid and the penalty has no charge reference when the use is an Agent" in new Setup() {
-        def doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMade)(messages, agentUser, appConfig))
+        def doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMade)(messages, agentUser))
         doc.select(".govuk-details__summary-text").get(0).ownText shouldBe "Why you cannot appeal yet"
         doc.select(".govuk-details__text p:nth-child(1)").get(0).text shouldBe "You cannot appeal until the VAT is paid."
         doc.select(".govuk-details__text p:nth-child(2)").get(0).text shouldBe "It can take up to 5 days for the payment to clear and show on your client’s payment history. If they have already paid, keep checking back to see when the payment clears."
@@ -339,7 +339,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours wit
       }
 
       "display the 'why you cannot appeal yet' drop down with Central Assessment content if the VAT has not been paid and the Main Transaction is Central Assessment when the user is an Agent" in {
-        def doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMadeCentralAssessment)(messages, agentUser, appConfig))
+        def doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMadeCentralAssessment)(messages, agentUser))
         doc.select(".govuk-details__summary-text").get(0).ownText shouldBe "Why you cannot appeal yet"
         doc.select(".govuk-details__text p:nth-child(1)").get(0).text shouldBe "You cannot appeal until the VAT Return is submitted and your client pays the VAT."
         doc.select(".govuk-details__text p:nth-child(2)").get(0).text shouldBe "If you believe a VAT Return was not due, appeal the late submission penalty for this VAT period instead."
@@ -442,7 +442,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours wit
       }
 
       "display the 'why you cannot appeal yet' drop down if the penalty is unappealable (VAT has not been paid) and the user is an Agent" in new Setup() {
-        def doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelForUnappealableLPP2)(messages, agentUser, appConfig))
+        def doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelForUnappealableLPP2)(messages, agentUser))
         doc.select(".govuk-details__summary-text").get(0).ownText shouldBe "Why you cannot appeal yet"
         doc.select(".govuk-details__text p:nth-child(1)").get(0).text shouldBe "You cannot appeal until the VAT is paid."
         doc.select(".govuk-details__text p:nth-child(2)").get(0).text shouldBe "It can take up to 5 days for the payment to clear and show on your client’s payment history. If they have already paid, keep checking back to see when the payment clears."
@@ -460,7 +460,7 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours wit
 
       "display the 'why you cannot appeal yet' drop down with Central Assessment content if the VAT has not been paid and the " +
         "Main Transaction is Central Assessment and the user is an Agent" in {
-        def doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMadeLPP2CentralAssessment)(messages, agentUser, appConfig))
+        def doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMadeLPP2CentralAssessment)(messages, agentUser))
         doc.select(".govuk-details__summary-text").get(0).ownText shouldBe "Why you cannot appeal yet"
         doc.select(".govuk-details__text p:nth-child(1)").get(0).text shouldBe "You cannot appeal until the VAT Return is submitted and your client pays the VAT."
         doc.select(".govuk-details__text p:nth-child(2)").get(0).text shouldBe "If you believe a VAT Return was not due, appeal the late submission penalty for this VAT period instead."
