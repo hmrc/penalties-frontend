@@ -19,6 +19,7 @@
 @import utils.CurrencyFormatter
 @import viewmodels.LateSubmissionPenaltySummaryCard
 @import models.lsp.LSPPenaltyCategoryEnum
+@import config.featureSwitches.ShowAppealAgainstObligationChanges
 
 @this(
         govukSummaryList: GovukSummaryList,
@@ -98,7 +99,11 @@
                     } else if(summaryCard.penaltyCategory.contains(LSPPenaltyCategoryEnum.Charge) && !summaryCard.isAddedOrRemovedPoint) {
                             {if(!summaryCard.isReturnSubmitted || summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
                                     <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}>
-                                    {messages("summaryCard.appealCheck")} <span class="govuk-visually-hidden">{visuallyHiddenText.getOrElse("")}</span>
+                                    {if(summaryCard.showFindOutHowToAppealText) {
+                                      messages("summaryCard.findOutHowToAppeal")
+                                    } else {
+                                      messages("summaryCard.appealCheck")
+                                    }}<span class="govuk-visually-hidden">{visuallyHiddenText.getOrElse("")}</span>
                                     </a>
                             } else {
                                     <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, false, false).url}>
@@ -108,7 +113,11 @@
                     } else if(!summaryCard.isAddedOrRemovedPoint) {
                         if(!summaryCard.isReturnSubmitted || summaryCard.appealStatus.contains(AppealStatusEnum.Unappealable)) {
                                 <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, true, false).url}>
-                                {messages("summaryCard.appealCheck")} <span class="govuk-visually-hidden">{visuallyHiddenText.getOrElse("")}</span>
+                                {if(summaryCard.showFindOutHowToAppealText) {
+                                  messages("summaryCard.findOutHowToAppeal")
+                                } else {
+                                  messages("summaryCard.appealCheck")
+                                }} <span class="govuk-visually-hidden">{visuallyHiddenText.getOrElse("")}</span>
                                 </a>
                         } else {
                                 <a class="govuk-link" href={controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyId, false, false, false).url}>
