@@ -16,10 +16,9 @@
 
 package viewmodels
 
-import config.AppConfig
-import config.featureSwitches.{FeatureSwitching, ShowAppealAgainstObligationChanges}
-
 import java.time.LocalDate
+import config.AppConfig
+import config.featureSwitches.{FeatureSwitching, ShowFindOutHowToAppealJourney, ShowAppealAgainstObligationChanges}
 import javax.inject.Inject
 import models.User
 import models.appealInfo.AppealStatusEnum
@@ -343,6 +342,7 @@ class SummaryCardHelper @Inject()(val appConfig: AppConfig) extends ImplicitDate
     val appealLevel = lpp.appealInformation.flatMap(_.headOption.flatMap(_.appealLevel))
     val isCentralAssessment = lpp.LPPDetailsMetadata.mainTransaction.get.equals(CentralAssessmentFirstLPP) ||
       lpp.LPPDetailsMetadata.mainTransaction.get.equals(CentralAssessmentSecondLPP) || lpp.LPPDetailsMetadata.mainTransaction.get.equals(CentralAssessment)
+    val vatOustandingAmount=lpp.vatOutstandingAmount.map(amount=> (amount * 100).toInt).getOrElse(0).toInt
     LatePaymentPenaltySummaryCard(
       cardRows = rows,
       status = tagStatus(None, Some(lpp)),
@@ -358,7 +358,10 @@ class SummaryCardHelper @Inject()(val appConfig: AppConfig) extends ImplicitDate
       taxPeriodStartDate = lpp.principalChargeBillingFrom.toString,
       taxPeriodEndDate = lpp.principalChargeBillingTo.toString,
       isAgent = user.isAgent,
-      isCentralAssessment = isCentralAssessment
+      isCentralAssessment = isCentralAssessment,
+      vatOutstandingAmountInPence = vatOustandingAmount,
+      showFindOutHowToAppeal = isEnabled(ShowFindOutHowToAppealJourney)
+
     )
   }
 

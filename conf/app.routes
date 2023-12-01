@@ -6,6 +6,8 @@ GET        /language/:lang              controllers.LanguageSwitchController.swi
 GET        /assets/*file                controllers.Assets.versioned(path = "/public", file: Asset)
 GET        /                            controllers.IndexController.onPageLoad
 GET        /appeal-penalty              controllers.IndexController.redirectToAppeals(penaltyId : String, isLPP : Boolean, isObligation : Boolean, isAdditional: Boolean)
+GET        /find-out-how-to-appeal      controllers.IndexController.redirectToFindOutHowToAppeal(principalChargeReference : String, vatAmountInPence : Int, vatPeriodStartDate: String, vatPeriodEndDate:String, isCa: Boolean)
+
 GET        /compliance                  controllers.ComplianceController.onPageLoad
 
 GET        /calculation                 controllers.CalculationController.onPageLoad(principalChargeReference: String, penaltyCategory: String)

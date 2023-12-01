@@ -104,6 +104,7 @@ summaryCard.appeal.C.01 = Mae canlyniad yr apêl wedi newid
 summaryCard.appeal.C.02 = Mae’r apêl wedi’i gwrthod gan y tribiwnlys treth
 summaryCard.footerLinkText = Apelio yn erbyn pwynt cosb {0}
 summaryCard.footerLinkTextNoPointNumber = Apelio yn erbyn y gosb hon
+summaryCard.footerLinkTextHowToAppeal = Dysgwch sut i apelio
 summaryCard.adjustedPoint.cannotAppeal = Ni allwch apelio yn erbyn y pwynt hwn
 summaryCard.manual.cannotAppeal = Ni allwch apelio yn erbyn y gosb hon ar-lein
 summaryCard.addedOnKey = Ychwanegwyd ar
