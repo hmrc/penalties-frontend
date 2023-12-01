@@ -82,7 +82,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       taxPeriodEndDate = principleChargeBillingEndDate.toString,
       isAgent = isAgent,
       isCentralAssessment = isCentralAssessment,
-      vatOutstandingAmountInPence= Some(12345),
+      vatOutstandingAmountInPence= 12345,
       showFindOutHowToAppeal = true
     )
   }
@@ -114,7 +114,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       taxPeriodEndDate = principleChargeBillingEndDate.toString,
       isAgent = isAgent,
       isCentralAssessment = isCentralAssessment,
-      vatOutstandingAmountInPence= Some(12345),
+      vatOutstandingAmountInPence= 12345,
       showFindOutHowToAppeal = true
 
 
@@ -143,7 +143,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       dueDate = "7\u00A0June\u00A02021",
       taxPeriodStartDate = principleChargeBillingStartDate.toString,
       taxPeriodEndDate = principleChargeBillingEndDate.toString,
-      vatOutstandingAmountInPence= Some(12345),
+      vatOutstandingAmountInPence= 12345,
       showFindOutHowToAppeal = true
 
     )

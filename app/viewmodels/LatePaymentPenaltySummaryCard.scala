@@ -37,6 +37,6 @@ case class LatePaymentPenaltySummaryCard(
                                           taxPeriodEndDate: String,
                                           isAgent: Boolean = false,
                                           isCentralAssessment: Boolean = false,
-                                          vatOutstandingAmountInPence: Option[Int],
+                                          vatOutstandingAmountInPence: Int,
                                           showFindOutHowToAppeal: Boolean
                                         )

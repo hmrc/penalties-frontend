@@ -63,7 +63,7 @@
 
 @howToAppealContent = {
 <a class="govuk-link" href=@{
-   controllers.routes.IndexController.redirectToFindOutHowToAppeal(summaryCard.principalChargeReference, summaryCard.vatOutstandingAmountInPence.get,summaryCard.taxPeriodStartDate, summaryCard.taxPeriodEndDate, isCa=summaryCard.isCentralAssessment).url
+   controllers.routes.IndexController.redirectToFindOutHowToAppeal(summaryCard.principalChargeReference, summaryCard.vatOutstandingAmountInPence,summaryCard.taxPeriodStartDate, summaryCard.taxPeriodEndDate, isCa=summaryCard.isCentralAssessment).url
    }>
     @messages("summaryCard.footerLinkTextHowToAppeal") <span class="govuk-visually-hidden">@visuallyHiddenText</span>
 </a>
@@ -94,7 +94,7 @@
     @if(summaryCard.penaltyCategory.equals(MANUAL)) {
 <div class="app-summary-card__actions">
     <a class="govuk-body">@messages("summaryCard.manual.cannotAppeal")</a></div>
-    }  else if(summaryCard.showFindOutHowToAppeal && !summaryCard.isCentralAssessment && !summaryCard.isVatPaid) {
+    }  else if(summaryCard.showFindOutHowToAppeal && !summaryCard.isCentralAssessment && !summaryCard.isVatPaid && (summaryCard.vatOutstandingAmountInPence > 0)) {
 @if(summaryCard.appealStatus.getOrElse(AppealStatusEnum.Unappealable) == AppealStatusEnum.Unappealable){
 <div class="app-summary-card__actions">
     <ul class="app-summary-card__actions-list">
