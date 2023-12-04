@@ -17,8 +17,9 @@
 package viewmodels
 
 import java.time.LocalDate
+
 import config.AppConfig
-import config.featureSwitches.{FeatureSwitching, ShowFindOutHowToAppealJourney, ShowAppealAgainstObligationChanges}
+import config.featureSwitches.{FeatureSwitching, ShowAppealAgainstObligationChanges, ShowCAFindOutHowToAppealJourney, ShowFindOutHowToAppealJourney}
 import javax.inject.Inject
 import models.User
 import models.appealInfo.AppealStatusEnum
@@ -360,8 +361,8 @@ class SummaryCardHelper @Inject()(val appConfig: AppConfig) extends ImplicitDate
       isAgent = user.isAgent,
       isCentralAssessment = isCentralAssessment,
       vatOutstandingAmountInPence = vatOustandingAmount,
-      showFindOutHowToAppeal = isEnabled(ShowFindOutHowToAppealJourney)
-
+      showFindOutHowToAppeal = isEnabled(ShowFindOutHowToAppealJourney),
+      showCAFindOutHowToAppeal = isEnabled(ShowCAFindOutHowToAppealJourney)
     )
   }
 

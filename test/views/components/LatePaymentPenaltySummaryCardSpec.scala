@@ -26,18 +26,23 @@ import views.behaviours.ViewBehaviours
 import views.html.components.summaryCardLPP
 import java.time.LocalDate
 
-import config.featureSwitches.{FeatureSwitching, ShowFindOutHowToAppealJourney}
+import config.featureSwitches.{FeatureSwitching, ShowCAFindOutHowToAppealJourney, ShowFindOutHowToAppealJourney}
 import models.lpp.MainTransactionEnum.{CentralAssessmentFirstLPP, CentralAssessmentSecondLPP}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 
 
 class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours with FeatureSwitching with BeforeAndAfterAll with BeforeAndAfterEach {
 
-  class Setup(isShowFindOutHowToAppealEnabled: Boolean = false) {
+  class Setup(isShowFindOutHowToAppealEnabled: Boolean = false, isShowCAFindOutHowToAppealJourneyEnabled: Boolean = false) {
     if(isShowFindOutHowToAppealEnabled) {
       enableFeatureSwitch(ShowFindOutHowToAppealJourney)
     } else {
       disableFeatureSwitch(ShowFindOutHowToAppealJourney)
+    }
+    if(isShowCAFindOutHowToAppealJourneyEnabled) {
+      enableFeatureSwitch(ShowCAFindOutHowToAppealJourney)
+    } else {
+      disableFeatureSwitch(ShowCAFindOutHowToAppealJourney)
     }
   }
 
@@ -322,7 +327,15 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours wit
         doc.select("dt").eq(5).isEmpty shouldBe true
       }
 
-      "display the 'why you cannot appeal yet' drop down with Central Assessment content if the VAT has not been paid and the Main Transaction is Central Assessment 4720 and with isShowFindOutHowToAppealEnabled FS enabled" in new Setup(isShowFindOutHowToAppealEnabled = true) {
+      "display the 'why you cannot appeal yet' drop down with Central Assessment content if the VAT has not been paid and the Main Transaction is Central Assessment 4720, isShowFindOutHowToAppealEnabled FS is enabled and ShowCAFindOutHowToAppealJourney FS is disabled" in new Setup(isShowFindOutHowToAppealEnabled = true) {
+        def doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMadeIsCentralAssessment))
+        doc.select(".govuk-details__summary-text").get(0).ownText shouldBe "Why you cannot appeal yet"
+        doc.select(".govuk-details__text p:nth-child(1)").get(0).text shouldBe "You cannot appeal until you submit the VAT Return and pay your VAT."
+        doc.select(".govuk-details__text p:nth-child(2)").get(0).text shouldBe "If you believe you did not need to submit a VAT Return, appeal the late submission penalty for this VAT period instead."
+        doc.select("dt").eq(5).isEmpty shouldBe true
+      }
+
+      "not display the 'why you cannot appeal yet' drop down with Central Assessment content if the VAT has not been paid and the Main Transaction is Central Assessment 4720 when ShowCAFindOutHowToAppealJourney FS is enabled" in new Setup(isShowCAFindOutHowToAppealJourneyEnabled = true) {
         def doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMadeIsCentralAssessment))
         doc.select(".govuk-details__summary-text").isEmpty shouldBe true
         doc.select(".govuk-details__text p:nth-child(1)").isEmpty shouldBe true
