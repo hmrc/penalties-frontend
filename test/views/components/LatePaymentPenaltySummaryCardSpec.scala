@@ -324,10 +324,11 @@ class LatePaymentPenaltySummaryCardSpec extends SpecBase with ViewBehaviours wit
 
       "display the 'why you cannot appeal yet' drop down with Central Assessment content if the VAT has not been paid and the Main Transaction is Central Assessment 4720 and with isShowFindOutHowToAppealEnabled FS enabled" in new Setup(isShowFindOutHowToAppealEnabled = true) {
         def doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelDueNoPaymentsMadeIsCentralAssessment))
-        doc.select(".govuk-details__summary-text").get(0).ownText shouldBe "Why you cannot appeal yet"
-        doc.select(".govuk-details__text p:nth-child(1)").get(0).text shouldBe "You cannot appeal until you submit the VAT Return and pay your VAT."
-        doc.select(".govuk-details__text p:nth-child(2)").get(0).text shouldBe "If you believe you did not need to submit a VAT Return, appeal the late submission penalty for this VAT period instead."
+        doc.select(".govuk-details__summary-text").isEmpty shouldBe true
+        doc.select(".govuk-details__text p:nth-child(1)").isEmpty shouldBe true
+        doc.select(".govuk-details__text p:nth-child(2)").isEmpty shouldBe true
         doc.select("dt").eq(5).isEmpty shouldBe true
+        doc.select(".app-summary-card__footer a").get(1).ownText shouldBe "Find out how to appeal"
       }
 
       "display the 'why you cannot appeal yet' drop down if the VAT has not been paid and the penalty has no charge reference when the use is an Agent" in new Setup() {
