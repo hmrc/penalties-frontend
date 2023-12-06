@@ -94,7 +94,7 @@
     @if(summaryCard.penaltyCategory.equals(MANUAL)) {
 <div class="app-summary-card__actions">
     <a class="govuk-body">@messages("summaryCard.manual.cannotAppeal")</a></div>
-    }  else if(summaryCard.showFindOutHowToAppeal && !summaryCard.isCentralAssessment && !summaryCard.isVatPaid && (summaryCard.vatOutstandingAmountInPence > 0)) {
+    }  else if(((summaryCard.showFindOutHowToAppeal && !summaryCard.isCentralAssessment) || (summaryCard.showCAFindOutHowToAppeal && summaryCard.isCentralAssessment)) && !summaryCard.isVatPaid && (summaryCard.vatOutstandingAmountInPence > 0)) {
 @if(summaryCard.appealStatus.getOrElse(AppealStatusEnum.Unappealable) == AppealStatusEnum.Unappealable){
 <div class="app-summary-card__actions">
     <ul class="app-summary-card__actions-list">
@@ -140,7 +140,7 @@
     <div class="app-summary-card__body">
     @govukSummaryList(SummaryList(summaryCard.cardRows))
     @if(!summaryCard.penaltyCategory.equals(MANUAL) && !summaryCard.isVatPaid && summaryCard.appealStatus.getOrElse(AppealStatusEnum.Unappealable) == AppealStatusEnum.Unappealable) {
-        @if(!summaryCard.showFindOutHowToAppeal || summaryCard.isCentralAssessment) {
+        @if((!summaryCard.showCAFindOutHowToAppeal && summaryCard.isCentralAssessment) || (!summaryCard.showFindOutHowToAppeal && !summaryCard.isCentralAssessment)) {
             @cannotAppealDetails
         }
     }
