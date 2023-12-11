@@ -78,7 +78,7 @@ class SummaryCardHelper @Inject()(val appConfig: AppConfig) extends ImplicitDate
   }
 
   private def buildLSPSummaryCard(rows: Seq[SummaryListRow], penalty: LSPDetails, isAnAddedPoint: Boolean = false,
-                                  isAnAddedOrRemovedPoint: Boolean = false, isManuallyRemovedPoint:Boolean = false)(implicit messages: Messages): LateSubmissionPenaltySummaryCard = {
+                                  isAnAddedOrRemovedPoint: Boolean = false, isManuallyRemovedPoint: Boolean = false)(implicit messages: Messages): LateSubmissionPenaltySummaryCard = {
     val isReturnSubmitted = penalty.lateSubmissions.map(penaltyPeriod =>
       PenaltyPeriodHelper.sortedPenaltyPeriod(penaltyPeriod).head)
       .fold(false)(_.taxReturnStatus.contains(TaxReturnStatusEnum.Fulfilled))
@@ -108,10 +108,10 @@ class SummaryCardHelper @Inject()(val appConfig: AppConfig) extends ImplicitDate
     if (penalty.lateSubmissions.getOrElse(Seq.empty).size > 1)
       Some(Html(
         s"""
-          |${messages("lsp.multiple.penaltyPeriod.1", dateToString(PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.lateSubmissions.get).last.taxPeriodDueDate.get))}
-          |<br>
-          |${messages("lsp.multiple.penaltyPeriod.2")}
-          |""".stripMargin
+           |${messages("lsp.multiple.penaltyPeriod.1", dateToString(PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.lateSubmissions.get).last.taxPeriodDueDate.get))}
+           |<br>
+           |${messages("lsp.multiple.penaltyPeriod.2")}
+           |""".stripMargin
       ))
     else None
   }
@@ -190,10 +190,7 @@ class SummaryCardHelper @Inject()(val appConfig: AppConfig) extends ImplicitDate
   }
 
   def pointSummaryCard(penalty: LSPDetails, thresholdMet: Boolean)(implicit messages: Messages): LateSubmissionPenaltySummaryCard = {
-    val cardBody = PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.lateSubmissions.get).head.returnReceiptDate match {
-      case Some(_: LocalDate) => returnSubmittedCardBody(penalty, thresholdMet)
-      case None => returnNotSubmittedCardBody(PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.lateSubmissions.get).head)
-    }
+    val cardBody = pointCardBody(penalty, thresholdMet)
     val appealInformationWithoutUnappealableStatus = penalty.appealInformation.map(_.filterNot(_.appealStatus.contains(AppealStatusEnum.Unappealable))).getOrElse(Seq.empty)
     if (appealInformationWithoutUnappealableStatus.nonEmpty) {
       buildLSPSummaryCard(cardBody :+ summaryListRow(
@@ -205,23 +202,26 @@ class SummaryCardHelper @Inject()(val appConfig: AppConfig) extends ImplicitDate
     }
   }
 
-  def returnSubmittedCardBody(penalty: LSPDetails, thresholdMet: Boolean)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val period = penalty.lateSubmissions
+  def pointCardBody(penalty: LSPDetails, thresholdMet: Boolean)(implicit messages: Messages): Seq[SummaryListRow] = {
     val appealStatus = penalty.appealInformation.flatMap(_.headOption.flatMap(_.appealStatus))
+    val sortedLateSubmissions: Seq[LateSubmission] = PenaltyPeriodHelper.sortedPenaltyPeriod(penalty.lateSubmissions.getOrElse(Seq.empty))
+    val receiptDate: Option[LocalDate] = sortedLateSubmissions.headOption.flatMap( _.returnReceiptDate)
     val base = Seq(
       summaryListRow(
         messages("summaryCard.key1"),
         Html(
           messages(
             "summaryCard.value1",
-            dateToString(PenaltyPeriodHelper.sortedPenaltyPeriod(period.get).head.taxPeriodStartDate.get),
-            dateToString(PenaltyPeriodHelper.sortedPenaltyPeriod(period.get).head.taxPeriodEndDate.get)
+            dateToString(sortedLateSubmissions.head.taxPeriodStartDate.get),
+            dateToString(sortedLateSubmissions.head.taxPeriodEndDate.get)
           )
         )
       ),
-      summaryListRow(messages("summaryCard.key2"), Html(dateToString(PenaltyPeriodHelper.sortedPenaltyPeriod(period.get).head.taxPeriodDueDate.get))),
-      summaryListRow(messages("summaryCard.key3"), Html(dateToString(PenaltyPeriodHelper.sortedPenaltyPeriod(period.get)
-        .head.returnReceiptDate.get)))
+      summaryListRow(messages("summaryCard.key2"), Html(dateToString(sortedLateSubmissions.head.taxPeriodDueDate.get))),
+      summaryListRow(messages("summaryCard.key3"),
+        if (receiptDate.isDefined)
+          Html(dateToString(receiptDate.get)) else
+          Html(messages("summaryCard.key3.defaultValue")))
     )
 
     if (penalty.penaltyExpiryDate.toString.nonEmpty && !thresholdMet && !appealStatus.contains(AppealStatusEnum.Upheld)) {
@@ -230,21 +230,6 @@ class SummaryCardHelper @Inject()(val appConfig: AppConfig) extends ImplicitDate
       base
     }
   }
-
-  def returnNotSubmittedCardBody(lateSubmissions: LateSubmission)(implicit messages: Messages): Seq[SummaryListRow] = Seq(
-    summaryListRow(
-      messages("summaryCard.key1"),
-      Html(
-        messages(
-          "summaryCard.value1",
-          dateToString(lateSubmissions.taxPeriodStartDate.get),
-          dateToString(lateSubmissions.taxPeriodEndDate.get)
-        )
-      )
-    ),
-    summaryListRow(messages("summaryCard.key2"), Html(dateToString(lateSubmissions.taxPeriodDueDate.get))),
-    summaryListRow(messages("summaryCard.key3"), Html(messages("summaryCard.key3.defaultValue")))
-  )
 
   private def removedPointCard(penalty: LSPDetails)(implicit messages: Messages): LateSubmissionPenaltySummaryCard = {
     val isFAP: Option[Boolean] = penalty.expiryReason.map(_.equals(ExpiryReasonEnum.Adjustment))
@@ -303,7 +288,7 @@ class SummaryCardHelper @Inject()(val appConfig: AppConfig) extends ImplicitDate
         messages("summaryCard.appeal.status"),
         returnAppealStatusMessageBasedOnPenalty(None, Some(lpp))
       ), lpp, isPaid, isVatPaid)
-    } else if(!isVatPaid && !lpp.penaltyCategory.equals(LPPPenaltyCategoryEnum.MANUAL)) {
+    } else if (!isVatPaid && !lpp.penaltyCategory.equals(LPPPenaltyCategoryEnum.MANUAL)) {
       buildLPPSummaryCard(cardBody :+ SummaryListRow(),
         lpp, isPaid, isVatPaid)
     } else {
@@ -312,7 +297,7 @@ class SummaryCardHelper @Inject()(val appConfig: AppConfig) extends ImplicitDate
     }
   }
 
-  private def isPenaltyPaid(lpp: LPPDetails) = if(lpp.penaltyAmountPaid.isDefined) lpp.penaltyAmountPaid.get == lpp.penaltyAmountPosted else false
+  private def isPenaltyPaid(lpp: LPPDetails) = if (lpp.penaltyAmountPaid.isDefined) lpp.penaltyAmountPaid.get == lpp.penaltyAmountPosted else false
 
   private def returnAppealStatusMessageBasedOnPenalty(penaltyPoint: Option[LSPDetails], lpp: Option[LPPDetails])
                                                      (implicit messages: Messages): Html = {
@@ -338,12 +323,12 @@ class SummaryCardHelper @Inject()(val appConfig: AppConfig) extends ImplicitDate
   private def buildLPPSummaryCard(rows: Seq[SummaryListRow],
                                   lpp: LPPDetails, isPaid: Boolean, isVatPaid: Boolean)
                                  (implicit messages: Messages, user: User[_]): LatePaymentPenaltySummaryCard = {
-    val amountDue = if(lpp.penaltyStatus == Posted) lpp.penaltyAmountPosted else lpp.penaltyAmountAccruing
+    val amountDue = if (lpp.penaltyStatus == Posted) lpp.penaltyAmountPosted else lpp.penaltyAmountAccruing
     val appealStatus = lpp.appealInformation.flatMap(_.headOption.flatMap(_.appealStatus))
     val appealLevel = lpp.appealInformation.flatMap(_.headOption.flatMap(_.appealLevel))
     val isCentralAssessment = lpp.LPPDetailsMetadata.mainTransaction.get.equals(CentralAssessmentFirstLPP) ||
       lpp.LPPDetailsMetadata.mainTransaction.get.equals(CentralAssessmentSecondLPP) || lpp.LPPDetailsMetadata.mainTransaction.get.equals(CentralAssessment)
-    val vatOustandingAmount=lpp.vatOutstandingAmount.map(amount=> (amount * 100).toInt).getOrElse(0).toInt
+    val vatOustandingAmount = lpp.vatOutstandingAmount.map(amount => (amount * 100).toInt).getOrElse(0).toInt
     LatePaymentPenaltySummaryCard(
       cardRows = rows,
       status = tagStatus(None, Some(lpp)),
@@ -410,7 +395,7 @@ class SummaryCardHelper @Inject()(val appConfig: AppConfig) extends ImplicitDate
       case VATReturnFirstLPP | VATReturnSecondLPP | VATReturnCharge => "summaryCard.lpp.key3.value.vat"
       case CentralAssessmentFirstLPP | CentralAssessmentSecondLPP | CentralAssessment => "summaryCard.lpp.key3.value.centralAssessment"
       case OfficersAssessmentFirstLPP | OfficersAssessmentSecondLPP | OfficersAssessment => "summaryCard.lpp.key3.value.officersAssessment"
-      case ErrorCorrectionFirstLPP | ErrorCorrectionSecondLPP| ErrorCorrection => "summaryCard.lpp.key3.value.ecn"
+      case ErrorCorrectionFirstLPP | ErrorCorrectionSecondLPP | ErrorCorrection => "summaryCard.lpp.key3.value.ecn"
       case AdditionalAssessmentFirstLPP | AdditionalAssessmentSecondLPP | AdditionalAssessment => "summaryCard.lpp.key3.value.additionalAssessment"
       case ProtectiveAssessmentFirstLPP | ProtectiveAssessmentSecondLPP | ProtectiveAssessment => "summaryCard.lpp.key3.value.protectiveAssessment"
       case POAReturnChargeFirstLPP | POAReturnChargeSecondLPP | POAReturnCharge => "summaryCard.lpp.key3.value.poaReturnCharge"

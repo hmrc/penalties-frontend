@@ -82,7 +82,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       taxPeriodEndDate = principleChargeBillingEndDate.toString,
       isAgent = isAgent,
       isCentralAssessment = isCentralAssessment,
-      vatOutstandingAmountInPence= 12345,
+      vatOutstandingAmountInPence = 12345,
       showFindOutHowToAppeal = true,
       showCAFindOutHowToAppeal = true
     )
@@ -115,12 +115,12 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       taxPeriodEndDate = principleChargeBillingEndDate.toString,
       isAgent = isAgent,
       isCentralAssessment = isCentralAssessment,
-      vatOutstandingAmountInPence= 12345,
+      vatOutstandingAmountInPence = 12345,
       showFindOutHowToAppeal = true,
       showCAFindOutHowToAppeal = true
     )
   }
-  
+
   def sampleManualLPPSummaryCard: LatePaymentPenaltySummaryCard = {
     LatePaymentPenaltySummaryCard(
       cardRows = Seq(
@@ -143,7 +143,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       dueDate = "7\u00A0June\u00A02021",
       taxPeriodStartDate = principleChargeBillingStartDate.toString,
       taxPeriodEndDate = principleChargeBillingEndDate.toString,
-      vatOutstandingAmountInPence= 12345,
+      vatOutstandingAmountInPence = 12345,
       showFindOutHowToAppeal = true,
       showCAFindOutHowToAppeal = true
     )
@@ -516,7 +516,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               penaltyCategory = None,
               showFindOutHowToAppealText = true
             ))
-          val result = helper.populateLateSubmissionPenaltyCard(Seq(sampleLateSubmissionPointReturnWithNoPenaltyCategory), quarterlyThreshold, quarterlyThreshold -1)
+          val result = helper.populateLateSubmissionPenaltyCard(Seq(sampleLateSubmissionPointReturnWithNoPenaltyCategory), quarterlyThreshold, quarterlyThreshold - 1)
           result.head shouldBe expectedResult.head
         }
       }
@@ -837,19 +837,19 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           val periodText = getPeriodText("VAT")
           val sampleLPPSummaryCardPenaltyUnpaidVAT: LatePaymentPenaltySummaryCard = sampleLPPSummaryCardPenaltyPaid("VAT").copy(
             cardRows =
-            Seq(
-              helper.summaryListRow(
-                penaltyType,
-                Html("First penalty for late payment")
+              Seq(
+                helper.summaryListRow(
+                  penaltyType,
+                  Html("First penalty for late payment")
+                ),
+                helper.summaryListRow(
+                  overdueCharge,
+                  Html(periodText("VAT", dateToString(principleChargeBillingStartDate), dateToString(principleChargeBillingEndDate)))
+                ),
+                helper.summaryListRow(chargeDue, Html(dateToString(principleChargeBillingDueDate))),
+                helper.summaryListRow(datePaid, Html(paymentNotReceived)),
+                SummaryListRow()
               ),
-              helper.summaryListRow(
-                overdueCharge,
-                Html(periodText("VAT", dateToString(principleChargeBillingStartDate), dateToString(principleChargeBillingEndDate)))
-              ),
-              helper.summaryListRow(chargeDue, Html(dateToString(principleChargeBillingDueDate))),
-              helper.summaryListRow(datePaid, Html(paymentNotReceived)),
-              SummaryListRow()
-            ),
             isPenaltyPaid = false,
             isVatPaid = false,
             status = Tag(Text(estimate)))
@@ -872,9 +872,9 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
   }
 
   "return Seq[SummaryListRow] when give a PenaltyPoint" when {
-    "returnSubmittedCardBody is called" when {
-      "given a PenaltyPoint and the threshold has not been met" in {
-        val result = helper.returnSubmittedCardBody(sampleLateSubmissionPoint, thresholdMet = false)
+    "pointCardBody is called" when {
+      "given a PenaltyPoint and the threshold has not been met and the Return has been submitted" in {
+        val result = helper.pointCardBody(sampleLateSubmissionPoint, thresholdMet = false)
         result shouldBe Seq(
           helper.summaryListRow(
             period,
@@ -886,8 +886,21 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         )
       }
 
-      "given a PenaltyPoint and the threshold has been met" in {
-        val result = helper.returnSubmittedCardBody(sampleLateSubmissionPoint, thresholdMet = true)
+      "given a PenaltyPoint and the threshold has not been met and the Return has not been submitted" in {
+        val result = helper.pointCardBody(samplePenaltyPointNotSubmitted, thresholdMet = false)
+        result shouldBe Seq(
+          helper.summaryListRow(
+            period,
+            Html(vatPeriodValue(dateToString(taxPeriodStart), dateToString(taxPeriodEnd)))
+          ),
+          helper.summaryListRow(returnDue, Html(dateToString(taxPeriodDue))),
+          helper.summaryListRow(returnSubmitted, Html(notSubmitted)),
+          helper.summaryListRow(pointExpiration, Html(dateToMonthYearString(expiryDate)))
+        )
+      }
+
+      "given a PenaltyPoint and the threshold has been met and the Return has been submitted" in {
+        val result = helper.pointCardBody(sampleLateSubmissionPoint, thresholdMet = true)
         result shouldBe Seq(
           helper.summaryListRow(
             period,
@@ -897,18 +910,18 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           helper.summaryListRow(returnSubmitted, Html(dateToString(receiptDate)))
         )
       }
-    }
 
-    "returnNotSubmittedCardBody is called" in {
-      val result = helper.returnNotSubmittedCardBody(samplePenaltyPointNotSubmitted.lateSubmissions.map(_.head).get)
-      result shouldBe Seq(
-        helper.summaryListRow(
-          period,
-          Html(vatPeriodValue(dateToString(taxPeriodStart), dateToString(taxPeriodEnd)))
-        ),
-        helper.summaryListRow(returnDue, Html(dateToString(taxPeriodDue))),
-        helper.summaryListRow(returnSubmitted, Html(notSubmitted))
-      )
+      "given a PenaltyPoint and the threshold has been met and the Return has not been submitted" in {
+        val result = helper.pointCardBody(samplePenaltyPointNotSubmitted, thresholdMet = true)
+        result shouldBe Seq(
+          helper.summaryListRow(
+            period,
+            Html(vatPeriodValue(dateToString(taxPeriodStart), dateToString(taxPeriodEnd)))
+          ),
+          helper.summaryListRow(returnDue, Html(dateToString(taxPeriodDue))),
+          helper.summaryListRow(returnSubmitted, Html(notSubmitted))
+        )
+      }
     }
   }
 
