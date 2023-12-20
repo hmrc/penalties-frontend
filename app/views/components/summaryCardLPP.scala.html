@@ -53,18 +53,18 @@
 
 @appealContent = {
     @if(summaryCard.isVatPaid) {
-        <a class="govuk-link" href=@{
+        <a class="govuk-link" href="@{
             controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyChargeReference.get, isLPP = true, isObligation = false, isAdditional = summaryCard.penaltyCategory.equals(LPP2)).url
-        }>
+        }">
         @messages("summaryCard.footerLinkTextNoPointNumber") <span class="govuk-visually-hidden">@visuallyHiddenText</span>
         </a>
     }
 }
 
 @howToAppealContent = {
-<a class="govuk-link" href=@{
+<a class="govuk-link" href="@{
    controllers.routes.IndexController.redirectToFindOutHowToAppeal(summaryCard.principalChargeReference, summaryCard.vatOutstandingAmountInPence,summaryCard.taxPeriodStartDate, summaryCard.taxPeriodEndDate, isCa=summaryCard.isCentralAssessment).url
-   }>
+   }">
     @messages("summaryCard.footerLinkTextHowToAppeal") <span class="govuk-visually-hidden">@visuallyHiddenText</span>
 </a>
 }
