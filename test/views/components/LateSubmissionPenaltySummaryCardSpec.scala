@@ -17,7 +17,7 @@
 package views.components
 
 import base.{BaseSelectors, SpecBase}
-import config.featureSwitches.{FeatureSwitching, ShowAppealAgainstObligationChanges}
+import config.featureSwitches.{FeatureSwitching, ShowFindOutHowToAppealJourney}
 import models.User
 import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import models.lsp._
@@ -26,7 +26,6 @@ import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import viewmodels.LateSubmissionPenaltySummaryCard
 import views.behaviours.ViewBehaviours
 import views.html.components.summaryCardLSP
-
 import java.time.LocalDate
 
 class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours with FeatureSwitching with BeforeAndAfterAll with BeforeAndAfterEach {
@@ -37,9 +36,9 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
 
   class Setup(isShowAppealAgainstObligationChangesEnabled: Boolean = false) {
     if(isShowAppealAgainstObligationChangesEnabled) {
-      enableFeatureSwitch(ShowAppealAgainstObligationChanges)
+      enableFeatureSwitch(ShowFindOutHowToAppealJourney)
     } else {
-      disableFeatureSwitch(ShowAppealAgainstObligationChanges)
+      disableFeatureSwitch(ShowFindOutHowToAppealJourney)
     }
   }
 
@@ -539,7 +538,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
 
   override def afterEach(): Unit = {
     super.afterEach()
-    sys.props -= ShowAppealAgainstObligationChanges.name
+    sys.props -= ShowFindOutHowToAppealJourney.name
   }
 
   "summaryCard" when {

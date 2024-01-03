@@ -19,7 +19,7 @@ package viewmodels
 import java.time.LocalDate
 
 import config.AppConfig
-import config.featureSwitches.{FeatureSwitching, ShowAppealAgainstObligationChanges, ShowCAFindOutHowToAppealJourney, ShowFindOutHowToAppealJourney}
+import config.featureSwitches.{FeatureSwitching, ShowCAFindOutHowToAppealJourney, ShowFindOutHowToAppealJourney}
 import javax.inject.Inject
 import models.User
 import models.appealInfo.AppealStatusEnum
@@ -100,7 +100,7 @@ class SummaryCardHelper @Inject()(val appConfig: AppConfig) extends ImplicitDate
       multiplePenaltyPeriod = getMultiplePenaltyPeriodMessage(penalty),
       dueDate = dueDate.map(dateToString(_)),
       penaltyCategory = penalty.penaltyCategory,
-      showFindOutHowToAppealText = isEnabled(ShowAppealAgainstObligationChanges)
+      showFindOutHowToAppealText = isEnabled(ShowFindOutHowToAppealJourney)
     )
   }
 
@@ -177,7 +177,7 @@ class SummaryCardHelper @Inject()(val appConfig: AppConfig) extends ImplicitDate
       totalPenaltyAmount = penalty.chargeAmount.getOrElse(BigDecimal(0)),
       multiplePenaltyPeriod = getMultiplePenaltyPeriodMessage(penalty),
       dueDate = dueDate.map(dateToString(_)),
-      showFindOutHowToAppealText = isEnabled(ShowAppealAgainstObligationChanges)
+      showFindOutHowToAppealText = isEnabled(ShowFindOutHowToAppealJourney)
     )
   }
 
