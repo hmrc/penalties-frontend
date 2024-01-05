@@ -97,8 +97,14 @@ class IndexController @Inject()(view: IndexView,
                         isAdditional: Boolean = false): Action[AnyContent] = authorise.async {
     logger.debug(s"[IndexController][redirectToAppeals] - Redirect to appeals frontend with id $penaltyId and is late payment penalty: $isLPP " +
       s"and cannot be appealed: $isFindOutHowToAppeal and is additional: $isAdditional")
+    if (isFindOutHowToAppeal) {
+      Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}" +
+        s"/initialise-appeal-against-the-obligation?penaltyId=$penaltyId"))
+    } else {
       Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=$isLPP&findOutHowToAppeal=$isFindOutHowToAppeal&isAdditional=$isAdditional"))
+    }
   }
+
 
   def redirectToFindOutHowToAppeal(principalChargeReference: String, vatAmountInPence: Int, vatPeriodStartDate: String, vatPeriodEndDate:String,
                         isCa: Boolean = false): Action[AnyContent] = authorise.async {

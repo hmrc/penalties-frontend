@@ -467,44 +467,38 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
   "GET /appeal-penalty" should {
     "redirect the user to the appeals service when the penalty is a LSP" in {
       val request = controller.redirectToAppeals(
-        penaltyId = "1234",
-        isLPP = false,
-        isObligation = false,
-        isAdditional = false)(FakeRequest("GET", "/").withSession(
+        penaltyId = "1234")(FakeRequest("GET", "/").withSession(
         authToken -> "1234"
       ))
       status(request) shouldBe Status.SEE_OTHER
-      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=false&isAdditional=false"
+      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=false&findOutHowToAppeal=false&isAdditional=false"
     }
 
     "redirect the user to the appeals service when the penalty is a LPP1" in {
       val request = controller.redirectToAppeals(
         penaltyId = "1234",
-        isLPP = true,
-        isObligation = false,
-        isAdditional = false)(FakeRequest("GET", "/").withSession(
+        isLPP = true)(FakeRequest("GET", "/").withSession(
         authToken -> "1234"
       ))
       status(request) shouldBe Status.SEE_OTHER
-      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=true&isAdditional=false"
+      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=true&findOutHowToAppeal=false&isAdditional=false"
     }
 
     "redirect the user to the appeals service when the penalty is a LPP2" in {
       val request = controller.redirectToAppeals(
         penaltyId = "1234",
         isLPP = true,
-        isObligation = false,
         isAdditional = true)(FakeRequest("GET", "/").withSession(
         authToken -> "1234"
       ))
       status(request) shouldBe Status.SEE_OTHER
-      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=true&isAdditional=true"
+      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=true&findOutHowToAppeal=false&isAdditional=true"
     }
 
     "redirect the user to the obligations appeals service when the penalty is a LSP" in {
       val request = controller.redirectToAppeals(
         penaltyId = "1234",
-        isObligation = true)(FakeRequest("GET", "/").withSession(
+        isFindOutHowToAppeal = true)(FakeRequest("GET", "/").withSession(
         authToken -> "1234"
       ))
       status(request) shouldBe Status.SEE_OTHER

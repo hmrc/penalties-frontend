@@ -635,7 +635,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
 
       "have a hidden span for check if you can appeal" in new Setup() {
         val docWithPoint: Document = asDocument(summaryCardHtml.apply(summaryCardModelNoReturnSubmitted))
-        docWithPoint.select(".app-summary-card__footer a").get(0).ownText() shouldBe "Check if you can appeal"
+        docWithPoint.select(".app-summary-card__footer a").get(0).ownText() shouldBe "Find out how to appeal"
         docWithPoint.select(".app-summary-card__footer span").text() shouldBe "penalty point 1"
       }
 
@@ -695,7 +695,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       }
 
       "display check if you can appeal link if the penalty is unappealable" in new Setup() {
-        docWithThresholdPenalty.select(".app-summary-card__footer a").text() shouldBe "Check if you can appeal"
+        docWithThresholdPenalty.select(".app-summary-card__footer a").text() shouldBe "Find out how to appeal"
         docWithThresholdPenalty.select("dt").eq(3).isEmpty shouldBe true
       }
 
@@ -777,7 +777,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       }
 
       "set the correct hidden span for a lurking point with no return submitted" in new Setup() {
-        doc.select("a").get(0).ownText() shouldBe "Check if you can appeal"
+        doc.select("a").get(0).ownText() shouldBe "Find out how to appeal"
         doc.select("a span").get(0).text() shouldBe "for penalty on late VAT return due 30 October 2069"
       }
 
@@ -798,7 +798,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     "given a non-appealed point and it is unappealable" should {
       implicit def doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelUnappealable))
       "not show the appeal status row and have the check if you can appeal link" in new Setup() {
-        doc.select(".app-summary-card__footer a").get(0).ownText() shouldBe "Check if you can appeal"
+        doc.select(".app-summary-card__footer a").get(0).ownText() shouldBe "Find out how to appeal"
         doc.select(".app-summary-card__footer a span").text() shouldBe "for late VAT return due on 12 March 2021"
         doc.select("dt").eq(4).isEmpty shouldBe true
       }
@@ -816,7 +816,7 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     "given a non-appealed point and it is unappealable, with an empty appeal level" should {
       implicit def doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelUnappealable.copy(appealLevel = None)))
       "not show the appeal status row and have the check if you can appeal link" in new Setup() {
-        doc.select(".app-summary-card__footer a").get(0).ownText() shouldBe "Check if you can appeal"
+        doc.select(".app-summary-card__footer a").get(0).ownText() shouldBe "Find out how to appeal"
         doc.select(".app-summary-card__footer a span").text() shouldBe "for late VAT return due on 12 March 2021"
         doc.select("dt").eq(4).isEmpty shouldBe true
       }
