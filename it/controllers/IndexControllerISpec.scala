@@ -440,7 +440,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
         authToken -> "1234"
       ))
       status(request) shouldBe Status.SEE_OTHER
-      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=false&isLPP2=false"
+      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=false&isAdditional=false"
     }
 
     "redirect the user to the appeals service when the penalty is a LPP1" in {
@@ -450,7 +450,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
         authToken -> "1234"
       ))
       status(request) shouldBe Status.SEE_OTHER
-      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=true&isLPP2=false"
+      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=true&isAdditional=false"
     }
 
     "redirect the user to the appeals service when the penalty is a LPP2" in {
@@ -461,7 +461,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
         authToken -> "1234"
       ))
       status(request) shouldBe Status.SEE_OTHER
-      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=true&isLPP2=true"
+      headers(request)(implicitly)(HeaderNames.LOCATION) shouldBe "http://localhost:9181/penalties-appeals/initialise-appeal?penaltyId=1234&isLPP=true&isAdditional=true"
     }
 
     "redirect the user to the obligations appeals service when the penalty is a LSP" in {

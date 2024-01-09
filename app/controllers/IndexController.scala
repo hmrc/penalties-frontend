@@ -96,12 +96,12 @@ class IndexController @Inject()(view: IndexView,
   def redirectToAppeals(penaltyId: String, isLPP: Boolean = false, isFindOutHowToAppealLPP: Boolean = false,
                         isLPP2: Boolean = false): Action[AnyContent] = authorise.async {
     logger.debug(s"[IndexController][redirectToAppeals] - Redirect to appeals frontend with id $penaltyId and is late payment penalty: $isLPP " +
-      s"and cannot be appealed: $isFindOutHowToAppealLPP and is additional: $isLPP2")
+      s"and cannot be appealed: $isFindOutHowToAppealLPP and is LPP2: $isLPP2")
     if (isFindOutHowToAppealLPP) {
       Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}" +
         s"/initialise-appeal-against-the-obligation?penaltyId=$penaltyId"))
     } else {
-      Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=$isLPP&isLPP2=$isLPP2"))
+      Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=$isLPP&isAdditional=$isLPP2"))
     }
   }
 

@@ -111,21 +111,21 @@ class IndexControllerSpec extends SpecBase with LogCapturing {
         val result: Future[Result] = Controller.redirectToAppeals("123456789")(fakeRequest)
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=false&isLPP2=false")
+        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=false&isAdditional=false")
       }
 
       "the user wants to appeal a penalty for LPP1" in new Setup(AuthTestModels.successfulAuthResult) {
         val result: Future[Result] = Controller.redirectToAppeals("123456789", isLPP = true)(fakeRequest)
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=true&isLPP2=false")
+        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=true&isAdditional=false")
       }
 
       "the user wants to appeal a penalty for LPP2" in new Setup(AuthTestModels.successfulAuthResult) {
         val result: Future[Result] = Controller.redirectToAppeals("123456789", isLPP = true, isLPP2 = true)(fakeRequest)
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=true&isLPP2=true")
+        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=true&isAdditional=true")
       }
 
       "the user wants to appeal an obligation" in new Setup(AuthTestModels.successfulAuthResult) {
