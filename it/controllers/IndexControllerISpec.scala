@@ -467,7 +467,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
     "redirect the user to the obligations appeals service when the penalty is a LSP" in {
       val request = controller.redirectToAppeals(
         penaltyId = "1234",
-        isFindOutHowToAppealLPP = true)(FakeRequest("GET", "/").withSession(
+        isFindOutHowToAppealLSP = true)(FakeRequest("GET", "/").withSession(
         authToken -> "1234"
       ))
       status(request) shouldBe Status.SEE_OTHER
