@@ -111,25 +111,25 @@ class IndexControllerSpec extends SpecBase with LogCapturing {
         val result: Future[Result] = Controller.redirectToAppeals("123456789")(fakeRequest)
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=false&findOutHowToAppeal=false&isAdditional=false")
+        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=false&isLPP2=false")
       }
 
       "the user wants to appeal a penalty for LPP1" in new Setup(AuthTestModels.successfulAuthResult) {
         val result: Future[Result] = Controller.redirectToAppeals("123456789", isLPP = true)(fakeRequest)
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=true&findOutHowToAppeal=false&isAdditional=false")
+        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=true&isLPP2=false")
       }
 
       "the user wants to appeal a penalty for LPP2" in new Setup(AuthTestModels.successfulAuthResult) {
-        val result: Future[Result] = Controller.redirectToAppeals("123456789", isLPP = true, isAdditional = true)(fakeRequest)
+        val result: Future[Result] = Controller.redirectToAppeals("123456789", isLPP = true, isLPP2 = true)(fakeRequest)
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=true&findOutHowToAppeal=false&isAdditional=true")
+        redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=true&isLPP2=true")
       }
 
       "the user wants to appeal an obligation" in new Setup(AuthTestModels.successfulAuthResult) {
-        val result: Future[Result] = Controller.redirectToAppeals("123456789", isFindOutHowToAppeal = true)(fakeRequest)
+        val result: Future[Result] = Controller.redirectToAppeals("123456789", isFindOutHowToAppealLPP = true)(fakeRequest)
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some(s"${appConfig.penaltiesAppealsBaseUrl}" +

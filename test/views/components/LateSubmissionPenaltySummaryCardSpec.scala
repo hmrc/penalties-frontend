@@ -17,7 +17,7 @@
 package views.components
 
 import base.{BaseSelectors, SpecBase}
-import config.featureSwitches.{FeatureSwitching, ShowFindOutHowToAppealJourney}
+import config.featureSwitches.FeatureSwitching
 import models.User
 import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import models.lsp._
@@ -33,14 +33,6 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
   object Selectors extends BaseSelectors
 
   implicit val user: User[_] = vatTraderUser
-
-  class Setup(isShowAppealAgainstObligationChangesEnabled: Boolean = false) {
-    if(isShowAppealAgainstObligationChangesEnabled) {
-      enableFeatureSwitch(ShowFindOutHowToAppealJourney)
-    } else {
-      disableFeatureSwitch(ShowFindOutHowToAppealJourney)
-    }
-  }
 
   val summaryCardHtml: summaryCardLSP = injector.instanceOf[summaryCardLSP]
 
@@ -538,93 +530,92 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
 
   override def afterEach(): Unit = {
     super.afterEach()
-    sys.props -= ShowFindOutHowToAppealJourney.name
   }
 
   "summaryCard" when {
     "given an added point and the threshold has not been met" should {
       implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAddedPoint))
-      "display that the point has been added i.e. Penalty point X: adjustment point" in new Setup() {
+      "display that the point has been added i.e. Penalty point X: adjustment point" in {
         doc.select("h4").text() shouldBe "Penalty point 1: adjustment point"
       }
 
-      "display a link to allow the user to find information about adjusted points" in new Setup() {
+      "display a link to allow the user to find information about adjusted points" in {
         doc.select("a").text() shouldBe "Read the guidance about adjustment points (opens in a new tab)"
         doc.select("a").attr("href") shouldBe appConfig.adjustmentLink
       }
 
-      "display the 'active' status for an added point" in new Setup() {
+      "display the 'active' status for an added point" in {
         doc.select("strong").text() shouldBe "active"
       }
 
-      "display when the added point was added" in new Setup() {
+      "display when the added point was added" in {
         doc.select("dt").get(0).text() shouldBe "Added on"
         doc.select("dd").get(0).text() shouldBe "30 October 2069"
       }
 
-      "display when the point is due to expire" in new Setup() {
+      "display when the point is due to expire" in {
         doc.select("dt").get(1).text() shouldBe "Point due to expire"
         doc.select("dd").get(1).text() shouldBe "October 2069"
       }
 
-      "display that the user can not appeal an added point" in new Setup() {
+      "display that the user can not appeal an added point" in {
         doc.select("footer").text() shouldBe "You cannot appeal this point"
       }
     }
 
     "given an added point and the threshold has been met" should {
       implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAddedPointAtThreshold))
-      "display that the point has been added i.e. Penalty point X: adjustment point" in new Setup() {
+      "display that the point has been added i.e. Penalty point X: adjustment point" in {
         doc.select("h4").text() shouldBe "Penalty point 1: adjustment point"
       }
 
-      "display a link to allow the user to find information about adjusted points" in new Setup() {
+      "display a link to allow the user to find information about adjusted points" in {
         doc.select("a").text() shouldBe "Read the guidance about adjustment points (opens in a new tab)"
         doc.select("a").attr("href") shouldBe appConfig.adjustmentLink
       }
 
-      "display the 'active' status for an added point" in new Setup() {
+      "display the 'active' status for an added point" in {
         doc.select("strong").text() shouldBe "active"
       }
 
-      "display when the added point was added" in new Setup() {
+      "display when the added point was added" in {
         doc.select("dt").get(0).text() shouldBe "Added on"
         doc.select("dd").get(0).text() shouldBe "30 October 2069"
       }
 
-      "NOT display when the point is due to expire" in new Setup() {
+      "NOT display when the point is due to expire" in {
         doc.select("dt").size() shouldBe 1
         doc.select("dd").size() shouldBe 1
       }
 
-      "display that the user can not appeal an added point" in new Setup() {
+      "display that the user can not appeal an added point" in {
         doc.select("footer").text() shouldBe "You cannot appeal this point"
       }
     }
 
     "given a removed point(not FAP)" should {
       implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithRemovedPoint))
-      "display that the point number as usual" in new Setup() {
+      "display that the point number as usual" in {
         doc.select("h4").text() shouldBe "Penalty point"
       }
 
-      "display the VAT period the point was removed from" in new Setup() {
+      "display the VAT period the point was removed from" in {
         doc.select("dt").get(0).text() shouldBe "VAT period"
         doc.select("dd").get(0).text() shouldBe "1 January 2020 to 1 February 2020"
       }
 
-      "display the reason why the point was removed" in new Setup() {
+      "display the reason why the point was removed" in {
         doc.select("dt").get(1).text() shouldBe "Reason"
         doc.select("dd").get(1).text() shouldBe "Removed by HMRC"
       }
 
-      "not display any footer text" in new Setup() {
+      "not display any footer text" in {
         doc.select("footer li").hasText shouldBe false
       }
     }
 
     "given a removed point (FAP)" should {
-      "display the reason why the point was removed (if reason was FAP)" in new Setup() {
+      "display the reason why the point was removed (if reason was FAP)" in {
         implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithRemovedPointFilingFrequencyChange))
         doc.select("dt").get(1).text() shouldBe "Reason"
         doc.select("dd").get(1).text() shouldBe "Change to VAT return deadlines"
@@ -633,15 +624,13 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
 
     "given a point - return not submitted" should {
 
-      "have a hidden span for check if you can appeal" in new Setup() {
+      "have a hidden span for check if you can appeal" in {
         val docWithPoint: Document = asDocument(summaryCardHtml.apply(summaryCardModelNoReturnSubmitted))
         docWithPoint.select(".app-summary-card__footer a").get(0).ownText() shouldBe "Find out how to appeal"
         docWithPoint.select(".app-summary-card__footer span").text() shouldBe "penalty point 1"
       }
 
-      "have a hidden span for find out how to appeal (ShowAppealAgainstObligationChanges feature enabled)" in new Setup(
-        isShowAppealAgainstObligationChangesEnabled = true
-      ) {
+      "have a hidden span for find out how to appeal (ShowAppealAgainstObligationChanges feature enabled)" in {
         val docWithPointFSEnabled: Document = asDocument(summaryCardHtml.apply(summaryCardModelNoReturnSubmitted))
         docWithPointFSEnabled.select(".app-summary-card__footer a").get(0).ownText() shouldBe "Find out how to appeal"
         docWithPointFSEnabled.select(".app-summary-card__footer span").text() shouldBe "penalty point 1"
@@ -663,45 +652,43 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       val docWithFinancialPointAppealTribunalRejected: Document =
         asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialPointBelowThresholdAndAppealTribunalRejected))
 
-      "shows the financial heading with point number when the point is below/at threshold for filing frequency" in new Setup() {
+      "shows the financial heading with point number when the point is below/at threshold for filing frequency" in {
         docWithThresholdPenalty.select(".app-summary-card__title").get(0).text() shouldBe "Penalty point 1: £200 penalty"
       }
 
-      "shows the financial heading WITHOUT point number when the point is above threshold for filing frequency and a rewording of the appeal text" in new Setup() {
+      "shows the financial heading WITHOUT point number when the point is above threshold for filing frequency and a rewording of the appeal text" in {
         docWithFinancialLSP.select(".app-summary-card__title").get(0).ownText() shouldBe "£200 penalty"
         docWithFinancialLSP.select(".app-summary-card__title span").get(0).ownText() shouldBe "for late submission of VAT due on 30 October 2069"
         docWithFinancialLSP.select(".app-summary-card__footer a").get(0).ownText() shouldBe "Appeal this penalty"
         docWithFinancialLSP.select(".app-summary-card__footer span").get(0).text() shouldBe "for late VAT return due on 30 October 2069"
       }
 
-      "shows the appeal information when the point is being appealed - i.e. under review" in new Setup() {
+      "shows the appeal information when the point is being appealed - i.e. under review" in {
         docWithFinancialPointAppealUnderReview.select("dt").get(3).text() shouldBe "Appeal status"
         docWithFinancialPointAppealUnderReview.select("dd").get(3).text() shouldBe "Under review by HMRC"
       }
 
-      "have the appeal status for REJECTED" in new Setup() {
+      "have the appeal status for REJECTED" in {
         docWithFinancialPointAppealRejected.select("dt").get(3).text() shouldBe "Appeal status"
         docWithFinancialPointAppealRejected.select("dd").get(3).text() shouldBe "Appeal rejected"
       }
 
-      "have the appeal status for UNDER_TRIBUNAL_REVIEW" in new Setup() {
+      "have the appeal status for UNDER_TRIBUNAL_REVIEW" in {
         docWithFinancialPointAppealUnderTribunalReview.select("dt").get(3).text() shouldBe "Appeal status"
         docWithFinancialPointAppealUnderTribunalReview.select("dd").get(3).text() shouldBe "Under review by the tax tribunal"
       }
 
-      "have the appeal status for TRIBUNAL REJECTED" in new Setup() {
+      "have the appeal status for TRIBUNAL REJECTED" in {
         docWithFinancialPointAppealTribunalRejected.select("dt").get(3).text() shouldBe "Appeal status"
         docWithFinancialPointAppealTribunalRejected.select("dd").get(3).text() shouldBe "Appeal rejected by tax tribunal"
       }
 
-      "display check if you can appeal link if the penalty is unappealable" in new Setup() {
+      "display check if you can appeal link if the penalty is unappealable" in {
         docWithThresholdPenalty.select(".app-summary-card__footer a").text() shouldBe "Find out how to appeal"
         docWithThresholdPenalty.select("dt").eq(3).isEmpty shouldBe true
       }
 
-      "display find out how to appeal link if the penalty is unappealable (ShowAppealAgainstObligationChanges feature enabled)" in new Setup(
-        isShowAppealAgainstObligationChangesEnabled = true
-      ) {
+      "display find out how to appeal link if the penalty is unappealable (ShowAppealAgainstObligationChanges feature enabled)" in {
         docWithThresholdPenalty.select(".app-summary-card__footer a").text() shouldBe "Find out how to appeal"
         docWithThresholdPenalty.select("dt").eq(3).isEmpty shouldBe true
       }
@@ -716,40 +703,40 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
       val docWithAppealedPointUnderTribunalRejected: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithAppealedPointTribunalRejected))
 
 
-      "not show the appeal link" in new Setup() {
+      "not show the appeal link" in {
         docWithAppealedPoint.select(".app-summary-card__footer a").isEmpty shouldBe true
       }
 
-      "have the appeal status for UNDER_REVIEW" in new Setup() {
+      "have the appeal status for UNDER_REVIEW" in {
         docWithAppealedPoint.select("dt").get(3).text() shouldBe "Appeal status"
         docWithAppealedPoint.select("dd").get(3).text() shouldBe "Under review by HMRC"
       }
 
-      "have the appeal status for UNDER_TRIBUNAL_REVIEW" in new Setup() {
+      "have the appeal status for UNDER_TRIBUNAL_REVIEW" in {
         docWithAppealedPointUnderTribunalReview.select("dt").get(3).text() shouldBe "Appeal status"
         docWithAppealedPointUnderTribunalReview.select("dd").get(3).text() shouldBe "Under review by the tax tribunal"
       }
 
-      "have the appeal status for ACCEPTED - removing the point due to expire and point number" in new Setup() {
+      "have the appeal status for ACCEPTED - removing the point due to expire and point number" in {
         docWithAppealedPointAccepted.select("dt").text().contains("Point due to expire") shouldBe false
         docWithAppealedPointAccepted.select("dt").get(3).text() shouldBe "Appeal status"
         docWithAppealedPointAccepted.select("dd").get(3).text() shouldBe "Appeal accepted"
         docWithAppealedPointAccepted.select("h4").get(0).text() shouldBe "Penalty"
       }
 
-      "have the appeal status for ACCEPTED_BY_TRIBUNAL - removing the point due to expire and point number" in new Setup() {
+      "have the appeal status for ACCEPTED_BY_TRIBUNAL - removing the point due to expire and point number" in {
         docWithAppealedPointAcceptedByTribunal.select("dt").text().contains("Point due to expire") shouldBe false
         docWithAppealedPointAcceptedByTribunal.select("dt").get(3).text() shouldBe "Appeal status"
         docWithAppealedPointAcceptedByTribunal.select("dd").get(3).text() shouldBe "Appeal accepted by tax tribunal"
         docWithAppealedPointAcceptedByTribunal.select("h4").get(0).text() shouldBe "Penalty"
       }
 
-      "have the appeal status for REJECTED" in new Setup() {
+      "have the appeal status for REJECTED" in {
         docWithAppealedPointRejected.select("dt").get(3).text() shouldBe "Appeal status"
         docWithAppealedPointRejected.select("dd").get(3).text() shouldBe "Appeal rejected"
       }
 
-      "have the appeal status for TRIBUNAL REJECTED" in new Setup() {
+      "have the appeal status for TRIBUNAL REJECTED" in {
         docWithAppealedPointUnderTribunalRejected.select("dt").get(3).text() shouldBe "Appeal status"
         docWithAppealedPointUnderTribunalRejected.select("dd").get(3).text() shouldBe "Appeal rejected by tax tribunal"
       }
@@ -757,14 +744,14 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
 
     "given multiple penalty period in LSP" should {
       implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithMultiplePenaltyPeriodLSP))
-      "show message VAT return submitted earlier in multiple penalty period" in new Setup() {
+      "show message VAT return submitted earlier in multiple penalty period" in {
         doc.select("p.govuk-body").text() shouldBe "The VAT Return due on 24 May 2021 was also submitted late. HMRC only applies 1 penalty for late submission in each month."
       }
     }
 
     "given multiple penalty period in LSPP" should {
       implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithMultiplePenaltyPeriodLSPP))
-      "show message VAT return submitted earlier in multiple penalty period" in new Setup() {
+      "show message VAT return submitted earlier in multiple penalty period" in {
         doc.select("p.govuk-body").text() shouldBe "The VAT Return due on 24 May 2021 was also submitted late. HMRC only applies 1 penalty for late submission in each month."
       }
     }
@@ -772,24 +759,22 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
     "given no multiple penalty period in LSP" should {
       implicit def doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialLSP(false)))
       val docSubmitted: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialLSP(true)))
-      "no message relating to multiple penalties in the same period should appear" in new Setup() {
+      "no message relating to multiple penalties in the same period should appear" in {
         doc.select("p.govuk-body").text().isEmpty shouldBe true
       }
 
-      "set the correct hidden span for a lurking point with no return submitted" in new Setup() {
+      "set the correct hidden span for a lurking point with no return submitted" in {
         doc.select("a").get(0).ownText() shouldBe "Find out how to appeal"
         doc.select("a span").get(0).text() shouldBe "for penalty on late VAT return due 30 October 2069"
       }
 
-      "set the correct hidden span for a lurking point with no return submitted (ShowAppealAgainstObligationChanges feature enabled)" in new Setup(
-        isShowAppealAgainstObligationChangesEnabled = true
-      ) {
+      "set the correct hidden span for a lurking point with no return submitted (ShowAppealAgainstObligationChanges feature enabled)" in {
         implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelWithFinancialLSP(false)))
         doc.select("a").get(0).ownText() shouldBe "Find out how to appeal"
         doc.select("a span").get(0).text() shouldBe "for penalty on late VAT return due 30 October 2069"
       }
 
-      "set the correct hidden span for a lurking point with a return submitted" in new Setup() {
+      "set the correct hidden span for a lurking point with a return submitted" in {
         docSubmitted.select("a").get(0).ownText() shouldBe "Appeal this penalty"
         docSubmitted.select("a span").get(0).text() shouldBe "for late VAT return due on 30 October 2069"
       }
@@ -797,15 +782,13 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
 
     "given a non-appealed point and it is unappealable" should {
       implicit def doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelUnappealable))
-      "not show the appeal status row and have the check if you can appeal link" in new Setup() {
+      "not show the appeal status row and have the check if you can appeal link" in {
         doc.select(".app-summary-card__footer a").get(0).ownText() shouldBe "Find out how to appeal"
         doc.select(".app-summary-card__footer a span").text() shouldBe "for late VAT return due on 12 March 2021"
         doc.select("dt").eq(4).isEmpty shouldBe true
       }
 
-      "not show the appeal status row and have the find out how to appeal link (ShowAppealAgainstObligationChanges feature enabled)" in new Setup(
-        isShowAppealAgainstObligationChangesEnabled = true
-      ) {
+      "not show the appeal status row and have the find out how to appeal link (ShowAppealAgainstObligationChanges feature enabled)" in {
         implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelUnappealable))
         doc.select(".app-summary-card__footer a").get(0).ownText() shouldBe "Find out how to appeal"
         doc.select(".app-summary-card__footer a span").text() shouldBe "for late VAT return due on 12 March 2021"
@@ -815,15 +798,13 @@ class LateSubmissionPenaltySummaryCardSpec extends SpecBase with ViewBehaviours 
 
     "given a non-appealed point and it is unappealable, with an empty appeal level" should {
       implicit def doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelUnappealable.copy(appealLevel = None)))
-      "not show the appeal status row and have the check if you can appeal link" in new Setup() {
+      "not show the appeal status row and have the check if you can appeal link" in {
         doc.select(".app-summary-card__footer a").get(0).ownText() shouldBe "Find out how to appeal"
         doc.select(".app-summary-card__footer a span").text() shouldBe "for late VAT return due on 12 March 2021"
         doc.select("dt").eq(4).isEmpty shouldBe true
       }
 
-      "not show the appeal status row and have the find out how to appeal link (ShowAppealAgainstObligationChanges feature enabled)" in new Setup(
-        isShowAppealAgainstObligationChangesEnabled = true
-      ) {
+      "not show the appeal status row and have the find out how to appeal link (ShowAppealAgainstObligationChanges feature enabled)" in {
         implicit val doc: Document = asDocument(summaryCardHtml.apply(summaryCardModelUnappealable.copy(appealLevel = None)))
         doc.select(".app-summary-card__footer a").get(0).ownText() shouldBe "Find out how to appeal"
         doc.select(".app-summary-card__footer a span").text() shouldBe "for late VAT return due on 12 March 2021"

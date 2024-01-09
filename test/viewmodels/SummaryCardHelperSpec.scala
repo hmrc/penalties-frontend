@@ -51,8 +51,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
     "12345678901234",
     isReturnSubmitted = true,
     dueDate = Some(dateToString(taxPeriodDue)),
-    penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
-    showFindOutHowToAppealText = true
+    penaltyCategory = Some(LSPPenaltyCategoryEnum.Point)
   )
 
   def sampleLPPSummaryCardPenaltyPaid(chargeType: String, isAgent: Boolean = false, isCentralAssessment: Boolean = false): LatePaymentPenaltySummaryCard = {
@@ -82,9 +81,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       taxPeriodEndDate = principleChargeBillingEndDate.toString,
       isAgent = isAgent,
       isCentralAssessment = isCentralAssessment,
-      vatOutstandingAmountInPence = 12345,
-      showFindOutHowToAppeal = true,
-      showCAFindOutHowToAppeal = true
+      vatOutstandingAmountInPence = 12345
     )
   }
 
@@ -115,9 +112,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       taxPeriodEndDate = principleChargeBillingEndDate.toString,
       isAgent = isAgent,
       isCentralAssessment = isCentralAssessment,
-      vatOutstandingAmountInPence = 12345,
-      showFindOutHowToAppeal = true,
-      showCAFindOutHowToAppeal = true
+      vatOutstandingAmountInPence = 12345
     )
   }
 
@@ -143,9 +138,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       dueDate = "7\u00A0June\u00A02021",
       taxPeriodStartDate = principleChargeBillingStartDate.toString,
       taxPeriodEndDate = principleChargeBillingEndDate.toString,
-      vatOutstandingAmountInPence = 12345,
-      showFindOutHowToAppeal = true,
-      showCAFindOutHowToAppeal = true
+      vatOutstandingAmountInPence = 12345
     )
   }
 
@@ -225,8 +218,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
           totalPenaltyAmount = 200,
           multiplePenaltyPeriod = None,
-          dueDate = Some(dateToString(taxPeriodDue)),
-          showFindOutHowToAppealText = true
+          dueDate = Some(dateToString(taxPeriodDue))
         )
 
         val pointToPassIn: LSPDetails = sampleLateSubmissionPenaltyCharge.copy(penaltyOrder = Some("05"))
@@ -250,8 +242,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           isReturnSubmitted = true,
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Threshold),
           totalPenaltyAmount = 200,
-          dueDate = Some(dateToString(taxPeriodDue)),
-          showFindOutHowToAppealText = true
+          dueDate = Some(dateToString(taxPeriodDue))
         )
 
         val pointToPassIn: LSPDetails = sampleLateSubmissionPenaltyCharge.copy(penaltyOrder = Some("01"), penaltyCategory = Some(LSPPenaltyCategoryEnum.Threshold))
@@ -355,8 +346,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Charge),
           totalPenaltyAmount = 200,
           multiplePenaltyPeriod = Some(Html(lspMultiplePenaltyPeriodMessage(dateToString(taxPeriodDue.plusMonths(1))))),
-          dueDate = Some(dateToString(taxPeriodDue)),
-          showFindOutHowToAppealText = true
+          dueDate = Some(dateToString(taxPeriodDue))
         )
 
         val actualResult = helper.financialSummaryCard(sampleLateSubmissionPenaltyChargeWithMultiplePeriods, monthlyThreshold)
@@ -379,8 +369,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
           isReturnSubmitted = false,
           penaltyCategory = Some(LSPPenaltyCategoryEnum.Threshold),
           totalPenaltyAmount = 200,
-          dueDate = Some(dateToString(taxPeriodDue)),
-          showFindOutHowToAppealText = true
+          dueDate = Some(dateToString(taxPeriodDue))
         )
 
         val pointToPassIn: LSPDetails = sampleLateSubmissionPenaltyCharge.copy(penaltyOrder = Some("01"), penaltyCategory = Some(LSPPenaltyCategoryEnum.Threshold),
@@ -430,8 +419,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
             "12345678901234",
             isReturnSubmitted = true,
             dueDate = Some(dateToString(taxPeriodDue)),
-            penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
-            showFindOutHowToAppealText = true
+            penaltyCategory = Some(LSPPenaltyCategoryEnum.Point)
           ),
             LateSubmissionPenaltySummaryCard(
               Seq(
@@ -448,8 +436,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               "12345678901234",
               isReturnSubmitted = true,
               dueDate = Some(dateToString(taxPeriodDue.plusMonths(1))),
-              penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
-              showFindOutHowToAppealText = true
+              penaltyCategory = Some(LSPPenaltyCategoryEnum.Point)
             ),
             LateSubmissionPenaltySummaryCard(
               Seq(
@@ -466,8 +453,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               "12345678901234",
               isReturnSubmitted = true,
               dueDate = Some(dateToString(taxPeriodDue.plusMonths(2))),
-              penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
-              showFindOutHowToAppealText = true
+              penaltyCategory = Some(LSPPenaltyCategoryEnum.Point)
             ),
             LateSubmissionPenaltySummaryCard(
               Seq(
@@ -483,8 +469,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               isReturnSubmitted = true,
               isAddedOrRemovedPoint = true,
               dueDate = Some(dateToString(taxPeriodDue.minusMonths(1))),
-              penaltyCategory = Some(LSPPenaltyCategoryEnum.Point),
-              showFindOutHowToAppealText = true
+              penaltyCategory = Some(LSPPenaltyCategoryEnum.Point)
             ))
 
 
@@ -513,8 +498,7 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
               "0987654321",
               isReturnSubmitted = true,
               dueDate = Some(dateToString(taxPeriodDue)),
-              penaltyCategory = None,
-              showFindOutHowToAppealText = true
+              penaltyCategory = None
             ))
           val result = helper.populateLateSubmissionPenaltyCard(Seq(sampleLateSubmissionPointReturnWithNoPenaltyCategory), quarterlyThreshold, quarterlyThreshold - 1)
           result.head shouldBe expectedResult.head
