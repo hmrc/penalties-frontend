@@ -37,6 +37,5 @@ case class LateSubmissionPenaltySummaryCard(
                                              isAddedOrRemovedPoint: Boolean = false,
                                              isManuallyRemovedPoint: Boolean = false,
                                              multiplePenaltyPeriod: Option[Html] = None,
-                                             dueDate: Option[String],
-                                             showFindOutHowToAppealText: Boolean
+                                             dueDate: Option[String]
                                            )

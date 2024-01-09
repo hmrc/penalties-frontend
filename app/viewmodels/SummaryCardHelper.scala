@@ -19,7 +19,7 @@ package viewmodels
 import java.time.LocalDate
 
 import config.AppConfig
-import config.featureSwitches.{FeatureSwitching, ShowAppealAgainstObligationChanges, ShowCAFindOutHowToAppealJourney, ShowFindOutHowToAppealJourney}
+import config.featureSwitches.FeatureSwitching
 import javax.inject.Inject
 import models.User
 import models.appealInfo.AppealStatusEnum
@@ -99,8 +99,7 @@ class SummaryCardHelper @Inject()(val appConfig: AppConfig) extends ImplicitDate
       isManuallyRemovedPoint = isManuallyRemovedPoint,
       multiplePenaltyPeriod = getMultiplePenaltyPeriodMessage(penalty),
       dueDate = dueDate.map(dateToString(_)),
-      penaltyCategory = penalty.penaltyCategory,
-      showFindOutHowToAppealText = isEnabled(ShowAppealAgainstObligationChanges)
+      penaltyCategory = penalty.penaltyCategory
     )
   }
 
@@ -176,8 +175,7 @@ class SummaryCardHelper @Inject()(val appConfig: AppConfig) extends ImplicitDate
       appealLevel = appealLevel,
       totalPenaltyAmount = penalty.chargeAmount.getOrElse(BigDecimal(0)),
       multiplePenaltyPeriod = getMultiplePenaltyPeriodMessage(penalty),
-      dueDate = dueDate.map(dateToString(_)),
-      showFindOutHowToAppealText = isEnabled(ShowAppealAgainstObligationChanges)
+      dueDate = dueDate.map(dateToString(_))
     )
   }
 
@@ -345,9 +343,7 @@ class SummaryCardHelper @Inject()(val appConfig: AppConfig) extends ImplicitDate
       taxPeriodEndDate = lpp.principalChargeBillingTo.toString,
       isAgent = user.isAgent,
       isCentralAssessment = isCentralAssessment,
-      vatOutstandingAmountInPence = vatOustandingAmount,
-      showFindOutHowToAppeal = isEnabled(ShowFindOutHowToAppealJourney),
-      showCAFindOutHowToAppeal = isEnabled(ShowCAFindOutHowToAppealJourney)
+      vatOutstandingAmountInPence = vatOustandingAmount
     )
   }
 

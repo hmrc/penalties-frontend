@@ -17,7 +17,6 @@
 package controllers
 
 import config.AppConfig
-import config.featureSwitches.ShowFindOutHowToAppealJourney
 import models.breathingSpace.BreathingSpace
 import org.jsoup.Jsoup
 import play.api.http.{HeaderNames, Status}
@@ -32,14 +31,6 @@ import uk.gov.hmrc.http.SessionKeys.authToken
 import utils.SessionKeys
 
 class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
-
-  class Setup(isShowFindOutHowToAppealEnabled: Boolean = false) {
-    if(isShowFindOutHowToAppealEnabled) {
-      enableFeatureSwitch(ShowFindOutHowToAppealJourney)
-    } else {
-      disableFeatureSwitch(ShowFindOutHowToAppealJourney)
-    }
-  }
 
   val appConfig: AppConfig = injector.instanceOf[AppConfig]
 
@@ -212,29 +203,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
       parsedBody.select("#late-payment-penalties footer li").text().contains("Appeal this penalty") shouldBe true
     }
 
-    "return 200 (OK) and render the view when there are LPPs with VAT partially unpaid that are retrieved from the backend" in new Setup(){
-      getPenaltyDetailsStub(Some(getPenaltiesDataPayloadWithLPPVATUnpaid))
-      val request = controller.onPageLoad()(fakeRequest)
-      status(request) shouldBe Status.OK
-      val parsedBody = Jsoup.parse(contentAsString(request))
-      parsedBody.select("#late-payment-penalties section header h4").get(0).ownText shouldBe "£400 penalty"
-      parsedBody.select("#late-payment-penalties section header h4 span").text shouldBe "for late payment of charge due on 7 March 2021"
-      parsedBody.select("#late-payment-penalties section header strong").text shouldBe "£200 due"
-      val summaryCardBody = parsedBody.select(" #late-payment-penalties .app-summary-card__body")
-      summaryCardBody.select("dt").get(0).text shouldBe "Penalty type"
-      summaryCardBody.select("dd").get(0).text shouldBe "First penalty for late payment"
-      summaryCardBody.select("dt").get(1).text shouldBe "Overdue charge"
-      summaryCardBody.select("dd").get(1).text shouldBe "VAT for period 1 January 2021 to 31 January 2021"
-      summaryCardBody.select("dt").get(2).text shouldBe "VAT due"
-      summaryCardBody.select("dd").get(2).text shouldBe "7 March 2021"
-      summaryCardBody.select("dt").get(3).text shouldBe "VAT paid"
-      summaryCardBody.select("dd").get(3).text shouldBe "Payment not yet received"
-      summaryCardBody.select(".govuk-details__summary-text").get(0).text shouldBe "Why you cannot appeal yet"
-      summaryCardBody.select(".govuk-details__text p:nth-child(1)").get(0).text shouldBe "You cannot appeal until the VAT is paid."
-      summaryCardBody.select(".govuk-details__text p:nth-child(2)").get(0).text shouldBe "It can take up to 5 days for the payment to clear and show on your payment history. If you’ve already paid, keep checking back to see when the payment clears."
-    }
-
-    "return 200 (OK) and render the view when there are LPPs with VAT partially unpaid that are retrieved from the backend and isShowFindOutHowToAppealEnabled is enabled" in new Setup(isShowFindOutHowToAppealEnabled=true) {
+    "return 200 (OK) and render the view when there are LPPs with VAT partially unpaid that are retrieved from the backend and isShowFindOutHowToAppealEnabled is enabled" in {
       getPenaltyDetailsStub(Some(getPenaltiesDataPayloadWithLPPVATUnpaid))
       val request = controller.onPageLoad()(fakeRequest)
       status(request) shouldBe Status.OK
@@ -255,7 +224,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
 
     }
 
-    "return 200 (OK) and render the view when there are LPPs with VAT unpaid that are retrieved from the backend" in new Setup() {
+    "return 200 (OK) and render the view when there are LPPs with VAT unpaid that are retrieved from the backend" in {
       complianceDataStub()
       getPenaltyDetailsStub(Some(getPenaltyDetailsPayloadWithLPPVATUnpaidAndVATOverviewAndLSPsDue.copy(latePaymentPenalty = Some(unpaidLatePaymentPenalty))))
       val request = controller.onPageLoad()(fakeRequest)
@@ -467,10 +436,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
   "GET /appeal-penalty" should {
     "redirect the user to the appeals service when the penalty is a LSP" in {
       val request = controller.redirectToAppeals(
-        penaltyId = "1234",
-        isLPP = false,
-        isObligation = false,
-        isAdditional = false)(FakeRequest("GET", "/").withSession(
+        penaltyId = "1234")(FakeRequest("GET", "/").withSession(
         authToken -> "1234"
       ))
       status(request) shouldBe Status.SEE_OTHER
@@ -480,9 +446,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
     "redirect the user to the appeals service when the penalty is a LPP1" in {
       val request = controller.redirectToAppeals(
         penaltyId = "1234",
-        isLPP = true,
-        isObligation = false,
-        isAdditional = false)(FakeRequest("GET", "/").withSession(
+        isLPP = true)(FakeRequest("GET", "/").withSession(
         authToken -> "1234"
       ))
       status(request) shouldBe Status.SEE_OTHER
@@ -493,8 +457,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
       val request = controller.redirectToAppeals(
         penaltyId = "1234",
         isLPP = true,
-        isObligation = false,
-        isAdditional = true)(FakeRequest("GET", "/").withSession(
+        isLPP2 = true)(FakeRequest("GET", "/").withSession(
         authToken -> "1234"
       ))
       status(request) shouldBe Status.SEE_OTHER
@@ -504,7 +467,7 @@ class IndexControllerISpec extends IntegrationSpecCommonBase with TestData {
     "redirect the user to the obligations appeals service when the penalty is a LSP" in {
       val request = controller.redirectToAppeals(
         penaltyId = "1234",
-        isObligation = true)(FakeRequest("GET", "/").withSession(
+        isFindOutHowToAppealLSP = true)(FakeRequest("GET", "/").withSession(
         authToken -> "1234"
       ))
       status(request) shouldBe Status.SEE_OTHER

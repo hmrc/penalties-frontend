@@ -97,19 +97,19 @@ trait SpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with P
   val penaltyId = "123456789"
 
   val redirectToAppealUrlForLSP: String =
-    controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = false, isObligation = false, isAdditional = false).url
+    controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = false, isFindOutHowToAppealLSP = false, isAdditional = false).url
 
   val redirectToAppealUrlForLPP: String =
-    controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = true, isObligation = false, isAdditional = false).url
+    controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = true, isFindOutHowToAppealLSP = false, isAdditional = false).url
 
   val redirectToAppealObligationUrlForLSP: String =
-    controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = false, isObligation = true, isAdditional = false).url
+    controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = false, isFindOutHowToAppealLSP = true, isAdditional = false).url
 
   val redirectToAppealObligationUrlForLPP: String =
-    controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = true, isObligation = true, isAdditional = false).url
+    controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = true, isFindOutHowToAppealLSP = true, isAdditional = false).url
 
   val redirectToAppealObligationUrlForLPPAdditional: String =
-    controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = true, isObligation = false, isAdditional = true).url
+    controllers.routes.IndexController.redirectToAppeals(penaltyId, isLPP = true, isFindOutHowToAppealLSP = false, isAdditional = true).url
 
   val vatTraderUser: User[AnyContent] = User("123456789", arn = None)(fakeRequest)
 

@@ -93,21 +93,22 @@ class IndexController @Inject()(view: IndexView,
     }
   }
 
-  def redirectToAppeals(penaltyId: String, isLPP: Boolean = false, isObligation: Boolean = false,
-                        isAdditional: Boolean = false): Action[AnyContent] = authorise.async {
+  def redirectToAppeals(penaltyId: String, isLPP: Boolean = false, isFindOutHowToAppealLSP: Boolean = false,
+                        isLPP2: Boolean = false): Action[AnyContent] = authorise.async {
     logger.debug(s"[IndexController][redirectToAppeals] - Redirect to appeals frontend with id $penaltyId and is late payment penalty: $isLPP " +
-      s"and is obligation appeal: $isObligation and is additional: $isAdditional")
-    if (isObligation) {
+      s"and cannot be appealed: $isFindOutHowToAppealLSP and is LPP2: $isLPP2")
+    if (isFindOutHowToAppealLSP) {
       Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}" +
         s"/initialise-appeal-against-the-obligation?penaltyId=$penaltyId"))
     } else {
-      Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=$isLPP&isAdditional=$isAdditional"))
+      Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal?penaltyId=$penaltyId&isLPP=$isLPP&isAdditional=$isLPP2"))
     }
   }
 
-  def redirectToFindOutHowToAppeal(principalChargeReference: String, vatAmountInPence: Int, vatPeriodStartDate: String, vatPeriodEndDate:String,
+
+  def redirectToFindOutHowToAppealLPP(principalChargeReference: String, vatAmountInPence: Int, vatPeriodStartDate: String, vatPeriodEndDate:String,
                         isCa: Boolean = false): Action[AnyContent] = authorise.async {
-    logger.debug(s"[IndexController][redirectToFindOutHowToAppeal] - Redirect to appeals frontend with principleChargeReference: $principalChargeReference " +
+    logger.debug(s"[IndexController][redirectToFindOutHowToAppealLPP] - Redirect to appeals frontend with principleChargeReference: $principalChargeReference " +
       s"and has vatPeriodStartDate: $vatPeriodStartDate and has vatPeriodEndDate: $vatPeriodEndDate and has vatAmountInPence: $vatAmountInPence and is Ca: $isCa")
     Future(Redirect(s"${appConfig.penaltiesAppealsBaseUrl}/initialise-appeal-find-out-how-to-appeal?principalChargeReference=$principalChargeReference&vatAmountInPence=$vatAmountInPence&vatPeriodStartDate=$vatPeriodStartDate&vatPeriodEndDate=$vatPeriodEndDate&isCa=$isCa"))
   }
