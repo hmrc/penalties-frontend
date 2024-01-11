@@ -70,28 +70,28 @@ class PenaltiesConnectorISpec extends IntegrationSpecCommonBase {
       invalidComplianceDataStub()
       val result: CompliancePayloadResponse = await(connector.getObligationData("123456789", startDate, endDate))
       result.isLeft shouldBe true
-      result.left.getOrElse(false) shouldBe CompliancePayloadMalformed
+      result.left.getOrElse(CompliancePayloadFailureResponse(IM_A_TEAPOT)) shouldBe CompliancePayloadMalformed
     }
 
     s"return a $CompliancePayloadNoData when the response status is Not Found (${Status.NOT_FOUND})" in {
       errorStatusStub(Status.NOT_FOUND)
       val result: CompliancePayloadResponse = await(connector.getObligationData("123456789", startDate, endDate))
       result.isLeft shouldBe true
-      result.left.getOrElse(false) shouldBe CompliancePayloadNoData
+      result.left.getOrElse(CompliancePayloadFailureResponse(IM_A_TEAPOT)) shouldBe CompliancePayloadNoData
     }
 
     s"return a $CompliancePayloadFailureResponse when the response status is ISE (${Status.INTERNAL_SERVER_ERROR})" in {
       errorStatusStub(Status.INTERNAL_SERVER_ERROR)
       val result: CompliancePayloadResponse = await(connector.getObligationData("123456789", startDate, endDate))
       result.isLeft shouldBe true
-      result.left.getOrElse(false) shouldBe CompliancePayloadFailureResponse(Status.INTERNAL_SERVER_ERROR)
+      result.left.getOrElse(CompliancePayloadFailureResponse(IM_A_TEAPOT)) shouldBe CompliancePayloadFailureResponse(Status.INTERNAL_SERVER_ERROR)
     }
 
     s"return a $CompliancePayloadFailureResponse when the response status is unmatched i.e. Service Unavailable (${Status.SERVICE_UNAVAILABLE})" in {
       errorStatusStub(Status.SERVICE_UNAVAILABLE)
       val result: CompliancePayloadResponse = await(connector.getObligationData("123456789", startDate, endDate))
       result.isLeft shouldBe true
-      result.left.getOrElse(false) shouldBe CompliancePayloadFailureResponse(Status.SERVICE_UNAVAILABLE)
+      result.left.getOrElse(CompliancePayloadFailureResponse(IM_A_TEAPOT)) shouldBe CompliancePayloadFailureResponse(Status.SERVICE_UNAVAILABLE)
     }
   }
 }
