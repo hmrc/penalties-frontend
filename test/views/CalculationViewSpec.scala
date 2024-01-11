@@ -53,8 +53,6 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
 
     val calculation = "#calculation"
 
-    val betaFeedbackBannerText =  ".govuk-phase-banner__text"
-
     val ttpInsetText = "#ttp-inset-text"
 
     override val h2 = "h2:nth-of-type(2)"
@@ -1120,25 +1118,6 @@ class CalculationViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         behave like pageWithExpectedMessages(expectedContent)
       }
     }
-  }
-
-  "have a beta banner with the feedback link and correct content and a link with the 'backUrl' queryParam" in {
-    def applyView(): HtmlFormat.Appendable = calculationLPP2Page.apply(
-      isEstimate = true,
-      startDate = "1 April 2022",
-      endDate = "30 June 2022",
-      dueDate = None,
-      penaltyAmount = "50.50",
-      amountReceived = "10.10",
-      amountLeftToPay = "40.40",
-      isTTPActive = false,
-      isUserInBreathingSpace = false,
-      isVATOverpayment = false
-    )(implicitly, implicitly, vatTraderUser)
-    val doc: Document = asDocument(applyView())
-
-    doc.select(Selector.betaFeedbackBannerText).text() shouldBe "This is a new service – your feedback will help us to improve it."
-    doc.select(".govuk-phase-banner__text > .govuk-link").attr("href").contains("http://localhost:9250/contact/beta-feedback?service=vat-penalties&backUrl=") shouldBe true
   }
 
   "have a feedback link at the bottom of the page" in {

@@ -29,7 +29,6 @@
     homepageUrl = "https://www.gov.uk/",
     serviceUrl = if(request.session.get(SessionKeys.agentSessionVrn).isDefined) {appConfig.vatOverviewUrlAgent} else {appConfig.vatOverviewUrl},
     serviceName = Some(if(request.session.get(SessionKeys.agentSessionVrn).isDefined) { messages("agent.service.name")} else { messages("service.name") }),
-    phaseBanner = Some(betaBanner(url = appConfig.feedbackUrl(request.uri))),
     containerClasses = "govuk-width-container",
     navigation = None,
     signOutHref = if(showSignOut) Some(controllers.routes.SignOutController.signOut(isAuthorised).url) else None,
