@@ -284,3 +284,4 @@ ise.heading = Mae’n ddrwg gennym - rydym yn profi anawsterau technegol
 ise.message = Rhowch gynnig arall arni mewn ychydig o funudau.
 error.link = Bwrw golwg dros eich cyfrif TAW
 agent.error.link = Bwrw golwg ar gyfrif TAW eich cleient
+error.link.general = Yn ôl i gosbau TAW

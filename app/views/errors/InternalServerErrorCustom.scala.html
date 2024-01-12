@@ -20,5 +20,5 @@
 @layout(pageTitle = messages("ise.title"), isError = true) {
     <h1 class="govuk-heading-xl">@messages("ise.heading")</h1>
     <p class="govuk-body"> @messages("ise.message")</p>
-    <p class="govuk-body"><a class="govuk-link" href="@{appConfig.vatOverviewUrl}">@getMessage("error.link")</a></p>
+    <p class="govuk-body"><a class="govuk-link" href="@{controllers.routes.IndexController.onPageLoad}">@getMessage("error.link")</a></p>
 }

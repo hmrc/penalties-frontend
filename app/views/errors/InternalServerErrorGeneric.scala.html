@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package assets.messages
+@this(layout: Layout)
 
-object ISECustomMessages {
-  val title = "Sorry, we are experiencing technical difficulties - 500 - Manage your VAT account - GOV.UK"
-  val heading = "Sorry, we’re experiencing technical difficulties"
-  val p = "Please try again in a few minutes."
-  val link = "Return to your VAT penalties"
-  val agentLink = "Return to your client’s VAT penalties"
-  val linkGeneric = "Return to VAT penalties"
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@layout(pageTitle = messages("ise.title"), isError = true) {
+    <h1 class="govuk-heading-xl">@messages("ise.heading")</h1>
+    <p class="govuk-body"> @messages("ise.message")</p>
+    <p class="govuk-body"><a class="govuk-link" href="@{controllers.routes.IndexController.onPageLoad}">@messages("error.link.general")</a></p>
 }

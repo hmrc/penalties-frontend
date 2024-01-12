@@ -20,15 +20,28 @@ import javax.inject.{Inject, Singleton}
 import models.User
 import play.api.i18n.MessagesApi
 import play.api.mvc.Results.InternalServerError
-import play.api.mvc.{Request, Result}
+import play.api.mvc.{Request, RequestHeader, Result, Results}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
+import utils.MessageRenderer.getMessage
 import views.html.ErrorTemplate
-import views.html.errors.InternalServerErrorCustom
+import views.html.errors.{InternalServerErrorCustom, InternalServerErrorGeneric}
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 @Singleton
-class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, iseCustom: InternalServerErrorCustom, val messagesApi: MessagesApi)(implicit appConfig: AppConfig)
+class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, iseCustom: InternalServerErrorCustom, iseGeneric: InternalServerErrorGeneric, val messagesApi: MessagesApi)(implicit appConfig: AppConfig)
     extends FrontendErrorHandler {
+
+  private implicit def rhToRequest(rh: RequestHeader): Request[_] = Request(rh, "")
+
+  override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
+    statusCode match {
+      case play.mvc.Http.Status.INTERNAL_SERVER_ERROR => Future(showInternalServerError(None)(request))
+      case _                                => Future.successful(Results.Status(statusCode)(fallbackClientErrorTemplate(request)))
+    }
+  }
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
     errorTemplate(pageTitle, heading, message)
@@ -38,7 +51,7 @@ class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, iseCustom: InternalSe
       implicit val user: User[_] = userOptional.get
       InternalServerError(iseCustom())
     } else {
-      InternalServerError(internalServerErrorTemplate)
+      InternalServerError(iseGeneric())
     }
   }
 }
