@@ -62,8 +62,6 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
     val missingDeadlineText = "#missing-deadline"
 
     val returnToVATLink = "#main-content > div > div > p > a"
-
-    val betaFeedbackBannerText =  ".govuk-phase-banner__text"
   }
 
   "ComplianceView" should {
@@ -137,14 +135,6 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
           asDocument(applyView(html(stringAsHtml(sampleMissingReturns)), "1 January 2022", "2"))
         docWithMissingReturns.body().toString.contains(agentMissingDeadlineContent) shouldBe true
       }
-    }
-
-    "have a beta banner with the feedback link and correct content and a link with the 'backUrl' queryParam" in {
-      def applyView(): HtmlFormat.Appendable = compliancePage.apply(html(), "", "")(implicitly, implicitly, vatTraderUser)
-      val doc: Document = asDocument(applyView())
-
-      doc.select(Selectors.betaFeedbackBannerText).text() shouldBe "This is a new service – your feedback will help us to improve it."
-      doc.select(".govuk-phase-banner__text > .govuk-link").attr("href").contains("http://localhost:9250/contact/beta-feedback?service=vat-penalties&backUrl=") shouldBe true
     }
 
     "have a feedback link at the bottom of the page" in {

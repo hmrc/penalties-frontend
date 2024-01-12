@@ -88,22 +88,9 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours with LSP
         Selectors.breadcrumbWithLink(2) -> breadcrumb2,
         Selectors.title -> title,
         Selectors.h1 -> heading,
-        Selectors.betaFeedbackBannerText -> betaFeedbackContent
       )
 
       behave like pageWithExpectedMessages(expectedContent)
-
-      "have a UR banner with the correct content" in {
-        doc.select(Selectors.urBannerHeader).text() shouldBe urBannerHeader
-        doc.select(Selectors.urBannerLink).text() shouldBe urBannerLinkText
-        doc.select(Selectors.urBannerLink).attr("href") shouldBe "https://signup.take-part-in-research.service.gov.uk/?utm_campaign=VAT_penalty&utm_source=Other&utm_medium=other&t=HMRC&id=535"
-        doc.select(Selectors.hideURBannerButton).get(0).text() shouldBe urBannerHideMessageButtonText
-      }
-
-      "have a beta banner with the feedback link and correct content and a link with the 'backUrl' queryParam" in {
-        doc.select(Selectors.betaFeedbackBannerText).text() shouldBe betaFeedbackContent
-        doc.select(".govuk-phase-banner__text > .govuk-link").attr("href").contains("http://localhost:9250/contact/beta-feedback?service=vat-penalties&backUrl=") shouldBe true
-      }
     }
 
     "display button with correct text and link when user owes penalties" when {

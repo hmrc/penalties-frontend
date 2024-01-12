@@ -24,7 +24,6 @@
         govukLayout: GovUkPageLayout,
         hmrcTimeoutDialog: HmrcTimeoutDialog,
         header: components.Header,
-        phaseBanner: components.phaseBanner,
         govukBackLink: GovukBackLink,
         hmrcStandardFooter: HmrcStandardFooter,
         languageSelect: views.html.LanguageSelect,
@@ -39,7 +38,6 @@
         isError: Boolean = false,
         isCustomLayout: Boolean = false,
         optPage: Option[Page] = None,
-        showURBannerIfEnabled: Boolean = false,
         isAuthorised: Boolean = true
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -120,7 +118,7 @@
 @govukLayout(
     pageTitle = Some(messages("common.pageTitle", pageTitle, messages(titleMessage))),
     headBlock = Some(headBlock),
-    headerBlock = Some(header(appConfig, !isTimeout, showURBannerIfEnabled, isAuthorised)),
+    headerBlock = Some(header(appConfig, !isTimeout, isAuthorised)),
     scriptsBlock = Some(scripts),
     beforeContentBlock = Some(beforeContentBlock),
     footerBlock = Some(hmrcStandardFooter()),

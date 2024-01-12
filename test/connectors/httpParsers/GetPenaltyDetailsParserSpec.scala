@@ -21,6 +21,7 @@ import models.GetPenaltyDetails
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.http.Status
+import play.api.http.Status.{IM_A_TEAPOT, INTERNAL_SERVER_ERROR}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpResponse
 import utils.Logger.logger
@@ -81,7 +82,7 @@ class GetPenaltyDetailsParserSpec extends AnyWordSpec with Matchers with LogCapt
           val result = GetPenaltyDetailsParser.GetPenaltyDetailsResponseReads.read("GET", "/", mockBadRequestHttpResponse)
           logs.exists(_.getMessage.contains(PagerDutyKeys.RECEIVED_4XX_FROM_PENALTIES_BACKEND.toString)) shouldBe true
           result.isLeft shouldBe true
-          result.left.getOrElse(None) shouldBe BadRequest
+          result.left.getOrElse(UnexpectedFailure(IM_A_TEAPOT, "")) shouldBe BadRequest
         }
       }
     }
@@ -89,7 +90,7 @@ class GetPenaltyDetailsParserSpec extends AnyWordSpec with Matchers with LogCapt
     s"parse a NO CONTENT (${Status.NO_CONTENT}) response" in {
       val result = GetPenaltyDetailsParser.GetPenaltyDetailsResponseReads.read("GET", "/", mockNoContentHttpResponse)
       result.isRight shouldBe true
-      result.getOrElse(false) shouldBe mockGetPenaltyDetailsModel
+      result.getOrElse(UnexpectedFailure(IM_A_TEAPOT, "")) shouldBe mockGetPenaltyDetailsModel
     }
 
     s"parse an unknown error (e.g. IM A TEAPOT - ${Status.IM_A_TEAPOT}) - and log a PagerDuty" in {
@@ -98,7 +99,7 @@ class GetPenaltyDetailsParserSpec extends AnyWordSpec with Matchers with LogCapt
           val result = GetPenaltyDetailsParser.GetPenaltyDetailsResponseReads.read("GET", "/", mockImATeapotHttpResponse)
           logs.exists(_.getMessage.contains(PagerDutyKeys.RECEIVED_4XX_FROM_PENALTIES_BACKEND.toString)) shouldBe true
           result.isLeft shouldBe true
-          result.left.getOrElse(false) shouldBe UnexpectedFailure(Status.IM_A_TEAPOT, s"Unexpected response, status ${Status.IM_A_TEAPOT} returned")
+          result.left.getOrElse(UnexpectedFailure(INTERNAL_SERVER_ERROR, "")) shouldBe UnexpectedFailure(Status.IM_A_TEAPOT, s"Unexpected response, status ${Status.IM_A_TEAPOT} returned")
         }
       }
     }
@@ -109,7 +110,7 @@ class GetPenaltyDetailsParserSpec extends AnyWordSpec with Matchers with LogCapt
           val result = GetPenaltyDetailsParser.GetPenaltyDetailsResponseReads.read("GET", "/", mockISEHttpResponse)
           logs.exists(_.getMessage.contains(PagerDutyKeys.RECEIVED_5XX_FROM_PENALTIES_BACKEND.toString)) shouldBe true
           result.isLeft shouldBe true
-          result.left.getOrElse(false) shouldBe UnexpectedFailure(Status.INTERNAL_SERVER_ERROR, s"Unexpected response, status ${Status.INTERNAL_SERVER_ERROR} returned")
+          result.left.getOrElse(UnexpectedFailure(IM_A_TEAPOT, "")) shouldBe UnexpectedFailure(Status.INTERNAL_SERVER_ERROR, s"Unexpected response, status ${Status.INTERNAL_SERVER_ERROR} returned")
         }
       }
     }

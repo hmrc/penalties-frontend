@@ -124,12 +124,6 @@ object IndexMessages {
 
   val betaFeedbackContent = "This is a new service – your feedback will help us to improve it."
 
-  val urBannerHeader = "Help make GOV.UK better"
-
-  val urBannerLinkText = "Sign up to take part in research (opens in new tab)"
-
-  val urBannerHideMessageButtonText = "Hide message"
-
   val whatYouOweButtonText = "Check amounts and pay"
   val whatYouOweButtonAgentText = "Check amounts"
 }
