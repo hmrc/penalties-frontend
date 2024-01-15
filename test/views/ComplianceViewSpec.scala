@@ -87,7 +87,7 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selectors.pointExpiryDate -> "1 January 2022",
         Selectors.missingDeadlineText -> missingDeadlineContent,
         Selectors.penaltyPointGuidance -> penaltyPointGuidance,
-          Selectors.returnToVATLink -> returnToVAT
+        Selectors.returnToVATLink -> returnToVAT
 
       )
 
