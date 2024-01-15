@@ -89,9 +89,9 @@ object CalculationMessages {
 
   val whenPenaltyIncreases = "The total increases daily based on the amount of unpaid VAT for the period."
 
-  val whenPenaltyIncreasesAccruing = "The total increases daily until you pay your VAT or set up a payment plan."
+  val whenPenaltyIncreasesAccruing = "The total builds up daily until you pay your VAT or set up a payment plan."
 
-  val whenPenaltyIncreasesAccruingAgent = "The total increases daily until your client pays their VAT or sets up a payment plan."
+  val whenPenaltyIncreasesAccruingAgent = "The total builds up daily until your client pays their VAT or sets up a payment plan."
 
   val lpp2Calculation = "The calculation we use for each day is: (Penalty rate of 4% × unpaid VAT) ÷ days in a year"
 
