@@ -237,6 +237,7 @@ agent.calculation.p.3.estimates.lpp.ttpActive = Bydd cosbau’n dangos fel amcan
 agent.calculation.p.3.estimates.lpp2 = Bydd cosbau a llog yn ymddangos fel amcangyfrifon hyd nes y bydd eich cleient yn talu’r tâl cysylltiedig.
 calculation.p.2.estimates.lpp1 = Bydd cosbau’n dangos fel amcangyfrifon hyd nes:
 calculation.p.2.estimates.b1 = rydych yn talu’r bil TAW, neu
+calculation.guidance = Darllenwch yr arweiniad ynghylch sut mae CThEF yn dileu pwyntiau cosb (yn agor tab newydd)
 agent.calculation.p.2.estimates.b1 = mae’ch cleient yn talu’r bil TAW, neu
 calculation.p.2.estimates.b2 = bod 30 diwrnod wedi mynd heibio ers dyddiad dyledus y TAW
 calculation.p.2.estimates.lpp2.breathing.space.ttp.active = Bydd cosbau’n cael eu dangos fel amcangyfrifon hyd nes:

@@ -246,6 +246,7 @@ agent.calculation.p.2.estimates.breathing.space.b1 = your client pays the charge
 calculation.p.2.estimates.breathing.space.b1.ttp.active = you make all payments due under the payment plan, and
 agent.calculation.p.2.estimates.breathing.space.b1.ttp.active = your client makes all payments due under the payment plan, and
 calculation.p.2.estimates.breathing.space.b2 = Breathing Space ends
+calculation.guidance = Read the guidance about how HMRC removes penalty points (opens in new tab)
 calculation.returnLink = Return to VAT penalties and appeals
 calculation.estimate.footerNote.warning = The penalty will increase by a further 2% if VAT remains unpaid 30 days after the due date and you have not set up a payment plan.
 agent.calculation.estimate.footerNote.warning = The penalty will increase by a further 2% if VAT remains unpaid 30 days after the due date and your client has not set up a payment plan.
