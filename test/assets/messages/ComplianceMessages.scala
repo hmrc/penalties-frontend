@@ -34,6 +34,8 @@ object ComplianceMessages {
 
   val agentMissingDeadlineContent = "If your client misses a return deadline, they will have to submit 2 more returns on time before we can remove their points."
 
+  val penaltyPointGuidance = "Read the guidance about how HMRC removes penalty points (opens in new tab)"
+
   val returnToVAT = "Return to VAT penalties and appeals"
 
 }

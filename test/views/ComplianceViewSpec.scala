@@ -60,8 +60,11 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
     val pointExpiryDate = "#expiry-date"
 
     val missingDeadlineText = "#missing-deadline"
+    val penaltyPointGuidance = "#main-content > div > div > p:nth-child(4) > a"
 
-    val returnToVATLink = "#main-content > div > div > p > a"
+    val returnToVATLink = "#main-content > div  > div > p:nth-child(5) > a"
+
+
   }
 
   "ComplianceView" should {
@@ -83,7 +86,8 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         Selectors.pointExpiryText -> expiryContent,
         Selectors.pointExpiryDate -> "1 January 2022",
         Selectors.missingDeadlineText -> missingDeadlineContent,
-        Selectors.returnToVATLink -> returnToVAT
+        Selectors.penaltyPointGuidance -> penaltyPointGuidance,
+          Selectors.returnToVATLink -> returnToVAT
 
       )
 
@@ -97,6 +101,10 @@ class ComplianceViewSpec extends SpecBase with ViewBehaviours with ViewUtils {
         docWithMissingReturns.select(Selectors.breadcrumbWithLink(1)).attr("href") shouldBe appConfig.btaUrl
         docWithMissingReturns.select(Selectors.breadcrumbWithLink(2)).attr("href") shouldBe appConfig.vatOverviewUrl
         docWithMissingReturns.select(Selectors.breadcrumbWithLink(3)).attr("href") shouldBe controllers.routes.IndexController.onPageLoad.url
+      }
+
+      "have the correct 'Read the guidance about how HMRC removes penalty points' link" in {
+        docWithMissingReturns.select(Selectors.penaltyPointGuidance).attr("href") shouldBe "https://www.gov.uk/guidance/remove-penalty-points-youve-received-after-submitting-your-vat-return-late"
       }
 
       "have the correct 'Return to VAT penalties and appeals' link" in {
