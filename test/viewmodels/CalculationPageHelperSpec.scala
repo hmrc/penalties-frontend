@@ -18,7 +18,6 @@ package viewmodels
 
 import base.{LogCapturing, SpecBase}
 import config.featureSwitches.FeatureSwitching
-import models.GetPenaltyDetails
 import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import models.lpp._
 import utils.Logger.logger
@@ -163,198 +162,133 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching with LogC
   "isTTPActive" should {
     "return true" when {
       "a TTP is active and ends today" in {
-        val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-          totalisations = None,
-          latePaymentPenalty = Some(
-            LatePaymentPenalty(
+        val lppDetails: LPPDetails =
+          sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+            mainTransaction = None,
+            outstandingAmount = None,
+            timeToPay = Some(
               Seq(
-                sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
-                  mainTransaction = None,
-                  outstandingAmount = None,
-                  timeToPay = Some(
-                    Seq(
-                      TimeToPay(
-                        TTPStartDate = Some(LocalDate.of(2022, 1, 1)),
-                        TTPEndDate = Some(LocalDate.of(2022, 7, 2))
-                      )
-                    )
-                  )))
+                TimeToPay(
+                  TTPStartDate = Some(LocalDate.of(2022, 1, 1)),
+                  TTPEndDate = Some(LocalDate.of(2022, 7, 2))
+                )
               )
-            )
-          ),
-          lateSubmissionPenalty = None,
-          breathingSpace = None
-        )
+            )))
         setFeatureDate(Some(LocalDate.of(2022, 7, 2)))
-        val result = calculationPageHelper.isTTPActive(penaltyDetails, "123456789")
+        val result = calculationPageHelper.isTTPActive(lppDetails, "123456789")
         result shouldBe true
       }
 
       "a TTP is active and ends in the future" in {
-        val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-          totalisations = None,
-          latePaymentPenalty = Some(
-            LatePaymentPenalty(
+        val lPPDetails: LPPDetails =
+          sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+            mainTransaction = None,
+            outstandingAmount = None,
+            timeToPay = Some(
               Seq(
-                sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
-                  mainTransaction = None,
-                  outstandingAmount = None,
-                  timeToPay = Some(
-                    Seq(
-                      TimeToPay(
-                        TTPStartDate = Some(LocalDate.of(2022, 1, 1)),
-                        TTPEndDate = Some(LocalDate.of(2022, 7, 2))
-                      )
-                    )
-                  )))
+                TimeToPay(
+                  TTPStartDate = Some(LocalDate.of(2022, 1, 1)),
+                  TTPEndDate = Some(LocalDate.of(2022, 7, 2))
+                )
               )
-            )
-          ),
-          lateSubmissionPenalty = None,
-          breathingSpace = None
-        )
+            )))
+
         setFeatureDate(Some(LocalDate.of(2022, 7, 1)))
-        val result = calculationPageHelper.isTTPActive(penaltyDetails, "123456789")
+        val result = calculationPageHelper.isTTPActive(lPPDetails, "123456789")
         result shouldBe true
       }
 
       "a TTP has been applied in the past but also has a TTP active now" in {
-        val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-          totalisations = None,
-          latePaymentPenalty = Some(
-            LatePaymentPenalty(
+        val lPPDetails: LPPDetails =
+          sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+            mainTransaction = None,
+            outstandingAmount = None,
+            timeToPay = Some(
               Seq(
-                sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
-                  mainTransaction = None,
-                  outstandingAmount = None,
-                  timeToPay = Some(
-                    Seq(
-                      TimeToPay(
-                        TTPStartDate = Some(LocalDate.of(2022, 1, 1)),
-                        TTPEndDate = Some(LocalDate.of(2022, 6, 20))
-                      ),
-                      TimeToPay(
-                        TTPStartDate = Some(LocalDate.of(2022, 6, 24)),
-                        TTPEndDate = Some(LocalDate.of(2022, 7, 2))
-                      )
-                    )
-                  )))
+                TimeToPay(
+                  TTPStartDate = Some(LocalDate.of(2022, 1, 1)),
+                  TTPEndDate = Some(LocalDate.of(2022, 6, 20))
+                ),
+                TimeToPay(
+                  TTPStartDate = Some(LocalDate.of(2022, 6, 24)),
+                  TTPEndDate = Some(LocalDate.of(2022, 7, 2))
+                )
               )
-            )
-          ),
-          lateSubmissionPenalty = None,
-          breathingSpace = None
-        )
+            )))
+
         setFeatureDate(Some(LocalDate.of(2022, 6, 25)))
-        val result = calculationPageHelper.isTTPActive(penaltyDetails, "123456789")
+        val result = calculationPageHelper.isTTPActive(lPPDetails, "123456789")
         result shouldBe true
       }
 
       "a TTP has no start date (only an end date) - when the end date is today" in {
-        val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-          totalisations = None,
-          latePaymentPenalty = Some(
-            LatePaymentPenalty(
+        val lPPDetails: LPPDetails =
+          sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+            mainTransaction = None,
+            outstandingAmount = None,
+            timeToPay = Some(
               Seq(
-                sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
-                  mainTransaction = None,
-                  outstandingAmount = None,
-                  timeToPay = Some(
-                    Seq(
-                      TimeToPay(
-                        TTPStartDate = None,
-                        TTPEndDate = Some(LocalDate.of(2022, 6, 25))
-                      )
-                    )
-                  )))
+                TimeToPay(
+                  TTPStartDate = None,
+                  TTPEndDate = Some(LocalDate.of(2022, 6, 25))
+                )
               )
-            )
-          ),
-          lateSubmissionPenalty = None,
-          breathingSpace = None
-        )
+            )))
         setFeatureDate(Some(LocalDate.of(2022, 6, 25)))
-        val result = calculationPageHelper.isTTPActive(penaltyDetails, "123456789")
+        val result = calculationPageHelper.isTTPActive(lPPDetails, "123456789")
         result shouldBe true
       }
 
       "a TTP has no start date (only an end date) - when the end date is after today" in {
-        val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-          totalisations = None,
-          latePaymentPenalty = Some(
-            LatePaymentPenalty(
+        val lPPDetails: LPPDetails =
+          sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+            mainTransaction = None,
+            outstandingAmount = None,
+            timeToPay = Some(
               Seq(
-                sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
-                  mainTransaction = None,
-                  outstandingAmount = None,
-                  timeToPay = Some(
-                    Seq(
-                      TimeToPay(
-                        TTPStartDate = None,
-                        TTPEndDate = Some(LocalDate.of(2022, 6, 26))
-                      )
-                    )
-                  )))
+                TimeToPay(
+                  TTPStartDate = None,
+                  TTPEndDate = Some(LocalDate.of(2022, 6, 26))
+                )
               )
-            )
-          ),
-          lateSubmissionPenalty = None,
-          breathingSpace = None
-        )
+            )))
+
         setFeatureDate(Some(LocalDate.of(2022, 6, 25)))
-        val result = calculationPageHelper.isTTPActive(penaltyDetails, "123456789")
+        val result = calculationPageHelper.isTTPActive(lPPDetails, "123456789")
         result shouldBe true
       }
     }
 
     "return false" when {
       "no TTP field is present" in {
-        val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-          totalisations = None,
-          latePaymentPenalty = Some(
-            LatePaymentPenalty(
-              Seq(
-                sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
-                  mainTransaction = None,
-                  outstandingAmount = None,
-                  timeToPay = None))
-              )
-            )
-          ),
-          lateSubmissionPenalty = None,
-          breathingSpace = None
-        )
-        val result = calculationPageHelper.isTTPActive(penaltyDetails, "123456789")
+        val lPPDetails: LPPDetails =
+          sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+            mainTransaction = None,
+            outstandingAmount = None,
+            timeToPay = None))
+
+        val result = calculationPageHelper.isTTPActive(lPPDetails, "123456789")
         result shouldBe false
       }
 
       "a TTP is active and has no end date" in {
-        val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-          totalisations = None,
-          latePaymentPenalty = Some(
-            LatePaymentPenalty(
+        val lPPDetails: LPPDetails =
+          sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+            mainTransaction = None,
+            outstandingAmount = None,
+            timeToPay = Some(
               Seq(
-                sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
-                  mainTransaction = None,
-                  outstandingAmount = None,
-                  timeToPay = Some(
-                    Seq(
-                      TimeToPay(
-                        TTPStartDate = Some(LocalDate.of(2022, 1, 1)),
-                        TTPEndDate = None
-                      )
-                    )
-                  )))
+                TimeToPay(
+                  TTPStartDate = Some(LocalDate.of(2022, 1, 1)),
+                  TTPEndDate = None
+                )
               )
-            )
-          ),
-          lateSubmissionPenalty = None,
-          breathingSpace = None
-        )
+            )))
+
         setFeatureDate(Some(LocalDate.of(2022, 7, 2)))
         withCaptureOfLoggingFrom(logger) {
           logs => {
-            val result = calculationPageHelper.isTTPActive(penaltyDetails, "123456789")
+            val result = calculationPageHelper.isTTPActive(lPPDetails, "123456789")
             result shouldBe false
             logs.exists(_.getMessage.contains(PagerDutyKeys.TTP_END_DATE_MISSING.toString)) shouldBe true
           }
@@ -363,11 +297,7 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching with LogC
       }
 
       "a TTP has no start date (only an end date) - when the end date is before today" in {
-        val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-          totalisations = None,
-          latePaymentPenalty = Some(
-            LatePaymentPenalty(
-              Seq(
+        val lPPDetails: LPPDetails =
                 sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
                   mainTransaction = None,
                   outstandingAmount = None,
@@ -379,23 +309,14 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching with LogC
                       )
                     )
                   )))
-              )
-            )
-          ),
-          lateSubmissionPenalty = None,
-          breathingSpace = None
-        )
+
         setFeatureDate(Some(LocalDate.of(2022, 7, 3)))
-        val result = calculationPageHelper.isTTPActive(penaltyDetails, "123456789")
+        val result = calculationPageHelper.isTTPActive(lPPDetails, "123456789")
         result shouldBe false
       }
 
       "a TTP was active but has since expired" in {
-        val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-          totalisations = None,
-          latePaymentPenalty = Some(
-            LatePaymentPenalty(
-              Seq(
+        val lPPDetails: LPPDetails =
                 sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
                   mainTransaction = None,
                   outstandingAmount = None,
@@ -407,43 +328,29 @@ class CalculationPageHelperSpec extends SpecBase with FeatureSwitching with LogC
                       )
                     )
                   )))
-              )
-            )
-          ),
-          lateSubmissionPenalty = None,
-          breathingSpace = None
-        )
+
         setFeatureDate(Some(LocalDate.of(2022, 7, 3)))
-        val result = calculationPageHelper.isTTPActive(penaltyDetails, "123456789")
+        val result = calculationPageHelper.isTTPActive(lPPDetails, "123456789")
         result shouldBe false
       }
 
       "a TTP is going to be active but start date is in the future" in {
-        val penaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
-          totalisations = None,
-          latePaymentPenalty = Some(
-            LatePaymentPenalty(
+        val LPPDetails: LPPDetails =
+          sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
+            mainTransaction = None,
+            outstandingAmount = None,
+            timeToPay = Some(
               Seq(
-                sampleUnpaidLPP1.copy(LPPDetailsMetadata = LPPDetailsMetadata(
-                  mainTransaction = None,
-                  outstandingAmount = None,
-                  timeToPay = Some(
-                    Seq(
-                      TimeToPay(
-                        TTPStartDate = Some(LocalDate.of(2022, 8, 1)),
-                        TTPEndDate = Some(LocalDate.of(2022, 9, 2))
-                      )
-                    )
-                  ),
-                ))
+                TimeToPay(
+                  TTPStartDate = Some(LocalDate.of(2022, 8, 1)),
+                  TTPEndDate = Some(LocalDate.of(2022, 9, 2))
+                )
               )
-            )
-          ),
-          lateSubmissionPenalty = None,
-          breathingSpace = None
-        )
+            ),
+          ))
+
         setFeatureDate(Some(LocalDate.of(2022, 7, 3)))
-        val result = calculationPageHelper.isTTPActive(penaltyDetails, "123456789")
+        val result = calculationPageHelper.isTTPActive(LPPDetails, "123456789")
         result shouldBe false
       }
 
