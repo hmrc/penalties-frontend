@@ -52,7 +52,7 @@
 }
 
 @appealContent = {
-    @if(summaryCard.isVatPaid) {
+    @if(summaryCard.penaltyChargeReference.isDefined) {
         <a class="govuk-link" href="@{
             controllers.routes.IndexController.redirectToAppeals(summaryCard.penaltyChargeReference.get, isLPP = true, isFindOutHowToAppealLSP = false, isAdditional = summaryCard.penaltyCategory.equals(LPP2)).url
         }">
@@ -91,7 +91,7 @@
     @if(summaryCard.penaltyCategory.equals(MANUAL)) {
 <div class="app-summary-card__actions">
     <a class="govuk-body">@messages("summaryCard.manual.cannotAppeal")</a></div>
-    }  else if(!summaryCard.isVatPaid && (summaryCard.vatOutstandingAmountInPence > 0)) {
+    }  else if(!summaryCard.isVatPaid && (summaryCard.vatOutstandingAmountInPence > 0) && !summaryCard.isTTPActive) {
 @if(summaryCard.appealStatus.getOrElse(AppealStatusEnum.Unappealable) == AppealStatusEnum.Unappealable){
 <div class="app-summary-card__actions">
     <ul class="app-summary-card__actions-list">
