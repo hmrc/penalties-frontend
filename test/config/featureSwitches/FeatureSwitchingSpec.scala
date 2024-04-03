@@ -30,13 +30,12 @@ import scala.language.postfixOps
 class FeatureSwitchingSpec extends SpecBase with BeforeAndAfterAll with FeatureSwitching {
   val mockConfig = mock(classOf[Configuration])
   val mockServicesConfig = mock(classOf[ServicesConfig])
-  val config: AppConfig = new AppConfig(mockConfig, mockServicesConfig)
+  implicit val config: AppConfig = new AppConfig(mockConfig, mockServicesConfig)
 
   class Setup {
     reset(mockConfig)
     reset(mockServicesConfig)
     val featureSwitching: FeatureSwitching = new FeatureSwitching {
-      override implicit val appConfig: AppConfig = config
     }
     sys.props -= featureSwitching.TIME_MACHINE_NOW
   }
@@ -54,7 +53,7 @@ class FeatureSwitchingSpec extends SpecBase with BeforeAndAfterAll with FeatureS
   }
 
   "isEnabled" should {
-    FeatureSwitch.listOfAllFeatureSwitches.foreach(
+    FeatureSwitch.featureSwitches.foreach(
       featureSwitch => {
         s"return true if ${featureSwitch.name} is enabled" in new Setup {
           featureSwitching.enableFeatureSwitch(featureSwitch)
@@ -74,7 +73,7 @@ class FeatureSwitchingSpec extends SpecBase with BeforeAndAfterAll with FeatureS
   }
 
   "enableFeatureSwitch" should {
-    FeatureSwitch.listOfAllFeatureSwitches.foreach(
+    FeatureSwitch.featureSwitches.foreach(
       featureSwitch => {
         s"set ${featureSwitch.name} property to true" in new Setup {
           featureSwitching.enableFeatureSwitch(featureSwitch)
@@ -85,7 +84,7 @@ class FeatureSwitchingSpec extends SpecBase with BeforeAndAfterAll with FeatureS
   }
 
   "disableFeatureSwitch" should {
-    FeatureSwitch.listOfAllFeatureSwitches.foreach(
+    FeatureSwitch.featureSwitches.foreach(
       featureSwitch => {
         s"set ${featureSwitch.name} property to false" in new Setup {
           featureSwitching.disableFeatureSwitch(featureSwitch)

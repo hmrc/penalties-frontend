@@ -15,6 +15,7 @@ index.breadcrumb.vat-account = Your VAT Account
 index.breadcrumb.bta = Business tax account
 index.breadcrumb.index = VAT penalties and appeals
 index.guidance.link = Read the guidance about late submission penalties
+index.webchat.link = Ask HMRC (opens in new tab)
 unauthorised.title = You are not authorised to use this service
 unauthorised.signUp = You need to sign up to view your VAT penalties.
 unauthorised.alreadySignedUp = If you have already signed up, you need to sign in with the correct Government Gateway details.

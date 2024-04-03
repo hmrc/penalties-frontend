@@ -16,7 +16,7 @@
 
 package config
 
-import config.featureSwitches.FeatureSwitch
+import config.featureSwitches.FeatureSwitch._
 import play.api.Configuration
 import play.api.i18n.Lang
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
@@ -65,6 +65,8 @@ class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesCon
   def feedbackUrl(redirectUrl: String): String = s"$contactFrontendUrl?service=$contactFrontendServiceId&backUrl=${backUrl(redirectUrl)}"
 
   lazy val penaltiesAppealsBaseUrl: String = config.get[String]("urls.penaltiesAppealsBaseurl") + "/penalties-appeals"
+
+  lazy val webChatUrl: String = config.get[String]("urls.askHmrcBaseUrl") + "/ask-hmrc/chat/vat-online?ds"
 
   val vatAgentClientLookupFrontendHost: String = "vat-agent-client-lookup-frontend.host"
   val vatAgentClientLookupFrontendStartUrl: String = "vat-agent-client-lookup-frontend.startUrl"

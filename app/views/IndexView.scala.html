@@ -19,6 +19,8 @@
 @import viewmodels.LatePaymentPenaltySummaryCard
 @import viewmodels.WhatYouOweContent
 @import views.html.helper.CSPNonce
+@import config.featureSwitches.FeatureSwitch._
+@import config.featureSwitches.FeatureSwitching._
 
 @this(
         layout: Layout,
@@ -40,6 +42,11 @@
         isUserInBreathingSpace: Boolean = false,
         whatYouOwe: Option[WhatYouOweContent] = None)(implicit messages: Messages, appConfig: AppConfig, user: User[_])
 
+@webchatLink = {
+    <p class="govuk-body">
+        <a class="govuk-link" href="@appConfig.webChatUrl" target="_blank" id="webchatLink-id">@messages("index.webchat.link")</a>
+    </p>
+}
 
 @layout(pageTitle = messages("index.headingAndTitle"),
   isUserAgent = user.isAgent,
@@ -69,6 +76,10 @@
 
     </div>
   </div>
+
+    @if(isEnabled(WebchatLink)) {
+        @webchatLink
+    }
 
   <h2 class="govuk-heading-l">@messages("whatIsOwed.penaltyAndAppealsHeading")</h2>
   <div class="govuk-grid-row">

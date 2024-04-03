@@ -16,14 +16,29 @@
 
 package config.featureSwitches
 
-sealed trait FeatureSwitch {
-  val name: String
-}
 
 object FeatureSwitch {
-  val prefix: String = "feature.switch"
-  val listOfAllFeatureSwitches: List[FeatureSwitch] = List.empty[FeatureSwitch]
 
+  val prefix: String = "feature.switch"
+
+  val featureSwitches: Seq[FeatureSwitch] = Seq(
+    WebchatLink
+  )
+
+  def apply(str: String): FeatureSwitch =
+    featureSwitches find (_.name == str) match {
+      case Some(switch) => switch
+      case None => throw new IllegalArgumentException("Invalid feature switch: " + str)
+    }
+
+
+  sealed trait FeatureSwitch {
+    val name: String
+  }
+
+  object WebchatLink extends FeatureSwitch {
+    val name = s"$prefix.webchatLink"
+  }
 }
 
 

@@ -15,6 +15,7 @@ index.breadcrumb.vat-account = Eich Cyfrif TAW
 index.breadcrumb.bta = Cyfrif treth busnes
 index.breadcrumb.index = Cosbau ac apeliadau TAW
 index.guidance.link = Darllenwch yr arweiniad ar gosbau am gyflwyno’n hwyr
+index.webchat.link = Gofyn i CThEF (yn agor tab newydd)
 unauthorised.title = Nid ydych wedi’ch awdurdodi i ddefnyddio’r gwasanaeth hwn
 unauthorised.signUp = Mae angen i chi gofrestru er mwyn gweld eich cosbau TAW.
 unauthorised.alreadySignedUp = Os ydych eisoes wedi cofrestru, bydd angen i chi fewngofnodi gan ddefnyddio’r manylion cywir ar gyfer Porth y Llywodraeth.

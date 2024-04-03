@@ -17,6 +17,7 @@
 package controllers.testOnly
 
 import config.AppConfig
+import config.featureSwitches.FeatureSwitch.FeatureSwitch
 import config.featureSwitches.{FeatureSwitch, FeatureSwitching}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -29,7 +30,7 @@ import scala.util.Try
 class FeatureSwitchController @Inject()(mcc: MessagesControllerComponents)
                                        (implicit val appConfig: AppConfig) extends FrontendController(mcc) with FeatureSwitching {
   def enableOrDisableFeature(name: String, enable: Boolean): Action[AnyContent] = Action {
-    val matchedFeatureSwitch: Option[FeatureSwitch] = FeatureSwitch.listOfAllFeatureSwitches.find(_.name == name)
+    val matchedFeatureSwitch: Option[FeatureSwitch] = FeatureSwitch.featureSwitches.find(_.name == name)
     matchedFeatureSwitch.fold[Result](NotFound)(
       featureSwitch => {
         if (enable) {

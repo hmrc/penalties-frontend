@@ -18,20 +18,19 @@ package config.featureSwitches
 
 import base.SpecBase
 import config.AppConfig
+import config.featureSwitches.FeatureSwitch.{FeatureSwitch, WebchatLink}
 import org.mockito.Mockito.mock
 
 class FeatureSwitchSpec extends SpecBase {
-  val mockAppConfig: AppConfig = mock(classOf[AppConfig])
 
   class Setup {
     val featureSwitching: FeatureSwitching = new FeatureSwitching {
-      override implicit val appConfig: AppConfig = mockAppConfig
     }
   }
 
   "listOfAllFeatureSwitches" should {
     "be all the featureswitches in the app" in {
-      FeatureSwitch.listOfAllFeatureSwitches shouldBe List.empty[FeatureSwitch]
+      FeatureSwitch.featureSwitches shouldBe Seq(WebchatLink)
     }
   }
 }
