@@ -19,6 +19,8 @@ package views
 import assets.messages.IndexMessages._
 import base.testData.LSPDetailsTestData
 import base.{BaseSelectors, SpecBase}
+import config.featureSwitches.FeatureSwitch.WebchatLink
+import config.featureSwitches.FeatureSwitching
 import models.{GetPenaltyDetails, Totalisations}
 import org.jsoup.nodes.Document
 import play.twirl.api.HtmlFormat
@@ -27,7 +29,7 @@ import viewmodels.IndexPageHelper
 import views.behaviours.ViewBehaviours
 import views.html.IndexView
 
-class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours with LSPDetailsTestData {
+class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours with LSPDetailsTestData with FeatureSwitching {
   val indexPage: IndexView = injector.instanceOf[IndexView]
   val helper: IndexPageHelper = injector.instanceOf[IndexPageHelper]
 
@@ -146,6 +148,27 @@ class IndexViewSpec extends SpecBase with ViewUtils with ViewBehaviours with LSP
     "have a feedback link at the bottom of the page" in {
       implicit val doc: Document = asDocument(applyView())
       doc.select("#feedback-link").get(0).text shouldBe "What do you think of this service? (takes 30 seconds)"
+    }
+
+    "have a link to the web chat" when  {
+      "webchat feature is enabled" in {
+        enableFeatureSwitch(WebchatLink)
+
+        implicit val doc: Document = asDocument(applyView())
+        val element = doc.select("#webchatLink-id").get(0)
+        element.text shouldBe "Ask HMRC (opens in new tab)"
+        element.attr("href") shouldBe "http://localhost:9956/ask-hmrc/chat/vat-online?ds"
+      }
+    }
+
+    "have no link to the web chat" when {
+      "webchat feature is disabled" in {
+        disableFeatureSwitch(WebchatLink)
+
+        implicit val doc: Document = asDocument(applyView())
+        val matchedElements = doc.select("#webchatLink-id")
+        matchedElements.size() shouldBe 0
+      }
     }
   }
 }
