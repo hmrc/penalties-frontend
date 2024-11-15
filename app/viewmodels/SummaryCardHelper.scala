@@ -442,6 +442,8 @@ class SummaryCardHelper @Inject()(val appConfig: AppConfig, calculationPageHelpe
 
   def showDueOrPartiallyPaidDueTag(penaltyAmountOutstanding: Option[BigDecimal], penaltyAmountPaid: BigDecimal)(implicit messages: Messages): Tag = (penaltyAmountOutstanding, penaltyAmountPaid) match {
     case (Some(outstanding), _) if outstanding == 0 => renderTag(messages("status.paid"))
+    case (None, _) =>
+      renderTag(messages("status.paid"), "penalty-paid-tag")
     case (Some(outstanding), paid) if paid > 0 =>
       renderTag(messages("status.partialPayment.due", CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(outstanding)), "penalty-due-tag")
     case _ => renderTag(messages("status.due"), "penalty-due-tag")
