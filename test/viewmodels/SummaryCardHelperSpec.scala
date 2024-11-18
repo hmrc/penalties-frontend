@@ -1199,13 +1199,13 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         )
       }
 
-      "render a due tag - when there is no financial data for the penalty" in {
+      "render a paid tag - when there is no financial data for the penalty" in {
         val penaltyAmountPaid = BigDecimal(00.00)
 
         val result = helper.showDueOrPartiallyPaidDueTag(None, penaltyAmountPaid)
         result shouldBe Tag(
-          content = Text(overdueTag),
-          classes = "penalty-due-tag"
+          content = Text(paidTag),
+          classes = "penalty-paid-tag"
         )
       }
 
@@ -1238,15 +1238,6 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
         val penaltyAmountOutstanding = Some(BigDecimal(600))
         val penaltyAmountPaid = BigDecimal(0)
         val result = helper.showDueOrPartiallyPaidDueTag(penaltyAmountOutstanding, penaltyAmountPaid)
-        result shouldBe Tag(
-          content = Text(overdueTag),
-          classes = "penalty-due-tag"
-        )
-      }
-
-      "render a due tag - when there is no financial data for the penalty" in {
-        val penaltyAmountPaid = BigDecimal(00.00)
-        val result = helper.showDueOrPartiallyPaidDueTag(None, penaltyAmountPaid)
         result shouldBe Tag(
           content = Text(overdueTag),
           classes = "penalty-due-tag"
