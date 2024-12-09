@@ -415,11 +415,11 @@ class SummaryCardHelper @Inject()(val appConfig: AppConfig, calculationPageHelpe
     val penaltyPointStatus = penalty.penaltyStatus
     val appealStatus = penalty.appealInformation.flatMap(_.headOption.flatMap(_.appealStatus))
     val penaltyAmountPaid = penalty.chargeAmount.getOrElse(BigDecimal(0)) - penalty.chargeOutstandingAmount.getOrElse(BigDecimal(0))
-    val penaltyAmount = penalty.chargeAmount.getOrElse(BigDecimal(0))
+    val penaltyAmountPosted = penalty.chargeAmount.getOrElse(BigDecimal(0))
     penaltyPointStatus match {
       case LSPPenaltyStatusEnum.Inactive if appealStatus.contains(AppealStatusEnum.Upheld) => renderTag(messages("status.cancelled"))
       case LSPPenaltyStatusEnum.Inactive => renderTag(messages("status.removed"))
-      case LSPPenaltyStatusEnum.Active if penaltyAmount > BigDecimal(0) => showDueOrPartiallyPaidDueTag(penalty.chargeOutstandingAmount, penaltyAmountPaid)
+      case LSPPenaltyStatusEnum.Active if penaltyAmountPosted > BigDecimal(0) => showDueOrPartiallyPaidDueTag(penalty.chargeOutstandingAmount, penaltyAmountPaid,  penaltyAmountPosted)
       case _ => renderTag(messages("status.active"))
     }
   }
@@ -431,7 +431,7 @@ class SummaryCardHelper @Inject()(val appConfig: AppConfig, calculationPageHelpe
       case (Some(AppealStatusEnum.Upheld), _) => renderTag(messages("status.cancelled"))
       case (_, LPPPenaltyStatusEnum.Accruing) => renderTag(messages("status.estimate"))
       case (_, LPPPenaltyStatusEnum.Posted) if isPenaltyPaid(penalty) => renderTag(messages("status.paid"))
-      case (_, _) => showDueOrPartiallyPaidDueTag(penalty.penaltyAmountOutstanding, penalty.penaltyAmountPaid.getOrElse(BigDecimal(0)))
+      case (_, _) => showDueOrPartiallyPaidDueTag(penalty.penaltyAmountOutstanding, penalty.penaltyAmountPaid.getOrElse(BigDecimal(0)), penalty.penaltyAmountPosted)
     }
   }
 
@@ -440,11 +440,10 @@ class SummaryCardHelper @Inject()(val appConfig: AppConfig, calculationPageHelpe
     classes = s"$cssClass"
   )
 
-  def showDueOrPartiallyPaidDueTag(penaltyAmountOutstanding: Option[BigDecimal], penaltyAmountPaid: BigDecimal)(implicit messages: Messages): Tag = (penaltyAmountOutstanding, penaltyAmountPaid) match {
-    case (Some(outstanding), _) if outstanding == 0 => renderTag(messages("status.paid"))
-    case (None, _) =>
-      renderTag(messages("status.paid"), "penalty-paid-tag")
-    case (Some(outstanding), paid) if paid > 0 =>
+  def showDueOrPartiallyPaidDueTag(penaltyAmountOutstanding: Option[BigDecimal], penaltyAmountPaid: BigDecimal, penaltyAmountPosted: BigDecimal)(implicit messages: Messages): Tag = (penaltyAmountOutstanding, penaltyAmountPaid, penaltyAmountPosted) match {
+    case (Some(outstanding), _, _) if outstanding == 0 => renderTag(messages("status.paid"))
+    case (None, paid, posted) if paid == posted => renderTag(messages("status.paid"), "penalty-paid-tag")
+    case (Some(outstanding), paid, _) if paid > 0 =>
       renderTag(messages("status.partialPayment.due", CurrencyFormatter.parseBigDecimalNoPaddedZeroToFriendlyValue(outstanding)), "penalty-due-tag")
     case _ => renderTag(messages("status.due"), "penalty-due-tag")
   }
