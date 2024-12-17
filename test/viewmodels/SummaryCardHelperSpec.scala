@@ -1191,9 +1191,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       "render a due tag - when there is financial data with an amount to be paid but no payments have been made" in {
         val penaltyAmountOutstanding = Some(BigDecimal(400.00))
         val penaltyAmountPaid = BigDecimal(0.00)
-        val penaltyAmountPosted = BigDecimal(400)
 
-        val result = helper.showDueOrPartiallyPaidDueTag(penaltyAmountOutstanding, penaltyAmountPaid, penaltyAmountPosted)
+        val result = helper.showDueOrPartiallyPaidDueTag(penaltyAmountOutstanding, penaltyAmountPaid)
         result shouldBe Tag(
           content = Text(overdueTag),
           classes = "penalty-due-tag"
@@ -1201,10 +1200,9 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       }
 
       "render a paid tag - when there is no financial data for the penalty" in {
-        val penaltyAmountPaid = BigDecimal(10.00)
-        val penaltyAmountPosted = BigDecimal(10.00)
+        val penaltyAmountPaid = BigDecimal(00.00)
 
-        val result = helper.showDueOrPartiallyPaidDueTag(None, penaltyAmountPaid, penaltyAmountPosted)
+        val result = helper.showDueOrPartiallyPaidDueTag(None, penaltyAmountPaid)
         result shouldBe Tag(
           content = Text("paid"),
           classes = "penalty-paid-tag"
@@ -1214,9 +1212,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       "render a due tag with the outstanding amount shown - when a partial payment has been made" in {
         val penaltyAmountOutstanding = Some(BigDecimal(146.12))
         val penaltyAmountPaid = BigDecimal(200.00)
-        val penaltyAmountPosted = BigDecimal(346.12)
 
-        val result = helper.showDueOrPartiallyPaidDueTag(penaltyAmountOutstanding, penaltyAmountPaid, penaltyAmountPosted)
+        val result = helper.showDueOrPartiallyPaidDueTag(penaltyAmountOutstanding, penaltyAmountPaid)
         result shouldBe Tag(
           content = Text(overduePartiallyPaidTag(146.12)),
           classes = "penalty-due-tag"
@@ -1226,9 +1223,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       "render a due tag with the outstanding amount shown - when a partial payment has been made (with whole tenths)" in {
         val penaltyAmountOutstanding = Some(BigDecimal(146.1))
         val penaltyAmountPaid = BigDecimal(200.00)
-        val penaltyAmountPosted = BigDecimal(346.10)
 
-        val result = helper.showDueOrPartiallyPaidDueTag(penaltyAmountOutstanding, penaltyAmountPaid, penaltyAmountPosted)
+        val result = helper.showDueOrPartiallyPaidDueTag(penaltyAmountOutstanding, penaltyAmountPaid)
         result shouldBe Tag(
           content = Text("£146.10 due"),
           classes = "penalty-due-tag"
@@ -1241,8 +1237,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       "render a due tag - when there is financial data with an amount to be paid but no payments have been made" in {
         val penaltyAmountOutstanding = Some(BigDecimal(600))
         val penaltyAmountPaid = BigDecimal(0)
-        val penaltyAmountPosted = BigDecimal(600)
-        val result = helper.showDueOrPartiallyPaidDueTag(penaltyAmountOutstanding, penaltyAmountPaid, penaltyAmountPosted)
+
+        val result = helper.showDueOrPartiallyPaidDueTag(penaltyAmountOutstanding, penaltyAmountPaid)
         result shouldBe Tag(
           content = Text(overdueTag),
           classes = "penalty-due-tag"
@@ -1252,9 +1248,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       "render a due tag with the outstanding amount shown - when a partial payment has been made" in {
         val penaltyAmountOutstanding = Some(BigDecimal(383.94))
         val penaltyAmountPaid = BigDecimal(200.00)
-        val penaltyAmountPosted = BigDecimal(583.94)
 
-        val result = helper.showDueOrPartiallyPaidDueTag(penaltyAmountOutstanding, penaltyAmountPaid, penaltyAmountPosted)
+        val result = helper.showDueOrPartiallyPaidDueTag(penaltyAmountOutstanding, penaltyAmountPaid)
         result shouldBe Tag(
           content = Text(overduePartiallyPaidTag(383.94)),
           classes = "penalty-due-tag"
@@ -1264,9 +1259,8 @@ class SummaryCardHelperSpec extends SpecBase with ImplicitDateFormatter {
       "render a due tag with the outstanding amount shown - when a partial payment has been made (with whole tenths)" in {
         val penaltyAmountOutstanding = Some(BigDecimal(383.90))
         val penaltyAmountPaid = BigDecimal(200.00)
-        val penaltyAmountPosted = BigDecimal(583.90)
 
-        val result = helper.showDueOrPartiallyPaidDueTag(penaltyAmountOutstanding, penaltyAmountPaid, penaltyAmountPosted)
+        val result = helper.showDueOrPartiallyPaidDueTag(penaltyAmountOutstanding, penaltyAmountPaid)
         result shouldBe Tag(
           content = Text("£383.90 due"),
           classes = "penalty-due-tag"
