@@ -6,7 +6,7 @@ val appName = "penalties-frontend"
 val silencerVersion = "1.17.13"
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
+  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .settings(
     majorVersion                     := 0,
     scalaVersion                     := "2.13.12",

@@ -16,12 +16,13 @@
 
 package views
 
+import assets.messages.ISECustomMessages._
 import base.{BaseSelectors, SpecBase}
 import org.jsoup.nodes.Document
+import play.twirl.api.Html
 import utils.ViewUtils
 import views.behaviours.ViewBehaviours
 import views.html.errors.InternalServerErrorCustom
-import assets.messages.ISECustomMessages._
 
 class InternalServerErrorCustomSpec extends SpecBase with ViewBehaviours with ViewUtils {
   val iseCustomPage: InternalServerErrorCustom = injector.instanceOf[InternalServerErrorCustom]
@@ -35,9 +36,9 @@ class InternalServerErrorCustomSpec extends SpecBase with ViewBehaviours with Vi
     "display the correct page" when {
 
       "the user is a trader" must {
-        def applyView() = {
+        def applyView(): Html = {
           iseCustomPage.apply()(
-            implicitly, implicitly, implicitly, vatTraderUser
+            implicitly, implicitly, vatTraderUser
           )
         }
 
@@ -54,9 +55,9 @@ class InternalServerErrorCustomSpec extends SpecBase with ViewBehaviours with Vi
       }
 
       "the user is a agent" must {
-        def applyView() = {
+        def applyView(): Html = {
           iseCustomPage.apply()(
-            implicitly, implicitly, implicitly, agentUser
+            implicitly, implicitly, agentUser
           )
         }
 

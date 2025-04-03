@@ -17,9 +17,7 @@
 package config.featureSwitches
 
 import base.SpecBase
-import config.AppConfig
-import config.featureSwitches.FeatureSwitch.{FeatureSwitch, WebchatLink}
-import org.mockito.Mockito.mock
+import config.featureSwitches.FeatureSwitch.WebchatLink
 
 class FeatureSwitchSpec extends SpecBase {
 
