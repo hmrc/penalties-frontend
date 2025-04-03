@@ -18,7 +18,7 @@ package testUtils
 
 import base.SpecBase
 import controllers.predicates.AuthPredicate
-import org.mockito.Matchers
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.mockito.stubbing.OngoingStubbing
 import uk.gov.hmrc.auth.core._
@@ -30,8 +30,8 @@ import scala.concurrent.Future
 trait AuthMocks extends SpecBase  {
   def setupAuthResponse(authResult: Future[~[Option[AffinityGroup], Enrolments]]): OngoingStubbing[Future[~[Option[AffinityGroup], Enrolments]]] = {
     when(mockAuthConnector.authorise[~[Option[AffinityGroup], Enrolments]](
-      Matchers.any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
-      Matchers.any(), Matchers.any())
+      ArgumentMatchers.any(), ArgumentMatchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
+      ArgumentMatchers.any(), ArgumentMatchers.any())
     ).thenReturn(authResult)
   }
 
@@ -61,8 +61,8 @@ trait AuthMocks extends SpecBase  {
 
   def mockAgentAuthorised(): OngoingStubbing[Future[Enrolments]] = {
     when(mockAuthConnector.authorise[Enrolments](
-      Matchers.any(), Matchers.any())(
-      Matchers.any(), Matchers.any())
+      ArgumentMatchers.any(), ArgumentMatchers.any())(
+      ArgumentMatchers.any(), ArgumentMatchers.any())
     ).thenReturn(Future.successful(
       Enrolments(
         Set(
@@ -77,8 +77,8 @@ trait AuthMocks extends SpecBase  {
 
   def mockAgentAuthorisedNoARN(): OngoingStubbing[Future[Enrolments]] = {
     when(mockAuthConnector.authorise[Enrolments](
-      Matchers.any(), Matchers.any())(
-      Matchers.any(), Matchers.any())
+      ArgumentMatchers.any(), ArgumentMatchers.any())(
+      ArgumentMatchers.any(), ArgumentMatchers.any())
     ).thenReturn(Future.successful(
       Enrolments(
         Set(

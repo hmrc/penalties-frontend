@@ -21,8 +21,8 @@ import connectors.PenaltiesConnector
 import connectors.httpParsers.ComplianceDataParser._
 import models.User
 import models.compliance.CompliancePayload
-import org.mockito.Matchers
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
@@ -45,8 +45,8 @@ class ComplianceServiceSpec extends SpecBase {
   "getDESComplianceData" should {
     s"return a successful response and pass the result back to the controller (date provided as parameter)" in new Setup {
       when(mockPenaltiesConnector.getObligationData(any(),
-        Matchers.eq(LocalDate.of(2020, 1, 1)),
-        Matchers.eq(LocalDate.of(2022, 1, 1)))(any())).thenReturn(Future.successful(Right(CompliancePayloadSuccessResponse(sampleCompliancePayload))))
+        ArgumentMatchers.eq(LocalDate.of(2020, 1, 1)),
+        ArgumentMatchers.eq(LocalDate.of(2022, 1, 1)))(any())).thenReturn(Future.successful(Right(CompliancePayloadSuccessResponse(sampleCompliancePayload))))
       val result: Option[CompliancePayload] = await(service.getDESComplianceData(vrn)(HeaderCarrier(),
         User("123456789"), implicitly, Some(LocalDate.of(2022, 1, 1))))
       result.isDefined shouldBe true
@@ -55,8 +55,8 @@ class ComplianceServiceSpec extends SpecBase {
 
     s"return a successful response and pass the result back to the controller (date in session)" in new Setup {
       when(mockPenaltiesConnector.getObligationData(any(),
-        Matchers.eq(LocalDate.of(2020, 1, 1)),
-        Matchers.eq(LocalDate.of(2022, 1, 1)))(any())).thenReturn(Future.successful(Right(CompliancePayloadSuccessResponse(sampleCompliancePayload))))
+        ArgumentMatchers.eq(LocalDate.of(2020, 1, 1)),
+        ArgumentMatchers.eq(LocalDate.of(2022, 1, 1)))(any())).thenReturn(Future.successful(Right(CompliancePayloadSuccessResponse(sampleCompliancePayload))))
       val result: Option[CompliancePayload] = await(service.getDESComplianceData(vrn)(HeaderCarrier(), User("123456789")(fakeRequest.withSession(
         SessionKeys.pocAchievementDate -> "2022-01-01"
       )), implicitly))

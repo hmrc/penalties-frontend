@@ -18,7 +18,7 @@ package config.featureSwitches
 
 import base.SpecBase
 import config.AppConfig
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{mock, reset, when}
 import org.scalatest.BeforeAndAfterAll
 import play.api.Configuration

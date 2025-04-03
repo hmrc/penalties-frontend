@@ -23,7 +23,7 @@ import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEn
 import models.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty, MainTransactionEnum}
 import models.lsp._
 import models.{GetPenaltyDetails, Totalisations}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{mock, reset, when}
 import play.api.http.Status._
 import play.api.test.Helpers.{await, defaultAwaitTimeout}

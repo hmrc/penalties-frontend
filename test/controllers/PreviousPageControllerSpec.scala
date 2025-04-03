@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import models.IndexPage
 import navigation.Navigation
-import org.mockito.Matchers
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.mvc.Call
 import play.api.test.Helpers._
@@ -35,8 +35,8 @@ class PreviousPageControllerSpec extends SpecBase {
 
     reset(mockAuthConnector)
     when(mockAuthConnector.authorise[~[Option[AffinityGroup], Enrolments]](
-      Matchers.any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
-      Matchers.any(), Matchers.any())
+      ArgumentMatchers.any(), ArgumentMatchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
+      ArgumentMatchers.any(), ArgumentMatchers.any())
     ).thenReturn(authResult)
 
     val controller = new PreviousPageController(mockNavigator)(mcc, authPredicate)
@@ -44,7 +44,7 @@ class PreviousPageControllerSpec extends SpecBase {
 
   "previousPage" should {
     "redirect to the previous page relative to the given page" in new Setup(AuthTestModels.successfulAuthResult) {
-      when(mockNavigator.previousPage(Matchers.any())(Matchers.any()))
+      when(mockNavigator.previousPage(ArgumentMatchers.any())(ArgumentMatchers.any()))
         .thenReturn(Call("", "/url"))
       val result = controller.previousPage(IndexPage.toString)(fakeRequest)
       status(result) shouldBe SEE_OTHER
