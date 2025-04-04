@@ -27,7 +27,7 @@
         link: components.link,
         details: components.details
 )
-@(summaryCard: LatePaymentPenaltySummaryCard)(implicit messages: Messages, user: User[_])
+@(summaryCard: LatePaymentPenaltySummaryCard)(implicit messages: Messages)
 
 
 @visuallyHiddenText = @{
@@ -67,23 +67,6 @@
    }">
     @messages("summaryCard.footerLinkTextHowToAppeal") <span class="govuk-visually-hidden">@visuallyHiddenText</span>
 </a>
-}
-
-@cannotAppealContents = {
-    <p>
-        @if(summaryCard.isCentralAssessment) {
-            @getMessage("summaryCard.details.text1.ca")
-        } else {
-            @messages("summaryCard.details.text1")
-        }
-    </p>
-    <p>
-        @if(summaryCard.isCentralAssessment) {
-            @getMessage("summaryCard.details.text2.ca")
-        } else {
-            @getMessage("summaryCard.details.text2")
-        }
-    </p>
 }
 
 

@@ -23,8 +23,8 @@ import models.lpp._
 import models.lsp._
 import models.{GetPenaltyDetails, Totalisations}
 import org.jsoup.Jsoup
-import org.mockito.Matchers
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.mvc.Result
@@ -706,7 +706,7 @@ class IndexPageHelperSpec extends SpecBase {
       }
 
       "show the correct content when there are no open obligations" in new Setup {
-        when(mockComplianceService.getDESComplianceData(Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any()))
+        when(mockComplianceService.getDESComplianceData(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
           .thenReturn(Future.successful(Some(compliancePayloadObligationsFulfilled)))
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith4ActivePoints)(
           implicitly, vatTraderUser, hc, implicitly))
@@ -718,7 +718,7 @@ class IndexPageHelperSpec extends SpecBase {
       }
 
       "user is agent - show the correct content when there are no open obligations" in new Setup {
-        when(mockComplianceService.getDESComplianceData(Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any()))
+        when(mockComplianceService.getDESComplianceData(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
           .thenReturn(Future.successful(Some(compliancePayloadObligationsFulfilled)))
         val result = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith4ActivePoints)(
           implicitly, agentUser, hc, implicitly))
@@ -730,7 +730,7 @@ class IndexPageHelperSpec extends SpecBase {
       }
 
       s"return $Left ISE when the obligation call returns None (no data/network error)" in new Setup {
-        when(mockComplianceService.getDESComplianceData(Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any()))
+        when(mockComplianceService.getDESComplianceData(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
           .thenReturn(Future.successful(None))
         val result: Either[Result, Html] = await(pageHelper.getContentBasedOnPointsFromModel(penaltyDetailsWith4ActivePoints)(implicitly,
           vatTraderUser, hc, implicitly))

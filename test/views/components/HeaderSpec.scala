@@ -18,7 +18,7 @@ package views.components
 
 import base.SpecBase
 import config.AppConfig
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{mock, when}
 import views.behaviours.ViewBehaviours
 import views.html.components.Header

@@ -22,7 +22,7 @@ import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEn
 import models.lpp._
 import models.lsp._
 import models.{GetPenaltyDetails, Totalisations}
-import org.mockito.Matchers
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{mock, reset, when}
 import play.api.mvc.Result
 import play.api.test.Helpers._
@@ -230,8 +230,8 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching with LogC
   class Setup(authResult: Future[~[Option[AffinityGroup], Enrolments]], isFSEnabled: Boolean = false) {
     reset(mockAuthConnector)
     when(mockAuthConnector.authorise[~[Option[AffinityGroup], Enrolments]](
-      Matchers.any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
-      Matchers.any(), Matchers.any())
+      ArgumentMatchers.any(), ArgumentMatchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
+      ArgumentMatchers.any(), ArgumentMatchers.any())
     ).thenReturn(authResult)
     reset(mockPenaltiesService)
   }
@@ -246,7 +246,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching with LogC
   "onPageLoad" when {
     "the user is authorised" should {
       "show the page when the penalty ID specified matches model API1812 payload" in new Setup(AuthTestModels.successfulAuthResult, isFSEnabled = true) {
-        when(mockPenaltiesService.getPenaltyDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
+        when(mockPenaltiesService.getPenaltyDataFromEnrolmentKey(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
           .thenReturn(Future.successful(Right(penaltyDetailsPayload)))
 
         val result: Future[Result] = Controller.onPageLoad("12345678901234", "LPP1")(fakeRequest)
@@ -254,7 +254,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching with LogC
       }
 
       "show an ISE when the penalty ID specified returns an empty payload" in new Setup(AuthTestModels.successfulAuthResult, isFSEnabled = true) {
-        when(mockPenaltiesService.getPenaltyDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
+        when(mockPenaltiesService.getPenaltyDataFromEnrolmentKey(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
           .thenReturn(Future.successful(Right(emptyPenaltyDetailsPayload)))
 
         val result: Future[Result] = Controller.onPageLoad("12345678901234", "LPP1")(fakeRequest)
@@ -263,7 +263,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching with LogC
 
       "show an ISE when the calculation row with model API1812 can not be rendered - because the payload is invalid (missing both 15/30 day payment amounts)" in
         new Setup(AuthTestModels.successfulAuthResult, isFSEnabled = true) {
-          when(mockPenaltiesService.getPenaltyDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
+          when(mockPenaltiesService.getPenaltyDataFromEnrolmentKey(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
             .thenReturn(Future.successful(Right(penaltyDetailsPayloadNo15Or30DayAmount)))
 
           withCaptureOfLoggingFrom(logger) {
@@ -276,7 +276,7 @@ class CalculationControllerSpec extends SpecBase with FeatureSwitching with LogC
 
       "show an ISE when the user specifies a penalty ID not found with model API1812 enabled" in
         new Setup(AuthTestModels.successfulAuthResult, isFSEnabled = true) {
-          when(mockPenaltiesService.getPenaltyDataFromEnrolmentKey(Matchers.any())(Matchers.any(), Matchers.any()))
+          when(mockPenaltiesService.getPenaltyDataFromEnrolmentKey(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
             .thenReturn(Future.successful(Right(penaltyDetailsPayload)))
 
           withCaptureOfLoggingFrom(logger) {

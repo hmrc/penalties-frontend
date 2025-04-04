@@ -17,8 +17,8 @@
 package controllers
 
 import base.{LogCapturing, SpecBase}
-import org.mockito.Matchers
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.{mock, reset, when}
 import play.api.mvc.Result
 import play.api.test.Helpers._
@@ -45,8 +45,8 @@ class ComplianceControllerSpec extends SpecBase with LogCapturing {
 
     reset(mockAuthConnector)
     when(mockAuthConnector.authorise[~[Option[AffinityGroup], Enrolments]](
-      Matchers.any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
-      Matchers.any(), Matchers.any())
+      ArgumentMatchers.any(), ArgumentMatchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
+      ArgumentMatchers.any(), ArgumentMatchers.any())
     ).thenReturn(authResult)
 
     reset(mockComplianceService)

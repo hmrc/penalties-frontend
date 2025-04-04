@@ -21,7 +21,7 @@ import config.AppConfig
 import config.featureSwitches.FeatureSwitching
 import connectors.httpParsers.ComplianceDataParser._
 import connectors.httpParsers.GetPenaltyDetailsParser.GetPenaltyDetailsResponse
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.test.Helpers._
