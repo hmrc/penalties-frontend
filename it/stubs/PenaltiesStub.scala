@@ -29,11 +29,11 @@ import play.api.libs.json.{JsValue, Json}
 import java.time.{LocalDate, LocalDateTime}
 
 object PenaltiesStub {
-  val vrn: String = "HMRC-MTD-VAT~VRN~123456789"
+  val vrn: String = "123456789"
   val sampleDate1: LocalDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
 
-  val getPenaltyDetailsUrlVATTrader: String = s"/penalties/etmp/penalties/$vrn"
-  val getPenaltyDetailsUrlAgent: String = s"/penalties/etmp/penalties/$vrn\\?arn=123456789"
+  val getPenaltyDetailsUrlVATTrader: String = s"/VATC/etmp/penalties/VRN/$vrn"
+  val getPenaltyDetailsUrlAgent: String = s"/VATC/etmp/penalties/VRN/$vrn\\?arn=123456789"
 
   val samplePenaltyDetails: GetPenaltyDetails = GetPenaltyDetails(
     totalisations = Some(Totalisations(

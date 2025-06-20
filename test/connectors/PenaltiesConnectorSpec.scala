@@ -28,7 +28,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 import utils.Logger.logger
 import utils.PagerDutyHelper.PagerDutyKeys
-
+import models.{Id, IdType, Regime}
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -51,7 +51,7 @@ class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching with LogCapt
         when(mockHttpClient.GET[GetPenaltyDetailsResponse](any(), any(), any())
           (any(), any(), any())).thenReturn(Future.successful(Right(samplePenaltyDetailsModel)))
 
-        val result: GetPenaltyDetailsResponse = await(connector.getPenaltyDetails(vrn)(vatTraderUser, HeaderCarrier()))
+        val result: GetPenaltyDetailsResponse = await(connector.getPenaltyDetails(Regime("VATC"), IdType("VRN"), Id(vrn))(vatTraderUser, HeaderCarrier()))
         result.isRight shouldBe true
         result shouldBe Right(samplePenaltyDetailsModel)
       }
@@ -60,7 +60,7 @@ class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching with LogCapt
         when(mockHttpClient.GET[GetPenaltyDetailsResponse](any(), any(), any())
           (any(), any(), any())).thenReturn(Future.successful(Right(samplePenaltyDetailsModelWithoutMetadata)))
 
-        val result = await(connector.getPenaltyDetails(vrn)(vatTraderUser, HeaderCarrier()))
+        val result = await(connector.getPenaltyDetails(Regime("VATC"), IdType("VRN"), Id(vrn))(vatTraderUser, HeaderCarrier()))
         result.isRight shouldBe true
         result shouldBe Right(samplePenaltyDetailsModelWithoutMetadata)
       }
@@ -77,7 +77,7 @@ class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching with LogCapt
 
         withCaptureOfLoggingFrom(logger) {
           logs => {
-            val result = await(connector.getPenaltyDetails("123456789")(vatTraderUser, HeaderCarrier()))
+            val result = await(connector.getPenaltyDetails(Regime("VATC"), IdType("VRN"), Id("123456789"))(vatTraderUser, HeaderCarrier()))
             logs.exists(_.getMessage.contains(PagerDutyKeys.RECEIVED_4XX_FROM_PENALTIES_BACKEND.toString)) shouldBe true
             result.isLeft shouldBe true
           }
@@ -94,7 +94,7 @@ class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching with LogCapt
 
         withCaptureOfLoggingFrom(logger) {
           logs => {
-            val result = await(connector.getPenaltyDetails("123456789")(vatTraderUser, HeaderCarrier()))
+            val result = await(connector.getPenaltyDetails(Regime("VATC"), IdType("VRN"), Id("123456789"))(vatTraderUser, HeaderCarrier()))
             logs.exists(_.getMessage.contains(PagerDutyKeys.RECEIVED_5XX_FROM_PENALTIES_BACKEND.toString)) shouldBe true
             result.isLeft shouldBe true
           }
@@ -111,7 +111,7 @@ class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching with LogCapt
 
         withCaptureOfLoggingFrom(logger){
           logs =>
-            val result = await(connector.getPenaltyDetails("123456789")(vatTraderUser, HeaderCarrier()))
+            val result = await(connector.getPenaltyDetails(Regime("VATC"), IdType("VRN"), Id("123456789"))(vatTraderUser, HeaderCarrier()))
             logs.exists(_.getMessage.contains(PagerDutyKeys.UNEXPECTED_ERROR_FROM_PENALTIES_BACKEND.toString)) shouldBe true
             result.isLeft shouldBe true
         }

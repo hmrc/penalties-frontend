@@ -22,7 +22,7 @@ import connectors.httpParsers.{BadRequest, InvalidJson, UnexpectedFailure}
 import models.appealInfo.{AppealInformationType, AppealLevelEnum, AppealStatusEnum}
 import models.lpp.{LPPDetails, LPPDetailsMetadata, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, LatePaymentPenalty, MainTransactionEnum}
 import models.lsp._
-import models.{GetPenaltyDetails, Totalisations}
+import models.{GetPenaltyDetails, Id, IdType, Regime, Totalisations}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{mock, reset, when}
 import play.api.http.Status._
@@ -99,13 +99,13 @@ class PenaltiesServiceSpec extends SpecBase {
     reset(mockPenaltiesConnector)
   }
 
-  "getPenaltyDataFromEnrolmentKey" when  {
+  "getPenaltyData" when  {
     s"$OK (Ok) is returned from the parser " should {
       "return a Right with the correct model" in new Setup {
-        when(mockPenaltiesConnector.getPenaltyDetails(any())(any(), any()))
+        when(mockPenaltiesConnector.getPenaltyDetails(any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(Right(penaltyDetailsWithNoVATDue)))
 
-        val result = await(service.getPenaltyDataFromEnrolmentKey("1234567890")(vatTraderUser, hc))
+        val result = await(service.getPenaltyData(Regime("VATC"), IdType("VRN"), Id("1234567890"))(vatTraderUser, hc))
         result.isRight shouldBe true
         result shouldBe Right(penaltyDetailsWithNoVATDue)
       }
@@ -113,51 +113,51 @@ class PenaltiesServiceSpec extends SpecBase {
 
     s"$NO_CONTENT (No content) is returned from the parser" should {
       "return an empty Right GetPenaltyDetails model" in new Setup {
-        when(mockPenaltiesConnector.getPenaltyDetails(any())(any(), any()))
+        when(mockPenaltiesConnector.getPenaltyDetails(any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(Right(GetPenaltyDetails(None, None, None, None))))
 
-        val result = await(service.getPenaltyDataFromEnrolmentKey("1234567890")(vatTraderUser, hc))
+        val result = await(service.getPenaltyData(Regime("VATC"), IdType("VRN"), Id("1234567890"))(vatTraderUser, hc))
         result.isRight shouldBe true
         result shouldBe Right(GetPenaltyDetails(None, None, None, None))
       }
+    }
 
-      s"$BAD_REQUEST (Bad request) is returned from the parser because of invalid json" should {
-        "return a Left with status 400" in new Setup {
-          when(mockPenaltiesConnector.getPenaltyDetails(any())(any(), any()))
-            .thenReturn(Future.successful(Left(InvalidJson)))
+    s"$BAD_REQUEST (Bad request) is returned from the parser because of invalid json" should {
+      "return a Left with status 400" in new Setup {
+        when(mockPenaltiesConnector.getPenaltyDetails(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(Left(InvalidJson)))
 
-          val result = await(service.getPenaltyDataFromEnrolmentKey("1234567890")(vatTraderUser, hc))
-          result.isLeft shouldBe true
-          result shouldBe Left(InvalidJson)
-          for(left <- result.left) yield left.status shouldBe 400
-          for(left <- result.left) yield left.body shouldBe "Invalid JSON received"
-        }
+        val result = await(service.getPenaltyData(Regime("VATC"), IdType("VRN"), Id("1234567890"))(vatTraderUser, hc))
+        result.isLeft shouldBe true
+        result shouldBe Left(InvalidJson)
+        for(left <- result.left) yield left.status shouldBe 400
+        for(left <- result.left) yield left.body shouldBe "Invalid JSON received"
       }
+    }
 
-      s"$BAD_REQUEST (Bad request) is returned from the parser" should {
-        "return a Left with status 400" in new Setup {
-          when(mockPenaltiesConnector.getPenaltyDetails(any())(any(), any()))
-            .thenReturn(Future.successful(Left(BadRequest)))
+    s"$BAD_REQUEST (Bad request) is returned from the parser" should {
+      "return a Left with status 400" in new Setup {
+        when(mockPenaltiesConnector.getPenaltyDetails(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(Left(BadRequest)))
 
-          val result = await(service.getPenaltyDataFromEnrolmentKey("1234567890")(vatTraderUser, hc))
-          result.isLeft shouldBe true
-          result shouldBe Left(BadRequest)
-          for(left <- result.left) yield left.status shouldBe 400
-          for(left <- result.left) yield left.body shouldBe "Incorrect JSON body sent"
-        }
+        val result = await(service.getPenaltyData(Regime("VATC"), IdType("VRN"), Id("1234567890"))(vatTraderUser, hc))
+        result.isLeft shouldBe true
+        result shouldBe Left(BadRequest)
+        for(left <- result.left) yield left.status shouldBe 400
+        for(left <- result.left) yield left.body shouldBe "Incorrect JSON body sent"
       }
+    }
 
-      s"an unexpected error is returned from the parser" should {
-        "return a Left with the status and message" in new Setup {
-          when(mockPenaltiesConnector.getPenaltyDetails(any())(any(), any()))
-            .thenReturn(Future.successful(Left(UnexpectedFailure(INTERNAL_SERVER_ERROR, s"Unexpected response, status $INTERNAL_SERVER_ERROR returned"))))
+    s"an unexpected error is returned from the parser" should {
+      "return a Left with the status and message" in new Setup {
+        when(mockPenaltiesConnector.getPenaltyDetails(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(Left(UnexpectedFailure(INTERNAL_SERVER_ERROR, s"Unexpected response, status $INTERNAL_SERVER_ERROR returned"))))
 
-          val result = await(service.getPenaltyDataFromEnrolmentKey("1234567890")(vatTraderUser, hc))
-          result.isLeft shouldBe true
-          result shouldBe Left(UnexpectedFailure(INTERNAL_SERVER_ERROR, s"Unexpected response, status $INTERNAL_SERVER_ERROR returned"))
-          for(left <- result.left) yield left.status shouldBe 500
-          for(left <- result.left) yield left.body shouldBe "Unexpected response, status 500 returned"
-        }
+        val result = await(service.getPenaltyData(Regime("VATC"), IdType("VRN"), Id("1234567890"))(vatTraderUser, hc))
+        result.isLeft shouldBe true
+        result shouldBe Left(UnexpectedFailure(INTERNAL_SERVER_ERROR, s"Unexpected response, status $INTERNAL_SERVER_ERROR returned"))
+        for(left <- result.left) yield left.status shouldBe 500
+        for(left <- result.left) yield left.body shouldBe "Unexpected response, status 500 returned"
       }
     }
   }

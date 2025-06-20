@@ -19,6 +19,7 @@ package controllers
 import config.featureSwitches.FeatureSwitching
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
+import models.{Id, IdType, Regime}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.PenaltiesService
@@ -45,7 +46,7 @@ class IndexController @Inject()(view: IndexView,
 
   //scalastyle:off
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
-    penaltiesService.getPenaltyDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn)).flatMap {
+    penaltiesService.getPenaltyData(Regime("VATC"), IdType("VRN"), Id(request.vrn)).flatMap {
       _.fold(
         errors => {
           logger.error(s"[IndexController][onPageLoad] - Received error with status ${errors.status} and body ${errors.body} rendering ISE.")

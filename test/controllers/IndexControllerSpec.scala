@@ -48,7 +48,7 @@ class IndexControllerSpec extends SpecBase with LogCapturing {
       ArgumentMatchers.any(), ArgumentMatchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(
       ArgumentMatchers.any(), ArgumentMatchers.any())
     ).thenReturn(authResult)
-    when(mockPenaltiesService.getPenaltyDataFromEnrolmentKey(any())(any(), any())).thenReturn(Future.successful(Right(samplePenaltyDetailsModel)))
+    when(mockPenaltiesService.getPenaltyData(any(), any(), any())(any(), any())).thenReturn(Future.successful(Right(samplePenaltyDetailsModel)))
   }
 
   object Controller extends IndexController(
@@ -78,14 +78,14 @@ class IndexControllerSpec extends SpecBase with LogCapturing {
           }
 
         "return an ISE when a left UnexpectedFailure is returned from the service call" in new Setup(AuthTestModels.successfulAuthResult) {
-          when(mockPenaltiesService.getPenaltyDataFromEnrolmentKey(any())(any(), any()))
+          when(mockPenaltiesService.getPenaltyData(any(), any(), any())(any(), any()))
             .thenReturn(Future.successful(Left(UnexpectedFailure(INTERNAL_SERVER_ERROR, ""))))
           val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
           status(result) shouldBe INTERNAL_SERVER_ERROR
         }
 
         "return an ISE when a left BadRequest is returned from the service call" in new Setup(AuthTestModels.successfulAuthResult) {
-          when(mockPenaltiesService.getPenaltyDataFromEnrolmentKey(any())(any(), any()))
+          when(mockPenaltiesService.getPenaltyData(any(), any(), any())(any(), any()))
             .thenReturn(Future.successful(Left(UnexpectedFailure(BAD_REQUEST, ""))))
           val result: Future[Result] = Controller.onPageLoad()(fakeRequest)
           status(result) shouldBe INTERNAL_SERVER_ERROR
