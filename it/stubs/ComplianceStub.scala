@@ -26,7 +26,7 @@ import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalDateTime}
 
 object ComplianceStub {
-  val getComplianceDataUrl: String = s"/penalties/compliance/des/compliance-data"
+  val getComplianceDataUrl: String = s"/penalties/VATC/compliance/data/VRN/123456789"
   val date: LocalDateTime = LocalDateTime.of(2021, 4, 23, 18, 25, 43)
     .plus(511, ChronoUnit.MILLIS)
   val startDate: LocalDate = LocalDate.of(2020, 1, 1)

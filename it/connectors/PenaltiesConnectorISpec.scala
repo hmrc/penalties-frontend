@@ -19,7 +19,7 @@ package connectors
 import config.AppConfig
 import connectors.httpParsers.ComplianceDataParser._
 import connectors.httpParsers.{InvalidJson, UnexpectedFailure}
-import models.User
+import models.{Id, IdType, Regime, User}
 import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -39,20 +39,20 @@ class PenaltiesConnectorISpec extends IntegrationSpecCommonBase {
   "getPenaltyDetails" should {
     "generate a valid PenaltyDetails model when valid JSON is returned" in {
       getPenaltyDetailsStub()
-      val result = await(connector.getPenaltyDetails(vrn))
+      val result = await(connector.getPenaltyDetails(Regime.VATC, IdType.VRN, Id(vrn)))
       result shouldBe Right(samplePenaltyDetails)
     }
 
     s"return $BAD_REQUEST (Bad Request) when invalid JSON is returned" in {
       getPenaltyDetailsStub(sampleInvalidPenaltyDetailsJson)
-      val result = await(connector.getPenaltyDetails(vrn))
+      val result = await(connector.getPenaltyDetails(Regime.VATC, IdType.VRN, Id(vrn)))
       result.isLeft shouldBe true
       result shouldBe Left(InvalidJson)
     }
 
     "throw an exception when an upstream error is returned from penalties" in {
       penaltyDetailsUpstreamErrorStub()
-      val result = await(connector.getPenaltyDetails(vrn))
+      val result = await(connector.getPenaltyDetails(Regime.VATC, IdType.VRN, Id(vrn)))
       result.isLeft shouldBe true
       result shouldBe Left(UnexpectedFailure(INTERNAL_SERVER_ERROR, s"Unexpected response, status $INTERNAL_SERVER_ERROR returned"))
     }

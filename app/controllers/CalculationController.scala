@@ -19,7 +19,7 @@ package controllers
 import config.featureSwitches.FeatureSwitching
 import config.{AppConfig, ErrorHandler}
 import controllers.predicates.AuthPredicate
-import models.User
+import models.{Id, IdType, Regime, User}
 import models.lpp.LPPPenaltyCategoryEnum.LPP2
 import models.lpp.{LPPDetails, LPPPenaltyCategoryEnum, LPPPenaltyStatusEnum, MainTransactionEnum}
 import play.api.i18n.I18nSupport
@@ -28,7 +28,7 @@ import services.PenaltiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Logger.logger
 import utils.PagerDutyHelper.PagerDutyKeys._
-import utils.{CurrencyFormatter, EnrolmentKeys, PagerDutyHelper}
+import utils.{CurrencyFormatter, PagerDutyHelper}
 import viewmodels.{BreathingSpaceHelper, CalculationPageHelper}
 import views.html.{CalculationLPP1View, CalculationLPP2View}
 import javax.inject.Inject
@@ -53,7 +53,7 @@ class CalculationController @Inject()(viewLPP1: CalculationLPP1View,
 
   def getPenaltyDetails(principalChargeReference: String, penaltyCategory: LPPPenaltyCategoryEnum.Value)
                        (implicit request: User[_]): Future[Result] = {
-    penaltiesService.getPenaltyDataFromEnrolmentKey(EnrolmentKeys.constructMTDVATEnrolmentKey(request.vrn)).map {
+    penaltiesService.getPenaltyData(Regime.VATC, IdType.VRN, Id(request.vrn)).map {
       _.fold(
         errors => {
           logger.error(s"[CalculationController][getPenaltyDetails] - Received status ${errors.status} and body ${errors.body}, rendering ISE.")

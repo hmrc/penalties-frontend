@@ -21,7 +21,7 @@ import connectors.httpParsers.GetPenaltyDetailsParser.GetPenaltyDetailsResponse
 import models.appealInfo.AppealStatusEnum
 import models.lsp._
 import models.lpp._
-import models.{GetPenaltyDetails, Totalisations, User}
+import models.{GetPenaltyDetails, Id, IdType, Regime, Totalisations, User}
 import play.api.i18n.Messages
 import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
@@ -30,9 +30,9 @@ import scala.concurrent.Future
 
 class PenaltiesService @Inject()(connector: PenaltiesConnector) {
 
-  def getPenaltyDataFromEnrolmentKey(enrolmentKey: String)(implicit user: User[_], hc: HeaderCarrier): Future[GetPenaltyDetailsResponse] =
-    connector.getPenaltyDetails(enrolmentKey)
-
+  def getPenaltyData(regime: Regime, idType: IdType, id: Id)(implicit user: User[_], hc: HeaderCarrier): Future[GetPenaltyDetailsResponse] =
+    connector.getPenaltyDetails(regime, idType, id)
+    
   def findInterestOnAccount(totalisations: Option[Totalisations]): BigDecimal = {
     val accruingInterest: BigDecimal = totalisations.flatMap(_.totalAccountAccruingInterest).getOrElse(0)
     val postedInterest: BigDecimal = totalisations.flatMap(_.totalAccountPostedInterest).getOrElse(0)
