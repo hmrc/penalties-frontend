@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,12 @@
 
 package models
 
+import play.api.libs.json._
+
 case class IdType(value: String) extends AnyVal {
   override def toString: String = value
 }
+
+object IdType {
+  val VRN: IdType = IdType("VRN")
+} 

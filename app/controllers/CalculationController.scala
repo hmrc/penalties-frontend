@@ -53,7 +53,7 @@ class CalculationController @Inject()(viewLPP1: CalculationLPP1View,
 
   def getPenaltyDetails(principalChargeReference: String, penaltyCategory: LPPPenaltyCategoryEnum.Value)
                        (implicit request: User[_]): Future[Result] = {
-    penaltiesService.getPenaltyData(Regime("VAT "), IdType("VRN"), Id(request.vrn)).map {
+    penaltiesService.getPenaltyData(Regime.VATC, IdType.VRN, Id(request.vrn)).map {
       _.fold(
         errors => {
           logger.error(s"[CalculationController][getPenaltyDetails] - Received status ${errors.status} and body ${errors.body}, rendering ISE.")

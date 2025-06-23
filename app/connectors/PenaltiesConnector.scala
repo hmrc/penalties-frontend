@@ -64,7 +64,7 @@ class PenaltiesConnector @Inject()(httpClient: HttpClient,
 
   def getObligationData(vrn: String, fromDate: LocalDate, toDate: LocalDate)(implicit hc: HeaderCarrier): Future[CompliancePayloadResponse] = {
     logger.info(s"[PenaltiesConnector][getObligationData] - Requesting obligation data from backend for VRN $vrn.")
-    httpClient.GET[CompliancePayloadResponse](s"$penaltiesBaseUrl${getDESObligationsDataUrl(Regime("VATC"), IdType("VRN"), Id(vrn), fromDate.toString, toDate.toString)}").recover {
+    httpClient.GET[CompliancePayloadResponse](s"$penaltiesBaseUrl${getDESObligationsDataUrl(Regime.VATC, IdType.VRN, Id(vrn), fromDate.toString, toDate.toString)}").recover {
       case e: UpstreamErrorResponse => {
         PagerDutyHelper.logStatusCode("getObligationData", e.statusCode)(RECEIVED_4XX_FROM_PENALTIES_BACKEND, RECEIVED_5XX_FROM_PENALTIES_BACKEND)
         logger.error(s"[PenaltiesConnector][getObligationData] -" +

@@ -46,7 +46,7 @@ class IndexController @Inject()(view: IndexView,
 
   //scalastyle:off
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
-    penaltiesService.getPenaltyData(Regime("VATC"), IdType("VRN"), Id(request.vrn)).flatMap {
+    penaltiesService.getPenaltyData(Regime.VATC, IdType.VRN, Id(request.vrn)).flatMap {
       _.fold(
         errors => {
           logger.error(s"[IndexController][onPageLoad] - Received error with status ${errors.status} and body ${errors.body} rendering ISE.")
