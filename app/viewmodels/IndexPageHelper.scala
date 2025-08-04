@@ -217,7 +217,7 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     complianceService.getDESComplianceData(vrn)(implicitly, implicitly, implicitly, pocAchievementDate).map {
       _.fold[Either[Result, CompliancePayload]](
         {
-          logger.debug(s"[IndexPageHelper][callObligationAPI] - Received error when calling the Obligation API")
+          logger.error(s"[IndexPageHelper][callObligationAPI] - Received error when calling the Obligation API")
           Left(errorHandler.showInternalServerError(Some(user)))
         })(
         Right(_)

@@ -35,12 +35,10 @@ object GetPenaltyDetailsParser {
             case JsSuccess(model, _) =>
               logger.info("[GetPenaltyDetailsResponseReads][read]: Successful call to retrieve penalties details.")
               Right(model)
-            case failure => {
-              logger.debug(s"[GetPenaltyDetailsResponseReads][read]: Failed to parse to model - failures: $failure")
-              logger.error("[GetPenaltyDetailsResponseReads][read]: Failed to parse to model")
+            case failure =>
+              logger.error(s"[GetPenaltyDetailsResponseReads][read]: Failed to parse to model - failures: $failure")
               PagerDutyHelper.log("PenaltiesConnectorParser: GetPenaltyDetailsResponseReads", INVALID_JSON_RECEIVED_FROM_PENALTIES_BACKEND)
               Left(InvalidJson)
-            }
           }
         case NO_CONTENT =>
           logger.info(s"[GetPenaltyDetailsResponseReads][read]: No content found for VRN provided, returning empty model")
@@ -49,7 +47,8 @@ object GetPenaltyDetailsParser {
           logger.error(s"[GetPenaltyDetailsResponseReads][read]: Bad request returned with reason: ${response.body}")
           PagerDutyHelper.log("PenaltiesConnectorParser: GetPenaltyDetailsResponseReads", RECEIVED_4XX_FROM_PENALTIES_BACKEND)
           Left(BadRequest)
-        case status => logger.error(s"[GetPenaltyDetailsResponseReads][read]: Unexpected response, status $status returned with reason: ${response.body}")
+        case status =>
+          logger.error(s"[GetPenaltyDetailsResponseReads][read]: Unexpected response, status $status returned with reason: ${response.body}")
           PagerDutyHelper.logStatusCode("PenaltiesConnectorParser: GetPenaltyDetailsResponseReads", status)(
             RECEIVED_4XX_FROM_PENALTIES_BACKEND, RECEIVED_5XX_FROM_PENALTIES_BACKEND)
           Left(UnexpectedFailure(status, s"Unexpected response, status $status returned"))

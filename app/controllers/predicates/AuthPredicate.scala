@@ -67,7 +67,7 @@ class AuthPredicate @Inject()(override val messagesApi: MessagesApi,
         Future.successful(errorHandler.showInternalServerError())
     } recover {
       case _: NoActiveSession =>
-        logger.debug(s"$logMsgStart - No active session, redirect to GG sign in")
+        logger.info(s"$logMsgStart - No active session, redirect to GG sign in")
         Redirect(appConfig.signInUrl)
       case _: AuthorisationException =>
         logger.warn(s"$logMsgStart - Unauthorised exception, redirect to GG sign in")
@@ -105,20 +105,20 @@ class AuthPredicate @Inject()(override val messagesApi: MessagesApi,
               } match {
                 case Some(arn) => block(User(vrn, arn = Some(arn)))
                 case None =>
-                  logger.debug("[AuthPredicate][authoriseAsAgent] - Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
+                  logger.info("[AuthPredicate][authoriseAsAgent] - Agent with no HMRC-AS-AGENT enrolment. Rendering unauthorised view.")
                   Future.successful(Forbidden(unauthorisedView()))
               }
           } recover {
           case _: NoActiveSession =>
-            logger.debug(s"AgentPredicate][authoriseAsAgent] - No active session. Redirecting to ${appConfig.signInUrl}")
+            logger.info(s"AgentPredicate][authoriseAsAgent] - No active session. Redirecting to ${appConfig.signInUrl}")
             Redirect(appConfig.signInUrl)
           case _: AuthorisationException =>
-            logger.debug(s"[AgentPredicate][authoriseAsAgent] - Agent does not have delegated authority for client. " +
+            logger.info(s"[AgentPredicate][authoriseAsAgent] - Agent does not have delegated authority for client. " +
               s"Showing unauthorised")
             Forbidden(unauthorisedView())
         }
       case None =>
-        logger.debug(s"[AuthPredicate][authoriseAsAgent] - No Client VRN in session. Redirecting to ${appConfig.agentClientLookupStartUrl(request.uri)}")
+        logger.info(s"[AuthPredicate][authoriseAsAgent] - No Client VRN in session. Redirecting to ${appConfig.agentClientLookupStartUrl(request.uri)}")
         Future.successful(Redirect(appConfig.agentClientLookupStartUrl(request.uri)))
     }
   }
