@@ -55,7 +55,7 @@ object ComplianceDataParser {
               Right(CompliancePayloadSuccessResponse(compliancePayload))
             case JsError(errors) =>
               PagerDutyHelper.log("CompliancePayloadReads", INVALID_JSON_RECEIVED_FROM_PENALTIES_BACKEND)
-              logger.debug(s"[CompliancePayloadReads][read] Json validation errors: $errors")
+              logger.error(s"[CompliancePayloadReads][read] Json validation errors: $errors")
               Left(CompliancePayloadMalformed)
           }
         case NOT_FOUND => {
