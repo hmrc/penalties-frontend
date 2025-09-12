@@ -34,10 +34,8 @@ class ErrorHandler @Inject() (errorTemplate: ErrorTemplate, iseCustom: InternalS
     val ec: ExecutionContext)
     extends FrontendErrorHandler {
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader): Future[Html] = {
-    implicit val req: Request[_] = request.asInstanceOf[Request[_]]
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader): Future[Html] =
     Future.successful(errorTemplate(pageTitle, heading, message))
-  }
 
   def showInternalServerError(userOptional: Option[User[_]] = None)(implicit request: Request[_]): Future[Result] =
     if (userOptional.isDefined) {
