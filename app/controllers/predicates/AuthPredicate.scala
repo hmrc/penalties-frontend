@@ -64,7 +64,7 @@ class AuthPredicate @Inject()(override val messagesApi: MessagesApi,
         }
       case _ =>
         logger.warn(s"$logMsgStart - Missing affinity group")
-        Future.successful(errorHandler.showInternalServerError())
+        errorHandler.showInternalServerError()
     } recover {
       case _: NoActiveSession =>
         logger.info(s"$logMsgStart - No active session, redirect to GG sign in")

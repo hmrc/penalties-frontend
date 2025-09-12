@@ -30,7 +30,7 @@ import views.html.ComplianceView
 
 import java.time.LocalDate
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class ComplianceController @Inject()(view: ComplianceView,
                                      complianceService: ComplianceService,
@@ -43,7 +43,7 @@ class ComplianceController @Inject()(view: ComplianceView,
   extends FrontendController(controllerComponents) with I18nSupport with CurrencyFormatter with ImplicitDateFormatter {
 
   def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
-    complianceService.getDESComplianceData(request.vrn).map {
+    complianceService.getDESComplianceData(request.vrn).flatMap {
       _.fold({
         logger.error("[ComplianceController][onPageLoad] - Received None from compliance service, rendering ISE.")
         PagerDutyHelper.log("ComplianceController: onPageLoad", NO_DATA_RETURNED_FROM_COMPLIANCE)
@@ -59,11 +59,11 @@ class ComplianceController @Inject()(view: ComplianceView,
             case "5" => "6"
             case x => x
           }
-          Ok(view(
+          Future.successful(Ok(view(
             timelineContent,
             parsedPOCAchievementDate,
             amountOfSubmissionsNeededIfMissed
-          ))
+          )))
         }
       )
     }

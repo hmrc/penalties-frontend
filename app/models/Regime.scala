@@ -16,8 +16,6 @@
 
 package models
 
-import play.api.libs.json._
-
 case class Regime(value: String) extends AnyVal {
   override def toString: String = value
 }
