@@ -17,7 +17,6 @@
 package config
 
 import base.SpecBase
-import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import views.html.ErrorTemplate
 
 class ErrorHandlerSpec extends SpecBase {
@@ -26,7 +25,7 @@ class ErrorHandlerSpec extends SpecBase {
   "standardErrorTemplate" should {
     "return HTML for the standard error template" in {
       lazy val expectedResult = errorTemplate.apply("Error!", "Something went wrong!", "We are unable to process this request.")
-      lazy val actualResult = await(errorHandler.standardErrorTemplate("Error!", "Something went wrong!", "We are unable to process this request."))
+      lazy val actualResult = errorHandler.standardErrorTemplate("Error!", "Something went wrong!", "We are unable to process this request.")
       actualResult shouldBe expectedResult
     }
   }

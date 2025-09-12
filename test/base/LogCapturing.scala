@@ -29,7 +29,7 @@ trait LogCapturing {
     appender.setContext(logger.getLoggerContext)
     appender.start()
     logger.addAppender(appender)
-    logger.setLevel(Level.DEBUG)
+    logger.setLevel(Level.ALL)
     logger.setAdditive(true)
     body(appender.list.asScala.toList)
   }

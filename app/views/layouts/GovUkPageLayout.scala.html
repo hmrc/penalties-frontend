@@ -37,7 +37,7 @@
         isPageCustomLayout: Boolean = false,
         isError: Boolean = false,
         isTimeout: Boolean = false
-)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
+)(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @headerDefault = {
 @headerBlock.getOrElse {
