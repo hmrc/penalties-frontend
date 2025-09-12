@@ -16,10 +16,12 @@
 
 package models
 
+import play.api.libs.json._
+
 case class IdType(value: String) extends AnyVal {
   override def toString: String = value
 }
 
 object IdType {
   val VRN: IdType = IdType("VRN")
-}
+} 
