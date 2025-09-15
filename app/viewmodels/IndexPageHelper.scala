@@ -16,11 +16,8 @@
 
 package viewmodels
 
-import java.time.LocalDate
-
 import config.featureSwitches.FeatureSwitching
 import config.{AppConfig, ErrorHandler}
-import javax.inject.Inject
 import models.appealInfo.AppealStatusEnum.Upheld
 import models.compliance.{CompliancePayload, ComplianceStatusEnum}
 import models.lpp.LPPDetails
@@ -35,6 +32,8 @@ import utils.Logger.logger
 import utils.MessageRenderer.getMessage
 import utils.{CurrencyFormatter, ImplicitDateFormatter, LSPTypeHelper, ViewUtils}
 
+import java.time.LocalDate
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndexPageHelper @Inject()(p: views.html.components.p,
@@ -213,17 +212,17 @@ class IndexPageHelper @Inject()(p: views.html.components.p,
     ),
     classes = "govuk-body")
 
-  private def callObligationAPI(vrn: String)(implicit ec: ExecutionContext, hc: HeaderCarrier, user: User[_], pocAchievementDate: Option[LocalDate]): Future[Either[Result, CompliancePayload]] = {
-    complianceService.getDESComplianceData(vrn)(implicitly, implicitly, implicitly, pocAchievementDate).map {
-      _.fold[Either[Result, CompliancePayload]](
-        {
-          logger.error(s"[IndexPageHelper][callObligationAPI] - Received error when calling the Obligation API")
-          Left(errorHandler.showInternalServerError(Some(user)))
-        })(
-        Right(_)
-      )
+  private def callObligationAPI(vrn: String)
+                               (implicit ec: ExecutionContext,
+                                hc: HeaderCarrier,
+                                user: User[_],
+                                pocAchievementDate: Option[LocalDate]): Future[Either[Result, CompliancePayload]] =
+    complianceService.getDESComplianceData(vrn)(implicitly, implicitly, implicitly, pocAchievementDate).flatMap {
+      case None =>
+        logger.error(s"[IndexPageHelper][callObligationAPI] - Received error when calling the Obligation API")
+        errorHandler.showInternalServerError(Some(user)).map(Left(_))
+      case Some(complianceData) => Future(Right(complianceData))
     }
-  }
 
   def getWhatYouOweBreakdown(penaltyDetails: GetPenaltyDetails)(implicit messages: Messages): Option[WhatYouOweContent] = {
     val unpaidVATCharges = penaltiesService.findUnpaidVATCharges(penaltyDetails.totalisations)
