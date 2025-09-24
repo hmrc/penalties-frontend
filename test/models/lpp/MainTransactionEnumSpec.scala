@@ -17,9 +17,10 @@
 package models.lpp
 
 import base.SpecBase
-import play.api.libs.json.{JsString, Json}
+import play.api.libs.json.{JsBoolean, JsNumber, JsString, Json}
 
 class MainTransactionEnumSpec extends SpecBase {
+
   "be writable to JSON for 'VAT Return Charge' (4700)" in {
     val result = Json.toJson(MainTransactionEnum.VATReturnCharge)
     result shouldBe JsString("4700")
@@ -270,8 +271,20 @@ class MainTransactionEnumSpec extends SpecBase {
     result.get shouldBe MainTransactionEnum.AAReturnChargeSecondLPP
   }
 
-  "return JsError when the enum is not readable" in {
-    val result = Json.fromJson(JsString("unknown"))(MainTransactionEnum.format)
-    result.isError shouldBe true
+  "be readable from any other four digit number JsString" in {
+    val result = Json.fromJson(JsString("9999"))(MainTransactionEnum.format)
+    result.get shouldBe MainTransactionEnum.Unknown
+  }
+
+  "return JsError when the value is not a four digit number JsString" in {
+    val nonNumResult = Json.fromJson(JsString("unknown"))(MainTransactionEnum.format)
+    val threeDigitNumResult = Json.fromJson(JsString("123"))(MainTransactionEnum.format)
+    val fiveDigitNumResult = Json.fromJson(JsString("12345"))(MainTransactionEnum.format)
+    val badNumResult = Json.fromJson(JsString("12.34"))(MainTransactionEnum.format)
+
+    nonNumResult.isError shouldBe true
+    threeDigitNumResult.isError shouldBe true
+    fiveDigitNumResult.isError shouldBe true
+    badNumResult.isError shouldBe true
   }
 }
