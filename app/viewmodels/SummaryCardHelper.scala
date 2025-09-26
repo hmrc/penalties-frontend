@@ -399,7 +399,7 @@ class SummaryCardHelper @Inject()(val appConfig: AppConfig, calculationPageHelpe
       case POAReturnChargeFirstLPP | POAReturnChargeSecondLPP | POAReturnCharge => "summaryCard.lpp.key3.value.poaReturnCharge"
       case AAReturnChargeFirstLPP | AAReturnChargeSecondLPP | AAReturnCharge => "summaryCard.lpp.key3.value.aaReturnCharge"
       case VATOverpaymentForTax => "summaryCard.lpp.key3.value.vatOverpaymentCharge"
-      case _ => "summaryCard.lpp.key3.value.vat" //Should be unreachable
+      case _ => "summaryCard.lpp.key3.value.vat" // Default if 'MainTransaction' is an unknown value
     }
   }
 
