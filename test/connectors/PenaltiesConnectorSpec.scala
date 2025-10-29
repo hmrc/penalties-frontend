@@ -25,7 +25,8 @@ import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import utils.Logger.logger
 import utils.PagerDutyHelper.PagerDutyKeys
 import models.{Id, IdType, Regime}
@@ -34,7 +35,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching with LogCapturing {
   implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
-  val mockHttpClient: HttpClient = mock(classOf[HttpClient])
+  val mockHttpClient: HttpClientV2 = mock(classOf[HttpClientV2])
+  val mockRequestBuilder: RequestBuilder = mock(classOf[RequestBuilder])
   val mockAppConfig: AppConfig = mock(classOf[AppConfig])
 
   class Setup {

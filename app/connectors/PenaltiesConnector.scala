@@ -22,7 +22,8 @@ import connectors.httpParsers.ComplianceDataParser.{CompliancePayloadFailureResp
 import connectors.httpParsers.GetPenaltyDetailsParser.{GetPenaltyDetailsResponse, GetPenaltyDetailsResponseReads}
 import connectors.httpParsers.UnexpectedFailure
 import models.{Id, IdType, Regime, User}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
+import uk.gov.hmrc.http.client.HttpClientV2
 import utils.Logger.logger
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import uk.gov.hmrc.http.UpstreamErrorResponse
@@ -33,7 +34,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PenaltiesConnector @Inject()(httpClient: HttpClient,
+class PenaltiesConnector @Inject()(httpClient: HttpClientV2,
                                    val appConfig: AppConfig)(implicit ec: ExecutionContext) extends FeatureSwitching {
 
   private val penaltiesBaseUrl: String = appConfig.penaltiesUrl
@@ -49,7 +50,8 @@ class PenaltiesConnector @Inject()(httpClient: HttpClient,
   def getPenaltyDetails(regime: Regime, idType: IdType, id: Id)(implicit user: User[_], hc: HeaderCarrier): Future[GetPenaltyDetailsResponse] = {
     logger.info(s"[PenaltiesConnector][getPenaltyDetails] - Requesting penalties details from backend for regime: $regime, idType: $idType, id: $id.")
     
-    httpClient.GET[GetPenaltyDetailsResponse](s"$penaltiesBaseUrl${getPenaltiesDataUrl(regime, idType, id)}")(GetPenaltyDetailsResponseReads, hc, ec).recover{
+    val fullUrl = s"$penaltiesBaseUrl${getPenaltiesDataUrl(regime, idType, id)}"
+    httpClient.get(url"$fullUrl").execute[GetPenaltyDetailsResponse](GetPenaltyDetailsResponseReads, ec).recover{
       case e: UpstreamErrorResponse =>
         PagerDutyHelper.logStatusCode("PenaltiesConnector: getPenaltyDetails", e.statusCode)(
           RECEIVED_4XX_FROM_PENALTIES_BACKEND, RECEIVED_5XX_FROM_PENALTIES_BACKEND)
@@ -64,7 +66,8 @@ class PenaltiesConnector @Inject()(httpClient: HttpClient,
 
   def getObligationData(vrn: String, fromDate: LocalDate, toDate: LocalDate)(implicit hc: HeaderCarrier): Future[CompliancePayloadResponse] = {
     logger.info(s"[PenaltiesConnector][getObligationData] - Requesting obligation data from backend for VRN $vrn.")
-    httpClient.GET[CompliancePayloadResponse](s"$penaltiesBaseUrl${getDESObligationsDataUrl(Regime.VATC, IdType.VRN, Id(vrn), fromDate.toString, toDate.toString)}").recover {
+    val fullUrl = s"$penaltiesBaseUrl${getDESObligationsDataUrl(Regime.VATC, IdType.VRN, Id(vrn), fromDate.toString, toDate.toString)}"
+    httpClient.get(url"$fullUrl").execute[CompliancePayloadResponse].recover {
       case e: UpstreamErrorResponse => {
         PagerDutyHelper.logStatusCode("getObligationData", e.statusCode)(RECEIVED_4XX_FROM_PENALTIES_BACKEND, RECEIVED_5XX_FROM_PENALTIES_BACKEND)
         logger.error(s"[PenaltiesConnector][getObligationData] -" +
