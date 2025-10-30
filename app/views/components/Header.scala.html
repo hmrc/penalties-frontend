@@ -18,12 +18,11 @@
 @import utils.SessionKeys
 @import config.AppConfig
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En}
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.userresearchbanner.UserResearchBanner
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 
 @this(hmrcHeader: HmrcHeader, betaBanner: StandardBetaBanner)
 
-@(appConfig: AppConfig, showSignOut: Boolean = true, isAuthorised: Boolean)(implicit messages: Messages, request: Request[_])
+@(appConfig: AppConfig, showSignOut: Boolean = true, isAuthorised: Boolean)(implicit messages: Messages, request: RequestHeader)
 
 @hmrcHeader(headerComponent(
     homepageUrl = "https://www.gov.uk/",

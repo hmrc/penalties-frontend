@@ -25,7 +25,8 @@ import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import utils.Logger.logger
 import utils.PagerDutyHelper.PagerDutyKeys
 import models.{Id, IdType, Regime}
@@ -34,22 +35,25 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching with LogCapturing {
   implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
-  val mockHttpClient: HttpClient = mock(classOf[HttpClient])
+  val mockHttpClient: HttpClientV2 = mock(classOf[HttpClientV2])
+  val mockRequestBuilder: RequestBuilder = mock(classOf[RequestBuilder])
   val mockAppConfig: AppConfig = mock(classOf[AppConfig])
 
   class Setup {
     reset(mockHttpClient)
+    reset(mockRequestBuilder)
     reset(mockAppConfig)
 
+    when(mockAppConfig.penaltiesUrl).thenReturn("http://localhost:9182")
     val connector: PenaltiesConnector = new PenaltiesConnector(mockHttpClient, mockAppConfig)
-    when(mockAppConfig.penaltiesUrl).thenReturn("/")
   }
 
   "getPenaltyDetails" should {
     "return a successful response when the call succeeds and the body can be parsed" when {
       "UseAPI1811Model is enabled" in new Setup {
-        when(mockHttpClient.GET[GetPenaltyDetailsResponse](any(), any(), any())
-          (any(), any(), any())).thenReturn(Future.successful(Right(samplePenaltyDetailsModel)))
+        when(mockHttpClient.get(any[java.net.URL])(any())).thenReturn(mockRequestBuilder)
+        when(mockRequestBuilder.execute[GetPenaltyDetailsResponse](any(), any()))
+          .thenReturn(Future.successful(Right(samplePenaltyDetailsModel)))
 
         val result: GetPenaltyDetailsResponse = await(connector.getPenaltyDetails(Regime.VATC, IdType.VRN, Id(vrn))(vatTraderUser, HeaderCarrier()))
         result.isRight shouldBe true
@@ -57,8 +61,9 @@ class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching with LogCapt
       }
 
       "UseAPI1811Model is disabled" in new Setup {
-        when(mockHttpClient.GET[GetPenaltyDetailsResponse](any(), any(), any())
-          (any(), any(), any())).thenReturn(Future.successful(Right(samplePenaltyDetailsModelWithoutMetadata)))
+        when(mockHttpClient.get(any[java.net.URL])(any())).thenReturn(mockRequestBuilder)
+        when(mockRequestBuilder.execute[GetPenaltyDetailsResponse](any(), any()))
+          .thenReturn(Future.successful(Right(samplePenaltyDetailsModelWithoutMetadata)))
 
         val result = await(connector.getPenaltyDetails(Regime.VATC, IdType.VRN, Id(vrn))(vatTraderUser, HeaderCarrier()))
         result.isRight shouldBe true
@@ -68,12 +73,9 @@ class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching with LogCapt
 
     "return a Left when" when {
       "an exception with status 4xx occurs upstream" in new Setup {
-        when(mockHttpClient.GET[GetPenaltyDetailsResponse](any(),
-          any(),
-          any())
-          (any(),
-            any(),
-            any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", BAD_REQUEST)))
+        when(mockHttpClient.get(any[java.net.URL])(any())).thenReturn(mockRequestBuilder)
+        when(mockRequestBuilder.execute[GetPenaltyDetailsResponse](any(), any()))
+          .thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", BAD_REQUEST)))
 
         withCaptureOfLoggingFrom(logger) {
           logs => {
@@ -85,12 +87,9 @@ class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching with LogCapt
       }
 
       "an exception with status 5xx occurs upstream is returned" in new Setup {
-        when(mockHttpClient.GET[GetPenaltyDetailsResponse](any(),
-          any(),
-          any())
-          (any(),
-            any(),
-            any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", INTERNAL_SERVER_ERROR)))
+        when(mockHttpClient.get(any[java.net.URL])(any())).thenReturn(mockRequestBuilder)
+        when(mockRequestBuilder.execute[GetPenaltyDetailsResponse](any(), any()))
+          .thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", INTERNAL_SERVER_ERROR)))
 
         withCaptureOfLoggingFrom(logger) {
           logs => {
@@ -102,12 +101,9 @@ class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching with LogCapt
       }
 
       "an exception is returned" in new Setup {
-        when(mockHttpClient.GET[GetPenaltyDetailsResponse](any(),
-          any(),
-          any())
-          (any(),
-            any(),
-            any())).thenReturn(Future.failed(new Exception("")))
+        when(mockHttpClient.get(any[java.net.URL])(any())).thenReturn(mockRequestBuilder)
+        when(mockRequestBuilder.execute[GetPenaltyDetailsResponse](any(), any()))
+          .thenReturn(Future.failed(new Exception("")))
 
         withCaptureOfLoggingFrom(logger){
           logs =>
@@ -121,12 +117,9 @@ class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching with LogCapt
 
   "getObligationData" should {
     s"return a successful response when the call succeeds and the body can be parsed" in new Setup {
-      when(mockHttpClient.GET[CompliancePayloadResponse](any(),
-        any(),
-        any())
-        (any(),
-          any(),
-          any())).thenReturn(Future.successful(Right(CompliancePayloadSuccessResponse(sampleCompliancePayload))))
+      when(mockHttpClient.get(any[java.net.URL])(any())).thenReturn(mockRequestBuilder)
+      when(mockRequestBuilder.execute[CompliancePayloadResponse](any(), any()))
+        .thenReturn(Future.successful(Right(CompliancePayloadSuccessResponse(sampleCompliancePayload))))
 
       val result: CompliancePayloadResponse = await(connector.getObligationData(vrn, LocalDate.of(2020, 1, 1),
         LocalDate.of(2020, 12, 1))(HeaderCarrier()))
@@ -136,12 +129,10 @@ class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching with LogCapt
 
     "return a Left response" when {
       "the call returns a OK response however the body is not parsable as a model" in new Setup {
-        when(mockHttpClient.GET[CompliancePayloadResponse](any(),
-          any(),
-          any())
-          (any(),
-            any(),
-            any())).thenReturn(Future.successful(Left(CompliancePayloadMalformed)))
+        when(mockHttpClient.get(any[java.net.URL])(any())).thenReturn(mockRequestBuilder)
+        when(mockRequestBuilder.execute[CompliancePayloadResponse](any(), any()))
+          .thenReturn(Future.successful(Left(CompliancePayloadMalformed)))
+          
         val result: CompliancePayloadResponse =
           await(connector.getObligationData("123456789", LocalDate.of(2020, 1, 1),
             LocalDate.of(2020, 12, 1))(HeaderCarrier()))
@@ -149,12 +140,10 @@ class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching with LogCapt
       }
 
       "the call returns a Not Found status" in new Setup {
-        when(mockHttpClient.GET[CompliancePayloadResponse](any(),
-          any(),
-          any())
-          (any(),
-            any(),
-            any())).thenReturn(Future.successful(Left(CompliancePayloadNoData)))
+        when(mockHttpClient.get(any[java.net.URL])(any())).thenReturn(mockRequestBuilder)
+        when(mockRequestBuilder.execute[CompliancePayloadResponse](any(), any()))
+          .thenReturn(Future.successful(Left(CompliancePayloadNoData)))
+          
         val result: CompliancePayloadResponse =
           await(connector.getObligationData("123456789", LocalDate.of(2020, 1, 1),
             LocalDate.of(2020, 12, 1))(HeaderCarrier()))
@@ -162,12 +151,10 @@ class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching with LogCapt
       }
 
       "the call returns a ISE" in new Setup {
-        when(mockHttpClient.GET[CompliancePayloadResponse](any(),
-          any(),
-          any())
-          (any(),
-            any(),
-            any())).thenReturn(Future.successful(Left(CompliancePayloadFailureResponse(INTERNAL_SERVER_ERROR))))
+        when(mockHttpClient.get(any[java.net.URL])(any())).thenReturn(mockRequestBuilder)
+        when(mockRequestBuilder.execute[CompliancePayloadResponse](any(), any()))
+          .thenReturn(Future.successful(Left(CompliancePayloadFailureResponse(INTERNAL_SERVER_ERROR))))
+          
         val result: CompliancePayloadResponse =
           await(connector.getObligationData("123456789", LocalDate.of(2020, 1, 1),
             LocalDate.of(2020, 12, 1))(HeaderCarrier()))
@@ -175,12 +162,10 @@ class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching with LogCapt
       }
 
       "the call returns an unmatched response" in new Setup {
-        when(mockHttpClient.GET[CompliancePayloadResponse](any(),
-          any(),
-          any())
-          (any(),
-            any(),
-            any())).thenReturn(Future.successful(Left(CompliancePayloadFailureResponse(SERVICE_UNAVAILABLE))))
+        when(mockHttpClient.get(any[java.net.URL])(any())).thenReturn(mockRequestBuilder)
+        when(mockRequestBuilder.execute[CompliancePayloadResponse](any(), any()))
+          .thenReturn(Future.successful(Left(CompliancePayloadFailureResponse(SERVICE_UNAVAILABLE))))
+          
         val result: CompliancePayloadResponse =
           await(connector.getObligationData("123456789", LocalDate.of(2020, 1, 1),
             LocalDate.of(2020, 12, 1))(HeaderCarrier()))
@@ -188,12 +173,9 @@ class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching with LogCapt
       }
 
       "the call returns a UpstreamErrorResponse(4xx) exception" in new Setup {
-        when(mockHttpClient.GET[CompliancePayloadResponse](any(),
-          any(),
-          any())
-          (any(),
-            any(),
-            any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("", BAD_REQUEST)))
+        when(mockHttpClient.get(any[java.net.URL])(any())).thenReturn(mockRequestBuilder)
+        when(mockRequestBuilder.execute[CompliancePayloadResponse](any(), any()))
+          .thenReturn(Future.failed(UpstreamErrorResponse.apply("", BAD_REQUEST)))
 
         withCaptureOfLoggingFrom(logger) {
           logs => {
@@ -207,13 +189,10 @@ class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching with LogCapt
       }
 
       "the call returns a UpstreamErrorResponse(5xx) exception" in new Setup {
-        when(mockHttpClient.GET[CompliancePayloadResponse](any(),
-          any(),
-          any())
-          (any(),
-            any(),
-            any()))
-        .thenReturn(Future.failed(UpstreamErrorResponse.apply("", INTERNAL_SERVER_ERROR)))
+        when(mockHttpClient.get(any[java.net.URL])(any())).thenReturn(mockRequestBuilder)
+        when(mockRequestBuilder.execute[CompliancePayloadResponse](any(), any()))
+          .thenReturn(Future.failed(UpstreamErrorResponse.apply("", INTERNAL_SERVER_ERROR)))
+          
         withCaptureOfLoggingFrom(logger) {
           logs => {
             val result: CompliancePayloadResponse =
@@ -226,13 +205,10 @@ class PenaltiesConnectorSpec extends SpecBase with FeatureSwitching with LogCapt
       }
 
       "the call returns an exception" in new Setup {
-        when(mockHttpClient.GET[CompliancePayloadResponse](any(),
-          any(),
-          any())
-          (any(),
-            any(),
-            any()))
+        when(mockHttpClient.get(any[java.net.URL])(any())).thenReturn(mockRequestBuilder)
+        when(mockRequestBuilder.execute[CompliancePayloadResponse](any(), any()))
           .thenReturn(Future.failed(new Exception("failed")))
+          
         withCaptureOfLoggingFrom(logger) {
           logs => {
             val result: CompliancePayloadResponse =
