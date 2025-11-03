@@ -89,7 +89,7 @@
         @messages("index.contents")
         </h3>
         <ul class="govuk-tabs__list">
-          <li class="govuk-tabs__list-item" id="lsp-tab">
+          <li class="govuk-tabs__list-item govuk-tabs__list-item--selected" id="lsp-tab">
             <a class="govuk-tabs__tab" href="#late-submission-penalties">
             @messages("index.subheading.lsp")
             </a>
@@ -101,7 +101,7 @@
           </li>
         </ul>
         <div class="govuk-tabs__panel" id="late-submission-penalties">
-          <h3 class="govuk-heading-m, tab-heading">@{
+          <h3 class="govuk-heading-m tab-heading">@{
             messages("index.subheading.lsp")
           }</h3>
           @contentToDisplayBeforeSummaryCards
@@ -110,8 +110,8 @@
             @summaryCardLSP(lspCard)
           }
         </div>
-        <div class="govuk-tabs__panel" id="late-payment-penalties">
-          <h3 class="govuk-heading-m, tab-heading">@{
+        <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="late-payment-penalties">
+          <h3 class="govuk-heading-m tab-heading">@{
             messages("index.subheading.lpp")
           }</h3>
           @contentLPPToDisplayBeforeSummaryCards
