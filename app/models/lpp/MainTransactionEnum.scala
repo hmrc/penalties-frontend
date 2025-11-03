@@ -18,6 +18,8 @@ package models.lpp
 
 import play.api.libs.json._
 
+import scala.util.Try
+
 object MainTransactionEnum extends Enumeration {
   val VATReturnCharge: MainTransactionEnum.Value = Value("4700")
   val VATReturnFirstLPP: MainTransactionEnum.Value = Value("4703")
@@ -45,6 +47,7 @@ object MainTransactionEnum extends Enumeration {
   val AAReturnChargeFirstLPP: MainTransactionEnum.Value = Value("4718")
   val AAReturnChargeSecondLPP: MainTransactionEnum.Value = Value("4719")
   val ManualCharge: MainTransactionEnum.Value = Value("4787")
+  val Unknown: MainTransactionEnum.Value = Value("Unknown value")
 
   implicit val format: Format[MainTransactionEnum.Value] = new Format[MainTransactionEnum.Value] {
     override def writes(o: MainTransactionEnum.Value): JsValue = {
@@ -52,6 +55,7 @@ object MainTransactionEnum extends Enumeration {
     }
 
     override def reads(json: JsValue): JsResult[MainTransactionEnum.Value] = {
+      def hasValidFormat(fourDigitNum: String): Boolean = fourDigitNum.length == 4 && Try(fourDigitNum.toInt).isSuccess
       json.as[String] match {
         case "4700" => JsSuccess(VATReturnCharge)
         case "4703" => JsSuccess(VATReturnFirstLPP)
@@ -79,7 +83,8 @@ object MainTransactionEnum extends Enumeration {
         case "4718" => JsSuccess(AAReturnChargeFirstLPP)
         case "4719" => JsSuccess(AAReturnChargeSecondLPP)
         case "4787" => JsSuccess(ManualCharge)
-        case e => JsError(s"$e not recognised")
+        case fourDigitNum if hasValidFormat(fourDigitNum) => JsSuccess(Unknown)
+        case e      => JsError(s"$e not recognised")
       }
     }
   }
