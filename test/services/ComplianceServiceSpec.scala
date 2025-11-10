@@ -24,6 +24,7 @@ import models.compliance.CompliancePayload
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
+import org.mockito.stubbing.OngoingStubbing
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import utils.SessionKeys
@@ -39,43 +40,73 @@ class ComplianceServiceSpec extends SpecBase {
   class Setup {
     val service: ComplianceService = new ComplianceService(mockPenaltiesConnector)
 
+    def mockSuccessfulConnectorResponse(toDate: LocalDate,
+                                        response: CompliancePayloadSuccessResponse): OngoingStubbing[Future[CompliancePayloadResponse]] =
+      when(mockPenaltiesConnector.getObligationData(any(), ArgumentMatchers.eq(toDate.minusYears(2)), ArgumentMatchers.eq(toDate))(any()))
+        .thenReturn(Future.successful(Right(response)))
+
     reset(mockPenaltiesConnector)
   }
 
-  "getDESComplianceData" should {
-    s"return a successful response and pass the result back to the controller (date provided as parameter)" in new Setup {
-      when(mockPenaltiesConnector.getObligationData(any(),
-        ArgumentMatchers.eq(LocalDate.of(2020, 1, 1)),
-        ArgumentMatchers.eq(LocalDate.of(2022, 1, 1)))(any())).thenReturn(Future.successful(Right(CompliancePayloadSuccessResponse(sampleCompliancePayload))))
-      val result: Option[CompliancePayload] = await(service.getDESComplianceData(vrn)(HeaderCarrier(),
-        User("123456789"), implicitly, Some(LocalDate.of(2022, 1, 1))))
-      result.isDefined shouldBe true
-      result.get shouldBe sampleCompliancePayload
-    }
+  private val validPocAchievementDate          = LocalDate.of(2022, 1, 1)
+  private val invalidDefaultDate               = LocalDate.of(9999, 12, 31)
+  private val dateNow                          = LocalDate.now()
+  private val user                             = User("123456789")
+  private def userWithSession(date: LocalDate) = User("123456789")(fakeRequest.withSession(SessionKeys.pocAchievementDate -> date.toString))
 
-    s"return a successful response and pass the result back to the controller (date in session)" in new Setup {
-      when(mockPenaltiesConnector.getObligationData(any(),
-        ArgumentMatchers.eq(LocalDate.of(2020, 1, 1)),
-        ArgumentMatchers.eq(LocalDate.of(2022, 1, 1)))(any())).thenReturn(Future.successful(Right(CompliancePayloadSuccessResponse(sampleCompliancePayload))))
-      val result: Option[CompliancePayload] = await(service.getDESComplianceData(vrn)(HeaderCarrier(), User("123456789")(fakeRequest.withSession(
-        SessionKeys.pocAchievementDate -> "2022-01-01"
-      )), implicitly))
-      result.isDefined shouldBe true
-      result.get shouldBe sampleCompliancePayload
+  "getDESComplianceData" should {
+    "return a successful response and pass the result back to the controller" when {
+      "the date is provided as a parameter" in new Setup {
+        mockSuccessfulConnectorResponse(validPocAchievementDate, CompliancePayloadSuccessResponse(sampleCompliancePayload))
+
+        val result: Option[CompliancePayload] =
+          await(service.getDESComplianceData(vrn)(HeaderCarrier(), user, implicitly, Some(validPocAchievementDate)))
+
+        result.isDefined shouldBe true
+        result.get shouldBe sampleCompliancePayload
+      }
+      "the date provided as a parameter is the HIP default with '9999' year and the service uses today's date instead" in new Setup {
+        mockSuccessfulConnectorResponse(dateNow, CompliancePayloadSuccessResponse(sampleCompliancePayload))
+
+        val result: Option[CompliancePayload] =
+          await(service.getDESComplianceData(vrn)(HeaderCarrier(), user, implicitly, Some(invalidDefaultDate)))
+
+        result.isDefined shouldBe true
+        result.get shouldBe sampleCompliancePayload
+      }
+
+      "the date is provided from session data" in new Setup {
+        mockSuccessfulConnectorResponse(validPocAchievementDate, CompliancePayloadSuccessResponse(sampleCompliancePayload))
+
+        val result: Option[CompliancePayload] =
+          await(service.getDESComplianceData(vrn)(HeaderCarrier(), userWithSession(validPocAchievementDate), implicitly, pocAchievementDate = None))
+
+        result.isDefined shouldBe true
+        result.get shouldBe sampleCompliancePayload
+      }
+      "the date provided from session data is the HIP default with '9999' year and the service uses today's date instead" in new Setup {
+        mockSuccessfulConnectorResponse(dateNow, CompliancePayloadSuccessResponse(sampleCompliancePayload))
+
+        val result: Option[CompliancePayload] =
+          await(service.getDESComplianceData(vrn)(HeaderCarrier(), userWithSession(invalidDefaultDate), implicitly, pocAchievementDate = None))
+
+        result.isDefined shouldBe true
+        result.get shouldBe sampleCompliancePayload
+      }
     }
 
     "return None when the session keys are not present" in new Setup {
-      val result: Option[CompliancePayload] = await(service.getDESComplianceData(vrn)(HeaderCarrier(), User("123456789")(fakeRequest), implicitly))
+      val result: Option[CompliancePayload] = await(service.getDESComplianceData(vrn)(HeaderCarrier(), user, implicitly))
       result shouldBe None
     }
 
-    s"return an exception and pass the result back to the controller" in new Setup {
+    "return an exception and pass the result back to the controller" in new Setup {
       when(mockPenaltiesConnector.getObligationData(any(), any(), any())(any()))
         .thenReturn(Future.failed(UpstreamErrorResponse.apply("Upstream error", INTERNAL_SERVER_ERROR)))
-      val result: Exception = intercept[Exception](await(service.getDESComplianceData(vrn)(HeaderCarrier(), User("123456789")(fakeRequest.withSession(
-        SessionKeys.pocAchievementDate -> "2022-01-01"
-      )), implicitly)))
+      val result: Exception = intercept[Exception](await(service.getDESComplianceData(vrn)(HeaderCarrier(), user, implicitly, Some(dateNow))))
+
       result.getMessage shouldBe "Upstream error"
     }
   }
+
 }
