@@ -30,19 +30,24 @@ import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ComplianceService @Inject()(connector: PenaltiesConnector)(implicit val appConfig: AppConfig) extends FeatureSwitching {
+class ComplianceService @Inject() (connector: PenaltiesConnector)(implicit val appConfig: AppConfig) extends FeatureSwitching {
 
-  def getDESComplianceData(vrn: String)(implicit hc: HeaderCarrier, user: User[_],
-                                        ec: ExecutionContext, pocAchievementDate: Option[LocalDate] = None): Future[Option[CompliancePayload]] = {
+  def getDESComplianceData(vrn: String)(implicit
+      hc: HeaderCarrier,
+      user: User[_],
+      ec: ExecutionContext,
+      pocAchievementDate: Option[LocalDate] = None): Future[Option[CompliancePayload]] = {
     val pocAchievementDateFromSession: Option[LocalDate] = user.session.get(SessionKeys.pocAchievementDate).map(LocalDate.parse(_))
     pocAchievementDate.orElse(pocAchievementDateFromSession) match {
-      case Some(pocAchievementDate) => {
-        val fromDate = pocAchievementDate.minusYears(2)
-        connector.getObligationData(vrn, fromDate, pocAchievementDate).map {
+      case Some(pocAchievementDate) =>
+        val validatedDate = replaceDefaultYearForCurrentYearWhenOngoingObligations(pocAchievementDate)
+        val fromDate      = validatedDate.minusYears(2)
+        connector.getObligationData(vrn, fromDate, validatedDate).map {
           _.fold(
             failure => {
               logger.error(s"[ComplianceService][getDESComplianceData] - Connector failure: ${failure.message}")
-              logger.error("[ComplianceService][getDESComplianceData] - Failed to retrieve obligation data, returning None back to controller (renders ISE)")
+              logger.error(
+                "[ComplianceService][getDESComplianceData] - Failed to retrieve obligation data, returning None back to controller (renders ISE)")
               None
             },
             obligationData => {
@@ -52,12 +57,14 @@ class ComplianceService @Inject()(connector: PenaltiesConnector)(implicit val ap
             }
           )
         }
-      }
-      case _ => {
+      case _ =>
         logger.error(s"[ComplianceService][getDESComplianceData] - POC Achievement date was not present in session")
         PagerDutyHelper.log("ComplianceService: getDESComplianceData", POC_ACHIEVEMENT_DATE_NOT_FOUND)
         Future.successful(None)
-      }
     }
   }
+
+  // HIP replaces the 'None' date value with '9999' which breaks the call to obligations
+  private def replaceDefaultYearForCurrentYearWhenOngoingObligations(date: LocalDate): LocalDate =
+    if (date.getYear > 9000) LocalDate.now() else date
 }

@@ -17,7 +17,7 @@
 package models.lpp
 
 import base.SpecBase
-import play.api.libs.json.{JsBoolean, JsNumber, JsString, Json}
+import play.api.libs.json.{JsString, Json}
 
 class MainTransactionEnumSpec extends SpecBase {
 
