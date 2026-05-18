@@ -34,8 +34,8 @@ class CalculationPageHelper @Inject()(implicit val appConfig: AppConfig) extends
       case (Some(amountOnDay15), Some(amountOnDay31)) =>
         val amountOnDay15ParsedAsString = CurrencyFormatter.parseBigDecimalToFriendlyValue(amountOnDay15)
         val amountOnDay31ParsedAsString = CurrencyFormatter.parseBigDecimalToFriendlyValue(amountOnDay31)
-        val penaltyAmountOnDay15 = CurrencyFormatter.parseBigDecimalToFriendlyValue(amountOnDay15 * (lpp.LPP1LRPercentage.getOrElse(BigDecimal(0)) / 100))
-        val penaltyAmountOnDay31 = CurrencyFormatter.parseBigDecimalToFriendlyValue(amountOnDay31 * (lpp.LPP1HRPercentage.getOrElse(BigDecimal(0)) / 100))
+        val penaltyAmountOnDay15 = CurrencyFormatter.parseBigDecimalToFriendlyValue(amountOnDay15 * (lpp.LPP1LRPercentage.getOrElse(BigDecimal(3)) / 100))
+        val penaltyAmountOnDay31 = CurrencyFormatter.parseBigDecimalToFriendlyValue(amountOnDay31 * (lpp.LPP1HRPercentage.getOrElse(BigDecimal(3)) / 100))
         val firstCalculation = messages("calculation.key.2.text.remove.30.days",
           s"${lpp.LPP1LRPercentage.get}", amountOnDay15ParsedAsString, messages("calculation.lpp1.15days"), penaltyAmountOnDay15)
         val secondCalculation = messages("calculation.key.2.text.remove.30.days",
