@@ -42,43 +42,51 @@
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 
 @beforeContentBlock = {
-@if(appConfig.welshLanguageSupportEnabled) {@languageSelect()}
 
-@if(!isTimeout && !isError){
-    @if(isUserAgent) {
-      @if(optPage.isDefined) {
-        @govukBackLink(BackLink(href = controllers.routes.PreviousPageController.previousPage(optPage.get.toString).url, content = Text(messages("app.common.back")), attributes = Map("id" -> "back-link")))
-      }
-    } else {
-        <div class="govuk-breadcrumbs govuk-breadcrumbs--collapse-on-mobile">
-            <ol class="govuk-breadcrumbs__list">
-                <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href="@{appConfig.btaUrl}">
+    @if(appConfig.welshLanguageSupportEnabled) {@languageSelect()}
+
+    @if(!isTimeout && !isError){
+        @if(isUserAgent) {
+            @agentBlock
+        } else {
+           @nonAgentBlock
+        }
+    }
+}
+
+@agentBlock = {
+    @optPage.map { optValue =>
+        @govukBackLink(BackLink(href = controllers.routes.PreviousPageController.previousPage(optValue.toString).url,
+                                content = Text(messages("app.common.back")), attributes = Map("id" -> "back-link")))
+    }
+}
+
+@nonAgentBlock = {
+    <div class="govuk-breadcrumbs govuk-breadcrumbs--collapse-on-mobile">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="@{appConfig.btaUrl}">
                     @messages("index.breadcrumb.bta")
-                    </a>
-                </li>
-                <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href="@{appConfig.vatOverviewUrl}">
+                </a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="@{appConfig.vatOverviewUrl}">
                     @messages("index.breadcrumb.vat-account")
-                    </a>
-                </li>
-                @{
-                    extraBreadcrumbs.map {
-                        _.map {
-                            breadcrumb => {
-                                <li class="govuk-breadcrumbs__list-item">
-                                    <a class="govuk-breadcrumbs__link" href={breadcrumb._2}>
-                                        {breadcrumb._1}
-                                    </a>
-                                </li>
-                            }
+                </a>
+            </li>
+            @{extraBreadcrumbs.map {
+                _.map { breadcrumb => {
+                    <li class="govuk-breadcrumbs__list-item">
+                        <a class="govuk-breadcrumbs__link" href={breadcrumb._2}>
+                            {breadcrumb._1}
+                        </a>
+                    </li>
                         }
                     }
                 }
-            </ol>
-        </div>
-    }
-}
+            }
+        </ol>
+    </div>
 }
 
 @headBlock = {
@@ -102,18 +110,23 @@
 @scripts = {
     <script @{CSPNonce.attr} src='@controllers.routes.Assets.versioned("lib/govuk-frontend/dist/govuk/all.bundle.js")'></script>
     <script @{CSPNonce.attr} src='@controllers.routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
-@if(scriptsBlock.isEmpty) {
-    <script @{CSPNonce.attr} src="@controllers.routes.Assets.versioned("javascripts/backLink.js")"></script>
-    <script @{CSPNonce.attr}>window.GOVUKFrontend.initAll();</script>
-    <script @{CSPNonce.attr}>window.HMRCFrontend.initAll();</script>
-} else {
-    @scriptsBlock.get
-}
+    @scriptsBlock.fold{
+        <script @{CSPNonce.attr} src='@controllers.routes.Assets.versioned("javascripts/backLink.js")'></script>
+        <script @{CSPNonce.attr}>window.GOVUKFrontend.initAll();</script>
+        <script @{CSPNonce.attr}>window.HMRCFrontend.initAll();</script>
+    }{block =>
+        @block
+    }
 }
 
 @titleMessage = @{
   if(isUserAgent) "agent.service.name" else "service.name"
 }
+
+@footerDefault = {
+    @hmrcStandardFooter()
+}
+
 
 @govukLayout(
     pageTitle = Some(messages("common.pageTitle", pageTitle, messages(titleMessage))),
@@ -121,7 +134,7 @@
     headerBlock = Some(header(appConfig, !isTimeout, isAuthorised)),
     scriptsBlock = Some(scripts),
     beforeContentBlock = Some(beforeContentBlock),
-    footerBlock = Some(hmrcStandardFooter()),
+    footerBlock = footerDefault,
     isFullWidth = isPageFullWidth,
     isPageCustomLayout = isCustomLayout,
     isError = isError,

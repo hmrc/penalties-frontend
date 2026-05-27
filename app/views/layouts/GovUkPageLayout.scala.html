@@ -16,11 +16,12 @@
 
 @import utils.SessionKeys
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcReportTechnicalIssueHelper
+@import uk.gov.hmrc.hmrcfrontend.views.html.components._
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 
 @this(
         govukTemplate: GovukTemplate,
-        govukHeader: GovukHeader,
-        govukFooter: GovukFooter,
+        hmrcStandardHeader: HmrcStandardHeader,
         hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
 )
 
@@ -29,8 +30,7 @@
         headBlock: Option[Html] = None,
         headerBlock: Option[Html] = None,
         beforeContentBlock: Option[Html] = None,
-        footerBlock: Option[Html] = None,
-        footerItems: Seq[FooterItem] = Seq.empty,
+        footerBlock: Html,
         bodyEndBlock: Option[Html] = None,
         scriptsBlock: Option[Html] = None,
         isFullWidth: Boolean = false,
@@ -40,24 +40,17 @@
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 
 @headerDefault = {
-@headerBlock.getOrElse {
-    @govukHeader(Header(
-        homepageUrl = Some(messages("service.homePageUrl")),
-        serviceName = Some(if(request.session.get(SessionKeys.agentSessionVrn).isDefined) { messages("agent.service.name")} else { messages("service.name") }),
-        serviceUrl = Some(messages("service.homePageUrl")),
-        containerClasses = Some("govuk-width-container")))
-}
-}
-
-@footerDefault = {
-@footerBlock.getOrElse {
-    @govukFooter(new Footer(meta = Some(Meta(items = Some(footerItems)))))
-}
+    @headerBlock.getOrElse {
+        @hmrcStandardHeader(
+            serviceName = Some(if(request.session.get(SessionKeys.agentSessionVrn).isDefined) { messages("agent.service.name")} else { messages("service.name") }),
+            serviceUrl = Some(messages("service.homePageUrl"))
+        )
+    }
 }
 
 @bodyEndDefault = {
-@bodyEndBlock
-@scriptsBlock
+    @bodyEndBlock
+    @scriptsBlock
 }
 
 @mainContentDefault = {
@@ -92,7 +85,7 @@
     headBlock = headBlock,
     headerBlock = headerDefault,
     beforeContentBlock = beforeContentBlock,
-    footerBlock = footerDefault,
+    footerBlock = footerBlock,
     mainClasses = Some("govuk-main-wrapper--auto-spacing"),
     bodyEndBlock = Some(bodyEndDefault)
 )(mainContentDefault)

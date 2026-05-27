@@ -14,22 +14,20 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.{Header => headerComponent, HmrcHeader}
 @import utils.SessionKeys
 @import config.AppConfig
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En}
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
+@import uk.gov.hmrc.hmrcfrontend.views.html.components._
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 
-@this(hmrcHeader: HmrcHeader, betaBanner: StandardBetaBanner)
+@this(hmrcStandardHeader: HmrcStandardHeader, betaBanner: StandardBetaBanner)
 
 @(appConfig: AppConfig, showSignOut: Boolean = true, isAuthorised: Boolean)(implicit messages: Messages, request: RequestHeader)
 
-@hmrcHeader(headerComponent(
-    homepageUrl = "https://www.gov.uk/",
-    serviceUrl = if(request.session.get(SessionKeys.agentSessionVrn).isDefined) {appConfig.vatOverviewUrlAgent} else {appConfig.vatOverviewUrl},
+@hmrcStandardHeader(
     serviceName = Some(if(request.session.get(SessionKeys.agentSessionVrn).isDefined) { messages("agent.service.name")} else { messages("service.name") }),
-    containerClasses = "govuk-width-container",
-    navigation = None,
-    signOutHref = if(showSignOut) Some(controllers.routes.SignOutController.signOut(isAuthorised).url) else None,
-    language = if(messages.lang.code.equalsIgnoreCase("en")) En else Cy
-))
+    serviceUrl =  Some(if(request.session.get(SessionKeys.agentSessionVrn).isDefined) {appConfig.vatOverviewUrlAgent} else {appConfig.vatOverviewUrl}),
+    signOutUrl = if(showSignOut) Some(controllers.routes.SignOutController.signOut(isAuthorised).url) else None,
+    displayHmrcBanner = false
+)
