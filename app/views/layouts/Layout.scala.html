@@ -47,39 +47,46 @@
 
     @if(!isTimeout && !isError){
         @if(isUserAgent) {
-          @if(optPage.isDefined) {
-            @govukBackLink(BackLink(href = controllers.routes.PreviousPageController.previousPage(optPage.get.toString).url, content = Text(messages("app.common.back")), attributes = Map("id" -> "back-link")))
-          }
+            @agentBlock
         } else {
-            <div class="govuk-breadcrumbs govuk-breadcrumbs--collapse-on-mobile">
-                <ol class="govuk-breadcrumbs__list">
-                    <li class="govuk-breadcrumbs__list-item">
-                        <a class="govuk-breadcrumbs__link" href="@{appConfig.btaUrl}">
-                        @messages("index.breadcrumb.bta")
-                        </a>
-                    </li>
-                    <li class="govuk-breadcrumbs__list-item">
-                        <a class="govuk-breadcrumbs__link" href="@{appConfig.vatOverviewUrl}">
-                        @messages("index.breadcrumb.vat-account")
-                        </a>
-                    </li>
-                    @{
-                        extraBreadcrumbs.map {
-                            _.map {
-                                breadcrumb => {
-                                    <li class="govuk-breadcrumbs__list-item">
-                                        <a class="govuk-breadcrumbs__link" href={breadcrumb._2}>
-                                            {breadcrumb._1}
-                                        </a>
-                                    </li>
-                                }
-                            }
-                        }
-                    }
-                </ol>
-            </div>
+           @nonAgentBlock
         }
     }
+}
+
+@agentBlock = {
+    @optPage.map { optValue =>
+        @govukBackLink(BackLink(href = controllers.routes.PreviousPageController.previousPage(optValue.toString).url,
+                                content = Text(messages("app.common.back")), attributes = Map("id" -> "back-link")))
+    }
+}
+
+@nonAgentBlock = {
+    <div class="govuk-breadcrumbs govuk-breadcrumbs--collapse-on-mobile">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="@{appConfig.btaUrl}">
+                    @messages("index.breadcrumb.bta")
+                </a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="@{appConfig.vatOverviewUrl}">
+                    @messages("index.breadcrumb.vat-account")
+                </a>
+            </li>
+            @{extraBreadcrumbs.map {
+                _.map { breadcrumb => {
+                    <li class="govuk-breadcrumbs__list-item">
+                        <a class="govuk-breadcrumbs__link" href={breadcrumb._2}>
+                            {breadcrumb._1}
+                        </a>
+                    </li>
+                        }
+                    }
+                }
+            }
+        </ol>
+    </div>
 }
 
 @headBlock = {
@@ -103,12 +110,12 @@
 @scripts = {
     <script @{CSPNonce.attr} src='@controllers.routes.Assets.versioned("lib/govuk-frontend/dist/govuk/all.bundle.js")'></script>
     <script @{CSPNonce.attr} src='@controllers.routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
-    @if(scriptsBlock.isEmpty) {
-        <script @{CSPNonce.attr} src="@controllers.routes.Assets.versioned("javascripts/backLink.js")"></script>
+    @scriptsBlock.fold{
+        <script @{CSPNonce.attr} src='@controllers.routes.Assets.versioned("javascripts/backLink.js")'></script>
         <script @{CSPNonce.attr}>window.GOVUKFrontend.initAll();</script>
         <script @{CSPNonce.attr}>window.HMRCFrontend.initAll();</script>
-    } else {
-        @scriptsBlock.get
+    }{block =>
+        @block
     }
 }
 
