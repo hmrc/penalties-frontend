@@ -43,7 +43,7 @@
 
 @beforeContentBlock = {
 
-    @if(appConfig.welshLanguageSupportEnabled) {@languageSelect()}
+    @if(appConfig.welshLanguageSupportEnabled && !appConfig.isServiceNavigationEnabled) {@languageSelect()}
 
     @if(!isTimeout && !isError){
         @if(isUserAgent) {
