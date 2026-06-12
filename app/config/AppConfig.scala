@@ -92,7 +92,7 @@ class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesCon
 
   lazy val lppCalculationGuidanceLink: String = config.get[String]("urls.lppCalculationGuidance")
 
-
+  lazy val isServiceNavigationEnabled: Boolean = config.getOptional[Boolean]("play-frontend-hmrc.forceServiceNavigation").getOrElse(false)
 
 }
 
