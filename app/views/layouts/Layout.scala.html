@@ -26,7 +26,6 @@
         header: components.Header,
         govukBackLink: GovukBackLink,
         hmrcStandardFooter: HmrcStandardFooter,
-        languageSelect: views.html.LanguageSelect,
         hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet
 )
 @(pageTitle: String,
@@ -42,8 +41,6 @@
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 
 @beforeContentBlock = {
-
-    @if(appConfig.welshLanguageSupportEnabled && !appConfig.isServiceNavigationEnabled) {@languageSelect()}
 
     @if(!isTimeout && !isError){
         @if(isUserAgent) {
