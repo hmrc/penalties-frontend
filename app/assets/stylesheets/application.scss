@@ -1,11 +1,11 @@
-$govuk-assets-path: "/penalties/assets/lib/govuk-frontend/dist/govuk/assets/";
-$hmrc-assets-path: "/penalties/assets/lib/hmrc-frontend/hmrc/";
-$govuk-suppressed-warnings: "libsass";
-$govuk-suppressed-warnings: "legacy-organisation-colours";
+@use "lib/govuk-frontend/dist/govuk" as * with (
+  $govuk-assets-path: "/penalties/assets/lib/govuk-frontend/dist/govuk/assets/"
+);
 
-@import "lib/govuk-frontend/dist/govuk/index";
 @import "lib/hmrc-frontend/hmrc/all";
 @import "summary-card";
+
+$hmrc-assets-path: "/penalties/assets/lib/hmrc-frontend/hmrc/";
 
 .penalty-information-caption {
   display: table-header-group;
