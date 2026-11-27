@@ -21,6 +21,7 @@
 @import views.html.helper.CSPNonce
 @import config.featureSwitches.FeatureSwitch._
 @import config.featureSwitches.FeatureSwitching._
+@import utils.UrBannerUtil
 
 @this(
         layout: Layout,
@@ -52,7 +53,8 @@
   isUserAgent = user.isAgent,
   isPageFullWidth = false,
   isCustomLayout = true,
-  optPage = Some(IndexPage)) {
+  optPage = Some(IndexPage),
+  urBanner = Some(UrBannerUtil.getUrBanner(hideCloseButton = false))) {
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-xl">@{
