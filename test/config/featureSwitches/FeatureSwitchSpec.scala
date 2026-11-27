@@ -17,7 +17,7 @@
 package config.featureSwitches
 
 import base.SpecBase
-import config.featureSwitches.FeatureSwitch.WebchatLink
+import config.featureSwitches.FeatureSwitch.{ShowUserResearchBanner, WebchatLink}
 
 class FeatureSwitchSpec extends SpecBase {
 
@@ -28,7 +28,7 @@ class FeatureSwitchSpec extends SpecBase {
 
   "listOfAllFeatureSwitches" should {
     "be all the featureswitches in the app" in {
-      FeatureSwitch.featureSwitches shouldBe Seq(WebchatLink)
+      FeatureSwitch.featureSwitches shouldBe Seq(WebchatLink, ShowUserResearchBanner)
     }
   }
 }

@@ -19,6 +19,8 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import views.html.layouts.GovUkPageLayout
 @import views.html.helper.CSPNonce
+@import config.featureSwitches.FeatureSwitch.ShowUserResearchBanner
+@import config.featureSwitches.FeatureSwitching.isEnabled
 
 @this(
         govukLayout: GovUkPageLayout,
@@ -26,7 +28,8 @@
         header: components.Header,
         govukBackLink: GovukBackLink,
         hmrcStandardFooter: HmrcStandardFooter,
-        hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet
+        hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
+        hmrcUserResearchBanner: HmrcUserResearchBanner
 )
 @(pageTitle: String,
         scriptsBlock: Option[Html] = None,
@@ -37,7 +40,8 @@
         isError: Boolean = false,
         isCustomLayout: Boolean = false,
         optPage: Option[Page] = None,
-        isAuthorised: Boolean = true
+        isAuthorised: Boolean = true,
+        urBanner: Option[UserResearchBanner] = None
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 
 @beforeContentBlock = {
@@ -120,6 +124,13 @@
   if(isUserAgent) "agent.service.name" else "service.name"
 }
 
+@headerWithBanner = {
+    @header(appConfig, !isTimeout, isAuthorised)
+    @if(isEnabled(ShowUserResearchBanner)) {
+        @urBanner.map(hmrcUserResearchBanner(_))
+    }
+}
+
 @footerDefault = {
     @hmrcStandardFooter()
 }
@@ -128,7 +139,7 @@
 @govukLayout(
     pageTitle = Some(messages("common.pageTitle", pageTitle, messages(titleMessage))),
     headBlock = Some(headBlock),
-    headerBlock = Some(header(appConfig, !isTimeout, isAuthorised)),
+    headerBlock = Some(headerWithBanner),
     scriptsBlock = Some(scripts),
     beforeContentBlock = Some(beforeContentBlock),
     footerBlock = footerDefault,

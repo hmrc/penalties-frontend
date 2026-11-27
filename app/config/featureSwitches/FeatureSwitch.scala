@@ -22,7 +22,8 @@ object FeatureSwitch {
   val prefix: String = "feature.switch"
 
   val featureSwitches: Seq[FeatureSwitch] = Seq(
-    WebchatLink
+    WebchatLink,
+    ShowUserResearchBanner
   )
 
   def apply(str: String): FeatureSwitch =
@@ -38,6 +39,10 @@ object FeatureSwitch {
 
   object WebchatLink extends FeatureSwitch {
     val name = s"$prefix.webchatLink"
+  }
+
+  object ShowUserResearchBanner extends FeatureSwitch {
+    val name = s"$prefix.showUserResearchBanner"
   }
 }
 

@@ -15,6 +15,7 @@
  *@
 
 @import config.AppConfig
+@import utils.UrBannerUtil
 
 @this(
         layout: Layout
@@ -31,7 +32,8 @@
     isPageFullWidth = false,
     isUserAgent = user.isAgent,
     extraBreadcrumbs = Some(Seq((messages("index.breadcrumb.index"), controllers.routes.IndexController.onPageLoad.url))),
-    optPage = Some(CompliancePage)
+    optPage = Some(CompliancePage),
+    urBanner = Some(UrBannerUtil.getUrBanner(hideCloseButton = false))
   ) {
 
     <h1 class="govuk-heading-xl">@getMessage("compliance.titleAndHeading")</h1>
